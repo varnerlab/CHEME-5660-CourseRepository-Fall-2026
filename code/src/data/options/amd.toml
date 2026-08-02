@@ -1,0 +1,11 @@
+[metadata]
+DTE = "58"
+underlying_share_price_mid = "225.78"
+underlying_share_price_bid = "225.74"
+underlying_share_price_ask = "225.91"
+expiration_date = "2025-12-19"
+purchase_date = "2025-10-22"
+is_weekly = false
+atm_IV = "0.5903"
+historical_volatility = "0.7971"
+source = "barchart.com"
