@@ -73,10 +73,9 @@ using VLQuantitativeFinancePackage
         zc = build(MyUSTreasuryZeroCouponBondModel, (par = 100.0, T = 2.0, n = 2, price = 100.0 * exp(-0.04 * 2.0)))
         @test isapprox(YTM(zc, ContinuousCompoundingModel()), 0.04; atol = 1e-4)
 
-        # discrete: NOTE current semantics are effective-annual, (1+r)^T — n is ignored (YTM.jl:12).
-        # This documents CURRENT behavior; the n-inconsistency with price() is a Task 10 suspect.
-        zd = build(MyUSTreasuryZeroCouponBondModel, (par = 100.0, T = 2.0, n = 2, price = 100.0 / (1.04)^2))
-        @test isapprox(YTM(zd, DiscreteCompoundingModel()), 0.04; atol = 1e-4)
+        # discrete: price and YTM should be consistent when both use the same n parameter (B6)
+        z_discrete = build(MyUSTreasuryZeroCouponBondModel, (par = 100.0, rate = 0.05, T = 2.0, n = 2)) |> DiscreteCompoundingModel()
+        @test isapprox(YTM(z_discrete, DiscreteCompoundingModel()), 0.05; atol = 1e-4)
     end
 
     @testset "interest-rate lattice populate/expectation/variance" begin

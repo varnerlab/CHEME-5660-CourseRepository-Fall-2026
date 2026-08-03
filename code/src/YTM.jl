@@ -4,12 +4,13 @@ function _net_present_value(r::Float64, model::MyUSTreasuryZeroCouponBondModel, 
     T = model.T;
     price = model.price; # the price is set, we are looking for the interest rate
     Vₚ = model.par
+    n = model.n
 
     # we are passing in the rate -
     rate = r;
 
     # compute the discount with this rate -
-    𝒟 = (1+rate)^(T)
+    𝒟 = (1+rate/n)^(n*T)
     future_payout = (1/𝒟)*Vₚ
    
     # compute the npv value -
