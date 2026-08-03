@@ -105,6 +105,20 @@ using Distributions
                     (index = 5, rule = rule2d)) isa MySimpleTwoDimensionalAgentModel   # index 5 = center of 3×3
     end
 
+    @testset "profit with equity leg" begin
+        # test that profit correctly uses direction and number_of_shares for equity leg
+        m = MyEquityModel()
+        m.ticker = "TEST"
+        m.purchase_price = 100.0
+        m.current_price = 100.0
+        m.direction = 1
+        m.number_of_shares = 100
+        call_contract = build(MyAmericanCallContractModel, (K = 110.0, sense = -1, premium = 2.0, copy = 1))
+        P = profit([call_contract], m, [110.0])
+        # equity leg should be: direction * number_of_shares * (Sᵢ - Sₒ) = 1 * 100 * (110 - 100) = 1000
+        @test isapprox(P[end - 1], 1000.0; atol = 1e-10)
+    end
+
     @testset "data loaders" begin
         train = MyTrainingMarketDataSet()
         @test train isa Dict{String, Any}
