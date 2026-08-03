@@ -589,6 +589,7 @@ function build(modeltype::Type{MySisoLegSHippoModel}, data::NamedTuple)::MySisoL
     number_of_hidden_states = data.number_of_hidden_states;
     Δt = data.Δt;
     uₒ = data.uₒ;
+    uₒval = uₒ isa AbstractArray ? uₒ[1] : uₒ;
     C = data.C;
 
     # A matrix -
@@ -628,7 +629,7 @@ function build(modeltype::Type{MySisoLegSHippoModel}, data::NamedTuple)::MySisoL
     model.Ĉ = Ĉ;
     model.D̂ = D̂;
     model.n = number_of_hidden_states;
-    model.Xₒ = B̂*uₒ;
+    model.Xₒ = B̂*uₒval;
 
     # return -
     return model;

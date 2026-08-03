@@ -47,6 +47,8 @@ using Distributions
         # Scalar keeps this green; the docstring/implementation mismatch is a Task 10 suspect.
         @test build(MySisoLegSHippoModel,
                     (number_of_hidden_states = 4, Δt = 0.1, uₒ = 1.0, C = ones(4))) isa MySisoLegSHippoModel
+        @test build(MySisoLegSHippoModel,
+                    (number_of_hidden_states = 4, Δt = 0.1, uₒ = [1.0], C = ones(4))) isa MySisoLegSHippoModel
     end
 
     @testset "portfolio problems + SIM" begin
