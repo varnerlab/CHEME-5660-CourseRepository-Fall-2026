@@ -1,0 +1,277 @@
+# L14a: Bandit and Weighted Majority Algorithm Portfolio Management Problems
+In this lecture, we explore the use of multi-armed bandit algorithms to manage a portfolio of assets (stocks and ETFs). The goal is to allocate resources among different investment options to maximize portfolio benefit while minimizing risk.
+
+> __Learning Objectives:__
+> 
+> By the end of this lecture, you should be able to:
+> * __Formulate and solve combinatorial bandit problems for portfolio selection:__ Understand how binary action vectors represent portfolio combinations, solve utility maximization problems with Cobb-Douglas utility functions, and apply the combinatorial epsilon-greedy algorithm to allocate budgets across asset combinations.
+> * __Model investor preferences and risk-adjust asset selection:__ Use feature vectors and activation functions to model preference coefficients for assets, incorporate risk aversion through risk adjustment parameters, and compute preference-based weights from market data.
+> * __Apply the Multiplicative Weights Algorithm to expert prediction tasks:__ Update expert weights based on prediction accuracy, manage belief distributions over experts, and understand regret bounds that characterize algorithm performance.
+
+
+Let's get started!
+
+___
+
+## Examples
+Today, we will use the following examples to illustrate key concepts:
+
+> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+
+> [▶ Let's revist the bandit portfolio example from Week-9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2025.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
+___
+
+<div>
+    <center>
+        <img src="figs/Fig-Bandits-Schematic.png" width="880"/>
+    </center>
+</div>
+
+## Concept Review: Reinforcement Learning and Binary Bernoulli Bandits
+In reinforcement learning, an agent interacts with an environment by observing its current state $s \in \mathcal{S}$, selecting an action $a \in \mathcal{A}$, and receiving a reward that influences its future decisions. We'll explore three different approaches to this problem:
+
+> __Model Free Reinforcement Learning Approaches:__
+> 
+> * __Bandit algorithms__ operate in stateless environments. On each round, bandits explore different actions to estimate their rewards and adapt their action-selection strategy based on these outcomes. TL;DR: Bandit algorithms learn to choose the best action from a fixed set of options by experimenting with the world. 
+> * __Multiplicative weights__ adjusts the probability of selecting an action based on past performance, but does so in a principled way that guarantees the algorithm performs nearly as well as the best fixed action in hindsight—even in changing environments, i.e., it minimizes regret.
+> * __Q-learning__ is a value-based method that estimates the long-term value (utility, satisfaction, happiness, etc.) of each state-action pair, enabling the agent to learn optimal behavior in environments with temporal and sequential dynamics.
+>
+> These approaches highlight different strategies for learning from interaction, but they all must balance a fundamental challenge in reinforcement learning: the tradeoff between exploring new actions to gather information and exploiting known actions to maximize reward.
+
+Last lecture we introduced the binary Bernoulli bandit problem, where each action (arm) yields a reward of 1 with some unknown probability $p$ and a reward of 0 otherwise. The agent's goal is to maximize its cumulative reward over time by learning which arms are most likely to yield positive outcomes.
+
+### $\epsilon$-Greedy Binary Bernoulli Bandit
+The $\epsilon$-greedy algorithm is simple and effective for solving the binary Bernoulli bandit problem. The algorithm selects the _best action_ with probability $1-\epsilon$ and selects a random action with probability $\epsilon$. The pseudocode for the $\epsilon$-greedy algorithm is given below.
+
+#### Pseudo-code
+The agent has $K$ arms (choices), $\mathcal{A} = \left\{1,2,\dots,K\right\}$, and the total number of rounds is $T\gg{K}$. Initialize the parameters of [the Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution) for each arm $a\in\mathcal{A}$ to $\alpha_{a} = 1$ and $\beta_{a} = 1$. The agent uses the following algorithm to choose which arm to pull (which action to take) during each round:
+
+For $t = 1,2,\dots,T$:
+1. _Initialize_: Roll a random number $p\in\left[0,1\right]$ and compute a threshold $\epsilon_{t}={t^{-1/3}}\cdot\left(K\cdot\log(t)\right)^{1/3}$.
+2. _Exploration_: If $p\leq\epsilon_{t}$, choose a random (uniform) arm $a_{t}\in\mathcal{A}$. Execute the action $a_{t}$ and receive a stochastic reward $r_{t} \in \left\{0,1\right\}$.
+3. _Exploitation_: Else if $p>\epsilon_{t}$, choose action $a^{\star}_{t}$, the action with the _highest expected probability of success_ (greedy choice), using the agent's model of the world. The highest probability action is: $a^{\star} = \arg\max_{a\in\mathcal{A}}\left\{\frac{\alpha(a) + \mathbf{S}(a)}{\alpha(a) + \beta(a) + \mathbf{S}(a) + \mathbf{F}(a)}\right\}$ where $\mathbf{S}(a)$ and $\mathbf{F}(a)$ are the number of successes and failures for arm $a$. Execute the action $a^{\star}_{t}$ and receive a stochastic reward $r^{\star}_{t}\in\left\{0,1\right\}$.
+4. Update the success $\mathbf{S}(a^{\star})$ and failure $\mathbf{F}(a^{\star})$ arrays for the chosen arm $a^{\star}_{t}$ using the reward $r^{\star}_{t}$:
+$$
+\begin{equation*}
+S(a^{\star}_{t}) \gets S(a^{\star}_{t}) + r^{\star}_{t},\quad F(a^{\star}_{t}) \gets F(a^{\star}_{t}) + (1-r^{\star}_{t})
+\end{equation*}
+$$
+
+Using a model of the world allows the agent to make decisions about which actions to take. This is the essence of the Bayesian approach to bandit problems. The agent has a model of the likely reward distribution for _each_ action and uses this model to select the best action at each time step.
+
+Let's look at an example of a risk-aware ticker picker binary Bernoulli bandit.
+
+> __Example__:
+>
+> 
+> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+
+___
+
+## Combinatorial Bandit Problems
+In combinatorial bandit problems, the agent selects a subset of actions (a combination) at each time step. This is more complex than selecting a single action, as the number of possible combinations grows exponentially with the number of actions.
+
+> __Difference with Standard Bandits?__
+> 
+> A combinatorial bandit problem extends the binary Bernoulli bandit framework to scenarios where decisions involve selecting __combinations of items__ rather than choosing a single arm. Each decision represents a configuration or subset of available options, making the action space combinatorial in nature.
+
+In the __binary combinatorial bandit problem__, we have $K$ items, and each arm corresponds to a binary vector $\mathbf{a}\in\left\{0,1\right\}^{K}$ indicating which items are selected (1) or not selected (0). This leads to $N = 2^{K}$ possible arms to explore, where each arm represents a unique combination of the $K$ items.
+
+For each round $t = 1,2,\dots,T$:
+1. The agent selects an arm $\mathbf{a}_{t}\in\mathcal{A}$, where $\mathcal{A} = \left\{0,1\right\}^{K}$ is the set of all possible binary vectors of length $K$.
+2. The agent receives a reward $r_{t}\in\mathbb{R}$ sampled from some (unknown) distribution associated with arm $\mathbf{a}_{t}$. This distribution is known by the world (nature) but unknown to the agent.
+3. The agent updates its belief about the expected reward for the selected arm. $\texttt{GOTO}$ 1.
+
+The goal is to maximize cumulative reward over $T$ rounds by learning which combinations of items yield the highest expected reward.
+
+> __Key Challenges__
+> 
+> The combinatorial bandit problem introduces several challenges compared to the standard multi-armed bandit:
+> * __Exponential growth__: With $K$ items, the number of possible arms grows as $N = 2^{K}$. Even modest values of $K$ lead to enormous action spaces. For example, with $K=10$ items, there are $N=1024$ arms to explore.
+> * __Sparse exploration__: The agent may never visit most arms during the learning process. This makes learning difficult because many combinations remain unexplored.
+> * __Structure exploitation__: Unlike the standard bandit problem, combinatorial bandits often exhibit structure. The reward for a combination may depend on interactions between items, not just individual item contributions. Exploiting this structure can improve learning efficiency.
+
+### Maximum Utility Portfolio Optimization Problem
+Suppose you have a collection of risky assets in portfolio $\mathcal{P}$.
+The goal is to allocate a fixed budget $B$ across these assets to __maximize the utility__ of the portfolio, where the utility is directly informed by quantitative investor preferences measures.
+
+> __Utility Function:__ A utility function $U:\mathbb{R}_{+}^{P}\to\mathbb{R}$ maps the number of shares of each asset in the portfolio to a real-valued utility score that reflects the investor's satisfaction with that allocation. We use a Cobb-Douglas utility function to model investor preferences:
+> $$
+\begin{align*}
+U\left(n_{1},n_{2},\dots,n_{P}\right) = \kappa(\gamma)\prod_{i\in\mathcal{P}}n_{i}^{\gamma_{i}}
+\end{align*}
+$$
+> where $\gamma_{i}\in\mathbb{R}$ is the __preference coefficient__ for asset $i$ (we need to estimate these values), and $\kappa(\gamma)$ is a leading coefficient that sets the scale of the utility function.
+
+Let $n_{i}\in\left(n_{1},\dots,n_{P}\in\mathbb{R}_{+}\right)^{\top}$ be the __number of shares__ of asset $i$ in the portfolio (we need to estimate these values). 
+
+> __Inclusion:__ Not every asset is included in the final portfolio from the universe of possible assets. Inclusion or exclusion of an asset is governed by the binary action vector $\mathbf{a}_{j}$ specified by a bandit agent, where $a_{j} = 1$ if asset $j$ is included in the portfolio and $a_{j} = 0$ otherwise. 
+
+An investment budget $B$ is allocated across the assets in the portfolio, where $p_{i}$ is the acquisition price of asset $i$ at the time of allocation. The optimal portfolio is the solution of the utility maximization problem:
+$$
+\boxed{
+\begin{align*}
+    \underset{n_{1},\dots,n_{P}}{\text{maximize}} &\quad \kappa(\gamma)\prod_{i\in\mathcal{P}}n_{i}^{\gamma_{i}} \\
+    \text{subject to}&\quad B =  \sum_{i\in\mathcal{P}}n_{i}\;{p}_{i}\\
+    \epsilon\;{a_{i}}&\leq n_{i} \leq{a_{i}}\left(\frac{B}{p_{i}}\right)\quad{\forall{i}\in\mathcal{P}}\\
+    a_{i} &\in\{0,1\}\quad{\forall{i}\in\mathcal{P}}\\
+    \epsilon &\in\mathbb{R}_{+} \quad\text{(hyperparameter)}
+\end{align*}}
+$$
+In this analysis, we assume that the budget $B$ is fixed during a time period, the prices $p_{i}$ are fixed at the time of allocation (and are bounded by the bid-ask spread), and fractional shares of assets are allowed. 
+Short selling is not allowed. 
+
+The leading coefficient $\kappa(\gamma)$ sets the scale of the utility function. Given that the utility is ordinal, the scale of the utility function can be set to an arbitrary value, for example $\kappa = \pm 1$, where $\kappa = 1$ if all the $\gamma_{i}$ coefficients are positive and $\kappa = -1$ if any of the $\gamma_{i}$ coefficients are negative.
+
+#### Analytical Solution
+The share optimization problem has an __analytical solution__. 
+Let $S = \left\{i\mid\mathbf{a} = 1\right\}$ be the set of assets in the portfolio; $S_{+} = \left\{i\mid\gamma_{i}>0\right\}$ be the set of preferred assets, $S_{-} = \left\{i\mid\gamma_{i}<0\right\}$ be the set of non-preferred assets.
+Then, the optimal maximum utility portfolio given the action $\mathbf{a}$, the budget $B$, user preferences $\gamma_{i}$, 
+and the acquisition share price $p_{i}$ of asset $i$ is given by:
+$$
+\begin{align*}
+n_{i}^{\star} & = \begin{cases}
+\left(\frac{\gamma_{i}}{\sum_{j\in{S}_{+}}\gamma_{j}}\right)\;\frac{B - \epsilon\sum_{k\in{S}_{-}}p_{k}}{p_{i}} & \forall{i}\in{S}_{+}\\
+\epsilon & \forall{i}\in{S}_{-}
+\end{cases}\quad\blacksquare    
+\end{align*}
+$$
+where $n_{i}^{\star}$ is the optimal number of shares of asset $i$ in the portfolio.
+
+#### Investor Preference Model
+The $\gamma_{i}$ coefficients reflect the relative importance of each asset in generating utility for the investor. These coefficients can incorporate market conditions, sentiment, and other asset-specific information through an $m$-dimensional feature vector $\mathbf{x}_{i}\in\mathbb{R}^{m}$:
+$$
+\begin{align*}
+\gamma_{i} & = \sigma\left(\mathbf{x}^{\top}_{i}\theta_{i}\right)\quad\forall{i}\in\mathcal{P}
+\end{align*}
+$$
+where $\sigma:\mathbb{R}\rightarrow\mathbb{R}$ is an activation function such that $\sigma_{\theta}(x)\in[-1,1]$,
+and $\mathbf{\theta}_{i}\in\mathbb{R}^{p}$ denotes the feature weights that can be learned from data or set based on subjective beliefs.
+
+For a concrete implementation, a single index model is used with feature vector $\mathbf{x}_{i} = \left(1,\mathbb{E}(\bar{g}_{m})\right)$, where $\mathbb{E}(\bar{g}_{m})$ is the expected growth rate of the market portfolio. The parameters $\theta_{i} = \left(\alpha_{i},\beta_{i}\right)$ represent firm-specific growth and relative risk with respect to the market portfolio.
+
+The single index model is risk-adjusted by dividing by $\beta_{i}^{\lambda}$, where $\lambda \geq 0$ is a risk aversion parameter that controls how much the investor penalizes higher-risk assets. When $\lambda = 0$, there is no risk adjustment; when $\lambda = 1$, the preference is inversely proportional to systematic risk. Using the $\texttt{tanh}$ activation function, the coefficients are modeled as:
+$$
+\begin{align*}
+    \gamma_{i} &= \texttt{tanh}\left(\alpha_{i}/{\beta_{i}^{\lambda}}+\beta^{1-\lambda}_{i}\cdot\mathbb{E}(\bar{g}_{m})\right)\quad\forall{i}\in\mathcal{P}\Longrightarrow{-1<\gamma_{i}<1}
+\end{align*}
+$$
+Assets with positive expected risk-adjusted growth rates yield $\gamma_{i} > 0$ (preferred), while those with negative rates yield $\gamma_{i}<0$ (non-preferred).
+
+Let's now look at an example of a combinatorial bandit problem in the context of portfolio management.
+Let's now look at an example of a combinatorial bandit problem in the context of portfolio management.
+### Combinatorial Epsilon-Greedy Algorithm
+The combinatorial epsilon-greedy algorithm extends the standard epsilon-greedy approach to handle the exponential action space of combinatorial bandits. The key modification is that each arm is represented as a binary vector $\mathbf{a}\in\left\{0,1\right\}^{K}$, and the agent maintains average reward estimates for each of the $N = 2^{K}$ possible combinations.
+
+#### Pseudo-code
+The agent has $K$ items, leading to $N = 2^{K}$ possible arms (combinations), and the total number of rounds is $T$. Each arm $i\in\left\{1,2,\dots,N\right\}$ corresponds to a binary vector $\mathbf{a}\in\left\{0,1\right\}^{K}$.
+
+_Initialization_: For each arm $i\in\left\{1,2,\dots,N\right\}$:
+1. Generate the binary representation $\mathbf{a}_{i}$ using $i$ (e.g., $\mathbf{a}_{i} = \text{digits}(i, \text{base}=2, \text{pad}=K)$).
+2. Execute action $\mathbf{a}_{i}$ and receive reward $r_{i}$ from the world.
+3. Initialize the average reward estimate: $\mu_{i} \gets \mu_{0,i}\cdot\left(1-\frac{1}{T}\right) + \frac{1}{T}\cdot r_{i}$, where $\mu_{0,i}$ is an initial guess for arm $i$.
+
+For rounds $t = 2,3,\dots,T$:
+1. _Compute threshold_: Calculate $\epsilon_{t} = \frac{1}{t^{1/3}}\cdot\left(\log(K\cdot t)\right)^{1/3}$.
+2. _Initialize_: Roll a random number $p\in\left[0,1\right]$.
+3. _Exploration_: If $p\leq\epsilon_{t}$, randomly select an arm index $i\in\left\{1,2,\dots,N\right\}$ uniformly.
+4. _Exploitation_: Else if $p>\epsilon_{t}$, choose the arm with the highest average reward: $i = \arg\max_{j\in\{1,\dots,N\}}\mu_{j}$.
+5. _Generate action_: Convert arm index $i$ to binary vector $\mathbf{a}_{t} = \text{digits}(i, \text{base}=2, \text{pad}=K)$.
+6. _Execute and observe_: Execute action $\mathbf{a}_{t}$ and receive reward $r_{t}$ from the world.
+7. _Update estimate_: Update the average reward for arm $i$ using a weighted online average: $\mu_{i} \gets \mu_{i} + \frac{1}{t}\cdot\left(r_{t} - \mu_{i}\right)$.
+
+__Output__: Return the history of rewards, final average reward estimates $\mu$, and action history.
+
+> __Learning Rate Choice:__
+>
+> The learning rate $\alpha_t = \frac{1}{t}$ decreases over time. Each new observation receives less weight as more data is collected, while early observations retain their influence on the running average. This choice satisfies the Robbins-Monro conditions for stochastic approximation: $\sum_{t=1}^{\infty}\alpha_t = \infty$ and $\sum_{t=1}^{\infty}\alpha_t^2 < \infty$, which guarantee that the average converges to the true expected reward as the number of observations increases. Alternative learning rates include:
+> * **Sample mean**: $\alpha = \frac{1}{n_i}$ where $n_i$ is the number of times arm $i$ has been pulled. This gives equal weight to all observations of arm $i$ and converges to the true sample mean.
+> * **Constant rate**: $\alpha = c$ for some fixed $c \in (0,1)$. This gives more weight to recent observations, allowing the algorithm to adapt to non-stationary environments.
+> * **Polynomial decay**: $\alpha_t = \frac{1}{t^\beta}$ for $\beta \in (0,1]$. This balances between fast early learning and stable convergence.
+>
+> The choice of learning rate affects how quickly the estimates converge and whether they converge to the true expected reward. The $\frac{1}{t}$ schedule used here provides theoretical convergence guarantees while being simple to implement.
+
+The combinatorial epsilon-greedy algorithm balances exploration and exploitation in the exponential action space by maintaining separate reward estimates for each combination. The weighted online average update allows the agent to adapt its estimates as it gathers more information, with the learning rate decreasing over time to stabilize the estimates.
+
+Let's look at an example of a risk-aware portfolio manager using combinatorial bandits.
+
+> __Example__
+> 
+> [▶ Let's revisit the bandit portfolio example from Week 9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2025.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
+
+
+## Multiplicative Weights Algorithm (MWA)
+The **Multiplicative Weights Algorithm (MWA)** is a simple yet robust online learning method that embodies a similar idea to the weighted majority algorithm, i.e., learning from expert advice. Here, the learning rate $\eta$ plays a role analogous to $\varepsilon$ in the Weighted Majority Algorithm, controlling adaptation speed. 
+
+Let’s walk through the setup and sketch out the algorithm.
+
+### Problem Setting
+Suppose we are faced with a repeated decision-making task over rounds $t = 1, 2, \ldots, T$. At each round, we have access to $N$ experts, each providing a recommendation or prediction. Our goal is to combine their advice adaptively in order to make strong decisions over time, even in adversarial or uncertain environments.
+
+* Let $\mathbf{p}^{(t)} = \{p_1^{(t)}, p_2^{(t)}, \ldots, p_N^{(t)}\}$ denote our belief distribution over experts at round $t$, updated iteratively based on their past performance.
+* We select an expert by sampling from this distribution—for example, using a Categorical distribution:
+  $i \sim \texttt{Categorical}(\mathbf{p}^{(t)})$—and follow that expert’s recommendation.
+* After the decision is made, the environment (or adversary) reveals the true outcome. We then compute a cost vector $\mathbf{m}^{(t)} = \{m_1^{(t)}, \dots, m_N^{(t)}\}$, where $m_i^{(t)} \in [-1, 1]$ denotes the cost incurred by expert $i$ at time $t$. A correct prediction receives a cost of $-1$, and an incorrect one receives a cost of $+1$.
+
+### Algorithm
+
+__Initialize__: Fix a learning rate $\eta\leq{1}/{2}$, for each expert initialize the weight $w_{i}^{(1)} = 1$.
+
+For $t=1,2,\dots,T$:
+1. Choose expert $i$ with probability $p_{i}^{(t)} = w_{i}^{(t)}/\sum_{j=1}^{N}w_{j}^{(t)}$. Ask expert $i$ what the outcome of the experiment should be and denote the expert's answer as $\hat{y}_{i}^{(t)}$.
+2. The adversary (nature) reveals the true outcome $y_{t}$ of the experiment at time $t$. Compute the cost of the following expert $i$, denoted as $m_{i}^{(t)}$. 
+    $$
+    m_i^{(t)} =
+    \begin{cases}
+    -1 & \text{if } \hat{y}_i^{(t)} = y_t \quad \text{(correct)} \\
+    +1 & \text{if } \hat{y}_i^{(t)} \neq y_t \quad \text{(incorrect)}
+    \end{cases}
+   $$
+3. Update the weights of expert $i$ as (renormalize the weights to obtain the new probability distribution):
+$$
+\begin{align*}
+w_{i}^{(t+1)} = w_{i}^{(t)}\cdot\left(1-\eta\cdot{m_{i}^{(t)}}\right)
+\end{align*}
+$$
+
+This is a simple algorithm with properties that are useful. The weights are updated multiplicatively based on the performance of each expert, hence the name Multiplicative Weights Algorithm. The learning rate $\eta$ controls how aggressively the algorithm adapts to the experts' performance. There is a theoretical guarantee that the algorithm will perform nearly as well as the best fixed expert in hindsight.
+
+### Theoretical Regret Bound
+Assume all costs lie in the range $m_i^{(t)} \in [-1, 1]$, and fix a learning rate $\eta \leq \frac{1}{2}$. Then the Multiplicative Weights Algorithm (MWA) guarantees that for any expert $i$, after $T$ rounds:
+$$
+\begin{align*}
+\sum_{t=1}^{T} \mathbf{p}^{(t)} \cdot \mathbf{m}^{(t)} & \leq \sum_{t=1}^{T} m_i^{(t)} + \eta \underbrace{\sum_{t=1}^{T} |m_i^{(t)}|}_{= T} + \frac{\ln N}{\eta} \\
+\underbrace{\sum_{t=1}^{T} \mathbf{p}^{(t)} \cdot \mathbf{m}^{(t)} - \overbrace{\sum_{t=1}^{T} m_i^{(t)}}^{\text{best expert}}}_{R(T)} & \leq \eta T + \frac{\ln N}{\eta} \\
+R(T) & \leq \eta T + \frac{\ln N}{\eta}\quad\blacksquare
+\end{align*}
+$$
+where we used the fact that $|m_i^{(t)}| = 1$. By choosing $\eta = \sqrt{\frac{\ln N}{T}}$, this regret bound becomes sublinear:
+$$
+R(T) \leq 2 \sqrt{T \ln N}
+$$
+This ensures that the algorithm's **average regret per round** vanishes as $T \to \infty$, meaning that MWA performs nearly as well as the best fixed expert in hindsight.
+
+### Additional Resources
+This module borrowed notes and was inspired from several sources: [Arora et al., The Multiplicative Weights Update Method: A Meta-Algorithm and Applications, Theory of Computing, Volume 8 (2012), pp. 121–164](https://theoryofcomputing.org/articles/v008a006/v008a006.pdf) and the [15-859 CMU Lecture 16](https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15859-f11/www/notes/lecture16.pdf) and [15-850 CMU Lecture 17](https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15859-f11/www/notes/lecture17.pdf). 
+___
+
+## Summary
+This lecture extends bandit algorithms to portfolio management through combinatorial optimization and online learning with expert advice.
+
+> __Key Takeaways:__
+> * __Combinatorial bandits scale bandit problems to exponential action spaces:__ Agents select subsets of items rather than single actions, representing each combination as a binary vector. The combinatorial epsilon-greedy algorithm maintains reward estimates for each combination and balances exploration and exploitation through adaptive thresholds and weighted online averaging.
+> * __Utility optimization incorporates investor preferences into portfolio selection:__ Cobb-Douglas utility functions map asset allocations to investor satisfaction, with preference coefficients estimated from market data and risk factors. The optimal allocation problem has an analytical solution that allocates budget to preferred assets based on their contribution to total utility.
+> * __The Multiplicative Weights Algorithm adapts to expert performance over time:__ Experts receive weights updated multiplicatively based on prediction accuracy, with a learning rate controlling adaptation speed. Regret bounds guarantee that the algorithm performs nearly as well as the best fixed expert, with average regret per round vanishing as the number of rounds increases.
+
+
+These methods provide frameworks for sequential decision-making in settings with exponential action spaces and expert advice.
+___
+
+## Disclaimer and Risks
+__This content is offered solely for training and informational purposes__. No offer or solicitation to buy or sell securities or derivative products or any investment or trading advice or strategy is made, given, or endorsed by the teaching team. 
+
+__Trading involves risk__. Carefully review your financial situation before investing in securities, futures contracts, options, or commodity interests. Past performance, whether actual or indicated by historical tests of strategies, is no guarantee of future performance or success. Trading is generally inappropriate for someone with limited resources, investment or trading experience, or a low-risk tolerance. Only risk capital that is not required for living expenses should be used.
+
+__You are fully responsible for any investment or trading decisions you make__. Such decisions should be based solely on evaluating your financial circumstances, investment or trading objectives, risk tolerance, and liquidity needs.
+
+___

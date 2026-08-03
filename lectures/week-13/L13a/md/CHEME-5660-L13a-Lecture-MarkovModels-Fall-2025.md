@@ -1,0 +1,206 @@
+# L13a: Markov Models and Hidden Markov Models
+In this lecture, we will explore the concepts of Markov Models and Hidden Markov Models (HMMs), which are widely used in various fields such as natural language processing, speech recognition, and bioinformatics. We are going to apply these concepts to practical problems in quantitative finance.
+
+> __Learning Objectives:__
+>
+> By the end of this lecture, you should be able to:
+> * __Construct discrete Markov models with state spaces and transition matrices:__ Define state spaces for systems, build transition probability matrices satisfying row normalization constraints, and apply the Markov property to model memoryless stochastic processes.
+> * __Compute stationary distributions using power iteration methods:__ Apply iterative algorithms to estimate stationary distributions from transition matrices, implement convergence criteria based on norm differences, and interpret stationary distributions as long-run probabilities.
+> * __Implement Hidden Markov Models with emission matrices:__ Define hidden state spaces and observable output spaces, construct emission probability matrices linking hidden states to observations, and generate synthetic sequences by sampling from transition and emission distributions.
+
+
+Let's get started!
+___
+
+## Examples
+Today, we will use the following examples to illustrate key concepts:
+
+> [▶ Analyze a three-state hidden Markov model for mood](CHEME-5660-L13a-Example-HiddenMarkovModels-Fall-2025.ipynb). In this example, we will analyze a simple hidden Markov model (HMM) that represents a person's mood (happy, sad, neutral) based on observable behaviors (smiling, frowning, neutral expression). We will set up the HMM, compute the most likely sequence of moods given a series of observed behaviors, and discuss how this model can be applied in real-world scenarios.
+
+> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2025.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) applied to the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
+___
+
+## Discrete Markov Model States
+A discrete Markov model is a stochastic (random) process that describes the transitions between states based on defined probabilities. Formally, a Markov model is determined by the tuple $\mathcal{M} = (\mathcal{S},\mathbf{P})$, where $\mathcal{S}$ represents the set of states in the model and $\mathbf{P}$ is the transition matrix.
+
+### The state space $\mathcal{S}$
+The state space $\mathcal{S}$ is the set of all possible values a system can assume. For example, if a Markov chain can be in the states $\left\{1,2,3\right\}$, then $\mathcal{S} \equiv \left\{1,2,3\right\}$. What do these states represent? The answer depends on the problem. Here are two concrete examples:
+* __Letters in words__ $\mathcal{S} \equiv \left\{a,b,c,\dotsc,z\right\}$: If the state space $\mathcal{S}$ is defined as the alphabet, we could develop a Markov model to generate $n$ words, each of length $l$ characters, that start with a specific letter such as $t$.
+* __Investor moods__ $\mathcal{S} \equiv \left\{\text{bullish},\text{neutral},\text{bearish}\right\}$: In this case, the state space is defined as three possible moods an investor can experience. Using this type of $\mathcal{S}$, we could build a Markov model to simulate how an investor's mood changes as they watch the market, the news, and other factors.
+
+Next, let's look at the Markov property and transition matrix $\mathbf{P}$.
+___
+
+## The Markov Property
+The Markov property is the key characteristic of Markov models: a random process has this property when the probability of future states depends only on the present state, not on how it got there. This memoryless property simplifies how we model stochastic systems. From weather prediction to inventory management, the Markov property captures the behavior of many real-world systems.
+
+> __Definition:__ A stochastic process $\{X_n\}_{n=0}^{\infty}$ satisfies the **Markov property** if, for all $n \geq 0$ and all sequences of states $s_0, s_1, \ldots, s_n, s_{n+1}$ in the state space $\mathcal{S}$:
+>
+> $$P(X_{n+1} = s_{n+1} \mid X_0 = s_0, X_1 = s_1, \ldots, X_n = s_n) = P(X_{n+1} = s_{n+1} \mid X_n = s_n)$$
+>
+> In other words, given the present state $X_n = s_n$, the future state $X_{n+1} = s_{n+1}$ is conditionally independent of all past states $X_0 = s_0, X_1 = s_1, \ldots, X_{n-1} = s_{n-1}$. This conditional independence captures the essence of memorylessness: the past is irrelevant once we know the present.
+
+### One-Step Transition Probabilities
+
+The one-step transition probability describes how the system moves from one state to another in a single time step. For a Markov chain with finite state space $\mathcal{S} = \{s_1, s_2, \ldots, s_N\}$, we define:
+
+$$
+\begin{equation*}
+p_{ij} = P(X_{n+1} = s_j \mid X_n = s_i)
+\end{equation*}
+$$
+
+Here, $p_{ij}$ is the probability of moving from state $s_i$ at time $n$ to state $s_j$ at time $n+1$. Because of the Markov property, this probability does not depend on $n$ (as long as the process is time-homogeneous, meaning transition probabilities stay constant over time). We pack these probabilities into the transition matrix $\mathbf{P}$.
+
+### Why the Markov Property Matters
+The Markov property simplifies our modeling work: instead of tracking the entire history of a process, we only need to know the present state. Without this property, the number of possible historical sequences would grow exponentially, making analysis difficult. With it, the problem becomes tractable and easier to work with.
+
+> __Why is this cool?__ The Markov property lets us build probability models of complex systems, use dynamic programming algorithms to make optimal decisions (such as value iteration for MDPs), and analyze long-run behavior using matrix operations and eigenvalue analysis. This approach has proven useful in finance, operations research, biology, physics, and machine learning.
+
+The Markov property is an assumption about the real world, and not all stochastic processes satisfy it exactly. However, by choosing the state representation carefully to capture the relevant information, we can often make the Markov assumption work well in practice. 
+
+___
+
+## The transition matrix
+A discrete Markov chain is a sequence of random variables (states) $X_{1},\dotsc, X_{n}$ with the _Markov property_ (i.e., the probability of moving to the next state depends only on the present state and not on past states):
+$$
+\begin{equation*}
+P(X_{n+1} = s_{n+1} \mid X_{1}=s_{1}, \dots, X_{n}=s_{n}) = P(X_{n+1} = s_{n+1} \mid X_{n} = s_{n})
+\end{equation*}
+$$
+For finite state spaces $\mathcal{S}$, the probability of moving from state $s_{i}\rightarrow{s_{j}}$ in the next step $n\rightarrow{n+1}$ is encoded in the transition matrix $p_{ij}\in\mathbf{P}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{S}|}$: 
+$$
+\begin{equation*}
+p_{ij} = P(X_{n+1}~=~s_{j}~\mid~X_{n}~=~s_{i})
+\end{equation*}
+$$
+
+The transition matrix $\mathbf{P}$ represents the state transitions of a Markov chain:
+
+<div>
+    <center>
+        <img src="figs/Fig-TransitionMatrix-Schematic.svg" width="680"/>
+    </center>
+</div>
+
+The transition matrix $\mathbf{P}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{S}|}$ has the following properties:
+* All elements of the transition matrix $\mathbf{P}$ are non-negative: $p_{ij}\geq{0}$.  
+* The rows of $\mathbf{P}$ represent the current states, while the columns represent the future states (our convention). Thus, the element $p_{ij}$ in row $i$ and column $j$ represents the probability of transitioning from state $s_{i}$ to state $s_{j}$ in the next step.
+* The rows of $\mathbf{P}$ must sum to unity (i.e., each row encodes the probability of all possible future outcomes given where we are currently). Thus, for any row $i$, we have: $\sum_{j=1}^{|\mathcal{S}|} p_{ij} = 1$. This means that the transition probabilities from state $s_{i}$ to all other states sum to 1 (we have a fixed number of states, and we must transition to one of them).
+* If the transition matrix $\mathbf{P}$ is invariant, then $p_{ij}$ does not change as $n\rightarrow{n+1}~\forall{n}$. In other words, the probability of transitioning from state $i$ to state $j$ does not change as the system evolves. The $p_{ij}$ values are constant.
+
+> __Example:__ Consider a simple 2-state Markov model for weather with states $\mathcal{S} = \{\text{Sunny}, \text{Rainy}\}$. The transition matrix is:
+>
+> $$\mathbf{P} = \begin{bmatrix} 0.8 & 0.2 \\ 0.4 & 0.6 \end{bmatrix}$$
+>
+> where row 1 corresponds to Sunny and row 2 corresponds to Rainy. If today is Sunny (state 1), there is an 80% chance tomorrow is Sunny and a 20% chance it is Rainy. If today is Rainy (state 2), there is a 40% chance tomorrow is Sunny and a 60% chance it is Rainy. Starting with the initial distribution $\pi_0 = [1, 0]$ (certain it is Sunny today), after one day we have:
+>
+> $$\pi_1 = \pi_0 \mathbf{P} = [1, 0]\begin{bmatrix} 0.8 & 0.2 \\ 0.4 & 0.6 \end{bmatrix} = [0.8, 0.2]$$
+>
+> This means there is an 80% probability of being in the Sunny state and a 20% probability of being in the Rainy state tomorrow.
+
+<div>
+    <center>
+        <img src="figs/Fig-Matrix-Vector-Left-bA-product-NeedToRedrawThis.png" width="680"/>
+    </center>
+</div>
+
+___
+
+## Algorithm: Power Iteration Method to compute the Stationary Distribution
+The stationary distribution $\bar{\pi}$ of a Markov chain with transition matrix $\mathbf{P}$ is a probability distribution that remains unchanged as the system evolves. We estimate $\bar{\pi}$ by repeatedly applying the transition matrix to an initial distribution until convergence:
+
+$$
+\begin{align*}
+\pi_1 &= \pi_0 \mathbf{P} \\
+\pi_2 &= \pi_1 \mathbf{P} = \pi_0 \mathbf{P}^2 \\
+\pi_3 &= \pi_2 \mathbf{P} = \pi_0 \mathbf{P}^3 \\
+&\vdots \\
+\pi_k &= \pi_{k-1} \mathbf{P} = \pi_0 \mathbf{P}^k
+\end{align*}
+$$
+
+__Initialize__: Given an ergodic transition matrix $\mathbf{P}$ with $N$ states, tolerance parameter $\epsilon$, and maximum number of iterations $T$, initialize the iteration counter $t\gets 1$, the uniform initial distribution $\pi \gets \left[1/N,\ldots,1/N\right]$, and $\texttt{converged}\gets\texttt{false}$.
+
+While $\texttt{converged}$ is $\texttt{false}$ __do__:
+1. Compute: $\pi^{\prime} \gets \pi\mathbf{P}$.
+2. Check for convergence:
+    - If $\lVert \pi^{\prime} - \pi \rVert_{1} \leq \epsilon$, then set $\texttt{converged}\gets\texttt{true}$ and $\bar{\pi}\gets\pi^{\prime}$.
+    - If $\lVert \pi^{\prime} - \pi \rVert_{1} > \epsilon$, increment $t\gets{t+1}$. Set $\pi\gets\pi^{\prime}$ and continue.
+3. Check for maximum iterations reached:
+    - If $t\geq{T}$, then set $\texttt{converged}\gets\texttt{true}$ and return $\bar{\pi}\gets\pi^{\prime}$. Notify that maximum iterations were reached without convergence.
+
+__Output__: The stationary distribution $\bar{\pi}$.
+
+The convergence rate depends on the spectral gap (difference between the largest and second-largest eigenvalue magnitudes of $\mathbf{P}$), with larger gaps enabling faster convergence.
+
+__Notes:__
+1. This algorithm assumes $\mathbf{P}$ is ergodic (irreducible and aperiodic), ensuring a unique stationary distribution exists.
+2. The $\pi^{\prime} \gets \pi\mathbf{P}$ step is a left vector-matrix multiplication, updating the distribution based on transition probabilities. See below for a schematic.
+3. The stationary distribution satisfies the equation $\bar{\pi} = \bar{\pi}\mathbf{P}$, meaning it remains unchanged under the transition matrix.
+
+___
+
+## Hidden Markov Models (HMMs)
+Finally, let's explore Hidden Markov Models (HMMs), which extend the concept of Markov models by introducing hidden states that are not directly observable.
+
+
+> __Definition:__
+>
+> A discrete hidden Markov model (HMM) is similar to a discrete observable Markov model, but with an added layer of complexity: the states are not directly observable. Instead, we observe outputs (or emissions) that are probabilistically related to the hidden states. An HMM is characterized by the tuple $\mathcal{M} = (\mathcal{S},\mathcal{O},\mathbf{P},\mathbf{E})$:
+> * __State Space ($\mathcal{S}$)__: The set of the $|\mathcal{S}|$ hidden states that the system can be in.
+> * __Observation Space ($\mathcal{O}$)__: The set of the $|\mathcal{O}|$ observable states (emissions) that can be observed.
+> * __Transition Matrix ($\mathbf{P}$)__: The transition matrix $\mathbf{P}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{S}|}$ that defines the probabilities of transitioning between hidden states.
+> * __Emission Matrix ($\mathbf{E}$)__: The emission matrix $\mathbf{E}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{O}|}$ that defines the probabilities of observing each observable state given a hidden state.
+
+The transition and emission matrices have the following (summation) properties:
+
+* The transition matrix $\mathbf{P}$ encodes the probability of moving from one hidden state to 
+another hidden state at the next time step. For state indices $i,j \in \{1,\ldots,|\mathcal{S}|\}$, the element $p_{ij} = P(X_{n+1} = s_j | X_{n} = s_i)$ must satisfy:
+    $$
+    \begin{align*}
+    \sum_{j=1}^{|\mathcal{S}|} p_{ij} &= 1\qquad\forall{i\in\{1,\ldots,|\mathcal{S}|\}}
+    \end{align*}
+    $$
+* The emission matrix $\mathbf{E}$ encodes the probability of emitting an observable state from a hidden state. For hidden state index $i \in \{1,\ldots,|\mathcal{S}|\}$ and observation index $j \in \{1,\ldots,|\mathcal{O}|\}$, the element $e_{ij} = P(O_{n} = o_j\,| X_{n} = s_i)$ must satisfy:
+    $$
+    \begin{align*}
+    \sum_{j=1}^{|\mathcal{O}|} e_{ij} &= 1\qquad\forall{i\in\{1,\ldots,|\mathcal{S}|\}}
+    \end{align*}
+    $$
+
+### Sampling Algorithm
+Let's outline a simple sampling algorithm for generating random sequences from an HMM.
+
+__Initialize__: Given an HMM defined by $\mathcal{M} = (\mathcal{S},\mathcal{O},\mathbf{P},\mathbf{E})$, the number of time steps $T$, and the stationary distribution $\bar{\pi}$. Draw an initial hidden state $X_0$ from the initial distribution: $X_0\sim \bar{\pi}$.
+
+For $n = 1$ to $T$ __do__:
+1. Sample the next __hidden state__ $X_n$ from the $\texttt{categorical}$ distribution $\mathbb{P}_{H}(...)$ defined by the previous state $X_{n-1}$ and the transition matrix $\mathbf{P}$: $X_n \sim \mathbb{P}_{H}(X_n \mid X_{n-1})$
+2. Sample the observable state $O_n$ from the $\texttt{categorical}$  distribution $\mathbb{P}_{E}(...)$ defined by the current hidden state $X_n$ and the emission matrix $\mathbf{E}$: $O_n \sim \mathbb{P}_{E}(O_n \mid X_n)$
+3. Store $X_n$ and $O_n$.
+
+__Output__: The sequences of hidden states $\{X_1, X_2, \ldots, X_T\}$ and observable states $\{O_1, O_2, \ldots, O_T\}$. The initial state $X_0$ is used to generate the sequence but is not included in the output.
+
+> __What is a categorical distribution?__ A categorical distribution is a probability distribution that describes the possible outcomes of a random variable that can take on one of $k$ different categories, each with its own probability. It is a generalization of the Bernoulli distribution (which has two categories) to multiple categories. The probabilities for each category must sum to 1.
+
+So how do we do this? We create categorical distributions from the rows of the transition and emission matrices, and then sample from these distributions at each time step to generate the sequences of hidden and observable states.
+
+Let's look at an example of an HMM in action for modeling the growth rate distribution of the SPY ETF.
+
+> __Example:__
+>
+> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2025.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) of the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
+___
+
+## Summary
+This lecture introduces Markov models and Hidden Markov Models as frameworks for modeling stochastic processes with memoryless state transitions.
+
+> __Key Takeaways:__
+>
+> * __Markov models encode memoryless state transitions through transition matrices:__ The Markov property states that future states depend only on the present state. Transition matrices encode one-step transition probabilities between states, with rows summing to one. These models simplify analysis by eliminating dependence on historical sequences.
+> * __Stationary distributions represent long-run state probabilities:__ Power iteration methods compute stationary distributions by repeatedly applying transition matrices to initial distributions until convergence. The stationary distribution satisfies the equation $\bar{\pi} = \bar{\pi}\mathbf{P}$ and remains unchanged under further transitions. Convergence speed depends on the spectral gap of the transition matrix.
+> * __Hidden Markov Models separate hidden states from observable outputs:__ HMMs extend Markov models by introducing emission matrices that link hidden states to observable outputs. The state space contains hidden states, while the observation space contains observable emissions. Sampling algorithms generate sequences by drawing hidden states from transition distributions and outputs from emission distributions.
+
+
+Markov models and Hidden Markov Models provide tools for modeling sequential data and stochastic processes across finance, language processing, and other domains.
+___

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="704px" height="502px" viewBox="0 0 704 502" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <g id="Artboard" stroke="none" fill="none">
+        <rect id="Rectangle" fill="#FFFAF0" fill-rule="evenodd" x="108" y="0" width="596" height="445"></rect>
+        <line x1="437" y1="26" x2="439.5" y2="445.5" id="Line-3" stroke="#FF0000" stroke-width="2" stroke-linecap="square" stroke-dasharray="0,5"></line>
+        <path id="Line" d="M106.5,2.44040671 L107.807363,4.76460814 L116.807363,20.7646081 L117.542755,22.0719714 L114.928029,23.5427552 L114.192637,22.2353919 L108,11.226 L108,477 L105,477 L105,11.226 L98.8073633,22.2353919 L98.0719714,23.5427552 L95.4572448,22.0719714 L96.1926367,20.7646081 L105.192637,4.76460814 L106.5,2.44040671 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M684.944803,435.433628 L686.251049,436.171003 L702.237374,445.195272 L704.559589,446.50616 L702.233406,447.809995 L686.219767,456.785706 L684.91129,457.519113 L683.444475,454.902157 L684.752953,454.16875 L695.771,447.992 L685.50072,447.977241 L41.4977238,446.999998 L39.9977256,446.997722 L40.0022779,443.997726 L41.5022762,444.000002 L685.505272,444.977245 L695.776,444.992 L684.776299,438.783495 L683.470054,438.04612 L684.944803,435.433628 Z" fill="#000000" fill-rule="nonzero"></path>
+        <text id="Risk-measure" font-family="Helvetica" font-size="24" font-weight="normal" fill="#000000">
+            <tspan x="517.646484" y="481">Risk measure</tspan>
+        </text>
+        <text id="Expected-reward" transform="translate(15, 235.5) rotate(-90) translate(-15, -235.5)" font-family="Helvetica" font-size="24" font-weight="normal" fill="#000000">
+            <tspan x="-75.046875" y="244">Expected reward</tspan>
+        </text>
+        <path d="M501.5,49.5 C359.5,142.166667 288.5,210.916667 288.5,255.75 C288.5,300.583333 367.75,352.166667 526.25,410.5" id="Line-2" stroke="#0B0B0B" stroke-width="2" stroke-linecap="square" stroke-dasharray="5"></path>
+        <path d="M501.5,49.5 C359.5,142.166667 288.5,210.916667 288.5,255.75" id="Path" stroke="#FF0000" stroke-width="3" stroke-linecap="square"></path>
+        <circle id="Oval" stroke="#0068AC" stroke-width="1" fill="#0068AC" fill-rule="evenodd" cx="288" cy="256" r="6.5"></circle>
+        <circle id="Oval" stroke="#FF0000" stroke-width="1" fill="#FF0000" fill-rule="evenodd" cx="438" cy="93" r="6.5"></circle>
+        <circle id="Oval" stroke="#FF0000" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" cx="439" cy="376" r="6"></circle>
+        <line x1="287.5" y1="263.5" x2="287.5" y2="446.5" id="Line-3" stroke="#0068AC" stroke-width="2" stroke-linecap="square" stroke-dasharray="0,5"></line>
+        <line x1="286.5" y1="255.5" x2="106.5" y2="255.5" id="Line-3" stroke="#0068AC" stroke-width="2" fill="#0068AC" fill-rule="evenodd" stroke-linecap="square" stroke-dasharray="0,5"></line>
+        <line x1="429.5" y1="92.5" x2="107" y2="93" id="Line-3" stroke="#FF0000" stroke-width="2" fill="#FF0000" fill-rule="evenodd" stroke-linecap="square" stroke-dasharray="0,5"></line>
+        <line x1="428.5" y1="375.5" x2="106" y2="376" id="Line-3" stroke="#FF0000" stroke-width="2" fill="#FF0000" fill-rule="evenodd" stroke-linecap="square" stroke-dasharray="0,5"></line>
+        <text id="min-var-portfolio" font-family="Helvetica" font-size="18" font-weight="normal" fill="#0068AC">
+            <tspan x="134.958984" y="225">min-var portfolio </tspan>
+        </text>
+        <text id="Efficient-Frontier" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="531.197266" y="33">Efficient Frontier   </tspan>
+        </text>
+        <rect id="Rectangle" stroke="#0068AC" stroke-width="1" fill="#0068AC" fill-rule="evenodd" x="282.5" y="440.5" width="11" height="11"></rect>
+        <rect id="Rectangle" stroke="#FF0000" stroke-width="1" fill="#FF0000" fill-rule="evenodd" x="434.5" y="440.5" width="11" height="11"></rect>
+        <rect id="Rectangle" stroke="#FF0000" stroke-width="1" fill="#FF0000" fill-rule="evenodd" x="100.5" y="86.5" width="11" height="11"></rect>
+        <rect id="Rectangle" stroke="#0068AC" stroke-width="1" fill="#0068AC" fill-rule="evenodd" x="100.5" y="249.5" width="11" height="11"></rect>
+        <rect id="Rectangle" stroke="#FF0000" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd" x="101.5" y="370.5" width="11" height="11"></rect>
+        <line x1="509.951965" y1="45.4017513" x2="525.048035" y2="35.5982487" id="Line-4" stroke="#FF0303" stroke-width="1" stroke-linecap="square"></line>
+        <text id="1" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="419.438477" y="80">1</tspan>
+        </text>
+        <text id="2" font-family="Helvetica" font-size="20" font-weight="normal" fill="#0068AC">
+            <tspan x="305.938477" y="264">2</tspan>
+        </text>
+        <text id="3" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="419.438477" y="400">3</tspan>
+        </text>
+        <text id="σ1" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="429.330078" y="477">σ</tspan>
+            <tspan x="441.546875" y="477">1</tspan>
+        </text>
+        <text id="σ2" font-family="Helvetica" font-size="20" font-weight="normal" fill="#0068AC">
+            <tspan x="277.330078" y="477">σ</tspan>
+            <tspan x="289.546875" y="477">2</tspan>
+        </text>
+        <text id="E(R2)" font-family="Helvetica" font-size="20" font-weight="normal" fill="#0068AC">
+            <tspan x="37.8867188" y="260">E(R</tspan>
+            <tspan x="72.3300781" y="260">2</tspan>
+            <tspan x="83.453125" y="260">)</tspan>
+        </text>
+        <text id="E(R3)" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="37.8867188" y="382">E(R</tspan>
+            <tspan x="72.3300781" y="382">3</tspan>
+            <tspan x="83.453125" y="382">)</tspan>
+        </text>
+        <text id="E(R1)" font-family="Helvetica" font-size="20" font-weight="normal" fill="#FF0000">
+            <tspan x="37.8867188" y="96">E(R</tspan>
+            <tspan x="72.3300781" y="96">1</tspan>
+            <tspan x="83.453125" y="96">)</tspan>
+        </text>
+        <line x1="277.5" y1="241.5" x2="264.5" y2="230.5" id="Line-5" stroke="#0068AC" stroke-width="1" stroke-linecap="square"></line>
+    </g>
+</svg>

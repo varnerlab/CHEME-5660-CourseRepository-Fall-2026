@@ -1,0 +1,234 @@
+# L13b: Reinforcement Learning: Bandit Problems
+In this lecture, we'll introduce the general topic of reinforcement learning (RL) and focus on the simpler sub-problem of bandit problems. 
+
+> __Learning Objectives:__
+> 
+> By the end of this lecture, you should be able to:
+> * __Understand the reinforcement learning framework and bandit problems:__ Describe how agents learn policies through interaction with environments, recognize bandit problems as a stateless subset of reinforcement learning, and explain the fundamental exploration-exploitation tradeoff that agents must balance.
+> * __Implement ε-greedy algorithms for binary Bernoulli bandit problems:__ Use Beta distributions to model action success probabilities, balance exploration and exploitation using adaptive thresholds, and update belief distributions based on observed binary rewards using conjugate prior relationships.
+> * __Compare Bayesian approaches to bandit problems:__ Explain how ε-greedy and Thompson sampling differ in their treatment of exploration, describe how Thompson sampling uses posterior sampling to naturally balance exploration and exploitation, and understand when each approach is appropriate.
+
+Let's get started!
+___
+
+## Examples
+Today, we will use the following examples to illustrate key concepts:
+
+> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2025-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
+
+> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+___
+
+## Concept Review: Markov Property and Hidden Markov Models (HMMs)
+In the last lecture, we introduced Markov models. Let's briefly review the Markov property and then explore Hidden Markov Models (HMMs).
+
+The Markov property is the key characteristic of Markov models: a random process has this property when the probability of future states depends only on the present state, not on how it got there. This memoryless property simplifies how we model stochastic systems. From weather prediction to inventory management, the Markov property captures the behavior of many real-world systems.
+
+> __Definition:__ A stochastic process $\{X_n\}_{n=0}^{\infty}$ satisfies the **Markov property** if, for all $n \geq 0$ and all sequences of states $s_0, s_1, \ldots, s_n, s_{n+1}$ in the state space $\mathcal{S}$:
+>
+> $$P(X_{n+1} = s_{n+1} \mid X_0 = s_0, X_1 = s_1, \ldots, X_n = s_n) = P(X_{n+1} = s_{n+1} \mid X_n = s_n)$$
+>
+> In other words, given the present state $X_n = s_n$, the future state $X_{n+1} = s_{n+1}$ is conditionally independent of all past states $X_0 = s_0, X_1 = s_1, \ldots, X_{n-1} = s_{n-1}$. This conditional independence captures the essence of memorylessness: the past is irrelevant once we know the present.
+
+### One-Step Transition Probabilities
+
+The one-step transition probability describes how the system moves from one state to another in a single time step. For a Markov chain with finite state space $\mathcal{S} = \{s_1, s_2, \ldots, s_N\}$, we define:
+
+$$
+\begin{equation*}
+p_{ij} = P(X_{n+1} = s_j \mid X_n = s_i)
+\end{equation*}
+$$
+
+Here, $p_{ij}$ is the probability of moving from state $s_i$ at time $n$ to state $s_j$ at time $n+1$. Because of the Markov property, this probability does not depend on $n$ (as long as the process is time-homogeneous, meaning transition probabilities stay constant over time). We pack these probabilities into the transition matrix $\mathbf{P}$.
+
+#### Hidden Markov Models (HMMs)
+Finally, let's explore Hidden Markov Models (HMMs), which extend the concept of Markov models by introducing hidden states that are not directly observable.
+
+
+> __Definition:__
+>
+> A discrete hidden Markov model (HMM) is similar to a discrete observable Markov model, but with an added layer of complexity: the states are not directly observable. Instead, we observe outputs (or emissions) that are probabilistically related to the hidden states. An HMM is characterized by the tuple $\mathcal{M} = (\mathcal{S},\mathcal{O},\mathbf{P},\mathbf{E})$:
+> * __State Space ($\mathcal{S}$)__: The set of the $|\mathcal{S}|$ hidden states that the system can be in.
+> * __Observation Space ($\mathcal{O}$)__: The set of the $|\mathcal{O}|$ observable states (emissions) that can be observed.
+> * __Transition Matrix ($\mathbf{P}$)__: The transition matrix $\mathbf{P}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{S}|}$ that defines the probabilities of transitioning between hidden states.
+> * __Emission Matrix ($\mathbf{E}$)__: The emission matrix $\mathbf{E}\in\mathbb{R}^{|\mathcal{S}|\times|\mathcal{O}|}$ that defines the probabilities of observing each observable state given a hidden state.
+
+The transition and emission matrices have the following (summation) properties:
+
+* The transition matrix $\mathbf{P}$ encodes the probability of moving from one hidden state to 
+another hidden state at the next time step. For state indices $i,j \in \{1,\ldots,|\mathcal{S}|\}$, the element $p_{ij} = P(X_{n+1} = s_j | X_{n} = s_i)$ must satisfy:
+    $$
+    \begin{align*}
+    \sum_{j=1}^{|\mathcal{S}|} p_{ij} &= 1\qquad\forall{i\in\{1,\ldots,|\mathcal{S}|\}}
+    \end{align*}
+    $$
+* The emission matrix $\mathbf{E}$ encodes the probability of emitting an observable state from a hidden state. For hidden state index $i \in \{1,\ldots,|\mathcal{S}|\}$ and observation index $j \in \{1,\ldots,|\mathcal{O}|\}$, the element $e_{ij} = P(O_{n} = o_j\,| X_{n} = s_i)$ must satisfy:
+    $$
+    \begin{align*}
+    \sum_{j=1}^{|\mathcal{O}|} e_{ij} &= 1\qquad\forall{i\in\{1,\ldots,|\mathcal{S}|\}}
+    \end{align*}
+    $$
+
+### Sampling Algorithm
+Let's outline a simple sampling algorithm for generating random sequences from an HMM.
+
+__Initialize__: Given an HMM defined by $\mathcal{M} = (\mathcal{S},\mathcal{O},\mathbf{P},\mathbf{E})$, the number of time steps $T$, and the stationary distribution $\bar{\pi}$. Draw an initial hidden state $X_0$ from the initial distribution: $X_0\sim \bar{\pi}$.
+
+For $n = 1$ to $T$ __do__:
+1. Sample the next __hidden state__ $X_n$ from the $\texttt{categorical}$ distribution $\mathbb{P}_{H}(...)$ defined by the previous state $X_{n-1}$ and the transition matrix $\mathbf{P}$: $X_n \sim \mathbb{P}_{H}(X_n \mid X_{n-1})$
+2. Sample the observable state $O_n$ from the $\texttt{categorical}$  distribution $\mathbb{P}_{E}(...)$ defined by the current hidden state $X_n$ and the emission matrix $\mathbf{E}$: $O_n \sim \mathbb{P}_{E}(O_n \mid X_n)$
+3. Store $X_n$ and $O_n$.
+
+__Output__: The sequences of hidden states $\{X_1, X_2, \ldots, X_T\}$ and observable states $\{O_1, O_2, \ldots, O_T\}$. The initial state $X_0$ is used to generate the sequence but is not included in the output.
+
+> __What is a categorical distribution?__ A categorical distribution is a probability distribution that describes the possible outcomes of a random variable that can take on one of $k$ different categories, each with its own probability. It is a generalization of the Bernoulli distribution (which has two categories) to multiple categories. The probabilities for each category must sum to 1.
+
+So how do we do this? We create categorical distributions from the rows of the transition and emission matrices, and then sample from these distributions at each time step to generate the sequences of hidden and observable states.
+
+Let's look at an example of an HMM in action for modeling the __out of sample__ growth rate distribution of the SPY ETF.
+
+> __Example__
+> 
+> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2025-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
+
+
+Now that we've reviewed Hidden Markov Models for sequential prediction, we turn our attention to the main topic of this lecture: reinforcement learning and bandit problems. Unlike HMMs, which model sequential state transitions, bandit problems focus on learning which actions yield the best rewards in stateless environments.
+
+___
+
+## Reinforcement Learning Problem
+Suppose we have an agent that can be in a state $s \in \mathcal{S}$ and can take an action $a \in \mathcal{A}$. After taking action $a$ in state $s$, the agent receives a reward $r$. But how does the agent learn to choose the best possible action in each state, i.e., develop a __policy__ to maximize its cumulative reward over time?
+
+<div>
+    <center>
+        <img src="figs/Fig-Schematic-RL.svg" width="580"/>
+    </center>
+</div>
+
+In reinforcement learning, an agent interacts with an environment by observing its current state $s \in \mathcal{S}$, selecting an action $a \in \mathcal{A}$, and receiving a reward that influences its future decisions. We'll explore three different approaches to this problem:
+
+* __Bandit algorithms__ operate in stateless environments. On each round, they explore different actions to estimate their rewards and adapt their action-selection strategy based on the outcomes.
+* __Multiplicative weights__ adjusts the probability of selecting an action based on past performance, but does so in a principled way that guarantees the algorithm performs nearly as well as the best fixed action in hindsight—even in changing environments, i.e., it minimizes regret.
+* __Q-learning__ is a value-based method that estimates the long-term value (utility, satisfaction, happiness, etc.) of each state-action pair, enabling the agent to learn optimal behavior in environments with temporal and sequential dynamics.
+
+These approaches highlight different strategies for learning from interaction, but they all must balance a fundamental challenge in reinforcement learning: the tradeoff between exploring new actions to gather information and exploiting known actions to maximize reward.
+
+___
+
+## Exploration vs. Exploitation
+In reinforcement learning, the problem on the surface is deceptively simple: an agent is in a state $s$ and can take an action $a\in A_{s}$, where $A_{s}$ is the set of actions currently available to the agent. The agent chooses an action $a$, implements it, and receives a reward $r$ and transitions to a new state $s^{\prime}$. The goal is to learn a policy that maximizes the cumulative reward over time, i.e., the best possible action in each state.
+
+The problem is more complex than it appears. The agent must make decisions based on incomplete information and balance two competing objectives: exploration and exploitation. The exploration vs. exploitation trade-off is a fundamental challenge that agents must navigate:
+* **Exploration**: Trying new actions to discover potentially better rewards. This is essential for learning about the environment and finding optimal policies. Taking random actions or actions that have not been tried often to gather information about their outcomes and rewards is an example of exploration.
+* **Exploitation**: Leveraging current knowledge to maximize immediate payoff. This involves choosing actions that have previously yielded high rewards based on the agent's experience. If the agent only exploits, it may miss out on discovering better actions that could yield higher rewards in the long run.
+
+Striking the right balance between exploration and exploitation is crucial for learning an optimal policy that performs well both now and in the long run. If an agent explores too much, it may miss out on immediate rewards; if it exploits too much, it may fail to discover better long-term strategies.
+
+The exploration-exploitation trade-off is often formalized in algorithms that guide the agent's decision-making process. These algorithms provide principled strategies for managing the trade-off, ensuring that the agent can learn effectively while maximizing its cumulative reward over time.
+___
+
+<div>
+    <center>
+        <img src="figs/Fig-Bandits-Schematic.png" width="880"/>
+    </center>
+</div>
+
+## Binary Bernoulli Bandit Problem
+The binary Bernoulli bandit problem is a special case of the stochastic bandit problem where the reward for taking action $a\in\mathcal{A}$ is binary $r_{t} = \left\{0,1\right\}$. The probability of getting reward `1` is unknown and needs to be estimated. The goal is to maximize the expected reward by selecting the best action at each time step.
+
+* __Difference__: Unlike a completely general stochastic bandit problem, the binary Bernoulli bandit problem assumes the agent models how the world responds using a simple reward distribution, [the Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). Thus, the agent has a model of the world.
+* __Binary__: The reward distribution is binary. However, this is not as limiting as it may first appear. The experiment represented by the action $a$ can be a complex statement or function that evaluates to a boolean value. Thus, we can model many complex scenarios that evaluate to `true` or `false`.
+
+The Bernoulli distribution is a discrete probability distribution that returns a value of `1` with probability $p$ and value `0` with probability $1-p$. The probability mass function of the Bernoulli distribution is given by:
+$$
+\begin{equation*}
+\texttt{Bern}(r; p) = \begin{cases}
+p & \text{if } r = 1,\\
+1-p & \text{if } r = 0.
+\end{cases}
+\end{equation*}
+$$
+where $r\in\left\{0,1\right\}$ is the reward and $p\in[0,1]$ is the probability of getting reward `r = 1`. The expected reward of $X\sim\texttt{Bern}(r;p)$ is given by: $\mathbb{E}[X] = p$ and the variance is given by: $\text{Var}[X] = p(1-p)$.
+
+The agent models the parameter $p$ using a probability distribution (e.g., [a Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution)) and updates this distribution as it observes rewards. This is the essence of the [Bayesian approach to bandit problems](https://onlinelibrary.wiley.com/doi/10.1002/asmb.874).
+
+> __Why Beta distribution?__ The Beta distribution is the conjugate prior for the Bernoulli distribution. This means when we observe binary rewards (successes and failures), updating our belief about $p$ has a simple closed form: if we start with $\text{Beta}(\alpha, \beta)$ and observe $s$ successes and $f$ failures, the posterior is $\text{Beta}(\alpha + s, \beta + f)$. The parameters $\alpha$ and $\beta$ can be interpreted as prior successes and failures, making this approach both mathematically elegant and computationally efficient.
+
+How do we solve this problem?
+
+### $\epsilon$-Greedy Binary Bernoulli Bandit
+The $\epsilon$-greedy algorithm is simple and effective for solving the binary Bernoulli bandit problem. The algorithm selects the _best action_ with probability $1-\epsilon$ and selects a random action with probability $\epsilon$. The pseudocode for the $\epsilon$-greedy algorithm is given below.
+
+#### Pseudo-code
+The agent has $K$ arms (choices), $\mathcal{A} = \left\{1,2,\dots,K\right\}$, and the total number of rounds is $T\gg{K}$. Initialize the parameters of [the Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution) for each arm $a\in\mathcal{A}$ to $\alpha_{a} = 1$ and $\beta_{a} = 1$. The agent uses the following algorithm to choose which arm to pull (which action to take) during each round:
+
+For $t = 1,2,\dots,T$:
+1. _Initialize_: Roll a random number $p\in\left[0,1\right]$ and compute a threshold $\epsilon_{t}={t^{-1/3}}\cdot\left(K\cdot\log(t)\right)^{1/3}$.
+2. _Exploration_: If $p\leq\epsilon_{t}$, choose a random (uniform) arm $a_{t}\in\mathcal{A}$. Execute the action $a_{t}$ and receive a stochastic reward $r_{t} \in \left\{0,1\right\}$.
+3. _Exploitation_: Else if $p>\epsilon_{t}$, choose action $a^{\star}_{t}$, the action with the _highest expected probability of success_ (greedy choice), using the agent's model of the world. The highest probability action is: $a^{\star} = \arg\max_{a\in\mathcal{A}}\left\{\frac{\alpha(a) + \mathbf{S}(a)}{\alpha(a) + \beta(a) + \mathbf{S}(a) + \mathbf{F}(a)}\right\}$ where $\mathbf{S}(a)$ and $\mathbf{F}(a)$ are the number of successes and failures for arm $a$. Execute the action $a^{\star}_{t}$ and receive a stochastic reward $r^{\star}_{t}\in\left\{0,1\right\}$.
+4. Update the success $\mathbf{S}(a^{\star})$ and failure $\mathbf{F}(a^{\star})$ arrays for the chosen arm $a^{\star}_{t}$ using the reward $r^{\star}_{t}$:
+$$
+\begin{equation*}
+S(a^{\star}_{t}) \gets S(a^{\star}_{t}) + r^{\star}_{t},\quad F(a^{\star}_{t}) \gets F(a^{\star}_{t}) + (1-r^{\star}_{t})
+\end{equation*}
+$$
+
+Using a model of the world allows the agent to make decisions about which actions to take. This is the essence of the Bayesian approach to bandit problems. The agent has a model of the likely reward distribution for _each_ action and uses this model to select the best action at each time step.
+
+### Thompson Sampling Binary Bernoulli Bandit
+An alternative Bayesian approach is Thompson sampling, which samples from the posterior distribution to make decisions.
+
+> __Thompson Sampling__: The Thompson sampling algorithm selects the _best action_ by sampling from the posterior distribution for each arm and choosing the one with the highest sample. There is no explicit exploration step; instead, exploration occurs naturally through the sampling process. The pseudocode for the Thompson sampling algorithm is given below.
+
+#### Pseudo-code
+The agent has $K$ arms (choices), $\mathcal{A} = \left\{1,2,\dots,K\right\}$, and the total number of rounds is $T\gg{K}$. Initialize the parameters of [the Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution) for each arm $a\in\mathcal{A}$ to $\alpha_{a} = 1$ and $\beta_{a} = 1$. The agent uses the following algorithm to choose which arm to pull (which action to take) during each round:
+
+For $t = 1,2,\dots,T$:
+1. Sample from the posterior for each arm: $\mathbf{p}\gets\left\{\text{Beta}(\alpha(a)+\mathbf{S}(a),\beta(a)+\mathbf{F}(a))\mid\forall{a}\in\mathcal{A}\right\}$ where $\mathbf{S}(a)$ and $\mathbf{F}(a)$ are the number of successes and failures for arm $a$.
+2. Choose the action with the highest sampled probability: $a^{\star} = \arg\max_{a\in\mathcal{A}}\left\{\mathbf{p}(a)\right\}$.
+3. Execute the action $a^{\star}_{t}$ and receive a stochastic reward $r^{\star}_{t}\in\left\{0,1\right\}$.
+4. Update the success $\mathbf{S}(a^{\star})$ and failure $\mathbf{F}(a^{\star})$ arrays for the chosen arm $a^{\star}_{t}$ using the reward $r^{\star}_{t}$:
+$$
+\begin{equation*}
+S(a^{\star}_{t}) \gets S(a^{\star}_{t}) + r^{\star}_{t},\quad F(a^{\star}_{t}) \gets F(a^{\star}_{t}) + (1-r^{\star}_{t})
+\end{equation*}
+$$
+
+Thompson sampling is fully Bayesian and often performs better than ε-greedy in practice. 
+
+> __Extensions:__
+>
+> * __Context:__ Some decisions depend upon context. For example, predicting the weather depends on location. Predicting product demand might depend on the season, or determining which drugs to prescribe might depend on the indication. Thus, context is essential.
+> * __Combinatorial Actions:__ In many scenarios, we need to select multiple actions simultaneously. For example, in drug discovery, we might want to test combinations of compounds. In marketing, we might want to select a set of advertisements to display. This leads us to the concept of combinatorial bandits, where the agent selects a subset of actions at each time step.
+>
+> We handle these more complex scenarios by extending our models to incorporate context and combinatorial actions (map an integer to a subset of actions). While more complex, the core principles remain the same: balancing exploration and exploitation to maximize cumulative reward.
+
+Let's look at an example of a Binary Bernoulli Bandit problem using the ε-greedy sampling algorithm.
+
+> __Example__
+>
+>
+> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+
+___
+
+## Summary
+This lecture introduces reinforcement learning and bandit problems, with a brief review of Hidden Markov Models.
+
+> __Key Takeaways:__
+> * __Reinforcement learning addresses sequential decision-making under uncertainty:__ Agents learn optimal policies by balancing exploration (gathering information about action rewards) and exploitation (maximizing immediate rewards). Bandit problems represent the stateless case where agents must learn action values without state transitions.
+> * __Bayesian bandit algorithms use probability distributions to model uncertainty:__ The ε-greedy algorithm explicitly controls exploration through adaptive thresholds, while Beta distributions serve as conjugate priors for Bernoulli rewards, enabling closed-form belief updates. Binary Bernoulli bandits model actions with success/failure outcomes.
+> * __Thompson sampling provides a fully Bayesian alternative to ε-greedy:__ Rather than explicitly switching between exploration and exploitation, Thompson sampling naturally balances both by sampling from posterior distributions over action success probabilities. This approach often performs well in practice with strong theoretical guarantees.
+
+Reinforcement learning provides frameworks for sequential decision-making under uncertainty.
+___
+
+## Disclaimer and Risks
+__This content is offered solely for training and informational purposes__. No offer or solicitation to buy or sell securities or derivative products or any investment or trading advice or strategy is made, given, or endorsed by the teaching team. 
+
+__Trading involves risk__. Carefully review your financial situation before investing in securities, futures contracts, options, or commodity interests. Past performance, whether actual or indicated by historical tests of strategies, is no guarantee of future performance or success. Trading is generally inappropriate for someone with limited resources, investment or trading experience, or a low-risk tolerance. Only risk capital that is not required for living expenses should be used.
+
+__You are fully responsible for any investment or trading decisions you make__. Such decisions should be based solely on evaluating your financial circumstances, investment or trading objectives, risk tolerance, and liquidity needs.
+
+___

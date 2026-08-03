@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="887px" height="471px" viewBox="0 0 887 471" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>STRIPS</title>
+    <g id="STRIPS" stroke="none" fill="none">
+        <ellipse id="Oval" fill="#FFDA31" fill-rule="evenodd" cx="304" cy="302" rx="47" ry="48"></ellipse>
+        <ellipse id="Oval" fill="#FFDA31" fill-rule="evenodd" cx="405" cy="302" rx="47" ry="48"></ellipse>
+        <ellipse id="Oval" fill="#FFDA31" fill-rule="evenodd" cx="508" cy="301" rx="47" ry="48"></ellipse>
+        <ellipse id="Oval" fill="#FFDA31" fill-rule="evenodd" cx="611" cy="301" rx="47" ry="48"></ellipse>
+        <path d="M805.5,295 L812,307.277778 C809.512346,305.351852 807.466049,304.388889 805.861111,304.388889 C804.256173,304.388889 801.969136,305.351852 799,307.277778 L805.5,295 Z" id="Triangle" fill="#000000" fill-rule="evenodd" transform="translate(805.5, 301.1389) rotate(90) translate(-805.5, -301.1389)"></path>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(304.5, 252.6389) rotate(-180) translate(-304.5, -252.6389)translate(298, 218)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(406.5, 253.6389) rotate(-180) translate(-406.5, -253.6389)translate(400, 219)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <ellipse id="Oval" fill="#FFDA31" fill-rule="evenodd" cx="711" cy="302" rx="47" ry="48"></ellipse>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(712.5, 374.6389) scale(1, -1) rotate(-180) translate(-712.5, -374.6389)translate(706, 340)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <line x1="104.5" y1="302.5" x2="801" y2="302" id="Line" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="304" cy="303" r="6.5"></circle>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="405" cy="303" r="6.5"></circle>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="508" cy="303" r="6.5"></circle>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="609" cy="303" r="6.5"></circle>
+        <text id="Time" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="826" y="310">Time</tspan>
+        </text>
+        <text id="VP" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="698" y="431">V</tspan>
+            <tspan x="712.006836" y="431">P</tspan>
+        </text>
+        <text id="C" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="296" y="208">C</tspan>
+        </text>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(609.5, 252.6389) rotate(-180) translate(-609.5, -252.6389)translate(603, 218)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <text id="C" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="601" y="208">C</tspan>
+        </text>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(509.5, 252.6389) rotate(-180) translate(-509.5, -252.6389)translate(503, 218)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <text id="C" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="501" y="208">C</tspan>
+        </text>
+        <text id="C" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="397" y="208">C</tspan>
+        </text>
+        <text id="Start-(current)" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="33.8259277" y="301">Start </tspan>
+            <tspan x="16.3276367" y="324">(current)</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#0167AA" stroke-width="2" x="177" y="183" width="176" height="177"></rect>
+        <text id="Security-1" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#0167AA">
+            <tspan x="183" y="208">Security 1</tspan>
+        </text>
+        <text id="Security-2" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#88CCE2">
+            <tspan x="184" y="169">Security 2</tspan>
+        </text>
+        <text id="Security-3" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#6EB43F">
+            <tspan x="183" y="133">Security 3</tspan>
+        </text>
+        <text id="Security-4" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#9EAC9F">
+            <tspan x="184" y="100">Security 4</tspan>
+        </text>
+        <text id="Security-5" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#A3998C">
+            <tspan x="184" y="69">Security 5</tspan>
+        </text>
+        <text id="Security-6" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#ED4036">
+            <tspan x="184" y="430">Security 6</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#88CCE2" stroke-width="2" x="177" y="147" width="277" height="213"></rect>
+        <rect id="Rectangle" stroke="#6EB43F" stroke-width="2" x="177" y="112" width="383" height="248"></rect>
+        <rect id="Rectangle" stroke="#9EAC9F" stroke-width="2" x="177" y="78" width="483" height="282"></rect>
+        <rect id="Rectangle" stroke="#A3998C" stroke-width="2" x="177" y="46" width="586" height="314"></rect>
+        <rect id="Rectangle" stroke="#ED4036" stroke-width="2" transform="translate(470, 423.5) scale(1, -1) translate(-470, -423.5)" x="177" y="391" width="586" height="65"></rect>
+        <text id="t-=-0" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="133" y="331">t = 0</tspan>
+        </text>
+        <text id="t-=-1" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="286" y="331">t = 1</tspan>
+        </text>
+        <text id="t-=-2" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="387" y="331">t = 2</tspan>
+        </text>
+        <text id="t-=-4" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="591" y="329">t = 4</tspan>
+        </text>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="712" cy="304" r="6.5"></circle>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(712.5, 252.6389) rotate(-180) translate(-712.5, -252.6389)translate(706, 218)">
+            <path d="M6.5,57 L13,69.2777778 C10.5123457,67.3518519 8.46604938,66.3888889 6.86111111,66.3888889 C5.25617284,66.3888889 2.9691358,67.3518519 0,69.2777778 L6.5,57 Z" id="Triangle" fill="#000000" transform="translate(6.5, 63.1389) rotate(-180) translate(-6.5, -63.1389)"></path>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="61.5" id="Line-2" stroke="#000000" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <text id="C" font-family="ArialMT, Arial" font-size="21" font-weight="normal" fill="#000000">
+            <tspan x="704" y="208">C</tspan>
+        </text>
+        <text id="t-=-5" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="694" y="330">t = 5</tspan>
+        </text>
+        <text id="t-=-3" font-family="ArialMT, Arial" font-size="18" font-weight="normal" fill="#000000">
+            <tspan x="490" y="329">t = 3</tspan>
+        </text>
+        <circle id="Oval" stroke="#000000" stroke-width="1" fill="#FFFDFD" fill-rule="evenodd" cx="176" cy="303" r="6.5"></circle>
+    </g>
+</svg>
