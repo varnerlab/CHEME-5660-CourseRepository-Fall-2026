@@ -57,6 +57,11 @@ using DataFrames
         @test isapprox(r["numerator"], dot(c, w); atol = 1e-6)      # internal consistency
         @test isapprox(r["sharpe_ratio"], r["numerator"] / r["denominator"]; atol = 1e-8)
         @test string(r["status"]) ∈ ("OPTIMAL", "ALMOST_OPTIMAL")
+
+        # infeasible τ should throw after fix (B4)
+        @test_throws Exception solve(build(MySharpeRatioPortfolioChoiceProblem, (
+            Σ = [0.04 0.009; 0.009 0.0225], risk_free_rate = 0.03, α = [0.01, 0.005],
+            β = [1.2, 0.8], gₘ = 0.08, τ = 1.0)))
     end
 
     @testset "log_growth_matrix + covariance invariants" begin

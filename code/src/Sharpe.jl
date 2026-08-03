@@ -49,7 +49,7 @@ function solve(model::MySharpeRatioPortfolioChoiceProblem)::Dict{String,Any}
     optimize!(opt_model)
 
     # check: was the optimization successful?
-    # @assert is_solved_and_feasible(opt_model)
+    @assert is_solved_and_feasible(opt_model)
 
     # get some results -
     w_opt = value.(w)                  # long-only, budgeted weights
