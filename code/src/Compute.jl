@@ -1115,6 +1115,7 @@ function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 =
     levels = model.levels;
     connectivity = model.connectivity;
     nodes = model.data;
+    p = model.p;
 
     # all the leaves, have the par value -
     leaves = levels[T];

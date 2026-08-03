@@ -92,4 +92,13 @@ using VLQuantitativeFinancePackage
         @test isapprox(V[0], 0.0; atol = 1e-12)
         @test isapprox(V[1], 0.5 * (0.055^2 + 0.045^2) - 0.05^2; atol = 1e-12)
     end
+
+    @testset "rate-lattice solve backward induction" begin
+        m = build(MySymmetricBinaryInterestRateLatticeModel, (u = 1.1, d = 0.9, p = 0.5, rₒ = 0.05, T = 2)) |> populate
+        m = solve(m; Vₚ = 100.0)
+        # leaves = 100; level-1: 100/1.055, 100/1.045; root = 0.5*(sum)/1.05 = 90.704957…
+        @test isapprox(m.data[1].price, 100.0 / 1.055; atol = 1e-8)
+        @test isapprox(m.data[2].price, 100.0 / 1.045; atol = 1e-8)
+        @test isapprox(m.data[0].price, 0.5 * (100.0 / 1.055 + 100.0 / 1.045) / 1.05; atol = 1e-8)
+    end
 end
