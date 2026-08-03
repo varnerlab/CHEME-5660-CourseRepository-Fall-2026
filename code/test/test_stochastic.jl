@@ -64,4 +64,14 @@ using Statistics
         @test all(isfinite, X)
         @test all(isfinite, V)     # no variance-truncation guard exists in src — Task 10 suspect if this is fragile
     end
+
+    @testset "Euler-Maruyama Heston: non-Feller params with variance guard" begin
+        # Non-Feller params: κ=0.5, θ=0.01, ξ=1.0 violate 2κθ ≥ ξ² (0.01 < 1.0)
+        Random.seed!(20260803)
+        m = build(MyHestonModel, (μ = (x, t) -> 0.05, κ = (x, t) -> 0.5, θ = (x, t) -> 0.01,
+                                  ξ = (x, t) -> 1.0, Σ = [1.0 0.0; 0.0 1.0]))
+        (T, X, V) = solve(m, (start = 0.0, stop = 1.0, step = 0.01), [100.0, 0.01]; N = 20)
+        @test all(isfinite, X)
+        @test all(isfinite, V)
+    end
 end
