@@ -33,7 +33,11 @@ The `estimate_implied_volatility` function estimates the implied volatility for 
 - `r̄::Float64`: The annual risk-free rate used to compute the premium. The default value is `0.05`.  
 
 ### Returns
-- `Tuple{Float64,Float64}`: The likelihood and estimated implied volatility for the given contract.
+- `Tuple{Float64,Float64}`: The fitted likelihood and estimated implied
+  volatility. The likelihood is
+  `exp(-(computed_premium - observed_premium)^2/2)` at the optimizer's solution
+  and therefore lies in `(0, 1]`, with values nearer one indicating a closer
+  premium match.
 
 ### See:
 * We use the [Nelder-Mead optimization algorithm](https://en.wikipedia.org/wiki/Nelder–Mead_method) from the [Optim.jl package](https://github.com/JuliaNLSolvers/Optim.jl) to estimate the implied volatility.

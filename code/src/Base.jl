@@ -80,12 +80,12 @@ continuous compounding.
 ### See:
 * The `DataFrame` type (and methods for working with data frames) is exported from the [DataFrames.jl package](https://dataframes.juliadata.org/stable/)
 """
-function log_growth_matrix(dataset::Dict{String, DataFrame}, 
-    firm::String; Δt::Float64 = (1.0/252.0), risk_free_rate::Float64 = 0.0, 
+function log_growth_matrix(dataset::Dict{String, DataFrame},
+    firm::String; Δt::Float64 = (1.0/252.0), risk_free_rate::Float64 = 0.0,
     keycol::Symbol = :volume_weighted_average_price)::Array{Float64,1}
 
     # initialize -
-    number_of_trading_days = nrow(dataset["AAPL"]);
+    number_of_trading_days = nrow(dataset[firm]);
     return_matrix = Array{Float64,1}(undef, number_of_trading_days-1);
 
     # get the firm data -

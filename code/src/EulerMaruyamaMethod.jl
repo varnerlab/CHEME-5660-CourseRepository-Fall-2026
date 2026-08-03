@@ -39,8 +39,8 @@ function _solve(model::MyHestonModel, tspan::NamedTuple,
             Z = rand(ZM);
 
             # update the state equations -
-            X[i,p] = X[i-1,p] + (μ*X[i-1,p])*dt + sqrt(V[i-1,p])*X[i-1,p]*(sqrt(dt)*Z[1]);
-            V[i,p] = V[i-1,p] + κ*(θ - V[i-1,p])*dt + ξ*(sqrt(V[i-1,p]))*(sqrt(dt)*Z[2]);
+            X[i,p] = X[i-1,p] + (μ*X[i-1,p])*dt + sqrt(max(V[i-1,p], 0.0))*X[i-1,p]*(sqrt(dt)*Z[1]);
+            V[i,p] = V[i-1,p] + κ*(θ - V[i-1,p])*dt + ξ*(sqrt(max(V[i-1,p], 0.0)))*(sqrt(dt)*Z[2]);
         end
     end
 

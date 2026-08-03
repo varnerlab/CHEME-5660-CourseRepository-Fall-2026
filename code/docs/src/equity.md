@@ -1,8 +1,13 @@
 # Equity Securities
-This should update now.
+
+The equity tools cover return calculation, recombining price trees, stochastic
+price processes, and numerical simulation.
 
 ## Computing returns
-Fill me in.
+
+`typicalprice` summarizes daily OHLC prices. `log_growth_matrix` converts price
+histories into annualized continuously compounded growth rates, optionally net
+of a risk-free rate.
 
 ```@docs
 VLQuantitativeFinancePackage.log_growth_matrix
@@ -64,7 +69,10 @@ VLQuantitativeFinancePackage.solve(model::AbstractAssetModel, tspan::NamedTuple,
 ```
 
 ## Structured State-Space Models
-Update this section with some groooovy text.
+
+The single-input LegS HiPPO model encodes a sampled signal into a finite-
+dimensional state-space representation. The package can simulate that state,
+predict a continuation, and estimate selected model parameters from data.
 
 ```@docs
 VLQuantitativeFinancePackage.MySisoLegSHippoModel

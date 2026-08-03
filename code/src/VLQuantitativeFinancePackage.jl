@@ -1,3 +1,7 @@
+"""
+`VLQuantitativeFinancePackage` provides the teaching models, pricing routines,
+simulation tools, and optimization helpers used by CHEME 5660.
+"""
 module VLQuantitativeFinancePackage
 
     # include -

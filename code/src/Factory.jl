@@ -1,22 +1,21 @@
-function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractEquityPriceTreeModel, AbstractAssetModel, AbstractTreasuryDebtSecurity, AbstractStochasticChoiceProblem, AbstractReturnModel, AbstractSamplingModel, AbstractWorldModel, AbstractPolicyModel, AbstractLearningModel}
-    
+function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractEquityPriceTreeModel, AbstractAssetModel, AbstractTreasuryDebtSecurity, AbstractStochasticChoiceProblem, AbstractReturnModel, AbstractSamplingModel, AbstractWorldModel, AbstractPolicyModel, AbstractLearningModel, MyBinaryInterestRateLatticeNodeModel}
+    required_fields = Symbol[
+        field for field in fieldnames(modeltype)
+        if !(Nothing <: fieldtype(modeltype, field))
+    ]
+    missing_fields = filter(field -> !haskey(data, field), required_fields)
+    if !isempty(missing_fields)
+        field_list = join(string.(missing_fields), ", ")
+        throw(ArgumentError("Cannot build $(modeltype): missing required field(s): $(field_list)"))
+    end
+
     # build an empty model
     model = modeltype();
 
-    # if we have options, add them to the contract model -
-    if (isempty(data) == false)
-        for key ∈ fieldnames(modeltype)
-            
-            # check the for the key - if we have it, then grab this value
-            value = nothing
-            if (haskey(data, key) == true)
-                # get the value -
-                value = data[key]
-            end
-
-            # set -
-            setproperty!(model, key, value)
-        end
+    # Populate supplied fields and initialize omitted optional fields to `nothing`.
+    for key ∈ fieldnames(modeltype)
+        value = haskey(data, key) ? data[key] : nothing
+        setproperty!(model, key, value)
     end
  
     # return -
@@ -107,8 +106,6 @@ function build(modeltype::Type{MyAdjacencyBasedCRREquityPriceTree};
     d = 1.0/u;
     p = (exp(µ * ΔT) - d) / (u - d)
 
-    @show (ΔT,u,d,p)
-  
     # # compute connectivity - 
     # number_items_per_level = [i for i = 1:(h+1)]
     # tmp_array = Array{Int64,1}()
@@ -546,9 +543,9 @@ This method builds an instance of the [`MyOrnsteinUhlenbeckModel`](@ref) type us
 - `data::NamedTuple`: The data to use to build the model. 
 
 The `data::NamedTuple` argument must contain the following `keys`:
-- `μ::Float64`: The long-term mean of the process.
-- `σ::Float64`: The volatility of the process.
-- `θ::Float64`: The mean reversion rate of the process.
+- `μ::Function`: Long-term mean as a function `(x, t) -> value`.
+- `σ::Function`: Volatility as a function `(x, t) -> value`.
+- `θ::Function`: Mean-reversion rate as a function `(x, t) -> value`.
 """
 function build(modeltype::Type{MyOrnsteinUhlenbeckModel}, data::NamedTuple)::MyOrnsteinUhlenbeckModel
 
@@ -577,7 +574,7 @@ using the [Leg-S parameterization](https://arxiv.org/abs/2008.07669).
 The `data::NamedTuple` must contain the following `keys`:
 - `number_of_hidden_states::Int64`: The number of hidden states in the model.
 - `Δt::Float64`: The time step size used to discretize the model (constant).
-- `uₒ::Array{Float64,1}`: The initial input to the model.
+- `uₒ::Real` or a one-element vector: The initial scalar input to the model.
 - `C::Array{Float64,1}`: The output matrix of the model.
 """
 function build(modeltype::Type{MySisoLegSHippoModel}, data::NamedTuple)::MySisoLegSHippoModel
@@ -589,6 +586,13 @@ function build(modeltype::Type{MySisoLegSHippoModel}, data::NamedTuple)::MySisoL
     number_of_hidden_states = data.number_of_hidden_states;
     Δt = data.Δt;
     uₒ = data.uₒ;
+    if uₒ isa Real
+        uₒval = uₒ
+    elseif uₒ isa AbstractVector && length(uₒ) == 1 && only(uₒ) isa Real
+        uₒval = only(uₒ)
+    else
+        throw(ArgumentError("MySisoLegSHippoModel.uₒ must be a scalar or one-element vector"))
+    end
     C = data.C;
 
     # A matrix -
@@ -628,7 +632,7 @@ function build(modeltype::Type{MySisoLegSHippoModel}, data::NamedTuple)::MySisoL
     model.Ĉ = Ĉ;
     model.D̂ = D̂;
     model.n = number_of_hidden_states;
-    model.Xₒ = B̂*uₒ;
+    model.Xₒ = B̂*uₒval;
 
     # return -
     return model;

@@ -17,7 +17,7 @@ function _hippo_objective_function(p, signal, hidden);
 end
 
 """
-    function prediction(model::MySisoLegSHippoModel, tspan::NamedTuple, signal::Array{Float64,1}; L::Int64 = 10) -> Tuple
+    prediction(model::MySisoLegSHippoModel, tspan::NamedTuple, signal::Array{Float64,1}; S::Int64 = 10, B::Float64 = 40.0, α::Float64 = 0.25, β::Float64 = 0.10) -> Tuple
 
 The `prediction` function predicts the output of the single input single output (SISO) HiPPO model given a signal vector using the Leg-S parameterization and bilinear discretization. 
 The function returns the time array, the hidden state array and the output array. 
@@ -26,7 +26,8 @@ The function returns the time array, the hidden state array and the output array
 - `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [MySisoLegSHippoModel](@ref) for details on the model struct.
 - `tspan::NamedTuple`: A named tuple that defines the time span for the simulation. The named tuple should have the fields `start`, `stop` and `step`.
 - `signal::Array{Float64}`: An array of input signals to the model.
-- `S::Int64`: Circular buffer size used by the prediction function. The default value is 10 steps. After `L` steps, the input signal is reset to the first signal value.
+- `S::Int64`: Circular buffer size used by the prediction function. The default
+  is 10 steps; after `S` inputs, indexing cycles to the first signal value.
 - `B::Float64`: A threshold value used to reset the hidden states. The default value is 40.0.
 - `α::Float64`: A scaling factor used to check the output value. The default value is 0.25.
 - `β::Float64`: A scaling factor used to reset the hidden states. The default value is 0.10.

@@ -22,7 +22,7 @@ Every lecture notebook begins by including its `Include*.jl` setup file, which a
 *(Rows added as weeks are released.)*
 
 ## The course package
-The course's Julia package, `VLQuantitativeFinancePackage`, is vendored in [`code/`](code/) and version-frozen for the semester. Its API documentation and the upstream repo: [VLQuantitativeFinancePackage.jl](https://github.com/varnerlab/VLQuantitativeFinancePackage.jl).
+The course's Julia package, `VLQuantitativeFinancePackage`, is vendored in [`code/`](code/) and version-frozen for the semester. See the [course API documentation](https://varnerlab.github.io/CHEME-5660-CourseRepository-Fall-2026/) or the [upstream package repository](https://github.com/varnerlab/VLQuantitativeFinancePackage.jl).
 
 ## Disclaimer
 This material is offered solely for training and informational purposes. No investment advice is given or implied. See the full disclaimer in each lecture.
