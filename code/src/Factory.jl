@@ -107,8 +107,6 @@ function build(modeltype::Type{MyAdjacencyBasedCRREquityPriceTree};
     d = 1.0/u;
     p = (exp(µ * ΔT) - d) / (u - d)
 
-    @show (ΔT,u,d,p)
-  
     # # compute connectivity - 
     # number_items_per_level = [i for i = 1:(h+1)]
     # tmp_array = Array{Int64,1}()

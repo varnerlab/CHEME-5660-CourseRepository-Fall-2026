@@ -15,6 +15,18 @@ using Distributions
                     (S = [100.0 101.0; 99.0 102.0], r̄ = 0.05, Δt = 1.0 / 365.0)) isa MyLongstaffSchwartzContractPricingModel
     end
 
+    @testset "keyword build: no debug output" begin
+        # test that keyword build of CRR tree produces no debug output
+        out = let
+            old = stdout
+            (rd, wr) = redirect_stdout()
+            m = build(MyAdjacencyBasedCRREquityPriceTree; h = 2, μ = 0.05, σ = 0.2, T = 0.5, Sₒ = 100.0)
+            redirect_stdout(old); close(wr)
+            read(rd, String)
+        end
+        @test out == ""
+    end
+
     @testset "trees + lattices" begin
         @test build(MyBinomialEquityPriceTree, (u = 1.1, d = 0.9, p = 0.5)) isa MyBinomialEquityPriceTree
         @test build(MyAdjacencyBasedCRREquityPriceTree, (μ = 0.05, σ = 0.2, T = 1.0)) isa MyAdjacencyBasedCRREquityPriceTree
