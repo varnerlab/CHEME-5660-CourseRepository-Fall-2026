@@ -14,11 +14,11 @@ ___
 ## Examples
 Today, we will use the following examples to illustrate key concepts:
 
-> [▶ Let's build a multiplicative weights algorithm for market mood discovery](CHEME-5660-L15a-Example-MWA-Portfolio-Fall-2025.ipynb). In this example, we will implement the Multiplicative Weights Algorithm (MWA) to adaptively discover market mood. This could help us understand which moods dominate the market at different times, and adjust our trading strategies accordingly. We will simulate a scenario where we have multiple "mood experts" providing predictions about market trends, and we will use MWA to weigh their advice based on past performance. 
+> [▶ Let's build a multiplicative weights algorithm for market mood discovery](CHEME-5660-L15a-Example-MWA-Portfolio-Fall-2026.ipynb). In this example, we will implement the Multiplicative Weights Algorithm (MWA) to adaptively discover market mood. This could help us understand which moods dominate the market at different times, and adjust our trading strategies accordingly. We will simulate a scenario where we have multiple "mood experts" providing predictions about market trends, and we will use MWA to weigh their advice based on past performance. 
 
-> [▶ Let's explore a collection of simple and expert agents](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Fall-2025.ipynb). In this example, we build a homogeneous collection of Wolfram market agents using simple rules. These agents watch experts and mimic their actions, leading to emergent market dynamics. We analyze how the collective behavior of these agents influences market stability and price movements.
+> [▶ Let's explore a collection of simple and expert agents](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Fall-2026.ipynb). In this example, we build a homogeneous collection of Wolfram market agents using simple rules. These agents watch experts and mimic their actions, leading to emergent market dynamics. We analyze how the collective behavior of these agents influences market stability and price movements.
 
-> [▶ Let's build a heterogeneous agent collection leading to a market crash](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Crash-Fall-2025.ipynb). In this example, we build a Wolfram market simulation in which a collection of agents interacts to produce a market crash. We show that by combining different agent strategies, the market can experience sudden downturns.
+> [▶ Let's build a heterogeneous agent collection leading to a market crash](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Crash-Fall-2026.ipynb). In this example, we build a Wolfram market simulation in which a collection of agents interacts to produce a market crash. We show that by combining different agent strategies, the market can experience sudden downturns.
 ___
 
 <div>
@@ -64,7 +64,7 @@ Let's look at an example of the application of MWA in financial markets.
 
 > __Example__
 > 
-> [▶ Let's build a multiplicative weights algorithm for market mood discovery](CHEME-5660-L15a-Example-MWA-Portfolio-Fall-2025.ipynb). In this example, we will implement the Multiplicative Weights Algorithm (MWA) to adaptively discover market mood. This could help us understand which moods dominate the market at different times, and adjust our trading strategies accordingly. We will simulate a scenario where we have multiple "mood experts" providing predictions about market trends, and we will use MWA to weigh their advice based on past performance. 
+> [▶ Let's build a multiplicative weights algorithm for market mood discovery](CHEME-5660-L15a-Example-MWA-Portfolio-Fall-2026.ipynb). In this example, we will implement the Multiplicative Weights Algorithm (MWA) to adaptively discover market mood. This could help us understand which moods dominate the market at different times, and adjust our trading strategies accordingly. We will simulate a scenario where we have multiple "mood experts" providing predictions about market trends, and we will use MWA to weigh their advice based on past performance. 
 ___
 
 <div>
@@ -185,9 +185,9 @@ Let's look at two example Wolfram Market simulations using different rulesets to
 
 > __Examples__
 >
-> [▶ Let's explore a collection of simple and expert agents](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Fall-2025.ipynb). In this example, we build a homogeneous collection of Wolfram market agents using simple rules. These agents watch experts and mimic their actions, leading to emergent market dynamics. We analyze how the collective behavior of these agents influences market stability and price movements.
+> [▶ Let's explore a collection of simple and expert agents](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Fall-2026.ipynb). In this example, we build a homogeneous collection of Wolfram market agents using simple rules. These agents watch experts and mimic their actions, leading to emergent market dynamics. We analyze how the collective behavior of these agents influences market stability and price movements.
 
-> [▶ Let's build a heterogeneous agent collection leading to a market crash](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Crash-Fall-2025.ipynb). In this example, we build a Wolfram market simulation in which a collection of agents interacts to produce a market crash. We show that by combining different agent strategies, the market can experience sudden downturns.
+> [▶ Let's build a heterogeneous agent collection leading to a market crash](CHEME-5660-L15a-Example-Wolfram-NetworkSimulation-Crash-Fall-2026.ipynb). In this example, we build a Wolfram market simulation in which a collection of agents interacts to produce a market crash. We show that by combining different agent strategies, the market can experience sudden downturns.
 
 ___
 

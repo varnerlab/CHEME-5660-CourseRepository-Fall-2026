@@ -32,7 +32,7 @@ MyTrainingMarketDataSet() = _jld2(joinpath(_PATH_TO_DATA, "SP500-Daily-OHLC-1-3-
 """
     MyTickerPickerBanditModelResults() -> Dict{String, Any}
 
-Load the ticker-picker bandit model results computed in the `Setup-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2025.ipynb` notebook.
+Load the ticker-picker bandit model results computed in the `CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2026.ipynb` notebook.
 
 ### Arguments
 - `mood::Symbol = :neutral`: Which preference set to load. Accepts `:optimistic`, `:neutral`, or `:pessimistic`.

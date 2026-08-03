@@ -15,9 +15,9 @@ ___
 ## Examples
 Today, we will use the following examples to illustrate key concepts:
 
-> [▶ Analyze a three-state hidden Markov model for mood](CHEME-5660-L13a-Example-HiddenMarkovModels-Fall-2025.ipynb). In this example, we will analyze a simple hidden Markov model (HMM) that represents a person's mood (happy, sad, neutral) based on observable behaviors (smiling, frowning, neutral expression). We will set up the HMM, compute the most likely sequence of moods given a series of observed behaviors, and discuss how this model can be applied in real-world scenarios.
+> [▶ Analyze a three-state hidden Markov model for mood](CHEME-5660-L13a-Example-HiddenMarkovModels-Fall-2026.ipynb). In this example, we will analyze a simple hidden Markov model (HMM) that represents a person's mood (happy, sad, neutral) based on observable behaviors (smiling, frowning, neutral expression). We will set up the HMM, compute the most likely sequence of moods given a series of observed behaviors, and discuss how this model can be applied in real-world scenarios.
 
-> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2025.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) applied to the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
+> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2026.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) applied to the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
 ___
 
 ## Discrete Markov Model States
@@ -189,7 +189,7 @@ Let's look at an example of an HMM in action for modeling the growth rate distri
 
 > __Example:__
 >
-> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2025.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) of the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
+> [▶ Analyze an in-sample hidden Markov model (HMM) of the daily SPY growth rate](CHEME-5660-L13a-Example-HMM-SPY-IS-Fall-2026.ipynb). In this example, we will analyze an in-sample hidden Markov model (HMM) of the growth rate of the SPY ETF. We will set up the HMM, estimate its parameters using historical SPY growth rate data, and evaluate its performance in capturing the stylized facts governing financial time series.
 ___
 
 ## Summary

@@ -16,9 +16,9 @@ ___
 ## Examples
 Today, we will use the following examples to illustrate key concepts:
 
-> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2026.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
 
-> [▶ Let's revist the bandit portfolio example from Week-9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2025.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
+> [▶ Let's revist the bandit portfolio example from Week-9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2026.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
 ___
 
 <div>
@@ -64,7 +64,7 @@ Let's look at an example of a risk-aware ticker picker binary Bernoulli bandit.
 > __Example__:
 >
 > 
-> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+> [▶ Let's build a risk-aware ticker picker binary Bernoulli bandit](CHEME-5660-L14a-Example-RiskAware-BBBP-Ticker-Picker-Fall-2026.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We'll scale the returns relative to a benchmark (e.g., S&P 500) and use a risk-adjusted return metric to inform our decisions. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
 
 ___
 
@@ -197,7 +197,7 @@ Let's look at an example of a risk-aware portfolio manager using combinatorial b
 
 > __Example__
 > 
-> [▶ Let's revisit the bandit portfolio example from Week 9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2025.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
+> [▶ Let's revisit the bandit portfolio example from Week 9](CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2026.ipynb). In this example, we will use a combinatorial bandit algorithm to manage a portfolio of assets. The agent will select combinations of assets to include in the portfolio, aiming to maximize investor utility while considering risk. We will implement the combinatorial epsilon-greedy algorithm to explore different portfolio configurations and learn which combinations yield the highest utility over time.
 
 
 ## Multiplicative Weights Algorithm (MWA)

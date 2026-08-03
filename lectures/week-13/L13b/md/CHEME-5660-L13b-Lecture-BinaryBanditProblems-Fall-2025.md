@@ -14,9 +14,9 @@ ___
 ## Examples
 Today, we will use the following examples to illustrate key concepts:
 
-> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2025-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
+> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2026-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
 
-> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2026.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
 ___
 
 ## Concept Review: Markov Property and Hidden Markov Models (HMMs)
@@ -90,7 +90,7 @@ Let's look at an example of an HMM in action for modeling the __out of sample__ 
 
 > __Example__
 > 
-> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2025-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
+> [▶ Let's test the Out of Sample (OoS) performance of our Hidden Markov Model](CHEME-5660-L13b-Example-HMM-SPY-OoS-Fall-2026-Project.ipynb). In this example, we will evaluate the out-of-sample performance of a Hidden Markov Model (HMM) with and without Jumps applied to the SPY ETF. We will analyze how well the model predicts unseen future returns and assess its effectiveness in capturing the stylized facts of financial time series data.
 
 
 Now that we've reviewed Hidden Markov Models for sequential prediction, we turn our attention to the main topic of this lecture: reinforcement learning and bandit problems. Unlike HMMs, which model sequential state transitions, bandit problems focus on learning which actions yield the best rewards in stateless environments.
@@ -209,7 +209,7 @@ Let's look at an example of a Binary Bernoulli Bandit problem using the ε-greed
 > __Example__
 >
 >
-> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2025.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
+> [▶ Let's Build a Ticker Picker Binary Bernoulli Bandit](CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2026.ipynb). In this example, we will build a binary Bernoulli bandit to help us pick stock tickers based on their historical performance. We will use the ε-greedy algorithm to balance exploration and exploitation as we learn which tickers yield the highest returns relative to an alternative benchmark, with and without risk adjustment.
 
 ___
 
