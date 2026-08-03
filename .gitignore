@@ -39,3 +39,10 @@ artifacts/
 # the ROOT manifest is the single course environment and MUST be committed
 # (overrides the Manifest*.toml ignore above)
 !/Manifest.toml
+
+# LaTeX build byproducts -
+*.aux
+*.bbl
+*.blg
+*.out
+*.log
