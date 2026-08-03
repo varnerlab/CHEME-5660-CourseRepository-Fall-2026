@@ -20,6 +20,7 @@ using Distributions
         @test build(MyAdjacencyBasedCRREquityPriceTree, (μ = 0.05, σ = 0.2, T = 1.0)) isa MyAdjacencyBasedCRREquityPriceTree
         @test build(MySymmetricBinaryInterestRateLatticeModel,
                     (u = 1.1, d = 0.9, p = 0.5, rₒ = 0.05, T = 2)) isa MySymmetricBinaryInterestRateLatticeModel
+        @test build(MyBinaryInterestRateLatticeNodeModel, (probability = 0.5, rate = 0.05, price = 100.0)) isa MyBinaryInterestRateLatticeNodeModel
 
         g = build(MyGeneralAdjacencyRecombiningCommodityPriceTree, (h = 2, n = 2))
         @test g isa MyGeneralAdjacencyRecombiningCommodityPriceTree

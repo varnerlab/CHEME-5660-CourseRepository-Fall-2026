@@ -1,4 +1,4 @@
-function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractEquityPriceTreeModel, AbstractAssetModel, AbstractTreasuryDebtSecurity, AbstractStochasticChoiceProblem, AbstractReturnModel, AbstractSamplingModel, AbstractWorldModel, AbstractPolicyModel, AbstractLearningModel}
+function _build(modeltype::Type{T}, data::NamedTuple) where T <: Union{AbstractEquityPriceTreeModel, AbstractAssetModel, AbstractTreasuryDebtSecurity, AbstractStochasticChoiceProblem, AbstractReturnModel, AbstractSamplingModel, AbstractWorldModel, AbstractPolicyModel, AbstractLearningModel, MyBinaryInterestRateLatticeNodeModel}
     
     # build an empty model
     model = modeltype();
