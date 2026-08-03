@@ -18,4 +18,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" "artifacts/$GITHUB_REF_NAME.zip" \
-            --title "$GITHUB_REF_NAME" --notes "Weekly bundle: unzip, then follow README setup."
+            --title "$GITHUB_REF_NAME" --notes "Weekly bundle: unzip, then follow README setup." \
+            || gh release upload "$GITHUB_REF_NAME" "artifacts/$GITHUB_REF_NAME.zip" --clobber
