@@ -25,7 +25,7 @@ BLOCK = re.compile(
     re.M)
 
 changed, manual = [], []
-for p in sorted(Path("lectures").rglob("Include.jl")):
+for p in sorted(Path("lectures").rglob("Include*.jl")):
     if ".ipynb_checkpoints" in str(p):
         continue
     s = p.read_text()

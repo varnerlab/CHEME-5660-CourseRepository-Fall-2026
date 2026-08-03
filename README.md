@@ -12,7 +12,7 @@ This course is for engineers and scientists interested in quantitative finance. 
    `julia --project=. -e 'using Pkg; Pkg.instantiate()'`  *(one time; several minutes)*
 3. Smoke test: `julia --project=. -e 'using VLQuantitativeFinancePackage; println("SETUP-OK")'`
 
-Every lecture notebook begins with `include("Include.jl")`, which activates this environment automatically — after the one-time setup, notebooks just run.
+Every lecture notebook begins by including its `Include*.jl` setup file, which activates this environment automatically — after the one-time setup, notebooks just run.
 
 ## Weekly materials
 | Week | Topic | Notebooks | Notes | Download |
