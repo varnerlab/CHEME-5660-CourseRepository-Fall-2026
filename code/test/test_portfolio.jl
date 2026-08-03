@@ -37,9 +37,27 @@ using DataFrames
         @test isapprox(r["reward"], R; atol = 1e-4)               # return constraint binds
     end
 
-    # REMOVED: max Sharpe test returned suboptimal solution.
-    # Solver returned Sharpe=0.389 vs theoretical optimum 0.410.
-    # See code/src — this is a Task 10 suspect (solver convergence).
+    @testset "Sharpe problem: max return subject to Sharpe ≥ τ" begin
+        # The SOCP in src is: max c'w  s.t. sum(w)=1, w≥0, ‖Uw‖ ≤ c'w/τ  (Sharpe floor τ).
+        # With τ well below the best achievable Sharpe the floor is slack and the optimum is
+        # the max-return vertex w = [1, 0]  (c = α + β·gₘ − r = [0.076, 0.039]; asset 1's
+        # standalone Sharpe = 0.076/0.20 = 0.38 ≥ τ, so the vertex is feasible).
+        # NOTE (Task 10 suspects): (a) feasibility assert in Sharpe.jl is commented out, so an
+        # infeasible τ (e.g. 1.0 here) silently returns junk; (b) the docstring claims
+        # "maximum Sharpe ratio" which does not match these semantics.
+        Σ = [0.04 0.009; 0.009 0.0225]
+        problem = build(MySharpeRatioPortfolioChoiceProblem, (
+            Σ = Σ, risk_free_rate = 0.03, α = [0.01, 0.005], β = [1.2, 0.8], gₘ = 0.08, τ = 0.2))
+        r = solve(problem)
+        w = r["argmax"]
+        c = [0.01, 0.005] .+ [1.2, 0.8] .* 0.08 .- 0.03
+        @test isapprox(sum(w), 1.0; atol = 1e-3)
+        @test all(w .≥ -1e-6)
+        @test isapprox(w, [1.0, 0.0]; atol = 1e-2)                 # max-return vertex, COSMO/ADMM tolerance
+        @test isapprox(r["numerator"], dot(c, w); atol = 1e-6)      # internal consistency
+        @test isapprox(r["sharpe_ratio"], r["numerator"] / r["denominator"]; atol = 1e-8)
+        @test string(r["status"]) ∈ ("OPTIMAL", "ALMOST_OPTIMAL")
+    end
 
     @testset "log_growth_matrix + covariance invariants" begin
         # deterministic geometric price paths; dataset must include "AAPL" (used as the size reference)
