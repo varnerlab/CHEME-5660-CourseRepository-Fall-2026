@@ -104,6 +104,13 @@ VLQuantitativeFinancePackage.premium(contract::MyEuropeanPutContractModel,
 ## American contract premiums
 Finding the premium for American options is more complex than for European options because the holder can exercise the option at any time before the expiration date. The premium can be calculated using the binomial pricing model, or other more complex models like the trinomial tree model or monte carlo simulation approaches.
 
+For simulated price paths, the package also provides a Longstaff--Schwartz
+least-squares Monte Carlo input model.
+
+```@docs
+VLQuantitativeFinancePackage.MyLongstaffSchwartzContractPricingModel
+```
+
 ### Binomial pricing model
 The binomial pricing model is a popular method for pricing American options. It uses a binomial tree to model the price of the underlying asset over time. The tree is constructed by moving up and down at each step, representing the price of the underlying asset increasing or decreasing. The premium is calculated by working backward from the expiration date to the present date, calculating the premium at each node and discounting it back to the present date.
 

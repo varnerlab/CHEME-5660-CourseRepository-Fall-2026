@@ -1,11 +1,36 @@
-# VLQuantitativeFinancePackage.jl
-The `VLQuantitativeFinancePackage.jl` package is a [Julia package](https://julialang.org) that provides a collection of functions and types useful for quantitative finance. The package is designed to be simple and easy to use, and it is suitable for students, researchers, and practitioners in the area of quantitative finance.
+# CHEME 5660 Quantitative Finance Package
 
-## Installation
-The package can be installed by running the following command in the Julia REPL:
-```julia
-using Pkg
-Pkg.add(url="https://github.com/varnerlab/VLQuantitativeFinancePackage.jl.git")
+`VLQuantitativeFinancePackage` is the version-frozen Julia package used by the
+CHEME 5660 course notebooks. It provides teaching implementations for fixed
+income, equity and derivative pricing, portfolio optimization, stochastic
+simulation, Markov models, bandits, and reinforcement learning.
+
+## Using the course snapshot
+
+Clone or download the course repository, activate its root Julia environment,
+and instantiate it once. Lecture notebooks activate that environment through
+their setup files. The separately maintained upstream repository can evolve;
+course work should use the vendored snapshot in `code/` for reproducibility.
+
+## API families
+
+```@docs
+VLQuantitativeFinancePackage
+VLQuantitativeFinancePackage.AbstractAssetModel
+VLQuantitativeFinancePackage.AbstractEquityPriceTreeModel
+VLQuantitativeFinancePackage.AbstractInterestRateTreeModel
+VLQuantitativeFinancePackage.AbstractContractModel
+VLQuantitativeFinancePackage.AbstractTreasuryDebtSecurity
+VLQuantitativeFinancePackage.AbstractCompoundingModel
+VLQuantitativeFinancePackage.AbstractStochasticChoiceProblem
+VLQuantitativeFinancePackage.AbstractReturnModel
+VLQuantitativeFinancePackage.AbstractProbabilityMeasure
+VLQuantitativeFinancePackage.AbstractMarkovModel
+VLQuantitativeFinancePackage.AbstractSamplingModel
+VLQuantitativeFinancePackage.AbstractWorldModel
+VLQuantitativeFinancePackage.AbstractPolicyModel
+VLQuantitativeFinancePackage.AbstractLearningModel
+VLQuantitativeFinancePackage.AbstractAgentModel
 ```
 
 ## Disclaimer and Risks
@@ -14,4 +39,3 @@ __This content is offered solely for training and informational purposes__. No o
 __Trading involves risk__. Carefully review your financial situation before investing in securities, futures contracts, options, or commodity interests. Past performance, whether actual or indicated by historical tests of strategies, is no guarantee of future performance or success. Trading is generally inappropriate for someone with limited resources, investment or trading experience, or a low-risk tolerance.  Only risk capital that is not required for living expenses.
 
 __You are fully responsible for any investment or trading decisions you make__. Such decisions should be based solely on evaluating your financial circumstances, investment or trading objectives, risk tolerance, and liquidity needs. You are responsible for conducting your own independent research and seeking the advice of a qualified professional before making any investment or trading decisions.
-

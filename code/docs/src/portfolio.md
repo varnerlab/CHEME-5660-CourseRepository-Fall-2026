@@ -1,5 +1,9 @@
 # Portfolio management
-Fill me in
+
+The package formulates long-only minimum-variance problems with either risky
+assets alone or a mix of risky assets and a risk-free position. Inputs include
+expected returns, a return covariance matrix, allocation bounds, and a target
+portfolio return.
 
 ```@docs
 VLQuantitativeFinancePackage.MyMarkowitzRiskyAssetOnlyPortfolioChoiceProblem
@@ -12,8 +16,12 @@ VLQuantitativeFinancePackage.solve(model::MyMarkowitzRiskyAssetOnlyPortfolioChoi
 VLQuantitativeFinancePackage.solve(model::MyMarkowitzRiskyRiskFreePortfolioChoiceProblem)
 ```
 
-## Maximizing the Sharpe ratio
-The Sharpe ratio is a widely used metric in finance to evaluate the performance of an investment by adjusting for its risk. It is defined as the ratio of the excess return of the investment over the risk-free rate to the standard deviation of the investment's returns. We've implemented some tools to help you build and solve portfolio choice problems that maximize the Sharpe ratio.
+## Sharpe-constrained excess return
+
+The Sharpe ratio is excess expected return divided by return standard
+deviation. `MySharpeRatioPortfolioChoiceProblem` maximizes expected excess
+return for a long-only, fully invested portfolio while requiring its Sharpe
+ratio to be at least `τ`. It does not directly maximize the ratio itself.
 
 ```@docs
 VLQuantitativeFinancePackage.MySharpeRatioPortfolioChoiceProblem

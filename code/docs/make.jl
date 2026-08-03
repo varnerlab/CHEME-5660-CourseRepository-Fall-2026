@@ -1,11 +1,11 @@
 using Documenter, VLQuantitativeFinancePackage
 
-push!(LOAD_PATH,"../src/")
-
 makedocs(
-    sitename="VLQuantitativeFinancePackage",
+    sitename = "CHEME 5660 Quantitative Finance Package",
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     modules = [VLQuantitativeFinancePackage],
+    checkdocs = :exports,
+    warnonly = false,
     pages = [
         "Home" => "index.md",
 
@@ -26,5 +26,8 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/varnerlab/VLQuantitativeFinancePackage.jl.git", branch = "gh-pages", target = "build"
+    repo = "github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git",
+    branch = "gh-pages",
+    target = "build",
+    push_preview = false,
 )

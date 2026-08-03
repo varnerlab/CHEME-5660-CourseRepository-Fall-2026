@@ -58,7 +58,11 @@ where the `discount_model` refers to either a [`DiscreteCompoundingModel`](@ref)
 
 
 ## Term structure of interest rates
-Fill me in
+
+The symmetric binary interest-rate lattice stores possible short rates and
+their reach probabilities at each time level. `populate` constructs the
+lattice, while `expectation` and `variance` summarize each level. `solve`
+performs backward induction for a terminal par payment.
     
 ```@docs
 VLQuantitativeFinancePackage.MySymmetricBinaryInterestRateLatticeModel
@@ -67,6 +71,7 @@ VLQuantitativeFinancePackage.build(model::Type{MySymmetricBinaryInterestRateLatt
 VLQuantitativeFinancePackage.populate(model::MySymmetricBinaryInterestRateLatticeModel)
 VLQuantitativeFinancePackage.expectation(model::MySymmetricBinaryInterestRateLatticeModel)
 VLQuantitativeFinancePackage.variance(model::MySymmetricBinaryInterestRateLatticeModel)
+VLQuantitativeFinancePackage.solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0)
 ```
 
 ## Separating the principal and interest payments
