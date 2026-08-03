@@ -2,4 +2,6 @@ using Test
 using VLQuantitativeFinancePackage
 using Aqua
 
-# suite filled in by its dedicated task
+@testset "Aqua QA battery" begin
+    Aqua.test_all(VLQuantitativeFinancePackage)
+end
