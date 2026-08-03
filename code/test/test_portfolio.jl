@@ -72,4 +72,13 @@ using DataFrames
         Σ̂ = cov(R)
         @test eigmin(Symmetric(Σ̂)) ≥ -1e-10                       # PSD invariant
     end
+
+    @testset "log_growth_matrix: firm parameter respected" begin
+        # test that log_growth_matrix uses the firm parameter, not hardcoded "AAPL"
+        n = 6
+        ds = Dict("MSFT" => DataFrame(volume_weighted_average_price = [100.0 * 1.01^t for t ∈ 0:(n-1)]))
+        R = log_growth_matrix(ds, "MSFT")
+        @test length(R) == n - 1
+        @test all(isapprox.(R, 252 * log(1.01); atol = 1e-8))
+    end
 end
