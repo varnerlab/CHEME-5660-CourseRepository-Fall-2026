@@ -1,18 +1,33 @@
+"""Supertype for models of financial assets and asset-price processes."""
 abstract type AbstractAssetModel end
+"""Supertype for discrete equity-price tree models."""
 abstract type AbstractEquityPriceTreeModel <: AbstractAssetModel end
+"""Supertype for interest-rate tree and lattice models."""
 abstract type AbstractInterestRateTreeModel <: AbstractAssetModel end
+"""Supertype for option and other derivative contract models."""
 abstract type AbstractContractModel <: AbstractAssetModel end
+"""Supertype for United States Treasury debt-security models."""
 abstract type AbstractTreasuryDebtSecurity end
+"""Supertype for discrete and continuous interest-compounding conventions."""
 abstract type AbstractCompoundingModel end
+"""Supertype for stochastic portfolio and decision optimization problems."""
 abstract type AbstractStochasticChoiceProblem end
+"""Supertype for statistical asset-return models."""
 abstract type AbstractReturnModel end
+"""Supertype for real-world and risk-neutral probability measures."""
 abstract type AbstractProbabilityMeasure end
 abstract type AbstractStochasticSolverModel end
+"""Supertype for Markov and hidden Markov models."""
 abstract type AbstractMarkovModel end
+"""Supertype for sampling-policy models, including bandit policies."""
 abstract type AbstractSamplingModel end
+"""Supertype for environments used by learning and simulation routines."""
 abstract type AbstractWorldModel end
+"""Supertype for deterministic policy and cellular-automaton rule models."""
 abstract type AbstractPolicyModel end
+"""Supertype for learning-agent models."""
 abstract type AbstractLearningModel end
+"""Supertype for agents that act in a world model."""
 abstract type AbstractAgentModel end
 
 # --- Equity models ------------------------------------------------------------------------ #
@@ -119,6 +134,13 @@ mutable struct MyGeneralAdjacencyRecombiningCommodityPriceTree  <: AbstractEquit
     MyGeneralAdjacencyRecombiningCommodityPriceTree() = new()
 end
 
+"""
+    MyLongstaffSchwartzContractPricingModel
+
+Inputs for Longstaff--Schwartz least-squares Monte Carlo pricing. `S` contains
+simulated price paths, `r̄` is the annual discount rate, and `Δt` is the time
+between adjacent rows of `S`.
+"""
 mutable struct MyLongstaffSchwartzContractPricingModel <: AbstractEquityPriceTreeModel
 
     # data -
@@ -676,7 +698,9 @@ end
 """
     mutable struct MySharpeRatioPortfolioChoiceProblem <: AbstractStochasticChoiceProblem
 
-The `MySharpeRatioPortfolioChoiceProblem` mutable struct represents a [Maximum Sharpe Ratio portfolio problem](https://en.wikipedia.org/wiki/Sharpe_ratio).
+The `MySharpeRatioPortfolioChoiceProblem` mutable struct represents a long-only
+portfolio problem that maximizes expected excess return subject to a minimum
+[Sharpe ratio](https://en.wikipedia.org/wiki/Sharpe_ratio) `τ`.
 
 ### Required fields
 - `Σ::Array{Float64,2}`: The covariance matrix of the risky asset returns
@@ -684,7 +708,7 @@ The `MySharpeRatioPortfolioChoiceProblem` mutable struct represents a [Maximum S
 - `α::Array{Float64,1}`: The firm specific unexplained returns
 - `β::Array{Float64,1}`: The relationship between the firm and the market
 - `gₘ::Float64`: The expected market return
-- `τ::Float64`: The growth parameter
+- `τ::Float64`: The minimum acceptable Sharpe ratio; it must be positive
 """
 mutable struct MySharpeRatioPortfolioChoiceProblem <: AbstractStochasticChoiceProblem
 
@@ -978,6 +1002,7 @@ mutable struct MyOneDimensionalElementarWolframRuleModel <: AbstractPolicyModel
 end
 
 
+"""Two-dimensional elementary cellular-automaton policy rule."""
 mutable struct MyTwoDimensionalElementaryWolframRuleModel <: AbstractPolicyModel
     
     # data -
@@ -991,6 +1016,7 @@ mutable struct MyTwoDimensionalElementaryWolframRuleModel <: AbstractPolicyModel
 end
 
 
+"""One-dimensional totalistic cellular-automaton policy rule."""
 mutable struct MyOneDimensionalTotalisticWolframRuleModel <: AbstractPolicyModel
     
     # data

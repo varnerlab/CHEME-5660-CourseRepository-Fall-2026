@@ -8,18 +8,22 @@ end
 # -- PUBLIC FUNCTIONS BELOW HERE ------------------------------------------------------------------------------- #
 
 """
-    MyTrainingMarketDataSet() -> Dict{String, DataFrame}
+    MyTrainingMarketDataSet() -> Dict{String,Any}
 
-Load the components of the SP500 Daily open, high, low, close (OHLC) dataset as a dictionary of DataFrames.
+Load the SP500 daily open, high, low, close (OHLC) training dataset. The returned
+dictionary contains a `"dataset"` entry whose value is a ticker-keyed dictionary
+of `DataFrame` objects.
 This data was provided by [Polygon.io](https://polygon.io/) and covers the period from January 3, 2014, to December 31, 2024.
 
 """
 MyTrainingMarketDataSet() = _jld2(joinpath(_PATH_TO_DATA, "SP500-Daily-OHLC-1-3-2014-to-12-31-2024.jld2"));
 
 """
-    MyTestingMarketDataSet() -> Dict{String, DataFrame}
+    MyTestingMarketDataSet() -> Dict{String,Any}
 
-Load the components of the SP500 Daily open, high, low, close (OHLC) dataset as a dictionary of DataFrames.
+Load the SP500 daily OHLC testing dataset. The returned dictionary contains a
+`"dataset"` entry whose value is a ticker-keyed dictionary of `DataFrame`
+objects.
 This data was provided by [Polygon.io](https://polygon.io/) and covers the period from January 3, 2025, to the current date (it is updated periodically).
 
 """

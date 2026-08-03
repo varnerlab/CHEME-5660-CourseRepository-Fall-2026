@@ -171,18 +171,30 @@ where ``\\star`` is the current state of the system, i.e., the current underlyin
 function gamma(contract::Y; h::Int64=2, T::Float64=(1 / 365), σ::Float64=0.15,
     Sₒ::Float64=1.0, μ::Float64=0.0015, choice::Function=_rational)::Float64 where {Y<:AbstractContractModel}
 
-    # advance base price by 1 -
-    S₁ = Sₒ + 1
+    h >= 2 || throw(ArgumentError("gamma requires a CRR tree with h >= 2"))
 
-    # compute -
-    δₒ = delta(contract; h=h, T=T, σ=σ, Sₒ=Sₒ, μ=μ, choice=choice)
-    δ₁ = delta(contract; h=h, T=T, σ=σ, Sₒ=S₁, μ=μ, choice=choice)
+    model = build(MyAdjacencyBasedCRREquityPriceTree,
+        (μ = μ, T = T, σ = σ)) |> (x -> populate(x, Sₒ = Sₒ, h = h))
+    premium(contract, model; choice = choice)
 
-    # compute γ -
-    γ_value = (δ₁ - δₒ)
+    up_index, down_index = model.levels[1]
+    up_up_index, up_down_index = model.connectivity[up_index]
+    down_up_index, down_down_index = model.connectivity[down_index]
 
-    # return -
-    return γ_value
+    up_delta = (
+        model.data[up_up_index].extrinsic - model.data[up_down_index].extrinsic
+    ) / (
+        model.data[up_up_index].price - model.data[up_down_index].price
+    )
+    down_delta = (
+        model.data[down_up_index].extrinsic - model.data[down_down_index].extrinsic
+    ) / (
+        model.data[down_up_index].price - model.data[down_down_index].price
+    )
+
+    return (up_delta - down_delta) / (
+        model.data[up_index].price - model.data[down_index].price
+    )
 end
 
 function gamma(contracts::Array{Y,1}; h::Int64=2, T::Float64=(1 / 365), σ::Float64=0.15,

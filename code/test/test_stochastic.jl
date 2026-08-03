@@ -2,6 +2,7 @@ using Test
 using VLQuantitativeFinancePackage
 using Random
 using Statistics
+using LinearAlgebra
 
 @testset "stochastic" begin
 
@@ -37,6 +38,26 @@ using Statistics
         X = VLQuantitativeFinancePackage.sample_endpoint(m, (T = 1.0, Sₒ = 100.0); number_of_paths = 5000)
         @test length(X) == 5000
         @test isapprox(mean(X), 100.0 * exp(0.10); rtol = 2e-2)
+    end
+
+    @testset "multi-asset GBM recovers drift and covariance (seeded)" begin
+        Random.seed!(20260803)
+        μ = [0.08, 0.10]
+        A = [0.20 0.0; 0.10 sqrt(0.03)]
+        target_covariance = A * transpose(A)
+        m = build(MyMultipleAssetGeometricBrownianMotionEquityModel, (μ = μ, A = A))
+        paths = VLQuantitativeFinancePackage.sample(
+            m, (T₁ = 0.0, T₂ = 1.0, Δt = 1.0, Sₒ = [100.0, 100.0]);
+            number_of_paths = 6000,
+        )
+        log_returns = reduce(vcat, [
+            reshape(log.(paths[i][end, 2:end] ./ paths[i][1, 2:end]), 1, :)
+            for i ∈ eachindex(paths)
+        ])
+
+        expected_log_drift = μ .- 0.5 .* diag(target_covariance)
+        @test isapprox(vec(mean(log_returns; dims = 1)), expected_log_drift; atol = 6e-3)
+        @test isapprox(cov(log_returns), target_covariance; atol = 3e-3)
     end
 
     @testset "Euler-Maruyama OU: zero-noise deterministic limit" begin

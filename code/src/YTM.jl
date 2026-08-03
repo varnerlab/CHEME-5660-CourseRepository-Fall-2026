@@ -64,6 +64,9 @@ The YTM is the interest (discount) rate that minimizes the Net Present Value (NP
 - `model::MyUSTreasuryZeroCouponBondModel`: A zero coupon bond model that contains the bond data, sans the interest (discount) rate.
 - `compounding::AbstractCompoundingModel`: The compounding model to use to compute the discount factors. The model can be an instance of either a [`DiscreteCompoundingModel`](@ref) or a [`ContinuousCompoundingModel`](@ref).
 
+For discrete compounding, the calculation uses the bond's `n` compounding
+periods per year, consistent with the discrete `price` calculation.
+
 ### Optional Arguments
 - `rₒ::Float64 = 0.01`: The initial guess for the annual interest (discount) rate. The default value is `0.01`.
 

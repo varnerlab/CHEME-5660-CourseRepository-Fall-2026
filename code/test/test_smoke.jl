@@ -55,12 +55,13 @@ using Distributions
                     (μ = (x, t) -> 1.0, σ = (x, t) -> 0.1, θ = (x, t) -> 2.0)) isa MyOrnsteinUhlenbeckModel
         @test build(MyHestonModel, (μ = (x, t) -> 0.05, κ = (x, t) -> 3.0, θ = (x, t) -> 0.04,
                                     ξ = (x, t) -> 0.1, Σ = [1.0 0.0; 0.0 1.0])) isa MyHestonModel
-        # NOTE: docstring says uₒ::Array{Float64,1}, but build computes Xₒ = B̂*uₒ which requires a scalar.
-        # Scalar keeps this green; the docstring/implementation mismatch is a Task 10 suspect.
+        # The initial SISO input may be supplied as a scalar or a one-element vector.
         @test build(MySisoLegSHippoModel,
                     (number_of_hidden_states = 4, Δt = 0.1, uₒ = 1.0, C = ones(4))) isa MySisoLegSHippoModel
         @test build(MySisoLegSHippoModel,
                     (number_of_hidden_states = 4, Δt = 0.1, uₒ = [1.0], C = ones(4))) isa MySisoLegSHippoModel
+        @test_throws ArgumentError build(MySisoLegSHippoModel,
+                    (number_of_hidden_states = 4, Δt = 0.1, uₒ = [1.0, 2.0], C = ones(4)))
     end
 
     @testset "portfolio problems + SIM" begin
@@ -162,5 +163,17 @@ using Distributions
         @test haskey(chain.metadata, "DTE")
         @test chain.data isa DataFrame
         @test nrow(chain.data) > 0
+    end
+
+    @testset "build validation: clear error on missing required field" begin
+        err = try
+            build(MyEuropeanCallContractModel, (sense = 1,))   # K missing
+            nothing
+        catch e
+            e
+        end
+        @test err isa ArgumentError
+        @test occursin("K", sprint(showerror, err))
+        @test occursin("MyEuropeanCallContractModel", sprint(showerror, err))
     end
 end

@@ -716,18 +716,20 @@ function sample(model::MyMultipleAssetGeometricBrownianMotionEquityModel, data::
     # get information from the model and data -
     μ̂ = model.μ
     A = model.A
-    Ā = diagm(0 => diag(A));
     T₁ = data[:T₁]
     T₂ = data[:T₂]
     Δt = data[:Δt]
     Sₒ = data[:Sₒ]
     number_of_states = length(Sₒ);
+    length(μ̂) == number_of_states || throw(DimensionMismatch("μ and Sₒ must have the same length"))
+    size(A, 1) == number_of_states || throw(DimensionMismatch("A must have one row per asset"))
+    size(A, 2) == number_of_states || throw(DimensionMismatch("A must be square"))
+    variances = diag(A * transpose(A))
     time_array = range(T₁, stop=T₂, step=Δt) |> collect
     number_of_steps = length(time_array)
 
     # main simulation loop -
     simulation_dictionary = Dict{Int64,Array{Float64,2}}(); # this is our dictionary of simulations (what gets rerturned)
-    Z = Normal(0,1); # this is our noise model -
     for trial_index ∈ 1:number_of_paths
         simulation_array = Array{Float64,2}(undef, number_of_steps, number_of_states + 1);
     
@@ -741,17 +743,12 @@ function sample(model::MyMultipleAssetGeometricBrownianMotionEquityModel, data::
         for i ∈ 2:number_of_steps
             t = time_array[i];
             simulation_array[i,1] = t;
+            noise = A * randn(number_of_states)
 
             for j ∈ 1:number_of_states
-            
-                # compute the noise term for this state -
-                noise_term = 0.0;
-                for k ∈ 1:number_of_states
-                    noise_term += A[j,k]*rand(Z)
-                end
-            
                 # compute the next share price -
-                simulation_array[i,j+1] = simulation_array[i-1,j+1]*exp((μ̂[j] -  Ā[j,j]/2)*Δt + (sqrt(Δt))*noise_term);
+                simulation_array[i,j+1] = simulation_array[i-1,j+1] *
+                    exp((μ̂[j] - variances[j]/2)*Δt + sqrt(Δt)*noise[j]);
             end
         end
         simulation_dictionary[trial_index] = simulation_array;
@@ -1106,6 +1103,13 @@ function premium(contract::MyEuropeanPutContractModel,
 end
 
 # --- lattice model methods ------------------------------------------------------------- #
+"""
+    solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ = 100.0)
+
+Price a terminal payment of `Vₚ` by backward induction through a populated
+symmetric binary short-rate lattice. The method updates each lattice node's
+`price` field and returns `model`.
+"""
 function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0)
 
     # initialize -

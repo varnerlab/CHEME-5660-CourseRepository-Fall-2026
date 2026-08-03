@@ -1,8 +1,10 @@
 """
     function solve(model::MySharpeRatioPortfolioChoiceProblem)::Dict{String,Any}
 
-This method solves the Sharpe ratio maximization portfolio choice problem for a given instance of the [`MySharpeRatioPortfolioChoiceProblem`](@ref) model type.
-This problem is encoded as a second-order cone program (SOCP) and solved using the COSMO solver via the JuMP modeling interface.
+This method maximizes expected excess return subject to a minimum Sharpe-ratio
+constraint for a given [`MySharpeRatioPortfolioChoiceProblem`](@ref). The
+problem is encoded as a second-order cone program (SOCP) and solved with COSMO
+through JuMP.
 
 ### Arguments
 - `model::MySharpeRatioPortfolioChoiceProblem`: An instance of the [`MySharpeRatioPortfolioChoiceProblem`](@ref) that defines the problem parameters.
@@ -11,8 +13,8 @@ This problem is encoded as a second-order cone program (SOCP) and solved using t
 - `Dict{String, Any}`: A dictionary containing the optimization results.
 
 The results dictionary has the following keys:
-- `"sharpe_ratio"`: The maximum Sharpe ratio achieved by the optimal portfolio.
-- `"argmax"`: The optimal portfolio weights that achieve the maximum Sharpe ratio.
+- `"sharpe_ratio"`: The Sharpe ratio achieved by the optimal portfolio.
+- `"argmax"`: The optimal long-only portfolio weights.
 - `"numerator"`: The numerator of the Sharpe ratio at the optimal solution (excess return over risk-free rate).
 - `"denominator"`: The denominator of the Sharpe ratio at the optimal solution (standard deviation of returns).
 - `"status"`: The status of the optimization
@@ -27,6 +29,7 @@ function solve(model::MySharpeRatioPortfolioChoiceProblem)::Dict{String,Any}
     β = model.β;
     gₘ = model.gₘ;
     τ = model.τ;
+    τ > 0.0 || throw(ArgumentError("MySharpeRatioPortfolioChoiceProblem.τ must be positive"))
 
     # setup the problem -
     d = length(α);
@@ -49,12 +52,15 @@ function solve(model::MySharpeRatioPortfolioChoiceProblem)::Dict{String,Any}
     optimize!(opt_model)
 
     # check: was the optimization successful?
-    @assert is_solved_and_feasible(opt_model)
+    if !is_solved_and_feasible(opt_model)
+        status = termination_status(opt_model)
+        throw(ErrorException("Sharpe-ratio portfolio problem is not solved and feasible (status: $(status))"))
+    end
 
     # get some results -
     w_opt = value.(w)                  # long-only, budgeted weights
     sr_num = dot(c, w_opt)             # numerator
-    sr_den = norm(U * w_opt)           # ≈ 1 at optimum (up to tolerances)
+    sr_den = norm(U * w_opt)
     sr_opt = sr_num / sr_den           # Sharpe at the solution
 
     # package results -

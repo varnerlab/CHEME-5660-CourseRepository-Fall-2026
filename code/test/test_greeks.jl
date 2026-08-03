@@ -5,12 +5,14 @@ using Distributions
 @testset "greeks (delta/gamma/theta)" begin
     K = 100.0; S = 100.0; σ = 0.20; r = 0.05; T = 0.5; h = 200
     c = build(MyEuropeanCallContractModel, (K = K, sense = 1))
+    european_choice = (current, future) -> future
 
     # analytic Black-Scholes quantities, computed here from first principles
     d1 = (log(S / K) + (r + σ^2 / 2) * T) / (σ * sqrt(T))
     d2 = d1 - σ * sqrt(T)
     N = Normal(0, 1)
     Δbs = cdf(N, d1)
+    Γbs = pdf(N, d1) / (S * σ * sqrt(T))
     Θbs_per_day = (-(S * pdf(N, d1) * σ) / (2 * sqrt(T)) - r * K * exp(-r * T) * cdf(N, d2)) / 365.0
 
     @testset "delta" begin
@@ -25,16 +27,10 @@ using Distributions
     end
 
     @testset "gamma" begin
-        # NOTE: the Black-Scholes magnitude comparison (Γbs ≈ 0.0274) is EXCLUDED from the
-        # baseline: gamma() returns exactly 0.0 at these parameters because the one-unit
-        # secant spans no payoff kink of the h=200 tree (adjacent-leaf spacing ≈ 2% ≈ $2 > $1).
-        # Recorded as a Task 10 suspect (Greeks.jl gamma) — bug vs discretization artifact
-        # to be adjudicated there.
-        Γ = gamma(c; h = h, T = T, σ = σ, Sₒ = S, μ = r)
-        δ₀ = delta(c; h = h, T = T, σ = σ, Sₒ = S, μ = r)
-        δ₁ = delta(c; h = h, T = T, σ = σ, Sₒ = S + 1, μ = r)
-        @test isapprox(Γ, δ₁ - δ₀; atol = 1e-10)   # gamma is defined as the secant of deltas
-        @test isfinite(Γ)
+        Γ = gamma(c; h = h, T = T, σ = σ, Sₒ = S, μ = r, choice = european_choice)
+        @test Γ > 0.0
+        @test isapprox(Γ, Γbs; atol = 5e-4)
+        @test_throws ArgumentError gamma(c; h = 1, T = T, σ = σ, Sₒ = S, μ = r)
     end
 
     @testset "theta" begin
