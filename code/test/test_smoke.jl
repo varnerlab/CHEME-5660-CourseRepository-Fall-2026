@@ -119,6 +119,16 @@ using Distributions
         @test isapprox(P[end - 1], 1000.0; atol = 1e-10)
     end
 
+    @testset "HMM jumps: small state space" begin
+        # test that HMM with jump generates valid states for N < 10
+        Random.seed!(20260803)
+        m = build(MyHiddenMarkovModelWithJumps, (
+            states = [1, 2], T = [0.9 0.1; 0.2 0.8], E = [0.8 0.2; 0.3 0.7],
+            ϵ = 0.9, λ = 3.0))
+        chain = m(1, 200)
+        @test all(s -> s ∈ (1, 2), chain[:, 1])
+    end
+
     @testset "data loaders" begin
         train = MyTrainingMarketDataSet()
         @test train isa Dict{String, Any}
