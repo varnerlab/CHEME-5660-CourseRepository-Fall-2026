@@ -4,13 +4,14 @@ This manifest is the authoritative scope and sequence for production lecture
 notes. It is transcribed from `CHEME-5660-CourseSchedule-Fall-2026.xlsx` and
 supersedes lecture ordering inferred from the Fall 2025 notebook folders.
 
-The notes target contains 26 substantive course lectures. Course logistics
-(1a), the Goldman Sachs guest Q/A (7a), Fall Break (8a), and Thanksgiving
-Break (14b) do not require production theory notes.
+The notes target contains 27 course lectures. L1a provides a compact course and
+institutional orientation; the Goldman Sachs guest Q/A (7a), Fall Break (8a),
+and Thanksgiving Break (14b) do not require production theory notes.
 
 | Lecture | Date | Unit | 2026 topic | Primary notebook substrate | Notes status |
 |---|---:|---:|---|---|---|
-| 1b | Aug 27 | 1 | Federal Reserve, money flows, time value of money, abstract assets | `week-1/L1b` | Built; visual QA passed |
+| 1a | Aug 25 | 1 | Course orientation, money flows, and the Federal Reserve | Introductory lecture material; no computational notebook required | Built; visual QA passed |
+| 1b | Aug 27 | 1 | Time value of money, abstract assets, and net present value | `week-1/L1b` | Built; visual QA passed after L1a split |
 | 2a | Sep 1 | 1 | Pricing Treasury bills, notes, and bonds by NPV | `week-2/L2a` | Built; visual QA passed |
 | 2b | Sep 3 | 1 | Risk in Treasury securities and Malkiel's pricing theorems | `week-2/L2b` | Built; visual QA passed |
 | 3a | Sep 8 | 1 | Yield curve, term structure, lattice and stochastic interest-rate models | `week-3/L3a` | Built; visual QA passed |

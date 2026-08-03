@@ -1,0 +1,114 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\begin{document}
+
+\lecturenotes{1a}{Course Orientation, Money Flows, and the Federal Reserve}{Fall 2026}{August 25, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Navigate the course}
+  {Explain how the four course units connect cash-flow models, uncertainty, derivative contracts, and algorithmic decisions.}
+  {Trace money flows}
+  {Distinguish customer deposits from the reserve balances banks use to settle payments across institutions.}
+  {Separate financial rates}
+  {Distinguish the federal funds rate, the primary credit rate, and an asset-specific valuation discount rate.}
+
+\section{What Is This Course About?}
+
+CHEME 5660 treats a financial asset as an engineered system: first identify its promised or uncertain cash flows, then choose a model that transports those cash flows across time and states of the world, and finally make a decision under declared assumptions. The same workflow applies to a Treasury bill, an equity portfolio, an option contract, or an automated trading rule. The asset changes; the modeling discipline does not.
+
+The course develops that discipline in four connected units (\figref{course-map}). Fixed-income securities introduce dated cash flows and discounting. Equity models add uncertainty and dependence across assets. Derivatives make payoffs contingent on future states. Decision systems combine forecasts, preferences, and constraints into actions.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,
+    unit/.style={draw=vnink,rounded corners=1pt,minimum width=2.2cm,
+      minimum height=1.0cm,align=center,fill=white}]
+    \node[unit,fill=vnsoft] (u1) at (0,0) {Unit 1\\fixed income};
+    \node[unit] (u2) at (2.85,0) {Unit 2\\equities};
+    \node[unit] (u3) at (5.70,0) {Unit 3\\derivatives};
+    \node[unit,fill=vnpanel] (u4) at (8.55,0) {Unit 4\\decision systems};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}] (u1)--(u2);
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}] (u2)--(u3);
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}] (u3)--(u4);
+  \end{tikzpicture}
+  \caption{The course sequence adds uncertainty, state-contingent contracts, and decisions to a common cash-flow foundation. Later models build on---rather than replace---the abstract-asset viewpoint introduced in Unit 1.}
+  \label{fig:course-map}
+\end{figure}
+
+\section{Money Flows Through Balance Sheets}
+
+Most dollars used in ordinary transactions are commercial-bank deposits, while banks settle obligations to one another using reserve balances held at Federal Reserve Banks. Suppose a buyer at Bank A pays a seller at Bank B. The buyer's deposit decreases, the seller's deposit increases, and reserve balances move from Bank A to Bank B through the payment system. No physical currency needs to cross the economy; linked balance-sheet entries implement the payment (\figref{money-flows}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,
+    actor/.style={draw=vnrule,fill=vnsoft,rounded corners=1pt,
+      minimum width=2.15cm,minimum height=0.72cm,align=center},
+    bank/.style={draw=vnink,fill=white,rounded corners=1pt,
+      minimum width=2.15cm,minimum height=0.72cm,align=center}]
+    \node[actor] (buyer) at (0,1.55) {buyer};
+    \node[bank] (banka) at (0,0) {Bank A};
+    \node[actor] (seller) at (7.3,1.55) {seller};
+    \node[bank] (bankb) at (7.3,0) {Bank B};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.7cm,minimum height=0.88cm,align=center]
+      (fed) at (3.65,-1.45) {Federal Reserve\\reserve accounts};
+
+    \draw[vncarnelian,line width=1.1pt,-{Latex[length=3mm]}]
+      (buyer)--(banka) node[midway,left,text=vncarnelian] {deposit $-P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (bankb)--(seller) node[midway,right,text=vnlink] {deposit $+P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (banka)--(fed) node[midway,below left,text=vnlink] {reserves $-P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (fed)--(bankb) node[midway,below right,text=vnlink] {reserves $+P$};
+    \draw[vnmuted,dashed,line width=0.9pt,-{Latex[length=3mm]}]
+      (buyer)--(seller) node[midway,above,text=vnmuted] {purchase or transfer of value};
+  \end{tikzpicture}
+  \caption{A stylized payment across two commercial banks. Deposits are liabilities of commercial banks to their customers; reserve balances are liabilities of the Federal Reserve to banks and provide the settlement asset. The diagram records linked balance-sheet changes, not four independent transfers of cash.}
+  \label{fig:money-flows}
+\end{figure}
+
+\section{The Treasury and the Federal Reserve Are Different Institutions}
+
+The U.S. Department of the Treasury is the federal government's fiscal and debt-management institution. When the Treasury issues a bill, note, or bond, an investor exchanges funds today for a federal promise of future dollars. Treasury receipts and payments pass through the Treasury General Account at the Federal Reserve and affect reserve balances as settlement occurs.
+
+The Federal Reserve is the U.S. central-bank system. It conducts monetary policy, supports payment-system operation, supervises and regulates parts of the banking system, and can provide liquidity to eligible institutions. The Federal Reserve may buy or sell Treasury securities in the secondary market as part of monetary-policy implementation, but that is distinct from the Treasury issuing new debt at auction.
+
+\section{Policy Rates Are Not Valuation Rates}
+
+The Federal Open Market Committee (FOMC) chooses a \emph{target range} for the federal funds rate, the overnight rate on unsecured reserve-balance loans among eligible institutions. The effective federal funds rate is a market outcome, not a number mechanically assigned to every loan or security. In an ample-reserves regime, administered rates---especially interest on reserve balances and the overnight reverse-repurchase offering rate---help steer overnight market rates into the target range.
+
+Three uses of the word \emph{rate} must remain conceptually separate:
+
+\begin{itemize}
+  \item The \emph{federal funds rate} is an overnight interbank market rate influenced by the FOMC's target range and implementation tools.
+  \item The \emph{primary credit rate}, often called the discount-window rate, is an administered rate for eligible borrowing from a Federal Reserve Bank.
+  \item A \emph{valuation discount rate} is a model input chosen to convert a particular asset's dated cash flows into common units.
+\end{itemize}
+
+Monetary policy influences market financing conditions, opportunity costs, and therefore many inputs used in valuation. It does not make these rates identical. L1b begins with this distinction in place and asks the quantitative question: given a declared rate and compounding convention, how do we compare dollars received at different dates?
+
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we located financial models inside the institutions that create deposits, settle payments, issue public debt, and influence short-term interest rates.}
+  {The course has a common modeling spine}
+  {Cash-flow structure comes first; uncertainty, contingent payoffs, and decisions are added in later units.}
+  {Payments use layered money}
+  {Customers transact with bank deposits, while banks use reserve balances at the Federal Reserve to settle across institutions.}
+  {Policy and valuation rates differ}
+  {The FOMC targets an overnight interbank rate; an asset's valuation discount rate is a separately declared model input.}
+  {Next, L1b develops discount factors, abstract assets, and net present value.}
+
+\begin{readinglist}
+  \item Federal Reserve Board, \href{https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm}{\emph{The Structure and Functions of the Federal Reserve System}}, for the roles of the Board of Governors, Reserve Banks, and FOMC.
+  \item Federal Reserve Board, \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, for the target range, effective federal funds rate, and current implementation tools.
+  \item Federal Reserve Bank of New York, \href{https://www.newyorkfed.org/aboutthefed/fedpoint/fed01.html}{\emph{Fedpoints: Federal Reserve System}}, for an institutional overview and the role of the Reserve Banks.
+  \item U.S. Department of the Treasury, \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, for the Treasury's fiscal, financial, and debt-management responsibilities.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

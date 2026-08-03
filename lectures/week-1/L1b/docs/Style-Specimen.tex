@@ -6,15 +6,15 @@
 
 \begin{document}
 
-\lecturenotes{1b}{The Federal Reserve, Money Flows, and the Time Value of Money}{Fall 2026}{August 27, 2026}{Jeffrey D. Varner}
+\lecturenotes{1b}{Time Value of Money, Abstract Assets, and Net Present Value}{Fall 2026}{August 27, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Trace money flows}
-  {Explain how deposits and reserve balances support payments and how Federal Reserve policy influences short-term rates.}
   {Convert dated dollars}
   {Explain why cash flows at different dates require common units and derive discrete and continuous discount factors.}
   {Asset valuation}
   {Represent a project, product, or security as an abstract asset and compute its net present value.}
+  {Interpret the benchmark}
+  {Explain what the sign of NPV does---and does not---say under a declared discount curve and cash-flow model.}
 
 \section{Why Does Time Have a Price?}
 
@@ -22,45 +22,7 @@ The time value of money begins with a simple asymmetry: one dollar in hand today
 
 This idea predates modern financial markets. Irving Fisher organized it around two forces: impatience to spend income and the opportunity to invest it. Modern valuation adds inflation and risk to the same basic story. A discount rate is therefore not merely a computational input; it records the return forgone by waiting and, when appropriate, compensation for uncertainty.
 
-\section{Money Flows Through Balance Sheets}
-
-Most dollars used in ordinary transactions are commercial-bank deposits, while banks settle obligations to one another using reserve balances held at Federal Reserve Banks. Suppose a buyer at Bank A pays a seller at Bank B. The buyer's deposit decreases, the seller's deposit increases, and reserve balances move from Bank A to Bank B through the payment system. No physical currency needs to cross the economy; linked balance-sheet entries implement the payment (\figref{money-flows}).
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,
-    actor/.style={draw=vnrule,fill=vnsoft,rounded corners=1pt,
-      minimum width=2.15cm,minimum height=0.72cm,align=center},
-    bank/.style={draw=vnink,fill=white,rounded corners=1pt,
-      minimum width=2.15cm,minimum height=0.72cm,align=center}]
-    \node[actor] (buyer) at (0,1.55) {buyer};
-    \node[bank] (banka) at (0,0) {Bank A};
-    \node[actor] (seller) at (7.3,1.55) {seller};
-    \node[bank] (bankb) at (7.3,0) {Bank B};
-    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.7cm,minimum height=0.88cm,align=center]
-      (fed) at (3.65,-1.45) {Federal Reserve\\reserve accounts};
-
-    \draw[vncarnelian,line width=1.1pt,-{Latex[length=3mm]}]
-      (buyer)--(banka) node[midway,left,text=vncarnelian] {deposit $-P$};
-    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
-      (bankb)--(seller) node[midway,right,text=vnlink] {deposit $+P$};
-    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
-      (banka)--(fed) node[midway,below left,text=vnlink] {reserves $-P$};
-    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
-      (fed)--(bankb) node[midway,below right,text=vnlink] {reserves $+P$};
-    \draw[vnmuted,dashed,line width=0.9pt,-{Latex[length=3mm]}]
-      (buyer)--(seller) node[midway,above,text=vnmuted] {purchase or transfer of value};
-  \end{tikzpicture}
-  \caption{A stylized payment across two commercial banks. Deposits are liabilities of the commercial banks to their customers; reserve balances are liabilities of the Federal Reserve to the banks and provide the settlement asset. The diagram records changes in balances, not four independent transfers of cash.}
-  \label{fig:money-flows}
-\end{figure}
-
-The Treasury is a distinct institution from the Federal Reserve. When the Treasury issues a bill, note, or bond, an investor exchanges funds today for a federal promise of future dollars; L2a models that security as an abstract asset. Treasury receipts and payments ultimately pass through the Treasury General Account at the Federal Reserve and alter reserve balances as settlement occurs. The Federal Reserve can also buy and sell Treasury securities in the secondary market as part of its operations, but it does not finance an ordinary Treasury auction by simply assigning a price to the new security.
-
-The Federal Open Market Committee (FOMC) chooses a \emph{target range} for the federal funds rate, the overnight rate on unsecured reserve-balance loans among eligible institutions. The effective federal funds rate is a market outcome rather than a number mechanically declared by the FOMC. In an ample-reserves regime, administered rates---especially interest on reserve balances and the overnight reverse-repurchase offering rate---help steer overnight market rates into the target range.
-
-Three rates must therefore remain conceptually separate. The \emph{federal funds rate} is an overnight interbank market rate; the \emph{primary credit rate}, often called the discount-window rate, applies to eligible borrowing from a Federal Reserve Bank; and the \emph{valuation discount rate} used below is a model input selected to convert a particular asset's dated cash flows. Monetary policy influences financing conditions and opportunity costs, but it does not make these three rates identical.
+L1a distinguished policy rates, bank funding rates, and asset-specific valuation rates. Here the discount rate is a declared model input: it describes the conversion between dated dollars under a stated benchmark and compounding convention. Monetary policy may influence that benchmark, but it does not uniquely determine the correct valuation rate for every asset.
 
 \section{Discounting as a Change of Units}
 
@@ -215,17 +177,16 @@ The worked-example notebook now applies the abstract-asset model. It constructs 
 
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we connected institutional money flows to valuation, placed dated cash flows in common time-0 units, and defined NPV for an abstract asset.}
-  {Payments use layered money}
-  {Customers transact with bank deposits, while banks use reserve balances at the Federal Reserve to settle obligations across institutions.}
-  {Policy and valuation rates differ}
-  {The FOMC targets an overnight interbank rate; an asset's valuation discount rate is a separately stated model input.}
+  {In this lecture, we placed dated cash flows in common time-0 units, derived discount factors, and defined NPV for an abstract asset.}
+  {Dated dollars require conversion}
+  {Cash flows at different dates cannot be added economically until a discount factor expresses them at a common valuation date.}
+  {Compounding is a convention}
+  {Discrete and continuous discount factors encode different stated conversion rules; neither should be used without identifying its assumptions.}
   {Structure before identity}
   {An abstract asset separates the universal cash-flow structure from the particular identity of an investment.}
   {Next, use the companion notebooks to test how compounding conventions, discount rates, and cash-flow assumptions change a valuation.}
 
 \begin{readinglist}
-  \item Federal Reserve Board, \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, for the target range, the effective federal funds rate, and current implementation tools.
   \item Irving Fisher, \href{https://oll.libertyfund.org/titles/fisher-the-theory-of-interest}{\emph{The Theory of Interest}} (1930), Chapters I--III, for the classical account of impatience and investment opportunity.
   \item Jonathan Berk and Peter DeMarzo, \href{https://www.pearson.com/en-gb/subject-catalog/p/Berk-Corporate-Finance-Global-Edition-5th-Edition/P200000003710}{\emph{Corporate Finance}}, 5th ed. (2020), Chapters 3--4, for present value and investment decision rules.
   \item Frank J. Fabozzi and Francesco A. Fabozzi, \href{https://mitpress.mit.edu/9780262046275/bond-markets-analysis-and-strategies/}{\emph{Bond Markets, Analysis, and Strategies}}, 10th ed. (2021), for discount factors and fixed-income conventions.
