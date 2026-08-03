@@ -1,0 +1,177 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\E}{\mathbb{E}}
+
+\begin{document}
+
+\lecturenotes{13b}{Binary Bernoulli Bandit Ticker Picker}{Fall 2026}{November 19, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Construct binary rewards}
+  {Map ticker performance relative to a declared benchmark into Bernoulli outcomes without look-ahead or ambiguous timing.}
+  {Update Beta beliefs}
+  {Derive the conjugate posterior, posterior mean, variance, and predictive success probability from prior and observed counts.}
+  {Implement and evaluate a picker}
+  {Apply $\varepsilon$-greedy or Thompson sampling, update the selected arm, and separate in-sample preference from investable evidence.}
+
+\section{A Ticker Picker Is a Statistical Experiment}
+
+Suppose arm $a\in\mathcal A:=\{1,\ldots,K\}$ denotes one ticker. At decision time $t$, the agent selects $A_t=a$, holds it over a predeclared evaluation interval, and observes a binary reward
+\begin{equation}
+  \label{eq:binary-reward}
+  R_t(a):=\mathbf 1\!\left\{G_{a,t}-C_{a,t}>G_{b,t}\right\}\in\{0,1\},
+\end{equation}
+where $G_{a,t}$ is the ticker's holding-period growth, $G_{b,t}$ is the growth of benchmark $b$, and $C_{a,t}$ contains the costs expressed in the same growth convention. The event, horizon, price timestamps, benchmark, dividend treatment, and cost model must be fixed before observing the outcome.
+
+The Bernoulli world model assumes
+\begin{equation}
+  \label{eq:likelihood}
+  R_t(a)\mid p_a\sim\operatorname{Bernoulli}(p_a),
+  \qquad
+  \Pr(R_t(a)=r\mid p_a)=p_a^r(1-p_a)^{1-r},
+\end{equation}
+where $p_a\in[0,1]$ is the unknown probability that ticker $a$ satisfies \eqnref{binary-reward}. Then $\E[R_t(a)\mid p_a]=p_a$ and $\operatorname{Var}(R_t(a)\mid p_a)=p_a(1-p_a)$.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.55cm]
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=3.0cm,minimum height=0.95cm,align=center] (choose) {select ticker $A_t$\\using current beliefs};
+    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=3.0cm,minimum height=0.95cm,align=center,right=of choose] (hold) {hold over a fixed\\outcome window};
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=3.0cm,minimum height=0.95cm,align=center,right=of hold] (score) {score against benchmark\\$R_t\in\{0,1\}$};
+    \draw[vnlink,very thick,->] (choose)--(hold);
+    \draw[vnlink,very thick,->] (hold)--(score);
+    \draw[vncarnelian,very thick,->,bend left=27] (score) to node[below,align=center] {update selected\\ticker only} (choose);
+  \end{tikzpicture}
+  \caption{The live bandit loop. The outcome window must end before its reward is used for the next decision; otherwise the implementation leaks future information.}
+  \label{fig:ticker-loop}
+\end{figure}
+
+The binary encoding answers a probability question, not a return question. A ticker that beats the benchmark by one basis point often can have a larger $p_a$ than a ticker with infrequent large gains. The indicator discards magnitude, volatility, drawdown, and cross-ticker dependence. It is useful only when that loss of information matches the decision objective.
+
+\section{Beta--Bernoulli Learning}
+
+Place an independent Beta prior on each success probability,
+\begin{equation}
+  \label{eq:prior}
+  p_a\sim\operatorname{Beta}(\alpha_{a,0},\beta_{a,0}),
+  \qquad
+  f(p_a)\propto p_a^{\alpha_{a,0}-1}(1-p_a)^{\beta_{a,0}-1},
+\end{equation}
+with $\alpha_{a,0},\beta_{a,0}>0$. The uniform prior is $\operatorname{Beta}(1,1)$. It is proper and weak, but not literally ``no information''; prior choice can matter when few rewards are observed.
+
+Let $S_a(t)$ and $F_a(t)$ be the numbers of observed successes and failures for arm $a$ before round $t$:
+\begin{equation}
+  \label{eq:counts}
+  S_a(t):=\sum_{s<t}\mathbf 1\{A_s=a\}R_s,
+  \qquad
+  F_a(t):=\sum_{s<t}\mathbf 1\{A_s=a\}(1-R_s).
+\end{equation}
+
+\begin{theorem}{Beta--Bernoulli conjugate update}{beta-update}
+Under the conditionally independent likelihood \eqnref{likelihood} and prior \eqnref{prior}, the posterior for arm $a$ before round $t$ is
+\begin{equation}
+  \label{eq:posterior}
+  p_a\mid H_{t-1}\sim
+  \operatorname{Beta}\!\left(\alpha_{a,0}+S_a(t),\,
+  \beta_{a,0}+F_a(t)\right).
+\end{equation}
+Its posterior mean and variance are
+\begin{align}
+  \label{eq:posterior-moments}
+  \bar p_a(t)&=
+  \frac{\alpha_{a,0}+S_a(t)}
+       {\alpha_{a,0}+\beta_{a,0}+S_a(t)+F_a(t)},\\
+  \operatorname{Var}(p_a\mid H_{t-1})&=
+  \frac{\bar p_a(t)[1-\bar p_a(t)]}
+       {\alpha_{a,0}+\beta_{a,0}+S_a(t)+F_a(t)+1}.
+\end{align}
+The posterior predictive probability of success on the next independent draw from arm $a$ is $\bar p_a(t)$.
+\end{theorem}
+
+The proof multiplies the prior kernel by $p_a^{S_a}(1-p_a)^{F_a}$ and collects exponents. Only observations from arm $a$ update its posterior. If arms share a market factor, independent priors do not exploit that structure and the assumed conditional independence may be false.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=7.0cm,y=2.25cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,0)--(1.08,0) node[right] {$p_a$};
+    \draw[->,vnmuted] (0,0)--(0,1.25) node[above] {density};
+    \draw[vnmuted,thick] plot[smooth] coordinates {(0,0.55) (0.2,0.55) (0.4,0.55) (0.6,0.55) (0.8,0.55) (1,0.55)};
+    \draw[vnlink,very thick] plot[smooth] coordinates {(0,0) (0.2,0.03) (0.35,0.15) (0.5,0.50) (0.62,1.04) (0.72,0.83) (0.84,0.23) (1,0)};
+    \draw[vncarnelian,very thick] plot[smooth] coordinates {(0,0) (0.25,0) (0.45,0.04) (0.58,0.23) (0.67,0.77) (0.72,1.13) (0.77,0.78) (0.86,0.12) (1,0)};
+    \node[text=vnmuted] at (0.14,0.72) {prior};
+    \node[text=vnlink,anchor=east] at (0.53,0.86) {more data};
+    \node[text=vncarnelian,anchor=west] at (0.74,1.16) {concentrated belief};
+  \end{tikzpicture}
+  \caption{Schematic evolution of a Beta belief after success-heavy data. Posterior concentration represents uncertainty under the model; it does not prove the success probability is stable through time.}
+  \label{fig:beta-learning}
+\end{figure}
+
+\section{Two Action Rules, One Correct Update}
+
+With $\varepsilon$-greedy selection, draw $U_t\sim\operatorname{Uniform}(0,1)$ and use
+\begin{equation}
+  \label{eq:epsilon-action}
+  A_t=
+  \begin{cases}
+    \text{a uniformly random arm}, & U_t\leq\varepsilon_t,\\
+    \arg\max_a\bar p_a(t), & U_t>\varepsilon_t.
+  \end{cases}
+\end{equation}
+After observing $R_t$, update the arm actually selected:
+\begin{equation}
+  \label{eq:selected-update}
+  S_{A_t}\leftarrow S_{A_t}+R_t,
+  \qquad
+  F_{A_t}\leftarrow F_{A_t}+1-R_t.
+\end{equation}
+This subscript matters. An exploratory round must update the randomly selected arm, not a separately stored greedy arm. The inherited 2025 lecture pseudocode used the greedy symbol in its update step; \eqnref{selected-update} corrects that bookkeeping defect.
+
+Thompson sampling instead draws
+\begin{equation}
+  \label{eq:thompson}
+  \widetilde p_{a,t}\sim
+  \operatorname{Beta}(\alpha_{a,0}+S_a(t),\beta_{a,0}+F_a(t))
+  \quad\text{for every }a,
+  \qquad
+  A_t\in\arg\max_a\widetilde p_{a,t}.
+\end{equation}
+It explores when a plausible posterior draw makes an uncertain arm look best. Both algorithms require a declared tie rule, random seed policy for reproducibility, and exact time ordering: decide, observe, then update.
+
+\notebooklink
+  {L13b: Binary Bernoulli Bandit Ticker Picker}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-13/L13b/CHEME-5660-L13b-Example-BBBP-Ticker-Picker-Fall-2025.ipynb}
+  {Implement the ticker world, run $\varepsilon$-greedy agents, visualize Beta beliefs, and aggregate ticker rankings.}
+
+\section{What the Historical Experiment Can Claim}
+
+The notebook compares a ticker with a risk-free alternative over rolling windows. Overlapping windows share most of their price path, so their binary rewards are dependent and the effective sample size is smaller than the raw window count. Randomly drawing such windows also differs from a chronological live policy. A production evaluation should separate training and testing by time, update only after each outcome is available, and report sensitivity to non-overlapping windows.
+
+The same historical panel contains returns for every ticker. If an implementation examines all of them after every round, it is using full-information feedback rather than a bandit. That can be a useful supervised ranking exercise, but it must be labeled correctly. Multiple simulated agents over the same price history create algorithmic variation, not new independent market evidence; averaging them does not multiply the economic sample size.
+
+A ranking by posterior mean estimates the probability of satisfying \eqnref{binary-reward} under the model. It is not automatically a portfolio. Allocation still requires magnitude, covariance, liquidity, turnover, concentration, and capital constraints. Out-of-sample tests should compare the complete investable policy---including its exploration trades---with the same benchmark used to define success and with simple passive alternatives.
+
+\begin{remark}{A benchmark changes the estimand}{benchmark}
+Replacing cash by SPY, or gross growth by risk-adjusted excess growth, defines a different binary event and a different $p_a$. These are not robustness labels attached after fitting; they are distinct statistical experiments whose reward construction should be documented and tested separately.
+\end{remark}
+
+\keytakeaways
+  {In this lecture, we specialized stochastic bandits to ticker-level Bernoulli outcomes and derived the Beta posterior used by Bayesian action rules.}
+  {The reward defines the question}
+  {Ticker, horizon, benchmark, costs, and timestamps determine the success event; binary feedback preserves frequency but discards payoff magnitude and tail risk.}
+  {Update the chosen arm}
+  {Beta conjugacy adds the observed success or failure to the selected ticker's posterior parameters, including when that selection came from exploration.}
+  {A preference is not a portfolio}
+  {Overlapping windows, shared histories, regime changes, and omitted covariance limit the investment claim; chronological out-of-sample policy evaluation remains necessary.}
+  {Next, convert learned preferences and market estimates into utility-based portfolio weights and a dynamic rebalancing policy.}
+
+\begin{readinglist}
+  \item William R. Thompson, \href{https://doi.org/10.2307/2332286}{``On the Likelihood That One Unknown Probability Exceeds Another,''} \emph{Biometrika} 25(3/4), 285--294 (1933).
+  \item Olivier Chapelle and Lihong Li, \href{https://proceedings.neurips.cc/paper/2011/hash/e53a0a2978c28872a4505bdb51db06dc-Abstract.html}{``An Empirical Evaluation of Thompson Sampling,''} \emph{NeurIPS 24} (2011).
+  \item Tor Lattimore and Csaba Szepesv\'ari, \href{https://tor-lattimore.com/downloads/book/book.pdf}{\emph{Bandit Algorithms}}, Cambridge University Press (2020), chapters 1, 2, and 36.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only. Posterior ticker rankings are model-dependent estimates, not investment recommendations.}
+
+\end{document}

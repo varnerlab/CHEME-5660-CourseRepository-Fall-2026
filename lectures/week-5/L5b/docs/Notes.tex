@@ -1,0 +1,203 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\PhiCDF}{\Phi}
+\newcommand{\Pmeasure}{\mathbb{P}}
+
+\begin{document}
+
+\lecturenotes{5b}{Single-Asset Geometric Brownian Motion}{Fall 2026}{September 24, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Derive the GBM solution}
+  {Apply It\^o's lemma to obtain the exact lognormal solution and explain the $-\sigma^2/2$ correction.}
+  {Estimate and simulate}
+  {Map log-return moments into drift and volatility estimates and simulate exact discrete-time GBM paths.}
+  {Evaluate model limits}
+  {Compute a target-return probability and test GBM against heavy tails, weak return autocorrelation, and volatility clustering.}
+
+\section{From Random Walks to Positive Prices}
+
+Brownian motion entered finance through attempts to describe continuously fluctuating prices. Louis Bachelier used an arithmetic Brownian model in 1900; later work associated with Paul Samuelson emphasized multiplicative dynamics so prices remain positive. Geometric Brownian motion (GBM) became foundational because it has an analytic solution, scales noise with price, and connects cleanly to option-pricing theory. These virtues make it a benchmark, not an empirical law.
+
+GBM assumes the ex-dividend share price $S_t>0$ satisfies the stochastic differential equation
+\begin{equation}
+  \label{eq:gbm-sde}
+  dS_t=\mu S_t\,dt+\sigma S_t\,dW_t,
+\end{equation}
+where $\mu\in\mathbb{R}$ is the annual arithmetic expected-return rate, $\sigma>0$ is annual volatility with units years$^{-1/2}$, and $W_t$ is a standard Wiener process. The increment notation is interpreted through stochastic integration rather than ordinary differentiable paths.
+
+\begin{definition}{Standard Wiener process}{wiener-process}
+A standard Wiener process $(W_t)_{t\geq0}$ is a continuous real-valued stochastic process satisfying $W_0=0$ almost surely; increments over disjoint intervals are independent; and for $0\leq s<t$, the increment $W_t-W_s$ is normally distributed with mean zero and variance $t-s$. Consequently,
+\begin{equation}
+  \label{eq:wiener-increment}
+  W_t-W_s\overset{d}{=}\sqrt{t-s}\,Z,
+  \qquad Z\sim\mathcal{N}(0,1),
+\end{equation}
+where $\overset{d}{=}$ denotes equality in distribution.
+\end{definition}
+
+Independent Gaussian increments give GBM tractability and also predetermine several of its empirical failures.
+
+\section{It\^o's Lemma Creates the Variance Correction}
+
+Ordinary calculus would incorrectly write $d\log S_t=dS_t/S_t$. Brownian increments have quadratic variation of order $dt$, so the second derivative contributes at first order. It\^o's lemma states the required stochastic chain rule (\thmref{ito-lemma}).
+
+\begin{theorem}{One-dimensional It\^o formula}{ito-lemma}
+Let $X_t$ satisfy $dX_t=a(X_t,t)\,dt+b(X_t,t)\,dW_t$, and let $f(x,t)$ be once continuously differentiable in $t$ and twice continuously differentiable in $x$. Under standard integrability conditions, $Y_t:=f(X_t,t)$ satisfies
+\begin{equation}
+  \label{eq:ito-lemma}
+  dY_t=
+  \left(\frac{\partial f}{\partial t}
+  +a\frac{\partial f}{\partial x}
+  +\frac{1}{2}b^2\frac{\partial^2f}{\partial x^2}\right)dt
+  +b\frac{\partial f}{\partial x}\,dW_t.
+\end{equation}
+All coefficients and derivatives on the right are evaluated at $(X_t,t)$.
+\end{theorem}
+
+Apply \thmref{ito-lemma} to $f(S)=\log S$. Because $f'(S)=1/S$ and $f''(S)=-1/S^2$, the GBM dynamics imply
+\begin{align}
+  d\log S_t
+  &=\left(\mu-\frac{\sigma^2}{2}\right)dt+\sigma\,dW_t,
+  \label{eq:log-gbm}\\
+  \log\!\left(\frac{S_T}{S_0}\right)
+  &=\left(\mu-\frac{\sigma^2}{2}\right)T+\sigma W_T.
+  \label{eq:integrated-log-gbm}
+\end{align}
+Exponentiation gives the exact GBM solution (\propref{gbm-solution}).
+
+\begin{proposition}{Exact solution and distribution of GBM}{gbm-solution}
+For constant $\mu\in\mathbb{R}$, $\sigma>0$, initial price $S_0>0$, and horizon $T>0$ years, the solution of \eqnref{gbm-sde} is
+\begin{equation}
+  \label{eq:gbm-solution}
+  S_T=S_0\exp\!\left[
+  \left(\mu-\frac{\sigma^2}{2}\right)T+\sigma\sqrt{T}\,Z
+  \right],
+  \qquad Z\sim\mathcal{N}(0,1).
+\end{equation}
+Thus $\log(S_T/S_0)$ is normal with mean $(\mu-\sigma^2/2)T$ and variance $\sigma^2T$, while $S_T$ is lognormal and strictly positive almost surely.
+\end{proposition}
+
+The correction $-\sigma^2/2$ reconciles arithmetic and log growth. From the lognormal moments,
+\begin{equation}
+  \label{eq:gbm-moments}
+  \E[S_T]=S_0e^{\mu T},
+  \qquad
+  \Var(S_T)=S_0^2e^{2\mu T}\left(e^{\sigma^2T}-1\right).
+\end{equation}
+The median is $S_0e^{(\mu-\sigma^2/2)T}$, below the mean when $\sigma>0$ because the price distribution is right-skewed.
+
+\notebooklink
+  {L5b: Derivation of the GBM Solution}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-GBM-Solution-Derivation-Fall-2025.ipynb}
+  {Work through Wiener increments, It\^o's lemma, and the analytic transition from the SDE to the lognormal solution.}
+
+\section{Exact Discrete Simulation}
+
+For a grid $0=t_0<t_1<\cdots<t_N$ with step lengths $\Delta t_j:=t_j-t_{j-1}>0$ years, GBM can be sampled exactly at grid points:
+\begin{equation}
+  \label{eq:exact-step}
+  S_{t_j}=S_{t_{j-1}}
+  \exp\!\left[
+  \left(\mu-\frac{\sigma^2}{2}\right)\Delta t_j
+  +\sigma\sqrt{\Delta t_j}\,Z_j
+  \right],
+  \qquad Z_j\overset{\mathrm{iid}}{\sim}\mathcal{N}(0,1).
+\end{equation}
+This is an exact transition for constant-parameter GBM, not the Euler--Maruyama approximation. Monte Carlo repeats \eqnref{exact-step} with independent pseudorandom streams to approximate path or terminal distributions. Reproducibility requires recording the seed and generator, while uncertainty in Monte Carlo estimates should be distinguished from uncertainty in $\mu$ and $\sigma$.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.35cm,y=0.85cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.2cm,minimum height=0.75cm] (params) at (0,0) {$S_0,\mu,\sigma,\Delta t$};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.1cm,minimum height=0.75cm] (noise) at (3.2,0) {$Z_j\sim\mathcal N(0,1)$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.3cm,minimum height=0.75cm] (step) at (6.4,0) {exact update};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.25cm,minimum height=0.75cm] (paths) at (9.7,0) {price paths};
+    \foreach \a/\b in {params/noise,noise/step,step/paths}
+      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\a)--(\b);
+    \node[below,text=vnmuted] at (4.8,-0.68) {repeat over time and simulations};
+  \end{tikzpicture}
+  \caption{Exact grid simulation of constant-parameter GBM. Gaussian shocks generate process uncertainty; parameter estimates and model form introduce separate layers of uncertainty.}
+  \label{fig:gbm-simulation}
+\end{figure}
+
+\section{Estimating Drift and Volatility Correctly}
+
+For equally spaced observations, define log returns $g_j:=\log(S_{t_j}/S_{t_{j-1}})$ over $\Delta t$ years. Under GBM,
+\begin{equation}
+  \label{eq:log-return-law}
+  g_j\overset{\mathrm{iid}}{\sim}
+  \mathcal{N}\!\left[
+  \left(\mu-\frac{\sigma^2}{2}\right)\Delta t,
+  \sigma^2\Delta t
+  \right].
+\end{equation}
+If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of log returns, the natural moment estimates are
+\begin{equation}
+  \label{eq:gbm-estimates}
+  \widehat\sigma^2=\frac{s_g^2}{\Delta t},
+  \qquad
+  \widehat\mu=\frac{\bar g}{\Delta t}+\frac{1}{2}\widehat\sigma^2.
+\end{equation}
+The annualized mean log-growth rate $\bar g/\Delta t$ estimates $\mu-\sigma^2/2$, not $\mu$. Omitting the half-variance adjustment silently changes the meaning of the drift parameter in \eqnref{gbm-sde}.
+
+Drift is difficult to estimate over short samples because expected return is small relative to return noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or return-moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
+
+\notebooklink
+  {L5b: Estimating Single-Asset GBM Parameters}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-Parameters-SAGBM-Fall-2025.ipynb}
+  {Estimate drift and volatility from historical prices, simulate paths, and compare distributional diagnostics with observed returns.}
+
+\section{Closed-Form Target Probability}
+
+Use the present-value return definition from L5a without costs: $\rho_T:=e^{-r_bT}S_T/S_0-1$. For a target $\rho_\star>-1$, substitute \eqnref{gbm-solution} and standardize the normal shock. The success probability is
+\begin{equation}
+  \label{eq:gbm-pop}
+  \Pmeasure(\rho_T>\rho_\star)
+  =1-\PhiCDF\!\left(
+  \frac{\log(1+\rho_\star)-
+  (\mu-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
+  \right),
+\end{equation}
+where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $\mu$ and $\sigma$. Replacing $\mu$ by a risk-neutral rate changes the measure and no longer answers an empirical probability-of-profit question.
+
+\notebooklink
+  {L5b: GBM NPV Trade Rule}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-GBM-NPV-TradeRule-Fall-2025.ipynb}
+  {Evaluate a benchmark-relative terminal return probability under GBM and compare the analytic result with Monte Carlo estimates.}
+
+\section{Which Stylized Facts Does GBM Encode?}
+
+GBM log returns are independent Gaussian increments with constant variance rate. The model therefore produces zero autocorrelation in nonoverlapping log returns, consistent with one broad stylized fact. It cannot generate heavy-tailed log returns or volatility clustering because $\sigma$ is constant and Gaussian tails are built in. The lognormal price distribution should not be confused with a heavy-tailed return law.
+
+GBM can still be useful for short-horizon scenarios, benchmarking, and deriving analytical intuition. Its adequacy must be judged against the decision: a model used to estimate extreme loss or dynamic hedging error demands stronger tail and volatility validation than one used to teach stochastic calculus.
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we solved GBM with It\^o's lemma, separated arithmetic drift from mean log growth, and derived an exact terminal target probability.}
+  {Quadratic variation matters}
+  {The It\^o correction $-\sigma^2/2$ appears because Brownian squared increments contribute at order $dt$.}
+  {Drift names must be consistent}
+  {In the SDE, $\mu$ governs expected price growth; the mean log-growth rate is $\mu-\sigma^2/2$.}
+  {Tractability has a cost}
+  {Independent Gaussian increments give exact simulation and closed-form probabilities but exclude heavy tails and volatility clustering.}
+  {Next, couple several GBM assets with correlated shocks and generate portfolio weights from a Dirichlet distribution.}
+
+\begin{readinglist}
+  \item Bernt \O ksendal, \emph{Stochastic Differential Equations}, 6th ed. (2003), for Wiener processes, It\^o's formula, and SDE solutions.
+  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), for lognormal price models and risk-neutral applications.
+  \item Paul A. Samuelson, ``Proof That Properly Anticipated Prices Fluctuate Randomly,'' \emph{Industrial Management Review} 6(2), 41--49 (1965), for the modern economic random-walk argument.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

@@ -1,0 +1,177 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{6b}{Minimum-Variance Portfolios and the Capital Allocation Line}{Fall 2026}{October 1, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Formulate portfolio risk}
+  {Express expected return and variance as functions of weights, asset means, and the covariance matrix.}
+  {Construct the frontier}
+  {Solve global and target-return minimum-variance problems and distinguish the feasible set from its efficient boundary.}
+  {Add the risk-free asset}
+  {Derive the capital allocation line and tangency portfolio and state the assumptions behind calling it the market portfolio.}
+
+\section{Diversification Is a Covariance Calculation}
+
+Harry Markowitz's central insight was that an asset should not be judged in isolation. A volatile asset can reduce portfolio variance when its returns offset other holdings, while individually stable assets can provide little diversification when they move together. The allocation problem therefore depends on the full covariance matrix.
+
+Let $\mathbf r\in\R^m$ be a random vector of single-period risky-asset returns, with mean $\boldsymbol\mu:=\mathbb E[\mathbf r]$ and positive-definite covariance matrix $\Sigma:=\operatorname{Cov}(\mathbf r)$. Let $\mathbf w\in\R^m$ be risky-asset dollar weights satisfying $\mathbf1^{\mathsf T}\mathbf w=1$. The portfolio return $r_p:=\mathbf w^{\mathsf T}\mathbf r$ has
+\begin{equation}
+  \label{eq:portfolio-moments}
+  \mu_p=\mathbf w^{\mathsf T}\boldsymbol\mu,
+  \qquad
+  \sigma_p^2=\mathbf w^{\mathsf T}\Sigma\mathbf w.
+\end{equation}
+The cross terms $2w_iw_j\Sigma_{ij}$ create diversification effects. Variance is dimensionless for returns measured over a fixed horizon; an annualized covariance rate must be combined with a matching annual return convention.
+
+\section{The Global Minimum-Variance Portfolio}
+
+The global minimum-variance (GMV) portfolio selects the fully invested risky allocation with the smallest modeled variance. When short positions are allowed and $\Sigma$ is positive definite, the equality-constrained problem has a closed form (\thmref{gmv}).
+
+\begin{theorem}{Unconstrained global minimum-variance portfolio}{gmv}
+Let $\Sigma\in\R^{m\times m}$ be symmetric positive definite and let $\mathbf1\in\R^m$ be the vector of ones. The unique solution of
+\begin{equation}
+  \label{eq:gmv-problem}
+  \min_{\mathbf w\in\R^m}\ \frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  \quad\text{subject to}\quad
+  \mathbf1^{\mathsf T}\mathbf w=1
+\end{equation}
+is
+\begin{equation}
+  \label{eq:gmv-solution}
+  \mathbf w_{\mathrm{GMV}}
+  =\frac{\Sigma^{-1}\mathbf1}
+  {\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1},
+  \qquad
+  \sigma_{\mathrm{GMV}}^2
+  =\frac{1}{\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1}.
+\end{equation}
+The solution can contain negative weights because no long-only constraint is imposed.
+\end{theorem}
+
+\begin{derivation}
+Introduce the Lagrange multiplier $\lambda\in\R$ for the budget constraint:
+\begin{equation*}
+  \mathcal L(\mathbf w,\lambda)
+  =\frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  -\lambda(\mathbf1^{\mathsf T}\mathbf w-1).
+\end{equation*}
+Stationarity gives $\Sigma\mathbf w-\lambda\mathbf1=\mathbf0$, so $\mathbf w=\lambda\Sigma^{-1}\mathbf1$. Enforcing $\mathbf1^{\mathsf T}\mathbf w=1$ gives $\lambda=(\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1)^{-1}$ and yields \eqnref{gmv-solution}.
+\end{derivation}
+
+Imposing $w_i\geq0$ converts the problem to a convex quadratic program. Its optimum may lie on a boundary with some weights exactly zero, and the unconstrained formula is no longer generally valid. Other realistic constraints---position limits, turnover, lots, taxes, and transaction costs---change the feasible set further.
+
+\section{The Minimum-Variance Frontier}
+
+To trace return--risk tradeoffs, add a target expected return $\mu_\star$:
+\begin{equation}
+  \label{eq:frontier-problem}
+  \min_{\mathbf w}\ \frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  \quad\text{subject to}\quad
+  \mathbf1^{\mathsf T}\mathbf w=1,
+  \quad
+  \boldsymbol\mu^{\mathsf T}\mathbf w=\mu_\star.
+\end{equation}
+Varying $\mu_\star$ produces the minimum-variance frontier. The branch above the GMV expected return is the \emph{efficient frontier}: no other feasible risky portfolio has both at least as much expected return and no more variance, with one strict improvement. The lower branch is minimum variance for its return target but is dominated in mean--variance terms by an upper-branch portfolio of equal variance.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.05cm,y=0.8cm,>=Latex,font=\sffamily\small]
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(8.2,0) node[right] {$\sigma$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,6.0) node[above] {$\mu$};
+    \draw[vnrule,line width=1.3pt,domain=1.4:6.8,samples=80,smooth]
+      plot (\x,{2.1+0.21*(\x-2.2)^2});
+    \draw[vnlink,line width=1.6pt,domain=2.2:6.8,samples=60,smooth]
+      plot (\x,{2.1+0.21*(\x-2.2)^2});
+    \fill[vnink] (2.2,2.1) circle (2.1pt) node[below right] {GMV};
+    \coordinate (rf) at (0,1.0);
+    \coordinate (tan) at (4.8,{2.1+0.21*(4.8-2.2)^2});
+    \draw[vncarnelian,line width=1.3pt] (rf)--($(rf)!1.55!(tan)$);
+    \fill[vncarnelian] (tan) circle (2.2pt) node[above left] {tangency};
+    \node[left] at (rf) {$r_f$};
+    \node[text=vnlink] at (6.3,5.25) {efficient risky frontier};
+    \node[text=vncarnelian,rotate=31] at (2.25,2.35) {capital allocation line};
+  \end{tikzpicture}
+  \caption{The risky-asset minimum-variance frontier and a capital allocation line from a risk-free return $r_f$. The line with the largest attainable slope is tangent to the risky frontier. Axes must use returns and standard deviations measured over compatible horizons.}
+  \label{fig:frontier-cal}
+\end{figure}
+
+\notebooklink
+  {L6b: Data-Driven Minimum-Variance Portfolios}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Example-Data-MinVar-Portfolio-Fall-2025.ipynb}
+  {Estimate means and covariance, solve long-only target-return quadratic programs, and visualize the empirical efficient frontier.}
+
+\section{Adding a Risk-Free Asset}
+
+Let a locally risk-free asset earn the deterministic return $r_f$ over the same horizon as $\mathbf r$. Combine it with any risky portfolio having return $\mu_p$ and standard deviation $\sigma_p>0$. If $y\in\R$ is the dollar fraction invested in that risky portfolio and $1-y$ is invested in the risk-free asset, then
+\begin{equation}
+  \label{eq:cal}
+  \mu_c=r_f+y(\mu_p-r_f),
+  \qquad
+  \sigma_c=|y|\sigma_p.
+\end{equation}
+For $y\geq0$, eliminating $y$ gives the capital allocation line (CAL):
+\begin{equation}
+  \label{eq:cal-line}
+  \mu_c=r_f+\frac{\mu_p-r_f}{\sigma_p}\sigma_c.
+\end{equation}
+The slope is the risky portfolio's Sharpe ratio under the stated horizon and risk-free convention. Values $0<y<1$ lend some wealth at $r_f$; $y=1$ holds only the risky portfolio; and $y>1$ represents leveraged risky exposure financed by borrowing. A single identical lending and borrowing rate is an idealization.
+
+Among all risky portfolios, the tangency portfolio maximizes the CAL slope. Without long-only constraints, its weights have the closed form in \propref{tangency}.
+
+\begin{proposition}{Unconstrained tangency portfolio}{tangency}
+Let $\Sigma$ be symmetric positive definite, let risky expected returns be $\boldsymbol\mu\in\R^m$, and let the same-horizon risk-free return be $r_f\in\R$. Assume $\boldsymbol\mu-r_f\mathbf1\neq\mathbf0$ and that $\mathbf1^{\mathsf T}\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)>0$. The fully invested risky portfolio proportional to $\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)$ has weights
+\begin{equation}
+  \label{eq:tangency}
+  \mathbf w_T=
+  \frac{\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)}
+  {\mathbf1^{\mathsf T}\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)}.
+\end{equation}
+It maximizes the positive Sharpe ratio among unconstrained fully invested risky portfolios under these assumptions.
+\end{proposition}
+
+Every mean--variance investor facing the same inputs can then combine the same tangency fund with the risk-free asset, choosing $y$ according to risk tolerance. This is the two-fund separation result. Long-only, leverage, and borrowing constraints can kink the attainable boundary and change the tangency solution.
+
+\section{When Is the Tangency Portfolio the Market Portfolio?}
+
+In the Capital Asset Pricing Model, all investors share the same beliefs, optimize mean and variance over the same horizon, can borrow and lend at the same risk-free rate, and trade all assets without taxes or frictions. Market clearing then identifies the aggregate value-weighted risky portfolio with the common tangency portfolio. This theoretical object is called the \emph{market portfolio}.
+
+An optimizer applied to a selected ticker list and historical estimates does not thereby recover the market portfolio. It produces a sample-dependent tangency portfolio for that universe and model. A broad stock index also omits many risky assets. The CAPM identification is an equilibrium conclusion under strong assumptions, not a label to attach to every maximum-Sharpe solution.
+
+\section{Estimation Risk Can Dominate Optimization}
+
+The inverse covariance in \eqnref{gmv-solution} and \eqnref{tangency} amplifies unstable directions. Tangency weights are especially sensitive to expected-return estimates, which are noisy. Backtests must fit inputs only on information available before each decision, include turnover and costs, and compare with simple baselines such as equal weighting. Covariance shrinkage, weight constraints, and robust objectives can improve stability but change the optimization problem and must be reported.
+
+The MGBM notebook supplies a separate scenario engine. It can test how a fixed allocation behaves under the assumed joint dynamics, but simulated performance is not independent validation when the same data estimated both the optimizer and simulator.
+
+\notebooklink
+  {L6b: MGBM Portfolio Simulation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Example-MAGBM-Portfolio-Fall-2025.ipynb}
+  {Simulate correlated asset prices and compare a chosen allocation's wealth distribution with actual and benchmark performance.}
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we derived minimum-variance weights, traced the efficient frontier, and added a risk-free asset to obtain the CAL and tangency portfolio.}
+  {Covariance determines diversification}
+  {Portfolio variance is $\mathbf w^{\mathsf T}\Sigma\mathbf w$; cross-asset terms determine whether combining assets reduces modeled risk.}
+  {The CAL selects a risky fund}
+  {The tangency portfolio maximizes reward per unit of modeled risk, while the risk-free allocation controls an investor's overall exposure.}
+  {Market portfolio is an equilibrium claim}
+  {Calling tangency weights the market portfolio requires the CAPM universe, common-belief, trading, and market-clearing assumptions.}
+  {Next, replace the full covariance description with a single-index factor model and separate systematic from idiosyncratic risk.}
+
+\begin{readinglist}
+  \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).
+  \item William F. Sharpe, \href{https://www.jstor.org/stable/2977928}{``Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk,''} \emph{Journal of Finance} 19(3), 425--442 (1964).
+  \item Richard O. Michaud, \emph{Efficient Asset Management}, 2nd ed. (2008), for estimation error and instability in mean--variance optimization.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

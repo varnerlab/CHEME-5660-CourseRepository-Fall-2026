@@ -46,3 +46,6 @@ artifacts/
 *.blg
 *.out
 *.log
+*.fdb_latexmk
+*.fls
+*.xdv

@@ -1,0 +1,181 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{12a}{Covered Calls and Cash-Secured Puts}{Fall 2026}{November 10, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Derive expiration P\&L}
+  {Construct covered-call and cash-secured-put profit functions, breakevens, and best/worst terminal outcomes.}
+  {Explain their equivalence}
+  {Use put--call parity and terminal payoff algebra to identify when the two positions are economically equivalent.}
+  {Manage implementation risk}
+  {Evaluate opportunity cost, funding, dividends, early assignment, position delta, and model-conditional outcome probabilities.}
+
+\section{Premium Income Is Payment for a Contingent Obligation}
+
+Selling an option creates cash today in exchange for a state-dependent obligation later. The premium is not yield in the bond sense and is not free downside protection. A covered call pairs a long stock position with a short call; a cash-secured put pairs a short put with enough cash to meet assignment. Both reshape the same underlying exposure into capped-upside, stock-like downside.
+
+Let $S_0>0$ be the current stock price, $S_T\geq 0$ the price at expiration $T$, $K>0$ the strike, and $q>0$ the contract multiplier in shares/contract. Let $C_0,P_0\geq 0$ be call and put premiums in USD/share. We initially analyze one contract, ignore costs and taxes, and treat expiration exercise mechanically from intrinsic value.
+
+\begin{remark}{Which stock basis belongs in the decision?}{basis}
+An historical acquisition price may determine accounting or tax P\&L, but the prospective economics of writing a call today use the stock's current opportunity value $S_0$. Keeping stock worth $S_0$ and selling a call should be compared with selling or otherwise deploying that stock now. Report historical-basis and forward-decision views separately rather than mixing them.
+\end{remark}
+
+\section{Covered Call: Long Stock Plus Short Call}
+
+Suppose one acquires or commits $q$ shares at current opportunity cost $S_0$ per share and sells one call for $C_0$. The frictionless expiration profit is
+\begin{equation}
+  \label{eq:covered-call-profit}
+  \Pi_{CC}(S_T)
+  =q\left[S_T-S_0+C_0-(S_T-K)^+\right]
+  =q\left[\min\{S_T,K\}-S_0+C_0\right].
+\end{equation}
+Thus the breakeven is $B_{CC}:=S_0-C_0$. Maximum profit is $q(K-S_0+C_0)$ when $S_T\geq K$. If limited liability implies $S_T\geq 0$, worst terminal profit is $q(C_0-S_0)$ at $S_T=0$, a loss magnitude of $q(S_0-C_0)$. The premium cushions only $C_0$ per share of stock downside.
+
+Above $K$, additional stock appreciation is surrendered. Relative to holding the same shares without the call, the incremental profit of writing the call is
+\begin{equation}
+  \label{eq:covered-call-relative}
+  \Pi_{CC}(S_T)-\Pi_{stock}(S_T)
+  =q\left[C_0-(S_T-K)^+\right].
+\end{equation}
+The covered call underperforms stock alone when $S_T>K+C_0$ in this expiration-only comparison. That is opportunity cost, not an additional cash loss on top of \eqnref{covered-call-profit}.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=0.72cm,y=0.58cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.0)--(10.3,2.0) node[right] {$S_T$};
+    \draw[->,vnmuted] (4.3,0)--(4.3,5.8) node[above] {profit};
+    \draw[vnmuted,dashed] (6.8,0.25)--(6.8,5.3);
+    \draw[vnmuted,dotted] (3.2,0.25)--(3.2,5.3);
+    \draw[vnlink,very thick] (0.7,0.35)--(6.8,4.5)--(9.6,4.5);
+    \draw[vncarnelian,thick,dashed] (0.7,0.1)--(9.4,5.35);
+    \node[below] at (3.2,2.0) {$B_{CC}$};
+    \node[below] at (6.8,2.0) {$K$};
+    \node[vnlink,above] at (8.2,4.5) {covered call};
+    \node[vncarnelian,above left] at (9.0,5.1) {stock only};
+  \end{tikzpicture}
+  \caption{Covered-call expiration profit versus stock alone. Premium shifts the initial breakeven left, while the short call caps profit above the strike.}
+  \label{fig:covered-call}
+\end{figure}
+
+\notebooklink
+  {L12a: Covered Call on AMD}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-AnalysisCoveredCall-Fall-2025.ipynb}
+  {Select an option-chain call, combine it with the required shares, plot expiration P\&L, and estimate downside, assignment, and opportunity-cost scenarios.}
+
+\section{Cash-Secured Put: Cash Plus a Short Put}
+
+Sell one put for $P_0$ and reserve enough liquid capital to buy $q$ shares at $K$ if assigned. The short-put expiration profit, before interest on collateral, is
+\begin{equation}
+  \label{eq:csp-profit}
+  \Pi_{CSP}(S_T)
+  =q\left[P_0-(K-S_T)^+\right]
+  =
+  \begin{cases}
+    qP_0, & S_T\geq K,\\
+    q(S_T-K+P_0), & S_T<K.
+  \end{cases}
+\end{equation}
+The breakeven and effective acquisition price are $B_{CSP}:=K-P_0$. Maximum profit is $qP_0$; worst terminal profit is $q(P_0-K)$ at $S_T=0$, a maximum loss magnitude of $q(K-P_0)$. ``Cash secured'' describes funding capacity, not protection from the acquired stock losing value.
+
+Collateral treatment matters. Reserving $qK$ in non-interest-bearing cash is conservative but costly. If the broker permits Treasury collateral or interest-bearing cash, financing income changes P\&L. If collateral can fall in value, be rehypothecated, or become unavailable, the position is not economically secured in the simple sense assumed by \eqnref{csp-profit}.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=0.75cm,y=0.62cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.0)--(9.9,2.0) node[right] {$S_T$};
+    \draw[->,vnmuted] (4.0,0)--(4.0,5.6) node[above] {profit};
+    \draw[vnmuted,dotted] (3.0,0.2)--(3.0,5.1);
+    \draw[vnmuted,dashed] (6.3,0.2)--(6.3,5.1);
+    \draw[vnlink,very thick] (0.7,0.3)--(6.3,4.35)--(9.2,4.35);
+    \node[below] at (3.0,2.0) {$B_{CSP}$};
+    \node[below] at (6.3,2.0) {$K$};
+    \node[vnlink,above] at (7.7,4.35) {max profit $qP_0$};
+    \node[vnlink,below right] at (1.0,0.55) {stock-like downside};
+  \end{tikzpicture}
+  \caption{Cash-secured-put expiration profit. The initial credit creates a buffer down to $K-P_0$, but losses then grow one-for-one as the stock falls.}
+  \label{fig:csp}
+\end{figure}
+
+\notebooklink
+  {L12a: Cash-Secured Put on AMD}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-CashSecuredPut-Fall-2025.ipynb}
+  {Construct a short put with reserved cash, calculate its effective purchase price and terminal P\&L, and evaluate model-conditional outcome regions.}
+
+\section{Parity Reveals the Shared Exposure}
+
+At expiration, the asset identities
+\begin{equation}
+  \label{eq:terminal-parity}
+  S_T-(S_T-K)^+
+  =K-(K-S_T)^+
+  =\min\{S_T,K\}
+\end{equation}
+show that long stock plus short call has the same payoff as $K$ cash plus short put. Before expiration, European put--call parity with continuous dividend yield $\delta$ and rate $r$ is
+\begin{equation}
+  \label{eq:put-call-parity}
+  S_0e^{-\delta T}-C_0=Ke^{-rT}-P_0.
+\end{equation}
+The left side is a prepaid-forward version of a covered call; the right side is a present-value-funded short put. Under matching contracts and frictionless assumptions, equal terminal payoffs imply equal no-arbitrage values.
+
+\begin{theorem}{Covered-call/cash-secured-put equivalence}{cc-csp-equivalence}
+For European options with common $K,T$, consistent dividends and financing, and the funding asset specified by \eqnref{put-call-parity}, covered-call and cash-secured-put packages are synthetic equivalents. Their apparent labels do not create different fundamental payoff risk.
+\end{theorem}
+
+Real implementations can differ because equity dividends, collateral yield, borrow costs, taxes, bid--ask spreads, discrete dividends, and early exercise are not identical across the two packages. American put--call parity becomes a set of bounds rather than the European equality. The equivalence is therefore a baseline for reconciliation, not a guarantee that two brokerage trades have identical realized returns.
+
+\section{Delta and Assignment Change Through Time}
+
+Let $\Delta_c:=\partial C/\partial S$ and $\Delta_p:=\partial P/\partial S$ be per-share long-option deltas. The current position deltas for one contract are
+\begin{equation}
+  \label{eq:position-deltas}
+  \Delta_{CC}=q(1-\Delta_c),
+  \qquad
+  \Delta_{CSP}=-q\Delta_p,
+\end{equation}
+because cash has zero spot delta. For matched non-dividend European options, $\Delta_c-\Delta_p=1$, so the two position deltas are equal. They are typically positive: both packages retain bullish, stock-like directional exposure. Delta changes with spot, time, volatility, and the American exercise boundary.
+
+Short American options can be assigned before expiration. Covered calls are particularly exposed around ex-dividend dates when a deep-ITM call has little remaining extrinsic value; assignment delivers the shares at $K$ and forfeits subsequent dividends and upside. Short puts can also be assigned early, especially when deep ITM. Pin risk near $K$, after-hours movement, exercise-by-exception rules, and delayed assignment notices can create an unexpected stock position.
+
+\section{Outcome Probabilities Are Conditional Estimates}
+
+Given a stated terminal-price CDF $F(x):=\mathbb P(S_T\leq x)$, frictionless expiration events include
+\begin{align}
+  \label{eq:covered-call-events}
+  \mathbb P(\Pi_{CC}<0)&=F(B_{CC}),
+  &
+  \mathbb P(S_T>K)&=1-F(K),\\
+  \label{eq:csp-events}
+  \mathbb P(\Pi_{CSP}<0)&=F(B_{CSP}),
+  &
+  \mathbb P(S_T<K)&=F(K),
+\end{align}
+when the distribution is continuous at the thresholds. These are model-conditional terminal probabilities. A risk-neutral distribution is appropriate for pricing but is not automatically a real-world forecast; historical and subjective forecast distributions answer different questions. Early assignment probabilities require a path-dependent exercise model, not only the terminal CDF.
+
+Probability of assignment, probability of loss, expected P\&L, maximum loss, and expected shortfall are different risk summaries. A high probability of keeping a small premium can coexist with a low-probability, large stock loss. Evaluate the entire distribution and stress scenarios rather than ranking contracts only by premium or ``win rate.''
+
+\Needspace{0.38\textheight}
+\keytakeaways
+  {In this lecture, we derived the capped-upside, stock-like downside of covered calls and cash-secured puts and used parity to expose their common economic structure.}
+  {Premium is a limited buffer}
+  {A covered call can lose nearly the stock purchase price and a cash-secured put can lose nearly the strike; collateral does not remove asset risk.}
+  {Parity is the organizing principle}
+  {Long stock minus a call and funded cash minus a put share the payoff $\min\{S_T,K\}$ under matched assumptions.}
+  {Implementation breaks textbook symmetry}
+  {Dividends, funding yield, early assignment, taxes, spreads, and current opportunity cost must accompany payoff and probability analysis.}
+  {Next, connect repeated cash-secured puts and covered calls into the state-dependent Wheel process.}
+
+\begin{readinglist}
+  \item Fischer Black and Myron Scholes, \href{https://doi.org/10.1086/260062}{``The Pricing of Options and Corporate Liabilities,''} \emph{Journal of Political Economy} 81(3), 637--654 (1973).
+  \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
+  \item Lawrence G. McMillan, \emph{Options as a Strategic Investment}, 5th ed., Prentice Hall (2012), sections on covered writing and put writing.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Short-option positions can incur substantial losses and early assignment.}
+
+\end{document}

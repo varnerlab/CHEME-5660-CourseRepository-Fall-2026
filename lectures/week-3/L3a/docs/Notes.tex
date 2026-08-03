@@ -1,0 +1,165 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+
+\begin{document}
+
+\lecturenotes{3a}{The Yield Curve and Stochastic Interest-Rate Models}{Fall 2026}{September 8, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Separate rate concepts}
+  {Distinguish investment yield, yield to maturity, spot rates, forward rates, and the term structure of interest rates.}
+  {Read curve shapes}
+  {Interpret normal, flat, inverted, and humped yield curves without treating any shape as a deterministic forecast.}
+  {Value on a rate lattice}
+  {Use risk-neutral backward induction to price a zero-coupon claim when the short rate evolves stochastically.}
+
+\section{Why One Interest Rate Is Not Enough}
+
+L1b converted dated dollars using one stated discount rate, and L2a used that rule to value Treasury cash flows. Markets require a richer object. A dollar promised in three months and a dollar promised in ten years are exposed to different opportunity costs, inflation horizons, liquidity conditions, and interest-rate uncertainty. Their prices therefore need not imply the same annual rate.
+
+The \emph{term structure of interest rates} collects rates indexed by maturity at one observation date. A \emph{yield curve} is a plotted slice of that term structure, but the label is incomplete unless the underlying rate and security set are stated. A par Treasury curve, a zero-coupon spot curve, and a forward curve answer different questions even when all three are plotted against maturity.
+
+This distinction matters operationally. A quoted yield is a compressed description of price under a convention; it is not cash, and it is not the contract. The contract supplies cash flows, the market supplies prices, and a model maps those prices into yields or discount factors.
+
+\section{From Prices to Yields}
+
+Begin with the cleanest security: a zero-coupon claim paying one dollar at maturity $T>0$. Its time-0 price is the discount function $P(0,T)$, measured in time-0 dollars per maturity-dollar. The associated continuously compounded spot rate is defined by \defnref{spot-rate}.
+
+\begin{definition}{Discount function and spot rate}{spot-rate}
+Let time $0$ be the observation and valuation date, and let $T>0$ years be a maturity. Let $P(0,T)\in(0,\infty)$ denote the time-0 price in dollars of a default-free zero-coupon claim that pays exactly one dollar at time $T$. The continuously compounded spot rate $z(0,T)$, in decimal units per year, is the maturity-specific rate satisfying
+\begin{equation}
+  \label{eq:spot-rate}
+  P(0,T)=\exp[-z(0,T)T],
+  \qquad
+  z(0,T)=-\frac{\log P(0,T)}{T}.
+\end{equation}
+The collection $T\mapsto z(0,T)$ is the continuously compounded spot-rate term structure at time 0.
+\end{definition}
+
+A coupon security does not reveal one spot rate directly because its price combines payments at several maturities. Its yield to maturity instead compresses the entire cash-flow stream into one internal rate of return (\defnref{ytm}).
+
+\begin{definition}{Yield to maturity}{ytm}
+Let $B_0>0$ dollars be the observed dirty price of an option-free coupon security at time 0. Let $X_j>0$ dollars be its remaining cash flow at coupon index $j\in\{1,\ldots,N\}$, and let the positive integer $n$ be the number of coupon intervals per year. A nominal annual yield to maturity $y$ is a solution with $1+y/n>0$ of
+\begin{equation}
+  \label{eq:ytm}
+  0=-B_0+\sum_{j=1}^{N}X_j\left(1+\frac{y}{n}\right)^{-j}.
+\end{equation}
+The definition assumes all promised payments are made and intermediate coupons can be reinvested consistently with the yield convention. The scalar $y$ is not a maturity-by-maturity spot curve.
+\end{definition}
+
+For positive fixed cash flows, the right-hand present value in \eqnref{ytm} decreases continuously with $y$. A numerical root finder can therefore infer the yield from price. The companion notebook uses the secant method to make that inversion explicit rather than treating a displayed market yield as primitive data.
+
+\notebooklink
+  {L3a: Yield to Maturity for a Coupon Security}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-YieldToMaturity-Coupon-Example-Fall-2025.ipynb}
+  {Solve the zero-NPV equation numerically and study how a coupon security's quoted yield changes with its market price.}
+
+\section{What Curve Are We Looking At?}
+
+The U.S. Treasury publishes a daily nominal par yield curve at standard maturities. It is estimated from indicative bid-side prices of actively traded securities; it is not a table of directly observed zero-coupon prices. A \emph{par yield} is the coupon rate that would make a hypothetical security price at par under a chosen discount curve. By contrast, the spot curve prices a single payment at each maturity. L3b shows how separate zero-coupon STRIPS make those discount factors especially transparent.
+
+Curve shape is descriptive shorthand rather than a complete model (\figref{curve-shapes}). A normal curve rises with maturity; a flat curve changes little; an inverted curve places shorter yields above longer yields; and a humped curve rises and then falls. The shape can reflect expectations of future short rates, term premia, risk preferences, supply and demand, and market segmentation. Observing the shape alone cannot identify those components.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.35cm,y=0.92cm,>=Latex,font=\sffamily\footnotesize]
+    \foreach \x/\name in {0/normal,4.25/flat,8.5/inverted}{
+      \begin{scope}[shift={(\x,0)}]
+        \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(2.8,0);
+        \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(0,2.2);
+        \node[below] at (1.4,-0.05) {maturity};
+        \node[rotate=90] at (-0.35,1.1) {yield};
+        \node[above,font=\sffamily\bfseries] at (1.4,2.15) {\name};
+      \end{scope}
+    }
+    \draw[vnlink,line width=1.3pt] plot[smooth] coordinates {(0.25,0.45)(0.8,0.95)(1.55,1.35)(2.55,1.55)};
+    \draw[vnlink,line width=1.3pt] plot[smooth] coordinates {(4.5,1.05)(5.2,1.08)(6.0,1.04)(6.8,1.07)};
+    \draw[vncarnelian,line width=1.3pt] plot[smooth] coordinates {(8.75,1.65)(9.35,1.35)(10.1,0.9)(11.05,0.55)};
+  \end{tikzpicture}
+  \caption{Three common yield-curve shapes. Each curve is a cross-section at one observation date. The plotted ordinate must still be identified---for example, par yield, spot rate, or forward rate---before the graph has a precise valuation meaning.}
+  \label{fig:curve-shapes}
+\end{figure}
+
+An inverted Treasury term spread has often preceded U.S. recessions, which makes the curve useful as a leading indicator. The New York Fed, for example, estimates a twelve-month-ahead recession probability from the ten-year minus three-month spread. This is a statistical association, not a timing theorem or an official declaration that a recession will occur. Other information and changing term premia can alter the signal.
+
+\notebooklink
+  {L3a: Messages in the Par Yield Curve}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-ParYieldCurves-Example-Fall-2025.ipynb}
+  {Load daily Treasury par-yield data, compare curve shapes across dates, and calculate selected term spreads.}
+
+\section{When Rates Are Random}
+
+A deterministic curve prices known cash flows today, but future discount rates remain unknown. Let the \emph{short rate} $r_t$ denote the instantaneous or one-period rate prevailing near time $t$. An interest-rate model specifies how $r_t$ can evolve and how rate risk is priced. Under a risk-neutral probability measure $\Q$ associated with the money-market account, the price of a default-free zero-coupon claim has the representation in \thmref{stochastic-discounting}.
+
+\begin{theorem}{Risk-neutral stochastic discounting}{stochastic-discounting}
+Let $0\leq t\leq T$, let $r_s$ be an integrable stochastic short-rate process in decimal units per year for $s\in[t,T]$, and let $\E_t^{\Q}[\,\cdot\,]$ denote conditional expectation at time $t$ under a risk-neutral measure $\Q$ associated with the continuously compounded money-market account. In an arbitrage-free model, the time-$t$ price $P(t,T)$ of a default-free claim paying one dollar at time $T$ is
+\begin{equation}
+  \label{eq:stochastic-discounting}
+  P(t,T)=\E_t^{\Q}\!\left[\exp\!\left(-\int_t^T r_s\,ds\right)\right].
+\end{equation}
+The measure $\Q$ is a pricing device fixed by the model and traded assets; it need not equal the real-world probability law used for forecasting rates.
+\end{theorem}
+
+The expectation is outside the exponential because the entire future path of rates determines the discount factor. In general, replacing the random path by an average rate changes the value: nonlinear discounting means that $\E[e^{-X}]$ need not equal $e^{-\E[X]}$.
+
+\section{A Binomial Short-Rate Lattice}
+
+A lattice replaces a continuous collection of possible paths by a finite recombining tree. At time index $k$, node $j$ carries the one-period annualized short rate $r_{k,j}$. If the time step is $\Delta t>0$ years and the risk-neutral up probability is $q\in[0,1]$, backward induction prices a maturity claim one layer at a time (\propref{lattice-recursion}).
+
+\begin{proposition}{One-period lattice recursion}{lattice-recursion}
+Let $V_{k+1,j}$ and $V_{k+1,j+1}$ be dollar values at the two successor nodes of node $(k,j)$. Let $r_{k,j}$ be the annualized one-period short rate at that node, let $\Delta t>0$ years be the step length, and assume $1+r_{k,j}\Delta t>0$. Under risk-neutral probability $q\in[0,1]$ and simple one-step compounding, the arbitrage-free node value is
+\begin{equation}
+  \label{eq:lattice-recursion}
+  V_{k,j}=\frac{(1-q)V_{k+1,j}+qV_{k+1,j+1}}
+  {1+r_{k,j}\Delta t}.
+\end{equation}
+For a zero-coupon claim maturing at layer $N$, set $V_{N,j}=1$ dollar at every terminal node and apply the recursion back to time 0.
+\end{proposition}
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=2.0cm,y=0.8cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (n0) at (0,0) {$r_{0,0}$};
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (d1) at (2,-0.8) {$r_{1,0}$};
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (u1) at (2,0.8) {$r_{1,1}$};
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (d2) at (4,-1.6) {$r_{2,0}$};
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (m2) at (4,0) {$r_{2,1}$};
+    \node[draw=vnink,circle,fill=white,minimum size=7mm] (u2) at (4,1.6) {$r_{2,2}$};
+    \foreach \a/\b in {n0/d1,n0/u1,d1/d2,d1/m2,u1/m2,u1/u2}
+      \draw[vnrule,line width=0.9pt,-{Latex[length=2.5mm]}] (\a)--(\b);
+    \node[text=vnlink] at (0.95,0.63) {$q$};
+    \node[text=vnmuted] at (0.95,-0.63) {$1-q$};
+    \draw[vncarnelian,line width=1.1pt,-{Latex[length=3mm]}]
+      (4.8,0)--(5.9,0) node[right,text=vnink] {discount backward};
+  \end{tikzpicture}
+  \caption{A two-step recombining short-rate lattice. Paths branch forward under the model, while contingent values are averaged under risk-neutral probabilities and discounted backward using each node's local short rate.}
+  \label{fig:rate-lattice}
+\end{figure}
+
+A useful tree must be calibrated: its node rates and volatility parameters should reproduce the observed time-0 discount curve before it is used to value path-dependent claims. Matching today's curve does not guarantee that the model's future-rate distribution is realistic; volatility structure and real-world forecasting require separate validation.
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we separated several meanings of yield, interpreted the curve as a maturity-indexed market object, and priced a claim under stochastic short rates.}
+  {Name the curve}
+  {Par yields, spot rates, and forward rates are related but distinct; every plotted curve must identify its security set and quotation convention.}
+  {Indicators are probabilistic}
+  {Curve inversion has predictive association with recessions, but it is not a deterministic economic clock.}
+  {Price backward on a lattice}
+  {Risk-neutral successor values are averaged and discounted with the local short rate; pricing probabilities are not automatically forecasting probabilities.}
+  {Next, use Treasury STRIPS to observe zero-coupon discount factors and infer forward rates without confusing them with expected future short rates.}
+
+\begin{readinglist}
+  \item U.S. Department of the Treasury, \href{https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve}{\emph{Daily Treasury Par Yield Curve Rates}}, for the official curve data and estimation description.
+  \item Federal Reserve Bank of New York, \href{https://www.newyorkfed.org/research/capital_markets/ycfaq.htm}{\emph{The Yield Curve as a Leading Indicator}}, for the ten-year minus three-month recession-probability model and its limitations.
+  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), Chapters 4 and 31, for zero rates, forward rates, and interest-rate trees.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

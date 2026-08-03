@@ -1,0 +1,174 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{6a}{Multivariate GBM and Dirichlet Portfolio Weights}{Fall 2026}{September 29, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Model correlated assets}
+  {Write and solve a multivariate GBM model whose matrix square root generates a specified return covariance structure.}
+  {Estimate covariance}
+  {Construct, annualize, and validate a sample covariance matrix while distinguishing covariance from correlation.}
+  {Sample portfolio weights}
+  {Use a Dirichlet distribution to explore the long-only allocation simplex without confusing random sampling with optimization.}
+
+\section{Why Separate Asset Models Are Insufficient}
+
+Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
+
+Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic drift rates in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
+\begin{equation}
+  \label{eq:mgbm-sde}
+  \frac{dS_{i,t}}{S_{i,t}}
+  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
+  \qquad i\in\{1,\ldots,m\}.
+\end{equation}
+The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $\Sigma_{ii}=\sigma_i^2$, while $\Sigma_{ik}$ records instantaneous covariance between assets $i$ and $k$.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.35cm,y=0.86cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.35cm,minimum height=0.78cm] (z) at (0,0) {independent $\mathbf Z$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.25cm,minimum height=0.78cm] (a) at (3.25,0) {matrix root $A$};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.65cm,minimum height=0.78cm] (az) at (6.5,0) {correlated shock $A\mathbf Z$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.55cm,minimum height=0.78cm] (s) at (10.0,0) {joint price update};
+    \foreach \u/\v in {z/a,a/az,az/s}
+      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\u)--(\v);
+    \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=\Sigma$};
+    \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=\Sigma$};
+  \end{tikzpicture}
+  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $\Sigma$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
+  \label{fig:correlated-shocks}
+\end{figure}
+
+\section{Exact Transition and Covariance}
+
+The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
+
+\begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
+Let $A\in\R^{m\times m}$, $\Sigma:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
+\begin{equation}
+  \label{eq:mgbm-transition}
+  S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
+  \left(\mu_i-\frac{1}{2}\Sigma_{ii}\right)\Delta t
+  +\sqrt{\Delta t}\,(A\mathbf Z)_i
+  \right].
+\end{equation}
+The log-return vector $\mathbf g_t:=\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$, where $\oslash$ denotes componentwise division, has covariance
+\begin{equation}
+  \label{eq:mgbm-log-covariance}
+  \Cov(\mathbf g_t)=\Sigma\Delta t.
+\end{equation}
+\end{proposition}
+
+Equation \eqnref{mgbm-log-covariance} gives the scaling rule. If a sample covariance $\widehat\Sigma_{\Delta t}$ is computed from log returns observed every $\Delta t$ years, the constant-i.i.d. model's annual covariance-rate estimate is $\widehat\Sigma:=\widehat\Sigma_{\Delta t}/\Delta t$. Multiplying by ``252'' is the special case $\Delta t\approx1/252$ year; it is an assumption about sampling and scaling, not a universal constant.
+
+\section{Estimating and Validating the Covariance Matrix}
+
+Let $G\in\R^{n\times m}$ store $n$ observed return vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased sample covariance is
+\begin{equation}
+  \label{eq:sample-covariance}
+  \widehat\Sigma_{\Delta t}:=
+  \frac{1}{n-1}\widetilde G^{\mathsf T}\widetilde G.
+\end{equation}
+It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_{\Delta t}\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. These are required invariants and useful implementation tests.
+
+Covariance depends on units and volatility scale. Correlation normalizes those effects:
+\begin{equation}
+  \label{eq:correlation}
+  \rho_{ik}:=\frac{\Sigma_{ik}}
+  {\sqrt{\Sigma_{ii}\Sigma_{kk}}},
+  \qquad -1\leq\rho_{ik}\leq1
+\end{equation}
+when both variances are positive. Zero correlation means zero linear covariance under the chosen sample and horizon; it does not generally imply statistical independence.
+
+A Cholesky factor is convenient when $\widehat\Sigma$ is positive definite. Duplicated assets, short samples, or exact linear dependence can make it only semidefinite, causing an unpivoted Cholesky routine to fail. Eigenvalue or singular-value square roots can handle semidefinite matrices. Arbitrarily adding diagonal ``jitter'' changes the model and must be documented rather than hidden.
+
+Sampling error is often the dominant problem. Pairwise estimates can shift across windows, and a matrix with $m(m+1)/2$ distinct entries becomes difficult to estimate when $m$ is large relative to $n$. Shrinkage and factor models trade some flexibility for greater stability.
+
+\notebooklink
+  {L6a: Computing and Analyzing a Covariance Matrix}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-CovarianceMatrix-Fall-2025.ipynb}
+  {Center a multi-asset return matrix, calculate its covariance matrix, inspect pairwise relationships, and verify numerical invariants.}
+
+\section{Buy-and-Hold Portfolio Wealth}
+
+Let total initial wealth be $W_0>0$ dollars and let $\mathbf w\in\R^m$ contain initial dollar fractions. For a fully invested long-only portfolio, $w_i\geq0$ and $\mathbf1^{\mathsf T}\mathbf w=1$. Fractional-share holdings are $n_i=w_iW_0/S_{i,0}$. If no rebalancing occurs, portfolio wealth is
+\begin{equation}
+  \label{eq:buy-hold-wealth}
+  W_t=\sum_{i=1}^{m}n_iS_{i,t}
+  =W_0\sum_{i=1}^{m}w_i\frac{S_{i,t}}{S_{i,0}}.
+\end{equation}
+The initial weights generally drift as relative prices change. A constant-weight portfolio is a different, dynamically rebalanced strategy with additional turnover and cost assumptions.
+
+\notebooklink
+  {L6a: Correlated MGBM Portfolio Simulation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Example-MAGBM-Portfolio-Fall-2025.ipynb}
+  {Generate correlated asset paths, construct a buy-and-hold portfolio, and compare simulated wealth with observed and benchmark wealth.}
+
+\section{Dirichlet Sampling Explores the Simplex}
+
+The feasible long-only weight set is the $(m-1)$-dimensional simplex $\Delta^{m-1}:=\{\mathbf w\in\R^m:w_i\geq0,\ \sum_iw_i=1\}$. The Dirichlet distribution generates random points on its interior and is a useful design-of-experiments tool (\defnref{dirichlet}).
+
+\begin{definition}{Dirichlet portfolio weights}{dirichlet}
+Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_m)$ with every concentration parameter $\alpha_i>0$, and let $\alpha_0:=\sum_{i=1}^{m}\alpha_i$. A random vector $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies on $\Delta^{m-1}$ and has mean and component variance
+\begin{equation}
+  \label{eq:dirichlet-moments}
+  \E[W_i]=\frac{\alpha_i}{\alpha_0},
+  \qquad
+  \operatorname{Var}(W_i)=
+  \frac{\alpha_i(\alpha_0-\alpha_i)}
+  {\alpha_0^2(\alpha_0+1)}.
+\end{equation}
+For equal $\alpha_i=1$, the distribution is uniform with respect to volume on the simplex; it is not uniform in each component separately.
+\end{definition}
+
+Small equal concentrations place more mass near sparse corners, while large equal concentrations cluster weights near equal allocation. Unequal concentrations encode a directional sampling preference. None of these draws is ``optimal'' unless an objective and constraints are subsequently evaluated. Dirichlet sampling explores candidate portfolios; L6b solves a minimum-variance optimization problem.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\small]
+    \coordinate (a) at (0,0); \coordinate (b) at (7,0); \coordinate (c) at (3.5,4.7);
+    \draw[vnink,line width=0.9pt] (a)--(b)--(c)--cycle;
+    \node[below left] at (a) {$w_1=1$};
+    \node[below right] at (b) {$w_2=1$};
+    \node[above] at (c) {$w_3=1$};
+    \foreach \x/\y in {1.0/.45,2.1/.7,2.8/1.4,3.5/.75,4.2/1.45,5.15/.55,3.5/2.25,2.65/2.25,4.35/2.15,3.5/3.45}
+      \fill[vnlink] (\x,\y) circle (1.8pt);
+    \node[text=vnmuted,align=center] at (3.5,-0.75) {$w_i\geq0$ and $w_1+w_2+w_3=1$};
+  \end{tikzpicture}
+  \caption{The three-asset long-only simplex. Dirichlet draws provide valid candidate allocations throughout the triangle; their density depends on the concentration vector $\boldsymbol\alpha$.}
+  \label{fig:simplex}
+\end{figure}
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks, and used Dirichlet draws to explore valid portfolio weights.}
+  {Covariance drives joint risk}
+  {A matrix square root maps independent shocks into correlated log returns with covariance $\Sigma\Delta t$.}
+  {Estimates require structural checks}
+  {A covariance estimate must be symmetric and positive semidefinite, and its scaling, window, and regularization must be documented.}
+  {Sampling is not optimization}
+  {Dirichlet draws explore the long-only simplex; concentration parameters control exploration but do not encode a minimum-risk objective.}
+  {Next, turn estimated means and covariance into the global minimum-variance portfolio, efficient frontier, capital allocation line, and tangency portfolio.}
+
+\begin{readinglist}
+  \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).
+  \item Robb J. Muirhead, \emph{Aspects of Multivariate Statistical Theory} (1982), for covariance matrices and multivariate normal transformations.
+  \item Thomas M. Cover and Joy A. Thomas, \emph{Elements of Information Theory}, 2nd ed. (2006), Appendix, for the Dirichlet family and simplex-valued distributions.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

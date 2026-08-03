@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{9a}{Dynamic Rebalancing of Minimum-Variance Portfolios}{Fall 2026}{October 20, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Quantify portfolio drift}
+  {Propagate pre-trade weights through asset returns and measure the resulting changes in risk, beta, and target tracking.}
+  {Design a rebalancing rule}
+  {Distinguish calendar, threshold, and cost-aware optimization policies and state exactly when each policy trades.}
+  {Evaluate implementation effects}
+  {Account for turnover, transaction costs, taxes, discrete shares, and information timing in a dynamic backtest.}
+
+\section{An Optimal Portfolio Is a Time-Stamped Decision}
+
+A minimum-variance optimizer produces target weights for one information set, one covariance model, and one set of constraints. After prices move, a portfolio with fixed share counts no longer has those weights. Re-solving and trading continuously would chase every movement, consume liquidity, realize taxes, and expose the strategy to estimation noise. Dynamic rebalancing therefore asks a policy question: \emph{when is the benefit of returning toward a target worth the cost and risk of trading?}
+
+The distinction between a target and a policy is fundamental. A target $\mathbf w_t^\star$ says what the portfolio would hold at decision time $t$ if it could trade immediately under the current model. A rebalancing policy maps observable state---pre-trade weights, estimates, costs, tax lots, and constraints---to an action. The policy must be specified before evaluating later returns.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.55cm]
+    \node[draw=vnrule,fill=vnsoft,minimum width=2.15cm,minimum height=0.75cm] (move) {market move};
+    \node[draw=vnrule,fill=vnsoft,right=of move,minimum width=2.15cm,minimum height=0.75cm] (drift) {pre-trade drift};
+    \node[draw=vnink,fill=vnpanel,right=of drift,minimum width=2.15cm,minimum height=0.75cm] (rule) {policy signal};
+    \node[draw=vnrule,fill=vnsoft,right=of rule,minimum width=2.15cm,minimum height=0.75cm] (trade) {trade and costs};
+    \node[draw=vnrule,fill=vnsoft,right=of trade,minimum width=2.15cm,minimum height=0.75cm] (hold) {post-trade hold};
+    \draw[vnlink,thick,->] (move)--(drift);
+    \draw[vnlink,thick,->] (drift)--(rule);
+    \draw[vnlink,thick,->] (rule)--(trade);
+    \draw[vnlink,thick,->] (trade)--(hold);
+    \draw[vnmuted,dashed,->] (hold.south) to[bend right=26] node[below] {next decision time} (move.south);
+  \end{tikzpicture}
+  \caption{A rebalancing strategy is a repeated event sequence. Returns create pre-trade weights; the policy observes only information available at that time, decides whether to trade, pays implementation costs, and then holds the resulting portfolio.}
+  \label{fig:rebalance-loop}
+\end{figure}
+
+\section{How Buy-and-Hold Weights Drift}
+
+Let $\mathbf w_t^+\in\R^m$ be post-trade risky-asset weights at time $t$, with $\mathbf1^{\mathsf T}\mathbf w_t^+=1$, and let $R_{i,t+1}>-1$ be asset $i$'s simple return from $t$ to $t+1$. Before any new trade, the portfolio simple return is $R_{p,t+1}:=(\mathbf w_t^+)^{\mathsf T}\mathbf R_{t+1}$ and the next pre-trade weights are
+\begin{equation}
+  \label{eq:weight-drift}
+  w_{i,t+1}^-
+  =\frac{w_{i,t}^+(1+R_{i,t+1})}{1+R_{p,t+1}},
+  \qquad i\in\{1,\ldots,m\}.
+\end{equation}
+The superscripts $+$ and $-$ mean immediately after and immediately before a trade, respectively. Equation~\eqref{eq:weight-drift} is a self-financing accounting identity before costs: asset values grow at different rates, while the denominator rescales them to fractions of total wealth.
+
+\begin{proposition}{When weights do not drift}{no-drift}
+Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift} satisfies $w_{i,t+1}^-=w_{i,t}^+$ if and only if
+\begin{equation}
+  \label{eq:no-drift}
+  R_{i,t+1}=R_{p,t+1}.
+\end{equation}
+Thus all positively weighted assets must earn the same return over the interval for every weight to remain unchanged. Assets held at zero weight impose no condition.
+\end{proposition}
+
+If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With covariance estimate $\Sigma_t$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_t\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
+
+\notebooklink
+  {L9a: Portfolio Drift After a Maximum-Sharpe Allocation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Example-Portfolio-Drift-Fall-2025.ipynb}
+  {Freeze initial share counts, propagate realized prices, reconstruct daily wealth fractions, and inspect how portfolio alpha and beta move away from their initial values.}
+
+\section{Three Families of Rebalancing Rules}
+
+Let $\mathbf w_t^\star$ be the current target and let $d(\mathbf w_t^-,\mathbf w_t^\star)$ be a stated distance or risk-deviation measure. Common policies include:
+
+\begin{enumerate}[leftmargin=1.7em]
+  \item \textbf{Calendar rebalancing.} Trade on predetermined dates---for example, monthly or quarterly---regardless of drift. It is simple to audit but can trade when nothing material changed and wait too long after a large move.
+  \item \textbf{Threshold rebalancing.} Trade when $d$ exceeds a band, such as $\|\mathbf w_t^- - \mathbf w_t^\star\|_\infty>\delta$ for tolerance $\delta>0$. This creates a no-trade region but requires a convention for returning to the target, the nearest band edge, or somewhere between.
+  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target return, and trading penalties. The action can be partial rather than all-or-nothing.
+\end{enumerate}
+
+A hybrid policy checks thresholds only on scheduled dates. Every rule needs an explicit clock, input timestamp, and action. ``Rebalance when needed'' is not reproducible.
+
+\section{Turnover and the Cost of Returning to Target}
+
+Let $\Delta\mathbf w_t:=\mathbf w_t^+-\mathbf w_t^-$ be the planned weight change. For fully invested portfolios with no external cash flow, $\mathbf1^{\mathsf T}\Delta\mathbf w_t=0$. The one-way turnover fraction is
+\begin{equation}
+  \label{eq:turnover}
+  \tau_t:=\frac12\|\Delta\mathbf w_t\|_1.
+\end{equation}
+The factor $1/2$ avoids counting both sales and purchases as separate portfolio replacements. If a cost model charges a proportional rate $c_i\geq0$ to every dollar bought or sold in asset $i$, the cost relative to pre-trade wealth is instead approximately $\sum_i c_i|\Delta w_{i,t}|$; state which convention is being reported.
+
+One convex cost-aware update uses risk-aversion coefficient $\gamma>0$ and turnover penalty $\lambda\geq0$:
+\begin{equation}
+  \label{eq:cost-aware-rebalance}
+  \begin{aligned}
+  \min_{\mathbf w\in\R^m}\quad
+    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_t\mathbf w
+      -\boldsymbol\mu_t^{\mathsf T}\mathbf w
+      +\lambda\|\mathbf w-\mathbf w_t^-\|_1\\
+  \text{subject to}\quad
+    &\mathbf1^{\mathsf T}\mathbf w=1,
+    \qquad \boldsymbol\ell\leq\mathbf w\leq\mathbf u.
+  \end{aligned}
+\end{equation}
+Here $\boldsymbol\mu_t\in\R^m$ and $\Sigma_t\in\R^{m\times m}$ are information-time expected-return and covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
+
+\section{Backtesting a Dynamic Policy Without Looking Ahead}
+
+At each decision time, first mark the existing shares to current observable prices and compute $\mathbf w_t^-$. Then estimate model inputs using data whose timestamps precede the decision, construct $\mathbf w_t^\star$ or solve \eqnref{cost-aware-rebalance}, convert desired dollar changes into executable share quantities, apply fills and costs, and hold until the next permitted decision. Returns used to judge the action must occur strictly afterward.
+
+Performance accounting should preserve the wealth recursion. If $C_t\geq0$ is the dollar implementation cost paid at time $t$ and $W_t^-$ is pre-trade wealth, then post-trade investable wealth is
+\begin{equation}
+  \label{eq:wealth-after-cost}
+  W_t^+=W_t^- - C_t.
+\end{equation}
+Ignoring \eqnref{wealth-after-cost} while changing weights grants the backtest free trading. Also record turnover, realized taxes or a declared pretax convention, constraint violations, cash residuals from integer shares, and failed or stale orders.
+
+Use walk-forward evaluation: select policy parameters such as calendar frequency, threshold $\delta$, and penalty $\lambda$ on training or validation data, then freeze them for a later test period. Compare buy-and-hold, full-target rebalancing, and the proposed partial policy on identical price data and cost assumptions. The relevant question is not whether rebalancing preserves the model target perfectly; it is whether the net risk--return outcome improves after all implementation effects.
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we turned a static minimum-variance target into a time-indexed decision policy that observes drift, chooses an action, pays costs, and then holds.}
+  {Drift is mechanical}
+  {Fixed share counts imply $w_{i,t+1}^-=w_{i,t}^+(1+R_{i,t+1})/(1+R_{p,t+1})$; unequal returns change weights and modeled exposures.}
+  {Rebalancing is a policy}
+  {Calendar, threshold, and optimization rules differ in their decision clocks, triggers, and destinations, so each must be specified before testing.}
+  {Trading is part of the wealth equation}
+  {Turnover, spreads, impact, taxes, and discrete shares can erase a model improvement and must be deducted at the time of action.}
+  {Next, begin the derivatives unit by separating an option's contractual payoff from the investor's premium-dependent profit.}
+
+\begin{readinglist}
+  \item André F. Perold and William F. Sharpe, \href{https://www.jstor.org/stable/4479134}{``Dynamic Strategies for Asset Allocation,''} \emph{Financial Analysts Journal} 44(1), 16--27 (1988).
+  \item Michael J. Magill and George M. Constantinides, \href{https://doi.org/10.1016/0304-405X(76)90003-4}{``Portfolio Selection with Transactions Costs,''} \emph{Journal of Economic Theory} 13(2), 245--263 (1976).
+  \item Richard Grinold and Ronald Kahn, \emph{Active Portfolio Management}, 2nd ed. (1999), chapters on implementation, turnover, and transaction costs.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

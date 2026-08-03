@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\D}{\mathcal{D}}
+
+\begin{document}
+
+\lecturenotes{1b}{The Federal Reserve, Money Flows, and the Time Value of Money}{Fall 2026}{August 27, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Trace money flows}
+  {Explain how deposits and reserve balances support payments and how Federal Reserve policy influences short-term rates.}
+  {Convert dated dollars}
+  {Explain why cash flows at different dates require common units and derive discrete and continuous discount factors.}
+  {Asset valuation}
+  {Represent a project, product, or security as an abstract asset and compute its net present value.}
+
+\section{Why Does Time Have a Price?}
+
+The time value of money begins with a simple asymmetry: one dollar in hand today and one dollar promised next year carry the same currency label, but they do not offer the same set of choices. Today's dollar can be consumed, held as a reserve, or invested. The future dollar cannot be used until it arrives, and its purchasing power and delivery are uncertain.
+
+This idea predates modern financial markets. Irving Fisher organized it around two forces: impatience to spend income and the opportunity to invest it. Modern valuation adds inflation and risk to the same basic story. A discount rate is therefore not merely a computational input; it records the return forgone by waiting and, when appropriate, compensation for uncertainty.
+
+\section{Money Flows Through Balance Sheets}
+
+Most dollars used in ordinary transactions are commercial-bank deposits, while banks settle obligations to one another using reserve balances held at Federal Reserve Banks. Suppose a buyer at Bank A pays a seller at Bank B. The buyer's deposit decreases, the seller's deposit increases, and reserve balances move from Bank A to Bank B through the payment system. No physical currency needs to cross the economy; linked balance-sheet entries implement the payment (\figref{money-flows}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,
+    actor/.style={draw=vnrule,fill=vnsoft,rounded corners=1pt,
+      minimum width=2.15cm,minimum height=0.72cm,align=center},
+    bank/.style={draw=vnink,fill=white,rounded corners=1pt,
+      minimum width=2.15cm,minimum height=0.72cm,align=center}]
+    \node[actor] (buyer) at (0,1.55) {buyer};
+    \node[bank] (banka) at (0,0) {Bank A};
+    \node[actor] (seller) at (7.3,1.55) {seller};
+    \node[bank] (bankb) at (7.3,0) {Bank B};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.7cm,minimum height=0.88cm,align=center]
+      (fed) at (3.65,-1.45) {Federal Reserve\\reserve accounts};
+
+    \draw[vncarnelian,line width=1.1pt,-{Latex[length=3mm]}]
+      (buyer)--(banka) node[midway,left,text=vncarnelian] {deposit $-P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (bankb)--(seller) node[midway,right,text=vnlink] {deposit $+P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (banka)--(fed) node[midway,below left,text=vnlink] {reserves $-P$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (fed)--(bankb) node[midway,below right,text=vnlink] {reserves $+P$};
+    \draw[vnmuted,dashed,line width=0.9pt,-{Latex[length=3mm]}]
+      (buyer)--(seller) node[midway,above,text=vnmuted] {purchase or transfer of value};
+  \end{tikzpicture}
+  \caption{A stylized payment across two commercial banks. Deposits are liabilities of the commercial banks to their customers; reserve balances are liabilities of the Federal Reserve to the banks and provide the settlement asset. The diagram records changes in balances, not four independent transfers of cash.}
+  \label{fig:money-flows}
+\end{figure}
+
+The Treasury is a distinct institution from the Federal Reserve. When the Treasury issues a bill, note, or bond, an investor exchanges funds today for a federal promise of future dollars; L2a models that security as an abstract asset. Treasury receipts and payments ultimately pass through the Treasury General Account at the Federal Reserve and alter reserve balances as settlement occurs. The Federal Reserve can also buy and sell Treasury securities in the secondary market as part of its operations, but it does not finance an ordinary Treasury auction by simply assigning a price to the new security.
+
+The Federal Open Market Committee (FOMC) chooses a \emph{target range} for the federal funds rate, the overnight rate on unsecured reserve-balance loans among eligible institutions. The effective federal funds rate is a market outcome rather than a number mechanically declared by the FOMC. In an ample-reserves regime, administered rates---especially interest on reserve balances and the overnight reverse-repurchase offering rate---help steer overnight market rates into the target range.
+
+Three rates must therefore remain conceptually separate. The \emph{federal funds rate} is an overnight interbank market rate; the \emph{primary credit rate}, often called the discount-window rate, applies to eligible borrowing from a Federal Reserve Bank; and the \emph{valuation discount rate} used below is a model input selected to convert a particular asset's dated cash flows. Monetary policy influences financing conditions and opportunity costs, but it does not make these three rates identical.
+
+\section{Discounting as a Change of Units}
+
+A useful currency model treats money at different dates as different currencies: $\mathrm{USD}_0,\mathrm{USD}_1,\ldots$. Just as euros and U.S. dollars cannot be added before conversion, dated dollars cannot be added until they share a valuation date. The discount rate specifies the conversion across time, and the discount factor performs it. An abstract asset then provides a flexible model of the economic value of a process, good, or idea as dated signed cash flows (\figref{abstract-asset}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=2.25cm,y=1cm,>=Latex,font=\sffamily\small]
+    \draw[decorate,decoration={brace,amplitude=5pt},vnmuted]
+      (0.35,1.65) -- (6.15,1.65)
+      node[midway,above=7pt,text=vnink]
+      {\bfseries abstract asset $\mathcal{A}=\{\bar c_0,\bar c_1,\ldots,\bar c_T\}$};
+
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}]
+      (0,0) -- (6.65,0) node[right] {time};
+    \foreach \x/\label/\unit in {0.35/0/u0,1.75/1/u1,3.15/2/u2,6.0/T/uT}{
+      \node[draw=vnink,circle,fill=white,line width=0.7pt,
+        minimum size=5mm,inner sep=0pt] (\unit) at (\x,0) {};
+      \node[below=4pt] at (\x,0) {$t=\label$};
+    }
+    \node at (4.55,0.02) {$\cdots$};
+
+    % CHEME flow convention: arrows leaving a unit are payments.
+    \draw[vncarnelian,line width=1.4pt,-{Latex[length=3mm]}]
+      (u0.north) -- (0.35,1.05);
+    \node[right,text=vncarnelian] at (0.35,0.62) {$-\bar c_0$};
+    \node[above,text=vnmuted,font=\footnotesize] at (0.35,1.05) {cash paid};
+
+    % Arrows entering a unit are receipts.
+    \draw[vnlink,line width=1.4pt,-{Latex[length=3mm]}]
+      (1.75,1.05) -- (u1.north);
+    \node[right,text=vnlink] at (1.75,0.62) {$+\bar c_1$};
+
+    \draw[vncarnelian,line width=1.4pt,-{Latex[length=3mm]}]
+      (u2.north) -- (3.15,1.05);
+    \node[right,text=vncarnelian] at (3.15,0.62) {$-\bar c_2$};
+
+    \draw[vnlink,line width=1.4pt,-{Latex[length=3mm]}]
+      (6.0,1.05) -- (uT.north);
+    \node[right,text=vnlink] at (6.0,0.62) {$+\bar c_T$};
+    \node[above,text=vnmuted,font=\footnotesize] at (6.0,1.05) {cash received};
+
+    \draw[vnlink,line width=0.9pt,-{Latex[length=3mm]}]
+      (6.0,-0.94) -- (0.50,-0.94)
+      node[midway,fill=white,inner sep=3pt,text=vnlink]
+      {$\bar c_t\mapsto\D_{t,0}^{-1}(r)\,\bar c_t$};
+    \node[draw=vnrule,fill=vnsoft,rounded corners=1pt,
+      inner xsep=8pt,inner ysep=5pt,anchor=north west]
+      at (0.35,-1.27) {common units: time-0 dollars};
+    \node[text=vnmuted,font=\footnotesize,anchor=west]
+      at (3.35,-1.57) {discount future cash flows to the valuation date};
+  \end{tikzpicture}
+  \caption{The abstract asset $\mathcal{A}$ comprises a signed net cash flow $\bar c_t$ at each time $t\in\{0,1,\ldots,T\}$, where the terminal time $T$ is the asset life. Following the process-flow convention, an arrow entering a time-point unit is money received and an arrow leaving it is money paid. Discounting transports each future cash flow to the common valuation date $t=0$.}
+  \label{fig:abstract-asset}
+\end{figure}
+
+To construct the required conversion rule, begin with the simplest transport problem. Suppose the initial principal $P$ dollars earns the annual discount rate $r$ for one year. The resulting year-end future value $F$ is given by \eqnref{annual-compounding}:
+\begin{equation}
+  \label{eq:annual-compounding}
+  F=(1+r)P.
+\end{equation}
+With annual compounding, the quoted rate $r$ produces the forward conversion factor $1+r$ and the backward factor $(1+r)^{-1}$. These two directions define a reversible conversion between dated currencies (\defnref{discount-factor}) and let us express every cash flow in \figref{abstract-asset} at a common date.
+
+\begin{definition}{Discount factor}{discount-factor}
+Let time $0$ be the valuation date, let the horizon $t\geq 0$ identify a future date, and let $\mathrm{USD}_0$ and $\mathrm{USD}_t$ denote dollars measured at those respective dates. For a quoted discount rate $r$ and a stated compounding convention, the discount factor $\D_{t,0}(r)$ is the multiplicative conversion factor from $\mathrm{USD}_0$ to $\mathrm{USD}_t$. If the present amount $P_0$ is measured in $\mathrm{USD}_0$ and the equivalent future amount $F_t$ is measured in $\mathrm{USD}_t$, then $F_t=\D_{t,0}(r)P_0$ and $P_0=\D_{t,0}^{-1}(r)F_t$, where $\D_{t,0}^{-1}(r):=1/\D_{t,0}(r)$ is the reciprocal conversion factor. A valid discount factor satisfies $\D_{0,0}=1$.
+
+In this course, $\D_{t,0}$ denotes the forward accumulation factor. Many finance texts instead reserve the phrase \emph{discount factor} for its present-value inverse, $\D_{t,0}^{-1}$; the formulas are equivalent once the convention is stated.
+\end{definition}
+
+The periodic-compounding formula is a model rather than an algebraic identity. It assumes that the nominal annual discount rate $r$ remains constant; the positive integer compounding frequency $n$ divides each year into $n$ equal intervals; interest is credited at the end of every interval at the proportional rate $r/n$; credited interest remains invested; and the investment horizon $T$ years contains the whole number $nT$ of intervals with no intervening deposits or withdrawals.
+
+Let the account value $V_k$ denote the value immediately after interval $k$, and let the initial principal be $V_0=P$. Applying the same one-interval update repeatedly gives the periodic accumulation factor:
+\begin{align*}
+  V_0
+    &= P,
+    && \text{\color{vnmuted}\footnotesize initial deposit} \\
+  V_1
+    &= \left(1+\frac{r}{n}\right)V_0
+     = P\left(1+\frac{r}{n}\right),
+    && \text{\color{vnmuted}\footnotesize apply the interval multiplier once} \\
+  V_2
+    &= \left(1+\frac{r}{n}\right)V_1
+     = P\left(1+\frac{r}{n}\right)^2,
+    && \text{\color{vnmuted}\footnotesize apply it a second time} \\
+  &\ \vdots
+    && \text{\color{vnmuted}\footnotesize repeat the same update} \\
+  V_{nT}
+    &= P\left(1+\frac{r}{n}\right)^{nT},
+    && \text{\color{vnmuted}\footnotesize after $nT$ intervals} \\
+  \D_{T,0}(r;n)
+    &:= \frac{V_{nT}}{V_0}
+     = \left(1+\frac{r}{n}\right)^{nT},
+    && \text{\color{vnmuted}\footnotesize normalize by the initial value.}
+\end{align*}
+The exponent $nT$ counts the compounding intervals and the base $1+r/n$ is the one-interval multiplier; as the compounding frequency $n$ increases, this factor approaches the continuous-compounding limit (\thmref{continuous-limit}).
+
+\newpage
+\thispagestyle{fancy}
+\begin{theorem}{Continuous-compounding limit}{continuous-limit}
+Let the nominal annual discount rate be the constant $r\in\R$, where $\R$ denotes the set of real numbers; let the investment horizon be $T\geq 0$ years; and let the positive integer $n$ denote the number of compounding intervals per year. As the compounding frequency $n$ increases without bound, the discrete accumulation factor converges to its continuous counterpart, where $e$ denotes Euler's number, as stated by \eqnref{continuous-limit-equation}:
+\begin{equation}
+  \label{eq:continuous-limit-equation}
+  \lim_{n\to\infty}\left(1+\frac{r}{n}\right)^{nT}=e^{rT}.
+\end{equation}
+Consequently, the continuously compounded discount factor is $\D_{T,0}(r)=e^{rT}$.
+\end{theorem}
+
+\begin{derivation}
+Apply the natural logarithm $\log$ to the discrete accumulation factor $\D_{T,0}(r;n)$ and use the Taylor expansion $\log(1+x)=x-x^2/2+O(x^3)$, where $x=r/n$ and $O(x^3)$ denotes a remainder bounded in magnitude by $C\lvert x\rvert^3$ near $x=0$ for some constant $C>0$:
+\begin{align*}
+  \log \D_{T,0}(r;n)
+  &=nT\log\left(1+\frac{r}{n}\right) \\
+  &=rT-\frac{r^2T}{2n}+O(n^{-2}).
+\end{align*}
+Here $O(n^{-2})$ denotes terms bounded in magnitude by $C'/n^2$ for sufficiently large compounding frequency $n$ and some constant $C'>0$. These correction terms vanish as $n\to\infty$; exponentiating gives the result. The expansion also shows how quickly discrete compounding approaches the continuous convention.
+\end{derivation}
+
+The companion notebook turns these expressions into computed discount factors. Use it to compare discrete and continuous compounding numerically and to see how quickly the two conventions converge.
+
+\notebooklink
+  {L1b: Time Value of Money}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-1/L1b/CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2025.ipynb}
+  {Build discrete and continuous discount factors and compare the two compounding conventions numerically.}
+
+\section{Abstract Assets and Net Present Value}
+
+With the conversion rule in hand, we can return to the abstract asset. Let $\bar c_t$ be the signed net cash flow in $\mathrm{USD}_t$: receipts are positive and payments are negative. An asset with life $0,1,\ldots,T$ is represented by $\{\bar c_t\}_{t=0}^{T}$. NPV follows a simple discipline---\emph{convert, then add}: multiply each $\bar c_t$ by $\D_{t,0}^{-1}(r)$ to express it in $\mathrm{USD}_0$, then sum the converted values (\defnref{net-present-value}).
+
+\begin{definition}{Net present value}{net-present-value}
+Let time $0$ be the valuation date, let the nonnegative integer $T$ be the terminal date, and let each integer $t\in\{0,1,\ldots,T\}$ identify a cash-flow date. Let the signed net cash flow $\bar c_t$ be measured in $\mathrm{USD}_t$, and let the discount factor $\D_{t,0}(r)$ convert $\mathrm{USD}_0$ to $\mathrm{USD}_t$ under the discount rate $r$. Its reciprocal $\D_{t,0}^{-1}(r):=1/\D_{t,0}(r)$ converts the cash flow back to time-0 dollars. The net present value at time $0$ is given by \eqnref{npv}:
+\begin{equation}
+  \label{eq:npv}
+  \operatorname{NPV}_0(r)=\sum_{t=0}^{T}\D_{t,0}^{-1}(r)\,\bar c_t.
+\end{equation}
+Every term in this sum is measured in time-0 currency units.
+\end{definition}
+
+The sign of NPV compares the asset with the opportunity represented by the discount rate $r$:
+
+\textbf{Positive NPV ($\operatorname{NPV}>0$).}\enspace Discounted receipts exceed discounted payments. Under the model assumptions, the asset creates value beyond the required return encoded by the discount rate $r$ and passes the NPV decision criterion.
+
+\textbf{Zero NPV ($\operatorname{NPV}=0$).}\enspace The asset earns exactly the required return. The decision maker is economically indifferent between the asset and the benchmark on value grounds, although strategic or operational considerations may still matter.
+
+\textbf{Negative NPV ($\operatorname{NPV}<0$).}\enspace The asset does not earn the required return and fails the NPV criterion. This does not necessarily imply a nominal cash loss: undiscounted receipts may exceed payments while still being insufficient after accounting for time and the benchmark return.
+
+The worked-example notebook now applies the abstract-asset model. It constructs a cash-flow table, computes NPV, and tests how the result changes when the discount rate and other assumptions move.
+
+\notebooklink
+  {L1b: Net Present Value Worked Example}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-1/L1b/CHEME-5660-L1b-NetPresentValue-Fall-2025-WorkedExample.ipynb}
+  {Represent a vehicle purchase as an abstract asset, compute its NPV, and explore which assumptions drive the result.}
+
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we connected institutional money flows to valuation, placed dated cash flows in common time-0 units, and defined NPV for an abstract asset.}
+  {Payments use layered money}
+  {Customers transact with bank deposits, while banks use reserve balances at the Federal Reserve to settle obligations across institutions.}
+  {Policy and valuation rates differ}
+  {The FOMC targets an overnight interbank rate; an asset's valuation discount rate is a separately stated model input.}
+  {Structure before identity}
+  {An abstract asset separates the universal cash-flow structure from the particular identity of an investment.}
+  {Next, use the companion notebooks to test how compounding conventions, discount rates, and cash-flow assumptions change a valuation.}
+
+\begin{readinglist}
+  \item Federal Reserve Board, \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, for the target range, the effective federal funds rate, and current implementation tools.
+  \item Irving Fisher, \href{https://oll.libertyfund.org/titles/fisher-the-theory-of-interest}{\emph{The Theory of Interest}} (1930), Chapters I--III, for the classical account of impatience and investment opportunity.
+  \item Jonathan Berk and Peter DeMarzo, \href{https://www.pearson.com/en-gb/subject-catalog/p/Berk-Corporate-Finance-Global-Edition-5th-Edition/P200000003710}{\emph{Corporate Finance}}, 5th ed. (2020), Chapters 3--4, for present value and investment decision rules.
+  \item Frank J. Fabozzi and Francesco A. Fabozzi, \href{https://mitpress.mit.edu/9780262046275/bond-markets-analysis-and-strategies/}{\emph{Bond Markets, Analysis, and Strategies}}, 10th ed. (2021), for discount factors and fixed-income conventions.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

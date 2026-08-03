@@ -1,0 +1,181 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{12b}{The Wheel as an Income-Generation Strategy}{Fall 2026}{November 12, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Model the Wheel as states}
+  {Represent cash-secured-put and covered-call phases as an inventory-dependent transition system.}
+  {Track economic P\&L}
+  {Reconcile premiums, collateral interest, dividends, assignment settlements, transaction costs, and marked inventory through time.}
+  {Evaluate strategy risk}
+  {Design strike and roll rules and backtests that measure drawdown, short-convexity exposure, assignment, and benchmark opportunity cost.}
+
+\section{The Wheel Is a Policy, Not a New Payoff}
+
+The Wheel repeatedly sells cash-secured puts while out of the stock and covered calls while holding the stock. Its novelty is sequencing: assignment changes inventory, and inventory determines which option may be sold next. Each individual position retains the payoff and risk derived in L12a. Repetition does not transform short-option premium into guaranteed income.
+
+Let $q>0$ be the contract multiplier, usually $100$ shares/contract, and consider one Wheel unit. At decision epoch $k=0,1,\ldots$, define the inventory state
+\begin{equation}
+  \label{eq:state}
+  Z_k\in\{C,S\},
+\end{equation}
+where $C$ denotes cash/collateral with no shares and $S$ denotes ownership of $q$ shares. A policy maps the current state and information $\mathcal I_k$ into a contract choice, position size, and management rule:
+\begin{equation}
+  \label{eq:policy}
+  a_k=\pi(Z_k,\mathcal I_k)
+  :=(\text{option type},K_k,T_k,\text{quantity},\text{exit/roll rule}).
+\end{equation}
+The policy must be specified before performance can be evaluated. ``Sell another option'' leaves strike, tenor, quote side, early exit, roll timing, and risk limits undefined.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=2.4cm]
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=3.7cm,minimum height=1.25cm,align=center] (cash)
+      {State $C$: cash collateral\\sell cash-secured put};
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=3.7cm,minimum height=1.25cm,align=center,right=of cash] (stock)
+      {State $S$: own $q$ shares\\sell covered call};
+    \draw[vnlink,very thick,->,bend left=18] (cash) to node[above,align=center]{put assigned\\buy $q$ shares at $K_p$} (stock);
+    \draw[vncarnelian,very thick,->,bend left=18] (stock) to node[below,align=center]{call assigned\\sell $q$ shares at $K_c$} (cash);
+    \draw[vnmuted,thick,->,loop left,looseness=3.6] (cash) to node[left,align=right]{put expires/closes\\without assignment} (cash);
+    \draw[vnmuted,thick,->,loop right,looseness=3.6] (stock) to node[right,align=left]{call expires/closes\\without assignment} (stock);
+  \end{tikzpicture}
+  \caption{The Wheel as an inventory state machine. Premiums occur on every initiated option, but assignment determines whether the strategy carries cash or stock risk into the next cycle.}
+  \label{fig:wheel-state-machine}
+\end{figure}
+
+\section{State Transitions and Inventory Conservation}
+
+In state $C$, sell one put at strike $K_{p,k}$ and reserve sufficient eligible collateral. If it expires or is closed without assignment, $Z_{k+1}=C$. If assigned, cash falls by $qK_{p,k}$, shares increase by $q$, and $Z_{k+1}=S$. In state $S$, sell one call at strike $K_{c,k}$ against exactly $q$ shares. Without assignment, remain in $S$; upon assignment, shares fall by $q$, cash rises by $qK_{c,k}$, and the next state is $C$.
+
+Let $a_p\in[0,1]$ and $a_c\in[0,1]$ denote simplified one-cycle assignment probabilities for the put and call phases. If these probabilities were constant, the state transition matrix, with rows and columns ordered $(C,S)$, would be
+\begin{equation}
+  \label{eq:transition-matrix}
+  \mathbf P=
+  \begin{bmatrix}
+    1-a_p & a_p\\
+    a_c & 1-a_c
+  \end{bmatrix}.
+\end{equation}
+When $a_p+a_c>0$, its stationary state fractions are
+\begin{equation}
+  \label{eq:stationary-state}
+  \pi_C=\frac{a_c}{a_p+a_c},
+  \qquad
+  \pi_S=\frac{a_p}{a_p+a_c}.
+\end{equation}
+This toy Markov description clarifies that the Wheel may spend long periods in one state. In reality, assignment probabilities depend on spot, strike, tenor, volatility, dividends, rates, and the policy; states must generally include market variables and open-contract details, so \eqnref{transition-matrix} is not a calibrated performance model.
+
+\begin{remark}{Assignment is not the only transition mechanism}{transitions}
+An operator may buy back, roll, exercise a long hedge, or sell shares independently. Those actions change cash and inventory even without expiration assignment. A complete state machine records every permitted action and prevents impossible states such as selling a ``covered'' call without the required deliverable shares.
+\end{remark}
+
+\section{The Ledger Makes or Breaks the Analysis}
+
+Let $X_k$ be cash immediately before action $k$, $N_k\in\{0,q\}$ the share count, and $S_k$ the contemporaneous stock price. Let $O_k$ be the signed executable value of any open option position. Marked wealth is
+\begin{equation}
+  \label{eq:wealth}
+  W_k:=X_k+N_kS_k+O_k.
+\end{equation}
+A cash ledger over one management interval should reconcile
+\begin{equation}
+  \label{eq:cash-ledger}
+  X_{k+1}=X_k
+  +Q_k
+  +I_k
+  +D_k
+  +A_k
+  -C_k,
+\end{equation}
+where $Q_k$ is net option trade cash flow using bid/ask and multiplier, $I_k$ is collateral interest net of financing, $D_k$ is stock dividend cash flow, $A_k$ is assignment or stock-trade settlement cash flow, and $C_k\geq 0$ collects commissions, fees, slippage, and taxes included in the chosen performance convention. Signs are cash-account signs, so put assignment produces $A_k=-qK_{p,k}$ and covered-call assignment produces $A_k=+qK_{c,k}$.
+
+Premium should be recognized as an asset/liability exchange, not immediate economic profit. Selling an option raises cash $Q_k>0$ while creating a short option $O_k<0$ of approximately equal executable value. Wealth changes through subsequent repricing, decay, exercise, and costs. Counting premium at entry as profit while ignoring the open liability overstates returns.
+
+For assigned stock, maintain at least three separate bases:
+\begin{itemize}[leftmargin=1.3em,itemsep=1pt,topsep=2pt]
+  \item tax/accounting basis, affected by jurisdiction-specific rules;
+  \item strategy ledger basis, including allocated premiums and costs; and
+  \item current market value, which determines present opportunity cost and risk.
+\end{itemize}
+Rolling a losing option does not erase the loss. The roll is a closing debit plus a new opening credit, and each leg must remain visible in \eqnref{cash-ledger}.
+
+\section{Where the Return Comes From---and What Is Sold}
+
+The Wheel is structurally short optionality. In state $C$, the short put has positive delta for the seller and negative gamma; losses accelerate as the stock falls. In state $S$, the covered call keeps positive delta and caps upside beyond the call strike. Premium compensates the seller for bearing volatility, jump, liquidity, and assignment risk; it is not an independent return source detached from those exposures.
+
+One cycle's outcome is path-dependent. A sharp decline can assign stock far above its new market value and leave the strategy selling calls below its ledger basis or receiving little premium at higher strikes. A sharp rally during the covered-call phase can remove the shares and create large opportunity cost relative to buy-and-hold. Repeated small credits can therefore coexist with negatively skewed total returns.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.15cm,y=0.72cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,0)--(8.2,0) node[right] {cycle};
+    \draw[->,vnmuted] (0,-2.2)--(0,3.2) node[above] {cumulative P\&L};
+    \draw[vnlink,very thick] plot coordinates {(0.3,0.1) (1.0,0.45) (1.7,0.78) (2.4,1.05) (3.1,1.38) (3.8,1.62) (4.5,-1.35) (5.2,-1.05) (5.9,-0.75) (6.6,-0.48) (7.4,-0.2)};
+    \foreach \x in {1.0,1.7,2.4,3.1,3.8,5.2,5.9,6.6,7.4}{\fill[vnlink] (\x,{0}) circle (0pt);}
+    \draw[vncarnelian,dashed] (4.5,-1.35)--(4.5,2.7);
+    \node[vncarnelian,right,align=left] at (4.55,2.1) {stock gap / assignment\\can dominate many credits};
+  \end{tikzpicture}
+  \caption{A schematic short-volatility return path: frequent modest credits do not bound the loss from a large underlying move. The precise sequence is policy- and market-dependent.}
+  \label{fig:wheel-skew}
+\end{figure}
+
+\section{A Reproducible Wheel Policy}
+
+A testable policy specifies eligibility and action rules before observing outcomes. At minimum record:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
+  \item \textbf{Underlying eligibility:} liquidity, option volume/open interest, spread limit, price, corporate actions, and concentration caps.
+  \item \textbf{Contract selection:} days to expiration, strike rule, quote side, minimum credit after costs, and treatment of dividends and earnings.
+  \item \textbf{Management:} profit target, stop/risk rule, roll date, early-assignment response, and whether decisions occur intraday or at a fixed close.
+  \item \textbf{Capital:} collateral instrument and yield, maximum utilization, reserve buffer, integer contracts, and treatment of excess cash.
+  \item \textbf{Stock state:} covered-call strike constraints, dividend ownership, independent stock exit rules, and concentration duration.
+\end{itemize}
+Strike selection by delta is a sensitivity-based convention, not a literal assignment-probability guarantee. Selecting the largest premium without normalizing for width, time, volatility, and downside exposure systematically favors riskier obligations.
+
+\notebooklink
+  {L12b: Cash-Secured Put Phase}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-CashSecuredPut-Fall-2025.ipynb}
+  {Analyze the share-acquisition phase, including collateral, premium, assignment, breakeven, and terminal downside.}
+
+\notebooklink
+  {L12b: Covered Call Phase}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-AnalysisCoveredCall-Fall-2025.ipynb}
+  {Analyze the share-sale phase, including capped upside, stock downside, assignment, and opportunity cost relative to holding shares.}
+
+\section{Backtest the Process, Not Isolated Diagrams}
+
+A credible backtest uses point-in-time option chains and stock data, executable bid/ask assumptions, correct multipliers, corporate-action adjustments, dividends, collateral yield, and explicit assignment/roll logic. It must prohibit look-ahead in strike selection and avoid survivorship bias in the underlying universe. When historical chains are unavailable, model-generated quotes should be labeled synthetic and stressed for model error.
+
+Mark the whole account daily using \eqnref{wealth}. Report annualized return only with its capital convention and alongside maximum drawdown, volatility, expected shortfall, turnover, costs, fraction of time in states $C$ and $S$, assignment frequency, concentration, and benchmark-relative return. Compare with buy-and-hold stock, cash/Treasuries, and a parity-consistent alternative. A premium total alone is not a performance statistic.
+
+Synthetic covered calls---a deep-ITM long call plus a higher-strike short call---form a call debit spread with bounded expiration loss. They can reduce initial cash outlay but introduce expiration mismatch, bid--ask, exercise, and early-assignment mechanics. They are a distinct policy variant, not automatically equivalent to deliverable shares in an American-option account.
+
+\notebooklink
+  {L12b: Synthetic Covered Call Extension}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-AnalysisSyntheticCoveredCall-Fall-2025.ipynb}
+  {Replace stock with a deep-ITM long call, derive the resulting call-spread payoff, and inspect the capital and assignment tradeoffs.}
+
+\Needspace{0.38\textheight}
+\keytakeaways
+  {In this lecture, we represented the Wheel as an inventory state machine and built the ledger and evaluation rules needed to test it as a complete strategy.}
+  {The Wheel is path-dependent}
+  {Assignment moves the account between cash and stock states, so one option cycle cannot describe the strategy's long-run exposure.}
+  {Premium is paired with a liability}
+  {Economic P\&L marks the open option and stock inventory and includes funding, dividends, settlement, and costs; entry credit alone is not profit.}
+  {A policy needs a full backtest}
+  {Point-in-time chains, executable prices, transition logic, drawdown, tail risk, state occupancy, and benchmark opportunity cost are required.}
+  {Next, generalize sequential decisions to exploration--exploitation problems with stochastic multi-armed bandits.}
+
+\begin{readinglist}
+  \item Yakov Amihud and Haim Mendelson, \href{https://doi.org/10.1016/0304-405X(86)90065-6}{``Asset Pricing and the Bid--Ask Spread,''} \emph{Journal of Financial Economics} 17(2), 223--249 (1986).
+  \item Hayne E. Leland, \href{https://doi.org/10.1111/j.1540-6261.1985.tb02383.x}{``Option Pricing and Replication with Transactions Costs,''} \emph{Journal of Finance} 40(5), 1283--1301 (1985).
+  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed., Pearson (2021), chapters on option strategies, hedging, and American exercise.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Repeated short-option selling can incur substantial drawdowns and assignment risk.}
+
+\end{document}

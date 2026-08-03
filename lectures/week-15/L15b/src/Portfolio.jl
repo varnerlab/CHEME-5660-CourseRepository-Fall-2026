@@ -14,7 +14,7 @@ preferences stored in a [`MyInvestorMarketContextModel`](@ref).
   `:random`, `:open`, `:close`, `:high`, `:low`, and `:volume_weighted_average_price` (default).
 - `cutoff::Float64`: Probability threshold that determines when a ticker is treated as preferred; values
   below this cutoff receive a penalty.
-- `penalty::Float64`: Score applied to low-probability tickers when computing the preference-weighted score.
+- `penalty::Float64`: Score applied to low-probability tickers before active-set selection.
 
 ### Returns
 - `NamedTuple`: `(shares, price, gamma, tickers, cash)` where `shares` is the optimal share vector,
@@ -22,9 +22,9 @@ preferences stored in a [`MyInvestorMarketContextModel`](@ref).
   `tickers` preserves the ticker order, and `cash` is any unallocated budget.
 
 ### Notes
-- Non-preferred tickers are forced to the minimum purchase size `model.ϵ`, and the remaining budget is
-  redistributed across preferred tickers.
-- The preference score is bounded to ``[-1, 1]`` using `tanh_fast` to stabilize the allocation weights.
+- Only tickers with a positive bounded score enter the active set; excluded tickers receive zero shares.
+- Signed SIM beta is converted to a positive scale using its magnitude before applying a possibly
+  noninteger exponent. The score itself retains beta's sign in the market-exposure term.
 """
 function shares(t::Int64, model::MyInvestorMarketContextModel; 
     fillpriceconvention = :volume_weighted_average_price, 
@@ -39,7 +39,6 @@ function shares(t::Int64, model::MyInvestorMarketContextModel;
     singleindexmodel_parameters = model.singleindexmodel_parameters;
     ξ = model.ξ;
     mood = model.mood;
-    min_share_purchase = model.ϵ;
 
     # size of the problem -
     K = length(mylocaltickers);
@@ -68,7 +67,8 @@ function shares(t::Int64, model::MyInvestorMarketContextModel;
         if pᵢ > cutoff
             ξᵢ = ξ;
         end
-        R = αᵢ/(βᵢ^λ) + (βᵢ/(βᵢ^λ))*(Ḡₘ) + ξᵢ*pᵢ; # score
+        risk_scale = max(abs(βᵢ), sqrt(eps(Float64)))^λ;
+        R = αᵢ/risk_scale + (βᵢ/risk_scale)*Ḡₘ + ξᵢ*pᵢ; # score
         γ[i] = tanh_fast(R);
     end
 
@@ -103,40 +103,10 @@ function shares(t::Int64, model::MyInvestorMarketContextModel;
     S = findall(γᵢ -> γᵢ > 0, γ); # Which assets does our preference model tell is to buy?
     # S = 1:K; # TEMPORARY: consider all assets for now
 
-    # In the set of assets to explore, do we have any non-preferred assets?
-    negative_gamma_flag = any(γ[S] .< 0);
-    if (negative_gamma_flag == false)
-        
-        # easy case: all of my potential assets are preferred.
+    if isempty(S) == false
         γ̄ = sum(γ[S]);
-        B̄ = B;
         for s ∈ S
-            n[s] = (γ[s]/γ̄)*(B̄/price[s]);
-        end
-    else
-
-        # hard case: some assets are *not* preferred. 
-        
-        # Prep work for non-preferred case
-        # First: the non-preferred assets are min_share_purchase -
-        # Second: Compute the adjusted budget
-        # Third: Compute γ̄
-        B̄ = B;
-        γ̄ = 0.0;
-        for s ∈ S
-            if (γ[s] < 0.0)
-                B̄ += -min_share_purchase*price[s];
-                n[s] = min_share_purchase;
-            else
-                γ̄ += γ[s];
-            end
-        end
-
-        # compute the optimal preferred assets -
-        for s ∈ S
-            if (γ[s] ≥ 0.0)
-                n[s] = (γ[s]/γ̄)*(B̄/price[s]);
-            end
+            n[s] = (γ[s]/γ̄)*(B/price[s]);
         end
     end
 
@@ -160,8 +130,8 @@ time series and single-index model parameters.
   factor series, market data matrix, SIM parameters, and share floor `ϵ`.
 
 ### Returns
-- `NamedTuple`: `(shares, price, gamma, tickers, cash)` where `shares` is the optimal share vector,
-  `price` holds the noisy fill prices used for each ticker, `gamma` are the bounded preference weights,
+- `NamedTuple`: `(shares, price, gamma, tickers, cash)` where `shares` is the target share vector,
+  `price` holds positive synthetic fill prices used for each ticker, `gamma` are bounded scores,
   `tickers` preserves the ticker order, and `cash` is any unallocated budget.
 """
 function shares(t::Int64, context::MySimpleRobotInvestorContextModel)
@@ -174,7 +144,6 @@ function shares(t::Int64, context::MySimpleRobotInvestorContextModel)
     λ = context.λ;
     K = length(mylocaltickers);
     singleindexmodel_parameters = context.singleindexmodel_parameters;
-    min_share_purchase = context.ϵ;
 
     # compute the risk factor array -
     riskfactors = Array{Float64,1}(undef, K);
@@ -182,13 +151,15 @@ function shares(t::Int64, context::MySimpleRobotInvestorContextModel)
         ticker = mylocaltickers[i];
         simmodel = singleindexmodel_parameters[ticker];
         βᵢ = simmodel.beta;
-        riskfactors[i] = βᵢ^λ;
+        riskfactors[i] = max(abs(βᵢ), sqrt(eps(Float64)))^λ;
     end;
 
     # compute the fill price -
     price = Array{Float64,1}(undef, K);
     for i ∈ eachindex(mylocaltickers)
-        price[i] = marketdata[t,i+1]*(1+0.01*randn()); # add some noise to the price
+        reference_price = marketdata[t,i+1];
+        reference_price > 0 || throw(ArgumentError("reference prices must be strictly positive"));
+        price[i] = reference_price*exp(0.01*randn() - 0.5*0.01^2); # positive synthetic fill perturbation
     end
 
     # compute the preference coefficient for each ticker -
@@ -206,43 +177,11 @@ function shares(t::Int64, context::MySimpleRobotInvestorContextModel)
     end
 
     n = zeros(K); # initialize space for optimal solution
-    # S = findall(γᵢ -> γᵢ > 0, γ); # Which assets does our preference model tell is to buy?
-    S = 1:K; # TEMPORARY: consider all assets for now
-
-    # In the set of assets to explore, do we have any non-preferred assets?
-    negative_gamma_flag = any(γ[S] .< 0)
-    if (negative_gamma_flag == false)
-        
-        # easy case: all of my potential assets are preferred.
+    S = findall(γᵢ -> γᵢ > 0, γ); # assets selected by the positive-score policy
+    if isempty(S) == false
         γ̄ = sum(γ[S]);
-        B̄ = B;
         for s ∈ S
-            n[s] = (γ[s]/γ̄)*(B̄/price[s]);
-        end
-    else
-
-        # hard case: some assets are *not* preferred. 
-        
-        # Prep work for non-preferred case
-        # First: the non-preferred assets are min_share_purchase -
-        # Second: Compute the adjusted budget
-        # Third: Compute γ̄
-        B̄ = B;
-        γ̄ = 0.0;
-        for s ∈ S
-            if (γ[s] < 0.0)
-                B̄ += -min_share_purchase*price[s];
-                n[s] = min_share_purchase;
-            else
-                γ̄ += γ[s];
-            end
-        end
-
-        # compute the optimal preferred assets -
-        for s ∈ S
-            if (γ[s] ≥ 0.0)
-                n[s] = (γ[s]/γ̄)*(B̄/price[s]);
-            end
+            n[s] = (γ[s]/γ̄)*(B/price[s]);
         end
     end
 

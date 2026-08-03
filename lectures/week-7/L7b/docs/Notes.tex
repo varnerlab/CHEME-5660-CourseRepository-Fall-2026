@@ -1,0 +1,170 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+
+\lecturenotes{7b}{Introduction to Single-Index Models}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Decompose asset returns}
+  {Separate common market exposure from firm-specific variation and interpret alpha, beta, and the residual.}
+  {Build the SIM covariance}
+  {Derive the low-dimensional mean and covariance structure implied by a single-index model.}
+  {Estimate and diagnose a SIM}
+  {Fit alpha and beta by least squares and use residuals, confidence intervals, and $R^2$ without overstating what they establish.}
+
+\section{Why Replace a Full Covariance Matrix?}
+
+A portfolio of $m$ risky assets requires $m$ expected returns and $m(m+1)/2$ distinct covariance entries. The number of pairwise terms grows quadratically, estimates become noisy when the history is short relative to the asset universe, and an inverse covariance matrix can magnify that noise. Yet many securities visibly move together when market-wide news arrives. A factor model makes that shared source of movement explicit.
+
+The single-index model (SIM), introduced by William Sharpe as a simplified model for portfolio analysis, compresses co-movement into exposure to one observed index. It is both a statistical regression and a covariance model. Those roles are related but not identical: fitting separate regressions does not by itself prove that their residuals are mutually uncorrelated.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.05cm and 1.45cm]
+    \node[draw=vnink,fill=vnsoft,minimum width=2.15cm,minimum height=0.78cm] (market) {market return $R_M$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=1.25cm,minimum width=2.15cm] (a1) {asset $1$: $R_1$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,minimum width=2.15cm] (a2) {asset $2$: $R_2$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=-1.25cm,minimum width=2.15cm] (am) {asset $m$: $R_m$};
+    \draw[vnlink,thick,->] (market.east) -- node[above,sloped] {$\beta_1$} (a1.west);
+    \draw[vnlink,thick,->] (market.east) -- node[above] {$\beta_2$} (a2.west);
+    \draw[vnlink,thick,->] (market.east) -- node[below,sloped] {$\beta_m$} (am.west);
+    \node[left=0.85cm of a1,text=vnmuted] (e1) {$\varepsilon_1$};
+    \node[left=0.85cm of a2,text=vnmuted] (e2) {$\varepsilon_2$};
+    \node[left=0.85cm of am,text=vnmuted] (em) {$\varepsilon_m$};
+    \draw[vnmuted,->] (e1)--(a1);
+    \draw[vnmuted,->] (e2)--(a2);
+    \draw[vnmuted,->] (em)--(am);
+  \end{tikzpicture}
+  \caption{One common market return reaches every asset through its beta loading, while each residual records variation not explained by that index. The diagonal-residual assumption makes the residual arrows mutually uncorrelated; it should be checked rather than silently presumed.}
+  \label{fig:sim-graph}
+\end{figure}
+
+\section{The Single-Index Return Model}
+
+Fix one return horizon, such as one trading day. Let $R_M\in\R$ be the market-index return over that horizon and let $R_i\in\R$ be the return of risky asset $i\in\{1,\ldots,m\}$. A SIM represents each asset as
+\begin{equation}
+  \label{eq:sim-scalar}
+  R_i=\alpha_i+\beta_iR_M+\varepsilon_i.
+\end{equation}
+Here $\alpha_i\in\R$ is an intercept per observation period, $\beta_i\in\R$ is a dimensionless market loading, and $\varepsilon_i\in\R$ is the same-period residual. The conventional population assumptions are
+\begin{equation}
+  \label{eq:sim-assumptions}
+  \mathbb E[\varepsilon_i]=0,
+  \qquad
+  \operatorname{Cov}(\varepsilon_i,R_M)=0,
+  \qquad
+  \operatorname{Cov}(\varepsilon_i,\varepsilon_j)=0\quad(i\neq j).
+\end{equation}
+The first two conditions define a linear projection when the parameters are population least-squares coefficients. The third is an additional covariance-model restriction. Market proxies, sector effects, omitted factors, and synchronized shocks can leave correlated residuals and violate it.
+
+\begin{definition}{Systematic and idiosyncratic components}{risk-components}
+For the SIM in \eqnref{sim-scalar}, $\beta_iR_M$ is the asset's \emph{systematic component}: its variation is inherited from the common index. The residual $\varepsilon_i$ is the \emph{idiosyncratic component}: variation orthogonal to the chosen index under \eqnref{sim-assumptions}. Idiosyncratic does not mean predictable, harmless, or independent through time.
+\end{definition}
+
+If $\sigma_M^2:=\operatorname{Var}(R_M)>0$, the population linear-projection coefficients satisfy
+\begin{equation}
+  \label{eq:projection-coefficients}
+  \beta_i=\frac{\operatorname{Cov}(R_i,R_M)}{\sigma_M^2},
+  \qquad
+  \alpha_i=\mathbb E[R_i]-\beta_i\mathbb E[R_M].
+\end{equation}
+Thus beta measures sensitivity to the selected index and horizon. A beta of $1.4$ does not mean the asset always moves by $1.4$ times the market; \eqnref{sim-scalar} includes an intercept and a residual on every observation.
+
+\section{Mean and Covariance Implied by the SIM}
+
+Let $\boldsymbol\alpha,\boldsymbol\beta\in\R^m$ collect the intercepts and betas, let $\boldsymbol\varepsilon\in\R^m$ collect residuals, and let $D:=\operatorname{diag}(\sigma_{\varepsilon,1}^2,\ldots,\sigma_{\varepsilon,m}^2)$, where $\sigma_{\varepsilon,i}^2:=\operatorname{Var}(\varepsilon_i)$. The vector model is
+\begin{equation}
+  \label{eq:sim-vector}
+  \mathbf R=\boldsymbol\alpha+\boldsymbol\beta R_M+\boldsymbol\varepsilon.
+\end{equation}
+Under \eqnref{sim-assumptions}, its moments have the low-rank-plus-diagonal form in \propref{sim-moments}.
+
+\begin{proposition}{Single-index moments}{sim-moments}
+Let $\mathbf R\in\R^m$ satisfy \eqnref{sim-vector}. Suppose $\mathbb E[\boldsymbol\varepsilon]=\mathbf0$, $\operatorname{Cov}(\boldsymbol\varepsilon,R_M)=\mathbf0$, and $\operatorname{Cov}(\boldsymbol\varepsilon)=D$, where $D$ is the diagonal matrix of residual variances defined above. If $\mu_M:=\mathbb E[R_M]$ and $\sigma_M^2:=\operatorname{Var}(R_M)$, then
+\begin{equation}
+  \label{eq:sim-moments}
+  \boldsymbol\mu:=\mathbb E[\mathbf R]
+  =\boldsymbol\alpha+\boldsymbol\beta\mu_M,
+  \qquad
+  \Sigma:=\operatorname{Cov}(\mathbf R)
+  =\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D.
+\end{equation}
+Consequently, $\operatorname{Cov}(R_i,R_j)=\beta_i\beta_j\sigma_M^2$ for $i\neq j$, while $\operatorname{Var}(R_i)=\beta_i^2\sigma_M^2+\sigma_{\varepsilon,i}^2$.
+\end{proposition}
+
+The matrix $\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}$ has rank at most one. Instead of estimating every cross-covariance separately, the SIM estimates $m$ betas, $m$ residual variances, and one market variance. This reduction buys stability only if the omitted residual correlations are small enough for the intended use.
+
+\section{Portfolio Risk Becomes Interpretable}
+
+Let $\mathbf w\in\R^m$ be fixed portfolio weights. The portfolio return $R_p:=\mathbf w^{\mathsf T}\mathbf R$ has market beta $\beta_p:=\mathbf w^{\mathsf T}\boldsymbol\beta$ and residual $\varepsilon_p:=\mathbf w^{\mathsf T}\boldsymbol\varepsilon$. Substituting \eqnref{sim-vector} gives
+\begin{equation}
+  \label{eq:portfolio-sim}
+  R_p=\mathbf w^{\mathsf T}\boldsymbol\alpha+\beta_pR_M+\varepsilon_p,
+  \qquad
+  \operatorname{Var}(R_p)=\beta_p^2\sigma_M^2+\mathbf w^{\mathsf T}D\mathbf w.
+\end{equation}
+The first variance term is common-factor risk. The second is residual risk. For an equal-weight portfolio with $w_i=1/m$ and residual variances bounded by a constant $C$, the residual variance satisfies
+\begin{equation}
+  \label{eq:diversification-bound}
+  \mathbf w^{\mathsf T}D\mathbf w
+  =\frac{1}{m^2}\sum_{i=1}^{m}\sigma_{\varepsilon,i}^2
+  \leq\frac{C}{m}.
+\end{equation}
+Thus firm-specific variance can vanish as the portfolio broadens under the diagonal-residual assumption, while systematic variance generally remains. Concentrated weights or correlated residuals can destroy this conclusion.
+
+\section{Estimating Alpha and Beta}
+
+For one asset, observe $n$ paired returns $\{(R_{M,t},R_{i,t})\}_{t=1}^n$. Let $\mathbf y\in\R^n$ contain the asset returns and let $X\in\R^{n\times2}$ have row $t$ equal to $(1,R_{M,t})$. When $X$ has full column rank, ordinary least squares estimates $\boldsymbol\theta_i:=(\alpha_i,\beta_i)^{\mathsf T}$ by
+\begin{equation}
+  \label{eq:ols}
+  \widehat{\boldsymbol\theta}_i
+  =(X^{\mathsf T}X)^{-1}X^{\mathsf T}\mathbf y,
+  \qquad
+  \widehat{\boldsymbol\varepsilon}_i
+  =\mathbf y-X\widehat{\boldsymbol\theta}_i.
+\end{equation}
+Numerically, a QR or singular-value decomposition is preferable to explicitly forming the inverse in \eqnref{ols}. The residual variance estimate is $\widehat\sigma_{\varepsilon,i}^2=\|\widehat{\boldsymbol\varepsilon}_i\|_2^2/(n-2)$ under the usual homoskedastic regression convention.
+
+Classical standard errors and Student-$t$ confidence intervals additionally rely on assumptions about conditional variance and temporal dependence. Financial returns can be heteroskedastic and serially dependent, so heteroskedasticity/autocorrelation-consistent errors, block bootstrap intervals, or rolling estimates may be more credible than an i.i.d. formula. Whatever method is used, the training window and return horizon must be stated.
+
+\notebooklink
+  {L7b: SVD Estimation of Single-Index Models}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-SVD-SIM-Estimation-Fall-2025.ipynb}
+  {Construct market and asset growth-rate arrays, estimate SIM coefficients with a numerically stable linear-algebra workflow, and inspect residual behavior.}
+
+\notebooklink
+  {L7b: SIM Parameter Uncertainty}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-SIM-Parameter-Uncertainty-Fall-2025.ipynb}
+  {Compute coefficient intervals and $R^2$, then compare theory-based uncertainty with bootstrap results across firms.}
+
+\section{What \texorpdfstring{$R^2$}{R-squared}, Alpha, and Beta Do Not Prove}
+
+In a regression with an intercept, $R_i^2:=1-\sum_t\widehat\varepsilon_{i,t}^2/\sum_t(R_{i,t}-\overline R_i)^2$ is the sample fraction of asset-return variation explained by the fitted market regressor. It is not the probability that the model is true, a forecast-accuracy guarantee, or a measure of investment quality. A low $R^2$ can coexist with a useful beta estimate, and a high $R^2$ can coexist with unstable parameters or omitted nonlinear structure.
+
+Likewise, a positive estimated alpha is an intercept conditional on the chosen market proxy, return convention, sample window, and specification. It is not automatically abnormal performance. Beta is exposure to the selected factor, not total risk. Before using a SIM covariance in an optimizer, inspect residual cross-correlations, rolling stability, out-of-sample error, and sensitivity to the market proxy.
+
+The notebooks work with continuously compounded growth rates. For small intervals, log returns and simple returns are close, but they are not identical. Means, intercepts, risk-free adjustments, and annualization must all use a compatible convention; a coefficient estimated from daily log returns should not be inserted unexamined into a model written for annual simple returns.
+
+\keytakeaways
+  {In this lecture, we replaced a dense covariance description with one common market factor plus asset-specific residuals and connected that structure to regression estimation.}
+  {SIM is a covariance restriction}
+  {The formula $\Sigma=\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D$ requires residuals to be uncorrelated across assets, not merely fitted separately.}
+  {Risk has two components}
+  {Portfolio market exposure is governed by $\mathbf w^{\mathsf T}\boldsymbol\beta$; diagonal residual risk can diversify, but systematic risk remains.}
+  {Diagnostics limit interpretation}
+  {Alpha, beta, and $R^2$ depend on the market proxy, horizon, sample, return convention, and regression assumptions.}
+  {Next, use the SIM moments inside risky-only and risky/risk-free minimum-variance allocation problems.}
+
+\begin{readinglist}
+  \item William F. Sharpe, \href{https://doi.org/10.1287/mnsc.9.2.277}{``A Simplified Model for Portfolio Analysis,''} \emph{Management Science} 9(2), 277--293 (1963).
+  \item Edwin J. Elton, Martin J. Gruber, Stephen J. Brown, and William N. Goetzmann, \emph{Modern Portfolio Theory and Investment Analysis}, 9th ed. (2014), chapters on index models.
+  \item John Y. Campbell, Andrew W. Lo, and A. Craig MacKinlay, \emph{The Econometrics of Financial Markets} (1997), chapters on return predictability and regression diagnostics.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

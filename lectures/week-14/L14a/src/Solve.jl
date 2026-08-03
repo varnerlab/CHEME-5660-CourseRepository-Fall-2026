@@ -21,8 +21,12 @@ function solve(problem::MySimpleCobbDouglasChoiceProblem)::Dict{String,Any}
     # how many variables do we have?
     d = length(γ);
 
-    # coefficient - if any gamma is negative, we have negative leading coefficient
-    α = (any(γ .< 0) ? -1 : 1);
+    # The standard Cobb-Douglas maximum-utility result requires positive exponents.
+    # Negative scores must be handled by asset selection or a different objective.
+    all(isfinite, γ) || throw(ArgumentError("Cobb-Douglas exponents must be finite"));
+    all(γ .> 0) || throw(ArgumentError("Cobb-Douglas exponents must be strictly positive; exclude non-preferred assets before solving"));
+    all(c .> 0) || throw(ArgumentError("asset prices must be strictly positive"));
+    B > 0 || throw(ArgumentError("budget must be strictly positive"));
 
 
     # Setup the problem -
@@ -34,7 +38,7 @@ function solve(problem::MySimpleCobbDouglasChoiceProblem)::Dict{String,Any}
     @variable(model, bounds[i,1] <= n[i=1:d] <= bounds[i,2], start=nₒ[i]) # we have d variables
     
     # set objective function -   
-    @NLobjective(model, Max, α*prod(n[i]^γ[i] for i ∈ 1:d));
+    @NLobjective(model, Max, prod(n[i]^γ[i] for i ∈ 1:d));
     @constraints(model, 
         begin
             # my budget constraint

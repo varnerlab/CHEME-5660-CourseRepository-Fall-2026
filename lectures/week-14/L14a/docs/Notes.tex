@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\newcommand{\E}{\mathbb{E}}
+
+\begin{document}
+
+\lecturenotes{14a}{Maximum-Utility Allocation and Dynamic Rebalancing}{Fall 2026}{November 24, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Solve a utility allocation}
+  {Derive the positive-exponent Cobb--Douglas optimum, interpret its dollar weights, and distinguish it from expected utility of terminal wealth.}
+  {Design a rebalance policy}
+  {Map point-in-time preference estimates into target holdings while enforcing self-financing, costs, bounds, and integer-share constraints.}
+  {Evaluate the full strategy}
+  {Separate forecast, optimizer, and execution effects and test dynamic allocations chronologically against stable benchmarks.}
+
+\section{From a Ranking to an Allocation}
+
+A ticker-ranking model answers ``which assets look attractive?'' It does not answer ``how much capital should each receive?'' Allocation requires an objective, a budget, prices, feasible holdings, and a rule for translating changing information into trades. Rebalancing then repeats this decision through time, so estimation and transaction costs become part of the strategy rather than afterthoughts.
+
+At rebalance date $\tau_k$, let $\mathcal S_k$ be the eligible asset set, $p_{i,k}>0$ the executable acquisition price of asset $i$, $n_{i,k}\geq 0$ its target share count, and $B_k>0$ the budget assigned to risky assets. One tractable allocation objective is the Cobb--Douglas holding utility
+\begin{equation}
+  \label{eq:cobb-douglas}
+  U_k(\mathbf n):=\kappa_k\prod_{i\in\mathcal S_k}n_i^{\gamma_{i,k}},
+  \qquad \kappa_k>0,\quad \gamma_{i,k}>0,
+\end{equation}
+subject to
+\begin{equation}
+  \label{eq:budget}
+  \sum_{i\in\mathcal S_k}p_{i,k}n_i\leq B_k.
+\end{equation}
+The positive coefficients $\gamma_{i,k}$ encode relative preference for the holding quantities. Since the logarithm is increasing, maximizing \eqnref{cobb-douglas} is equivalent to maximizing
+\begin{equation}
+  \label{eq:log-utility}
+  \log U_k(\mathbf n)=\log\kappa_k+
+  \sum_{i\in\mathcal S_k}\gamma_{i,k}\log n_i.
+\end{equation}
+The log form is concave for positive exponents and makes the first-order conditions transparent.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.25cm]
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=2.45cm,minimum height=0.9cm,align=center] (info) {point-in-time data\\through $\tau_k$};
+    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of info] (pref) {estimate preferences\\$\gamma_{i,k}$};
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of pref] (target) {solve target\\$\mathbf n_k^\star$};
+    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of target] (trade) {execute trades\\and pay costs};
+    \draw[vnlink,very thick,->] (info)--(pref);
+    \draw[vnlink,very thick,->] (pref)--(target);
+    \draw[vnlink,very thick,->] (target)--(trade);
+    \draw[vncarnelian,very thick,->,bend left=22] (trade) to node[below,align=center] {observe until\\$\tau_{k+1}$} (info);
+  \end{tikzpicture}
+  \caption{A dynamic allocation is a closed policy loop. Information timing, optimization, and execution jointly determine its realized performance.}
+  \label{fig:rebalance-loop}
+\end{figure}
+
+\section{The Closed-Form Maximum-Utility Portfolio}
+
+Let $\Gamma_k:=\sum_{j\in\mathcal S_k}\gamma_{j,k}$. Because every exponent is positive, utility increases with every holding and the budget binds. The Lagrangian for \eqnref{log-utility}--\eqnref{budget} is
+\begin{equation}
+  \label{eq:lagrangian}
+  \mathcal L(\mathbf n,\lambda)=
+  \sum_i\gamma_{i,k}\log n_i
+  +\lambda\left(B_k-\sum_i p_{i,k}n_i\right).
+\end{equation}
+
+\begin{theorem}{Positive-exponent Cobb--Douglas allocation}{cd-optimum}
+For $B_k>0$, $p_{i,k}>0$, and $\gamma_{i,k}>0$, the unique maximizer of \eqnref{cobb-douglas} subject to \eqnref{budget} is
+\begin{equation}
+  \label{eq:optimal-shares}
+  n_{i,k}^*=\frac{\gamma_{i,k}}{\Gamma_k}\frac{B_k}{p_{i,k}}.
+\end{equation}
+Consequently, the target dollar and portfolio weights are
+\begin{equation}
+  \label{eq:optimal-weights}
+  p_{i,k}n_{i,k}^*=\frac{\gamma_{i,k}}{\Gamma_k}B_k,
+  \qquad
+  w_{i,k}^*=\frac{p_{i,k}n_{i,k}^*}{B_k}
+  =\frac{\gamma_{i,k}}{\Gamma_k}.
+\end{equation}
+\end{theorem}
+
+The first-order condition is $\gamma_{i,k}/n_i=\lambda p_{i,k}$. Substitution into the binding budget gives $\lambda=\Gamma_k/B_k$ and \eqnref{optimal-shares}. Strict concavity of \eqnref{log-utility} supplies uniqueness.
+
+This result has an important interpretation: prices determine share counts, but the normalized preference coefficients determine dollar weights. If $\gamma_{i,k}$ is itself estimated from returns or a bandit model, the economic substance resides in that preference model. The optimizer cannot repair a poorly identified signal.
+
+\begin{remark}{Negative exponents are not ordinary aversion scores}{negative-gamma}
+If $\gamma_i<0$, then $n_i^{\gamma_i}$ increases without bound as $n_i\downarrow0$. The positive-exponent theorem no longer applies, and an arbitrary small lower bound can make the answer boundary-driven. Exclude an unwanted asset, impose a defensible constraint, or use a utility model in which risk enters explicitly; do not insert negative exponents into \eqnref{optimal-shares}.
+\end{remark}
+
+Holding utility in \eqnref{cobb-douglas} differs from classical expected utility of uncertain terminal wealth,
+\begin{equation}
+  \label{eq:expected-utility}
+  \max_{\mathbf w\in\mathcal W_k}
+  \E_k\!\left[u\!\left(W_{k+1}\right)\right],
+  \qquad
+  W_{k+1}=W_k\left(1+r_{f,k}+\mathbf w^\top
+  (\mathbf R_{k+1}-r_{f,k}\mathbf 1)\right).
+\end{equation}
+Here $u$ describes preference over wealth outcomes and the distribution of future return vector $\mathbf R_{k+1}$ carries risk. For example, CRRA utility $u(W)=W^{1-\rho}/(1-\rho)$ for $\rho\neq1$ uses $\rho>0$ as relative risk aversion. Cobb--Douglas asset holding utility is a convenient allocation map, but it should not be described as risk-aware unless its preference construction or constraints genuinely incorporate risk.
+
+\section{Turn Targets into Feasible Trades}
+
+Let $h_{i,k}^-$ be shares held immediately before the rebalance and let $x_{i,k}:=n_{i,k}-h_{i,k}^-$ be the signed trade. With no external cash flow, a self-financing implementation must reconcile
+\begin{equation}
+  \label{eq:self-financing}
+  \sum_i p^{\mathrm{exec}}_{i,k}x_{i,k}
+  +C_k(\mathbf x_k)
+  +\Delta c_k=0,
+\end{equation}
+where $p^{\mathrm{exec}}_{i,k}$ uses the appropriate bid or ask, $C_k\geq0$ contains commissions, fees, spread, and market impact, and $\Delta c_k$ is the change in the cash account. Solving targets at mid or close prices and then ignoring \eqnref{self-financing} can spend cash that the strategy does not have.
+
+Fractional targets from \eqnref{optimal-shares} must be rounded if only whole shares are tradable. Rounding each asset independently can violate the budget or create unintended concentration. The implementable problem may instead require integer holdings, lower and upper weights, a cash reserve, turnover caps, lot sizes, restricted names, and tax constraints. Those constraints convert a closed form into a numerical optimization or a deterministic rounding-and-repair procedure.
+
+Dynamic rebalancing need not trade all the way to every noisy target. A turnover-aware objective can penalize trades:
+\begin{equation}
+  \label{eq:turnover-objective}
+  \max_{\mathbf n\in\mathcal N_k}
+  \left\{
+  \sum_i\gamma_{i,k}\log n_i
+  -\eta_k\sum_i p_{i,k}|n_i-h_{i,k}^-|
+  \right\},
+\end{equation}
+where $\eta_k\geq0$ governs the reluctance to trade and $\mathcal N_k$ contains budget and operational constraints. A no-trade band is another policy: transact only when the current weight differs from target by more than a declared tolerance. Both approaches recognize that tiny theoretical improvements may be smaller than implementation cost.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.1cm,y=0.9cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,0)--(8.3,0) node[right] {time};
+    \draw[->,vnmuted] (0,0)--(0,4.0) node[above] {weight};
+    \draw[vnlink,very thick] plot coordinates {(0.3,2.5) (1.4,2.5) (1.4,3.0) (2.6,3.0) (2.6,2.2) (3.8,2.2) (3.8,2.75) (5.0,2.75) (5.0,2.35) (6.2,2.35) (6.2,2.8) (7.5,2.8)};
+    \draw[vnmuted,dashed] plot[smooth] coordinates {(0.3,2.6) (1.0,2.8) (1.7,2.7) (2.4,2.4) (3.1,2.35) (3.8,2.6) (4.5,2.65) (5.2,2.5) (5.9,2.55) (6.6,2.7) (7.5,2.65)};
+    \foreach \x in {1.4,2.6,3.8,5.0,6.2}{\draw[vncarnelian,thick] (\x,0.15)--(\x,-0.15);}
+    \node[text=vnlink] at (6.7,3.15) {implemented weight};
+    \node[text=vnmuted] at (6.5,2.25) {drifting target};
+    \node[text=vncarnelian] at (4.1,0.42) {rebalance dates};
+  \end{tikzpicture}
+  \caption{Between decision dates, market moves change portfolio weights. A rebalance rule determines when and how far the account trades toward a newly estimated target.}
+  \label{fig:weight-path}
+\end{figure}
+
+\section{Information Timing and Strategy Evaluation}
+
+Every target at $\tau_k$ must use only data available by $\tau_k$. Return estimates, covariance matrices, bandit posteriors, eligible-universe membership, and prices must be stored point-in-time. Trades should execute no earlier than the first price that would actually be available after the signal. A closing-price signal filled at that same unobserved close is look-ahead.
+
+The holding-period account recursion is
+\begin{equation}
+  \label{eq:wealth-recursion}
+  W_{k+1}=W_k+\sum_i h_{i,k}^+\Delta P_{i,k+1}
+  +D_{k+1}+I_{k+1}-C_k(\mathbf x_k),
+\end{equation}
+where $h_{i,k}^+$ is post-trade inventory, $\Delta P_{i,k+1}$ is the split-adjusted price change, $D_{k+1}$ denotes dividends, and $I_{k+1}$ is net interest on cash or borrowing. The exact return convention should be reconciled to this ledger.
+
+Evaluate the full policy chronologically and decompose its behavior:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
+  \item \textbf{Forecast:} Did the point-in-time $\gamma_{i,k}$ rank or predict the intended outcome out of sample?
+  \item \textbf{Allocation:} Did the utility map create sensible diversification, concentration, and risk exposure?
+  \item \textbf{Execution:} How much gross performance was lost to turnover, spread, fees, impact, and idle cash?
+  \item \textbf{Policy:} Were drawdown, volatility, tail loss, capacity, and benchmark-relative return acceptable across regimes?
+\end{itemize}
+Compare with buy-and-hold, equal weight, and the course's minimum-variance benchmark using the same universe, dates, cash treatment, and costs. An optimizer's in-sample objective value is not a performance measure.
+
+\notebooklink
+  {L14a: Online Bandit Portfolio Allocation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-14/L14a/CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2025.ipynb}
+  {Select asset subsets, solve the Cobb--Douglas allocation, and compare the resulting portfolio with a maximum-Sharpe benchmark.}
+
+\notebooklink
+  {L9a: Advanced Portfolio Rebalancing}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-Advanced-Portfolio-Rebalance-Fall-2025.ipynb}
+  {Review rolling parameter estimation and dynamic rebalancing mechanics that supply the implementation substrate for the 2026 synthesis.}
+
+\keytakeaways
+  {In this lecture, we derived a maximum-utility target allocation and embedded it in a self-financing, cost-aware dynamic rebalancing loop.}
+  {Preferences determine dollar weights}
+  {With positive Cobb--Douglas exponents, the optimal dollar weight is $\gamma_i/\sum_j\gamma_j$; prices convert that target into shares.}
+  {Targets are not trades}
+  {Existing inventory, executable prices, integer lots, cash, constraints, and transaction costs determine whether an optimizer's target is implementable.}
+  {Evaluate the closed loop}
+  {Point-in-time estimation, rebalance timing, execution, and benchmark design jointly determine out-of-sample performance and risk.}
+  {Next, study how interacting heterogeneous agents can generate abrupt market crashes and other emergent price behavior.}
+
+\begin{readinglist}
+  \item Robert C. Merton, \href{https://doi.org/10.1016/0022-0531(71)90038-X}{``Optimum Consumption and Portfolio Rules in a Continuous-Time Model,''} \emph{Journal of Economic Theory} 3(4), 373--413 (1971).
+  \item Stephen Boyd et al., \href{https://web.stanford.edu/~boyd/papers/pdf/multi_period_trading.pdf}{``Multi-Period Trading via Convex Optimization,''} \emph{Foundations and Trends in Optimization} 3(1), 1--76 (2017).
+\end{readinglist}
+
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only. Utility scores and optimizer outputs are model-dependent and are not investment recommendations.}
+
+\end{document}

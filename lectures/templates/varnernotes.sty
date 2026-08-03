@@ -1,0 +1,280 @@
+% ============================================================
+% varnernotes.sty -- house style for CHEME 5660 lecture notes
+% Engine: XeLaTeX
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{varnernotes}[2026/08/03 Varner lecture-notes house style]
+
+% Page and type ------------------------------------------------
+\RequirePackage[letterpaper,margin=0.5in,includeheadfoot,
+  headheight=14pt,headsep=10pt,footskip=20pt]{geometry}
+\RequirePackage{fontspec}
+% Latin Modern preserves the familiar LaTeX/Computer Modern voice for body
+% copy, while Arial supplies the course's visual hierarchy and teaching UI.
+\setmainfont{lmroman10}[
+  Extension=.otf,
+  UprightFont=*-regular,
+  ItalicFont=*-italic,
+  BoldFont=*-bold,
+  BoldItalicFont=*-bolditalic,
+  Ligatures=TeX]
+\IfFontExistsTF{Arial}
+  {\setsansfont{Arial}}
+  {\setsansfont{TeX Gyre Heros}}
+\linespread{1.05}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.5pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{2em}
+% Flush-left, ragged-right text intentionally leaves some lines underfull; only
+% overfull boxes indicate a margin violation worth reporting.
+\hbadness=10000
+
+% Core packages ------------------------------------------------
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage[
+  warnings-off={mathtools-colon,mathtools-overbracket}
+]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+% Latin Modern Math ships without a separate bold face. Define an explicit
+% synthetic bold math version so matrix/vector notation and bold callouts do
+% not trigger missing-font substitutions under XeLaTeX.
+\setmathfont{latinmodern-math.otf}[version=bold,FakeBold=1.35]
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{needspace}
+\RequirePackage{ragged2e}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{breakable,skins,theorems}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning}
+\RequirePackage{hyperref}
+\RequirePackage[nameinlink,noabbrev]{cleveref}
+% Use the visibly ragged standard setting so body copy is never mistaken for
+% full (two-sided) justification. Displayed mathematics remains centered.
+\AtBeginDocument{\raggedright}
+
+% Palette: intentionally restrained and print-friendly ----------
+\definecolor{vnink}{HTML}{202124}
+\definecolor{vnmuted}{HTML}{5F6368}
+\definecolor{vnrule}{HTML}{AEB4BA}
+\definecolor{vnpanel}{HTML}{F2F3F4}
+\definecolor{vnsoft}{HTML}{F8F9FA}
+\definecolor{vnlink}{HTML}{1A5276}
+\definecolor{vncarnelian}{HTML}{B31B1B}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=vnlink,
+  urlcolor=vnlink,
+  citecolor=vnlink,
+  breaklinks=true
+}
+\urlstyle{same}
+
+% Semantic inline references ----------------------------------
+% Every numbered object must be introduced in prose by a sentence that says
+% what the object contributes. These compact macros keep that reference in the
+% sentence; arguments are label suffixes (for example, \figref{cash-flow}).
+% Every display must also complete an informative prose lead-in such as “is
+% given by:” or “therefore satisfies:”; never drop directly into mathematics.
+% Pair each new symbol and notation (including operators, indices, big-O terms,
+% and conventional constants) with its meaning, domain, and units. Definitions,
+% theorems, propositions, and remarks must redefine these locally so that every
+% formal statement can be read independently of surrounding prose.
+\newcommand{\vnobjectref}[2]{\hyperref[#2]{#1~\ref*{#2}}}
+\newcommand{\figref}[1]{\vnobjectref{Fig.}{fig:#1}}
+\newcommand{\tabref}[1]{\vnobjectref{Table}{tab:#1}}
+\newcommand{\eqnref}[1]{\vnobjectref{Eq.}{eq:#1}}
+\newcommand{\defnref}[1]{\vnobjectref{Defn.}{def:#1}}
+\newcommand{\thmref}[1]{\vnobjectref{Thm.}{thm:#1}}
+\newcommand{\propref}[1]{\vnobjectref{Prop.}{prop:#1}}
+\newcommand{\remref}[1]{\vnobjectref{Remark}{rem:#1}}
+
+% Headings and running furniture -------------------------------
+\titleformat{\section}
+  {\sffamily\Large\bfseries\color{vnink}}
+  {\thesection}{0.65em}{}
+  [\vspace{2pt}{\color{vnrule}\titlerule}]
+\titlespacing*{\section}{0pt}{17pt}{7pt}
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{vnink}}
+  {\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{13pt}{4pt}
+% Never strand a section heading at the foot of a page.
+\AddToHook{cmd/section/before}{%
+  \Needspace{7\baselineskip}%
+  \ifnum\value{page}>1\thispagestyle{fancy}\fi
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small\color{vnmuted}CHEME 5660 -- Quantitative Finance for Engineers}
+\fancyhead[R]{\sffamily\small\color{vnmuted}\vnlecturemark}
+\fancyfoot[L]{\sffamily\footnotesize\color{vnmuted}Jeffrey D. Varner}
+\fancyfoot[R]{\sffamily\footnotesize\color{vnmuted}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\newcommand{\vnlecturemark}{}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[L]{\sffamily\small\color{vnmuted}CHEME 5660 -- Quantitative Finance for Engineers}%
+  \fancyhead[R]{\sffamily\small\color{vnmuted}\vnlecturemark}%
+  \fancyfoot[L]{\sffamily\footnotesize\color{vnmuted}Jeffrey D. Varner}%
+  \fancyfoot[R]{\sffamily\footnotesize\color{vnmuted}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancypagestyle{vnfirst}{%
+  \fancyhf{}%
+  \fancyfoot[L]{\sffamily\footnotesize\color{vnmuted}Jeffrey D. Varner}%
+  \fancyfoot[R]{\sffamily\footnotesize\color{vnmuted}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+% Compact lecture title ----------------------------------------
+\newcommand{\lecturenotes}[5]{%
+  \renewcommand{\vnlecturemark}{Lecture #1}%
+  \hypersetup{pdftitle={Lecture #1: #2},pdfauthor={#5}}%
+  \pagestyle{fancy}%
+  \thispagestyle{vnfirst}%
+  \begin{minipage}[t]{0.72\textwidth}
+    \sffamily\raggedright
+    {\small\bfseries\color{vnmuted}LECTURE #1 \enspace/\enspace #3}\par
+    \vspace{4pt}
+    {\fontsize{24}{28}\selectfont\bfseries\color{vnink}#2}\par
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.24\textwidth}
+    \sffamily\raggedleft\small\color{vnmuted}
+    CHEME 5660\par
+    Cornell University\par
+    #4\par
+    #5
+  \end{minipage}
+  \par\vspace{6pt}{\color{vnink}\hrule height 1.2pt}\vspace{8pt}
+}
+
+% Bookend callouts. Learning objectives enforce exactly three
+% title/explanation pairs. Key takeaways additionally require one summary
+% sentence before the three items and one next-steps sentence after them.
+\newcommand{\vnthreeitembox}[9]{%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    colback=vnpanel,colframe=#2,
+    boxrule=0pt,leftrule=#3,
+    arc=0pt,outer arc=0pt,
+    left=10pt,right=10pt,top=8pt,bottom=7pt,
+    before skip=#4,after skip=#5,
+    fontupper=\sffamily,
+    fonttitle=\sffamily\bfseries\small,
+    title={#1},coltitle=vnink,
+    attach title to upper={\par\vspace{4pt}}]
+    \if\relax\detokenize{#6}\relax\else #6\par\vspace{2pt}\fi
+    \begin{itemize}
+      \item \textbf{#7.}\enspace #8
+      #9
+    \end{itemize}
+  \end{tcolorbox}%
+}
+\newcommand{\learningobjectives}[6]{%
+  \vnthreeitembox{LEARNING OBJECTIVES}{vnmuted}{3pt}{8pt}{12pt}
+    {By the end of this lecture, students will be able to:}
+    {#1}{#2}{%
+      \item \textbf{#3.}\enspace #4
+      \item \textbf{#5.}\enspace #6}%
+}
+\newcommand{\keytakeaways}[8]{%
+  \begin{tcolorbox}[
+    enhanced,breakable,
+    colback=vnpanel,colframe=vnink,
+    boxrule=0pt,leftrule=4pt,
+    arc=0pt,outer arc=0pt,
+    left=10pt,right=10pt,top=8pt,bottom=8pt,
+    before skip=12pt,after skip=10pt,
+    fontupper=\sffamily,
+    fonttitle=\sffamily\bfseries\small,
+    title={KEY TAKEAWAYS},coltitle=vnink,
+    attach title to upper={\par\vspace{4pt}}]
+    #1\par\vspace{2pt}
+    \begin{itemize}
+      \item \textbf{#2.}\enspace #3
+      \item \textbf{#4.}\enspace #5
+      \item \textbf{#6.}\enspace #7
+    \end{itemize}
+    \vspace{2pt}{\color{vnrule}\hrule height 0.5pt}\vspace{5pt}
+    #8
+  \end{tcolorbox}%
+}
+
+% Formal statements -------------------------------------------
+\tcbset{vnstatementbase/.style={
+  enhanced,
+  arc=0pt,outer arc=0pt,
+  left=9pt,right=9pt,top=7pt,bottom=7pt,
+  before={\par\Needspace{8\baselineskip}\smallskip},after skip=10pt,
+  fonttitle=\sffamily\bfseries,
+  separator sign={.}
+},
+vndefinition/.style={
+  vnstatementbase,
+  colback=white,colframe=vnrule,
+  colbacktitle=vnpanel,coltitle=vnink,
+  boxrule=0.5pt,leftrule=3pt
+},
+vntheorem/.style={
+  vnstatementbase,
+  colback=vnsoft,colframe=vnink,
+  colbacktitle=vnink,coltitle=white,
+  boxrule=0.7pt,leftrule=3pt
+},
+vnproposition/.style={
+  vnstatementbase,
+  colback=vnsoft,colframe=vnmuted,
+  colbacktitle=vnmuted,coltitle=white,
+  boxrule=0.6pt,leftrule=3pt
+},
+vnremark/.style={
+  vnstatementbase,
+  colback=white,colframe=vnrule,
+  colbacktitle=white,coltitle=vnmuted,
+  boxrule=0.4pt,leftrule=2pt
+}}
+\newtcbtheorem[number within=section]{definition}{Definition}{vndefinition}{def}
+\newtcbtheorem[number within=section]{theorem}{Theorem}{vntheorem}{thm}
+\newtcbtheorem[number within=section]{proposition}{Proposition}{vnproposition}{prop}
+\newtcbtheorem[number within=section]{remark}{Remark}{vnremark}{rem}
+
+\newenvironment{derivation}{%
+  \par\Needspace{8\baselineskip}\thispagestyle{fancy}\smallskip
+  \noindent{\sffamily\bfseries Derivation.}\enspace
+}{\hfill$\square$\par\smallskip}
+
+% Notebook and reading links ----------------------------------
+\newcommand{\notebooklink}[3]{%
+  \begin{tcolorbox}[
+    enhanced,colback=white,colframe=vnrule,
+    boxrule=0.5pt,leftrule=3pt,
+    arc=0pt,outer arc=0pt,
+    left=9pt,right=9pt,top=7pt,bottom=7pt,
+    before skip=8pt,after skip=8pt,
+    fontupper=\sffamily]
+    {\small\bfseries\color{vnmuted}COMPANION NOTEBOOK}\par
+    \href{#2}{\bfseries\color{vnlink}#1\enspace$\rightarrow$}\par
+    \small #3
+  \end{tcolorbox}%
+}
+
+\newenvironment{readinglist}{%
+  \par\medskip
+  {\sffamily\small\bfseries\color{vnmuted}ADDITIONAL READING}\par\smallskip
+  \begin{itemize}[leftmargin=18pt,itemsep=3pt,topsep=2pt]
+}{\end{itemize}}
+
+% Lists and captions ------------------------------------------
+\setlist[itemize]{leftmargin=18pt,itemsep=3pt,topsep=3pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=22pt,itemsep=3pt,topsep=3pt,parsep=0pt}
+\RequirePackage[font=small,labelfont={bf,sf},
+  justification=raggedright,singlelinecheck=false]{caption}
