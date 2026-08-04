@@ -29,6 +29,9 @@ using JLD2
 using FileIO
 using Distributions
 using PrettyTables
+# using UnicodePlots
+using HypothesisTests
 
 # include some local codes -
 include(joinpath(_PATH_TO_SRC, "Compute.jl"));
+include(joinpath(_PATH_TO_SRC, "Split.jl"));

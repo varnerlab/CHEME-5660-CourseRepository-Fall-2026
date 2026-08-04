@@ -5,187 +5,166 @@
 
 \begin{document}
 
-\lecturenotes{10a}{European BSM and American CRR Option Pricing}{Fall 2026}{October 27, 2026}{Jeffrey D. Varner}
+\lecturenotes{10a}{Option Sensitivities: Delta, Gamma, Theta, Vega, and Rho}{Fall 2026}{October 27, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Price European claims}
-  {Derive risk-neutral valuation and apply the Black--Scholes--Merton call and put formulas with a continuous dividend yield.}
-  {Build a CRR lattice}
-  {Choose up/down factors and risk-neutral probabilities that match volatility and exclude one-step arbitrage.}
-  {Price early exercise}
-  {Use backward induction to compare continuation and intrinsic value at every American-option node.}
+  {Define the Greeks}
+  {Interpret delta, gamma, theta, vega, and rho as local derivatives with explicit units and sign conventions.}
+  {Approximate option P\&L}
+  {Use a second-order Taylor expansion to map small market-factor changes into an estimated premium change.}
+  {Compute robust sensitivities}
+  {Estimate lattice Greeks with finite differences and diagnose step-size, exercise-boundary, and quote-scaling effects.}
 
-\section{Price Is the Cost of Replication, Not a Forecasted Payoff}
+\section{A Premium Is a Surface, Not a Single Number}
 
-An option's expiration payoff is known as a function of the future underlying price, but that future price is uncertain. Arbitrage pricing does not insert the asset's estimated real-world expected return into a discounted-payoff calculation. Instead, it constructs a self-financing hedge or, equivalently under the model, evaluates the payoff under a risk-neutral probability measure. The resulting premium is conditional on assumptions about tradability, volatility, interest rates, dividends, and exercise rights.
-
-Let $S_t>0$ be the underlying price in USD/share at time $t\in[0,T]$, let $r\in\R$ be a continuously compounded risk-free rate, let $\delta\in\R$ be a continuous proportional dividend yield, and let $\sigma>0$ be annualized volatility. Under the Black--Scholes--Merton (BSM) risk-neutral model,
+An option premium changes when the market state changes. Let
 \begin{equation}
-  \label{eq:risk-neutral-gbm}
-  \frac{dS_t}{S_t}=(r-\delta)\,dt+\sigma\,dW_t^{\mathbb Q},
+  \label{eq:value-function}
+  V=V(S,\sigma,\tau,r;K,\delta)
 \end{equation}
-where $W^{\mathbb Q}$ is a Wiener process under the risk-neutral measure $\mathbb Q$. The drift is $r-\delta$, not a historical return forecast. For a European payoff $g(S_T)$ with suitable integrability, no-arbitrage value at time $0$ is
-\begin{equation}
-  \label{eq:risk-neutral-price}
-  V_0=e^{-rT}\mathbb E^{\mathbb Q}[g(S_T)].
-\end{equation}
+denote a model value in USD/share, where $S>0$ is spot in USD/share, $\sigma>0$ is annualized volatility, $\tau:=T-t\geq 0$ is time to maturity in years, $r\in\R$ is the continuously compounded risk-free rate, $K>0$ is strike in USD/share, and $\delta\in\R$ is continuous dividend yield. Contract terms $K$ and $T$ are fixed; the displayed market inputs can move.
 
-\begin{remark}{What the model assumes}{bsm-assumptions}
-The classical BSM derivation assumes frictionless continuous trading, no arbitrage, constant $r$, $\delta$, and $\sigma$, continuous lognormal price paths, and the ability to trade the underlying and financing asset as required by the hedge. Real markets have jumps, discrete trading, volatility smiles, funding spreads, transaction costs, and position constraints. A formula can be evaluated exactly while its model remains approximate.
+The Greeks describe the local slope and curvature of the value surface:
+\begin{equation}
+  \label{eq:greek-definitions}
+  \Delta:=\frac{\partial V}{\partial S},
+  \qquad
+  \Gamma:=\frac{\partial^2V}{\partial S^2},
+  \qquad
+  \Theta:=\frac{\partial V}{\partial t}=-\frac{\partial V}{\partial\tau},
+  \qquad
+  \nu:=\frac{\partial V}{\partial\sigma},
+  \qquad
+  \rho:=\frac{\partial V}{\partial r}.
+\end{equation}
+Vega is conventionally denoted by the Greek letter $\nu$ even though ``vega'' is not a Greek letter. The definition of theta in \eqnref{greek-definitions} uses \emph{calendar time} $t$: one day passes while expiration $T$ stays fixed, so $\tau$ decreases. Some software instead reports $\partial V/\partial\tau$; its sign is opposite. Always inspect the convention.
+
+\begin{remark}{Raw derivatives versus displayed quotes}{quote-scaling}
+If $\sigma$ and $r$ are stored as decimals, raw $\nu$ and $\rho$ measure a full $1.00$ change. A platform that quotes sensitivity per one percentage point reports $\nu/100$ and $\rho/100$. Annual theta is often divided by $365$ or by a trading-day convention. Contract-level dollar exposure also multiplies per-share Greeks by the multiplier, commonly $100$ shares/contract for standard U.S. equity options, and by the signed position count.
 \end{remark}
 
-\section{Black--Scholes--Merton Closed Forms}
+\section{Local P\&L: Slope, Curvature, and Cross-Factor Risk}
 
-Let $S_0>0$, strike $K>0$, and maturity $T>0$. Let $\Phi$ denote the standard-normal cumulative distribution function and define the dimensionless quantities
+For small changes $\Delta S$, $\Delta\sigma$, $\Delta t$, and $\Delta r$, a second-order Taylor approximation that retains spot curvature is
 \begin{equation}
-  \label{eq:d1-d2}
-  d_1=\frac{\ln(S_0/K)+(r-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
-  \qquad
-  d_2=d_1-\sigma\sqrt T.
+  \label{eq:taylor-pnl}
+  \Delta V\approx
+  \Delta\,\Delta S
+  +\frac12\Gamma(\Delta S)^2
+  +\Theta\,\Delta t
+  +\nu\,\Delta\sigma
+  +\rho\,\Delta r.
 \end{equation}
-The European call and put premiums in \thmref{bsm} are measured in USD/share.
-
-\begin{theorem}{BSM European call and put prices}{bsm}
-Under \eqnref{risk-neutral-gbm} and the assumptions in \remref{bsm-assumptions}, a European call with payoff $(S_T-K)^+$ and a European put with payoff $(K-S_T)^+$ have time-$0$ values
-\begin{equation}
-  \label{eq:bsm-prices}
-  C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2),
-  \qquad
-  P_0=Ke^{-rT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1),
-\end{equation}
-where $d_1$ and $d_2$ are defined in \eqnref{d1-d2}.
-\end{theorem}
-
-The two prices satisfy European put--call parity:
-\begin{equation}
-  \label{eq:put-call-parity}
-  C_0-P_0=S_0e^{-\delta T}-Ke^{-rT}.
-\end{equation}
-Equation~\eqref{eq:put-call-parity} is a replication identity and a valuable implementation check. A code path that violates it beyond numerical tolerance has inconsistent inputs or a bug.
-
-Monte Carlo simulation evaluates \eqnref{risk-neutral-price} by drawing $M$ independent risk-neutral endpoints, computing discounted payoffs $Y_k:=e^{-rT}g(S_T^{(k)})$, and using
-\begin{equation}
-  \label{eq:mc-estimator}
-  \widehat V_M=\frac1M\sum_{k=1}^{M}Y_k,
-  \qquad
-  \widehat{\operatorname{SE}}(\widehat V_M)
-  =\frac{s_Y}{\sqrt M},
-\end{equation}
-where $s_Y$ is the sample standard deviation of the $Y_k$. The $M^{-1/2}$ convergence rate is slow; report the standard error, random seed policy, and number of paths rather than only the point estimate.
-
-\notebooklink
-  {L10a: European BSM and Monte Carlo Premiums}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-BSM-Premium-Fall-2026.ipynb}
-  {Price European calls and puts with both risk-neutral Monte Carlo and the BSM formulas, quantify simulation error, and study premiums across strikes.}
-
-\section{From Continuous Diffusion to a CRR Lattice}
-
-American exercise is naturally handled on a discrete state tree. Divide $T$ into $N\in\mathbb N$ steps of length $\Delta t:=T/N$. In the Cox--Ross--Rubinstein (CRR) model, one step multiplies the stock by
-\begin{equation}
-  \label{eq:crr-factors}
-  u=e^{\sigma\sqrt{\Delta t}},
-  \qquad
-  d=e^{-\sigma\sqrt{\Delta t}}=u^{-1}.
-\end{equation}
-The symmetry $ud=1$ makes the lattice recombine, while the log-return variance matches $\sigma^2\Delta t$ to leading order. The risk-neutral up probability is
-\begin{equation}
-  \label{eq:crr-probability}
-  p=\frac{e^{(r-\delta)\Delta t}-d}{u-d},
-  \qquad 1-p=\frac{u-e^{(r-\delta)\Delta t}}{u-d}.
-\end{equation}
-The one-step no-arbitrage condition is $d<e^{(r-\delta)\Delta t}<u$, which is equivalent to $0<p<1$. If it fails, increasing $N$ may restore a valid step size, but the invalid probability must not be clipped silently.
-
-At time index $n\in\{0,\ldots,N\}$ after $j\in\{0,\ldots,n\}$ up moves, the recombining stock price is
-\begin{equation}
-  \label{eq:lattice-stock}
-  S_{n,j}=S_0u^jd^{\,n-j}.
-\end{equation}
+This is not an exact identity and is not a first-order total differential because it includes the gamma term. It omits higher-order terms and cross-partials such as vanna, the sensitivity of delta to volatility. The approximation deteriorates for large moves, long holding periods, jumps, or motion across an American exercise boundary.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=2.0cm,y=0.85cm,>=Latex,font=\sffamily\small]
-    \foreach \n in {0,...,3}{
-      \foreach \j in {0,...,\n}{
-        \coordinate (n\n j\j) at (\n,{2*\j-\n});
-        \fill[vnink] (n\n j\j) circle (1.9pt);
-      }
-    }
-    \foreach \n in {0,...,2}{
-      \pgfmathtruncatemacro{\next}{\n+1}
-      \foreach \j in {0,...,\n}{
-        \pgfmathtruncatemacro{\up}{\j+1}
-        \draw[vnlink,->] (n\n j\j)--(n\next j\up);
-        \draw[vnmuted,->] (n\n j\j)--(n\next j\j);
-      }
-    }
-    \node[left] at (n0j0) {$S_0$};
-    \node[right] at (n3j3) {$S_0u^3$};
-    \node[right] at (n3j2) {$S_0u^2d$};
-    \node[right] at (n3j1) {$S_0ud^2$};
-    \node[right] at (n3j0) {$S_0d^3$};
-    \node[below] at (0,-3.7) {$n=0$};
-    \node[below] at (1,-3.7) {$n=1$};
-    \node[below] at (2,-3.7) {$n=2$};
-    \node[below] at (3,-3.7) {$n=3$};
+  \begin{tikzpicture}[x=0.95cm,y=0.72cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,0)--(8.1,0) node[right] {$S$};
+    \draw[->,vnmuted] (0,0)--(0,5.0) node[above] {$V$};
+    \draw[vnlink,very thick]
+      plot[smooth] coordinates {(0.4,0.35) (1.5,0.45) (2.6,0.7) (3.7,1.25) (4.8,2.15) (5.9,3.25) (7.2,4.65)};
+    \coordinate (p) at (4.8,2.15);
+    \fill[vncarnelian] (p) circle (2pt);
+    \draw[vncarnelian,thick] (2.7,0.16)--(6.9,4.14);
+    \draw[vnmuted,dashed] (4.8,0)--(p);
+    \node[below] at (4.8,0) {$S_0$};
+    \node[vncarnelian,above left] at (3.5,1.2) {tangent slope $\Delta$};
+    \node[vnlink,above left] at (6.8,4.4) {curvature $\Gamma$};
   \end{tikzpicture}
-  \caption{A recombining CRR stock lattice. Different up/down orderings reach the same node because $ud=du$. This reduces the node count from exponential in paths to quadratic in time steps.}
-  \label{fig:crr-lattice}
+  \caption{Delta is the tangent slope of the premium as a function of spot; gamma measures how that slope changes. A delta-only approximation follows the red tangent, while delta--gamma retains local curvature.}
+  \label{fig:delta-gamma}
 \end{figure}
 
-\notebooklink
-  {L10a: Origin of the CRR Up and Down Factors}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-OriginStory-CRR-Factors-Fall-2026.ipynb}
-  {Derive the reciprocal CRR factors by matching the binomial log-return variance to the diffusion variance over one time step.}
+For a signed position of $m\in\mathbb Z$ contracts with multiplier $q>0$ shares/contract, the position's Greek vector is $mq$ times the per-share long-option vector. Thus short-position Greeks are the negatives of the corresponding long-position Greeks when both use the same valuation mark and model inputs.
 
-\section{Backward Induction and Early Exercise}
+\section{Economic Meaning of the Five Greeks}
 
-Let $h(S)$ be the intrinsic payoff: $h_c(S):=(S-K)^+$ for a call or $h_p(S):=(K-S)^+$ for a put. At maturity, set $V_{N,j}:=h(S_{N,j})$. For a European option, every earlier node uses only discounted continuation value:
+\paragraph{Delta $\Delta$.} Delta measures first-order directional exposure. A long vanilla call usually has $0\leq\Delta\leq 1$, while a long vanilla put usually has $-1\leq\Delta\leq 0$ under standard assumptions. A position containing one long option contract and $-q\Delta$ shares is locally delta-neutral: its first-order response to a small spot move is approximately zero. Because delta changes with spot and time, the hedge must be rebalanced.
+
+\paragraph{Gamma $\Gamma$.} Gamma measures the instability of delta. Long vanilla calls and puts generally have nonnegative gamma away from American exercise kinks. A delta-neutral but gamma-positive position benefits from sufficiently large moves before costs and other factor changes; a gamma-negative position is exposed to convex losses and increasingly adverse hedge adjustments.
+
+\paragraph{Theta $\Theta$.} Calendar-time theta measures value change as time passes with the modeled state otherwise fixed. Long optionality commonly has negative theta, reflecting the loss of remaining opportunities, but American exercise, dividends, rates, and deep moneyness can complicate blanket sign claims. Theta is a partial derivative, not a forecast of tomorrow's realized P\&L.
+
+\paragraph{Vega $\nu$.} Vega measures sensitivity to the volatility input used by the pricing model. Long vanilla options generally have positive vega. In market applications, ``implied volatility went up one point'' means $\Delta\sigma=0.01$, not $1.00$. Volatility is itself a surface over strike and maturity, so a single parallel-vega shock is an approximation.
+
+\paragraph{Rho $\rho$.} Rho measures rate sensitivity. European calls typically have positive rho and European puts negative rho under the standard BSM model, but dividends and American exercise can alter magnitude and even local behavior. A single scalar $r$ also compresses an entire discount curve; longer-dated portfolios may require bucketed rate sensitivities.
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+  \hline
+  Greek & Perturbation & Raw units & Typical long-vanilla sign \\
+  \hline
+  $\Delta$ & spot $S$ & share/share & call $+$; put $-$ \\
+  $\Gamma$ & spot curvature & share/USD & $+$ \\
+  $\Theta$ & calendar time $t$ & USD/share/year & usually $-$ \\
+  $\nu$ & volatility $\sigma$ & USD/share per $1.00$ & $+$ \\
+  $\rho$ & rate $r$ & USD/share per $1.00$ & call $+$; put $-$ \\
+  \hline
+\end{tabular}
+\end{center}
+
+\begin{remark}{Delta is not generally an exercise probability}{delta-probability}
+Delta is a hedge ratio. In the European BSM model with dividend yield $\delta$, call delta is $e^{-\delta\tau}\Phi(d_1)$, whereas the risk-neutral probability of finishing ITM is $\Phi(d_2)$; $d_1\neq d_2$ whenever $\sigma\sqrt\tau>0$. The real-world probability uses another measure, and an American option can exercise before expiration. Delta may serve as a rough market heuristic for ITM probability in limited settings, but it is not the definition of probability of exercise or profit.
+\end{remark}
+
+\section{Finite Differences on an American-Option Lattice}
+
+Closed-form Greeks are unavailable for a general American contract, but a consistent pricing function can be perturbed. Let $h_S,h_\sigma,h_t,h_r>0$ be bump sizes in the units of their respective inputs. Central differences give
+\begin{align}
+  \label{eq:finite-differences}
+  \widehat\Delta
+  &=\frac{V(S+h_S)-V(S-h_S)}{2h_S},
+  &
+  \widehat\Gamma
+  &=\frac{V(S+h_S)-2V(S)+V(S-h_S)}{h_S^2},\\
+  \widehat\nu
+  &=\frac{V(\sigma+h_\sigma)-V(\sigma-h_\sigma)}{2h_\sigma},
+  &
+  \widehat\rho
+  &=\frac{V(r+h_r)-V(r-h_r)}{2h_r}.
+\end{align}
+Arguments not displayed in \eqnref{finite-differences} are held fixed. A one-day calendar theta can be approximated directly by
 \begin{equation}
-  \label{eq:european-backward}
-  V_{n,j}^{\mathrm{EU}}
-  =e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{EU}}+(1-p)V_{n+1,j}^{\mathrm{EU}}\bigr].
+  \label{eq:theta-day}
+  \widehat\Theta_{\mathrm{day}}
+  :=V(S,\sigma,\tau-1/365,r)-V(S,\sigma,\tau,r),
+  \qquad \tau\geq 1/365.
 \end{equation}
-For an American option, the holder chooses between immediate exercise and continuation:
-\begin{equation}
-  \label{eq:american-backward}
-  V_{n,j}^{\mathrm{AM}}
-  =\max\left\{
-    h(S_{n,j}),
-    e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{AM}}+(1-p)V_{n+1,j}^{\mathrm{AM}}\bigr]
-  \right\}.
-\end{equation}
-The first term in \eqnref{american-backward} is intrinsic value; the second is continuation value. Nodes where the first strictly exceeds the second form the model's early-exercise region. Because the American holder can always imitate the European policy of waiting, $V_0^{\mathrm{AM}}\geq V_0^{\mathrm{EU}}$ under identical inputs.
+This quote is a one-day value change, not an annual derivative; multiplying it by $365$ only approximates annual theta when local linearity is adequate.
 
-For a non-dividend-paying stock with nonnegative interest rates, early exercise of an American call is not optimal in the classical frictionless model, so its value equals the European call value. American puts can have an early-exercise region. Dividends, negative rates, borrow constraints, and market frictions change these conclusions.
+Each bumped valuation must rebuild the lattice with identical contract conventions and sufficient resolution. A bump that is too large introduces truncation bias; one that is too small amplifies floating-point noise and tree-discretization jumps. Sweep several bump sizes and lattice depths. American values are maxima of exercise and continuation branches, so derivatives can be discontinuous or numerically unstable near the exercise boundary.
 
 \notebooklink
-  {L10a: American Options with the CRR Model}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-CRR-Model-Fall-2026.ipynb}
-  {Construct the stock and option lattices, run European and American backward induction, and identify nodes where early exercise dominates continuation.}
+  {L10a: NVDA Call and Put Greeks}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-Greeks-PutCall-NVDA-Fall-2026.ipynb}
+  {Compute delta, gamma, theta, vega, and rho for long and short American call and put positions using CRR repricing.}
 
-\section{Numerical Checks Before Trusting a Premium}
+\section{Risk Reports Need More Than Five Numbers}
 
-Increase $N$ and verify convergence rather than reporting one lattice resolution. CRR prices can oscillate with step parity, especially near the strike; compare sequences of even and odd $N$ or use averaging/extrapolation. Confirm $0<p<1$, nonnegative option values, American value no smaller than European value, and terminal nodes equal their payoffs.
+Greeks are model-dependent, point-in-time approximations. A useful report records the valuation timestamp, spot, yield curve, dividend treatment, volatility input, exercise model, contract multiplier, position sign, bump definition, and units. It should show both per-contract and portfolio totals and distinguish model Greeks from broker-supplied quote Greeks.
 
-For European options, compare the CRR root value with BSM under matching $r$, $\delta$, $\sigma$, $T$, $S_0$, and $K$. Also check put--call parity and monotonicity: calls decrease with strike, puts increase with strike, and both are nondecreasing in volatility under standard BSM conditions. Disagreement is useful diagnostic evidence only after all conventions and inputs have been reconciled.
+Stress tests complement local sensitivities. Reprice the portfolio under joint spot--volatility moves, passage of time, rate shifts, and changes in liquidity. Compare the full repricing with \eqnref{taylor-pnl}; the residual reveals higher-order and cross-factor effects. Hedging decisions must also include discrete trading, bid--ask spreads, commissions, jumps, and model error.
 
+\Needspace{0.38\textheight}
 \keytakeaways
-  {In this lecture, we priced European claims by risk-neutral expectation and BSM closed forms, then introduced American exercise through CRR backward induction.}
-  {Risk-neutral is a pricing measure}
-  {The discounted payoff expectation uses $\mathbb Q$ and drift $r-\delta$; it is not a claim about the asset's real-world expected return.}
-  {CRR must exclude one-step arbitrage}
-  {The factors and probability must satisfy $d<e^{(r-\delta)\Delta t}<u$ so that $0<p<1$ before backward induction begins.}
-  {American value includes a decision}
-  {Every pre-expiration node compares intrinsic value with discounted continuation, creating an endogenous exercise boundary.}
-  {Next, decompose an American option premium into intrinsic value and nonnegative continuation value across the lattice.}
+  {In this lecture, we treated the Greeks as local derivatives of a model-value surface and used them to approximate and diagnose option risk.}
+  {Conventions are part of the number}
+  {Theta sign, day-count, volatility/rate scaling, multiplier, and position sign must accompany every reported Greek.}
+  {Delta--gamma is a local approximation}
+  {Delta supplies slope and gamma supplies spot curvature; large moves and exercise-boundary changes require full repricing.}
+  {Delta is a hedge ratio, not a probability identity}
+  {ITM, exercise, and profit probabilities depend on a distribution, measure, contract policy, and threshold that delta alone does not specify.}
+  {Next, combine contract payoffs, profit thresholds, probability models, and delta hedging at the portfolio level.}
 
 \begin{readinglist}
   \item Fischer Black and Myron Scholes, \href{https://doi.org/10.1086/260062}{``The Pricing of Options and Corporate Liabilities,''} \emph{Journal of Political Economy} 81(3), 637--654 (1973).
-  \item John C. Cox, Stephen A. Ross, and Mark Rubinstein, \href{https://doi.org/10.1016/0304-405X(79)90015-1}{``Option Pricing: A Simplified Approach,''} \emph{Journal of Financial Economics} 7(3), 229--263 (1979).
   \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
+  \item Paul Wilmott, \emph{Paul Wilmott on Quantitative Finance}, 2nd ed., Wiley (2006), sections on option sensitivities and hedging.
 \end{readinglist}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Option values are model-dependent and trading involves substantial risk.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Greeks are model-dependent local approximations and options trading involves substantial risk.}
 
 \end{document}

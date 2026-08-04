@@ -1,142 +1,114 @@
-# PRIVATE METHODS BELOW HERE ================================================================================= #
-# placeholder - always return 0
-_null(action::Int64)::Int64 = return 0;
-
 """
-    private logic called by the public solve method. This implementation is similar to the `L7b` impl, but
-    we've modified it to work with combinations, and use a weighted online average for the rewards.
+    function sample(model::MyEpsilonSamplingBanditModel, world::AbstractWorldModel)::Dict{Int64, Array{Beta,1}}
+
+This function solved the ticker picker problem as a bandit model using an epsilon-greedy strategy.
+The function takes two arguments: a bandit model and a world model.
+The bandit model is a custom type, [`MyEpsilonSamplingBanditModel`](@ref), which contains the parameters of the bandit model.
+The world model is a custom type, `MyTickerPickerWorldModel`, which contains the parameters of the world model.
+The function returns a dictionary where the keys are integers (time steps) and the values are arrays of Beta distributions.
+
+### Arguments
+- `model::MyEpsilonSamplingBanditModel`: An instance of the [`MyEpsilonSamplingBanditModel`](@ref) that defines the bandit model parameters.
+- `world::AbstractWorldModel`: An instance of the world model that defines the world model parameters.
+- `horizon::Int64 = 1`: The number of trials to sample. Default is 1 (single trial).
+
+### Returns
+- `Dict{Int64, Array{Beta,1}}`: A dictionary where the keys are integers (trials) and the values are arrays of Beta distributions (ticker preferences).
 """
+function sample(samplingmodel::MyEpsilonSamplingBanditModel, worldmodel::AbstractWorldModel;
+    horizon::Int64 = 1)::Dict{Int64, Array{Beta,1}}
 
-function _solve(model::MyEpsilonGreedyDynamicNoiseAlgorithmModel; T::Int = 0, world::Function = _null, 
-    context::MyDynamicBanditPortfolioAllocationContextModel = nothing, startdayindex::Int = 1)
-
+    # data from the sampling and world models -
+    α = samplingmodel.α
+    β = samplingmodel.β
+    K = samplingmodel.K
+    world = worldmodel.world
 
     # initialize -
-    K = model.K; # get the number of goods to choose from
-    α = model.α; # learning rate
-    N = 2^K; # this is the maximum number of arms we can have (we have K goods, with each good being {0 | 1})
-    μₒ = context.μₒ; # initial guess for the average returns from the different arms
-    μ = zeros(Float64, N); # average reward for each possible goods combination
-    R = zeros(Float64, T, N);
-    S = zeros(Float64, T, K); # history of the number of shares 
-    P = zeros(Float64, T, K); # history of fill prices for each asset
-    G = zeros(Float64, T, K); # history of preferences
+    θ̂_vector = Array{Float64,1}(undef, K)
+    time_sample_results_dict_Ts = Dict{Int64, Array{Beta,1}}();
+    action_distribution = Array{Beta,1}(undef, K);
 
-    # so before we start, go through every possible arm, and compute the average reward -
-    # this means that we try each possible arm at least once, and compute the average reward
-    for i ∈ 1:N
-        aₜ = digits(i, base=2, pad=K); # generate a binary representation of the number, with K digits  
-        if (i == N)
-            aₜ = digits(i - 1, base=2, pad=K); # generate a binary representation of the number, with K digits  
-        end
-        r,n,p,γ = world(startdayindex, aₜ, context); # get the reward from the world (use the first day of the OOS data)
-        μ[i] = μₒ[i]*(1-1/T) + (1/T)*r; # update the average reward for the chosen arm (learning rate = α)
-        
-        R[1, i] = r; # store the reward in the rewards array
-        S[1, :] = n; # store the number of shares purchased in the first round
-        P[1, :] = p; # store the probabilities in the first round
-        G[1, :] = γ; # store the preferences in the first round
-    end
+    # generate random Categorical distribution -
+    parray = [1/K for _ = 1:K]
+    dcat = Categorical(parray);
 
-    # main -
-    for t ∈ 2:T
+    # initialize collection of Beta distributions -
+    foreach(k -> action_distribution[k] = Beta(α[k], β[k]), 1:K);
+
+    # main sampling loop -
+    for t ∈ 1:horizon
 
         ϵₜ = (1.0/(t^(1/3)))*(log(K*t))^(1/3); # compute the epsilon value -
 
-        # if we were to purchase stuff, how much would we purchase?
-        p = rand(); # role a random number
-        aₜ = nothing; # initialize action vector
-        î = nothing; # index of the combination of goods
-        if (p ≤ ϵₜ)
-            î = rand(1:N); # randomly select an integer from 1 to N (this will be used to generate a binary representation of the action vector)
+        # create a new parameter array -
+        parameter_array = Array{Float64,2}(undef, K, 2);
+        fill!(parameter_array, 0.0);
+
+        # update the results archive -
+        time_sample_results_dict_Ts[t] = deepcopy(action_distribution);
+
+        aₜ = nothing; # default to nothing
+        if (rand() ≤ ϵₜ) # explore with probability epsilon
+            aₜ = rand(dcat); # choose a random action uniformly
         else
-            î = argmax(μ); # compute the arm with best average reward
+
+            # for each arm, sample from the distribution -
+            foreach(k -> θ̂_vector[k] = rand(action_distribution[k]), 1:K); # choose the action with the highest mean
+
+            # ok: let's choose an action -
+            aₜ = argmax(θ̂_vector);
+
+            # pass that action to the world function, gives back a reward -
+            rₜ = world(t, aₜ, worldmodel);
+
+            # update the parameters -
+            # first, get the old parameters -
+            αₒ,βₒ = action_distribution[aₜ] |> params;
+
+            # update the old values with the new values -
+            αₜ = αₒ + rₜ
+            βₜ = βₒ + (1-rₜ)
+
+            # build new distribution -
+            action_distribution[aₜ] = Beta(αₜ, βₜ);
         end
-        aₜ = digits(î, base=2, pad=K); # generate a binary representation of the number, with K digits  
-        if (î == N)
-            aₜ = digits(î - 1, base=2, pad=K); # generate a binary representation of the number, with K digits  
-        end
-
-        # call out to the world, record the result.
-        rₜ, nₜ, pₜ, γₜ = world(startdayindex, aₜ, context); # get the reward from the world (use the first day of the OOS data)
-
-        # for each arm, compute the reward -
-        μ[î]+=(t/T)*(rₜ - μ[î]); # update the average reward for the chosen arm (learning rate = α)
-
-        # store other data -
-        R[t, î] = rₜ; # store the reward in the rewards array
-
-        # @show t, î, R[t, î], μ[î]; # debug output
-
-        S[t, :] = nₜ; # store the number of shares purchased in the first round
-        P[t, :] = pₜ; # store the probabilities in the first round
-        G[t, :] = γₜ; # store the preferences in the first round
     end
 
-    # return -
-    return R, μ, S, P, G;
+    return time_sample_results_dict_Ts;
 end
 
-
-# PRIVATE METHODS ABOVE HERE ================================================================================= #
-
-# PUBLIC METHODS BELOW HERE ================================================================================== #`
 """
-    solve(model::AbstractBanditAlgorithmModel; T::Int = 0, world::Function = _null)
+    function preference(beta::Array{Beta,1}, tickers::Array{String,1}) -> Array{Int64,1}
 
-Solve the bandit problem using the given model. 
+This function computes the preference of each action based on the mean of the Beta distribution.
 
 ### Arguments
-- `model::AbstractBanditAlgorithmModel`: The model to use to solve the bandit problem.
-- `T::Int = 0`: The number of rounds to play. Default is 0.
-- `world::Function = _null`: The function that returns the reward for a given action. Default is the private `_null` function.
+- `beta::Array{Beta,1}`: An array of Beta distributions that represent the actions (or preferences)
+- `tickers::Array{String,1}`: An array of strings that represent the tickers (or actions)
 
 ### Returns
-- `Array{Float64,2}`: The rewards for each arm at each round.
-"""
-function my_bandit_solve(model::AbstractBanditAlgorithmModel; T::Int = 0, world::Function = _null, 
-    context::AbstractBanditProblemContextModel = nothing, startdayindex::Int = 1)
-    return _solve(model, T = T, world = world, context = context, startdayindex = startdayindex);
-end
+- `Array{Int64,1}`: An array of integers that represent the preference of each action based on the mean of the Beta distribution.
 
 """
-    regret(rewards::Array{Float64,2})::Array{Float64,1}
+function preference(beta::Array{Beta,1}, tickers::Array{String,1})::Array{Int64,1}
 
-Compute the regret for the given rewards.
+    # sample -
+    K = length(tickers);
+    θ̂_vector = Array{Float64,1}(undef, K)
 
-### Arguments
-- `rewards::Array{Float64,2}`: The rewards for each arm at each round.
+    # Let's compute the mean of each beta distribution -
+    for k ∈ 1:K # for each action
 
-### Returns
-- `Array{Float64,1}`: The regret at each round.
-"""
-function regret(rewards::Array{Float64,2})::Array{Float64,1}
-    
-    # initialize -
-    T = size(rewards, 1); # how many rounds did we play?
-    K = size(rewards, 2); # how many arms do we have?
-    regret = zeros(Float64, T); # initialize the regret array
+        # grab -
+        α,β = beta[k] |> d -> params(d);
 
-    # first: compute the best arm in hindsight -
-    μ = zeros(Float64, K); # average reward for each arm
-    for a ∈ 1:K
-        μ[a] = filter(x-> x != 0.0, rewards[:,a]) |> x-> mean(x);
+        # generate a sample for this action -
+        θ̂_vector[k] = (α)/(α+β);
     end
-    μₒ = maximum(μ); # compute the best average reward
 
-    # compute the regret -
-    for t ∈ 1:T
-
-        # what action was taken at time t?
-        tmp = 0.0;
-        for j = 1:t
-            aₜ = argmax(rewards[j, :]); # get the action that was taken
-            tmp += μ[aₜ]; # compute the hypothetical average reward
-        end
-        regret[t] = μₒ*t - tmp; # compute the regret at time t
-    end
+    # ok: let's choose an action -
 
     # return -
-    return regret;
+    return tiedrank(θ̂_vector, rev = true) .|> x -> trunc(Int64, x);
 end
-# PUBLIC METHODS ABOVE HERE ================================================================================== #

@@ -1,194 +1,167 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\R}{\mathbb{R}}
 
 \begin{document}
 
-\lecturenotes{6a}{Multivariate GBM and Dirichlet Portfolio Weights}{Fall 2026}{September 29, 2026}{Jeffrey D. Varner}
+\lecturenotes{6a}{Introduction to Single-Index Models}{Fall 2026}{September 29, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Model correlated assets}
-  {Write and solve a multivariate GBM model whose matrix square root generates a specified log-return covariance rate.}
-  {Estimate covariance}
-  {Construct, annualize, and validate a sample covariance matrix while distinguishing covariance from correlation.}
-  {Sample portfolio weights}
-  {Use a Dirichlet distribution to explore the long-only allocation simplex without confusing random sampling with optimization.}
+  {Decompose asset growth rates}
+  {Separate common market exposure from firm-specific variation and interpret alpha, beta, and the residual.}
+  {Build the SIM covariance}
+  {Derive the low-dimensional mean and covariance structure implied by a single-index model.}
+  {Estimate and diagnose a SIM}
+  {Fit alpha and beta by least squares and use residuals, confidence intervals, and $R^2$ without overstating what they establish.}
 
-\section{Why Separate Asset Models Are Insufficient}
+\section{Why Replace a Full Covariance Matrix?}
 
-Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
+A portfolio of $m$ risky assets requires $m$ expected growth rates and $m(m+1)/2$ distinct growth-rate covariance entries. The number of pairwise terms grows quadratically, estimates become noisy when the history is short relative to the asset universe, and an inverse covariance matrix can magnify that noise. Yet many securities visibly move together when market-wide news arrives. A factor model makes that shared source of movement explicit.
 
-Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic GBM drifts in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
-\begin{equation}
-  \label{eq:mgbm-sde}
-  \frac{dS_{i,t}}{S_{i,t}}
-  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
-  \qquad i\in\{1,\ldots,m\}.
-\end{equation}
-The diffusion covariance rate is $C:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $C_{ii}=\sigma_i^2$, while $C_{ik}$ records instantaneous log-return covariance per unit time. Applying It\^o's lemma to $\log S_{i,t}$ gives the expected continuously compounded growth rate
-\begin{equation}
-  \label{eq:drift-growth-relation}
-  \bar g_i:=\E[g_{i,t,\Delta t}]
-  =\mu_i-\frac12 C_{ii},
-  \qquad
-  \mu_i=\bar g_i+\frac12 C_{ii}.
-\end{equation}
-Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,t,\Delta t}:=(\Delta t)^{-1}\log(S_{i,t+\Delta t}/S_{i,t})$ is the realized growth rate. Both have units years$^{-1}$, but they are different quantities.
+The single-index model (SIM), introduced by William Sharpe as a simplified model for portfolio analysis, compresses co-movement into exposure to one observed index. It is both a statistical regression and a covariance model. Those roles are related but not identical: fitting separate regressions does not by itself prove that their residuals are mutually uncorrelated.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=1.35cm,y=0.86cm,>=Latex,font=\sffamily\small]
-    \node[draw=vnrule,fill=white,rounded corners=1pt,
-      minimum width=2.35cm,minimum height=0.78cm] (z) at (0,0) {independent $\mathbf Z$};
-    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.25cm,minimum height=0.78cm] (a) at (3.25,0) {matrix root $A$};
-    \node[draw=vnrule,fill=white,rounded corners=1pt,
-      minimum width=2.65cm,minimum height=0.78cm] (az) at (6.5,0) {correlated shock $A\mathbf Z$};
-    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.55cm,minimum height=0.78cm] (s) at (10.0,0) {joint price update};
-    \foreach \u/\v in {z/a,a/az,az/s}
-      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\u)--(\v);
-    \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=C$};
-    \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=C$};
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.05cm and 1.45cm]
+    \node[draw=vnink,fill=vnsoft,minimum width=2.15cm,minimum height=0.78cm] (market) {market growth $g_M$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=1.25cm,minimum width=2.15cm] (a1) {asset $1$: $g_1$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,minimum width=2.15cm] (a2) {asset $2$: $g_2$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=-1.25cm,minimum width=2.15cm] (am) {asset $m$: $g_m$};
+    \draw[vnlink,thick,->] (market.east) -- node[above,sloped] {$\beta_1$} (a1.west);
+    \draw[vnlink,thick,->] (market.east) -- node[above] {$\beta_2$} (a2.west);
+    \draw[vnlink,thick,->] (market.east) -- node[below,sloped] {$\beta_m$} (am.west);
+    \node[left=0.85cm of a1,text=vnmuted] (e1) {$\varepsilon_1$};
+    \node[left=0.85cm of a2,text=vnmuted] (e2) {$\varepsilon_2$};
+    \node[left=0.85cm of am,text=vnmuted] (em) {$\varepsilon_m$};
+    \draw[vnmuted,->] (e1)--(a1);
+    \draw[vnmuted,->] (e2)--(a2);
+    \draw[vnmuted,->] (em)--(am);
   \end{tikzpicture}
-  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $C$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
-  \label{fig:correlated-shocks}
+  \caption{One common market growth rate reaches every asset through its beta loading, while each residual records variation not explained by that index. The diagonal-residual assumption makes the residual arrows mutually uncorrelated; it should be checked rather than silently presumed.}
+  \label{fig:sim-graph}
 \end{figure}
 
-\section{Exact Transition and Covariance}
+\section{The Single-Index Growth Model}
 
-The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
-
-\begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
-Let $A\in\R^{m\times m}$, $C:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. Define $\bar g_i:=\mu_i-C_{ii}/2$. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
+Fix one sampling interval $\Delta t$, such as one trading day expressed in years. Let $g_M\in\R$ be the market-index continuously compounded growth rate and let $g_i\in\R$ be the growth rate of risky asset $i\in\{1,\ldots,m\}$. A SIM represents each asset as
 \begin{equation}
-  \label{eq:mgbm-transition}
-  S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
-  \bar g_i\Delta t
-  +\sqrt{\Delta t}\,(A\mathbf Z)_i
-  \right].
+  \label{eq:sim-scalar}
+  g_i=\alpha_{g,i}+\beta_i g_M+\varepsilon_{g,i}.
 \end{equation}
-Define the dimensionless log-return vector $\mathbf r_t:=\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and the realized growth-rate vector $\mathbf g_t:=\mathbf r_t/\Delta t$. Then
+Here $\alpha_{g,i}$ and $\varepsilon_{g,i}$ have units time$^{-1}$, while $\beta_i$ is a dimensionless market loading. The conventional population assumptions are
 \begin{equation}
-  \label{eq:mgbm-log-covariance}
-  \mathbf g_t=\bar{\mathbf g}+\frac{1}{\sqrt{\Delta t}}A\mathbf Z,
+  \label{eq:sim-assumptions}
+  \mathbb E[\varepsilon_{g,i}]=0,
   \qquad
-  \E[\mathbf g_t]=\bar{\mathbf g}=\boldsymbol\mu-\frac12\operatorname{diag}(C),
+  \operatorname{Cov}(\varepsilon_{g,i},g_M)=0,
   \qquad
-  \Cov(\mathbf r_t)=C\Delta t,
-  \qquad
-  \Cov(\mathbf g_t)=\frac{C}{\Delta t}.
+  \operatorname{Cov}(\varepsilon_{g,i},\varepsilon_{g,j})=0\quad(i\neq j).
 \end{equation}
-\end{proposition}
+The first two conditions define a linear projection when the parameters are population least-squares coefficients. The third is an additional covariance-model restriction. Market proxies, sector effects, omitted factors, and synchronized shocks can leave correlated residuals and violate it.
 
-Equation \eqnref{mgbm-log-covariance} gives the scaling rule. Writing $\Sigma_r:=\Cov(\mathbf r_t)$ and $\Sigma_g:=\Cov(\mathbf g_t)$,
-\begin{equation}
-  \label{eq:three-covariances}
-  \Sigma_r=(\Delta t)^2\Sigma_g,
-  \qquad
-  C=\frac{\Sigma_r}{\Delta t}=\Delta t\,\Sigma_g.
-\end{equation}
-The three matrices are not interchangeable: $\Sigma_g$ is appropriate for a growth-rate portfolio objective, while $C$ drives GBM shocks. Multiplying a daily log-return covariance by ``252'' estimates $C$; it does not estimate $\Sigma_g$.
-
-\section{Estimating and Validating the Covariance Matrix}
-
-Let $G\in\R^{n\times m}$ store $n$ observed growth-rate vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased growth-rate covariance is
-\begin{equation}
-  \label{eq:sample-covariance}
-  \widehat\Sigma_g:=
-  \frac{1}{n-1}\widetilde G^{\mathsf T}\widetilde G.
-\end{equation}
-It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_g\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. For GBM simulation, use $\widehat C=\Delta t\,\widehat\Sigma_g$.
-
-Covariance depends on units and volatility scale. Correlation normalizes those effects:
-\begin{equation}
-  \label{eq:correlation}
-  \rho_{ik}:=\frac{\Sigma_{ik}}
-  {\sqrt{\Sigma_{ii}\Sigma_{kk}}},
-  \qquad -1\leq\rho_{ik}\leq1
-\end{equation}
-when both variances are positive. Zero correlation means zero linear covariance under the chosen sample and horizon; it does not generally imply statistical independence.
-
-A Cholesky factor is convenient when $\widehat\Sigma$ is positive definite. Duplicated assets, short samples, or exact linear dependence can make it only semidefinite, causing an unpivoted Cholesky routine to fail. Eigenvalue or singular-value square roots can handle semidefinite matrices. Arbitrarily adding diagonal ``jitter'' changes the model and must be documented rather than hidden.
-
-Sampling error is often the dominant problem. Pairwise estimates can shift across windows, and a matrix with $m(m+1)/2$ distinct entries becomes difficult to estimate when $m$ is large relative to $n$. Shrinkage and factor models trade some flexibility for greater stability.
-
-\notebooklink
-  {L6a: Computing and Analyzing a Covariance Matrix}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-CovarianceMatrix-Fall-2026.ipynb}
-  {Center a multi-asset growth-rate matrix, calculate $\widehat\Sigma_g$, convert it to the GBM covariance rate $\widehat C$, and verify numerical invariants.}
-
-\section{Buy-and-Hold Portfolio Wealth}
-
-Let total initial wealth be $W_0>0$ dollars and let $\mathbf w\in\R^m$ contain initial dollar fractions. For a fully invested long-only portfolio, $w_i\geq0$ and $\mathbf1^{\mathsf T}\mathbf w=1$. Fractional-share holdings are $n_i=w_iW_0/S_{i,0}$. If no rebalancing occurs, portfolio wealth is
-\begin{equation}
-  \label{eq:buy-hold-wealth}
-  W_t=\sum_{i=1}^{m}n_iS_{i,t}
-  =W_0\sum_{i=1}^{m}w_i\frac{S_{i,t}}{S_{i,0}}.
-\end{equation}
-The initial weights generally drift as relative prices change. A constant-weight portfolio is a different, dynamically rebalanced strategy with additional turnover and cost assumptions.
-
-\notebooklink
-  {L6a: Correlated MGBM Portfolio Simulation}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Example-MAGBM-Portfolio-Fall-2026.ipynb}
-  {Generate correlated asset paths, construct a buy-and-hold portfolio, and compare simulated wealth with observed and benchmark wealth.}
-
-\section{Dirichlet Sampling Explores the Simplex}
-
-The feasible long-only weight set is the $(m-1)$-dimensional simplex $\Delta^{m-1}:=\{\mathbf w\in\R^m:w_i\geq0,\ \sum_iw_i=1\}$. The Dirichlet distribution generates random points on its interior and is a useful design-of-experiments tool (\defnref{dirichlet}).
-
-\begin{definition}{Dirichlet portfolio weights}{dirichlet}
-Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_m)$ with every concentration parameter $\alpha_i>0$, and let $\alpha_0:=\sum_{i=1}^{m}\alpha_i$. A random vector $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies on $\Delta^{m-1}$ and has mean and component variance
-\begin{equation}
-  \label{eq:dirichlet-moments}
-  \E[W_i]=\frac{\alpha_i}{\alpha_0},
-  \qquad
-  \operatorname{Var}(W_i)=
-  \frac{\alpha_i(\alpha_0-\alpha_i)}
-  {\alpha_0^2(\alpha_0+1)}.
-\end{equation}
-For equal $\alpha_i=1$, the distribution is uniform with respect to volume on the simplex; it is not uniform in each component separately.
+\begin{definition}{Systematic and idiosyncratic components}{risk-components}
+For the SIM in \eqnref{sim-scalar}, $\beta_i g_M$ is the asset's \emph{systematic component}: its variation is inherited from the common index. The residual $\varepsilon_{g,i}$ is the \emph{idiosyncratic component}: variation orthogonal to the chosen index under \eqnref{sim-assumptions}. Idiosyncratic does not mean predictable, harmless, or independent through time.
 \end{definition}
 
-Small equal concentrations place more mass near sparse corners, while large equal concentrations cluster weights near equal allocation. Unequal concentrations encode a directional sampling preference. None of these draws is ``optimal'' unless an objective and constraints are subsequently evaluated. Dirichlet sampling explores candidate portfolios; L6b solves a minimum-variance optimization problem.
+If $\sigma_{g,M}^2:=\operatorname{Var}(g_M)>0$, the population linear-projection coefficients satisfy
+\begin{equation}
+  \label{eq:projection-coefficients}
+  \beta_i=\frac{\operatorname{Cov}(g_i,g_M)}{\sigma_{g,M}^2},
+  \qquad
+  \alpha_{g,i}=\mathbb E[g_i]-\beta_i\mathbb E[g_M].
+\end{equation}
+Thus beta measures sensitivity to the selected index and sampling convention. A beta of $1.4$ does not mean the asset always moves by $1.4$ times the market; \eqnref{sim-scalar} includes an intercept and a residual on every observation. For $r=(\Delta t)g$, the return-form coefficients satisfy $\alpha_{r,i}=(\Delta t)\alpha_{g,i}$, $\varepsilon_{r,i}=(\Delta t)\varepsilon_{g,i}$, and the same $\beta_i$.
 
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\small]
-    \coordinate (a) at (0,0); \coordinate (b) at (7,0); \coordinate (c) at (3.5,4.7);
-    \draw[vnink,line width=0.9pt] (a)--(b)--(c)--cycle;
-    \node[below left] at (a) {$w_1=1$};
-    \node[below right] at (b) {$w_2=1$};
-    \node[above] at (c) {$w_3=1$};
-    \foreach \x/\y in {1.0/.45,2.1/.7,2.8/1.4,3.5/.75,4.2/1.45,5.15/.55,3.5/2.25,2.65/2.25,4.35/2.15,3.5/3.45}
-      \fill[vnlink] (\x,\y) circle (1.8pt);
-    \node[text=vnmuted,align=center] at (3.5,-0.75) {$w_i\geq0$ and $w_1+w_2+w_3=1$};
-  \end{tikzpicture}
-  \caption{The three-asset long-only simplex. Dirichlet draws provide valid candidate allocations throughout the triangle; their density depends on the concentration vector $\boldsymbol\alpha$.}
-  \label{fig:simplex}
-\end{figure}
+\section{Mean and Covariance Implied by the SIM}
 
-\newpage
-\thispagestyle{fancy}
+Let $\boldsymbol\alpha_g,\boldsymbol\beta\in\R^m$ collect the growth intercepts and betas, let $\boldsymbol\varepsilon_g\in\R^m$ collect growth residuals, and let $D_g:=\operatorname{diag}(\sigma_{g,\varepsilon,1}^2,\ldots,\sigma_{g,\varepsilon,m}^2)$, where $\sigma_{g,\varepsilon,i}^2:=\operatorname{Var}(\varepsilon_{g,i})$. The vector model is
+\begin{equation}
+  \label{eq:sim-vector}
+  \mathbf g=\boldsymbol\alpha_g+\boldsymbol\beta g_M+\boldsymbol\varepsilon_g.
+\end{equation}
+Under \eqnref{sim-assumptions}, its moments have the low-rank-plus-diagonal form in \propref{sim-moments}.
+
+\begin{proposition}{Single-index moments}{sim-moments}
+Let $\mathbf g\in\R^m$ satisfy \eqnref{sim-vector}. Suppose $\mathbb E[\boldsymbol\varepsilon_g]=\mathbf0$, $\operatorname{Cov}(\boldsymbol\varepsilon_g,g_M)=\mathbf0$, and $\operatorname{Cov}(\boldsymbol\varepsilon_g)=D_g$. If $\bar g_M:=\mathbb E[g_M]$ and $\sigma_{g,M}^2:=\operatorname{Var}(g_M)$, then
+\begin{equation}
+  \label{eq:sim-moments}
+  \bar{\mathbf g}:=\mathbb E[\mathbf g]
+  =\boldsymbol\alpha_g+\boldsymbol\beta\bar g_M,
+  \qquad
+  \Sigma_g:=\operatorname{Cov}(\mathbf g)
+  =\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g.
+\end{equation}
+Consequently, $\operatorname{Cov}(g_i,g_j)=\beta_i\beta_j\sigma_{g,M}^2$ for $i\neq j$, while $\operatorname{Var}(g_i)=\beta_i^2\sigma_{g,M}^2+\sigma_{g,\varepsilon,i}^2$.
+\end{proposition}
+
+The matrix $\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}$ has rank at most one. Instead of estimating every cross-covariance separately, the SIM estimates $m$ betas, $m$ residual growth variances, and one market growth variance. This reduction buys stability only if the omitted residual correlations are small enough for the intended use.
+
+\section{Portfolio Risk Becomes Interpretable}
+
+Let $\mathbf w\in\R^m$ be fixed portfolio weights. The portfolio growth rate $g_p:=\mathbf w^{\mathsf T}\mathbf g$ has market beta $\beta_p:=\mathbf w^{\mathsf T}\boldsymbol\beta$ and residual $\varepsilon_{g,p}:=\mathbf w^{\mathsf T}\boldsymbol\varepsilon_g$. Substituting \eqnref{sim-vector} gives
+\begin{equation}
+  \label{eq:portfolio-sim}
+  g_p=\mathbf w^{\mathsf T}\boldsymbol\alpha_g+\beta_p g_M+\varepsilon_{g,p},
+  \qquad
+  \operatorname{Var}(g_p)=\beta_p^2\sigma_{g,M}^2+\mathbf w^{\mathsf T}D_g\mathbf w.
+\end{equation}
+The first variance term is common-factor risk. The second is residual risk. For an equal-weight portfolio with $w_i=1/m$ and residual variances bounded by a constant $K$, the residual variance satisfies
+\begin{equation}
+  \label{eq:diversification-bound}
+  \mathbf w^{\mathsf T}D_g\mathbf w
+  =\frac{1}{m^2}\sum_{i=1}^{m}\sigma_{g,\varepsilon,i}^2
+  \leq\frac{K}{m}.
+\end{equation}
+Thus firm-specific variance can vanish as the portfolio broadens under the diagonal-residual assumption, while systematic variance generally remains. Concentrated weights or correlated residuals can destroy this conclusion.
+
+\section{Estimating Alpha and Beta}
+
+For one asset, observe $n$ paired growth rates $\{(g_{M,t},g_{i,t})\}_{t=1}^n$. Let $\mathbf y\in\R^n$ contain the asset growth rates and let $X\in\R^{n\times2}$ have row $t$ equal to $(1,g_{M,t})$. When $X$ has full column rank, ordinary least squares estimates $\boldsymbol\theta_i:=(\alpha_{g,i},\beta_i)^{\mathsf T}$ by
+\begin{equation}
+  \label{eq:ols}
+  \widehat{\boldsymbol\theta}_i
+  =(X^{\mathsf T}X)^{-1}X^{\mathsf T}\mathbf y,
+  \qquad
+  \widehat{\boldsymbol\varepsilon}_{g,i}
+  =\mathbf y-X\widehat{\boldsymbol\theta}_i.
+\end{equation}
+Numerically, a QR or singular-value decomposition is preferable to explicitly forming the inverse in \eqnref{ols}. The growth-residual variance estimate is $\widehat\sigma_{g,\varepsilon,i}^2=\|\widehat{\boldsymbol\varepsilon}_{g,i}\|_2^2/(n-2)$ under the usual homoskedastic regression convention. Do not divide this value by $\Delta t$: the observations are already growth rates. The corresponding return residual variance is $(\Delta t)^2\widehat\sigma_{g,\varepsilon,i}^2$, while its GBM covariance-rate contribution is $\Delta t\,\widehat\sigma_{g,\varepsilon,i}^2$.
+
+Classical standard errors and Student-$t$ confidence intervals additionally rely on assumptions about conditional variance and temporal dependence. Financial growth rates can be heteroskedastic and serially dependent, so heteroskedasticity/autocorrelation-consistent errors, block bootstrap intervals, or rolling estimates may be more credible than an i.i.d. formula. Whatever method is used, the training window and sampling interval must be stated.
+
+\notebooklink
+  {L6a: SVD Estimation of Single-Index Models}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}
+  {Construct market and asset growth-rate arrays, estimate SIM coefficients with a numerically stable linear-algebra workflow, and inspect residual behavior.}
+
+\notebooklink
+  {L6a: SIM Parameter Uncertainty}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}
+  {Compute coefficient intervals and $R^2$, then compare theory-based uncertainty with bootstrap results across firms.}
+
+\section{What \texorpdfstring{$R^2$}{R-squared}, Alpha, and Beta Do Not Prove}
+
+In a regression with an intercept, $R_i^2:=1-\sum_t\widehat\varepsilon_{g,i,t}^2/\sum_t(g_{i,t}-\bar g_i)^2$ is the sample fraction of asset-growth variation explained by the fitted market regressor. It is not the probability that the model is true, a forecast-accuracy guarantee, or a measure of investment quality. A low $R^2$ can coexist with a useful beta estimate, and a high $R^2$ can coexist with unstable parameters or omitted nonlinear structure.
+
+Likewise, a positive estimated alpha is an intercept conditional on the chosen market proxy, return convention, sample window, and specification. It is not automatically abnormal performance. Beta is exposure to the selected factor, not total risk. Before using a SIM covariance in an optimizer, inspect residual cross-correlations, rolling stability, out-of-sample error, and sensitivity to the market proxy.
+
+The notebooks work with continuously compounded growth rates $g=r/\Delta t$. Means, intercepts, residuals, risk-free adjustments, and covariances must all use this convention. In particular, $\Sigma_r=(\Delta t)^2\Sigma_g$ and the GBM covariance rate is $C=\Delta t\,\Sigma_g$. Simple returns remain distinct from both quantities.
+
 \keytakeaways
-  {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks, and used Dirichlet draws to explore valid portfolio weights.}
-  {Drift and growth are distinct}
-  {The price SDE uses $\boldsymbol\mu$, while realized growth is $\mathbf g_t=(\Delta t)^{-1}\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and $\E[\mathbf g_t]=\boldsymbol\mu-\tfrac12\operatorname{diag}(C)$.}
-  {Covariance drives joint risk}
-  {A matrix square root maps independent shocks into correlated log returns with covariance $\Sigma\Delta t$.}
-  {Estimates require structural checks}
-  {A covariance estimate must be symmetric and positive semidefinite, and its scaling, window, and regularization must be documented.}
-  {Sampling is not optimization}
-  {Dirichlet draws explore the long-only simplex; concentration parameters control exploration but do not encode a minimum-risk objective.}
-  {Next, turn estimated means and covariance into the global minimum-variance portfolio, efficient frontier, capital allocation line, and tangency portfolio.}
+  {In this lecture, we replaced a dense covariance description with one common market factor plus asset-specific residuals and connected that structure to regression estimation.}
+  {SIM is a covariance restriction}
+  {The formula $\Sigma_g=\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g$ requires residuals to be uncorrelated across assets, not merely fitted separately.}
+  {Risk has two components}
+  {Portfolio market exposure is governed by $\mathbf w^{\mathsf T}\boldsymbol\beta$; diagonal residual risk can diversify, but systematic risk remains.}
+  {Diagnostics limit interpretation}
+  {Alpha, beta, and $R^2$ depend on the market proxy, horizon, sample, return convention, and regression assumptions.}
+  {Next, use the SIM moments inside risky-only and risky/risk-free minimum-variance allocation problems.}
 
 \begin{readinglist}
-  \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).
-  \item Robb J. Muirhead, \emph{Aspects of Multivariate Statistical Theory} (1982), for covariance matrices and multivariate normal transformations.
-  \item Thomas M. Cover and Joy A. Thomas, \emph{Elements of Information Theory}, 2nd ed. (2006), Appendix, for the Dirichlet family and simplex-valued distributions.
+  \item William F. Sharpe, \href{https://doi.org/10.1287/mnsc.9.2.277}{``A Simplified Model for Portfolio Analysis,''} \emph{Management Science} 9(2), 277--293 (1963).
+  \item Edwin J. Elton, Martin J. Gruber, Stephen J. Brown, and William N. Goetzmann, \emph{Modern Portfolio Theory and Investment Analysis}, 9th ed. (2014), chapters on index models.
+  \item John Y. Campbell, Andrew W. Lo, and A. Craig MacKinlay, \emph{The Econometrics of Financial Markets} (1997), chapters on return predictability and regression diagnostics.
 \end{readinglist}
 
 \vfill

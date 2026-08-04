@@ -1,164 +1,200 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\PhiCDF}{\Phi}
 \newcommand{\Pmeasure}{\mathbb{P}}
-\newcommand{\Qmeasure}{\mathbb{Q}}
 
 \begin{document}
 
-\lecturenotes{4b}{Equity-Price Lattices Under Real-World and Risk-Neutral Measures}{Fall 2026}{September 17, 2026}{Jeffrey D. Varner}
+\lecturenotes{4b}{Single-Asset Geometric Brownian Motion}{Fall 2026}{September 17, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Build a binomial lattice}
-  {Derive node prices and node probabilities from the up factor, down factor, horizon, and transition probability.}
-  {Separate probability measures}
-  {Explain why real-world probabilities support forecasting while risk-neutral probabilities support no-arbitrage valuation.}
-  {Test model purpose}
-  {Evaluate probability of profit under the real-world measure and identify stylized facts excluded by a fixed-parameter lattice.}
+  {Derive the GBM solution}
+  {Apply It\^o's lemma to obtain the exact lognormal solution and explain the $-\sigma^2/2$ correction.}
+  {Estimate and simulate}
+  {Map growth-rate moments into drift and volatility estimates and simulate exact discrete-time GBM paths.}
+  {Evaluate model limits}
+  {Compute a target-ROI probability and test GBM against heavy growth-rate tails, weak growth-rate autocorrelation, and volatility clustering.}
 
-\section{A Finite Map of Uncertain Prices}
+\section{From Random Walks to Positive Prices}
 
-An equity price has many possible futures. A binomial lattice makes uncertainty computationally explicit by replacing that continuum with two moves per step. The model is deliberately simple: it gives a complete distribution, preserves positive prices when its move factors are positive, and supports backward valuation. Its simplicity also makes its omissions visible.
+Brownian motion entered finance through attempts to describe continuously fluctuating prices. Louis Bachelier used an arithmetic Brownian model in 1900; later work associated with Paul Samuelson emphasized multiplicative dynamics so prices remain positive. Geometric Brownian motion (GBM) became foundational because it has an analytic solution, scales noise with price, and connects cleanly to option-pricing theory. These virtues make it a benchmark, not an empirical law.
 
-Let $S_0>0$ dollars per share be the initial ex-dividend price. Over each step of length $\Delta t>0$ years, the price is multiplied by the constant up factor $u>0$ or down factor $d>0$, with $d<u$. Multiplication commutes, so a path with $k$ up moves and $n-k$ down moves reaches the same node regardless of the order of those moves. This is the source of recombination (\figref{equity-lattice}).
+GBM assumes the ex-dividend share price $S_t>0$ satisfies the stochastic differential equation
+\begin{equation}
+  \label{eq:gbm-sde}
+  dS_t=\mu S_t\,dt+\sigma S_t\,dW_t,
+\end{equation}
+where $\mu\in\mathbb{R}$ is the annual arithmetic drift in the price SDE, $\sigma>0$ is annual volatility with units years$^{-1/2}$, and $W_t$ is a standard Wiener process. We reserve $g$ for an observed continuously compounded growth rate. Both $\mu$ and $g$ have units years$^{-1}$, but they are not the same quantity.
+
+\begin{definition}{Standard Wiener process}{wiener-process}
+A standard Wiener process $(W_t)_{t\geq0}$ is a continuous real-valued stochastic process satisfying $W_0=0$ almost surely; increments over disjoint intervals are independent; and for $0\leq s<t$, the increment $W_t-W_s$ is normally distributed with mean zero and variance $t-s$. Consequently,
+\begin{equation}
+  \label{eq:wiener-increment}
+  W_t-W_s\overset{d}{=}\sqrt{t-s}\,Z,
+  \qquad Z\sim\mathcal{N}(0,1),
+\end{equation}
+where $\overset{d}{=}$ denotes equality in distribution.
+\end{definition}
+
+Independent Gaussian increments give GBM tractability and also predetermine several of its empirical failures.
+
+\section{It\^o's Lemma Creates the Variance Correction}
+
+Ordinary calculus would incorrectly write $d\log S_t=dS_t/S_t$. Brownian increments have quadratic variation of order $dt$, so the second derivative contributes at first order. It\^o's lemma states the required stochastic chain rule (\thmref{ito-lemma}).
+
+\begin{theorem}{One-dimensional It\^o formula}{ito-lemma}
+Let $X_t$ satisfy $dX_t=a(X_t,t)\,dt+b(X_t,t)\,dW_t$, and let $f(x,t)$ be once continuously differentiable in $t$ and twice continuously differentiable in $x$. Under standard integrability conditions, $Y_t:=f(X_t,t)$ satisfies
+\begin{equation}
+  \label{eq:ito-lemma}
+  dY_t=
+  \left(\frac{\partial f}{\partial t}
+  +a\frac{\partial f}{\partial x}
+  +\frac{1}{2}b^2\frac{\partial^2f}{\partial x^2}\right)dt
+  +b\frac{\partial f}{\partial x}\,dW_t.
+\end{equation}
+All coefficients and derivatives on the right are evaluated at $(X_t,t)$.
+\end{theorem}
+
+Apply \thmref{ito-lemma} to $f(S)=\log S$. Because $f'(S)=1/S$ and $f''(S)=-1/S^2$, the GBM dynamics imply
+\begin{align}
+  d\log S_t
+  &=\left(\mu-\frac{\sigma^2}{2}\right)dt+\sigma\,dW_t,
+  \label{eq:log-gbm}\\
+  \log\!\left(\frac{S_T}{S_0}\right)
+  &=\left(\mu-\frac{\sigma^2}{2}\right)T+\sigma W_T.
+  \label{eq:integrated-log-gbm}
+\end{align}
+Exponentiation gives the exact GBM solution (\propref{gbm-solution}).
+
+\begin{proposition}{Exact solution and distribution of GBM}{gbm-solution}
+For constant $\mu\in\mathbb{R}$, $\sigma>0$, initial price $S_0>0$, and horizon $T>0$ years, the solution of \eqnref{gbm-sde} is
+\begin{equation}
+  \label{eq:gbm-solution}
+  S_T=S_0\exp\!\left[
+  \left(\mu-\frac{\sigma^2}{2}\right)T+\sigma\sqrt{T}\,Z
+  \right],
+  \qquad Z\sim\mathcal{N}(0,1).
+\end{equation}
+Thus $\log(S_T/S_0)$ is normal with mean $(\mu-\sigma^2/2)T$ and variance $\sigma^2T$, while $S_T$ is lognormal and strictly positive almost surely.
+\end{proposition}
+
+The correction $-\sigma^2/2$ reconciles arithmetic and log growth. From the lognormal moments,
+\begin{equation}
+  \label{eq:gbm-moments}
+  \E[S_T]=S_0e^{\mu T},
+  \qquad
+  \Var(S_T)=S_0^2e^{2\mu T}\left(e^{\sigma^2T}-1\right).
+\end{equation}
+The median is $S_0e^{(\mu-\sigma^2/2)T}$, below the mean when $\sigma>0$ because the price distribution is right-skewed.
+
+\notebooklink
+  {L4b: Derivation of the GBM Solution}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-GBM-Solution-Derivation-Fall-2026.ipynb}
+  {Work through Wiener increments, It\^o's lemma, and the analytic transition from the SDE to the lognormal solution.}
+
+\section{Exact Discrete Simulation}
+
+For a grid $0=t_0<t_1<\cdots<t_N$ with step lengths $\Delta t_j:=t_j-t_{j-1}>0$ years, GBM can be sampled exactly at grid points:
+\begin{equation}
+  \label{eq:exact-step}
+  S_{t_j}=S_{t_{j-1}}
+  \exp\!\left[
+  \left(\mu-\frac{\sigma^2}{2}\right)\Delta t_j
+  +\sigma\sqrt{\Delta t_j}\,Z_j
+  \right],
+  \qquad Z_j\overset{\mathrm{iid}}{\sim}\mathcal{N}(0,1).
+\end{equation}
+This is an exact transition for constant-parameter GBM, not the Euler--Maruyama approximation. Monte Carlo repeats \eqnref{exact-step} with independent pseudorandom streams to approximate path or terminal distributions. Reproducibility requires recording the seed and generator, while uncertainty in Monte Carlo estimates should be distinguished from uncertainty in $\mu$ and $\sigma$.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=2.05cm,y=0.82cm,>=Latex,font=\sffamily\small]
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (s0) at (0,0) {$S_0$};
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (d1) at (2,-0.85) {$S_0d$};
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (u1) at (2,0.85) {$S_0u$};
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (d2) at (4,-1.7) {$S_0d^2$};
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (m2) at (4,0) {$S_0ud$};
-    \node[draw=vnink,circle,fill=white,minimum size=8mm] (u2) at (4,1.7) {$S_0u^2$};
-    \foreach \a/\b in {s0/d1,s0/u1,d1/d2,d1/m2,u1/m2,u1/u2}
-      \draw[vnrule,line width=0.9pt,-{Latex[length=2.5mm]}] (\a)--(\b);
-    \node[text=vnlink] at (1.0,0.62) {up};
-    \node[text=vnmuted] at (1.0,-0.62) {down};
-    \node[below,text=vnmuted] at (0,-2.2) {$n=0$};
-    \node[below,text=vnmuted] at (2,-2.2) {$n=1$};
-    \node[below,text=vnmuted] at (4,-2.2) {$n=2$};
+  \begin{tikzpicture}[x=1.35cm,y=0.85cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.2cm,minimum height=0.75cm] (params) at (0,0) {$S_0,\mu,\sigma,\Delta t$};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.1cm,minimum height=0.75cm] (noise) at (3.2,0) {$Z_j\sim\mathcal N(0,1)$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.3cm,minimum height=0.75cm] (step) at (6.4,0) {exact update};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.25cm,minimum height=0.75cm] (paths) at (9.7,0) {price paths};
+    \foreach \a/\b in {params/noise,noise/step,step/paths}
+      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\a)--(\b);
+    \node[below,text=vnmuted] at (4.8,-0.68) {repeat over time and simulations};
   \end{tikzpicture}
-  \caption{A two-step recombining equity lattice. The middle node is shared because $S_0ud=S_0du$. Recombination does not require $ud=1$; that reciprocal constraint is an additional parameter choice used in some models.}
-  \label{fig:equity-lattice}
+  \caption{Exact grid simulation of constant-parameter GBM. Gaussian shocks generate process uncertainty; parameter estimates and model form introduce separate layers of uncertainty.}
+  \label{fig:gbm-simulation}
 \end{figure}
 
-\section{Terminal Prices and Their Distribution}
+\section{Estimating Drift and Volatility Correctly}
 
-Assume first that successive moves are independent and that an up move has constant probability $p\in[0,1]$. After $n$ steps, the number of up moves $K_n$ is binomial. This supplies both the node values and their probability mass (\propref{terminal-distribution}).
-
-\begin{proposition}{Terminal distribution in an i.i.d. binomial lattice}{terminal-distribution}
-Let $S_0>0$, $u>d>0$, $p\in[0,1]$, and let the positive integer $n$ be the number of independent lattice steps. Let $K_n\sim\operatorname{Binomial}(n,p)$ denote the number of up moves. Conditional on $K_n=k$, where $k\in\{0,\ldots,n\}$, the terminal share price and its real-world probability are
+For equally spaced observations, define the growth rate $g_j:=(1/\Delta t)\log(S_{t_j}/S_{t_{j-1}})$ and its associated log return $r_j:=(\Delta t)g_j$. Under GBM,
 \begin{equation}
-  \label{eq:terminal-distribution}
-  S_{n,k}=S_0u^kd^{,n-k},
-  \qquad
-  \Pmeasure(K_n=k)=\binom{n}{k}p^k(1-p)^{n-k}.
+  \label{eq:log-return-law}
+  g_j\overset{\mathrm{iid}}{\sim}
+  \mathcal{N}\!\left[
+  \mu-\frac{\sigma^2}{2},
+  \frac{\sigma^2}{\Delta t}
+  \right].
 \end{equation}
-The model has $n+1$ distinct terminal nodes when $u\neq d$.
-\end{proposition}
+If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of growth rates, the natural moment estimates are
+\begin{equation}
+  \label{eq:gbm-estimates}
+  \widehat\sigma^2=s_g^2\Delta t,
+  \qquad
+  \widehat\mu=\bar g+\frac{1}{2}\widehat\sigma^2.
+\end{equation}
+The sample mean $\bar g$ estimates the expected continuously compounded growth rate $\mu-\sigma^2/2$, not the arithmetic SDE drift itself. Omitting the half-variance adjustment silently changes the meaning of the model parameter.
 
-The expected gross return per step under this probability law is $pu+(1-p)d$. Historical data can suggest estimates for $u$, $d$, and $p$, but the procedure is a model choice. Splitting past observations into positive and negative groups and averaging their move factors discards serial dependence, changing volatility, and tail structure. Estimated parameters also inherit sampling error and regime dependence.
+The drift parameter is difficult to estimate over short samples because expected growth is small relative to growth-rate noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or growth-rate moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
 
 \notebooklink
-  {L4b: Real-World Binomial Share-Price Simulation}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb}
-  {Estimate move factors and an up probability from historical data, populate a lattice, and compare its prediction bands with observed prices.}
+  {L4b: Estimating Single-Asset GBM Parameters}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}
+  {Estimate drift and volatility from historical prices, simulate paths, and compare distributional diagnostics with observed growth rates.}
 
-\section{Two Measures, Two Questions}
+\section{Closed-Form Target Probability}
 
-The symbol assigned to ``probability of up'' must identify its purpose. Under the real-world measure $\Pmeasure$, $p$ describes a statistical law for future prices and is estimated or forecast from data. Under a risk-neutral measure $\Qmeasure$, the up probability $q$ is chosen so that discounted traded-asset prices satisfy the no-arbitrage pricing relation. It is generally not an empirical frequency.
-
-Let the one-step risk-free gross return be $R_f>0$. A risk-neutral lattice forces the expected share-price gross return under $\Qmeasure$ to equal $R_f$ when dividends and frictions are absent. Solving that restriction gives \thmref{risk-neutral-probability}.
-
-\begin{theorem}{Risk-neutral probability in a one-step equity lattice}{risk-neutral-probability}
-Let an equity with current price $S_0>0$ have next-step values $S_0u$ and $S_0d$, where $u>d>0$. Let a locally risk-free asset have one-step gross return $R_f>0$. If
+Use the present-value return definition from L4a without costs: $\rho_T:=e^{-r_bT}S_T/S_0-1$. For a target $\rho_\star>-1$, substitute \eqnref{gbm-solution} and standardize the normal shock. The success probability is
 \begin{equation}
-  \label{eq:no-arbitrage-bounds}
-  d<R_f<u,
+  \label{eq:gbm-pop}
+  \Pmeasure(\rho_T>\rho_\star)
+  =1-\PhiCDF\!\left(
+  \frac{\log(1+\rho_\star)-
+  (\mu-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
+  \right),
 \end{equation}
-then the unique number $q\in(0,1)$ satisfying the discounted-martingale condition is
-\begin{equation}
-  \label{eq:risk-neutral-probability}
-  S_0=\frac{qS_0u+(1-q)S_0d}{R_f},
-  \qquad
-  q=\frac{R_f-d}{u-d}.
-\end{equation}
-Under a continuously compounded annual rate $r_f$ over a step of $\Delta t$ years, $R_f:=\exp(r_f\Delta t)$. The result assumes no intermediate dividend and frictionless trading.
-\end{theorem}
-
-The inequalities in \eqnref{no-arbitrage-bounds} are economic, not cosmetic. If $R_f\leq d$, the equity weakly dominates the risk-free asset in both states; if $R_f\geq u$, the risk-free asset weakly dominates the equity. Either boundary failure creates an arbitrage in the idealized one-period market or signals inconsistent inputs.
-
-For any one-step payoff $H_u$ dollars in the up state and $H_d$ dollars in the down state, the same replication argument yields the no-arbitrage value
-\begin{equation}
-  \label{eq:one-step-claim}
-  V_0=\frac{qH_u+(1-q)H_d}{R_f}.
-\end{equation}
-This is an expectation under $\Qmeasure$, not a statement that the real-world expected payoff equals the price grown at $R_f$. L10a will apply the recursion to options.
-
-\begin{table}[ht]
-  \centering
-  \caption{The probability measure must match the question. Mixing columns produces incorrect forecasts or valuations.}
-  \label{tab:measures}
-  \small\sffamily
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}p{0.19\textwidth}p{0.35\textwidth}p{0.35\textwidth}@{}}
-    \hline
-    & \textbf{Real-world $\Pmeasure$} & \textbf{Risk-neutral $\Qmeasure$} \\
-    \hline
-    Primary use & Forecasting, scenarios, risk, probability of profit & No-arbitrage pricing and hedging \\
-    Up probability & Estimated or modeled from data & Implied by $u,d,R_f$ in the complete one-step model \\
-    Expected equity return & Investor-required or data-generating return & Locally equals the risk-free return after discounting \\
-    Calibration test & Out-of-sample distribution and path behavior & Reproduce traded prices and exclude arbitrage \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\section{Probability of Profit Belongs to the Real-World Measure}
-
-Suppose a strategy costs $C_0>0$ dollars initially and has terminal liquidation value $W_{n,k}$ dollars at node $(n,k)$. If profit means terminal wealth exceeding the initial cost grown at benchmark gross return $R_b^n$, the probability of profit is defined by \defnref{probability-profit}.
-
-\begin{definition}{Lattice probability of profit}{probability-profit}
-Let $K_n\sim\operatorname{Binomial}(n,p)$ under the real-world measure $\Pmeasure$, let $W_{n,k}$ be terminal strategy wealth in dollars at node $k$, let $C_0>0$ dollars be initial cost, and let $R_b>0$ be the benchmark gross return per step. The benchmark-relative probability of profit is
-\begin{equation}
-  \label{eq:probability-profit}
-  \operatorname{POP}_{\Pmeasure}
-  :=\Pmeasure\!\left(W_{n,K_n}>C_0R_b^n\right)
-  =\sum_{k=0}^{n}\mathbf{1}_{\{W_{n,k}>C_0R_b^n\}}
-  \binom{n}{k}p^k(1-p)^{n-k},
-\end{equation}
-where $\mathbf{1}_{A}$ equals one when event $A$ occurs and zero otherwise.
-\end{definition}
-
-POP depends on the forecast law, horizon, benchmark, transaction costs, and profit definition. A large probability of a small gain can coexist with a small probability of a catastrophic loss, so POP is not expected profit and is never a sufficient risk measure. Using $q$ from \eqnref{risk-neutral-probability} in \eqnref{probability-profit} would produce a pricing-measure probability, not the desired empirical success probability.
-
-\section{What the Fixed Lattice Cannot Reproduce}
-
-With constant $u$, $d$, and independent moves, one-step log returns take only two values and have zero serial correlation. Aggregated returns are affine transformations of a binomial count and approach a Gaussian shape after standardization as the step count grows. The model therefore captures weak autocorrelation by construction but not the heavy tails or volatility clustering documented in L4a. A prediction band can have nominal coverage in one sample while still failing exactly when regimes and volatility change.
-
-This is not a reason to discard lattices. It is a reason to match the tool to the question. A lattice is excellent for exposing states, path-dependent trading rules, and replication. Forecasting rare equity moves requires richer innovations or state-dependent parameters, and every extension should be tested against data it was not fit to reproduce.
+where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $\mu$ and $\sigma$. Replacing $\mu$ by a risk-neutral drift changes the measure and no longer answers an empirical probability-of-profit question.
 
 \notebooklink
-  {L4b: Lattice Models for Equity Prices}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb}
-  {Derive terminal node distributions and test which return stylized facts follow from a fixed-parameter binomial model.}
+  {L4b: GBM NPV Trade Rule}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}
+  {Evaluate a benchmark-relative terminal return probability under GBM and compare the analytic result with Monte Carlo estimates.}
+
+\section{Which Stylized Facts Does GBM Encode?}
+
+GBM growth rates over nonoverlapping equal-length intervals are independent Gaussian observations with constant variance rate. The model therefore produces zero autocorrelation in those growth rates, consistent with one broad stylized fact. It cannot generate heavy-tailed growth rates or volatility clustering because $\sigma$ is constant and Gaussian tails are built in. The lognormal price distribution should not be confused with a heavy-tailed growth-rate law.
+
+GBM can still be useful for short-horizon scenarios, benchmarking, and deriving analytical intuition. Its adequacy must be judged against the decision: a model used to estimate extreme loss or dynamic hedging error demands stronger tail and volatility validation than one used to teach stochastic calculus.
 
 \newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we built a recombining equity lattice, separated forecasting from pricing measures, and located probability of profit under the real-world law.}
-  {Recombination is algebraic}
-  {A node depends on the count of up and down moves because multiplication commutes; the extra constraint $ud=1$ is not required.}
-  {Measure follows purpose}
-  {Real-world probabilities describe forecast frequencies, while risk-neutral probabilities enforce discounted no-arbitrage pricing.}
-  {POP is incomplete}
-  {Probability of profit must use a stated real-world model and benchmark, and it does not reveal loss severity or expected profit.}
-  {Next, convert lattice states into explicit trading rules and quantify how entry, exit, and transaction-cost choices reshape probability of profit.}
+  {In this lecture, we solved GBM with It\^o's lemma, separated arithmetic drift from mean log growth, and derived an exact terminal target probability.}
+  {Quadratic variation matters}
+  {The It\^o correction $-\sigma^2/2$ appears because Brownian squared increments contribute at order $dt$.}
+  {Drift names must be consistent}
+  {The SDE uses arithmetic drift $\mu$; realized growth is $g_{t,\Delta t}=(1/\Delta t)\log(S_{t+\Delta t}/S_t)$ with mean $\mu-\sigma^2/2$.}
+  {Tractability has a cost}
+  {Independent Gaussian increments give exact simulation and closed-form probabilities but exclude heavy tails and volatility clustering.}
+  {Next, couple several GBM assets with correlated shocks and generate portfolio weights from a Dirichlet distribution.}
 
 \begin{readinglist}
-  \item John C. Cox, Stephen A. Ross, and Mark Rubinstein, \href{https://doi.org/10.1016/0304-405X(79)90015-1}{``Option Pricing: A Simplified Approach,''} \emph{Journal of Financial Economics} 7(3), 229--263 (1979).
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), Chapters 13 and 15, for binomial trees, replication, and risk-neutral valuation.
-  \item Rama Cont, \href{https://doi.org/10.1080/713665670}{``Empirical Properties of Asset Returns,''} \emph{Quantitative Finance} 1(2), 223--236 (2001), for empirical validation targets omitted by the fixed lattice.
+  \item Bernt \O ksendal, \emph{Stochastic Differential Equations}, 6th ed. (2003), for Wiener processes, It\^o's formula, and SDE solutions.
+  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), for lognormal price models and risk-neutral applications.
+  \item Paul A. Samuelson, ``Proof That Properly Anticipated Prices Fluctuate Randomly,'' \emph{Industrial Management Review} 6(2), 41--49 (1965), for the modern economic random-walk argument.
 \end{readinglist}
 
 \vfill

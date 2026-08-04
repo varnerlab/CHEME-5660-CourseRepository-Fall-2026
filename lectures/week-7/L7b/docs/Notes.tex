@@ -5,163 +5,141 @@
 
 \begin{document}
 
-\lecturenotes{7b}{Introduction to Single-Index Models}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
+\lecturenotes{7b}{Dynamic Rebalancing of Minimum-Variance Portfolios}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Decompose asset growth rates}
-  {Separate common market exposure from firm-specific variation and interpret alpha, beta, and the residual.}
-  {Build the SIM covariance}
-  {Derive the low-dimensional mean and covariance structure implied by a single-index model.}
-  {Estimate and diagnose a SIM}
-  {Fit alpha and beta by least squares and use residuals, confidence intervals, and $R^2$ without overstating what they establish.}
+  {Quantify portfolio drift}
+  {Propagate pre-trade weights through asset returns and measure the resulting changes in risk, beta, and target tracking.}
+  {Design a rebalancing rule}
+  {Distinguish calendar, threshold, and cost-aware optimization policies and state exactly when each policy trades.}
+  {Evaluate implementation effects}
+  {Account for turnover, transaction costs, taxes, discrete shares, and information timing in a dynamic backtest.}
 
-\section{Why Replace a Full Covariance Matrix?}
+\section{An Optimal Portfolio Is a Time-Stamped Decision}
 
-A portfolio of $m$ risky assets requires $m$ expected growth rates and $m(m+1)/2$ distinct growth-rate covariance entries. The number of pairwise terms grows quadratically, estimates become noisy when the history is short relative to the asset universe, and an inverse covariance matrix can magnify that noise. Yet many securities visibly move together when market-wide news arrives. A factor model makes that shared source of movement explicit.
+A minimum-variance optimizer produces target weights for one information set, one covariance model, and one set of constraints. After prices move, a portfolio with fixed share counts no longer has those weights. Re-solving and trading continuously would chase every movement, consume liquidity, realize taxes, and expose the strategy to estimation noise. Dynamic rebalancing therefore asks a policy question: \emph{when is the benefit of returning toward a target worth the cost and risk of trading?}
 
-The single-index model (SIM), introduced by William Sharpe as a simplified model for portfolio analysis, compresses co-movement into exposure to one observed index. It is both a statistical regression and a covariance model. Those roles are related but not identical: fitting separate regressions does not by itself prove that their residuals are mutually uncorrelated.
+The distinction between a target and a policy is fundamental. A target $\mathbf w_t^\star$ says what the portfolio would hold at decision time $t$ if it could trade immediately under the current model. A rebalancing policy maps observable state---pre-trade weights, estimates, costs, tax lots, and constraints---to an action. The policy must be specified before evaluating later returns.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.05cm and 1.45cm]
-    \node[draw=vnink,fill=vnsoft,minimum width=2.15cm,minimum height=0.78cm] (market) {market growth $g_M$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=1.25cm,minimum width=2.15cm] (a1) {asset $1$: $g_1$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,minimum width=2.15cm] (a2) {asset $2$: $g_2$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=-1.25cm,minimum width=2.15cm] (am) {asset $m$: $g_m$};
-    \draw[vnlink,thick,->] (market.east) -- node[above,sloped] {$\beta_1$} (a1.west);
-    \draw[vnlink,thick,->] (market.east) -- node[above] {$\beta_2$} (a2.west);
-    \draw[vnlink,thick,->] (market.east) -- node[below,sloped] {$\beta_m$} (am.west);
-    \node[left=0.85cm of a1,text=vnmuted] (e1) {$\varepsilon_1$};
-    \node[left=0.85cm of a2,text=vnmuted] (e2) {$\varepsilon_2$};
-    \node[left=0.85cm of am,text=vnmuted] (em) {$\varepsilon_m$};
-    \draw[vnmuted,->] (e1)--(a1);
-    \draw[vnmuted,->] (e2)--(a2);
-    \draw[vnmuted,->] (em)--(am);
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.55cm]
+    \node[draw=vnrule,fill=vnsoft,minimum width=2.15cm,minimum height=0.75cm] (move) {market move};
+    \node[draw=vnrule,fill=vnsoft,right=of move,minimum width=2.15cm,minimum height=0.75cm] (drift) {pre-trade drift};
+    \node[draw=vnink,fill=vnpanel,right=of drift,minimum width=2.15cm,minimum height=0.75cm] (rule) {policy signal};
+    \node[draw=vnrule,fill=vnsoft,right=of rule,minimum width=2.15cm,minimum height=0.75cm] (trade) {trade and costs};
+    \node[draw=vnrule,fill=vnsoft,right=of trade,minimum width=2.15cm,minimum height=0.75cm] (hold) {post-trade hold};
+    \draw[vnlink,thick,->] (move)--(drift);
+    \draw[vnlink,thick,->] (drift)--(rule);
+    \draw[vnlink,thick,->] (rule)--(trade);
+    \draw[vnlink,thick,->] (trade)--(hold);
+    \draw[vnmuted,dashed,->] (hold.south) to[bend right=26] node[below] {next decision time} (move.south);
   \end{tikzpicture}
-  \caption{One common market growth rate reaches every asset through its beta loading, while each residual records variation not explained by that index. The diagonal-residual assumption makes the residual arrows mutually uncorrelated; it should be checked rather than silently presumed.}
-  \label{fig:sim-graph}
+  \caption{A rebalancing strategy is a repeated event sequence. Returns create pre-trade weights; the policy observes only information available at that time, decides whether to trade, pays implementation costs, and then holds the resulting portfolio.}
+  \label{fig:rebalance-loop}
 \end{figure}
 
-\section{The Single-Index Growth Model}
+\section{How Buy-and-Hold Weights Drift}
 
-Fix one sampling interval $\Delta t$, such as one trading day expressed in years. Let $g_M\in\R$ be the market-index continuously compounded growth rate and let $g_i\in\R$ be the growth rate of risky asset $i\in\{1,\ldots,m\}$. A SIM represents each asset as
+Let $\mathbf w_t^+\in\R^m$ be post-trade risky-asset weights at time $t$, with $\mathbf1^{\mathsf T}\mathbf w_t^+=1$, and let $R_{i,t+1}>-1$ be asset $i$'s simple return from $t$ to $t+1$. Before any new trade, the portfolio simple return is $R_{p,t+1}:=(\mathbf w_t^+)^{\mathsf T}\mathbf R_{t+1}$ and the next pre-trade weights are
 \begin{equation}
-  \label{eq:sim-scalar}
-  g_i=\alpha_{g,i}+\beta_i g_M+\varepsilon_{g,i}.
+  \label{eq:weight-drift}
+  w_{i,t+1}^-
+  =\frac{w_{i,t}^+(1+R_{i,t+1})}{1+R_{p,t+1}},
+  \qquad i\in\{1,\ldots,m\}.
 \end{equation}
-Here $\alpha_{g,i}$ and $\varepsilon_{g,i}$ have units time$^{-1}$, while $\beta_i$ is a dimensionless market loading. The conventional population assumptions are
+The superscripts $+$ and $-$ mean immediately after and immediately before a trade, respectively. Equation~\eqref{eq:weight-drift} is a self-financing accounting identity before costs: asset values grow at different rates, while the denominator rescales them to fractions of total wealth.
+
+With the course convention $r_{i,t+1}=(\Delta t)g_{i,t+1}$ for continuously compounded log return, $1+R_{i,t+1}=\exp(r_{i,t+1})$. The same exact update is therefore
 \begin{equation}
-  \label{eq:sim-assumptions}
-  \mathbb E[\varepsilon_{g,i}]=0,
-  \qquad
-  \operatorname{Cov}(\varepsilon_{g,i},g_M)=0,
-  \qquad
-  \operatorname{Cov}(\varepsilon_{g,i},\varepsilon_{g,j})=0\quad(i\neq j).
+  \label{eq:weight-drift-growth}
+  w_{i,t+1}^-
+  =\frac{w_{i,t}^+\exp((\Delta t)g_{i,t+1})}
+  {\sum_j w_{j,t}^+\exp((\Delta t)g_{j,t+1})}.
 \end{equation}
-The first two conditions define a linear projection when the parameters are population least-squares coefficients. The third is an additional covariance-model restriction. Market proxies, sector effects, omitted factors, and synchronized shocks can leave correlated residuals and violate it.
+Do not replace the gross price relative by $1+(\Delta t)g_{i,t+1}$ except as a stated small-move approximation.
 
-\begin{definition}{Systematic and idiosyncratic components}{risk-components}
-For the SIM in \eqnref{sim-scalar}, $\beta_i g_M$ is the asset's \emph{systematic component}: its variation is inherited from the common index. The residual $\varepsilon_{g,i}$ is the \emph{idiosyncratic component}: variation orthogonal to the chosen index under \eqnref{sim-assumptions}. Idiosyncratic does not mean predictable, harmless, or independent through time.
-\end{definition}
-
-If $\sigma_{g,M}^2:=\operatorname{Var}(g_M)>0$, the population linear-projection coefficients satisfy
+\begin{proposition}{When weights do not drift}{no-drift}
+Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift} satisfies $w_{i,t+1}^-=w_{i,t}^+$ if and only if
 \begin{equation}
-  \label{eq:projection-coefficients}
-  \beta_i=\frac{\operatorname{Cov}(g_i,g_M)}{\sigma_{g,M}^2},
-  \qquad
-  \alpha_{g,i}=\mathbb E[g_i]-\beta_i\mathbb E[g_M].
+  \label{eq:no-drift}
+  R_{i,t+1}=R_{p,t+1}.
 \end{equation}
-Thus beta measures sensitivity to the selected index and sampling convention. A beta of $1.4$ does not mean the asset always moves by $1.4$ times the market; \eqnref{sim-scalar} includes an intercept and a residual on every observation. For $r=(\Delta t)g$, the return-form coefficients satisfy $\alpha_{r,i}=(\Delta t)\alpha_{g,i}$, $\varepsilon_{r,i}=(\Delta t)\varepsilon_{g,i}$, and the same $\beta_i$.
-
-\section{Mean and Covariance Implied by the SIM}
-
-Let $\boldsymbol\alpha_g,\boldsymbol\beta\in\R^m$ collect the growth intercepts and betas, let $\boldsymbol\varepsilon_g\in\R^m$ collect growth residuals, and let $D_g:=\operatorname{diag}(\sigma_{g,\varepsilon,1}^2,\ldots,\sigma_{g,\varepsilon,m}^2)$, where $\sigma_{g,\varepsilon,i}^2:=\operatorname{Var}(\varepsilon_{g,i})$. The vector model is
-\begin{equation}
-  \label{eq:sim-vector}
-  \mathbf g=\boldsymbol\alpha_g+\boldsymbol\beta g_M+\boldsymbol\varepsilon_g.
-\end{equation}
-Under \eqnref{sim-assumptions}, its moments have the low-rank-plus-diagonal form in \propref{sim-moments}.
-
-\begin{proposition}{Single-index moments}{sim-moments}
-Let $\mathbf g\in\R^m$ satisfy \eqnref{sim-vector}. Suppose $\mathbb E[\boldsymbol\varepsilon_g]=\mathbf0$, $\operatorname{Cov}(\boldsymbol\varepsilon_g,g_M)=\mathbf0$, and $\operatorname{Cov}(\boldsymbol\varepsilon_g)=D_g$. If $\bar g_M:=\mathbb E[g_M]$ and $\sigma_{g,M}^2:=\operatorname{Var}(g_M)$, then
-\begin{equation}
-  \label{eq:sim-moments}
-  \bar{\mathbf g}:=\mathbb E[\mathbf g]
-  =\boldsymbol\alpha_g+\boldsymbol\beta\bar g_M,
-  \qquad
-  \Sigma_g:=\operatorname{Cov}(\mathbf g)
-  =\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g.
-\end{equation}
-Consequently, $\operatorname{Cov}(g_i,g_j)=\beta_i\beta_j\sigma_{g,M}^2$ for $i\neq j$, while $\operatorname{Var}(g_i)=\beta_i^2\sigma_{g,M}^2+\sigma_{g,\varepsilon,i}^2$.
+Thus all positively weighted assets must earn the same return over the interval for every weight to remain unchanged. Assets held at zero weight impose no condition.
 \end{proposition}
 
-The matrix $\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}$ has rank at most one. Instead of estimating every cross-covariance separately, the SIM estimates $m$ betas, $m$ residual growth variances, and one market growth variance. This reduction buys stability only if the omitted residual correlations are small enough for the intended use.
-
-\section{Portfolio Risk Becomes Interpretable}
-
-Let $\mathbf w\in\R^m$ be fixed portfolio weights. The portfolio growth rate $g_p:=\mathbf w^{\mathsf T}\mathbf g$ has market beta $\beta_p:=\mathbf w^{\mathsf T}\boldsymbol\beta$ and residual $\varepsilon_{g,p}:=\mathbf w^{\mathsf T}\boldsymbol\varepsilon_g$. Substituting \eqnref{sim-vector} gives
-\begin{equation}
-  \label{eq:portfolio-sim}
-  g_p=\mathbf w^{\mathsf T}\boldsymbol\alpha_g+\beta_p g_M+\varepsilon_{g,p},
-  \qquad
-  \operatorname{Var}(g_p)=\beta_p^2\sigma_{g,M}^2+\mathbf w^{\mathsf T}D_g\mathbf w.
-\end{equation}
-The first variance term is common-factor risk. The second is residual risk. For an equal-weight portfolio with $w_i=1/m$ and residual variances bounded by a constant $K$, the residual variance satisfies
-\begin{equation}
-  \label{eq:diversification-bound}
-  \mathbf w^{\mathsf T}D_g\mathbf w
-  =\frac{1}{m^2}\sum_{i=1}^{m}\sigma_{g,\varepsilon,i}^2
-  \leq\frac{K}{m}.
-\end{equation}
-Thus firm-specific variance can vanish as the portfolio broadens under the diagonal-residual assumption, while systematic variance generally remains. Concentrated weights or correlated residuals can destroy this conclusion.
-
-\section{Estimating Alpha and Beta}
-
-For one asset, observe $n$ paired growth rates $\{(g_{M,t},g_{i,t})\}_{t=1}^n$. Let $\mathbf y\in\R^n$ contain the asset growth rates and let $X\in\R^{n\times2}$ have row $t$ equal to $(1,g_{M,t})$. When $X$ has full column rank, ordinary least squares estimates $\boldsymbol\theta_i:=(\alpha_{g,i},\beta_i)^{\mathsf T}$ by
-\begin{equation}
-  \label{eq:ols}
-  \widehat{\boldsymbol\theta}_i
-  =(X^{\mathsf T}X)^{-1}X^{\mathsf T}\mathbf y,
-  \qquad
-  \widehat{\boldsymbol\varepsilon}_{g,i}
-  =\mathbf y-X\widehat{\boldsymbol\theta}_i.
-\end{equation}
-Numerically, a QR or singular-value decomposition is preferable to explicitly forming the inverse in \eqnref{ols}. The growth-residual variance estimate is $\widehat\sigma_{g,\varepsilon,i}^2=\|\widehat{\boldsymbol\varepsilon}_{g,i}\|_2^2/(n-2)$ under the usual homoskedastic regression convention. Do not divide this value by $\Delta t$: the observations are already growth rates. The corresponding return residual variance is $(\Delta t)^2\widehat\sigma_{g,\varepsilon,i}^2$, while its GBM covariance-rate contribution is $\Delta t\,\widehat\sigma_{g,\varepsilon,i}^2$.
-
-Classical standard errors and Student-$t$ confidence intervals additionally rely on assumptions about conditional variance and temporal dependence. Financial growth rates can be heteroskedastic and serially dependent, so heteroskedasticity/autocorrelation-consistent errors, block bootstrap intervals, or rolling estimates may be more credible than an i.i.d. formula. Whatever method is used, the training window and sampling interval must be stated.
+If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With growth-rate covariance estimate $\Sigma_{g,t}$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_{g,t}\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
 
 \notebooklink
-  {L7b: SVD Estimation of Single-Index Models}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}
-  {Construct market and asset growth-rate arrays, estimate SIM coefficients with a numerically stable linear-algebra workflow, and inspect residual behavior.}
+  {L7b: Portfolio Drift After a Maximum-Sharpe Allocation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-Portfolio-Drift-Fall-2026.ipynb}
+  {Freeze initial share counts, propagate realized prices, reconstruct daily wealth fractions, and inspect how portfolio alpha and beta move away from their initial values.}
 
-\notebooklink
-  {L7b: SIM Parameter Uncertainty}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}
-  {Compute coefficient intervals and $R^2$, then compare theory-based uncertainty with bootstrap results across firms.}
+\section{Three Families of Rebalancing Rules}
 
-\section{What \texorpdfstring{$R^2$}{R-squared}, Alpha, and Beta Do Not Prove}
+Let $\mathbf w_t^\star$ be the current target and let $d(\mathbf w_t^-,\mathbf w_t^\star)$ be a stated distance or risk-deviation measure. Common policies include:
 
-In a regression with an intercept, $R_i^2:=1-\sum_t\widehat\varepsilon_{g,i,t}^2/\sum_t(g_{i,t}-\bar g_i)^2$ is the sample fraction of asset-growth variation explained by the fitted market regressor. It is not the probability that the model is true, a forecast-accuracy guarantee, or a measure of investment quality. A low $R^2$ can coexist with a useful beta estimate, and a high $R^2$ can coexist with unstable parameters or omitted nonlinear structure.
+\begin{enumerate}[leftmargin=1.7em]
+  \item \textbf{Calendar rebalancing.} Trade on predetermined dates---for example, monthly or quarterly---regardless of drift. It is simple to audit but can trade when nothing material changed and wait too long after a large move.
+  \item \textbf{Threshold rebalancing.} Trade when $d$ exceeds a band, such as $\|\mathbf w_t^- - \mathbf w_t^\star\|_\infty>\delta$ for tolerance $\delta>0$. This creates a no-trade region but requires a convention for returning to the target, the nearest band edge, or somewhere between.
+  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target growth, and trading penalties. The action can be partial rather than all-or-nothing.
+\end{enumerate}
 
-Likewise, a positive estimated alpha is an intercept conditional on the chosen market proxy, return convention, sample window, and specification. It is not automatically abnormal performance. Beta is exposure to the selected factor, not total risk. Before using a SIM covariance in an optimizer, inspect residual cross-correlations, rolling stability, out-of-sample error, and sensitivity to the market proxy.
+A hybrid policy checks thresholds only on scheduled dates. Every rule needs an explicit clock, input timestamp, and action. ``Rebalance when needed'' is not reproducible.
 
-The notebooks work with continuously compounded growth rates $g=r/\Delta t$. Means, intercepts, residuals, risk-free adjustments, and covariances must all use this convention. In particular, $\Sigma_r=(\Delta t)^2\Sigma_g$ and the GBM covariance rate is $C=\Delta t\,\Sigma_g$. Simple returns remain distinct from both quantities.
+\section{Turnover and the Cost of Returning to Target}
 
+Let $\Delta\mathbf w_t:=\mathbf w_t^+-\mathbf w_t^-$ be the planned weight change. For fully invested portfolios with no external cash flow, $\mathbf1^{\mathsf T}\Delta\mathbf w_t=0$. The one-way turnover fraction is
+\begin{equation}
+  \label{eq:turnover}
+  \tau_t:=\frac12\|\Delta\mathbf w_t\|_1.
+\end{equation}
+The factor $1/2$ avoids counting both sales and purchases as separate portfolio replacements. If a cost model charges a proportional rate $c_i\geq0$ to every dollar bought or sold in asset $i$, the cost relative to pre-trade wealth is instead approximately $\sum_i c_i|\Delta w_{i,t}|$; state which convention is being reported.
+
+One convex cost-aware update uses risk-aversion coefficient $\gamma>0$ and turnover penalty $\lambda\geq0$:
+\begin{equation}
+  \label{eq:cost-aware-rebalance}
+  \begin{aligned}
+  \min_{\mathbf w\in\R^m}\quad
+    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_{g,t}\mathbf w
+      -\bar{\mathbf g}_t^{\mathsf T}\mathbf w
+      +\lambda\|\mathbf w-\mathbf w_t^-\|_1\\
+  \text{subject to}\quad
+    &\mathbf1^{\mathsf T}\mathbf w=1,
+    \qquad \boldsymbol\ell\leq\mathbf w\leq\mathbf u.
+  \end{aligned}
+\end{equation}
+Here $\bar{\mathbf g}_t\in\R^m$ and $\Sigma_{g,t}\in\R^{m\times m}$ are information-time expected-growth and growth-rate covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. If same-horizon log-return inputs are used instead, convert every input consistently: $\bar{\mathbf r}_t=(\Delta t)\bar{\mathbf g}_t$ and $\Sigma_{r,t}=(\Delta t)^2\Sigma_{g,t}$. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
+
+\section{Backtesting a Dynamic Policy Without Looking Ahead}
+
+At each decision time, first mark the existing shares to current observable prices and compute $\mathbf w_t^-$. Then estimate model inputs using data whose timestamps precede the decision, construct $\mathbf w_t^\star$ or solve \eqnref{cost-aware-rebalance}, convert desired dollar changes into executable share quantities, apply fills and costs, and hold until the next permitted decision. Returns used to judge the action must occur strictly afterward.
+
+Performance accounting should preserve the wealth recursion. If $C_t\geq0$ is the dollar implementation cost paid at time $t$ and $W_t^-$ is pre-trade wealth, then post-trade investable wealth is
+\begin{equation}
+  \label{eq:wealth-after-cost}
+  W_t^+=W_t^- - C_t.
+\end{equation}
+Ignoring \eqnref{wealth-after-cost} while changing weights grants the backtest free trading. Also record turnover, realized taxes or a declared pretax convention, constraint violations, cash residuals from integer shares, and failed or stale orders.
+
+Use walk-forward evaluation: select policy parameters such as calendar frequency, threshold $\delta$, and penalty $\lambda$ on training or validation data, then freeze them for a later test period. Compare buy-and-hold, full-target rebalancing, and the proposed partial policy on identical price data and cost assumptions. The relevant question is not whether rebalancing preserves the model target perfectly; it is whether the net risk--return outcome improves after all implementation effects.
+
+\newpage
+\thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we replaced a dense covariance description with one common market factor plus asset-specific residuals and connected that structure to regression estimation.}
-  {SIM is a covariance restriction}
-  {The formula $\Sigma_g=\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g$ requires residuals to be uncorrelated across assets, not merely fitted separately.}
-  {Risk has two components}
-  {Portfolio market exposure is governed by $\mathbf w^{\mathsf T}\boldsymbol\beta$; diagonal residual risk can diversify, but systematic risk remains.}
-  {Diagnostics limit interpretation}
-  {Alpha, beta, and $R^2$ depend on the market proxy, horizon, sample, return convention, and regression assumptions.}
-  {Next, use the SIM moments inside risky-only and risky/risk-free minimum-variance allocation problems.}
+  {In this lecture, we turned a static minimum-variance target into a time-indexed decision policy that observes drift, chooses an action, pays costs, and then holds.}
+  {Drift is mechanical}
+  {Fixed share counts imply $w_{i,t+1}^-=w_{i,t}^+(1+R_{i,t+1})/(1+R_{p,t+1})$; unequal returns change weights and modeled exposures.}
+  {Rebalancing is a policy}
+  {Calendar, threshold, and optimization rules differ in their decision clocks, triggers, and destinations, so each must be specified before testing.}
+  {Trading is part of the wealth equation}
+  {Turnover, spreads, impact, taxes, and discrete shares can erase a model improvement and must be deducted at the time of action.}
+  {Next, begin the derivatives unit by separating an option's contractual payoff from the investor's premium-dependent profit.}
 
 \begin{readinglist}
-  \item William F. Sharpe, \href{https://doi.org/10.1287/mnsc.9.2.277}{``A Simplified Model for Portfolio Analysis,''} \emph{Management Science} 9(2), 277--293 (1963).
-  \item Edwin J. Elton, Martin J. Gruber, Stephen J. Brown, and William N. Goetzmann, \emph{Modern Portfolio Theory and Investment Analysis}, 9th ed. (2014), chapters on index models.
-  \item John Y. Campbell, Andrew W. Lo, and A. Craig MacKinlay, \emph{The Econometrics of Financial Markets} (1997), chapters on return predictability and regression diagnostics.
+  \item André F. Perold and William F. Sharpe, \href{https://www.jstor.org/stable/4479134}{``Dynamic Strategies for Asset Allocation,''} \emph{Financial Analysts Journal} 44(1), 16--27 (1988).
+  \item Michael J. Magill and George M. Constantinides, \href{https://doi.org/10.1016/0304-405X(76)90003-4}{``Portfolio Selection with Transactions Costs,''} \emph{Journal of Economic Theory} 13(2), 245--263 (1976).
+  \item Richard Grinold and Ronald Kahn, \emph{Active Portfolio Management}, 2nd ed. (1999), chapters on implementation, turnover, and transaction costs.
 \end{readinglist}
 
 \vfill

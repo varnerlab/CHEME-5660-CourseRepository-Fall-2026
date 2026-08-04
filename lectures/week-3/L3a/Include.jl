@@ -14,8 +14,6 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-
-
 # load external packages -
 using VLQuantitativeFinancePackage
 using DataFrames
@@ -31,8 +29,6 @@ using JLD2
 using FileIO
 using Distributions
 using PrettyTables
-
-# load my codes -
-include(joinpath(_PATH_TO_SRC, "Files.jl"));
-include(joinpath(_PATH_TO_SRC, "Utility.jl"));
-include(joinpath(_PATH_TO_SRC, "Compute.jl"));
+using ColorVectorSpace
+using Images
+using HypothesisTests

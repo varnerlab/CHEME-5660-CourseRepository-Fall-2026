@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage{varnernotes}
+
+\begin{document}
+
+\lecturenotes{2b}{Optional Advanced: Treasury STRIPS and the Term Structure}{Fall 2026}{September 3, 2026}{Jeffrey D. Varner}
+
+\learningobjectives
+  {Explain stripping}
+  {Describe how a financial institution separates eligible Treasury principal and interest payments into zero-coupon securities.}
+  {Recover discount factors}
+  {Infer spot discount factors and spot rates from STRIPS prices and reconstruct the value of the parent coupon security.}
+  {Interpret forward rates}
+  {Derive an implied forward rate from discount factors and state why it is not automatically an expected future short rate.}
+
+\section{Why Separate a Treasury into Pieces?}
+
+A coupon-bearing Treasury security bundles payments at many dates into one traded instrument. Some investors instead want one known nominal payment at one particular date: a pension fund may be matching a liability, and a valuation model may need the price of a pure maturity claim. The U.S. Treasury's Separate Trading of Registered Interest and Principal of Securities program---\emph{STRIPS}---allows eligible notes, bonds, and Treasury inflation-protected securities to be decomposed into those single-payment claims.
+
+The Treasury does not issue a new collection of ``STRIPS bonds'' at auction. A financial institution holds an eligible parent security in the commercial book-entry system and requests that its coupon and principal components be registered and traded separately. Each component becomes a zero-coupon security with its own CUSIP and one payment date. The process is reversible: compatible components can be reassembled into the original security.
+
+For a nominal ten-year note with semiannual coupons, stripping creates twenty coupon-interest components and one principal component. The resulting twenty-one zero-coupon claims preserve the original Treasury's total promised cash flows; stripping changes the packaging and trading units, not the federal payment obligation (\figref{stripping}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1.25cm,y=0.9cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.4cm,minimum height=0.85cm,align=center]
+      (parent) at (0,0) {coupon Treasury\\price $B_0$};
+    \draw[vnlink,line width=1.1pt,-{Latex[length=3mm]}]
+      (parent)--(2.25,0) node[midway,above] {strip};
+    \foreach \x/\lab in {3.0/C_1,4.25/C_2,5.5/\cdots,6.75/C_N,8.0/F_N}{
+      \node[draw=vnrule,fill=white,minimum width=0.92cm,
+        minimum height=0.68cm] at (\x,0) {$\lab$};
+    }
+    \node[text=vnmuted,anchor=north] at (3.0,-0.48) {$T_1$};
+    \node[text=vnmuted,anchor=north] at (4.25,-0.48) {$T_2$};
+    \node[text=vnmuted,anchor=north] at (6.75,-0.48) {$T_N$};
+    \node[text=vnmuted,anchor=north] at (8.0,-0.48) {$T_N$};
+    \draw[vncarnelian,line width=1.0pt,-{Latex[length=3mm]}]
+      (8.5,0.65)--(0.9,0.65) node[midway,fill=white,inner sep=3pt] {reassemble compatible components};
+  \end{tikzpicture}
+  \caption{A coupon-bearing Treasury is decomposed into separately registered claims on each coupon $C_j$ and the face-value payment $F_N$. Coupon and principal components due on the same date remain distinct securities even though they share a maturity.}
+  \label{fig:stripping}
+\end{figure}
+
+\section{A STRIP Is a Direct Discount-Factor Observation}
+
+Let a STRIP pay the known face amount $F_T>0$ dollars at maturity $T>0$ years and have the observed time-0 dirty price $Q_T>0$ dollars. Because it contains no intermediate cash flow, its normalized price directly identifies the discount function (\defnref{strip-discount}).
+
+\begin{definition}{Discount factor from a STRIP}{strip-discount}
+Let time 0 be the valuation date, let $T>0$ years be the maturity, let $Q_T>0$ dollars be the observed time-0 price of a nominal Treasury STRIP, and let $F_T>0$ dollars be its single maturity payment. The time-0 price of one maturity-dollar is
+\begin{equation}
+  \label{eq:strip-discount}
+  P(0,T):=\frac{Q_T}{F_T}.
+\end{equation}
+Under continuous compounding, the associated annual spot rate $z(0,T)$ in decimal units per year is
+\begin{equation}
+  \label{eq:strip-spot}
+  z(0,T):=-\frac{\log P(0,T)}{T}
+  =\frac{1}{T}\log\!\left(\frac{F_T}{Q_T}\right).
+\end{equation}
+These relations ignore taxes, transaction costs, settlement conventions, and differences in liquidity across components.
+\end{definition}
+
+Normalizing by face value is essential: price dollars and maturity dollars are not the same unit. Once the ratios $P(0,T_j)$ are available across maturities $T_j$, they form a zero-coupon discount curve. Quoting rates through \eqnref{strip-spot} is optional; discount factors are the primitive objects that multiply dated cash flows.
+
+Observed STRIPS quotes are discrete and may be noisy. Constructing a curve at every possible maturity requires interpolation or a parametric fit. A good curve-building procedure preserves positive discount factors, handles bid-ask spreads, documents the compounding convention, and avoids introducing artificial oscillations between observed maturities.
+
+\notebooklink
+  {Advanced L2b: Treasury STRIPS and the Spot Curve}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/advanced/strips/CHEME-5660-L3b-Lecture-STRIPS-Bonds-Fall-2026.ipynb}
+  {Load observed STRIPS prices, normalize the single payments, and construct spot and adjacent-period implied-rate curves.}
+
+\section{Reassembling the Parent Security}
+
+Stripping does not create value by arithmetic alone. If the separated components reproduce the parent's dates and amounts, no-arbitrage requires the component values to add to the parent value, subject to market frictions (\propref{reassembly}).
+
+\begin{proposition}{STRIPS reassembly value}{reassembly}
+Let a nominal option-free coupon Treasury pay $C_j>0$ dollars at increasing dates $0<T_1<\cdots<T_N$ and pay face value $F_N>0$ dollars at $T_N$. Let $P(0,T_j)>0$ be the time-0 price of one dollar paid at $T_j$. If the parent and its separate components have identical Treasury payment claims and markets admit no arbitrage, then the parent dirty value $B_0$ satisfies
+\begin{equation}
+  \label{eq:reassembly}
+  B_0=\sum_{j=1}^{N}C_jP(0,T_j)+F_NP(0,T_N).
+\end{equation}
+The equality is an idealized valuation relation; observed executable prices may differ because of bid-ask spreads, financing, taxes, fees, and component-specific liquidity.
+\end{proposition}
+
+\begin{derivation}
+Purchase $C_j$ units of the maturity-$T_j$ zero-coupon claim for each coupon and $F_N$ units of the maturity-$T_N$ claim for principal. The constructed portfolio then pays exactly the same dollar amount as the parent on every date. If its value differed from $B_0$ in a frictionless market, one could buy the cheaper cash-flow package and sell the more expensive one while net future cash flows cancel. Absence of that arbitrage yields \eqnref{reassembly}.
+\end{derivation}
+
+Coupon-bond data can also be used to infer discount factors sequentially. If $P(0,T_1),\ldots,P(0,T_{N-1})$ are known, the final factor follows by isolating the last cash flow:
+\begin{equation}
+  \label{eq:bootstrap}
+  P(0,T_N)=
+  \frac{B_0-\sum_{j=1}^{N-1}C_jP(0,T_j)}{C_N+F_N}.
+\end{equation}
+This recursive construction is called \emph{bootstrapping}. STRIPS make the same logic more direct because each observed instrument already contains only one maturity payment.
+
+\notebooklink
+  {Advanced L2b: Creating and Pricing STRIPS}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/advanced/strips/CHEME-5660-L3b-STRIPS-Issuer-Example-Fall-2026.ipynb}
+  {Decompose a Treasury coupon security, price its components under alternative curve shapes, and compare component proceeds with the parent value.}
+
+\section{Forward Rates: Implied, Not Automatically Expected}
+
+Two discount factors also determine a break-even rate for lending over a future interval. Let $0<T_1<T_2$ and let $\tau:=T_2-T_1$ years. A time-0 investor can lock in the same terminal amount either by investing directly to $T_2$ or by investing to $T_1$ and then rolling the proceeds through a contractually fixed rate for $[T_1,T_2]$. No-arbitrage equates those strategies (\defnref{forward-rate}).
+
+\begin{definition}{Continuously compounded forward rate}{forward-rate}
+Let $P(0,T_1)>0$ and $P(0,T_2)>0$ be discount factors for maturities $0<T_1<T_2$, and let $\tau:=T_2-T_1>0$ years. The continuously compounded forward rate $f(0;T_1,T_2)$, in decimal units per year, is defined by
+\begin{equation}
+  \label{eq:forward-rate}
+  \exp[f(0;T_1,T_2)\tau]
+  =\frac{P(0,T_1)}{P(0,T_2)},
+  \qquad
+  f(0;T_1,T_2)=\frac{\log P(0,T_1)-\log P(0,T_2)}{\tau}.
+\end{equation}
+It is the rate implied today for the future interval $[T_1,T_2]$ by the two discount factors and the stated compounding convention.
+\end{definition}
+
+The word \emph{implied} is doing important work. A forward rate is fixed by current relative prices under a no-arbitrage model. It is not automatically the market's statistical expectation of the future short rate. Identifying the two requires an expectations hypothesis and assumptions about term premia, convexity effects, and the relevant probability measure. In modern interest-rate models, real-world expected rates and risk-neutral forward rates generally differ.
+
+For adjacent maturity dates, the ratios in \eqnref{forward-rate} give a fine-grained forward curve. Calling this object a ``short-rate curve'' can obscure its status: the future short rate is random, while the time-0 forward rate is known from today's fitted discount curve. The notebook's adjacent-period calculation should be interpreted as an \emph{implied forward rate}, not an unconditional forecast.
+
+\begin{remark}{A rate convention can change the formula}{rate-convention}
+Equation \eqnref{forward-rate} uses continuous compounding. Under simple compounding over the interval of length $\tau$, the implied forward rate $L(0;T_1,T_2)$ instead satisfies
+\begin{equation}
+  \label{eq:simple-forward}
+  1+L(0;T_1,T_2)\tau=\frac{P(0,T_1)}{P(0,T_2)}.
+\end{equation}
+Rates must never be compared or inserted into a pricing formula until their day-count and compounding conventions are aligned.
+\end{remark}
+
+\section{Practical Risks and Uses}
+
+STRIPS remove reinvestment uncertainty within the security because there are no intermediate coupons, but their long-duration prices can be highly sensitive to rates. Their accreted value may also create taxable income before cash is received, depending on the investor and jurisdiction. Liquidity can differ across coupon and principal components. Thus, a known nominal maturity payment does not imply a stable interim market value or known real purchasing power.
+
+Their analytical value remains substantial: STRIPS support liability matching, expose maturity-specific discount factors, provide inputs to term-structure models, and permit any fixed Treasury cash-flow stream to be valued as a sum of zero-coupon claims.
+
+\newpage
+\thispagestyle{fancy}
+\keytakeaways
+  {In this lecture, we treated STRIPS as separately traded Treasury payment components, extracted discount factors from their prices, and derived no-arbitrage forward rates.}
+  {One payment reveals one factor}
+  {A STRIP's normalized price directly measures the time-0 value of one dollar at its maturity.}
+  {Components reconstruct the whole}
+  {Under common claims and frictionless no-arbitrage assumptions, the values of stripped coupons and principal add to the parent security's value.}
+  {Forward is not forecast}
+  {A forward rate is implied by current discount factors; interpreting it as an expected future short rate requires additional economic assumptions.}
+  {Next, carry the distinction between real-world and pricing probabilities into equity-price models and their observed return distributions.}
+
+\begin{readinglist}
+  \item U.S. Treasury, \href{https://www.treasurydirect.gov/marketable-securities/strips/}{\emph{STRIPS}}, for eligible securities, stripping and reassembly, and the commercial book-entry process.
+  \item U.S. Department of the Treasury, \href{https://home.treasury.gov/resource-center/data-chart-center/interest-rates}{\emph{Interest Rate Statistics}}, for official par and related Treasury curve data.
+  \item Frank J. Fabozzi and Francesco A. Fabozzi, \emph{Bond Markets, Analysis, and Strategies}, 10th ed. (2021), for zero-coupon valuation, bootstrapping, and forward-rate interpretation.
+\end{readinglist}
+
+\vfill
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+
+\end{document}

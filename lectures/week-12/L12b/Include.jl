@@ -18,6 +18,7 @@ end
 using VLQuantitativeFinancePackage
 using DataFrames
 using Statistics
+using StatsBase
 using Plots
 using Colors
 using PrettyTables
@@ -27,3 +28,4 @@ using FileIO
 using JLD2
 using HypothesisTests
 using StatsPlots
+using LinearAlgebra

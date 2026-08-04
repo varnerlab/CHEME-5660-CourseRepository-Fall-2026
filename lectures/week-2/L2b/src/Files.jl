@@ -1,4 +1,4 @@
-# Internal method for load a CSV file 
+# Internal method for load a CSV file
 function _loadcsvfile(path::String)::DataFrame
     return CSV.read(path, DataFrame);
 end

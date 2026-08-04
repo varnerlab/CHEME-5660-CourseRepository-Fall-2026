@@ -1,6 +1,5 @@
 # setup paths -
 const _ROOT = @__DIR__;
-const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
@@ -14,16 +13,6 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-# load external packages -
-using VLQuantitativeFinancePackage
 using DataFrames
-using Statistics
 using Plots
-using Colors
 using PrettyTables
-using CSV
-using Distributions
-using FileIO
-using JLD2
-using HypothesisTests
-using StatsPlots

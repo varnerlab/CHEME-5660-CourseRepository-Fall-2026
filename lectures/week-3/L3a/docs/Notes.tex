@@ -1,162 +1,138 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\E}{\mathbb{E}}
-
 \begin{document}
 
-\lecturenotes{3a}{The Yield Curve and Stochastic Interest-Rate Models}{Fall 2026}{September 8, 2026}{Jeffrey D. Varner}
+\lecturenotes{3a}{Equity Markets and the Stylized Facts of Growth Rates}{Fall 2026}{September 8, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Separate rate concepts}
-  {Distinguish investment yield, yield to maturity, spot rates, forward rates, and the term structure of interest rates.}
-  {Read curve shapes}
-  {Interpret normal, flat, inverted, and humped yield curves without treating any shape as a deterministic forecast.}
-  {Value on a rate lattice}
-  {Use risk-neutral backward induction to price a zero-coupon claim when the short rate evolves stochastically.}
+  {Describe equity claims}
+  {Explain what common stock represents and distinguish the corporation, an exchange, an index, and an exchange-traded fund.}
+  {Compute growth rates}
+  {Calculate continuously compounded growth rates and convert them to log returns using $r=(\Delta t)g$.}
+  {Diagnose stylized facts}
+  {Use empirical distributions, autocorrelation, and conditional-volatility evidence to challenge an equity-return model.}
 
-\section{Why One Interest Rate Is Not Enough}
+\section{Why Corporations Sell Ownership Claims}
 
-L1b converted dated dollars using one stated discount rate, and L2a used that rule to value Treasury cash flows. Markets require a richer object. A dollar promised in three months and a dollar promised in ten years are exposed to different opportunity costs, inflation horizons, liquidity conditions, and interest-rate uncertainty. Their prices therefore need not imply the same annual rate.
+Large ventures often require more capital and a longer horizon than one owner can supply. The joint-stock form separates the corporation from any single investor and divides the residual ownership claim into transferable shares. A common shareholder may receive voting rights and dividends, but stands behind contractual creditors in liquidation. Limited liability ordinarily caps the shareholder's loss at the invested amount; it does not protect the share price from falling to zero.
 
-The \emph{term structure of interest rates} collects rates indexed by maturity at one observation date. A \emph{yield curve} is a plotted slice of that term structure, but the label is incomplete unless the underlying rate and security set are stated. A par Treasury curve, a zero-coupon spot curve, and a forward curve answer different questions even when all three are plotted against maturity.
+An \emph{equity security} is therefore a residual claim on a corporation, not a promise of fixed repayment. Its value depends on uncertain future distributions and resale opportunities. The market price aggregates heterogeneous beliefs, constraints, information, and orders into one executable quotation at a particular time.
 
-This distinction matters operationally. A quoted yield is a compressed description of price under a convention; it is not cash, and it is not the contract. The contract supplies cash flows, the market supplies prices, and a model maps those prices into yields or discount factors.
+An exchange supplies listing and trading rules and an organized venue for matching orders. Clearing and settlement complete the obligations created by trades, often through specialized infrastructure distinct from the matching engine. A stock index, such as the S\&P 500, is a rule-based numerical portfolio benchmark; it cannot itself be purchased. An exchange-traded fund (ETF) is a security whose shares trade intraday and whose portfolio may seek to track an index. These objects interact, but they are not interchangeable.
 
-\section{From Prices to Yields}
+\section{Growth Rates and Returns}
 
-Begin with the cleanest security: a zero-coupon claim paying one dollar at maturity $T>0$. Its time-0 price is the discount function $P(0,T)$, measured in time-0 dollars per maturity-dollar. The associated continuously compounded spot rate is defined by \defnref{spot-rate}.
+A price change in dollars depends on the initial share price. We use the continuously compounded growth rate as the primary reward variable and reserve $r$ for the dimensionless log return over a specified interval.
 
-\begin{definition}{Discount function and spot rate}{spot-rate}
-Let time $0$ be the observation and valuation date, and let $T>0$ years be a maturity. Let $P(0,T)\in(0,\infty)$ denote the time-0 price in dollars of a default-free zero-coupon claim that pays exactly one dollar at time $T$. The continuously compounded spot rate $z(0,T)$, in decimal units per year, is the maturity-specific rate satisfying
+\begin{definition}{Growth rate and log return}{return-measures}
+Let $S_{t-1}>0$ and $S_t>0$ be consecutive share prices separated by $\Delta t>0$ years. The continuously compounded growth rate $g_t$ and corresponding log return $r_t$ are
 \begin{equation}
-  \label{eq:spot-rate}
-  P(0,T)=\exp[-z(0,T)T],
+  \label{eq:return-measures}
+  g_t:=\frac{1}{\Delta t}\log\!\left(\frac{S_t}{S_{t-1}}\right),
   \qquad
-  z(0,T)=-\frac{\log P(0,T)}{T}.
+  r_t:=(\Delta t)g_t=\log\!\left(\frac{S_t}{S_{t-1}}\right).
 \end{equation}
-The collection $T\mapsto z(0,T)$ is the continuously compounded spot-rate term structure at time 0.
+Thus $g_t$ has units inverse years and $r_t$ is dimensionless. If dividends are included, use a consistently adjusted total-return price series before applying the definition.
 \end{definition}
 
-A coupon security does not reveal one spot rate directly because its price combines payments at several maturities. Its yield to maturity instead compresses the entire cash-flow stream into one internal rate of return (\defnref{ytm}).
+The choice between price and total return is substantive. A price-only series omits dividends, while an adjusted-price vendor may incorporate dividends and splits through its own convention. Data transformations must be documented before statistical conclusions are compared.
 
-\begin{definition}{Yield to maturity}{ytm}
-Let $B_0>0$ dollars be the observed dirty price of an option-free coupon security at time 0. Let $X_j>0$ dollars be its remaining cash flow at coupon index $j\in\{1,\ldots,N\}$, and let the positive integer $n$ be the number of coupon intervals per year. A nominal annual yield to maturity $y$ is a solution with $1+y/n>0$ of
+Log returns add across nonoverlapping time intervals (\propref{log-additivity}); equivalently, cumulative log return is a time-weighted sum of growth rates.
+
+\begin{proposition}{Aggregation of price log returns}{log-additivity}
+Let $S_0,S_1,\ldots,S_T$ be strictly positive prices and let $\Delta t_t$ be the length of interval $t$. Define $g_t:=(1/\Delta t_t)\log(S_t/S_{t-1})$ and $r_t:=(\Delta t_t)g_t$. Then
 \begin{equation}
-  \label{eq:ytm}
-  0=-B_0+\sum_{j=1}^{N}X_j\left(1+\frac{y}{n}\right)^{-j}.
+  \label{eq:log-additivity}
+  \sum_{t=1}^{T}r_t
+  =\sum_{t=1}^{T}(\Delta t_t)g_t
+  =\log\!\left(\frac{S_T}{S_0}\right),
 \end{equation}
-The definition assumes all promised payments are made and intermediate coupons can be reinvested consistently with the yield convention. The scalar $y$ is not a maturity-by-maturity spot curve.
-\end{definition}
-
-For positive fixed cash flows, the right-hand present value in \eqnref{ytm} decreases continuously with $y$. A numerical root finder can therefore infer the yield from price. The companion notebook uses the secant method to make that inversion explicit rather than treating a displayed market yield as primitive data.
-
-\notebooklink
-  {L3a: Yield to Maturity for a Coupon Security}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-YieldToMaturity-Coupon-Example-Fall-2026.ipynb}
-  {Solve the zero-NPV equation numerically and study how a coupon security's quoted yield changes with its market price.}
-
-\section{What Curve Are We Looking At?}
-
-The U.S. Treasury publishes a daily nominal par yield curve at standard maturities. It is estimated from indicative bid-side prices of actively traded securities; it is not a table of directly observed zero-coupon prices. A \emph{par yield} is the coupon rate that would make a hypothetical security price at par under a chosen discount curve. By contrast, the spot curve prices a single payment at each maturity. L3b shows how separate zero-coupon STRIPS make those discount factors especially transparent.
-
-Curve shape is descriptive shorthand rather than a complete model (\figref{curve-shapes}). A normal curve rises with maturity; a flat curve changes little; an inverted curve places shorter yields above longer yields; and a humped curve rises and then falls. The shape can reflect expectations of future short rates, term premia, risk preferences, supply and demand, and market segmentation. Observing the shape alone cannot identify those components.
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[x=1.35cm,y=0.92cm,>=Latex,font=\sffamily\footnotesize]
-    \foreach \x/\name in {0/normal,4.25/flat,8.5/inverted}{
-      \begin{scope}[shift={(\x,0)}]
-        \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(2.8,0);
-        \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(0,2.2);
-        \node[below] at (1.4,-0.05) {maturity};
-        \node[rotate=90] at (-0.35,1.1) {yield};
-        \node[above,font=\sffamily\bfseries] at (1.4,2.15) {\name};
-      \end{scope}
-    }
-    \draw[vnlink,line width=1.3pt] plot[smooth] coordinates {(0.25,0.45)(0.8,0.95)(1.55,1.35)(2.55,1.55)};
-    \draw[vnlink,line width=1.3pt] plot[smooth] coordinates {(4.5,1.05)(5.2,1.08)(6.0,1.04)(6.8,1.07)};
-    \draw[vncarnelian,line width=1.3pt] plot[smooth] coordinates {(8.75,1.65)(9.35,1.35)(10.1,0.9)(11.05,0.55)};
-  \end{tikzpicture}
-  \caption{Three common yield-curve shapes. Each curve is a cross-section at one observation date. The plotted ordinate must still be identified---for example, par yield, spot rate, or forward rate---before the graph has a precise valuation meaning.}
-  \label{fig:curve-shapes}
-\end{figure}
-
-An inverted Treasury term spread has often preceded U.S. recessions, which makes the curve useful as a leading indicator. The New York Fed, for example, estimates a twelve-month-ahead recession probability from the ten-year minus three-month spread. This is a statistical association, not a timing theorem or an official declaration that a recession will occur. Other information and changing term premia can alter the signal.
-
-\notebooklink
-  {L3a: Messages in the Par Yield Curve}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-ParYieldCurves-Example-Fall-2026.ipynb}
-  {Load daily Treasury par-yield data, compare curve shapes across dates, and calculate selected term spreads.}
-
-\section{When Rates Are Random}
-
-A deterministic curve prices known cash flows today, but future discount rates remain unknown. Let the \emph{short rate} $r_t$ denote the instantaneous or one-period rate prevailing near time $t$. An interest-rate model specifies how $r_t$ can evolve and how rate risk is priced. Under a risk-neutral probability measure $\Q$ associated with the money-market account, the price of a default-free zero-coupon claim has the representation in \thmref{stochastic-discounting}.
-
-\begin{theorem}{Risk-neutral stochastic discounting}{stochastic-discounting}
-Let $0\leq t\leq T$, let $r_s$ be an integrable stochastic short-rate process in decimal units per year for $s\in[t,T]$, and let $\E_t^{\Q}[\,\cdot\,]$ denote conditional expectation at time $t$ under a risk-neutral measure $\Q$ associated with the continuously compounded money-market account. In an arbitrage-free model, the time-$t$ price $P(t,T)$ of a default-free claim paying one dollar at time $T$ is
-\begin{equation}
-  \label{eq:stochastic-discounting}
-  P(t,T)=\E_t^{\Q}\!\left[\exp\!\left(-\int_t^T r_s\,ds\right)\right].
-\end{equation}
-The measure $\Q$ is a pricing device fixed by the model and traded assets; it need not equal the real-world probability law used for forecasting rates.
-\end{theorem}
-
-The expectation is outside the exponential because the entire future path of rates determines the discount factor. In general, replacing the random path by an average rate changes the value: nonlinear discounting means that $\E[e^{-X}]$ need not equal $e^{-\E[X]}$.
-
-\section{A Binomial Short-Rate Lattice}
-
-A lattice replaces a continuous collection of possible paths by a finite recombining tree. At time index $k$, node $j$ carries the one-period annualized short rate $r_{k,j}$. If the time step is $\Delta t>0$ years and the risk-neutral up probability is $q\in[0,1]$, backward induction prices a maturity claim one layer at a time (\propref{lattice-recursion}).
-
-\begin{proposition}{One-period lattice recursion}{lattice-recursion}
-Let $V_{k+1,j}$ and $V_{k+1,j+1}$ be dollar values at the two successor nodes of node $(k,j)$. Let $r_{k,j}$ be the annualized one-period short rate at that node, let $\Delta t>0$ years be the step length, and assume $1+r_{k,j}\Delta t>0$. Under risk-neutral probability $q\in[0,1]$ and simple one-step compounding, the arbitrage-free node value is
-\begin{equation}
-  \label{eq:lattice-recursion}
-  V_{k,j}=\frac{(1-q)V_{k+1,j}+qV_{k+1,j+1}}
-  {1+r_{k,j}\Delta t}.
-\end{equation}
-For a zero-coupon claim maturing at layer $N$, set $V_{N,j}=1$ dollar at every terminal node and apply the recursion back to time 0.
+which is the course convention $r=(\Delta t)g$ applied interval by interval.
 \end{proposition}
 
+\begin{derivation}
+Use the logarithm of a product and cancel the intermediate price ratios:
+\begin{equation*}
+  \sum_{t=1}^{T}\log\!\left(\frac{S_t}{S_{t-1}}\right)
+  =\log\!\left(\prod_{t=1}^{T}\frac{S_t}{S_{t-1}}\right)
+  =\log\!\left(\frac{S_T}{S_0}\right).
+\end{equation*}
+The result is exact; the common approximation $\log(1+R_t)\approx R_t$ is only local for small $\lvert R_t\rvert$.
+\end{derivation}
+
+An excess growth rate compares the equity with a benchmark rate over the same interval. If $g_{f,t}$ is the benchmark growth rate, then $\bar g_t:=g_t-g_{f,t}$ and the corresponding excess log return is $\bar r_t=(\Delta t)\bar g_t$.
+
+\section{Reward, Risk, and the Measurement Horizon}
+
+The sample mean estimates average return under a chosen sampling rule; the sample standard deviation measures dispersion around that sample mean. Neither statistic alone describes downside magnitude, tail probability, drawdown, or liquidity. Moreover, annualizing daily volatility by multiplying by the square root of the number of periods relies on assumptions about scaling and dependence that empirical data may violate.
+
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=2.0cm,y=0.8cm,>=Latex,font=\sffamily\small]
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (n0) at (0,0) {$r_{0,0}$};
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (d1) at (2,-0.8) {$r_{1,0}$};
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (u1) at (2,0.8) {$r_{1,1}$};
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (d2) at (4,-1.6) {$r_{2,0}$};
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (m2) at (4,0) {$r_{2,1}$};
-    \node[draw=vnink,circle,fill=white,minimum size=7mm] (u2) at (4,1.6) {$r_{2,2}$};
-    \foreach \a/\b in {n0/d1,n0/u1,d1/d2,d1/m2,u1/m2,u1/u2}
-      \draw[vnrule,line width=0.9pt,-{Latex[length=2.5mm]}] (\a)--(\b);
-    \node[text=vnlink] at (0.95,0.63) {$q$};
-    \node[text=vnmuted] at (0.95,-0.63) {$1-q$};
-    \draw[vncarnelian,line width=1.1pt,-{Latex[length=3mm]}]
-      (4.8,0)--(5.9,0) node[right,text=vnink] {discount backward};
-  \end{tikzpicture}
-  \caption{A two-step recombining short-rate lattice. Paths branch forward under the model, while contingent values are averaged under risk-neutral probabilities and discounted backward using each node's local short rate.}
-  \label{fig:rate-lattice}
+  \includegraphics[width=0.72\textwidth]{../figs/Fig-RiskReward-Asset-Schematic.pdf}
+  \caption{A conceptual risk--reward map. Expected reward and measured dispersion summarize different dimensions of an uncertain asset; assets with similar means and standard deviations can still have very different tail behavior, drawdowns, and liquidity.}
+  \label{fig:risk-reward}
 \end{figure}
 
-A useful tree must be calibrated: its node rates and volatility parameters should reproduce the observed time-0 discount curve before it is used to value path-dependent claims. Matching today's curve does not guarantee that the model's future-rate distribution is realistic; volatility structure and real-world forecasting require separate validation.
+The engineering question is not simply ``how volatile is this asset?'' It is ``which loss mechanism matters for this decision, over which horizon, and is the selected statistic sensitive to it?'' Value at risk, expected shortfall, maximum drawdown, downside deviation, beta, and tracking error each answer different questions.
+
+\section{Stylized Facts as Model Requirements}
+
+A stylized fact is a recurring empirical pattern observed across many assets or markets. It is not an exact law for every ticker and every sample. Stylized facts constrain useful models: a model that structurally cannot generate an important observed pattern should not be trusted for questions driven by that pattern.
+
+\textbf{Heavy tails.}\enspace Large-magnitude returns occur more frequently than a fitted Gaussian model predicts. Sample kurtosis, quantile comparisons, tail plots, and tests such as Anderson--Darling can reveal distributional mismatch, but tail-index estimation is sensitive to the threshold and sample size. ``Heavy-tailed'' should be supported by a stated mathematical or empirical criterion rather than used as a synonym for volatile.
+
+\textbf{Weak linear autocorrelation of raw returns.}\enspace At ordinary liquid-market horizons, signed returns often show small linear autocorrelations. This does not establish independence: nonlinear dependence, market microstructure effects, and conditional predictability can remain. Statistical significance also depends on the sample length and simultaneous testing across lags.
+
+\textbf{Volatility clustering.}\enspace Large absolute or squared returns tend to occur near other large movements, and calm observations near other calm observations. The signed return may have little autocorrelation while $\lvert g_t\rvert$ or $g_t^2$ remains strongly dependent. Volatility is therefore conditional and time-varying rather than a fixed property revealed by one unconditional standard deviation.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=0.58cm,y=0.72cm,>=Latex,font=\sffamily\footnotesize]
+    \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(18.2,0) node[right]{time};
+    \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,-2.25)--(0,2.25) node[above]{return};
+    \draw[vnlink,line width=0.9pt]
+      plot coordinates {(0.2,.1)(.6,-.2)(1,.15)(1.4,-.25)(1.8,.2)(2.2,-.1)(2.6,.18)(3,-.12)(3.4,.22)(3.8,-.18)(4.2,.1)(4.6,-.2)(5,.15)(5.4,-.12)(5.8,.25)(6.2,-.2)(6.6,.1)(7,-.15)(7.4,.2)(7.8,-.1)(8.2,.15)(8.6,-.25)(9,.2)(9.4,-.15)(9.8,.3)(10.2,-.55)(10.6,1.1)(11,-1.65)(11.4,.85)(11.8,-1.2)(12.2,1.8)(12.6,-.9)(13,1.25)(13.4,-1.55)(13.8,.7)(14.2,-.45)(14.6,.35)(15,-.25)(15.4,.2)(15.8,-.3)(16.2,.15)(16.6,-.2)(17,.1)(17.4,-.15)};
+    \draw[vnrule,dashed] (9.6,-2)--(9.6,2);
+    \draw[vnrule,dashed] (14.5,-2)--(14.5,2);
+    \node[text=vnmuted,fill=white] at (12.05,2.0) {high-volatility cluster};
+  \end{tikzpicture}
+  \caption{A schematic return path with changing conditional dispersion. The high-volatility interval contains both positive and negative observations, so clustering concerns return magnitude rather than a persistent return sign.}
+  \label{fig:volatility-clustering}
+\end{figure}
+
+The empirical notebook calculates these diagnostics for common stocks and ETFs. Its role is model criticism: the output should be compared with the assumptions and implications of the models introduced in L3b and L3b.
+
+\notebooklink
+  {L3a: Stylized Facts of Stocks and ETFs}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}
+  {Compute empirical return distributions, autocorrelations, tail diagnostics, and volatility-clustering evidence from historical prices.}
+
+\section{Many Assets Share Common Modes}
+
+For $m$ dates and $n$ assets, collect centered returns in a matrix $G\in\mathbb{R}^{m\times n}$. Its singular value decomposition $G=U\Sigma V^{\mathsf T}$ expresses the data as ordered rank-one modes. Large singular values identify directions explaining substantial squared variation, often including a broad market-like co-movement. SVD is descriptive linear algebra: a mode is not automatically a causal economic factor, and results depend on centering, scaling, missing-data treatment, and the selected universe.
+
+\notebooklink
+  {L3a: SVD of S\&P 500 Growth Rates}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}
+  {Construct a multi-asset growth-rate matrix and use singular values and singular vectors to study common market modes.}
 
 \newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we separated several meanings of yield, interpreted the curve as a maturity-indexed market object, and priced a claim under stochastic short rates.}
-  {Name the curve}
-  {Par yields, spot rates, and forward rates are related but distinct; every plotted curve must identify its security set and quotation convention.}
-  {Indicators are probabilistic}
-  {Curve inversion has predictive association with recessions, but it is not a deterministic economic clock.}
-  {Price backward on a lattice}
-  {Risk-neutral successor values are averaged and discounted with the local short rate; pricing probabilities are not automatically forecasting probabilities.}
-  {Next, use Treasury STRIPS to observe zero-coupon discount factors and infer forward rates without confusing them with expected future short rates.}
+  {In this lecture, we treated equity as a residual ownership claim, constructed consistent return measures, and used recurring empirical patterns to challenge models.}
+  {Returns require conventions}
+  {Price versus total return, sampling interval, corporate-action adjustment, and compounding must be stated before statistics are compared.}
+  {Dependence hides beyond returns}
+  {Small autocorrelation in signed returns does not imply independence; absolute and squared returns often reveal persistent conditional volatility.}
+  {Stylized facts are validation targets}
+  {Heavy tails and volatility clustering expose risks that a fixed-variance Gaussian or i.i.d. model can systematically understate.}
+  {Next, build a binomial equity lattice and separate real-world probabilities used for forecasting from risk-neutral probabilities used for pricing.}
 
 \begin{readinglist}
-  \item U.S. Department of the Treasury, \href{https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve}{\emph{Daily Treasury Par Yield Curve Rates}}, for the official curve data and estimation description.
-  \item Federal Reserve Bank of New York, \href{https://www.newyorkfed.org/research/capital_markets/ycfaq.htm}{\emph{The Yield Curve as a Leading Indicator}}, for the ten-year minus three-month recession-probability model and its limitations.
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), Chapters 4 and 31, for zero rates, forward rates, and interest-rate trees.
+  \item Rama Cont, \href{https://doi.org/10.1080/713665670}{``Empirical Properties of Asset Returns: Stylized Facts and Statistical Issues,''} \emph{Quantitative Finance} 1(2), 223--236 (2001).
+  \item Benoit Mandelbrot, \href{https://www.jstor.org/stable/2350970}{``The Variation of Certain Speculative Prices,''} \emph{Journal of Business} 36(4), 394--419 (1963), for the early challenge to Gaussian return models.
+  \item U.S. Securities and Exchange Commission, \href{https://www.investor.gov/introduction-investing/investing-basics/investment-products/stocks}{\emph{Stocks}}, for a concise description of shareholder claims and risks.
 \end{readinglist}
 
 \vfill

@@ -1,190 +1,177 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\E}{\mathbb{E}}
-
 \begin{document}
 
-\lecturenotes{14a}{Maximum-Utility Allocation and Dynamic Rebalancing}{Fall 2026}{November 24, 2026}{Jeffrey D. Varner}
+\lecturenotes{14a}{Launching the 2026 Autotrader}{Fall 2026}{November 24, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Solve a utility allocation}
-  {Derive the positive-exponent Cobb--Douglas optimum, interpret its dollar weights, and distinguish it from expected utility of terminal wealth.}
-  {Design a rebalance policy}
-  {Map point-in-time preference estimates into target holdings while enforcing self-financing, costs, bounds, and integer-share constraints.}
-  {Evaluate the full strategy}
-  {Separate forecast, optimizer, and execution effects and test dynamic allocations chronologically against stable benchmarks.}
+  {Specify the decision pipeline}
+  {Connect lagged data, EMA sentiment, single-index forecasts, positive utility preferences, target holdings, orders, fills, and ledger updates.}
+  {Enforce launch invariants}
+  {Test information timing, numerical domains, self-financing, inventory, cash, execution, and risk limits before any external order is possible.}
+  {Stage an evidence-based launch}
+  {Progress from deterministic simulation through walk-forward and paper trading to a capped pilot with monitoring, reconciliation, and a kill switch.}
 
-\section{From a Ranking to an Allocation}
+\section{A Trading System Is More Than a Signal}
 
-A ticker-ranking model answers ``which assets look attractive?'' It does not answer ``how much capital should each receive?'' Allocation requires an objective, a budget, prices, feasible holdings, and a rule for translating changing information into trades. Rebalancing then repeats this decision through time, so estimation and transaction costs become part of the strategy rather than afterthoughts.
+An autotrader is a stateful control system coupled to market data, a broker, and an accounting ledger. The model proposes an action; the execution system determines what was actually filled; the ledger and risk engine determine what may happen next. A backtest that jumps directly from a signal to portfolio return omits the interfaces where many costly failures occur.
 
-At rebalance date $\tau_k$, let $\mathcal S_k$ be the eligible asset set, $p_{i,k}>0$ the executable acquisition price of asset $i$, $n_{i,k}\geq 0$ its target share count, and $B_k>0$ the budget assigned to risky assets. One tractable allocation objective is the Cobb--Douglas holding utility
+For the course prototype, a market signal comes from short- and long-horizon exponential moving averages (EMAs). With price observation $P_t$ and span $N$, define
 \begin{equation}
-  \label{eq:cobb-douglas}
-  U_k(\mathbf n):=\kappa_k\prod_{i\in\mathcal S_k}n_i^{\gamma_{i,k}},
-  \qquad \kappa_k>0,\quad \gamma_{i,k}>0,
+  \label{eq:ema}
+  E_t^{(N)}=\alpha_NP_t+(1-\alpha_N)E_{t-1}^{(N)},
+  \qquad
+  \alpha_N:=\frac{2}{N+1}.
 \end{equation}
-subject to
+The initialization rule for $E_0^{(N)}$ must be declared because it affects early signals. A dimensionless crossover score available after the close of $t$ is
 \begin{equation}
-  \label{eq:budget}
-  \sum_{i\in\mathcal S_k}p_{i,k}n_i\leq B_k.
+  \label{eq:sentiment}
+  z_t:=\frac{E_t^{(s)}}{E_t^{(\ell)}}-1,
+  \qquad s<\ell,
 \end{equation}
-The positive coefficients $\gamma_{i,k}$ encode relative preference for the holding quantities. Since the logarithm is increasing, maximizing \eqnref{cobb-douglas} is equivalent to maximizing
-\begin{equation}
-  \label{eq:log-utility}
-  \log U_k(\mathbf n)=\log\kappa_k+
-  \sum_{i\in\mathcal S_k}\gamma_{i,k}\log n_i.
-\end{equation}
-The log form is concave for positive exponents and makes the first-order conditions transparent.
+where $s$ and $\ell$ are the short and long spans. The notebook uses $-Gz_t$ to tilt allocation, where $G>0$ is a gain. Because this quantity may be negative, it is better called a \emph{sentiment or exposure tilt} than classical risk aversion, which is normally nonnegative.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.25cm]
-    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=2.45cm,minimum height=0.9cm,align=center] (info) {point-in-time data\\through $\tau_k$};
-    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of info] (pref) {estimate preferences\\$\gamma_{i,k}$};
-    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of pref] (target) {solve target\\$\mathbf n_k^\star$};
-    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=2.45cm,minimum height=0.9cm,align=center,right=of target] (trade) {execute trades\\and pay costs};
-    \draw[vnlink,very thick,->] (info)--(pref);
-    \draw[vnlink,very thick,->] (pref)--(target);
-    \draw[vnlink,very thick,->] (target)--(trade);
-    \draw[vncarnelian,very thick,->,bend left=22] (trade) to node[below,align=center] {observe until\\$\tau_{k+1}$} (info);
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.78cm]
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=1.62cm,minimum height=0.85cm,align=center] (data) {validated\\data};
+    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=1.62cm,minimum height=0.85cm,align=center,right=of data] (signal) {lagged signal\\and forecast};
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=1.62cm,minimum height=0.85cm,align=center,right=of signal] (target) {risk-checked\\target};
+    \node[draw=vnink,very thick,rounded corners,fill=white,minimum width=1.62cm,minimum height=0.85cm,align=center,right=of target] (order) {orders and\\fills};
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=1.62cm,minimum height=0.85cm,align=center,right=of order] (ledger) {reconciled\\ledger};
+    \draw[vnlink,very thick,->] (data)--(signal);
+    \draw[vnlink,very thick,->] (signal)--(target);
+    \draw[vnlink,very thick,->] (target)--(order);
+    \draw[vnlink,very thick,->] (order)--(ledger);
+    \draw[vncarnelian,very thick,->,bend left=22] (ledger) to node[below,align=center] {positions, cash, and risk\\become next state} (data);
   \end{tikzpicture}
-  \caption{A dynamic allocation is a closed policy loop. Information timing, optimization, and execution jointly determine its realized performance.}
-  \label{fig:rebalance-loop}
+  \caption{The minimum auditable autotrader loop. Each arrow is an interface with timing, validation, failure, and recovery requirements.}
+  \label{fig:autotrader-loop}
 \end{figure}
 
-\section{The Closed-Form Maximum-Utility Portfolio}
+If the signal uses the close at date $t$, the first routine execution is at a price after that close, such as the next session's open. Same-close execution is valid only when the signal was computable before the order deadline from information already observed. Timestamp every observation, feature, decision, order, acknowledgement, fill, and ledger event.
 
-Let $\Gamma_k:=\sum_{j\in\mathcal S_k}\gamma_{j,k}$. Because every exponent is positive, utility increases with every holding and the budget binds. The Lagrangian for \eqnref{log-utility}--\eqnref{budget} is
-\begin{equation}
-  \label{eq:lagrangian}
-  \mathcal L(\mathbf n,\lambda)=
-  \sum_i\gamma_{i,k}\log n_i
-  +\lambda\left(B_k-\sum_i p_{i,k}n_i\right).
-\end{equation}
+\section{Forecasts and Preferences Must Stay in Domain}
 
-\begin{theorem}{Positive-exponent Cobb--Douglas allocation}{cd-optimum}
-For $B_k>0$, $p_{i,k}>0$, and $\gamma_{i,k}>0$, the unique maximizer of \eqnref{cobb-douglas} subject to \eqnref{budget} is
+For ticker $i$, a single-index forecast can be written
 \begin{equation}
-  \label{eq:optimal-shares}
-  n_{i,k}^*=\frac{\gamma_{i,k}}{\Gamma_k}\frac{B_k}{p_{i,k}}.
+  \label{eq:sim-forecast}
+  \widehat g_{i,t}=\widehat\alpha_{i,t}
+  +\widehat\beta_{i,t}\widehat g_{m,t},
 \end{equation}
-Consequently, the target dollar and portfolio weights are
+where the estimates and market forecast use data available at the decision time. A separate transformation converts this forecast and the sentiment score into a strictly positive allocation preference $\gamma_{i,t}>0$. One stable example is
 \begin{equation}
-  \label{eq:optimal-weights}
-  p_{i,k}n_{i,k}^*=\frac{\gamma_{i,k}}{\Gamma_k}B_k,
+  \label{eq:positive-preference}
+  \gamma_{i,t}:=\gamma_{\min}+
+  \log\!\left(1+\exp\!\left[
+    a\widehat g_{i,t}-b\rho_{i,t}+cz_t
+  \right]\right),
+\end{equation}
+where $\gamma_{\min}>0$ is a preference floor, $a,b,c$ are declared scaling coefficients, and $\rho_{i,t}\geq0$ is a positive risk measure such as forecast volatility. Standardize the inputs or bound the score to avoid overflow and unstable concentration.
+
+This construction separates expected reward from risk. A SIM beta $\widehat\beta_i$ is signed market exposure, not a universally positive risk scale. The inherited prototype computes $\widehat\beta_i^{\lambda_t}$ for a generally non-integer, signed tilt $\lambda_t$; this is not real-valued when $\widehat\beta_i<0$ and is undefined at zero for some exponents. Use a positive $\rho_i$, or explicitly transform magnitude and sign separately.
+
+Likewise, $\tanh(\widehat g_i)$ lies in $(-1,1)$ and can produce negative values. Those values cannot be inserted as exponents into the positive Cobb--Douglas solution derived in L12a. Equation \eqnref{positive-preference}, explicit exclusion of non-preferred assets, or a different constrained objective fixes the domain mismatch. A tiny forced holding of every negative-score asset is a policy choice, not the analytical optimum.
+
+With positive preferences, normalized target weights are
+\begin{equation}
+  \label{eq:target-weights}
+  w_{i,t}^*=\frac{\gamma_{i,t}}{\sum_{j\in\mathcal S_t}\gamma_{j,t}},
   \qquad
-  w_{i,k}^*=\frac{p_{i,k}n_{i,k}^*}{B_k}
-  =\frac{\gamma_{i,k}}{\Gamma_k}.
+  n_{i,t}^*=\frac{w_{i,t}^*B_t}{p_{i,t}^{\mathrm{ref}}},
 \end{equation}
-\end{theorem}
+before implementability constraints. Here $\mathcal S_t$ is the point-in-time eligible universe, $B_t$ is deployable capital, and $p_{i,t}^{\mathrm{ref}}>0$ is a reference price used only to form targets. The execution engine must recalculate feasibility using actual order sides and fills.
 
-The first-order condition is $\gamma_{i,k}/n_i=\lambda p_{i,k}$. Substitution into the binding budget gives $\lambda=\Gamma_k/B_k$ and \eqnref{optimal-shares}. Strict concavity of \eqnref{log-utility} supplies uniqueness.
-
-This result has an important interpretation: prices determine share counts, but the normalized preference coefficients determine dollar weights. If $\gamma_{i,k}$ is itself estimated from returns or a bandit model, the economic substance resides in that preference model. The optimizer cannot repair a poorly identified signal.
-
-\begin{remark}{Negative exponents are not ordinary aversion scores}{negative-gamma}
-If $\gamma_i<0$, then $n_i^{\gamma_i}$ increases without bound as $n_i\downarrow0$. The positive-exponent theorem no longer applies, and an arbitrary small lower bound can make the answer boundary-driven. Exclude an unwanted asset, impose a defensible constraint, or use a utility model in which risk enters explicitly; do not insert negative exponents into \eqnref{optimal-shares}.
+\begin{remark}{Synthetic realism is a test claim, not an input label}{synthetic-realism}
+An HMM-driven market factor combined with SIM residuals can generate useful controlled scenarios, but calibration to historical data does not make simulated paths realistic by declaration. Check regime duration, cross-sectional covariance, tails, volatility clustering, jumps, and drawdowns, and stress features the generator does not reproduce.
 \end{remark}
 
-Holding utility in \eqnref{cobb-douglas} differs from classical expected utility of uncertain terminal wealth,
+\notebooklink
+  {L14a: Synthetic Trade Bot}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-14/L14a/CHEME-5660-L14a-Example-MyTradeBot-Synthetic-Fall-2026.ipynb}
+  {Generate synthetic HMM/SIM prices, form EMA crossover signals, allocate shares, and compare the prototype with SPY and STRIPS benchmarks.}
+
+\section{The Ledger Is the Source of Truth}
+
+Let $h_{i,t}^-$ and $c_t^-$ be broker-confirmed shares and cash before an execution cycle. If signed fill $f_{i,t}$ is positive for a purchase and negative for a sale, post-fill state is
+\begin{align}
+  \label{eq:fill-ledger}
+  h_{i,t}^+&=h_{i,t}^-+f_{i,t},\\
+  c_t^+&=c_t^--\sum_i p_{i,t}^{\mathrm{fill}}f_{i,t}
+  -C_t(\mathbf f_t),
+\end{align}
+where $p_{i,t}^{\mathrm{fill}}>0$ and total execution cost $C_t\geq0$ includes commissions, fees, spread, and modeled impact. Marked wealth at a declared liquidation convention $p_{i,t}^{\mathrm{mark}}$ is
 \begin{equation}
-  \label{eq:expected-utility}
-  \max_{\mathbf w\in\mathcal W_k}
-  \E_k\!\left[u\!\left(W_{k+1}\right)\right],
-  \qquad
-  W_{k+1}=W_k\left(1+r_{f,k}+\mathbf w^\top
-  (\mathbf R_{k+1}-r_{f,k}\mathbf 1)\right).
+  \label{eq:marked-wealth}
+  W_t=c_t^++\sum_i h_{i,t}^+p_{i,t}^{\mathrm{mark}}.
 \end{equation}
-Here $u$ describes preference over wealth outcomes and the distribution of future return vector $\mathbf R_{k+1}$ carries risk. For example, CRRA utility $u(W)=W^{1-\rho}/(1-\rho)$ for $\rho\neq1$ uses $\rho>0$ as relative risk aversion. Cobb--Douglas asset holding utility is a convenient allocation map, but it should not be described as risk-aware unless its preference construction or constraints genuinely incorporate risk.
+Order submission does not change the ledger; fills do. Partial fills, rejects, cancellations, and duplicate messages must be handled explicitly.
 
-\section{Turn Targets into Feasible Trades}
-
-Let $h_{i,k}^-$ be shares held immediately before the rebalance and let $x_{i,k}:=n_{i,k}-h_{i,k}^-$ be the signed trade. With no external cash flow, a self-financing implementation must reconcile
+\begin{theorem}{Execution conservation check}{execution-invariant}
+Ignoring external deposits, withdrawals, dividends, and mark changes during the fill event, \eqnref{fill-ledger} implies
 \begin{equation}
-  \label{eq:self-financing}
-  \sum_i p^{\mathrm{exec}}_{i,k}x_{i,k}
-  +C_k(\mathbf x_k)
-  +\Delta c_k=0,
+  \label{eq:execution-conservation}
+  \left(c_t^++\sum_i h_{i,t}^+p_{i,t}^{\mathrm{fill}}\right)
+  -\left(c_t^-+\sum_i h_{i,t}^-p_{i,t}^{\mathrm{fill}}\right)
+  =-C_t(\mathbf f_t).
 \end{equation}
-where $p^{\mathrm{exec}}_{i,k}$ uses the appropriate bid or ask, $C_k\geq0$ contains commissions, fees, spread, and market impact, and $\Delta c_k$ is the change in the cash account. Solving targets at mid or close prices and then ignoring \eqnref{self-financing} can spend cash that the strategy does not have.
+Any larger discrepancy signals a sign, multiplier, quantity, price, fee, or event-processing error and should stop the strategy before another order cycle.
+\end{theorem}
 
-Fractional targets from \eqnref{optimal-shares} must be rounded if only whole shares are tradable. Rounding each asset independently can violate the budget or create unintended concentration. The implementable problem may instead require integer holdings, lower and upper weights, a cash reserve, turnover caps, lot sizes, restricted names, and tax constraints. Those constraints convert a closed form into a numerical optimization or a deterministic rounding-and-repair procedure.
+The notebook's pedagogical rule liquidates at a daily price and buys at a random perturbation of another price. For research, fill simulation should be side-aware and feasible: buys at or above the ask, sells at or below the bid, participation limited by volume, and fills bounded to positive prices. A Gaussian percentage perturbation has unbounded support and does not by itself model spreads or market impact.
 
-Dynamic rebalancing need not trade all the way to every noisy target. A turnover-aware objective can penalize trades:
-\begin{equation}
-  \label{eq:turnover-objective}
-  \max_{\mathbf n\in\mathcal N_k}
-  \left\{
-  \sum_i\gamma_{i,k}\log n_i
-  -\eta_k\sum_i p_{i,k}|n_i-h_{i,k}^-|
-  \right\},
-\end{equation}
-where $\eta_k\geq0$ governs the reluctance to trade and $\mathcal N_k$ contains budget and operational constraints. A no-trade band is another policy: transact only when the current weight differs from target by more than a declared tolerance. Both approaches recognize that tiny theoretical improvements may be smaller than implementation cost.
+Every cycle should assert invariants before and after trading:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
+  \item all prices, quantities, timestamps, and identifiers are valid and finite;
+  \item the universe, corporate actions, and market session are current; stale or missing data cause no trade;
+  \item cash, shorting, leverage, per-name weight, gross/net exposure, and turnover obey configured limits;
+  \item order IDs are idempotent, open orders are included in risk, and broker state reconciles to the internal ledger; and
+  \item a breached drawdown, connectivity, data-quality, or reconciliation threshold cancels open orders and disables new ones.
+\end{itemize}
+
+\section{Launch Through Evidence Gates}
+
+The 2026 Autotrader should move through progressively more realistic environments. Advancement is conditional on predeclared evidence, not on one attractive wealth chart.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=1.1cm,y=0.9cm,>=Latex,font=\sffamily\small]
-    \draw[->,vnmuted] (0,0)--(8.3,0) node[right] {time};
-    \draw[->,vnmuted] (0,0)--(0,4.0) node[above] {weight};
-    \draw[vnlink,very thick] plot coordinates {(0.3,2.5) (1.4,2.5) (1.4,3.0) (2.6,3.0) (2.6,2.2) (3.8,2.2) (3.8,2.75) (5.0,2.75) (5.0,2.35) (6.2,2.35) (6.2,2.8) (7.5,2.8)};
-    \draw[vnmuted,dashed] plot[smooth] coordinates {(0.3,2.6) (1.0,2.8) (1.7,2.7) (2.4,2.4) (3.1,2.35) (3.8,2.6) (4.5,2.65) (5.2,2.5) (5.9,2.55) (6.6,2.7) (7.5,2.65)};
-    \foreach \x in {1.4,2.6,3.8,5.0,6.2}{\draw[vncarnelian,thick] (\x,0.15)--(\x,-0.15);}
-    \node[text=vnlink] at (6.7,3.15) {implemented weight};
-    \node[text=vnmuted] at (6.5,2.25) {drifting target};
-    \node[text=vncarnelian] at (4.1,0.42) {rebalance dates};
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.7cm]
+    \foreach \name/\text/\x in {u/{unit and\\property tests}/0,s/{deterministic\\simulation}/2.35,w/{walk-forward\\backtest}/4.7,p/{paper and\\shadow}/7.05,l/{capped\\pilot}/9.4}{
+      \node[draw=vnink,very thick,rounded corners,fill=vnsoft,minimum width=1.95cm,minimum height=0.92cm,align=center] (\name) at (\x,0) {\text};
+    }
+    \draw[vnlink,very thick,->] (u)--(s);
+    \draw[vnlink,very thick,->] (s)--(w);
+    \draw[vnlink,very thick,->] (w)--(p);
+    \draw[vncarnelian,very thick,->] (p)--(l);
+    \node[below=0.6cm of w,align=center,text=vnmuted] {reconcile, review, and require a pass at every gate};
   \end{tikzpicture}
-  \caption{Between decision dates, market moves change portfolio weights. A rebalance rule determines when and how far the account trades toward a newly estimated target.}
-  \label{fig:weight-path}
+  \caption{A safe launch ladder. Live capital appears only in the final capped pilot, after the identical decision and ledger code has passed offline and broker-connected tests.}
+  \label{fig:launch-ladder}
 \end{figure}
 
-\section{Information Timing and Strategy Evaluation}
+\textbf{Unit and property tests} cover EMA initialization, strict lags, preference-domain checks, allocation constraints, rounding, fill signs, conservation \eqnref{execution-conservation}, duplicate events, and deterministic seeds. \textbf{Simulation} adds regime, gap, spread, missing-data, rejection, partial-fill, and disconnect scenarios. \textbf{Walk-forward testing} repeatedly freezes parameters, trades a later interval, and reports every trial rather than selecting the best seed or window.
 
-Every target at $\tau_k$ must use only data available by $\tau_k$. Return estimates, covariance matrices, bandit posteriors, eligible-universe membership, and prices must be stored point-in-time. Trades should execute no earlier than the first price that would actually be available after the signal. A closing-price signal filled at that same unobserved close is look-ahead.
+\textbf{Paper trading} exercises real market-data and broker interfaces without economic fills. A parallel shadow ledger compares intended orders, broker acknowledgements, hypothetical fills, and end-of-day positions. Only after sustained reconciliation and operational review should a \textbf{capped pilot} permit a small approved universe, capital limit, maximum order size, rate limit, loss limit, and staffed kill switch. Whether any live pilot is appropriate is a separate governance decision, not a course deliverable.
 
-The holding-period account recursion is
-\begin{equation}
-  \label{eq:wealth-recursion}
-  W_{k+1}=W_k+\sum_i h_{i,k}^+\Delta P_{i,k+1}
-  +D_{k+1}+I_{k+1}-C_k(\mathbf x_k),
-\end{equation}
-where $h_{i,k}^+$ is post-trade inventory, $\Delta P_{i,k+1}$ is the split-adjusted price change, $D_{k+1}$ denotes dividends, and $I_{k+1}$ is net interest on cash or borrowing. The exact return convention should be reconciled to this ledger.
-
-Evaluate the full policy chronologically and decompose its behavior:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
-  \item \textbf{Forecast:} Did the point-in-time $\gamma_{i,k}$ rank or predict the intended outcome out of sample?
-  \item \textbf{Allocation:} Did the utility map create sensible diversification, concentration, and risk exposure?
-  \item \textbf{Execution:} How much gross performance was lost to turnover, spread, fees, impact, and idle cash?
-  \item \textbf{Policy:} Were drawdown, volatility, tail loss, capacity, and benchmark-relative return acceptable across regimes?
-\end{itemize}
-Compare with buy-and-hold, equal weight, and the course's minimum-variance benchmark using the same universe, dates, cash treatment, and costs. An optimizer's in-sample objective value is not a performance measure.
-
-\notebooklink
-  {L14a: Online Bandit Portfolio Allocation}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-14/L14a/CHEME-5660-L14a-Example-INFORMS-Poster-CombintorialBandit-Fall-2026.ipynb}
-  {Select asset subsets, solve the Cobb--Douglas allocation, and compare the resulting portfolio with a maximum-Sharpe benchmark.}
-
-\notebooklink
-  {L9a: Advanced Portfolio Rebalancing}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-Advanced-Portfolio-Rebalance-Fall-2026.ipynb}
-  {Review rolling parameter estimation and dynamic rebalancing mechanics that supply the implementation substrate for the 2026 synthesis.}
+Performance reporting uses the ledger and includes return, volatility, maximum drawdown, expected shortfall, turnover, costs, exposure, rejected and partial orders, stale-data events, reconciliation breaks, and downtime. Compare with passive SPY, the declared cash/STRIPS alternative, equal weight, and no-rebalance variants under the same dates and capital convention. Synthetic success, historical backtest success, and paper success are distinct evidence tiers.
 
 \keytakeaways
-  {In this lecture, we derived a maximum-utility target allocation and embedded it in a self-financing, cost-aware dynamic rebalancing loop.}
-  {Preferences determine dollar weights}
-  {With positive Cobb--Douglas exponents, the optimal dollar weight is $\gamma_i/\sum_j\gamma_j$; prices convert that target into shares.}
-  {Targets are not trades}
-  {Existing inventory, executable prices, integer lots, cash, constraints, and transaction costs determine whether an optimizer's target is implementable.}
-  {Evaluate the closed loop}
-  {Point-in-time estimation, rebalance timing, execution, and benchmark design jointly determine out-of-sample performance and risk.}
-  {Next, study how interacting heterogeneous agents can generate abrupt market crashes and other emergent price behavior.}
+  {In this lecture, we converted the course prototype into an auditable launch design with valid preference mathematics, execution accounting, risk controls, and evidence gates.}
+  {Stay inside the model domain}
+  {Signed SIM beta is not a positive risk scale, signed sentiment is not classical risk aversion, and Cobb--Douglas preferences must remain positive.}
+  {Fills change the account}
+  {The broker-confirmed ledger, conservation checks, open-order exposure, and reconciliation---not target weights or submitted orders---define holdings, cash, and wealth.}
+  {Launch is progressive}
+  {Deterministic tests, stress simulation, walk-forward evaluation, paper/shadow operation, and governance precede any tightly capped live pilot.}
+  {The course ends with a system that can be questioned, reproduced, monitored, and improved---the essential traits of responsible quantitative engineering.}
 
 \begin{readinglist}
-  \item Robert C. Merton, \href{https://doi.org/10.1016/0022-0531(71)90038-X}{``Optimum Consumption and Portfolio Rules in a Continuous-Time Model,''} \emph{Journal of Economic Theory} 3(4), 373--413 (1971).
-  \item Stephen Boyd et al., \href{https://web.stanford.edu/~boyd/papers/pdf/multi_period_trading.pdf}{``Multi-Period Trading via Convex Optimization,''} \emph{Foundations and Trends in Optimization} 3(1), 1--76 (2017).
+  \item Marcos L\'opez de Prado, \emph{Advances in Financial Machine Learning}, Wiley (2018), chapters on backtest overfitting and feature importance.
+  \item David H. Bailey et al., \href{https://doi.org/10.1093/rfs/hhu041}{``The Probability of Backtest Overfitting,''} \emph{Journal of Computational Finance} 20(4), 39--69 (2017).
+  \item Philip Maymin, \href{https://doi.org/10.3905/jot.2011.6.1.001}{``Markets Are Not Continuous,''} \emph{Journal of Trading} 6(1), 1--8 (2011).
 \end{readinglist}
 
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only. Utility scores and optimizer outputs are model-dependent and are not investment recommendations.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only. Automated trading can lose money rapidly and can amplify software, data, execution, and model errors.}
 
 \end{document}

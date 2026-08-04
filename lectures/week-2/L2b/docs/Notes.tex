@@ -5,15 +5,15 @@
 
 \begin{document}
 
-\lecturenotes{2b}{Is Risk-Free Really Risk-Free? Malkiel's Bond Pricing Theorems}{Fall 2026}{September 3, 2026}{Jeffrey D. Varner}
+\lecturenotes{2b}{Yield, Duration, Convexity, and the Yield Curve}{Fall 2026}{September 3, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Prove price sensitivity}
-  {Differentiate a fixed-income cash-flow model to establish the signs of its yield sensitivity and curvature.}
+  {Explain price sensitivity}
+  {Use a fixed-income cash-flow model to establish the direction and curvature of its response to a yield change.}
   {Compute local risk measures}
-  {Calculate modified duration and convexity from a bond's discounted cash flows and use them to approximate a price change.}
-  {Compare bond structures}
-  {Predict how maturity and coupon placement affect the interest-rate exposure of otherwise comparable securities.}
+  {Calculate modified duration and convexity and use them to approximate a price change.}
+  {Read the yield curve}
+  {Distinguish yield to maturity, par yield, and spot rates and explain which rates price individual cash flows.}
 
 \section{A Safe Payment Can Have a Risky Price}
 
@@ -87,7 +87,7 @@ The bill-sensitivity notebook tests the first part of \thmref{yield-shape} using
 
 \notebooklink
   {L2b: Treasury Bill Price Sensitivity}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Malkiel-TBill-Example-Fall-2026.ipynb}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/advanced/malkiel/CHEME-5660-L2b-Advanced-Malkiel-TBill-Example-Fall-2026.ipynb}
   {Measure how a zero-coupon bill price changes with yield and remaining time using Treasury auction records.}
 
 \section{Duration and Convexity}
@@ -123,14 +123,43 @@ Duration is a present-value-weighted measure of payment timing. Moving more valu
 
 \textbf{Discrete-maturity caution.}\enspace A coupon count $N$ is an integer. Extending maturity adds a payment and changes the cash-flow vector, so differentiating a finite coupon sum with respect to a continuous maturity variable can be misleading. Compare two explicitly defined cash-flow streams or use duration with the cash flows held fixed.
 
+\section{From One Yield to a Curve of Discount Rates}
+
+Yield to maturity compresses a security's price and complete promised cash-flow
+schedule into one internal rate of return. That scalar is useful for quoting and
+comparison, but it is not the collection of discount rates used by an
+arbitrage-consistent term-structure model. A \emph{spot rate} applies to a
+single payment at one maturity; the resulting spot curve supplies one discount
+factor for each payment date. A \emph{par yield} is the coupon rate that makes a
+hypothetical coupon security trade at par under that discount curve.
+
+For cash flows $X_j$ paid at times $t_j$, a term-structure valuation replaces
+the flat-yield expression in \eqnref{yield-price} with
+\begin{equation}
+  \label{eq:spot-curve-price}
+  \B=\sum_{j=1}^{N}X_jD(0,t_j),
+\end{equation}
+where $D(0,t_j)$ is the time-0 discount factor for maturity $t_j$. The curve's
+level, slope, and curvature summarize how required compensation varies across
+maturities; they do not by themselves identify a unique forecast of future
+short rates. This distinction is the essential bridge from fixed income to the
+multi-period asset models used in Week 3.
+
 The coupon-security notebook evaluates these comparative statics on Treasury note data and shows how coupon placement changes the response to a yield shock.
 
 \newpage
 \thispagestyle{fancy}
 \notebooklink
-  {L2b: Treasury Note and Bond Price Sensitivity}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Malkiel-NotesBonds-Example-Fall-2026.ipynb}
-  {Compare yield, coupon, and maturity sensitivities for coupon-bearing Treasury securities.}
+  {L2b: Treasury Duration and Convexity}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Example-Treasury-Duration-Convexity-Fall-2026.ipynb}
+  {Price a coupon Treasury security and compare its yield, coupon, duration, and convexity sensitivities.}
+
+\subsection*{Optional advanced paths}
+
+Students who want the full theorem proofs, empirical curve exercises, stochastic
+short-rate models, or STRIPS construction can continue in
+\texttt{week-2/L2b/advanced/}. These extensions are deliberately separated from
+the required sequence so that Week 3 can begin with equity markets.
 
 \keytakeaways
   {In this lecture, we differentiated a fixed cash-flow bond price, established its decreasing convex price-yield shape, and converted those derivatives into duration and convexity risk measures.}
@@ -138,9 +167,9 @@ The coupon-security notebook evaluates these comparative statics on Treasury not
   {For a fixed positive cash-flow stream, a higher yield lowers price because every promised payment is discounted more heavily.}
   {Curvature creates asymmetry}
   {Positive convexity makes the gain from a yield decrease larger than the loss from an equal yield increase around the same starting yield.}
-  {Timing controls exposure}
-  {Longer-dated value increases interest-rate sensitivity, while larger coupons move value earlier and generally reduce percentage sensitivity.}
-  {Next, use observed Treasury prices to infer yields across maturities and assemble the yield curve.}
+  {A yield is not a curve}
+  {Payment timing controls duration; yield to maturity is a single internal rate, while spot discount factors price individual cash flows and par yields describe hypothetical securities priced at par.}
+  {Next, carry these return, risk, and time-scale ideas into equity markets and empirical growth-rate data.}
 
 \begin{readinglist}
   \item Burton G. Malkiel, \href{https://academic.oup.com/qje/article-abstract/76/2/197/1904062}{``Expectations, Bond Prices, and the Term Structure of Interest Rates,''} \emph{Quarterly Journal of Economics} 76(2), 197--218 (1962).

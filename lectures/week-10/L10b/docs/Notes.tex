@@ -5,164 +5,180 @@
 
 \begin{document}
 
-\lecturenotes{10b}{Intrinsic and Extrinsic Value of American Options}{Fall 2026}{October 29, 2026}{Jeffrey D. Varner}
+\lecturenotes{10b}{Probability of Profit, Composite Contracts, and Delta Hedging}{Fall 2026}{October 29, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Separate value components}
-  {Distinguish intrinsic value, continuation value, extrinsic value, and the early-exercise premium without conflating their economic meanings.}
-  {Locate exercise decisions}
-  {Use American backward induction to identify exercise and continuation regions in an option lattice.}
-  {Interpret market premiums}
-  {Relate moneyness, time to expiration, volatility, rates, and dividends to observed option-value decompositions.}
+  {Aggregate option legs}
+  {Construct composite expiration payoff and profit functions with consistent signs, quantities, premiums, and contract multipliers.}
+  {Compute strategy probabilities}
+  {Map profitable terminal-price regions through a stated predictive distribution and distinguish profit from exercise-related events.}
+  {Build a local hedge}
+  {Sum leg deltas, select an offsetting stock position, and explain why delta neutrality requires monitoring and rebalancing.}
 
-\section{An American Option Contains a Timing Choice}
+\section{A Strategy Is the Sum of Signed Legs}
 
-An American option is not merely a terminal payoff. It is a contract that lets its holder choose an exercise time on or before expiration. That flexibility converts valuation into an optimal-stopping problem: at every admissible decision time, compare the cash flow from exercising now with the value of retaining the contract.
-
-Let $S_{n,j}>0$ be the underlying price at node $(n,j)$ of a recombining lattice, let $K>0$ be the strike in USD/share, and let $T>0$ be expiration. The intrinsic-value functions are
+Options are combined to reshape exposure rather than merely add contracts. Let a composite position $\mathcal C$ contain legs $i=1,\ldots,d$ on the same underlying. Leg $i$ has type $\tau_i\in\{c,p\}$, strike $K_i>0$ in USD/share, signed orientation $\theta_i\in\{-1,+1\}$ for short/long, count $n_i\in\mathbb N$, and opening premium $P_i\geq 0$ in USD/share. Define the expiration payoff per share by
 \begin{equation}
-  \label{eq:intrinsic}
-  H_c(S):=(S-K)^+,
-  \qquad
-  H_p(S):=(K-S)^+,
-  \qquad x^+:=\max\{x,0\}.
+  \label{eq:leg-payoff}
+  h_i(S_T):=
+  \begin{cases}
+    (S_T-K_i)^+, & \tau_i=c,\\
+    (K_i-S_T)^+, & \tau_i=p,
+  \end{cases}
+  \qquad x^+:=\max\{x,0\},
 \end{equation}
-Intrinsic value is the cash flow from immediate exercise; it is not the option's full economic value before expiration.
+where $S_T>0$ is the underlying price at common expiration $T$. With a multiplier $q>0$ shares/contract, terminal payoff and frictionless profit are
+\begin{align}
+  \label{eq:composite-payoff}
+  H_{\mathcal C}(S_T)
+  &:=q\sum_{i=1}^{d}\theta_i n_i h_i(S_T),\\
+  \label{eq:composite-profit}
+  \Pi_{\mathcal C}(S_T)
+  &:=q\sum_{i=1}^{d}\theta_i n_i\bigl[h_i(S_T)-P_i\bigr].
+\end{align}
+Equation~\eqref{eq:composite-profit} treats a long premium as an initial cost and a short premium as an initial receipt. Commissions, bid--ask spread, financing, dividends on stock hedges, assignment fees, taxes, and slippage must be added for an economic P\&L.
 
-For a step length $\Delta t>0$, continuously compounded risk-free rate $r\in\R$, and risk-neutral up probability $p\in(0,1)$, define the discounted continuation value
-\begin{equation}
-  \label{eq:continuation}
-  C_{n,j}:=e^{-r\Delta t}
-  \left[pV_{n+1,j+1}+(1-p)V_{n+1,j}\right].
-\end{equation}
-Here $V_{n+1,j+1}$ and $V_{n+1,j}$ are the optimally managed American-option values at the two child nodes. The Bellman recursion is
-\begin{equation}
-  \label{eq:bellman}
-  V_{n,j}=\max\!\left\{H(S_{n,j}),C_{n,j}\right\},
-  \qquad
-  V_{N,j}=H(S_{N,j}),
-\end{equation}
-where $H$ is the appropriate function from \eqnref{intrinsic}. Exercise is strictly optimal when $H>C$; continuation is strictly optimal when $C>H$. Equality is an indifference node, so code should state its tie-breaking convention.
-
-\begin{theorem}{Value decomposition at an American-option node}{american-decomposition}
-Define extrinsic value at node $(n,j)$ by
-\begin{equation}
-  \label{eq:extrinsic}
-  X_{n,j}:=V_{n,j}-H(S_{n,j}).
-\end{equation}
-Then the Bellman recursion \eqnref{bellman} implies
-\begin{equation}
-  \label{eq:extrinsic-positive-part}
-  X_{n,j}=\bigl(C_{n,j}-H(S_{n,j})\bigr)^+\geq 0.
-\end{equation}
-Thus $X=0$ throughout the strict exercise region and at expiration, while $X=C-H>0$ in the strict continuation region.
-\end{theorem}
-
-\begin{remark}{Three quantities that sound similar}{three-values}
-Continuation value $C$ is the value of waiting. Extrinsic value $X=V-H$ is the amount by which the optimally managed contract exceeds immediate exercise value. The early-exercise premium $A:=V^{\mathrm{AM}}-V^{\mathrm{EU}}$ is the value of American exercise flexibility relative to an otherwise identical European contract. In general, $C$, $X$, and $A$ are different quantities.
+\begin{remark}{Expiration P\&L versus mark-to-market P\&L}{pnl-horizon}
+Before expiration, replace $h_i(S_T)$ in the closing value with an executable option mark $V_i(S_t,t)$ and include hedge cash flows. Comparing today's spot directly with an expiration breakeven does not determine current P\&L because remaining extrinsic value and close-out spreads still matter.
 \end{remark}
 
-\section{A Two-Step American Put}
+\section{Straddles: Two Tails and Two Breakevens}
 
-Consider the textbook put example with $S_0=50$ USD/share, $K=52$ USD/share, two one-year steps, $u=1.2$, $d=0.8$, $p=0.6282$, and $r=0.05\ \mathrm{yr}^{-1}$. At the one-year down node, $S=40$ and immediate exercise pays $H_p(40)=12$. Waiting is worth
+A one-contract long straddle buys a call and put with common strike $K$ and expiration. Let $D:=P_c+P_p>0$ be the total debit per share. Because $(S_T-K)^++(K-S_T)^+=|S_T-K|$, its profit is
 \begin{equation}
-  \label{eq:hull-down-continuation}
-  C_{1,0}=e^{-0.05}\left[0.6282(4)+0.3718(20)\right]\approx 9.46,
+  \label{eq:straddle-profit}
+  \Pi_L(S_T)=q\bigl(|S_T-K|-D\bigr).
 \end{equation}
-so exercise is optimal and $V_{1,0}=12$. At the one-year up node, $S=60$, intrinsic value is zero, and continuation is
-\begin{equation}
-  \label{eq:hull-up-continuation}
-  C_{1,1}=e^{-0.05}\left[0.6282(0)+0.3718(4)\right]\approx 1.41,
-\end{equation}
-so the holder waits. Backward induction gives an American root value of approximately $5.09$ USD/share, versus $4.19$ USD/share for the European put. At the root, intrinsic value is $2$, extrinsic value is about $3.09$, and the early-exercise premium is about $0.90$---a numerical demonstration of the distinctions in \remref{three-values}.
+The breakevens are $B_-:=K-D$ and $B_+:=K+D$, provided $B_->0$ for the lower boundary to be economically reachable. The long straddle profits when $S_T<B_-$ or $S_T>B_+$; its maximum loss is $qD$ at $S_T=K$, and its upside profit is unbounded in the idealized model. The short straddle has profit $-\Pi_L$; it collects at most $qD$ but has unbounded upside loss and large downside loss.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{../figs/Fig-HullExample-American-v-European-Schematic.png}
-  \caption{American and European put lattices for the two-step example. The American holder exercises at the $S=40$ node because $12>9.46$; the European holder must continue. Values are in USD/share.}
-  \label{fig:hull-american-european}
-\end{figure}
-
-\notebooklink
-  {L10b: Hull American Put Example}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Example-Hull-American-Put-Fall-2026.ipynb}
-  {Build the two-step price lattice, reproduce the American put premium, and inspect the hold-versus-exercise decision node by node.}
-
-\section{Moneyness Is Not the Same as Value}
-
-Moneyness describes the relation between spot and strike. A call is in the money (ITM) when $S>K$, at the money (ATM) when $S\approx K$, and out of the money (OTM) when $S<K$; the inequalities reverse for a put. Moneyness determines intrinsic value through \eqnref{intrinsic}, but it does not determine the entire premium.
-
-An OTM option has $H=0$ yet can have $V>0$ because future states with positive payoff remain possible. In that case the entire model value is extrinsic: $X=V$. For an ITM option, $H>0$, but waiting can still be valuable because it preserves favorable upside states, avoids paying the strike early for a call, or delays surrendering the underlying for a put.
-
-For fixed model inputs, extrinsic value is often largest near the exercise boundary or near the money. Far OTM options have little probability-weighted payoff; deep ITM options increasingly resemble immediate exercise or a linear position. These are qualitative tendencies, not universal monotonic laws.
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[x=1.0cm,y=0.72cm,>=Latex,font=\sffamily\small]
-    \draw[->,vnmuted] (0,0)--(8.0,0) node[right] {$S$};
-    \draw[->,vnmuted] (0,0)--(0,5.0) node[above] {value};
-    \draw[vnink,very thick] (0,0)--(3.4,0)--(7.7,4.3) node[right] {$H_c(S)$};
-    \draw[vnlink,very thick]
-      plot[smooth] coordinates {(0.2,0.18) (1.2,0.28) (2.2,0.55) (3.2,1.15) (4.2,2.05) (5.4,3.15) (6.6,4.18) (7.6,5.0)};
-    \draw[vnmuted,dashed] (3.4,0)--(3.4,4.7) node[above] {$K$};
-    \draw[<->,vncarnelian,thick] (3.05,0.05)--(3.05,1.05);
-    \node[vncarnelian,left] at (3.0,0.58) {$X=V-H$};
-    \node[vnlink,above left] at (5.8,3.55) {$V(S,t)$};
-    \node[below] at (1.7,-0.18) {OTM};
-    \node[below] at (3.4,-0.18) {ATM};
-    \node[below] at (5.7,-0.18) {ITM};
+  \begin{tikzpicture}[x=0.72cm,y=0.56cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.2)--(10.3,2.2) node[right] {$S_T$};
+    \draw[->,vnmuted] (5.0,0)--(5.0,6.0) node[above] {profit};
+    \draw[vnlink,very thick] (0.7,5.35)--(5.0,0.8)--(9.4,5.45);
+    \draw[vncarnelian,very thick,dashed] (0.7,-0.95)--(5.0,3.6)--(9.4,-1.05);
+    \draw[vnmuted,dotted] (2.9,0)--(2.9,5.6);
+    \draw[vnmuted,dotted] (7.1,0)--(7.1,5.6);
+    \node[below] at (2.9,2.2) {$B_-$};
+    \node[below] at (5.0,2.2) {$K$};
+    \node[below] at (7.1,2.2) {$B_+$};
+    \node[vnlink,above right] at (8.1,4.15) {long};
+    \node[vncarnelian,below right] at (7.7,0.55) {short};
   \end{tikzpicture}
-  \caption{Schematic call-value decomposition before expiration. The blue premium curve lies above intrinsic value in an arbitrage-free American model; their vertical gap is extrinsic value. The exact shape depends on time, volatility, rates, dividends, and exercise policy.}
-  \label{fig:value-decomposition}
+  \caption{Schematic expiration profit for long and short straddles. The long position buys both tails beyond $B_-$ and $B_+$; the short position sells those tails in exchange for the initial credit.}
+  \label{fig:straddle-profit}
+\end{figure}
+
+Let $F(x):=\mathbb P(S_T\leq x)$ be the CDF under a clearly stated predictive model. If $F$ is continuous at both breakevens, then
+\begin{equation}
+  \label{eq:straddle-pop}
+  \operatorname{POP}_{L}=F(B_-)+1-F(B_+),
+  \qquad
+  \operatorname{POP}_{S}=F(B_+)-F(B_-).
+\end{equation}
+The two sum to one only under matching frictionless profit functions and zero probability at the breakevens. With discrete distributions, use strict and non-strict inequalities consistently.
+
+\notebooklink
+  {L10b: AMD Earnings Straddle}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}
+  {Build long and short straddle profit diagrams, locate both breakevens, and estimate terminal profit probabilities from projected price distributions.}
+
+\section{Vertical Put Credit Spreads: Bounded Tails}
+
+Sell one put at $K_H$ for premium $P_H$ and buy one put at $K_L<K_H$ for premium $P_L$. Let the net credit be $C:=P_H-P_L>0$ and the width be $W:=K_H-K_L>0$. Per share,
+\begin{equation}
+  \label{eq:put-spread-profit}
+  \pi_V(S_T)=C+(K_L-S_T)^+-(K_H-S_T)^+.
+\end{equation}
+The maximum profit is $C$ for $S_T\geq K_H$; the minimum profit is $C-W$ for $S_T\leq K_L$, so maximum \emph{loss magnitude} is $W-C$ when $0<C<W$. The breakeven is
+\begin{equation}
+  \label{eq:put-spread-breakeven}
+  B:=K_H-C,
+\end{equation}
+and profit occurs for $S_T>B$. Under CDF $F$, $\operatorname{POP}_V=1-F(B)$ when the boundary has zero probability. This defined-risk structure caps both reward and downside, but early assignment, pin risk, and illiquid close-out prices still matter before expiration.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=0.85cm,y=0.6cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.7)--(9.6,2.7) node[right] {$S_T$};
+    \draw[->,vnmuted] (0.5,0)--(0.5,5.6) node[above] {profit};
+    \draw[vnlink,very thick] (0.8,1.0)--(3.4,1.0)--(6.6,4.25)--(9.1,4.25);
+    \draw[vnmuted,dotted] (3.4,0.25)--(3.4,5.1);
+    \draw[vnmuted,dotted] (5.1,0.25)--(5.1,5.1);
+    \draw[vnmuted,dotted] (6.6,0.25)--(6.6,5.1);
+    \node[below] at (3.4,2.7) {$K_L$};
+    \node[below] at (5.1,2.7) {$B$};
+    \node[below] at (6.6,2.7) {$K_H$};
+    \node[vnlink,above] at (8.0,4.25) {max profit $C$};
+    \node[vnlink,below] at (2.2,1.0) {min profit $C-W$};
+  \end{tikzpicture}
+  \caption{Expiration profit per share for a put credit vertical. The long lower-strike put truncates the short higher-strike put's downside.}
+  \label{fig:vertical-profit}
 \end{figure}
 
 \notebooklink
-  {L10b: NVDA Intrinsic and Extrinsic Value}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Example-NVDA-ExtrinsicValue-Fall-2026.ipynb}
-  {Decompose modeled call premiums across strike and time to expiration, and connect the premium--intrinsic gap to moneyness.}
+  {L10b: Put Credit Vertical Spread and Delta}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}
+  {Combine two put legs, compute bounded profit and loss, estimate terminal probabilities, and aggregate the spread's delta.}
 
-\section{What Moves Extrinsic Value?}
+\section{Probability Requires a Measure and a Horizon}
 
-Extrinsic value reflects the option's remaining opportunity set under the pricing model. Holding other inputs fixed, more time and higher volatility often increase a vanilla option's opportunity to finish favorably. Interest rates affect the value of deferring the strike payment or receipt, while dividends change the economics of owning the stock rather than the option. These effects interact with contract type and the endogenous exercise boundary.
-
-The phrase \emph{time decay} must be used carefully. Along a fixed hypothetical state with all other inputs held constant, less remaining time generally removes optionality. Along an observed market path, however, $S$, implied volatility, rates, dividends, liquidity, and the exercise boundary all move. Consequently, a sequence of quoted extrinsic values need not decline smoothly. Theta, introduced in L11a, is a local model derivative; it is not a promise that tomorrow's market premium will be lower.
-
-For a non-dividend-paying stock and $r\geq 0$, early exercise of an American call is suboptimal in the classical frictionless model, so $V_c^{\mathrm{AM}}=V_c^{\mathrm{EU}}$. American puts can optimally exercise early because receiving $K$ sooner has financing value. Dividends can create early-exercise incentives for calls, and negative rates or trading constraints can change the standard conclusions.
-
-\section{From Model Values to an Option Chain}
-
-For a quoted market premium $P^{\mathrm{mkt}}$, a descriptive decomposition uses
+The definition
 \begin{equation}
-  \label{eq:market-decomposition}
-  X^{\mathrm{mkt}}:=P^{\mathrm{mkt}}-H(S).
+  \label{eq:general-pop}
+  \operatorname{POP}_{\mathcal C}^{\mathbb P}
+  :=\mathbb P\!\left(\Pi_{\mathcal C}(S_T)>0\mid\mathcal I_t\right)
 \end{equation}
-The choice of bid, ask, last trade, or midpoint matters. Wide spreads, stale prints, asynchronous spot prices, discrete dividends, and contract multipliers can distort comparisons. A negative value from \eqnref{market-decomposition} is usually a data or executability warning, not evidence of negative model extrinsic value.
+is incomplete until the probability measure $\mathbb P$, information set $\mathcal I_t$, horizon, parameters, and cost convention are specified. A historical or forecast model attempts to describe real-world outcomes. The risk-neutral measure $\mathbb Q$ is constructed for arbitrage pricing; $\mathbb Q$-probabilities are not automatically real-world frequencies or personal profit odds.
 
-Likewise, a CRR price outside a quoted bid--ask spread does not by itself prove a tradable mispricing. First reconcile timestamp, spot, exercise convention, dividend assumptions, rate curve, implied volatility, tree resolution, and transaction costs. Model disagreement is a diagnostic signal; arbitrage is a stronger claim requiring an executable strategy and consistent inputs.
+Historical GBM, option-implied distributions, and simple normal ``expected move'' approximations answer different questions and embed different assumptions. Historical estimates are backward-looking and unstable. Implied distributions are affected by risk premia and require a full option surface, not a single volatility quote. A normal price approximation can assign mass to negative prices. Report probabilities as model-conditional estimates and stress the distribution, not as objective facts.
 
-\notebooklink
-  {L10b: American Contract Premiums versus AMD Quotes}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Example-AmericanContractsPremium-Fall-2026.ipynb}
-  {Price American calls and puts across strikes with CRR and compare the model values with observed bid--ask intervals.}
+For exercise-related events, distinguish terminal ITM from American exercise. A call is terminally ITM when $S_T>K$ and a put when $S_T<K$. That event does not include early exercise, broker assignment rules, or exercise-by-exception thresholds. In a composite position, report leg-level events or an explicitly defined joint event; there is no universal strategy-level ``probability of exercise.''
+
+\section{Delta Hedging a Composite Position}
+
+Let $V_i(S,t)$ be the current per-share value of leg $i$, let $\Delta_i:=\partial V_i/\partial S$, and let $N_S\in\R$ be the number of underlying shares held. The marked portfolio value and net delta are
+\begin{align}
+  \label{eq:portfolio-value}
+  \mathcal V(S,t)
+  &:=N_SS+q\sum_{i=1}^{d}\theta_i n_iV_i(S,t),\\
+  \label{eq:net-delta}
+  \Delta_{\mathrm{net}}
+  &:=\frac{\partial\mathcal V}{\partial S}
+   =N_S+q\sum_{i=1}^{d}\theta_i n_i\Delta_i.
+\end{align}
+At the current state $(S,t)$, choose
+\begin{equation}
+  \label{eq:hedge-shares}
+  N_S^*:=-q\sum_{i=1}^{d}\theta_i n_i\Delta_i
+\end{equation}
+to make $\Delta_{\mathrm{net}}=0$. If shares must be integral, round deliberately and report residual delta. For ten short calls with $q=100$ and long-call delta $0.60$, options delta is $10(-1)(100)(0.60)=-600$ shares, so holding $600$ shares offsets the initial first-order exposure.
+
+\begin{theorem}{Delta neutrality is local}{local-hedge}
+A stock holding selected by \eqnref{hedge-shares} neutralizes the first derivative at the current valuation state. Unless the options position has zero gamma and unchanged inputs, the same fixed $N_S^*$ will not keep $\Delta_{\mathrm{net}}=0$ for all future $S$ and $t$. Dynamic delta hedging therefore requires recalculation and trading.
+\end{theorem}
+
+Delta hedging does not eliminate gamma, volatility, time, rate, jump, liquidity, funding, or model risk. Rebalancing more frequently reduces some discretization error but increases turnover and costs. Early exercise or assignment changes both the option inventory and stock position immediately, so the hedge and cash account must be updated as contract state changes.
 
 \Needspace{0.38\textheight}
 \keytakeaways
-  {In this lecture, we separated the value of exercising, waiting, and owning American exercise flexibility, then connected those quantities to lattice decisions and market quotes.}
-  {Extrinsic value is a residual}
-  {$X=V-H=(C-H)^+$ in the American lattice; continuation value, extrinsic value, and the early-exercise premium are not synonyms.}
-  {Exercise is an endogenous boundary}
-  {Backward induction chooses $H$ or $C$ at every node, producing exercise and continuation regions that depend on contract and market inputs.}
-  {Quoted decompositions require care}
-  {Bid, ask, timestamp, dividends, volatility, and liquidity must be aligned before treating model--market differences as economic opportunities.}
-  {Next, measure how an option premium responds locally to spot, volatility, time, and interest rates through the Greeks.}
+  {In this lecture, we built composite expiration P\&L, mapped profitable regions through explicit distributions, and constructed a local stock hedge from leg deltas.}
+  {Profit regions come from the full strategy}
+  {Add signed leg payoffs and opening cash flows first; then solve $\Pi_{\mathcal C}(S_T)>0$ for the relevant terminal-price region.}
+  {POP is model-conditional}
+  {A probability needs a measure, horizon, information set, and cost definition; risk-neutral pricing probabilities are not automatically real-world profit odds.}
+  {Delta neutrality is temporary}
+  {The hedge cancels first-order spot exposure at the current state, while gamma, time, other factors, costs, and assignment make rebalancing necessary.}
+  {Next, apply payoff, risk, and assignment logic to covered calls and cash-secured puts.}
 
 \begin{readinglist}
-  \item John C. Cox, Stephen A. Ross, and Mark Rubinstein, \href{https://doi.org/10.1016/0304-405X(79)90015-1}{``Option Pricing: A Simplified Approach,''} \emph{Journal of Financial Economics} 7(3), 229--263 (1979).
-  \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed., Pearson (2021), chapters on binomial trees and American options.
+  \item Hayne E. Leland, \href{https://doi.org/10.1111/j.1540-6261.1985.tb02383.x}{``Option Pricing and Replication with Transactions Costs,''} \emph{Journal of Finance} 40(5), 1283--1301 (1985).
+  \item Mark Rubinstein and Eric Reiner, \emph{Exotic Options}, working-paper and practitioner treatments of static payoff decomposition (1991).
+  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed., Pearson (2021), chapters on trading strategies and the Greeks.
 \end{readinglist}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Option values are model-dependent and trading involves substantial risk.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Probability estimates and hedges are model-dependent, and options trading involves substantial risk.}
 
 \end{document}

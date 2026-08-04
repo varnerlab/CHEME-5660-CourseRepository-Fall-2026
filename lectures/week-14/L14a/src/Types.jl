@@ -1,194 +1,142 @@
-abstract type AbstractBanditAlgorithmModel end
-abstract type AbstractBanditProblemContextModel end
-abstract type AbstractSimpleChoiceProblem end
-abstract type AbstractReturnModel end
+"""
+    AbstractWorldModel
+
+Abstract supertype for world models that generate rewards given an action and environment state.
+"""
+abstract type AbstractWorldModel end
 
 """
-    mutable MySimpleCobbDouglasChoiceProblem
+    AbstractSamplingModel
 
-A mutable struct that defines a simple Cobb-Douglas choice problem. 
-The problem is defined by the following fields:
-
-### Fields
-- `γ::Array{Float64,1}`: The Cobb-Douglas utility function exponents. One exponent for each object.
-- `c::Array{Float64,1}`: The unit cost of each objects.
-- `B::Float64`: The budget that we have to spend on the collection of objects.
-- `bounds::Array{Float64,2}`: The bounds on the objects that we can purchase. First column is the lower bound, second column is the upper bound.
-- `initial::Array{Float64,1}`: The initial guess for the solution.
+Abstract supertype for bandit-style sampling models that select actions over time.
+"""
+abstract type AbstractSamplingModel end
 
 """
-mutable struct MySimpleCobbDouglasChoiceProblem <: AbstractSimpleChoiceProblem
+    AbstractInvestorContextModel
+
+Abstract supertype for investor context models that combine preferences, risk, and market data.
+"""
+abstract type AbstractInvestorContextModel end
+
+"""
+    mutable struct MyTickerPickerSIMRiskAwareWorldModel <: AbstractWorldModel
+
+The `MyTickerPickerSIMRiskAwareWorldModel` mutable struct represents a world model for a ticker picker problem
+that is risk-aware and uses a single index model (SIM) for returns.
+
+### Required fields
+- `tickers::Array{String,1}`: An array of ticker symbols that we explore
+- `risk_free_rate::Float64`: The risk-free rate of return in the world (assumed constant)
+- `world::Function`: A function that represents the world model. The function takes an action `a`, data about the world, and returns the reward `r` for taking action `a`.
+- `Δt::Float64`: The time step size in the world model
+- `Ḡₘ::Float64`: The expected excess market return (market factor)
+- `parameters::Dict{String, NamedTuple}`: A dictionary that holds the single index model parameters for each ticker symbol
+- `buffersize::Int64`: The size of the buffer used in the world model
+- `risk::Dict{String, Float64}`: A dictionary that holds the risk measure for each ticker symbol
+"""
+mutable struct MyTickerPickerSIMRiskAwareWorldModel <: AbstractWorldModel
 
     # data -
-    γ::Array{Float64,1}
-    c::Array{Float64,1}
-    B::Float64
-    bounds::Array{Float64,2}
-    initial::Array{Float64,1}
+    tickers::Array{String,1}
+    risk_free_rate::Float64
+    world::Function
+    Δt::Float64
+    Ḡₘ::Float64 # expected excess market return (market factor)
+    parameters::Dict{String, NamedTuple} # single index model parameters for each ticker
+    buffersize::Int64 # how many days to use in the buffer
+    risk::Dict{String, Float64}
 
-    # constructor
-    MySimpleCobbDouglasChoiceProblem() = new();
+    # constructor -
+    MyTickerPickerSIMRiskAwareWorldModel() = new();
 end
 
 """
-    mutable MyEpsilonGreedyAlgorithmModel < : AbstractBanditAlgorithmModel
+    mutable struct MyEpsilonSamplingBanditModel <: AbstractSamplingModel
 
-A mutable struct that defines the epsilon-greedy bandit algorithm model.
+The `MyEpsilonSamplingBanditModel` mutable struct represents a multi-armed bandit model that uses epsilon-sampling for exploration.
 
-### Fields
-- `K::Int64`: The number of arms in each category.
-- `α::Float64`: The learning rate.
+### Required fields
+- `α::Array{Float64,1}`: A vector holding the number of successful pulls for each arm. Each element in the vector represents the number of successful pulls for a specific arm.
+- `β::Array{Float64,1}`: A vector holding the number of unsuccessful pulls for each arm. Each element in the vector represents the number of unsuccessful pulls for a specific arm.
+- `K::Int64`: The number of arms in the bandit model
+- `ϵ::Float64`: The exploration parameter. A value of `0.0` indicates no exploration, and a value of `1.0` indicates full exploration.
 """
-mutable struct MyEpsilonGreedyAlgorithmModel <: AbstractBanditAlgorithmModel
+mutable struct MyEpsilonSamplingBanditModel <: AbstractSamplingModel
 
     # data -
-    K::Int64 # number of arms in each category
-    α::Float64 # learning rate
+    α::Array{Float64,1}
+    β::Array{Float64,1}
+    K::Int64
 
     # constructor -
-    MyEpsilonGreedyAlgorithmModel() = new();
+    MyEpsilonSamplingBanditModel() = new();
 end
 
 """
-    mutable MyEpsilonGreedyDynamicAlgorithmModel < : AbstractBanditAlgorithmModel
+    mutable struct MyInvestorMarketContextModel <: AbstractInvestorContextModel
 
-A mutable struct that defines the dynamic epsilon-greedy bandit algorithm model.
+Investor context that blends ticker-picker preferences with a single-index model (SIM) for allocating
+a fixed budget across tickers.
 
 ### Fields
-- `K::Int64`: The number of arms in each category.
-- `α::Float64`: The learning rate.
+- `B::Float64`: Total budget available (USD).
+- `tickers::Array{String,1}`: Ordered ticker symbols.
+- `marketdata::Dict{String, DataFrame}`: Historical price data keyed by ticker.
+- `preferences::Dict{Symbol, DataFrame}`: Ticker-picker preference tables keyed by mood.
+- `Ḡₘ::Float64`: Expected excess market return (market factor).
+- `risk_free_rate::Float64`: Annual risk-free rate.
+- `singleindexmodel_parameters::Dict{String, NamedTuple}`: SIM parameters per ticker.
+- `ξ::Float64`: Weight given to ticker-picker preferences in the allocation rule.
+- `mood::Symbol`: Investor mood controlling which preference table is used.
+- `ϵ::Float64`: Minimum number of shares to buy/sell for non-preferred assets.
 """
-mutable struct MyEpsilonGreedyDynamicAlgorithmModel <: AbstractBanditAlgorithmModel
+mutable struct MyInvestorMarketContextModel <: AbstractInvestorContextModel
 
     # data -
-    K::Int64 # number of arms in each category
-    α::Float64 # learning rate
+    B::Float64 # total budget for investment (in USD)
+    tickers::Array{String,1} # array of ticker symbols
+    marketdata::Dict{String, DataFrame} # market data for the tickers
+    preferences::Dict{Symbol, DataFrame} # ticker-picker preferences
+    Ḡₘ::Float64 # expected excess market return (market factor)
+    risk_free_rate::Float64 # risk-free rate of return
+    singleindexmodel_parameters::Dict{String, NamedTuple} # single index model parameters for each ticker
+    ξ::Float64 # weight of the ticker-picker preference in the investor context model
+    mood::Symbol # mood of the investor (:optimistic, :neutral, :pessimistic)
+    ϵ::Float64 # minimum number of shares to buy/sell per trade
 
     # constructor -
-    MyEpsilonGreedyDynamicAlgorithmModel() = new();
+    MyInvestorMarketContextModel() = new();
 end
 
 """
-    mutable MyEpsilonGreedyStaticNoiseAlgorithmModel < : AbstractBanditAlgorithmModel
+    mutable struct MySimpleRobotInvestorContextModel <: AbstractInvestorContextModel
 
-A mutable struct that defines the static noise epsilon-greedy bandit algorithm model.
-
-### Fields
-- `K::Int64`: The number of arms in each category.
-- `α::Float64`: The learning rate.
-"""
-mutable struct MyEpsilonGreedyStaticNoiseAlgorithmModel <: AbstractBanditAlgorithmModel
-
-    # data -
-    K::Int64 # number of arms in each category
-    α::Float64 # learning rate
-
-    # constructor -
-    MyEpsilonGreedyStaticNoiseAlgorithmModel() = new();
-end
-
-"""
-    mutable MyEpsilonGreedyDynamicNoiseAlgorithmModel < : AbstractBanditAlgorithmModel
-
-A mutable struct that defines the dynamic noise epsilon-greedy bandit algorithm model.
+Lightweight investor context used by a robot trader that relies on a precomputed market factor series
+and SIM parameters to allocate shares.
 
 ### Fields
-- `K::Int64`: The number of arms in each category.
-- `α::Float64`: The learning rate.
+- `B::Float64`: Total budget available (USD).
+- `tickers::Array{String,1}`: Ordered ticker symbols.
+- `marketfactor::Array{Float64,1}`: Market factor value at each time step.
+- `marketdata::Array{Float64,2}`: Price matrix (rows: time, columns: tickers, first column is time).
+- `singleindexmodel_parameters::Dict{String, NamedTuple}`: SIM parameters per ticker.
+- `λ::Float64`: Risk-aversion exponent applied to beta.
+- `Δt::Float64`: Time step size (years).
+- `ϵ::Float64`: Minimum number of shares to hold for non-preferred assets.
 """
-mutable struct MyEpsilonGreedyDynamicNoiseAlgorithmModel <: AbstractBanditAlgorithmModel
+mutable struct MySimpleRobotInvestorContextModel <: AbstractInvestorContextModel
 
     # data -
-    K::Int64 # number of arms in each category
-    α::Float64 # learning rate
+    B::Float64 # total budget for investment (in USD)
+    tickers::Array{String,1} # array of ticker symbols
+    marketfactor::Array{Float64,1} # market factor at current time step
+    marketdata::Array{Float64,2} # market data matrix (rows: time steps, columns: tickers, first column is time)
+    singleindexmodel_parameters::Dict{String, NamedTuple} # single index model parameters for each ticker
+    λ::Float64 # risk aversion parameter
+    Δt::Float64 # time step size
+    ϵ::Float64 # minimum number of shares to buy for non-preferred asset
 
     # constructor -
-    MyEpsilonGreedyDynamicNoiseAlgorithmModel() = new();
-end
-
-"""
-    mutable MyBanditPortfolioAllocationContextModel < : AbstractBanditProblemContextModel
-A mutable struct that defines the bandit portfolio allocation context model.
-
-### Fields
-- `γ::Array{Float64,1}`: Investors preference for each category of goods.
-- `Sₒ::Array{Float64,1}`: Cost of each good.
-- `bounds::Array{Float64,2}`: Bounds on the assets that we can purchase.
-- `B::Float64`: Budget that we have to spend on the collection of assets.
-- `nₒ::Array{Float64,1}`: Initial guess for the solution.
-- `number_of_assets::Int64`: Number of assets that we can purchase.
-"""
-mutable struct MyBanditPortfolioAllocationContextModel <: AbstractBanditProblemContextModel
-
-    # data -
-    γ::Array{Float64,1} # investors preference for each category of goods
-    Sₒ::Array{Float64,1} # share price at which we can purchase the asset 
-    bounds::Array{Float64,2} # bounds on the assets that we can purchase
-    B::Float64 # budget that we have to spend on the collection of assets
-    nₒ::Array{Float64,1} # initial guess for the solution
-    number_of_assets::Int64 # number of assets that we can purchase
-    
-
-    # constructor -
-    MyBanditPortfolioAllocationContextModel() = new();
-end
-
-"""
-    mutable MyDynamicBanditPortfolioAllocationContextModel < : AbstractBanditProblemContextModel
-
-A mutable struct that defines the dynamic bandit portfolio allocation context model.
-
-### Fields
-- `singleindexmodels::Dict{String, NamedTuple}`: Single index models for each asset.
-- `dataset::Dict{String, DataFrame}`: Dataset for each asset.
-- `tickers::Array{String,1}`: Tickers for each asset.
-- `bounds::Array{Float64,2}`: Bounds on the assets that we can purchase.
-- `number_of_assets::Int64`: Number of assets that we can purchase.
-- `B::Float64`: Budget that we have to spend on the collection of assets.
-- `nₒ::Array{Float64,1}`: Initial guess for the solution.
-- `X̄::Array{Float64,2}`: inv(X^T*X)*X^T.
-- `number_of_samples_to_draw::Int64`: Number of samples needed by the error model.
-- `μₒ::Array{Float64,1}`: Initial guess for the mean of the error model.
-- `R̄ₘ::Float64`: Average return of the market (to use in the SIM).
-"""
-mutable struct MyDynamicBanditPortfolioAllocationContextModel <: AbstractBanditProblemContextModel
-
-    # data -
-    singleindexmodels::Dict{String, NamedTuple} # single index models for each asset
-    dataset::Dict{String, DataFrame} # dataset for each asset
-    tickers::Array{String,1} # tickers for each asset
-    bounds::Array{Float64,2} # bounds on the assets that we can purchase
-    number_of_assets::Int64 # number of assets that we can purchase
-    B::Float64 # budget that we have to spend on the collection of assets
-    nₒ::Array{Float64,1} # initial guess for the solution
-    X̄::Array{Float64,2} # inv(X^T*X)*X^T
-    number_of_samples_to_draw::Int64 # number of samples needed by the error model -
-    μₒ::Array{Float64,1} # initial guess for the mean of the error model
-    R̄ₘ::Float64 # average return of the market (to use in the SIM)
-
-    # constructor -
-    MyDynamicBanditPortfolioAllocationContextModel() = new();
-end
-
-"""
-    mutable MyBanditPortfolioModel
-
-A mutable struct that defines the bandit portfolio model.
-
-### Fields
-- `utility::Float64`: Utility of the portfolio.
-- `n::Array{Float64,1}`: Share array.
-- `a::Array{Int,1}`: Action array.
-- `converged::Bool`: Has the model converged?   
-"""
-struct MyBanditPortfolioModel
-
-    # data -
-    utility::Float64 # utility of the portfolio
-    n::Array{Float64,1} # share array
-    a::Array{Int,1} # action array
-    converged::Bool # has the model converged?   
-
-    # constructor -
-    MyBanditPortfolioModel(U,n,a, converged) = new(U,n, a, converged);
+    MySimpleRobotInvestorContextModel() = new();
 end

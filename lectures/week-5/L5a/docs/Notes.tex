@@ -1,156 +1,194 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\Pmeasure}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\R}{\mathbb{R}}
 
 \begin{document}
 
-\lecturenotes{5a}{Lattice Trading Rules and Probability of Profit}{Fall 2026}{September 22, 2026}{Jeffrey D. Varner}
+\lecturenotes{5a}{Multivariate GBM and Dirichlet Portfolio Weights}{Fall 2026}{September 22, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Specify a trade rule}
-  {Translate entry price, holding period, benchmark, target, and transaction costs into an unambiguous terminal profit event.}
-  {Derive lattice probabilities}
-  {Convert a target-return inequality into a minimum up-move count and evaluate its real-world binomial tail probability.}
-  {Generalize the state space}
-  {Represent an $m$-branch recombining lattice with multinomial state counts and explain its computational tradeoffs.}
+  {Model correlated assets}
+  {Write and solve a multivariate GBM model whose matrix square root generates a specified log-return covariance rate.}
+  {Estimate covariance}
+  {Construct, annualize, and validate a sample covariance matrix while distinguishing covariance from correlation.}
+  {Sample portfolio weights}
+  {Use a Dirichlet distribution to explore the long-only allocation simplex without confusing random sampling with optimization.}
 
-\section{A Forecast Is Not Yet a Trading Rule}
+\section{Why Separate Asset Models Are Insufficient}
 
-A price model describes possible states and their probabilities. A trading rule adds decisions: when to enter, how many shares to hold, what constitutes success, when to exit, and how costs are handled. Without those choices, ``probability of profit'' is not a well-defined quantity.
+Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
 
-Suppose $n_0>0$ shares are purchased at the time-0 ask price $S_0^{\mathrm{ask}}>0$ dollars per share and liquidated after $N$ steps at the bid price $S_N^{\mathrm{bid}}>0$. Let $K\geq0$ dollars collect commissions and other modeled cash costs. With a continuously compounded annual benchmark rate $r_b$ and horizon $T=N\Delta t$ years, one present-value profit measure is
+Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic GBM drifts in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
 \begin{equation}
-  \label{eq:trade-npv}
-  \Pi_0:=e^{-r_bT}n_0S_N^{\mathrm{bid}}
-  -n_0S_0^{\mathrm{ask}}-K.
+  \label{eq:mgbm-sde}
+  \frac{dS_{i,t}}{S_{i,t}}
+  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
+  \qquad i\in\{1,\ldots,m\}.
 \end{equation}
-Equation \eqnref{trade-npv} compares all cash flows at time 0. An equivalent future-value comparison grows the entry cost and costs to time $T$. Mixing a discounted sale value with an undiscounted target would create inconsistent units.
+The diffusion covariance rate is $C:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $C_{ii}=\sigma_i^2$, while $C_{ik}$ records instantaneous log-return covariance per unit time. Applying It\^o's lemma to $\log S_{i,t}$ gives the expected continuously compounded growth rate
+\begin{equation}
+  \label{eq:drift-growth-relation}
+  \bar g_i:=\E[g_{i,t,\Delta t}]
+  =\mu_i-\frac12 C_{ii},
+  \qquad
+  \mu_i=\bar g_i+\frac12 C_{ii}.
+\end{equation}
+Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,t,\Delta t}:=(\Delta t)^{-1}\log(S_{i,t+\Delta t}/S_{i,t})$ is the realized growth rate. Both have units years$^{-1}$, but they are different quantities.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=2.1cm,y=0.9cm,>=Latex,font=\sffamily\small]
-    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(6.2,0) node[right]{time};
-    \node[draw=vnink,circle,fill=white,minimum size=6mm] (t0) at (0.6,0) {};
-    \node[draw=vnink,circle,fill=white,minimum size=6mm] (tN) at (5.55,0) {};
-    \node[below=4pt] at (t0) {$0$};
-    \node[below=4pt] at (tN) {$T$};
-    \draw[vncarnelian,line width=1.3pt,-{Latex[length=3mm]}]
-      (t0.north)--(0.6,1.05) node[above,text=vncarnelian] {$-n_0S_0^{\mathrm{ask}}-K$};
-    \draw[vnlink,line width=1.3pt,-{Latex[length=3mm]}]
-      (5.55,1.05)--(tN.north) node[above,text=vnlink] {$+n_0S_N^{\mathrm{bid}}$};
-    \draw[vnlink,line width=0.9pt,-{Latex[length=3mm]}]
-      (5.35,-0.75)--(0.82,-0.75)
-      node[midway,fill=white,inner sep=3pt] {discount at $r_b$};
+  \begin{tikzpicture}[x=1.35cm,y=0.86cm,>=Latex,font=\sffamily\small]
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.35cm,minimum height=0.78cm] (z) at (0,0) {independent $\mathbf Z$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.25cm,minimum height=0.78cm] (a) at (3.25,0) {matrix root $A$};
+    \node[draw=vnrule,fill=white,rounded corners=1pt,
+      minimum width=2.65cm,minimum height=0.78cm] (az) at (6.5,0) {correlated shock $A\mathbf Z$};
+    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
+      minimum width=2.55cm,minimum height=0.78cm] (s) at (10.0,0) {joint price update};
+    \foreach \u/\v in {z/a,a/az,az/s}
+      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\u)--(\v);
+    \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=C$};
+    \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=C$};
   \end{tikzpicture}
-  \caption{A terminal-exit long-equity rule represented as dated cash flows. Real execution introduces a bid--ask spread and costs; the benchmark rate converts the liquidation receipt to the entry date.}
-  \label{fig:trade-rule}
+  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $C$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
+  \label{fig:correlated-shocks}
 \end{figure}
 
-The benchmark encodes an opportunity-cost hurdle. Setting $r_b=0$ asks whether nominal proceeds exceed cost. A Treasury-based or strategy-specific $r_b$ asks whether the trade beats that alternative. Neither choice converts POP into investment advice; it only makes the comparison explicit.
+\section{Exact Transition and Covariance}
 
-\section{Closed-Form Binomial Tail Rule}
+The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
 
-Use the real-world binomial lattice from L4b. Let $u>d>0$ be the constant price factors, let $p\in[0,1]$ be the real-world up probability, and let the random up-move count be $K_N\sim\operatorname{Binomial}(N,p)$. Ignoring bid--ask spread and fixed costs temporarily, the terminal node price is $S_0u^{K_N}d^{N-K_N}$.
-
-Define the present-value fractional return on initial share cost by
+\begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
+Let $A\in\R^{m\times m}$, $C:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. Define $\bar g_i:=\mu_i-C_{ii}/2$. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
 \begin{equation}
-  \label{eq:pv-return}
-  \rho_N(K_N):=e^{-r_bT}\frac{S_N}{S_0}-1
-  =e^{-r_bT}u^{K_N}d^{N-K_N}-1.
+  \label{eq:mgbm-transition}
+  S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
+  \bar g_i\Delta t
+  +\sqrt{\Delta t}\,(A\mathbf Z)_i
+  \right].
 \end{equation}
-For a target $\rho_\star>-1$, the strict success event $\rho_N>\rho_\star$ becomes a threshold on the integer $K_N$ (\thmref{binomial-tail}).
-
-\begin{theorem}{Target-return probability in a binomial lattice}{binomial-tail}
-Let $u>d>0$, $p\in[0,1]$, $N\in\mathbb{N}$, $\Delta t>0$ years, $T:=N\Delta t$, and $K_N\sim\operatorname{Binomial}(N,p)$ under the real-world measure. Let the continuously compounded benchmark rate be $r_b\in\mathbb{R}$ per year and let $\rho_\star>-1$ be the dimensionless strict target for the present-value return in \eqnref{pv-return}. Define
+Define the dimensionless log-return vector $\mathbf r_t:=\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and the realized growth-rate vector $\mathbf g_t:=\mathbf r_t/\Delta t$. Then
 \begin{equation}
-  \label{eq:count-threshold}
-  \tau(\rho_\star):=
-  \frac{\log(1+\rho_\star)+r_bT-N\log d}{\log(u/d)},
+  \label{eq:mgbm-log-covariance}
+  \mathbf g_t=\bar{\mathbf g}+\frac{1}{\sqrt{\Delta t}}A\mathbf Z,
   \qquad
-  k_{\min}:=\lfloor\tau(\rho_\star)\rfloor+1.
-\end{equation}
-Then the real-world probability of exceeding the target is
-\begin{equation}
-  \label{eq:binomial-tail}
-  \Pmeasure(\rho_N>\rho_\star)
-  =\sum_{k=\max(0,k_{\min})}^{N}
-  \binom{N}{k}p^k(1-p)^{N-k},
-\end{equation}
-with value zero when $k_{\min}>N$ and value one when $k_{\min}\leq0$.
-\end{theorem}
-
-\begin{derivation}
-Start with $e^{-r_bT}u^kd^{N-k}-1>\rho_\star$. Move positive terms and take logarithms:
-\begin{align*}
-  u^kd^{N-k}&>(1+\rho_\star)e^{r_bT},\\
-  k\log(u/d)&>\log(1+\rho_\star)+r_bT-N\log d.
-\end{align*}
-Because $u/d>1$, division preserves the inequality, so $k>\tau(\rho_\star)$. The smallest admissible integer is $\lfloor\tau\rfloor+1$; summing the binomial masses above it gives \eqnref{binomial-tail}.
-\end{derivation}
-
-The strict inequality matters at a node lying exactly on the threshold. A non-strict goal $\rho_N\geq\rho_\star$ uses a ceiling rule instead. Numerical code should handle this boundary explicitly rather than rely on floating-point equality.
-
-\notebooklink
-  {L5a: Cumulative Probability for a Lattice Exit Rule}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-CumulativeProbabilityLattice-Fall-2026.ipynb}
-  {Estimate a real-world lattice, convert target returns into node thresholds, and compare the analytic binomial tail with enumerated states.}
-
-\section{Terminal Rules and First-Passage Rules Differ}
-
-The theorem concerns a fixed terminal liquidation date. A take-profit or stop-loss instruction monitored during the holding period is path dependent: the first boundary crossing can occur before $T$, and two paths ending at the same terminal node may trigger different trades. Terminal node probabilities alone cannot evaluate such a rule.
-
-\begin{definition}{First-exit time}{first-exit}
-Let $S_j$ be the modeled share price at step $j\in\{0,\ldots,N\}$, and let $L_j<U_j$ be lower and upper dollar boundaries. The first-exit time is the random index
-\begin{equation}
-  \label{eq:first-exit}
-  \tau_{\mathrm{exit}}:=
-  \min\{j\in\{1,\ldots,N\}:S_j\leq L_j\ \text{or}\ S_j\geq U_j\},
-\end{equation}
-with $\tau_{\mathrm{exit}}:=N$ if no earlier boundary is reached. A complete rule must also specify the liquidation price and action when a boundary is crossed or both instructions are affected by a price gap.
-\end{definition}
-
-First-passage probabilities can be computed by propagating probability only through nodes that have not yet been absorbed. In actual markets, stop orders do not guarantee their trigger price, limit orders do not guarantee execution, and discrete monitoring can miss between-step crossings. Slippage and market impact make the execution model part of the strategy model.
-
-\section{From Two Branches to Many}
-
-A binary lattice compresses every step into two outcomes. An $m$-branch model uses positive factors $f_1,\ldots,f_m$ with probabilities $p_1,\ldots,p_m$, where $p_j\geq0$ and $\sum_jp_j=1$. After $N$ independent steps, a state is indexed by the count vector $\mathbf{x}=(x_1,\ldots,x_m)$ of nonnegative integers satisfying $\sum_jx_j=N$.
-
-\begin{proposition}{Multinomial lattice state}{multinomial-state}
-Under the constant independent $m$-branch model, a count vector $\mathbf{x}\in\mathbb{Z}_{\geq0}^m$ with $\sum_{j=1}^{m}x_j=N$ has terminal price and probability
-\begin{equation}
-  \label{eq:multinomial-state}
-  S_N(\mathbf{x})=S_0\prod_{j=1}^{m}f_j^{x_j},
+  \E[\mathbf g_t]=\bar{\mathbf g}=\boldsymbol\mu-\frac12\operatorname{diag}(C),
   \qquad
-  \Pmeasure(\mathbf{X}=\mathbf{x})
-  =\frac{N!}{x_1!\cdots x_m!}\prod_{j=1}^{m}p_j^{x_j}.
+  \Cov(\mathbf r_t)=C\Delta t,
+  \qquad
+  \Cov(\mathbf g_t)=\frac{C}{\Delta t}.
 \end{equation}
-The number of count vectors at level $N$ is $\binom{N+m-1}{m-1}$. Distinct count vectors may coincide in price if the factors have additional multiplicative relationships.
 \end{proposition}
 
-More branches approximate a richer one-step distribution but do not automatically create heavy tails, volatility clustering, or accurate forecasts. Parameters, bin boundaries, and transition dependence still require out-of-sample validation. The computational notebook compares equal-mass and equal-width discretizations and checks that probability mass sums to one at each level.
+Equation \eqnref{mgbm-log-covariance} gives the scaling rule. Writing $\Sigma_r:=\Cov(\mathbf r_t)$ and $\Sigma_g:=\Cov(\mathbf g_t)$,
+\begin{equation}
+  \label{eq:three-covariances}
+  \Sigma_r=(\Delta t)^2\Sigma_g,
+  \qquad
+  C=\frac{\Sigma_r}{\Delta t}=\Delta t\,\Sigma_g.
+\end{equation}
+The three matrices are not interchangeable: $\Sigma_g$ is appropriate for a growth-rate portfolio objective, while $C$ drives GBM shocks. Multiplying a daily log-return covariance by ``252'' estimates $C$; it does not estimate $\Sigma_g$.
+
+\section{Estimating and Validating the Covariance Matrix}
+
+Let $G\in\R^{n\times m}$ store $n$ observed growth-rate vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased growth-rate covariance is
+\begin{equation}
+  \label{eq:sample-covariance}
+  \widehat\Sigma_g:=
+  \frac{1}{n-1}\widetilde G^{\mathsf T}\widetilde G.
+\end{equation}
+It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_g\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. For GBM simulation, use $\widehat C=\Delta t\,\widehat\Sigma_g$.
+
+Covariance depends on units and volatility scale. Correlation normalizes those effects:
+\begin{equation}
+  \label{eq:correlation}
+  \rho_{ik}:=\frac{\Sigma_{ik}}
+  {\sqrt{\Sigma_{ii}\Sigma_{kk}}},
+  \qquad -1\leq\rho_{ik}\leq1
+\end{equation}
+when both variances are positive. Zero correlation means zero linear covariance under the chosen sample and horizon; it does not generally imply statistical independence.
+
+A Cholesky factor is convenient when $\widehat\Sigma$ is positive definite. Duplicated assets, short samples, or exact linear dependence can make it only semidefinite, causing an unpivoted Cholesky routine to fail. Eigenvalue or singular-value square roots can handle semidefinite matrices. Arbitrarily adding diagonal ``jitter'' changes the model and must be documented rather than hidden.
+
+Sampling error is often the dominant problem. Pairwise estimates can shift across windows, and a matrix with $m(m+1)/2$ distinct entries becomes difficult to estimate when $m$ is large relative to $n$. Shrinkage and factor models trade some flexibility for greater stability.
 
 \notebooklink
-  {L5a: $N$-Ary Recombining Lattices}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-N-Aray-Lattice-Fall-2026.ipynb}
-  {Discretize an empirical return distribution into multiple branches, build multinomial states, and visualize terminal prices and probabilities.}
+  {L5a: Computing and Analyzing a Covariance Matrix}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb}
+  {Center a multi-asset growth-rate matrix, calculate $\widehat\Sigma_g$, convert it to the GBM covariance rate $\widehat C$, and verify numerical invariants.}
+
+\section{Buy-and-Hold Portfolio Wealth}
+
+Let total initial wealth be $W_0>0$ dollars and let $\mathbf w\in\R^m$ contain initial dollar fractions. For a fully invested long-only portfolio, $w_i\geq0$ and $\mathbf1^{\mathsf T}\mathbf w=1$. Fractional-share holdings are $n_i=w_iW_0/S_{i,0}$. If no rebalancing occurs, portfolio wealth is
+\begin{equation}
+  \label{eq:buy-hold-wealth}
+  W_t=\sum_{i=1}^{m}n_iS_{i,t}
+  =W_0\sum_{i=1}^{m}w_i\frac{S_{i,t}}{S_{i,0}}.
+\end{equation}
+The initial weights generally drift as relative prices change. A constant-weight portfolio is a different, dynamically rebalanced strategy with additional turnover and cost assumptions.
+
+\notebooklink
+  {L5b: Correlated MGBM Portfolio Simulation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb}
+  {Generate correlated asset paths, construct a buy-and-hold portfolio, and compare simulated wealth with observed and benchmark wealth.}
+
+\section{Dirichlet Sampling Explores the Simplex}
+
+The feasible long-only weight set is the $(m-1)$-dimensional simplex $\Delta^{m-1}:=\{\mathbf w\in\R^m:w_i\geq0,\ \sum_iw_i=1\}$. The Dirichlet distribution generates random points on its interior and is a useful design-of-experiments tool (\defnref{dirichlet}).
+
+\begin{definition}{Dirichlet portfolio weights}{dirichlet}
+Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_m)$ with every concentration parameter $\alpha_i>0$, and let $\alpha_0:=\sum_{i=1}^{m}\alpha_i$. A random vector $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies on $\Delta^{m-1}$ and has mean and component variance
+\begin{equation}
+  \label{eq:dirichlet-moments}
+  \E[W_i]=\frac{\alpha_i}{\alpha_0},
+  \qquad
+  \operatorname{Var}(W_i)=
+  \frac{\alpha_i(\alpha_0-\alpha_i)}
+  {\alpha_0^2(\alpha_0+1)}.
+\end{equation}
+For equal $\alpha_i=1$, the distribution is uniform with respect to volume on the simplex; it is not uniform in each component separately.
+\end{definition}
+
+Small equal concentrations place more mass near sparse corners, while large equal concentrations cluster weights near equal allocation. Unequal concentrations encode a directional sampling preference. None of these draws is ``optimal'' unless an objective and constraints are subsequently evaluated. Dirichlet sampling explores candidate portfolios; L5b solves a minimum-variance optimization problem.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\small]
+    \coordinate (a) at (0,0); \coordinate (b) at (7,0); \coordinate (c) at (3.5,4.7);
+    \draw[vnink,line width=0.9pt] (a)--(b)--(c)--cycle;
+    \node[below left] at (a) {$w_1=1$};
+    \node[below right] at (b) {$w_2=1$};
+    \node[above] at (c) {$w_3=1$};
+    \foreach \x/\y in {1.0/.45,2.1/.7,2.8/1.4,3.5/.75,4.2/1.45,5.15/.55,3.5/2.25,2.65/2.25,4.35/2.15,3.5/3.45}
+      \fill[vnlink] (\x,\y) circle (1.8pt);
+    \node[text=vnmuted,align=center] at (3.5,-0.75) {$w_i\geq0$ and $w_1+w_2+w_3=1$};
+  \end{tikzpicture}
+  \caption{The three-asset long-only simplex. Dirichlet draws provide valid candidate allocations throughout the triangle; their density depends on the concentration vector $\boldsymbol\alpha$.}
+  \label{fig:simplex}
+\end{figure}
 
 \newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we converted a lattice forecast into a complete terminal trade rule, derived its target-return probability, and separated terminal from first-passage exits.}
-  {Profit is a cash-flow event}
-  {Entry, exit, benchmark, horizon, spread, fees, and the strictness of the target must be specified before POP exists.}
-  {Thresholds become count tails}
-  {A monotone binomial terminal payoff converts a return hurdle into a minimum number of up moves and an exact real-world binomial tail.}
-  {Path dependence changes the state}
-  {Stop-loss and take-profit rules depend on the first boundary crossing, so terminal node probabilities alone are insufficient.}
-  {Next, take the continuous-time limit and derive geometric Brownian motion, its lognormal price distribution, and its closed-form target probability.}
+  {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks, and used Dirichlet draws to explore valid portfolio weights.}
+  {Drift and growth are distinct}
+  {The price SDE uses $\boldsymbol\mu$, while realized growth is $\mathbf g_t=(\Delta t)^{-1}\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and $\E[\mathbf g_t]=\boldsymbol\mu-\tfrac12\operatorname{diag}(C)$.}
+  {Covariance drives joint risk}
+  {A matrix square root maps independent shocks into correlated log returns with covariance $\Sigma\Delta t$.}
+  {Estimates require structural checks}
+  {A covariance estimate must be symmetric and positive semidefinite, and its scaling, window, and regularization must be documented.}
+  {Sampling is not optimization}
+  {Dirichlet draws explore the long-only simplex; concentration parameters control exploration but do not encode a minimum-risk objective.}
+  {Next, turn estimated means and covariance into the global minimum-variance portfolio, efficient frontier, capital allocation line, and tangency portfolio.}
 
 \begin{readinglist}
-  \item Sheldon M. Ross, \emph{Introduction to Probability Models}, 13th ed. (2023), for binomial, multinomial, and first-passage constructions.
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), for lattice state propagation and no-arbitrage applications.
-  \item U.S. Securities and Exchange Commission, \href{https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders}{\emph{Types of Orders}}, for the practical distinctions among market, limit, and stop orders.
+  \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).
+  \item Robb J. Muirhead, \emph{Aspects of Multivariate Statistical Theory} (1982), for covariance matrices and multivariate normal transformations.
+  \item Thomas M. Cover and Joy A. Thomas, \emph{Elements of Information Theory}, 2nd ed. (2006), Appendix, for the Dirichlet family and simplex-valued distributions.
 \end{readinglist}
 
 \vfill

@@ -1,200 +1,185 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\Var}{\operatorname{Var}}
-\newcommand{\PhiCDF}{\Phi}
-\newcommand{\Pmeasure}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Cov}{\operatorname{Cov}}
 
 \begin{document}
 
-\lecturenotes{5b}{Single-Asset Geometric Brownian Motion}{Fall 2026}{September 24, 2026}{Jeffrey D. Varner}
+\lecturenotes{5b}{Minimum-Variance Portfolios and the Capital Allocation Line}{Fall 2026}{September 24, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Derive the GBM solution}
-  {Apply It\^o's lemma to obtain the exact lognormal solution and explain the $-\sigma^2/2$ correction.}
-  {Estimate and simulate}
-  {Map log-return moments into drift and volatility estimates and simulate exact discrete-time GBM paths.}
-  {Evaluate model limits}
-  {Compute a target-return probability and test GBM against heavy tails, weak return autocorrelation, and volatility clustering.}
+  {Formulate portfolio risk}
+  {Express expected growth rate and variance as functions of weights, asset means, and the covariance matrix.}
+  {Construct the frontier}
+  {Solve global and target-return minimum-variance problems and distinguish the feasible set from its efficient boundary.}
+  {Add the risk-free asset}
+  {Derive the capital allocation line and tangency portfolio and state the assumptions behind calling it the market portfolio.}
 
-\section{From Random Walks to Positive Prices}
+\section{Diversification Is a Covariance Calculation}
 
-Brownian motion entered finance through attempts to describe continuously fluctuating prices. Louis Bachelier used an arithmetic Brownian model in 1900; later work associated with Paul Samuelson emphasized multiplicative dynamics so prices remain positive. Geometric Brownian motion (GBM) became foundational because it has an analytic solution, scales noise with price, and connects cleanly to option-pricing theory. These virtues make it a benchmark, not an empirical law.
+Harry Markowitz's central insight was that an asset should not be judged in isolation. A volatile asset can reduce portfolio variance when its growth rates offset other holdings, while individually stable assets can provide little diversification when they move together.
 
-GBM assumes the ex-dividend share price $S_t>0$ satisfies the stochastic differential equation
+Let $\mathbf g\in\R^m$ be a random vector of risky-asset growth rates, with mean $\bar{\mathbf g}:=\mathbb E[\mathbf g]$ and positive-definite covariance matrix $\Sigma:=\operatorname{Cov}(\mathbf g)$. Let $\mathbf w\in\R^m$ be risky-asset dollar weights satisfying $\mathbf1^{\mathsf T}\mathbf w=1$. The portfolio growth rate $g_p:=\mathbf w^{\mathsf T}\mathbf g$ has
 \begin{equation}
-  \label{eq:gbm-sde}
-  dS_t=g S_t\,dt+\sigma S_t\,dW_t,
+  \label{eq:portfolio-moments}
+  \mathbb E[g_p]=\mathbf w^{\mathsf T}\bar{\mathbf g},
+  \qquad
+  \sigma_{g,p}^2=\mathbf w^{\mathsf T}\Sigma\mathbf w.
 \end{equation}
-where $g\in\mathbb{R}$ is the annual arithmetic expected-return rate, $\sigma>0$ is annual volatility with units years$^{-1/2}$, and $W_t$ is a standard Wiener process. The increment notation is interpreted through stochastic integration rather than ordinary differentiable paths.
+The cross terms $2w_iw_j\Sigma_{ij}$ create diversification effects. Growth-rate covariance has units of inverse time squared; all inputs must use a common time convention. The associated log return over $\Delta t$ is $r_p=(\Delta t)g_p$.
 
-\begin{definition}{Standard Wiener process}{wiener-process}
-A standard Wiener process $(W_t)_{t\geq0}$ is a continuous real-valued stochastic process satisfying $W_0=0$ almost surely; increments over disjoint intervals are independent; and for $0\leq s<t$, the increment $W_t-W_s$ is normally distributed with mean zero and variance $t-s$. Consequently,
+For a fixed observation interval, let $\Sigma_r:=\Cov(\mathbf r)$, $\Sigma_g:=\Cov(\mathbf g)$, and let $C$ denote the diffusion covariance rate used by GBM. Because $\mathbf r=(\Delta t)\mathbf g$,
 \begin{equation}
-  \label{eq:wiener-increment}
-  W_t-W_s\overset{d}{=}\sqrt{t-s}\,Z,
-  \qquad Z\sim\mathcal{N}(0,1),
+  \label{eq:covariance-conversion}
+  \Sigma_r=(\Delta t)^2\Sigma_g,
+  \qquad
+  C=\frac{\Sigma_r}{\Delta t}=\Delta t\,\Sigma_g.
 \end{equation}
-where $\overset{d}{=}$ denotes equality in distribution.
-\end{definition}
+This lecture uses $\Sigma=\Sigma_g$ throughout the allocation problems. Replacing it by $\Sigma_r$ merely scales an unconstrained variance objective by $(\Delta t)^2$, but means and targets must also satisfy $\bar{\mathbf r}=(\Delta t)\bar{\mathbf g}$ and $r_\star=(\Delta t)g_\star$. The covariance rate $C$ is reserved for GBM simulation and annualized-volatility reporting.
+For daily observations with $\Delta t=1/252$, the diffusion model implies $\Sigma_g=252C$. Thus growth-rate variances can look numerically ``huge'' compared with conventional annual covariance-rate entries; that factor is the required unit conversion, not an estimation failure. Portfolio weights are unchanged by this common positive rescaling when every other constraint is expressed consistently, but reported risk and Sharpe-ratio horizons are not interchangeable.
 
-Independent Gaussian increments give GBM tractability and also predetermine several of its empirical failures.
+\section{The Global Minimum-Variance Portfolio}
 
-\section{It\^o's Lemma Creates the Variance Correction}
+The global minimum-variance (GMV) portfolio selects the fully invested risky allocation with the smallest modeled variance. When short positions are allowed and $\Sigma$ is positive definite, the equality-constrained problem has a closed form (\thmref{gmv}).
 
-Ordinary calculus would incorrectly write $d\log S_t=dS_t/S_t$. Brownian increments have quadratic variation of order $dt$, so the second derivative contributes at first order. It\^o's lemma states the required stochastic chain rule (\thmref{ito-lemma}).
-
-\begin{theorem}{One-dimensional It\^o formula}{ito-lemma}
-Let $X_t$ satisfy $dX_t=a(X_t,t)\,dt+b(X_t,t)\,dW_t$, and let $f(x,t)$ be once continuously differentiable in $t$ and twice continuously differentiable in $x$. Under standard integrability conditions, $Y_t:=f(X_t,t)$ satisfies
+\begin{theorem}{Unconstrained global minimum-variance portfolio}{gmv}
+Let $\Sigma\in\R^{m\times m}$ be symmetric positive definite and let $\mathbf1\in\R^m$ be the vector of ones. The unique solution of
 \begin{equation}
-  \label{eq:ito-lemma}
-  dY_t=
-  \left(\frac{\partial f}{\partial t}
-  +a\frac{\partial f}{\partial x}
-  +\frac{1}{2}b^2\frac{\partial^2f}{\partial x^2}\right)dt
-  +b\frac{\partial f}{\partial x}\,dW_t.
+  \label{eq:gmv-problem}
+  \min_{\mathbf w\in\R^m}\ \frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  \quad\text{subject to}\quad
+  \mathbf1^{\mathsf T}\mathbf w=1
 \end{equation}
-All coefficients and derivatives on the right are evaluated at $(X_t,t)$.
+is
+\begin{equation}
+  \label{eq:gmv-solution}
+  \mathbf w_{\mathrm{GMV}}
+  =\frac{\Sigma^{-1}\mathbf1}
+  {\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1},
+  \qquad
+  \sigma_{\mathrm{GMV}}^2
+  =\frac{1}{\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1}.
+\end{equation}
+The solution can contain negative weights because no long-only constraint is imposed.
 \end{theorem}
 
-Apply \thmref{ito-lemma} to $f(S)=\log S$. Because $f'(S)=1/S$ and $f''(S)=-1/S^2$, the GBM dynamics imply
-\begin{align}
-  d\log S_t
-  &=\left(g-\frac{\sigma^2}{2}\right)dt+\sigma\,dW_t,
-  \label{eq:log-gbm}\\
-  \log\!\left(\frac{S_T}{S_0}\right)
-  &=\left(g-\frac{\sigma^2}{2}\right)T+\sigma W_T.
-  \label{eq:integrated-log-gbm}
-\end{align}
-Exponentiation gives the exact GBM solution (\propref{gbm-solution}).
+\begin{derivation}
+Introduce the Lagrange multiplier $\lambda\in\R$ for the budget constraint:
+\begin{equation*}
+  \mathcal L(\mathbf w,\lambda)
+  =\frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  -\lambda(\mathbf1^{\mathsf T}\mathbf w-1).
+\end{equation*}
+Stationarity gives $\Sigma\mathbf w-\lambda\mathbf1=\mathbf0$, so $\mathbf w=\lambda\Sigma^{-1}\mathbf1$. Enforcing $\mathbf1^{\mathsf T}\mathbf w=1$ gives $\lambda=(\mathbf1^{\mathsf T}\Sigma^{-1}\mathbf1)^{-1}$ and yields \eqnref{gmv-solution}.
+\end{derivation}
 
-\begin{proposition}{Exact solution and distribution of GBM}{gbm-solution}
-For constant $g\in\mathbb{R}$, $\sigma>0$, initial price $S_0>0$, and horizon $T>0$ years, the solution of \eqnref{gbm-sde} is
+Imposing $w_i\geq0$ converts the problem to a convex quadratic program. Its optimum may lie on a boundary with some weights exactly zero, and the unconstrained formula is no longer generally valid. Other realistic constraints---position limits, turnover, lots, taxes, and transaction costs---change the feasible set further.
+
+\section{The Minimum-Variance Frontier}
+
+To trace growth--risk tradeoffs, add a target expected growth rate $g_\star$:
 \begin{equation}
-  \label{eq:gbm-solution}
-  S_T=S_0\exp\!\left[
-  \left(g-\frac{\sigma^2}{2}\right)T+\sigma\sqrt{T}\,Z
-  \right],
-  \qquad Z\sim\mathcal{N}(0,1).
+  \label{eq:frontier-problem}
+  \min_{\mathbf w}\ \frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
+  \quad\text{subject to}\quad
+  \mathbf1^{\mathsf T}\mathbf w=1,
+  \quad
+  \bar{\mathbf g}^{\mathsf T}\mathbf w=g_\star.
 \end{equation}
-Thus $\log(S_T/S_0)$ is normal with mean $(g-\sigma^2/2)T$ and variance $\sigma^2T$, while $S_T$ is lognormal and strictly positive almost surely.
-\end{proposition}
-
-The correction $-\sigma^2/2$ reconciles arithmetic and log growth. From the lognormal moments,
-\begin{equation}
-  \label{eq:gbm-moments}
-  \E[S_T]=S_0e^{g T},
-  \qquad
-  \Var(S_T)=S_0^2e^{2g T}\left(e^{\sigma^2T}-1\right).
-\end{equation}
-The median is $S_0e^{(g-\sigma^2/2)T}$, below the mean when $\sigma>0$ because the price distribution is right-skewed.
-
-\notebooklink
-  {L5b: Derivation of the GBM Solution}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-GBM-Solution-Derivation-Fall-2026.ipynb}
-  {Work through Wiener increments, It\^o's lemma, and the analytic transition from the SDE to the lognormal solution.}
-
-\section{Exact Discrete Simulation}
-
-For a grid $0=t_0<t_1<\cdots<t_N$ with step lengths $\Delta t_j:=t_j-t_{j-1}>0$ years, GBM can be sampled exactly at grid points:
-\begin{equation}
-  \label{eq:exact-step}
-  S_{t_j}=S_{t_{j-1}}
-  \exp\!\left[
-  \left(g-\frac{\sigma^2}{2}\right)\Delta t_j
-  +\sigma\sqrt{\Delta t_j}\,Z_j
-  \right],
-  \qquad Z_j\overset{\mathrm{iid}}{\sim}\mathcal{N}(0,1).
-\end{equation}
-This is an exact transition for constant-parameter GBM, not the Euler--Maruyama approximation. Monte Carlo repeats \eqnref{exact-step} with independent pseudorandom streams to approximate path or terminal distributions. Reproducibility requires recording the seed and generator, while uncertainty in Monte Carlo estimates should be distinguished from uncertainty in $g$ and $\sigma$.
+Varying $g_\star$ produces the minimum-variance frontier. The branch above the GMV expected growth rate is the \emph{efficient frontier}: no other feasible risky portfolio has both at least as much expected growth and no more variance, with one strict improvement.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=1.35cm,y=0.85cm,>=Latex,font=\sffamily\small]
-    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.2cm,minimum height=0.75cm] (params) at (0,0) {$S_0,g,\sigma,\Delta t$};
-    \node[draw=vnrule,fill=white,rounded corners=1pt,
-      minimum width=2.1cm,minimum height=0.75cm] (noise) at (3.2,0) {$Z_j\sim\mathcal N(0,1)$};
-    \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.3cm,minimum height=0.75cm] (step) at (6.4,0) {exact update};
-    \node[draw=vnrule,fill=white,rounded corners=1pt,
-      minimum width=2.25cm,minimum height=0.75cm] (paths) at (9.7,0) {price paths};
-    \foreach \a/\b in {params/noise,noise/step,step/paths}
-      \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\a)--(\b);
-    \node[below,text=vnmuted] at (4.8,-0.68) {repeat over time and simulations};
+  \begin{tikzpicture}[x=1.05cm,y=0.8cm,>=Latex,font=\sffamily\small]
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(8.2,0) node[right] {$\sigma$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,6.0) node[above] {$g$};
+    \draw[vnrule,line width=1.3pt,domain=1.4:6.8,samples=80,smooth]
+      plot (\x,{2.1+0.21*(\x-2.2)^2});
+    \draw[vnlink,line width=1.6pt,domain=2.2:6.8,samples=60,smooth]
+      plot (\x,{2.1+0.21*(\x-2.2)^2});
+    \fill[vnink] (2.2,2.1) circle (2.1pt) node[below right] {GMV};
+    \coordinate (rf) at (0,1.0);
+    \coordinate (tan) at (4.8,{2.1+0.21*(4.8-2.2)^2});
+    \draw[vncarnelian,line width=1.3pt] (rf)--($(rf)!1.55!(tan)$);
+    \fill[vncarnelian] (tan) circle (2.2pt) node[above left] {tangency};
+    \node[left] at (rf) {$g_f$};
+    \node[text=vnlink] at (6.3,5.25) {efficient risky frontier};
+    \node[text=vncarnelian,rotate=31] at (2.25,2.35) {capital allocation line};
   \end{tikzpicture}
-  \caption{Exact grid simulation of constant-parameter GBM. Gaussian shocks generate process uncertainty; parameter estimates and model form introduce separate layers of uncertainty.}
-  \label{fig:gbm-simulation}
+  \caption{The risky-asset minimum-variance frontier and a capital allocation line from a risk-free growth rate $g_f$. The line with the largest attainable slope is tangent to the risky frontier.}
+  \label{fig:frontier-cal}
 \end{figure}
 
-\section{Estimating Drift and Volatility Correctly}
+\notebooklink
+  {L5b: Data-Driven Minimum-Variance Portfolios}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}
+  {Estimate means and covariance, solve long-only target-return quadratic programs, and visualize the empirical efficient frontier.}
 
-For equally spaced observations, define the growth rate $g_j:=(1/\Delta t)\log(S_{t_j}/S_{t_{j-1}})$ and its associated log return $r_j:=(\Delta t)g_j$. Under GBM,
+\section{Adding a Risk-Free Asset}
+
+Let a locally risk-free asset earn deterministic growth rate $g_f$. Combine it with any risky portfolio having expected growth rate $g_p$ and standard deviation $\sigma_p>0$. If $y\in\R$ is the dollar fraction invested in that risky portfolio, then
 \begin{equation}
-  \label{eq:log-return-law}
-  g_j\overset{\mathrm{iid}}{\sim}
-  \mathcal{N}\!\left[
-  g-\frac{\sigma^2}{2},
-  \frac{\sigma^2}{\Delta t}
-  \right].
-\end{equation}
-If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of growth rates, the natural moment estimates are
-\begin{equation}
-  \label{eq:gbm-estimates}
-  \widehat\sigma^2=s_g^2\Delta t,
+  \label{eq:cal}
+  g_c=g_f+y(g_p-g_f),
   \qquad
-  \widehat g_{\mathrm{SDE}}=\bar g+\frac{1}{2}\widehat\sigma^2.
+  \sigma_c=|y|\sigma_p.
 \end{equation}
-The sample mean $\bar g$ estimates the expected continuously compounded growth rate $g_{\mathrm{SDE}}-\sigma^2/2$, not the arithmetic SDE drift itself. Omitting the half-variance adjustment silently changes the meaning of the model parameter.
-
-The growth parameter is difficult to estimate over short samples because expected growth is small relative to growth-rate noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or growth-rate moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
-
-\notebooklink
-  {L5b: Estimating Single-Asset GBM Parameters}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-Parameters-SAGBM-Fall-2026.ipynb}
-  {Estimate drift and volatility from historical prices, simulate paths, and compare distributional diagnostics with observed returns.}
-
-\section{Closed-Form Target Probability}
-
-Use the present-value return definition from L5a without costs: $\rho_T:=e^{-r_bT}S_T/S_0-1$. For a target $\rho_\star>-1$, substitute \eqnref{gbm-solution} and standardize the normal shock. The success probability is
+For $y\geq0$, eliminating $y$ gives the capital allocation line (CAL):
 \begin{equation}
-  \label{eq:gbm-pop}
-  \Pmeasure(\rho_T>\rho_\star)
-  =1-\PhiCDF\!\left(
-  \frac{\log(1+\rho_\star)-
-  (g-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
-  \right),
+  \label{eq:cal-line}
+  g_c=g_f+\frac{g_p-g_f}{\sigma_p}\sigma_c.
 \end{equation}
-where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $g$ and $\sigma$. Replacing $g$ by a risk-neutral rate changes the measure and no longer answers an empirical probability-of-profit question.
+The slope is the risky portfolio's Sharpe ratio under the stated horizon and risk-free convention. Values $0<y<1$ lend some wealth at $g_f$; $y=1$ holds only the risky portfolio; and $y>1$ represents leveraged risky exposure financed by borrowing. A single identical lending and borrowing rate is an idealization.
+
+Among all risky portfolios, the tangency portfolio maximizes the CAL slope. Without long-only constraints, its weights have the closed form in \propref{tangency}.
+
+\begin{proposition}{Unconstrained tangency portfolio}{tangency}
+Let $\Sigma$ be symmetric positive definite, let risky expected growth rates be $\bar{\mathbf g}\in\R^m$, and let the risk-free growth rate be $g_f\in\R$. Assume $\bar{\mathbf g}-g_f\mathbf1\neq\mathbf0$. The fully invested risky portfolio proportional to $\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)$ has weights
+\begin{equation}
+  \label{eq:tangency}
+  \mathbf w_T=
+  \frac{\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)}
+  {\mathbf1^{\mathsf T}\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)}.
+\end{equation}
+It maximizes the positive Sharpe ratio among unconstrained fully invested risky portfolios under these assumptions.
+\end{proposition}
+
+Every mean--variance investor facing the same inputs can then combine the same tangency fund with the risk-free asset, choosing $y$ according to risk tolerance. This is the two-fund separation result. Long-only, leverage, and borrowing constraints can kink the attainable boundary and change the tangency solution.
+
+\section{When Is the Tangency Portfolio the Market Portfolio?}
+
+In the Capital Asset Pricing Model, all investors share the same beliefs, optimize mean and variance over the same horizon, can borrow and lend at the same risk-free rate, and trade all assets without taxes or frictions. Market clearing then identifies the aggregate value-weighted risky portfolio with the common tangency portfolio. This theoretical object is called the \emph{market portfolio}.
+
+An optimizer applied to a selected ticker list and historical estimates does not thereby recover the market portfolio. It produces a sample-dependent tangency portfolio for that universe and model. A broad stock index also omits many risky assets. The CAPM identification is an equilibrium conclusion under strong assumptions, not a label to attach to every maximum-Sharpe solution.
+
+\section{Estimation Risk Can Dominate Optimization}
+
+The inverse covariance in \eqnref{gmv-solution} and \eqnref{tangency} amplifies unstable directions. Tangency weights are especially sensitive to expected-return estimates, which are noisy. Backtests must fit inputs only on information available before each decision, include turnover and costs, and compare with simple baselines such as equal weighting. Covariance shrinkage, weight constraints, and robust objectives can improve stability but change the optimization problem and must be reported.
+
+The MGBM notebook supplies a separate scenario engine. It can test how a fixed allocation behaves under the assumed joint dynamics, but simulated performance is not independent validation when the same data estimated both the optimizer and simulator.
 
 \notebooklink
-  {L5b: GBM NPV Trade Rule}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}
-  {Evaluate a benchmark-relative terminal return probability under GBM and compare the analytic result with Monte Carlo estimates.}
-
-\section{Which Stylized Facts Does GBM Encode?}
-
-GBM log returns are independent Gaussian increments with constant variance rate. The model therefore produces zero autocorrelation in nonoverlapping log returns, consistent with one broad stylized fact. It cannot generate heavy-tailed log returns or volatility clustering because $\sigma$ is constant and Gaussian tails are built in. The lognormal price distribution should not be confused with a heavy-tailed return law.
-
-GBM can still be useful for short-horizon scenarios, benchmarking, and deriving analytical intuition. Its adequacy must be judged against the decision: a model used to estimate extreme loss or dynamic hedging error demands stronger tail and volatility validation than one used to teach stochastic calculus.
+  {L5b: MGBM Portfolio Simulation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb}
+  {Simulate correlated asset prices and compare a chosen allocation's wealth distribution with actual and benchmark performance.}
 
 \newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we solved GBM with It\^o's lemma, separated arithmetic drift from mean log growth, and derived an exact terminal target probability.}
-  {Quadratic variation matters}
-  {The It\^o correction $-\sigma^2/2$ appears because Brownian squared increments contribute at order $dt$.}
-  {Drift names must be consistent}
-  {In the SDE, $g$ governs expected price growth; the mean log-growth rate is $g-\sigma^2/2$.}
-  {Tractability has a cost}
-  {Independent Gaussian increments give exact simulation and closed-form probabilities but exclude heavy tails and volatility clustering.}
-  {Next, couple several GBM assets with correlated shocks and generate portfolio weights from a Dirichlet distribution.}
+  {In this lecture, we derived minimum-variance weights, traced the efficient frontier, and added a risk-free asset to obtain the CAL and tangency portfolio.}
+  {Covariance determines diversification}
+  {Portfolio variance is $\mathbf w^{\mathsf T}\Sigma\mathbf w$; cross-asset terms determine whether combining assets reduces modeled risk.}
+  {The CAL selects a risky fund}
+  {The tangency portfolio maximizes reward per unit of modeled risk, while the risk-free allocation controls an investor's overall exposure.}
+  {Market portfolio is an equilibrium claim}
+  {Calling tangency weights the market portfolio requires the CAPM universe, common-belief, trading, and market-clearing assumptions.}
+  {Next, replace the full covariance description with a single-index factor model and separate systematic from idiosyncratic risk.}
 
 \begin{readinglist}
-  \item Bernt \O ksendal, \emph{Stochastic Differential Equations}, 6th ed. (2003), for Wiener processes, It\^o's formula, and SDE solutions.
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed. (2021), for lognormal price models and risk-neutral applications.
-  \item Paul A. Samuelson, ``Proof That Properly Anticipated Prices Fluctuate Randomly,'' \emph{Industrial Management Review} 6(2), 41--49 (1965), for the modern economic random-walk argument.
+  \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).
+  \item William F. Sharpe, \href{https://www.jstor.org/stable/2977928}{``Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk,''} \emph{Journal of Finance} 19(3), 425--442 (1964).
+  \item Richard O. Michaud, \emph{Efficient Asset Management}, 2nd ed. (2008), for estimation error and instability in mean--variance optimization.
 \end{readinglist}
 
 \vfill

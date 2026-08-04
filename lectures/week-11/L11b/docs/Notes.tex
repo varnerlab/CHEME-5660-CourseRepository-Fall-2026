@@ -1,184 +1,258 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\R}{\mathbb{R}}
-
 \begin{document}
 
-\lecturenotes{11b}{Probability of Profit, Composite Contracts, and Delta Hedging}{Fall 2026}{November 5, 2026}{Jeffrey D. Varner}
+\lecturenotes{11b}{Protective Collars with Standard Listed Options---TJUL as a Comparison}{Fall 2026}{November 5, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Aggregate option legs}
-  {Construct composite expiration payoff and profit functions with consistent signs, quantities, premiums, and contract multipliers.}
-  {Compute strategy probabilities}
-  {Map profitable terminal-price regions through a stated predictive distribution and distinguish profit from exercise-related events.}
-  {Build a local hedge}
-  {Sum leg deltas, select an offsetting stock position, and explain why delta neutrality requires monitoring and rebalancing.}
+  {Construct a standard listed collar}
+  {Match 100 shares with one ordinary listed put and one ordinary listed call using a common expiration.}
+  {Compute economic risk and reward}
+  {Use executable premiums to calculate the floor, cap, breakeven, maximum loss, and maximum profit.}
+  {Compare implementation choices}
+  {Distinguish a self-managed standard collar from TJUL's FLEX-option fund structure without requiring students to trade FLEX options.}
 
-\section{A Strategy Is the Sum of Signed Legs}
+\section{The Core Position Uses Standard Listed Options}
 
-Options are combined to reshape exposure rather than merely add contracts. Let a composite position $\mathcal C$ contain legs $i=1,\ldots,d$ on the same underlying. Leg $i$ has type $\tau_i\in\{c,p\}$, strike $K_i>0$ in USD/share, signed orientation $\theta_i\in\{-1,+1\}$ for short/long, count $n_i\in\mathbb N$, and opening premium $P_i\geq 0$ in USD/share. Define the expiration payoff per share by
+A protective collar combines long exposure to an underlying asset, a long put
+that limits downside, and a short call that helps finance the put by surrendering
+upside. The core classroom construction uses ordinary listed options that an
+options-approved brokerage account may support. FLEX options are not required.
+
+Let one standard option contract represent $m=100$ shares and hold $n$ matched
+contracts. At time zero, buy or already own $mn$ shares at $S_0$, buy $n$ puts
+with strike $K_P$, and sell $n$ calls with strike $K_C$, where both option legs
+have the same expiration and
 \begin{equation}
-  \label{eq:leg-payoff}
-  h_i(S_T):=
+  \label{eq:strike-order}
+  K_P<S_0<K_C.
+\end{equation}
+The terminal value is
+\begin{equation}
+  \label{eq:collar-value}
+  V_T=mn\left[S_T+(K_P-S_T)^+-(S_T-K_C)^+\right].
+\end{equation}
+Therefore,
+\begin{equation}
+  \label{eq:collar-piecewise}
+  V_T=mn
   \begin{cases}
-    (S_T-K_i)^+, & \tau_i=c,\\
-    (K_i-S_T)^+, & \tau_i=p,
+    K_P, & S_T<K_P,\\
+    S_T, & K_P\leq S_T\leq K_C,\\
+    K_C, & S_T>K_C.
   \end{cases}
-  \qquad x^+:=\max\{x,0\},
 \end{equation}
-where $S_T>0$ is the underlying price at common expiration $T$. With a multiplier $q>0$ shares/contract, terminal payoff and frictionless profit are
-\begin{align}
-  \label{eq:composite-payoff}
-  H_{\mathcal C}(S_T)
-  &:=q\sum_{i=1}^{d}\theta_i n_i h_i(S_T),\\
-  \label{eq:composite-profit}
-  \Pi_{\mathcal C}(S_T)
-  &:=q\sum_{i=1}^{d}\theta_i n_i\bigl[h_i(S_T)-P_i\bigr].
-\end{align}
-Equation~\eqref{eq:composite-profit} treats a long premium as an initial cost and a short premium as an initial receipt. Commissions, bid--ask spread, financing, dividends on stock hedges, assignment fees, taxes, and slippage must be added for an economic P\&L.
-
-\begin{remark}{Expiration P\&L versus mark-to-market P\&L}{pnl-horizon}
-Before expiration, replace $h_i(S_T)$ in the closing value with an executable option mark $V_i(S_t,t)$ and include hedge cash flows. Comparing today's spot directly with an expiration breakeven does not determine current P\&L because remaining extrinsic value and close-out spreads still matter.
-\end{remark}
-
-\section{Straddles: Two Tails and Two Breakevens}
-
-A one-contract long straddle buys a call and put with common strike $K$ and expiration. Let $D:=P_c+P_p>0$ be the total debit per share. Because $(S_T-K)^++(K-S_T)^+=|S_T-K|$, its profit is
-\begin{equation}
-  \label{eq:straddle-profit}
-  \Pi_L(S_T)=q\bigl(|S_T-K|-D\bigr).
-\end{equation}
-The breakevens are $B_-:=K-D$ and $B_+:=K+D$, provided $B_->0$ for the lower boundary to be economically reachable. The long straddle profits when $S_T<B_-$ or $S_T>B_+$; its maximum loss is $qD$ at $S_T=K$, and its upside profit is unbounded in the idealized model. The short straddle has profit $-\Pi_L$; it collects at most $qD$ but has unbounded upside loss and large downside loss.
+The put creates the floor, the shares participate one-for-one between the
+strikes, and the short call creates the cap.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=0.72cm,y=0.56cm,>=Latex,font=\sffamily\small]
-    \draw[->,vnmuted] (0,2.2)--(10.3,2.2) node[right] {$S_T$};
-    \draw[->,vnmuted] (5.0,0)--(5.0,6.0) node[above] {profit};
-    \draw[vnlink,very thick] (0.7,5.35)--(5.0,0.8)--(9.4,5.45);
-    \draw[vncarnelian,very thick,dashed] (0.7,-0.95)--(5.0,3.6)--(9.4,-1.05);
-    \draw[vnmuted,dotted] (2.9,0)--(2.9,5.6);
-    \draw[vnmuted,dotted] (7.1,0)--(7.1,5.6);
-    \node[below] at (2.9,2.2) {$B_-$};
-    \node[below] at (5.0,2.2) {$K$};
-    \node[below] at (7.1,2.2) {$B_+$};
-    \node[vnlink,above right] at (8.1,4.15) {long};
-    \node[vncarnelian,below right] at (7.7,0.55) {short};
+  \begin{tikzpicture}[x=0.78cm,y=0.62cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,0)--(12.4,0) node[right] {$S_T$};
+    \draw[->,vnmuted] (0,0)--(0,7.1) node[above] {$V_T$};
+    \draw[vnlink,very thick] (0.4,2.1)--(3.5,2.1)--(9.0,6.0)--(11.8,6.0);
+    \draw[vncarnelian,dashed] (3.5,0)--(3.5,2.1) node[below] {$K_P$};
+    \draw[vncarnelian,dashed] (9.0,0)--(9.0,6.0) node[below] {$K_C$};
+    \node[vnmuted,align=center] at (1.8,3.0) {put floor};
+    \node[vnmuted,align=center] at (6.3,4.8) {share\\participation};
+    \node[vnmuted,align=center] at (10.4,6.7) {call cap};
   \end{tikzpicture}
-  \caption{Schematic expiration profit for long and short straddles. The long position buys both tails beyond $B_-$ and $B_+$; the short position sells those tails in exchange for the initial credit.}
-  \label{fig:straddle-profit}
+  \caption{Terminal value of a standard listed protective collar. Premiums
+  shift the profit diagram but do not change the three payoff regions.}
+  \label{fig:collar-payoff}
 \end{figure}
 
-Let $F(x):=\mathbb P(S_T\leq x)$ be the CDF under a clearly stated predictive model. If $F$ is continuous at both breakevens, then
+The Options Clearing Corporation reports that each ordinary standard equity
+option generally covers 100 shares and that standard equity options are
+American-style. Corporate actions can create adjusted contracts with a
+different deliverable, so the broker's contract specification must still be
+checked.
+
+\section{Build the Retail Order Ticket}
+
+For an existing 100-share position, the opening option order is:
+\begin{enumerate}[leftmargin=1.5em,itemsep=2pt,topsep=3pt]
+  \item buy to open one put at strike $K_P$; and
+  \item sell to open one call at strike $K_C$ with the same expiration.
+\end{enumerate}
+For a new position, buy 100 shares as well. Some brokers support a three-leg
+stock-plus-options combination order. Otherwise, entering the legs separately
+creates execution and interim-exposure risk.
+
+Use executable quote sides in the pre-trade estimate. Let $P_0^{ask}$ be the
+put ask and $C_0^{bid}$ the call bid. A conservative initial cost for one
+matched collar is
 \begin{equation}
-  \label{eq:straddle-pop}
-  \operatorname{POP}_{L}=F(B_-)+1-F(B_+),
-  \qquad
-  \operatorname{POP}_{S}=F(B_+)-F(B_-).
+  \label{eq:initial-cost}
+  \Pi_0=m\left(S_0+P_0^{ask}-C_0^{bid}\right),
+  \qquad m=100.
 \end{equation}
-The two sum to one only under matching frictionless profit functions and zero probability at the breakevens. With discrete distributions, use strict and non-strict inequalities consistently.
+The broker may fill a multi-leg limit order inside the component quotes, but a
+midpoint fill is an execution outcome rather than an assumption. Verify the
+underlying, deliverable, strikes, expiration, multiplier, option approval,
+buying power, and ex-dividend date before entering the order.
 
 \notebooklink
-  {L11b: AMD Earnings Straddle}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}
-  {Build long and short straddle profit diagrams, locate both breakevens, and estimate terminal profit probabilities from projected price distributions.}
+  {L11b: Standard-Listed SPY Protective Collar}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}
+  {Match 100 illustrative SPY shares with one listed put and call, use executable quote sides, calculate risk metrics, and compare the result with TJUL.}
 
-\section{Vertical Put Credit Spreads: Bounded Tails}
+\section{Payoff Is Not Profit}
 
-Sell one put at $K_H$ for premium $P_H$ and buy one put at $K_L<K_H$ for premium $P_L$. Let the net credit be $C:=P_H-P_L>0$ and the width be $W:=K_H-K_L>0$. Per share,
-\begin{equation}
-  \label{eq:put-spread-profit}
-  \pi_V(S_T)=C+(K_L-S_T)^+-(K_H-S_T)^+.
-\end{equation}
-The maximum profit is $C$ for $S_T\geq K_H$; the minimum profit is $C-W$ for $S_T\leq K_L$, so maximum \emph{loss magnitude} is $W-C$ when $0<C<W$. The breakeven is
-\begin{equation}
-  \label{eq:put-spread-breakeven}
-  B:=K_H-C,
-\end{equation}
-and profit occurs for $S_T>B$. Under CDF $F$, $\operatorname{POP}_V=1-F(B)$ when the boundary has zero probability. This defined-risk structure caps both reward and downside, but early assignment, pin risk, and illiquid close-out prices still matter before expiration.
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[x=0.85cm,y=0.6cm,>=Latex,font=\sffamily\small]
-    \draw[->,vnmuted] (0,2.7)--(9.6,2.7) node[right] {$S_T$};
-    \draw[->,vnmuted] (0.5,0)--(0.5,5.6) node[above] {profit};
-    \draw[vnlink,very thick] (0.8,1.0)--(3.4,1.0)--(6.6,4.25)--(9.1,4.25);
-    \draw[vnmuted,dotted] (3.4,0.25)--(3.4,5.1);
-    \draw[vnmuted,dotted] (5.1,0.25)--(5.1,5.1);
-    \draw[vnmuted,dotted] (6.6,0.25)--(6.6,5.1);
-    \node[below] at (3.4,2.7) {$K_L$};
-    \node[below] at (5.1,2.7) {$B$};
-    \node[below] at (6.6,2.7) {$K_H$};
-    \node[vnlink,above] at (8.0,4.25) {max profit $C$};
-    \node[vnlink,below] at (2.2,1.0) {min profit $C-W$};
-  \end{tikzpicture}
-  \caption{Expiration profit per share for a put credit vertical. The long lower-strike put truncates the short higher-strike put's downside.}
-  \label{fig:vertical-profit}
-\end{figure}
-
-\notebooklink
-  {L11b: Put Credit Vertical Spread and Delta}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-Delta-VerticalSpread-Fall-2026.ipynb}
-  {Combine two put legs, compute bounded profit and loss, estimate terminal probabilities, and aggregate the spread's delta.}
-
-\section{Probability Requires a Measure and a Horizon}
-
-The definition
-\begin{equation}
-  \label{eq:general-pop}
-  \operatorname{POP}_{\mathcal C}^{\mathbb P}
-  :=\mathbb P\!\left(\Pi_{\mathcal C}(S_T)>0\mid\mathcal I_t\right)
-\end{equation}
-is incomplete until the probability measure $\mathbb P$, information set $\mathcal I_t$, horizon, parameters, and cost convention are specified. A historical or forecast model attempts to describe real-world outcomes. The risk-neutral measure $\mathbb Q$ is constructed for arbitrage pricing; $\mathbb Q$-probabilities are not automatically real-world frequencies or personal profit odds.
-
-Historical GBM, option-implied distributions, and simple normal ``expected move'' approximations answer different questions and embed different assumptions. Historical estimates are backward-looking and unstable. Implied distributions are affected by risk premia and require a full option surface, not a single volatility quote. A normal price approximation can assign mass to negative prices. Report probabilities as model-conditional estimates and stress the distribution, not as objective facts.
-
-For exercise-related events, distinguish terminal ITM from American exercise. A call is terminally ITM when $S_T>K$ and a put when $S_T<K$. That event does not include early exercise, broker assignment rules, or exercise-by-exception thresholds. In a composite position, report leg-level events or an explicitly defined joint event; there is no universal strategy-level ``probability of exercise.''
-
-\section{Delta Hedging a Composite Position}
-
-Let $V_i(S,t)$ be the current per-share value of leg $i$, let $\Delta_i:=\partial V_i/\partial S$, and let $N_S\in\R$ be the number of underlying shares held. The marked portfolio value and net delta are
+Ignoring financing, dividends, taxes, and transaction fees, expiration profit
+is $V_T-\Pi_0$. For a matched collar,
 \begin{align}
-  \label{eq:portfolio-value}
-  \mathcal V(S,t)
-  &:=N_SS+q\sum_{i=1}^{d}\theta_i n_iV_i(S,t),\\
-  \label{eq:net-delta}
-  \Delta_{\mathrm{net}}
-  &:=\frac{\partial\mathcal V}{\partial S}
-   =N_S+q\sum_{i=1}^{d}\theta_i n_i\Delta_i.
+  \label{eq:risk-metrics}
+  \text{maximum loss}
+    &=\Pi_0-mnK_P,\\
+  \text{maximum profit}
+    &=mnK_C-\Pi_0,\\
+  \text{interior breakeven}
+    &=\frac{\Pi_0}{mn}
+      =S_0+P_0^{ask}-C_0^{bid}.
 \end{align}
-At the current state $(S,t)$, choose
+The breakeven formula applies when it lies between the strikes. A ``zero-cost
+collar'' only means that the quoted put premium is approximately financed by
+the quoted call premium. It does not remove underlying risk, bid--ask cost,
+assignment risk, taxes, financing, or foregone upside.
+
+\section{The Standard Chain Constrains the Design}
+
+Standard listed options restrict the investor to available strikes and
+expirations. Raising $K_P$ improves the floor but generally increases the put
+cost. Lowering $K_C$ generally collects more call premium but surrenders upside
+sooner. A reproducible selection rule can maximize $K_C$ subject to a minimum
+$K_P$, maximum net debit, minimum volume/open interest, and maximum spread.
+
+For example, a 10\%-down/10\%-up collar has
 \begin{equation}
-  \label{eq:hedge-shares}
-  N_S^*:=-q\sum_{i=1}^{d}\theta_i n_i\Delta_i
+  \label{eq:ten-ten}
+  K_P=0.90S_0,
+  \qquad K_C=1.10S_0.
 \end{equation}
-to make $\Delta_{\mathrm{net}}=0$. If shares must be integral, round deliberately and report residual delta. For ten short calls with $q=100$ and long-call delta $0.60$, options delta is $10(-1)(100)(0.60)=-600$ shares, so holding $600$ shares offsets the initial first-order exposure.
+It does not provide a 100\% downside buffer. The position participates in the
+first 10\% decline and is protected only below $K_P$. A put nearer $S_0$
+provides stronger protection but normally requires a larger debit or a lower
+call cap.
 
-\begin{theorem}{Delta neutrality is local}{local-hedge}
-A stock holding selected by \eqnref{hedge-shares} neutralizes the first derivative at the current valuation state. Unless the options position has zero gamma and unchanged inputs, the same fixed $N_S^*$ will not keep $\Delta_{\mathrm{net}}=0$ for all future $S$ and $t$. Dynamic delta hedging therefore requires recalculation and trading.
-\end{theorem}
+\section{Keep Growth and Price Changes Distinct}
 
-Delta hedging does not eliminate gamma, volatility, time, rate, jump, liquidity, funding, or model risk. Rebalancing more frequently reduces some discretization error but increases turnover and costs. Early exercise or assignment changes both the option inventory and stock position immediately, so the hedge and cash account must be updated as contract state changes.
+For a horizon $\Delta t$ measured in years, this course uses
+\begin{equation}
+  \label{eq:growth-convention}
+  r_{t,\Delta t}
+  :=\log\!\left(\frac{S_{t+\Delta t}}{S_t}\right)
+  =(\Delta t)g_{t,\Delta t}.
+\end{equation}
+Option diagrams and defined-outcome documents generally quote a cumulative
+simple price change. Denote it by a capital $R$:
+\begin{equation}
+  \label{eq:simple-change}
+  R_{t,\Delta t}
+  :=\frac{S_{t+\Delta t}-S_t}{S_t}
+  =\exp\!\left((\Delta t)g_{t,\Delta t}\right)-1.
+\end{equation}
+A 90-day collar outcome or a two-year ETF cap is cumulative over its stated
+horizon, not an annual growth rate.
 
-\Needspace{0.38\textheight}
+\section{Expiration and Early Assignment}
+
+Below $K_P$, put exercise or assignment can sell the matched shares at the floor
+strike. Between the strikes, both options normally expire without exercise and
+the investor retains the shares. Above $K_C$, call assignment sells the shares
+at the cap strike.
+
+Standard equity and ETF options are generally American-style, so assignment can
+occur before expiration. Short-call assignment risk is especially relevant near
+an ex-dividend date when remaining extrinsic value is small. The operator should
+decide before entry how to handle dividends, closing, rolling, exercise,
+assignment, and any mismatch between shares and adjusted deliverables. Adjusting
+one leg must not accidentally leave an unintended naked option.
+
+\section{TJUL Is the Comparison, Not the Required Instrument}
+
+The Innovator Equity Defined Protection ETF (TJUL) packages a defined outcome
+inside an exchange-traded fund. TJUL uses customized FLEX options on SPY; the
+disclosed construction uses purchased call exposure, a purchased put, and a
+sold call that creates the cap. FLEX options permit customized strikes,
+expirations, and exercise styles and use specialized exchange execution
+workflows. Students do not need that access. They can:
+\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
+  \item build a self-managed collar with ordinary listed SPY options;
+  \item buy or analyze TJUL shares as an ETF product; or
+  \item compare the two without trying to replicate TJUL's FLEX positions.
+\end{itemize}
+
+Let $R_{SPY}$ be the complete-period cumulative SPY price change and $c$ the
+starting cap. A simplified full-buffer outcome before expenses is
+\begin{equation}
+  \label{eq:defined-outcome}
+  R_{TJUL}^{\mathrm{gross}}=
+  \begin{cases}
+    0, & R_{SPY}<0,\\
+    R_{SPY}, & 0\leq R_{SPY}\leq c,\\
+    c, & R_{SPY}>c.
+  \end{cases}
+\end{equation}
+This is a complete-period outcome map, not a daily guarantee, a mid-period NAV
+model, or an instruction to trade FLEX contracts.
+
+\section{A Dated TJUL Snapshot}
+
+The official materials checked on August 4, 2026 describe an outcome period
+from July 1, 2025 through June 30, 2027, a 13.61\% starting cap before expenses,
+a 100\% starting buffer before expenses, and a 0.79\% annual management fee.
+The prospectus illustrates a 12.03\% cap and 98.42\% buffer after two years of
+management fees. Refresh the
+\href{https://www.innovatoretfs.com/etf/?ticker=TJUL}{official fund page},
+\href{https://www.innovatoretfs.com/pdf/tjul_prospectus.pdf}{prospectus}, and
+\href{https://www.innovatoretfs.com/pdf/tjul_factsheet.pdf}{factsheet} before
+class. Starting outcomes apply only from the first through the last day of the
+outcome period.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{p{0.22\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\hline
+\textbf{Feature} & \textbf{Self-managed standard collar} & \textbf{TJUL}\\
+\hline
+Investor accesses & Shares plus listed put and call & ETF shares\\
+Options used & Standard listed contracts & FLEX contracts managed inside fund\\
+Granularity & Usually 100-share blocks & Whole or fractional ETF shares, broker dependent\\
+Floor and cap & Available strikes, premium, expiration & Dated starting buffer and cap\\
+Management & Investor handles execution and assignment & Fund manages option package\\
+Costs & Spreads, fees, financing, taxes & Expense ratio, ETF spread, premium/discount, taxes\\
+\hline
+\end{tabular}
+\end{center}
+
+TJUL references the SPY \emph{price} return. Direct SPY ownership may also
+receive distributions, so compare complete wealth using consistent price-return
+or total-return conventions.
+
+\section{Optional Advanced Track}
+
+An advanced standard-options project can load a dated SPY chain and optimize
+collar strikes under floor, cap, liquidity, and maximum-debit constraints. The
+previous Wheel lecture and supporting examples remain in the \texttt{advanced/}
+subfolder as a separate optional extension.
+
+\Needspace{0.34\textheight}
 \keytakeaways
-  {In this lecture, we built composite expiration P\&L, mapped profitable regions through explicit distributions, and constructed a local stock hedge from leg deltas.}
-  {Profit regions come from the full strategy}
-  {Add signed leg payoffs and opening cash flows first; then solve $\Pi_{\mathcal C}(S_T)>0$ for the relevant terminal-price region.}
-  {POP is model-conditional}
-  {A probability needs a measure, horizon, information set, and cost definition; risk-neutral pricing probabilities are not automatically real-world profit odds.}
-  {Delta neutrality is temporary}
-  {The hedge cancels first-order spot exposure at the current state, while gamma, time, other factors, costs, and assignment make rebalancing necessary.}
-  {Next, apply payoff, risk, and assignment logic to covered calls and cash-secured puts.}
-
-\begin{readinglist}
-  \item Hayne E. Leland, \href{https://doi.org/10.1111/j.1540-6261.1985.tb02383.x}{``Option Pricing and Replication with Transactions Costs,''} \emph{Journal of Finance} 40(5), 1283--1301 (1985).
-  \item Mark Rubinstein and Eric Reiner, \emph{Exotic Options}, working-paper and practitioner treatments of static payoff decomposition (1991).
-  \item John C. Hull, \emph{Options, Futures, and Other Derivatives}, 11th ed., Pearson (2021), chapters on trading strategies and the Greeks.
-\end{readinglist}
+  {In this lecture, we constructed a retail-replicable collar using ordinary listed options and used TJUL only as a defined-outcome comparison.}
+  {FLEX options are not required}
+  {The core position is 100 shares, one standard listed put, and one standard listed call with a common expiration.}
+  {Use executable premiums}
+  {Put ask minus call bid determines a conservative initial debit and therefore shifts breakeven, maximum loss, and maximum profit.}
+  {Implementation determines the outcome}
+  {Listed strikes constrain a self-managed floor and cap; TJUL instead manages FLEX options internally while the investor accesses ETF shares.}
+  {Next, generalize sequential decisions to exploration--exploitation problems with stochastic multi-armed bandits.}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Probability estimates and hedges are model-dependent, and options trading involves substantial risk.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.}
+These notes are for instruction only and do not constitute investment advice or
+an order recommendation. Options involve risk and require broker approval.}
 
 \end{document}

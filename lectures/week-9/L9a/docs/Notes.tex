@@ -5,144 +5,187 @@
 
 \begin{document}
 
-\lecturenotes{9a}{Dynamic Rebalancing of Minimum-Variance Portfolios}{Fall 2026}{October 20, 2026}{Jeffrey D. Varner}
+\lecturenotes{9a}{European BSM and American CRR Option Pricing}{Fall 2026}{October 20, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Quantify portfolio drift}
-  {Propagate pre-trade weights through asset returns and measure the resulting changes in risk, beta, and target tracking.}
-  {Design a rebalancing rule}
-  {Distinguish calendar, threshold, and cost-aware optimization policies and state exactly when each policy trades.}
-  {Evaluate implementation effects}
-  {Account for turnover, transaction costs, taxes, discrete shares, and information timing in a dynamic backtest.}
+  {Price European claims}
+  {Derive risk-neutral valuation and apply the Black--Scholes--Merton call and put formulas with a continuous dividend yield.}
+  {Build a CRR lattice}
+  {Choose up/down factors and risk-neutral probabilities that match volatility and exclude one-step arbitrage.}
+  {Price early exercise}
+  {Use backward induction to compare continuation and intrinsic value at every American-option node.}
 
-\section{An Optimal Portfolio Is a Time-Stamped Decision}
+\section{Price Is the Cost of Replication, Not a Forecasted Payoff}
 
-A minimum-variance optimizer produces target weights for one information set, one covariance model, and one set of constraints. After prices move, a portfolio with fixed share counts no longer has those weights. Re-solving and trading continuously would chase every movement, consume liquidity, realize taxes, and expose the strategy to estimation noise. Dynamic rebalancing therefore asks a policy question: \emph{when is the benefit of returning toward a target worth the cost and risk of trading?}
+An option's expiration payoff is known as a function of the future underlying price, but that future price is uncertain. Arbitrage pricing does not insert the asset's estimated real-world expected return into a discounted-payoff calculation. Instead, it constructs a self-financing hedge or, equivalently under the model, evaluates the payoff under a risk-neutral probability measure. The resulting premium is conditional on assumptions about tradability, volatility, interest rates, dividends, and exercise rights.
 
-The distinction between a target and a policy is fundamental. A target $\mathbf w_t^\star$ says what the portfolio would hold at decision time $t$ if it could trade immediately under the current model. A rebalancing policy maps observable state---pre-trade weights, estimates, costs, tax lots, and constraints---to an action. The policy must be specified before evaluating later returns.
+Let $S_t>0$ be the underlying price in USD/share at time $t\in[0,T]$, let $r\in\R$ be a continuously compounded risk-free rate, let $\delta\in\R$ be a continuous proportional dividend yield, and let $\sigma>0$ be annualized volatility. Under the Black--Scholes--Merton (BSM) risk-neutral model,
+\begin{equation}
+  \label{eq:risk-neutral-gbm}
+  \frac{dS_t}{S_t}=(r-\delta)\,dt+\sigma\,dW_t^{\mathbb Q},
+\end{equation}
+where $W^{\mathbb Q}$ is a Wiener process under the risk-neutral measure $\mathbb Q$. The drift is $r-\delta$, not a historical return forecast. For a European payoff $g(S_T)$ with suitable integrability, no-arbitrage value at time $0$ is
+\begin{equation}
+  \label{eq:risk-neutral-price}
+  V_0=e^{-rT}\mathbb E^{\mathbb Q}[g(S_T)].
+\end{equation}
+
+\begin{remark}{What the model assumes}{bsm-assumptions}
+The classical BSM derivation assumes frictionless continuous trading, no arbitrage, constant $r$, $\delta$, and $\sigma$, continuous lognormal price paths, and the ability to trade the underlying and financing asset as required by the hedge. Real markets have jumps, discrete trading, volatility smiles, funding spreads, transaction costs, and position constraints. A formula can be evaluated exactly while its model remains approximate.
+\end{remark}
+
+\section{Black--Scholes--Merton Closed Forms}
+
+Let $S_0>0$, strike $K>0$, and maturity $T>0$. Let $\Phi$ denote the standard-normal cumulative distribution function and define the dimensionless quantities
+\begin{equation}
+  \label{eq:d1-d2}
+  d_1=\frac{\ln(S_0/K)+(r-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
+  \qquad
+  d_2=d_1-\sigma\sqrt T.
+\end{equation}
+The European call and put premiums in \thmref{bsm} are measured in USD/share.
+
+\begin{theorem}{BSM European call and put prices}{bsm}
+Under \eqnref{risk-neutral-gbm} and the assumptions in \remref{bsm-assumptions}, a European call with payoff $(S_T-K)^+$ and a European put with payoff $(K-S_T)^+$ have time-$0$ values
+\begin{equation}
+  \label{eq:bsm-prices}
+  C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2),
+  \qquad
+  P_0=Ke^{-rT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1),
+\end{equation}
+where $d_1$ and $d_2$ are defined in \eqnref{d1-d2}.
+\end{theorem}
+
+The two prices satisfy European put--call parity:
+\begin{equation}
+  \label{eq:put-call-parity}
+  C_0-P_0=S_0e^{-\delta T}-Ke^{-rT}.
+\end{equation}
+Equation~\eqref{eq:put-call-parity} is a replication identity and a valuable implementation check. A code path that violates it beyond numerical tolerance has inconsistent inputs or a bug.
+
+Monte Carlo simulation evaluates \eqnref{risk-neutral-price} by drawing $M$ independent risk-neutral endpoints, computing discounted payoffs $Y_k:=e^{-rT}g(S_T^{(k)})$, and using
+\begin{equation}
+  \label{eq:mc-estimator}
+  \widehat V_M=\frac1M\sum_{k=1}^{M}Y_k,
+  \qquad
+  \widehat{\operatorname{SE}}(\widehat V_M)
+  =\frac{s_Y}{\sqrt M},
+\end{equation}
+where $s_Y$ is the sample standard deviation of the $Y_k$. The $M^{-1/2}$ convergence rate is slow; report the standard error, random seed policy, and number of paths rather than only the point estimate.
+
+\notebooklink
+  {L9a: European BSM and Monte Carlo Premiums}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}
+  {Price European calls and puts with both risk-neutral Monte Carlo and the BSM formulas, quantify simulation error, and study premiums across strikes.}
+
+\section{From Continuous Diffusion to a CRR Lattice}
+
+American exercise is naturally handled on a discrete state tree. Divide $T$ into $N\in\mathbb N$ steps of length $\Delta t:=T/N$. In the Cox--Ross--Rubinstein (CRR) model, one step multiplies the stock by
+\begin{equation}
+  \label{eq:crr-factors}
+  u=e^{\sigma\sqrt{\Delta t}},
+  \qquad
+  d=e^{-\sigma\sqrt{\Delta t}}=u^{-1}.
+\end{equation}
+The symmetry $ud=1$ makes the lattice recombine, while the log-return variance matches $\sigma^2\Delta t$ to leading order. The risk-neutral up probability is
+\begin{equation}
+  \label{eq:crr-probability}
+  p=\frac{e^{(r-\delta)\Delta t}-d}{u-d},
+  \qquad 1-p=\frac{u-e^{(r-\delta)\Delta t}}{u-d}.
+\end{equation}
+The one-step no-arbitrage condition is $d<e^{(r-\delta)\Delta t}<u$, which is equivalent to $0<p<1$. If it fails, increasing $N$ may restore a valid step size, but the invalid probability must not be clipped silently.
+
+At time index $n\in\{0,\ldots,N\}$ after $j\in\{0,\ldots,n\}$ up moves, the recombining stock price is
+\begin{equation}
+  \label{eq:lattice-stock}
+  S_{n,j}=S_0u^jd^{\,n-j}.
+\end{equation}
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.55cm]
-    \node[draw=vnrule,fill=vnsoft,minimum width=2.15cm,minimum height=0.75cm] (move) {market move};
-    \node[draw=vnrule,fill=vnsoft,right=of move,minimum width=2.15cm,minimum height=0.75cm] (drift) {pre-trade drift};
-    \node[draw=vnink,fill=vnpanel,right=of drift,minimum width=2.15cm,minimum height=0.75cm] (rule) {policy signal};
-    \node[draw=vnrule,fill=vnsoft,right=of rule,minimum width=2.15cm,minimum height=0.75cm] (trade) {trade and costs};
-    \node[draw=vnrule,fill=vnsoft,right=of trade,minimum width=2.15cm,minimum height=0.75cm] (hold) {post-trade hold};
-    \draw[vnlink,thick,->] (move)--(drift);
-    \draw[vnlink,thick,->] (drift)--(rule);
-    \draw[vnlink,thick,->] (rule)--(trade);
-    \draw[vnlink,thick,->] (trade)--(hold);
-    \draw[vnmuted,dashed,->] (hold.south) to[bend right=26] node[below] {next decision time} (move.south);
+  \begin{tikzpicture}[x=2.0cm,y=0.85cm,>=Latex,font=\sffamily\small]
+    \foreach \n in {0,...,3}{
+      \foreach \j in {0,...,\n}{
+        \coordinate (n\n j\j) at (\n,{2*\j-\n});
+        \fill[vnink] (n\n j\j) circle (1.9pt);
+      }
+    }
+    \foreach \n in {0,...,2}{
+      \pgfmathtruncatemacro{\next}{\n+1}
+      \foreach \j in {0,...,\n}{
+        \pgfmathtruncatemacro{\up}{\j+1}
+        \draw[vnlink,->] (n\n j\j)--(n\next j\up);
+        \draw[vnmuted,->] (n\n j\j)--(n\next j\j);
+      }
+    }
+    \node[left] at (n0j0) {$S_0$};
+    \node[right] at (n3j3) {$S_0u^3$};
+    \node[right] at (n3j2) {$S_0u^2d$};
+    \node[right] at (n3j1) {$S_0ud^2$};
+    \node[right] at (n3j0) {$S_0d^3$};
+    \node[below] at (0,-3.7) {$n=0$};
+    \node[below] at (1,-3.7) {$n=1$};
+    \node[below] at (2,-3.7) {$n=2$};
+    \node[below] at (3,-3.7) {$n=3$};
   \end{tikzpicture}
-  \caption{A rebalancing strategy is a repeated event sequence. Returns create pre-trade weights; the policy observes only information available at that time, decides whether to trade, pays implementation costs, and then holds the resulting portfolio.}
-  \label{fig:rebalance-loop}
+  \caption{A recombining CRR stock lattice. Different up/down orderings reach the same node because $ud=du$. This reduces the node count from exponential in paths to quadratic in time steps.}
+  \label{fig:crr-lattice}
 \end{figure}
 
-\section{How Buy-and-Hold Weights Drift}
+\notebooklink
+  {L9a: Origin of the CRR Up and Down Factors}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-OriginStory-CRR-Factors-Fall-2026.ipynb}
+  {Derive the reciprocal CRR factors by matching the binomial log-return variance to the diffusion variance over one time step.}
 
-Let $\mathbf w_t^+\in\R^m$ be post-trade risky-asset weights at time $t$, with $\mathbf1^{\mathsf T}\mathbf w_t^+=1$, and let $R_{i,t+1}>-1$ be asset $i$'s simple return from $t$ to $t+1$. Before any new trade, the portfolio simple return is $R_{p,t+1}:=(\mathbf w_t^+)^{\mathsf T}\mathbf R_{t+1}$ and the next pre-trade weights are
+\section{Backward Induction and Early Exercise}
+
+Let $h(S)$ be the intrinsic payoff: $h_c(S):=(S-K)^+$ for a call or $h_p(S):=(K-S)^+$ for a put. At maturity, set $V_{N,j}:=h(S_{N,j})$. For a European option, every earlier node uses only discounted continuation value:
 \begin{equation}
-  \label{eq:weight-drift}
-  w_{i,t+1}^-
-  =\frac{w_{i,t}^+(1+R_{i,t+1})}{1+R_{p,t+1}},
-  \qquad i\in\{1,\ldots,m\}.
+  \label{eq:european-backward}
+  V_{n,j}^{\mathrm{EU}}
+  =e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{EU}}+(1-p)V_{n+1,j}^{\mathrm{EU}}\bigr].
 \end{equation}
-The superscripts $+$ and $-$ mean immediately after and immediately before a trade, respectively. Equation~\eqref{eq:weight-drift} is a self-financing accounting identity before costs: asset values grow at different rates, while the denominator rescales them to fractions of total wealth.
-
-With the course convention $r_{i,t+1}=(\Delta t)g_{i,t+1}$ for continuously compounded log return, $1+R_{i,t+1}=\exp(r_{i,t+1})$. The same exact update is therefore
+For an American option, the holder chooses between immediate exercise and continuation:
 \begin{equation}
-  \label{eq:weight-drift-growth}
-  w_{i,t+1}^-
-  =\frac{w_{i,t}^+\exp((\Delta t)g_{i,t+1})}
-  {\sum_j w_{j,t}^+\exp((\Delta t)g_{j,t+1})}.
+  \label{eq:american-backward}
+  V_{n,j}^{\mathrm{AM}}
+  =\max\left\{
+    h(S_{n,j}),
+    e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{AM}}+(1-p)V_{n+1,j}^{\mathrm{AM}}\bigr]
+  \right\}.
 \end{equation}
-Do not replace the gross price relative by $1+(\Delta t)g_{i,t+1}$ except as a stated small-move approximation.
+The first term in \eqnref{american-backward} is intrinsic value; the second is continuation value. Nodes where the first strictly exceeds the second form the model's early-exercise region. Because the American holder can always imitate the European policy of waiting, $V_0^{\mathrm{AM}}\geq V_0^{\mathrm{EU}}$ under identical inputs.
 
-\begin{proposition}{When weights do not drift}{no-drift}
-Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift} satisfies $w_{i,t+1}^-=w_{i,t}^+$ if and only if
-\begin{equation}
-  \label{eq:no-drift}
-  R_{i,t+1}=R_{p,t+1}.
-\end{equation}
-Thus all positively weighted assets must earn the same return over the interval for every weight to remain unchanged. Assets held at zero weight impose no condition.
-\end{proposition}
-
-If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With growth-rate covariance estimate $\Sigma_{g,t}$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_{g,t}\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
+For a non-dividend-paying stock with nonnegative interest rates, early exercise of an American call is not optimal in the classical frictionless model, so its value equals the European call value. American puts can have an early-exercise region. Dividends, negative rates, borrow constraints, and market frictions change these conclusions.
 
 \notebooklink
-  {L9a: Portfolio Drift After a Maximum-Sharpe Allocation}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Example-Portfolio-Drift-Fall-2026.ipynb}
-  {Freeze initial share counts, propagate realized prices, reconstruct daily wealth fractions, and inspect how portfolio alpha and beta move away from their initial values.}
+  {L9a: American Options with the CRR Model}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-American-Derivatives-CRR-Model-Fall-2026.ipynb}
+  {Construct the stock and option lattices, run European and American backward induction, and identify nodes where early exercise dominates continuation.}
 
-\section{Three Families of Rebalancing Rules}
+\section{Numerical Checks Before Trusting a Premium}
 
-Let $\mathbf w_t^\star$ be the current target and let $d(\mathbf w_t^-,\mathbf w_t^\star)$ be a stated distance or risk-deviation measure. Common policies include:
+Increase $N$ and verify convergence rather than reporting one lattice resolution. CRR prices can oscillate with step parity, especially near the strike; compare sequences of even and odd $N$ or use averaging/extrapolation. Confirm $0<p<1$, nonnegative option values, American value no smaller than European value, and terminal nodes equal their payoffs.
 
-\begin{enumerate}[leftmargin=1.7em]
-  \item \textbf{Calendar rebalancing.} Trade on predetermined dates---for example, monthly or quarterly---regardless of drift. It is simple to audit but can trade when nothing material changed and wait too long after a large move.
-  \item \textbf{Threshold rebalancing.} Trade when $d$ exceeds a band, such as $\|\mathbf w_t^- - \mathbf w_t^\star\|_\infty>\delta$ for tolerance $\delta>0$. This creates a no-trade region but requires a convention for returning to the target, the nearest band edge, or somewhere between.
-  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target growth, and trading penalties. The action can be partial rather than all-or-nothing.
-\end{enumerate}
+For European options, compare the CRR root value with BSM under matching $r$, $\delta$, $\sigma$, $T$, $S_0$, and $K$. Also check put--call parity and monotonicity: calls decrease with strike, puts increase with strike, and both are nondecreasing in volatility under standard BSM conditions. Disagreement is useful diagnostic evidence only after all conventions and inputs have been reconciled.
 
-A hybrid policy checks thresholds only on scheduled dates. Every rule needs an explicit clock, input timestamp, and action. ``Rebalance when needed'' is not reproducible.
-
-\section{Turnover and the Cost of Returning to Target}
-
-Let $\Delta\mathbf w_t:=\mathbf w_t^+-\mathbf w_t^-$ be the planned weight change. For fully invested portfolios with no external cash flow, $\mathbf1^{\mathsf T}\Delta\mathbf w_t=0$. The one-way turnover fraction is
-\begin{equation}
-  \label{eq:turnover}
-  \tau_t:=\frac12\|\Delta\mathbf w_t\|_1.
-\end{equation}
-The factor $1/2$ avoids counting both sales and purchases as separate portfolio replacements. If a cost model charges a proportional rate $c_i\geq0$ to every dollar bought or sold in asset $i$, the cost relative to pre-trade wealth is instead approximately $\sum_i c_i|\Delta w_{i,t}|$; state which convention is being reported.
-
-One convex cost-aware update uses risk-aversion coefficient $\gamma>0$ and turnover penalty $\lambda\geq0$:
-\begin{equation}
-  \label{eq:cost-aware-rebalance}
-  \begin{aligned}
-  \min_{\mathbf w\in\R^m}\quad
-    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_{g,t}\mathbf w
-      -\bar{\mathbf g}_t^{\mathsf T}\mathbf w
-      +\lambda\|\mathbf w-\mathbf w_t^-\|_1\\
-  \text{subject to}\quad
-    &\mathbf1^{\mathsf T}\mathbf w=1,
-    \qquad \boldsymbol\ell\leq\mathbf w\leq\mathbf u.
-  \end{aligned}
-\end{equation}
-Here $\bar{\mathbf g}_t\in\R^m$ and $\Sigma_{g,t}\in\R^{m\times m}$ are information-time expected-growth and growth-rate covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. If same-horizon log-return inputs are used instead, convert every input consistently: $\bar{\mathbf r}_t=(\Delta t)\bar{\mathbf g}_t$ and $\Sigma_{r,t}=(\Delta t)^2\Sigma_{g,t}$. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
-
-\section{Backtesting a Dynamic Policy Without Looking Ahead}
-
-At each decision time, first mark the existing shares to current observable prices and compute $\mathbf w_t^-$. Then estimate model inputs using data whose timestamps precede the decision, construct $\mathbf w_t^\star$ or solve \eqnref{cost-aware-rebalance}, convert desired dollar changes into executable share quantities, apply fills and costs, and hold until the next permitted decision. Returns used to judge the action must occur strictly afterward.
-
-Performance accounting should preserve the wealth recursion. If $C_t\geq0$ is the dollar implementation cost paid at time $t$ and $W_t^-$ is pre-trade wealth, then post-trade investable wealth is
-\begin{equation}
-  \label{eq:wealth-after-cost}
-  W_t^+=W_t^- - C_t.
-\end{equation}
-Ignoring \eqnref{wealth-after-cost} while changing weights grants the backtest free trading. Also record turnover, realized taxes or a declared pretax convention, constraint violations, cash residuals from integer shares, and failed or stale orders.
-
-Use walk-forward evaluation: select policy parameters such as calendar frequency, threshold $\delta$, and penalty $\lambda$ on training or validation data, then freeze them for a later test period. Compare buy-and-hold, full-target rebalancing, and the proposed partial policy on identical price data and cost assumptions. The relevant question is not whether rebalancing preserves the model target perfectly; it is whether the net risk--return outcome improves after all implementation effects.
-
-\newpage
-\thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we turned a static minimum-variance target into a time-indexed decision policy that observes drift, chooses an action, pays costs, and then holds.}
-  {Drift is mechanical}
-  {Fixed share counts imply $w_{i,t+1}^-=w_{i,t}^+(1+R_{i,t+1})/(1+R_{p,t+1})$; unequal returns change weights and modeled exposures.}
-  {Rebalancing is a policy}
-  {Calendar, threshold, and optimization rules differ in their decision clocks, triggers, and destinations, so each must be specified before testing.}
-  {Trading is part of the wealth equation}
-  {Turnover, spreads, impact, taxes, and discrete shares can erase a model improvement and must be deducted at the time of action.}
-  {Next, begin the derivatives unit by separating an option's contractual payoff from the investor's premium-dependent profit.}
+  {In this lecture, we priced European claims by risk-neutral expectation and BSM closed forms, then introduced American exercise through CRR backward induction.}
+  {Risk-neutral is a pricing measure}
+  {The discounted payoff expectation uses $\mathbb Q$ and drift $r-\delta$; it is not a claim about the asset's real-world expected return.}
+  {CRR must exclude one-step arbitrage}
+  {The factors and probability must satisfy $d<e^{(r-\delta)\Delta t}<u$ so that $0<p<1$ before backward induction begins.}
+  {American value includes a decision}
+  {Every pre-expiration node compares intrinsic value with discounted continuation, creating an endogenous exercise boundary.}
+  {Next, decompose an American option premium into intrinsic value and nonnegative continuation value across the lattice.}
 
 \begin{readinglist}
-  \item André F. Perold and William F. Sharpe, \href{https://www.jstor.org/stable/4479134}{``Dynamic Strategies for Asset Allocation,''} \emph{Financial Analysts Journal} 44(1), 16--27 (1988).
-  \item Michael J. Magill and George M. Constantinides, \href{https://doi.org/10.1016/0304-405X(76)90003-4}{``Portfolio Selection with Transactions Costs,''} \emph{Journal of Economic Theory} 13(2), 245--263 (1976).
-  \item Richard Grinold and Ronald Kahn, \emph{Active Portfolio Management}, 2nd ed. (1999), chapters on implementation, turnover, and transaction costs.
+  \item Fischer Black and Myron Scholes, \href{https://doi.org/10.1086/260062}{``The Pricing of Options and Corporate Liabilities,''} \emph{Journal of Political Economy} 81(3), 637--654 (1973).
+  \item John C. Cox, Stephen A. Ross, and Mark Rubinstein, \href{https://doi.org/10.1016/0304-405X(79)90015-1}{``Option Pricing: A Simplified Approach,''} \emph{Journal of Financial Economics} 7(3), 229--263 (1979).
+  \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
 \end{readinglist}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Option values are model-dependent and trading involves substantial risk.}
 
 \end{document}
