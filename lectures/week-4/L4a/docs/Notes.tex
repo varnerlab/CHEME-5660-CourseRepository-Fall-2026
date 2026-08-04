@@ -3,13 +3,13 @@
 
 \begin{document}
 
-\lecturenotes{4a}{Equity Markets and the Stylized Facts of Returns}{Fall 2026}{September 15, 2026}{Jeffrey D. Varner}
+\lecturenotes{4a}{Equity Markets and the Stylized Facts of Growth Rates}{Fall 2026}{September 15, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
   {Describe equity claims}
   {Explain what common stock represents and distinguish the corporation, an exchange, an index, and an exchange-traded fund.}
-  {Compute returns}
-  {Calculate simple, log, and excess returns with consistent price, dividend, time, and compounding conventions.}
+  {Compute growth rates}
+  {Calculate continuously compounded growth rates and convert them to log returns using $r=(\Delta t)g$.}
   {Diagnose stylized facts}
   {Use empirical distributions, autocorrelation, and conditional-volatility evidence to challenge an equity-return model.}
 
@@ -21,33 +21,34 @@ An \emph{equity security} is therefore a residual claim on a corporation, not a 
 
 An exchange supplies listing and trading rules and an organized venue for matching orders. Clearing and settlement complete the obligations created by trades, often through specialized infrastructure distinct from the matching engine. A stock index, such as the S\&P 500, is a rule-based numerical portfolio benchmark; it cannot itself be purchased. An exchange-traded fund (ETF) is a security whose shares trade intraday and whose portfolio may seek to track an index. These objects interact, but they are not interchangeable.
 
-\section{Price Changes Are Not Yet Returns}
+\section{Growth Rates and Returns}
 
-A price change in dollars depends on the initial share price and ignores distributions. A return rescales the investment outcome and must specify whether dividends are included. Let $S_{t-1}>0$ and $S_t>0$ denote ex-dividend share prices in dollars per share at consecutive dates, and let $D_t\geq0$ be the cash distribution per share received between them. The holding-period return and its logarithmic counterpart are defined in \defnref{return-measures}.
+A price change in dollars depends on the initial share price. We use the continuously compounded growth rate as the primary reward variable and reserve $r$ for the dimensionless log return over a specified interval.
 
-\begin{definition}{Simple and logarithmic returns}{return-measures}
-Let $S_{t-1}>0$ and $S_t>0$ be share prices in dollars per share at dates $t-1$ and $t$, and let $D_t\geq0$ dollars per share be a distribution received during the interval. The simple total return $R_t$ and log total return $g_t$ are
+\begin{definition}{Growth rate and log return}{return-measures}
+Let $S_{t-1}>0$ and $S_t>0$ be consecutive share prices separated by $\Delta t>0$ years. The continuously compounded growth rate $g_t$ and corresponding log return $r_t$ are
 \begin{equation}
   \label{eq:return-measures}
-  R_t:=\frac{S_t+D_t-S_{t-1}}{S_{t-1}},
+  g_t:=\frac{1}{\Delta t}\log\!\left(\frac{S_t}{S_{t-1}}\right),
   \qquad
-  g_t:=\log(1+R_t)=\log\!\left(\frac{S_t+D_t}{S_{t-1}}\right),
+  r_t:=(\Delta t)g_t=\log\!\left(\frac{S_t}{S_{t-1}}\right).
 \end{equation}
-provided $1+R_t>0$. When $D_t=0$, the price log return is $g_t=\log(S_t/S_{t-1})$. If the interval length is $\Delta t>0$ years, the continuously compounded growth rate is $\mu_t:=g_t/\Delta t$ in inverse years.
+Thus $g_t$ has units inverse years and $r_t$ is dimensionless. If dividends are included, use a consistently adjusted total-return price series before applying the definition.
 \end{definition}
 
 The choice between price and total return is substantive. A price-only series omits dividends, while an adjusted-price vendor may incorporate dividends and splits through its own convention. Data transformations must be documented before statistical conclusions are compared.
 
-Log returns are especially useful because they add across nonoverlapping time intervals (\propref{log-additivity}). Simple returns compound multiplicatively instead.
+Log returns add across nonoverlapping time intervals (\propref{log-additivity}); equivalently, cumulative log return is a time-weighted sum of growth rates.
 
 \begin{proposition}{Aggregation of price log returns}{log-additivity}
-Let $S_0,S_1,\ldots,S_T$ be strictly positive share prices measured at increasing dates, and suppose distributions are absent or already incorporated consistently into a total-return index. Define the one-period price log return by $g_t:=\log(S_t/S_{t-1})$ for $t\in\{1,\ldots,T\}$. Then the cumulative log return satisfies
+Let $S_0,S_1,\ldots,S_T$ be strictly positive prices and let $\Delta t_t$ be the length of interval $t$. Define $g_t:=(1/\Delta t_t)\log(S_t/S_{t-1})$ and $r_t:=(\Delta t_t)g_t$. Then
 \begin{equation}
   \label{eq:log-additivity}
-  \sum_{t=1}^{T}g_t
+  \sum_{t=1}^{T}r_t
+  =\sum_{t=1}^{T}(\Delta t_t)g_t
   =\log\!\left(\frac{S_T}{S_0}\right),
 \end{equation}
-while the cumulative simple return satisfies $1+R_{0,T}=\prod_{t=1}^{T}(1+R_t)$.
+which is the course convention $r=(\Delta t)g$ applied interval by interval.
 \end{proposition}
 
 \begin{derivation}
@@ -60,7 +61,7 @@ Use the logarithm of a product and cancel the intermediate price ratios:
 The result is exact; the common approximation $\log(1+R_t)\approx R_t$ is only local for small $\lvert R_t\rvert$.
 \end{derivation}
 
-An excess log return compares the equity outcome with a benchmark over the same interval. If $r_{f,t}$ is the continuously compounded benchmark rate in inverse years, then $x_t:=g_t-r_{f,t}\Delta t$. This is a relative performance measure, not proof that the benchmark itself is literally riskless.
+An excess growth rate compares the equity with a benchmark rate over the same interval. If $g_{f,t}$ is the benchmark growth rate, then $\bar g_t:=g_t-g_{f,t}$ and the corresponding excess log return is $\bar r_t=(\Delta t)\bar g_t$.
 
 \section{Reward, Risk, and the Measurement Horizon}
 

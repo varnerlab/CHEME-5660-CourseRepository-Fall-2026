@@ -1,0 +1,80 @@
+{% extends 'lab/index.html.j2' %}
+
+{% block html_head_css %}
+{{ super() }}
+<style type="text/css">
+{% include 'lecture-notebook.css' %}
+</style>
+{% endblock html_head_css %}
+
+{% block body_header %}
+{% if resources.theme == 'dark' %}
+<body class="jp-Notebook cheme-lecture" data-jp-theme-light="false" data-jp-theme-name="JupyterLab Dark">
+{% else %}
+<body class="jp-Notebook cheme-lecture" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
+{% endif %}
+<header class="lecture-toolbar" aria-label="Lecture display controls">
+  <span class="lecture-toolbar__course">CHEME 5660</span>
+  <span class="lecture-toolbar__mode">Lecture view</span>
+  <span class="lecture-toolbar__spacer"></span>
+  <button type="button" data-lecture-action="smaller" aria-label="Decrease text size">A−</button>
+  <button type="button" data-lecture-action="reset" aria-label="Reset text size">Reset</button>
+  <button type="button" data-lecture-action="larger" aria-label="Increase text size">A+</button>
+  <button type="button" data-lecture-action="fullscreen" aria-label="Toggle fullscreen">Fullscreen</button>
+</header>
+<div class="lecture-progress" aria-hidden="true"><span></span></div>
+<main id="lecture-content">
+{% endblock body_header %}
+
+{% block footer_js %}
+{{ super() }}
+<script>
+(() => {
+  const root = document.documentElement;
+  const progress = document.querySelector('.lecture-progress span');
+  let scale = 1;
+
+  const setScale = (next) => {
+    scale = Math.min(1.35, Math.max(0.8, next));
+    root.style.setProperty('--lecture-scale', scale.toFixed(2));
+  };
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  };
+
+  const act = (action) => {
+    if (action === 'larger') setScale(scale + 0.1);
+    if (action === 'smaller') setScale(scale - 0.1);
+    if (action === 'reset') setScale(1);
+    if (action === 'fullscreen') toggleFullscreen();
+  };
+
+  document.querySelectorAll('[data-lecture-action]').forEach((button) => {
+    button.addEventListener('click', () => act(button.dataset.lectureAction));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.target.matches('input, textarea, select')) return;
+    if (event.key === '+' || event.key === '=') act('larger');
+    if (event.key === '-' || event.key === '_') act('smaller');
+    if (event.key === '0') act('reset');
+    if (event.key.toLowerCase() === 'f') act('fullscreen');
+  });
+
+  const updateProgress = () => {
+    const available = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = available > 0 ? (window.scrollY / available) * 100 : 0;
+    progress.style.width = `${Math.min(100, Math.max(0, percent))}%`;
+  };
+
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+})();
+</script>
+{% endblock footer_js %}

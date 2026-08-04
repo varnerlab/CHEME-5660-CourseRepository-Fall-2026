@@ -1,0 +1,50 @@
+% ============================================================
+% vnfigure.sty -- house style for standalone CHEME 5660 figures
+% Engine: XeLaTeX
+%
+% Mirrors the type and palette of templates/varnernotes.sty so that
+% standalone figures rendered for the notebooks are visually identical
+% to the TikZ figures set inside the lecture notes.
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{vnfigure}[2026/08/04 Varner standalone figure style]
+
+\RequirePackage{fontspec}
+\IfFontExistsTF{Arial}
+  {\setsansfont{Arial}}
+  {\setsansfont{TeX Gyre Heros}}
+
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage[
+  warnings-off={mathtools-colon,mathtools-overbracket}
+]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning}
+
+% Palette shared with varnernotes.sty ---------------------------
+\definecolor{vnink}{HTML}{202124}
+\definecolor{vnmuted}{HTML}{5F6368}
+\definecolor{vnrule}{HTML}{AEB4BA}
+\definecolor{vnpanel}{HTML}{F2F3F4}
+\definecolor{vnsoft}{HTML}{F8F9FA}
+\definecolor{vnlink}{HTML}{1A5276}
+\definecolor{vncarnelian}{HTML}{B31B1B}
+
+% Shared figure grammar ----------------------------------------
+% CHEME flow convention: an arrow leaving a time-point unit is money
+% paid; an arrow entering one is money received.
+\tikzset{
+  vn timeline/.style     = {vnink,line width=0.8pt,-{Latex[length=3mm]}},
+  vn unit/.style         = {draw=vnink,circle,fill=white,line width=0.7pt,
+                            minimum size=5mm,inner sep=0pt},
+  vn paid/.style         = {vncarnelian,line width=1.4pt,-{Latex[length=3mm]}},
+  vn received/.style     = {vnlink,line width=1.4pt,-{Latex[length=3mm]}},
+  vn brace/.style        = {decorate,decoration={brace,amplitude=5pt},vnmuted},
+  vn transport/.style    = {vnlink,line width=0.9pt,-{Latex[length=3mm]}},
+  vn callout/.style      = {draw=vnrule,fill=vnsoft,rounded corners=1pt,
+                            inner xsep=8pt,inner ysep=5pt},
+  vn annotation/.style   = {text=vnmuted,font=\footnotesize},
+}

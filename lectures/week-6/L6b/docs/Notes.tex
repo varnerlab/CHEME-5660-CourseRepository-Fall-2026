@@ -9,7 +9,7 @@
 
 \learningobjectives
   {Formulate portfolio risk}
-  {Express expected return and variance as functions of weights, asset means, and the covariance matrix.}
+  {Express expected growth rate and variance as functions of weights, asset means, and the covariance matrix.}
   {Construct the frontier}
   {Solve global and target-return minimum-variance problems and distinguish the feasible set from its efficient boundary.}
   {Add the risk-free asset}
@@ -17,16 +17,16 @@
 
 \section{Diversification Is a Covariance Calculation}
 
-Harry Markowitz's central insight was that an asset should not be judged in isolation. A volatile asset can reduce portfolio variance when its returns offset other holdings, while individually stable assets can provide little diversification when they move together. The allocation problem therefore depends on the full covariance matrix.
+Harry Markowitz's central insight was that an asset should not be judged in isolation. A volatile asset can reduce portfolio variance when its growth rates offset other holdings, while individually stable assets can provide little diversification when they move together.
 
-Let $\mathbf r\in\R^m$ be a random vector of single-period risky-asset returns, with mean $\boldsymbol\mu:=\mathbb E[\mathbf r]$ and positive-definite covariance matrix $\Sigma:=\operatorname{Cov}(\mathbf r)$. Let $\mathbf w\in\R^m$ be risky-asset dollar weights satisfying $\mathbf1^{\mathsf T}\mathbf w=1$. The portfolio return $r_p:=\mathbf w^{\mathsf T}\mathbf r$ has
+Let $\mathbf g\in\R^m$ be a random vector of risky-asset growth rates, with mean $\bar{\mathbf g}:=\mathbb E[\mathbf g]$ and positive-definite covariance matrix $\Sigma:=\operatorname{Cov}(\mathbf g)$. Let $\mathbf w\in\R^m$ be risky-asset dollar weights satisfying $\mathbf1^{\mathsf T}\mathbf w=1$. The portfolio growth rate $g_p:=\mathbf w^{\mathsf T}\mathbf g$ has
 \begin{equation}
   \label{eq:portfolio-moments}
-  \mu_p=\mathbf w^{\mathsf T}\boldsymbol\mu,
+  \mathbb E[g_p]=\mathbf w^{\mathsf T}\bar{\mathbf g},
   \qquad
-  \sigma_p^2=\mathbf w^{\mathsf T}\Sigma\mathbf w.
+  \sigma_{g,p}^2=\mathbf w^{\mathsf T}\Sigma\mathbf w.
 \end{equation}
-The cross terms $2w_iw_j\Sigma_{ij}$ create diversification effects. Variance is dimensionless for returns measured over a fixed horizon; an annualized covariance rate must be combined with a matching annual return convention.
+The cross terms $2w_iw_j\Sigma_{ij}$ create diversification effects. Growth-rate covariance has units of inverse time squared; all inputs must use a common time convention. The associated log return over $\Delta t$ is $r_p=(\Delta t)g_p$.
 
 \section{The Global Minimum-Variance Portfolio}
 
@@ -67,22 +67,22 @@ Imposing $w_i\geq0$ converts the problem to a convex quadratic program. Its opti
 
 \section{The Minimum-Variance Frontier}
 
-To trace return--risk tradeoffs, add a target expected return $\mu_\star$:
+To trace growth--risk tradeoffs, add a target expected growth rate $g_\star$:
 \begin{equation}
   \label{eq:frontier-problem}
   \min_{\mathbf w}\ \frac12\mathbf w^{\mathsf T}\Sigma\mathbf w
   \quad\text{subject to}\quad
   \mathbf1^{\mathsf T}\mathbf w=1,
   \quad
-  \boldsymbol\mu^{\mathsf T}\mathbf w=\mu_\star.
+  \bar{\mathbf g}^{\mathsf T}\mathbf w=g_\star.
 \end{equation}
-Varying $\mu_\star$ produces the minimum-variance frontier. The branch above the GMV expected return is the \emph{efficient frontier}: no other feasible risky portfolio has both at least as much expected return and no more variance, with one strict improvement. The lower branch is minimum variance for its return target but is dominated in mean--variance terms by an upper-branch portfolio of equal variance.
+Varying $g_\star$ produces the minimum-variance frontier. The branch above the GMV expected growth rate is the \emph{efficient frontier}: no other feasible risky portfolio has both at least as much expected growth and no more variance, with one strict improvement.
 
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[x=1.05cm,y=0.8cm,>=Latex,font=\sffamily\small]
     \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(8.2,0) node[right] {$\sigma$};
-    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,6.0) node[above] {$\mu$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,6.0) node[above] {$g$};
     \draw[vnrule,line width=1.3pt,domain=1.4:6.8,samples=80,smooth]
       plot (\x,{2.1+0.21*(\x-2.2)^2});
     \draw[vnlink,line width=1.6pt,domain=2.2:6.8,samples=60,smooth]
@@ -92,11 +92,11 @@ Varying $\mu_\star$ produces the minimum-variance frontier. The branch above the
     \coordinate (tan) at (4.8,{2.1+0.21*(4.8-2.2)^2});
     \draw[vncarnelian,line width=1.3pt] (rf)--($(rf)!1.55!(tan)$);
     \fill[vncarnelian] (tan) circle (2.2pt) node[above left] {tangency};
-    \node[left] at (rf) {$r_f$};
+    \node[left] at (rf) {$g_f$};
     \node[text=vnlink] at (6.3,5.25) {efficient risky frontier};
     \node[text=vncarnelian,rotate=31] at (2.25,2.35) {capital allocation line};
   \end{tikzpicture}
-  \caption{The risky-asset minimum-variance frontier and a capital allocation line from a risk-free return $r_f$. The line with the largest attainable slope is tangent to the risky frontier. Axes must use returns and standard deviations measured over compatible horizons.}
+  \caption{The risky-asset minimum-variance frontier and a capital allocation line from a risk-free growth rate $g_f$. The line with the largest attainable slope is tangent to the risky frontier.}
   \label{fig:frontier-cal}
 \end{figure}
 
@@ -107,29 +107,29 @@ Varying $\mu_\star$ produces the minimum-variance frontier. The branch above the
 
 \section{Adding a Risk-Free Asset}
 
-Let a locally risk-free asset earn the deterministic return $r_f$ over the same horizon as $\mathbf r$. Combine it with any risky portfolio having return $\mu_p$ and standard deviation $\sigma_p>0$. If $y\in\R$ is the dollar fraction invested in that risky portfolio and $1-y$ is invested in the risk-free asset, then
+Let a locally risk-free asset earn deterministic growth rate $g_f$. Combine it with any risky portfolio having expected growth rate $g_p$ and standard deviation $\sigma_p>0$. If $y\in\R$ is the dollar fraction invested in that risky portfolio, then
 \begin{equation}
   \label{eq:cal}
-  \mu_c=r_f+y(\mu_p-r_f),
+  g_c=g_f+y(g_p-g_f),
   \qquad
   \sigma_c=|y|\sigma_p.
 \end{equation}
 For $y\geq0$, eliminating $y$ gives the capital allocation line (CAL):
 \begin{equation}
   \label{eq:cal-line}
-  \mu_c=r_f+\frac{\mu_p-r_f}{\sigma_p}\sigma_c.
+  g_c=g_f+\frac{g_p-g_f}{\sigma_p}\sigma_c.
 \end{equation}
 The slope is the risky portfolio's Sharpe ratio under the stated horizon and risk-free convention. Values $0<y<1$ lend some wealth at $r_f$; $y=1$ holds only the risky portfolio; and $y>1$ represents leveraged risky exposure financed by borrowing. A single identical lending and borrowing rate is an idealization.
 
 Among all risky portfolios, the tangency portfolio maximizes the CAL slope. Without long-only constraints, its weights have the closed form in \propref{tangency}.
 
 \begin{proposition}{Unconstrained tangency portfolio}{tangency}
-Let $\Sigma$ be symmetric positive definite, let risky expected returns be $\boldsymbol\mu\in\R^m$, and let the same-horizon risk-free return be $r_f\in\R$. Assume $\boldsymbol\mu-r_f\mathbf1\neq\mathbf0$ and that $\mathbf1^{\mathsf T}\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)>0$. The fully invested risky portfolio proportional to $\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)$ has weights
+Let $\Sigma$ be symmetric positive definite, let risky expected growth rates be $\bar{\mathbf g}\in\R^m$, and let the risk-free growth rate be $g_f\in\R$. Assume $\bar{\mathbf g}-g_f\mathbf1\neq\mathbf0$. The fully invested risky portfolio proportional to $\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)$ has weights
 \begin{equation}
   \label{eq:tangency}
   \mathbf w_T=
-  \frac{\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)}
-  {\mathbf1^{\mathsf T}\Sigma^{-1}(\boldsymbol\mu-r_f\mathbf1)}.
+  \frac{\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)}
+  {\mathbf1^{\mathsf T}\Sigma^{-1}(\bar{\mathbf g}-g_f\mathbf1)}.
 \end{equation}
 It maximizes the positive Sharpe ratio among unconstrained fully invested risky portfolios under these assumptions.
 \end{proposition}

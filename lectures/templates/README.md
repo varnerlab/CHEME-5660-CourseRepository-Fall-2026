@@ -9,6 +9,29 @@ all lecture notes. Each substantive lecture owns a `docs/Notes.tex`, a
 includes `lectures/templates/lecture.mk`. From `lectures/`, run `make notes` to
 build the complete note set or `make -C week-N/Lxx/docs notes` to build one.
 
+## Projector-friendly notebook view
+
+Long-form lecture notebooks remain the canonical source for the annotated
+in-class presentation. A lecture directory can define `NOTEBOOK` in a local
+`Makefile` and include `../../templates/notebook.mk` to generate a standalone
+HTML lecture view next to the notebook. For example:
+
+```make
+NOTEBOOK := CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb
+include ../../templates/notebook.mk
+```
+
+Run `make` in that lecture directory. The HTML view uses 28 px body text and
+larger display mathematics on projector-sized screens, hides notebook prompts,
+and retains ordinary scrolling rather than forcing content into fixed-height
+slides. Its toolbar changes the text size and enters fullscreen; the keyboard
+shortcuts are `+`, `-`, `0` (reset), and `f` (fullscreen). Equations scroll
+horizontally when necessary rather than being reduced to an unreadable size.
+
+The generated HTML is a presentation artifact, not a second source document:
+edit the notebook, then rebuild the HTML. Relative links to figures and worked
+examples continue to resolve because the two files live in the same directory.
+
 ## Semantic cross-references
 
 Every numbered figure, table, equation, definition, theorem, proposition, and

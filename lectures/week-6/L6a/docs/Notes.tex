@@ -21,11 +21,11 @@
 
 Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
 
-Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic drift rates in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
+Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic growth parameters in $\boldsymbol{g}\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
 \begin{equation}
   \label{eq:mgbm-sde}
   \frac{dS_{i,t}}{S_{i,t}}
-  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
+  =g_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
   \qquad i\in\{1,\ldots,m\}.
 \end{equation}
 The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $\Sigma_{ii}=\sigma_i^2$, while $\Sigma_{ik}$ records instantaneous covariance between assets $i$ and $k$.
@@ -55,11 +55,11 @@ The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose en
 The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
 
 \begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
-Let $A\in\R^{m\times m}$, $\Sigma:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
+Let $A\in\R^{m\times m}$, $\Sigma:=AA^{\mathsf T}$, $\boldsymbol{g}\in\R^m$, and $\Delta t>0$ years. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
 \begin{equation}
   \label{eq:mgbm-transition}
   S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
-  \left(\mu_i-\frac{1}{2}\Sigma_{ii}\right)\Delta t
+  \left(g_i-\frac{1}{2}\Sigma_{ii}\right)\Delta t
   +\sqrt{\Delta t}\,(A\mathbf Z)_i
   \right].
 \end{equation}

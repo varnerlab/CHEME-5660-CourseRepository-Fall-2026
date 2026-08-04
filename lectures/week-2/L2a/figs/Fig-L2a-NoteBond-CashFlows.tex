@@ -1,0 +1,49 @@
+% Treasury note/bond cash-flow timeline (L2a).
+% Flow convention: an arrow leaving a time-point unit is money paid;
+% an arrow entering one is money received.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+
+\begin{document}
+\begin{tikzpicture}[x=1.45cm,y=1cm,>=Latex,font=\sffamily\small]
+
+  % Span label ------------------------------------------------
+  \draw[vn brace] (0.45,1.65) -- (5.85,1.65)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries coupon security: $nT$ coupons, then par at maturity};
+
+  % Timeline --------------------------------------------------
+  \draw[vn timeline] (0,0) -- (6.50,0) node[right] {time};
+  \foreach \x/\lab/\unit in {0.45/0/n0,1.85/1/n1,3.25/2/n2,5.85/nT/nN}{
+    \node[vn unit] (\unit) at (\x,0) {};
+    \node[below=4pt] at (\unit) {$j=\lab$};
+  }
+  \node at (4.55,0.02) {$\cdots$};
+
+  % Purchase price paid at the valuation date ------------------
+  \draw[vn paid] (n0.north) -- (0.45,1.05);
+  \node[right,text=vncarnelian] at (0.45,0.62) {$-V_{B}$};
+  \node[above,vn annotation] at (0.45,1.05) {cash paid};
+
+  % Semiannual coupons ----------------------------------------
+  \foreach \unit/\x in {n1/1.85,n2/3.25}{
+    \draw[vn received] (\x,1.05) -- (\unit.north);
+    \node[right,text=vnlink] at (\x,0.62) {$+C$};
+  }
+
+  % Final coupon plus principal repayment ----------------------
+  \draw[vn received] (5.85,1.05) -- (nN.north);
+  \node[right,text=vnlink] at (5.85,0.62) {$+C+V_{P}$};
+  \node[above,vn annotation] at (5.85,1.05) {cash received};
+
+  % Transport to the valuation date ----------------------------
+  \draw[vn transport] (5.85,-0.94) -- (0.60,-0.94)
+    node[midway,fill=white,inner sep=3pt,text=vnlink]
+    {$\mathrm{PV}_{0}(\bar{c}_{j})=\mathcal{D}_{j,0}^{-1}(\bar{r})\,\bar{c}_{j}$};
+  % Tie the abstract net cash flow to the concrete coupon and par amounts.
+  \node[vn annotation,anchor=north west] at (0.47,-1.30)
+    {net cash flow: $\bar{c}_{0}=-V_{B}$,\;\; $\bar{c}_{j}=C$ for $0<j<nT$,%
+     \;\; $\bar{c}_{nT}=C+V_{P}$};
+
+\end{tikzpicture}
+\end{document}

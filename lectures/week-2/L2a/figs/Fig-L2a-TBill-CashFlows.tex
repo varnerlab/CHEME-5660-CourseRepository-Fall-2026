@@ -1,0 +1,47 @@
+% Treasury bill cash-flow timeline (L2a).
+% Flow convention: an arrow leaving a time-point unit is money paid;
+% an arrow entering one is money received.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+
+\begin{document}
+\begin{tikzpicture}[x=2.0cm,y=1cm,>=Latex,font=\sffamily\small]
+
+  % Span label ------------------------------------------------
+  \draw[vn brace] (0.45,1.65) -- (3.40,1.65)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries zero-coupon bill: one payment, one receipt};
+
+  % Timeline --------------------------------------------------
+  \draw[vn timeline] (0,0) -- (4.05,0) node[right] {time};
+  \node[vn unit] (b0) at (0.45,0) {};
+  \node[vn unit] (bT) at (3.40,0) {};
+  \node[below=4pt] at (b0) {$j=0$};
+  \node[below=4pt] at (bT) {$j=nT$};
+
+  % Purchase price paid at the valuation date ------------------
+  \draw[vn paid] (b0.north) -- (0.45,1.05);
+  \node[right,text=vncarnelian] at (0.45,0.62) {$-V_{B}$};
+  \node[above,vn annotation] at (0.45,1.05) {cash paid};
+
+  % Par value received at maturity -----------------------------
+  \draw[vn received] (3.40,1.05) -- (bT.north);
+  \node[right,text=vnlink] at (3.40,0.62) {$+V_{P}$};
+  \node[above,vn annotation] at (3.40,1.05) {cash received};
+
+  % Transport to the valuation date ----------------------------
+  % A single future flow means the transport step is itself the price.
+  \draw[vn transport] (3.40,-0.94) -- (0.60,-0.94)
+    node[midway,fill=white,inner sep=3pt,text=vnlink]
+    {$V_{B}=\mathcal{D}_{nT,0}^{-1}(\bar{r})\,V_{P}$};
+  \node[vn callout,anchor=north west] at (0.45,-1.27)
+    {common units: purchase-date dollars};
+  \node[vn annotation,anchor=north west] at (0.47,-1.95)
+    {the return is the gap $V_{P}-V_{B}$; there are no coupons};
+  % Bridge the axis (compounding periods) to the quoted maturity (years):
+  % a bill matures in under a year, so $nT$ need not be a whole number.
+  \node[vn annotation,anchor=north west] at (0.47,-2.55)
+    {$j$ counts compounding periods, $n=2$ per year, over a maturity of $T$ years};
+
+\end{tikzpicture}
+\end{document}

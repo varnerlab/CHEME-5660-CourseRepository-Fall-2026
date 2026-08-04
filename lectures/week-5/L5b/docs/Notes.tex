@@ -25,9 +25,9 @@ Brownian motion entered finance through attempts to describe continuously fluctu
 GBM assumes the ex-dividend share price $S_t>0$ satisfies the stochastic differential equation
 \begin{equation}
   \label{eq:gbm-sde}
-  dS_t=\mu S_t\,dt+\sigma S_t\,dW_t,
+  dS_t=g S_t\,dt+\sigma S_t\,dW_t,
 \end{equation}
-where $\mu\in\mathbb{R}$ is the annual arithmetic expected-return rate, $\sigma>0$ is annual volatility with units years$^{-1/2}$, and $W_t$ is a standard Wiener process. The increment notation is interpreted through stochastic integration rather than ordinary differentiable paths.
+where $g\in\mathbb{R}$ is the annual arithmetic expected-return rate, $\sigma>0$ is annual volatility with units years$^{-1/2}$, and $W_t$ is a standard Wiener process. The increment notation is interpreted through stochastic integration rather than ordinary differentiable paths.
 
 \begin{definition}{Standard Wiener process}{wiener-process}
 A standard Wiener process $(W_t)_{t\geq0}$ is a continuous real-valued stochastic process satisfying $W_0=0$ almost surely; increments over disjoint intervals are independent; and for $0\leq s<t$, the increment $W_t-W_s$ is normally distributed with mean zero and variance $t-s$. Consequently,
@@ -61,34 +61,34 @@ All coefficients and derivatives on the right are evaluated at $(X_t,t)$.
 Apply \thmref{ito-lemma} to $f(S)=\log S$. Because $f'(S)=1/S$ and $f''(S)=-1/S^2$, the GBM dynamics imply
 \begin{align}
   d\log S_t
-  &=\left(\mu-\frac{\sigma^2}{2}\right)dt+\sigma\,dW_t,
+  &=\left(g-\frac{\sigma^2}{2}\right)dt+\sigma\,dW_t,
   \label{eq:log-gbm}\\
   \log\!\left(\frac{S_T}{S_0}\right)
-  &=\left(\mu-\frac{\sigma^2}{2}\right)T+\sigma W_T.
+  &=\left(g-\frac{\sigma^2}{2}\right)T+\sigma W_T.
   \label{eq:integrated-log-gbm}
 \end{align}
 Exponentiation gives the exact GBM solution (\propref{gbm-solution}).
 
 \begin{proposition}{Exact solution and distribution of GBM}{gbm-solution}
-For constant $\mu\in\mathbb{R}$, $\sigma>0$, initial price $S_0>0$, and horizon $T>0$ years, the solution of \eqnref{gbm-sde} is
+For constant $g\in\mathbb{R}$, $\sigma>0$, initial price $S_0>0$, and horizon $T>0$ years, the solution of \eqnref{gbm-sde} is
 \begin{equation}
   \label{eq:gbm-solution}
   S_T=S_0\exp\!\left[
-  \left(\mu-\frac{\sigma^2}{2}\right)T+\sigma\sqrt{T}\,Z
+  \left(g-\frac{\sigma^2}{2}\right)T+\sigma\sqrt{T}\,Z
   \right],
   \qquad Z\sim\mathcal{N}(0,1).
 \end{equation}
-Thus $\log(S_T/S_0)$ is normal with mean $(\mu-\sigma^2/2)T$ and variance $\sigma^2T$, while $S_T$ is lognormal and strictly positive almost surely.
+Thus $\log(S_T/S_0)$ is normal with mean $(g-\sigma^2/2)T$ and variance $\sigma^2T$, while $S_T$ is lognormal and strictly positive almost surely.
 \end{proposition}
 
 The correction $-\sigma^2/2$ reconciles arithmetic and log growth. From the lognormal moments,
 \begin{equation}
   \label{eq:gbm-moments}
-  \E[S_T]=S_0e^{\mu T},
+  \E[S_T]=S_0e^{g T},
   \qquad
-  \Var(S_T)=S_0^2e^{2\mu T}\left(e^{\sigma^2T}-1\right).
+  \Var(S_T)=S_0^2e^{2g T}\left(e^{\sigma^2T}-1\right).
 \end{equation}
-The median is $S_0e^{(\mu-\sigma^2/2)T}$, below the mean when $\sigma>0$ because the price distribution is right-skewed.
+The median is $S_0e^{(g-\sigma^2/2)T}$, below the mean when $\sigma>0$ because the price distribution is right-skewed.
 
 \notebooklink
   {L5b: Derivation of the GBM Solution}
@@ -102,18 +102,18 @@ For a grid $0=t_0<t_1<\cdots<t_N$ with step lengths $\Delta t_j:=t_j-t_{j-1}>0$ 
   \label{eq:exact-step}
   S_{t_j}=S_{t_{j-1}}
   \exp\!\left[
-  \left(\mu-\frac{\sigma^2}{2}\right)\Delta t_j
+  \left(g-\frac{\sigma^2}{2}\right)\Delta t_j
   +\sigma\sqrt{\Delta t_j}\,Z_j
   \right],
   \qquad Z_j\overset{\mathrm{iid}}{\sim}\mathcal{N}(0,1).
 \end{equation}
-This is an exact transition for constant-parameter GBM, not the Euler--Maruyama approximation. Monte Carlo repeats \eqnref{exact-step} with independent pseudorandom streams to approximate path or terminal distributions. Reproducibility requires recording the seed and generator, while uncertainty in Monte Carlo estimates should be distinguished from uncertainty in $\mu$ and $\sigma$.
+This is an exact transition for constant-parameter GBM, not the Euler--Maruyama approximation. Monte Carlo repeats \eqnref{exact-step} with independent pseudorandom streams to approximate path or terminal distributions. Reproducibility requires recording the seed and generator, while uncertainty in Monte Carlo estimates should be distinguished from uncertainty in $g$ and $\sigma$.
 
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[x=1.35cm,y=0.85cm,>=Latex,font=\sffamily\small]
     \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.2cm,minimum height=0.75cm] (params) at (0,0) {$S_0,\mu,\sigma,\Delta t$};
+      minimum width=2.2cm,minimum height=0.75cm] (params) at (0,0) {$S_0,g,\sigma,\Delta t$};
     \node[draw=vnrule,fill=white,rounded corners=1pt,
       minimum width=2.1cm,minimum height=0.75cm] (noise) at (3.2,0) {$Z_j\sim\mathcal N(0,1)$};
     \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
@@ -130,25 +130,25 @@ This is an exact transition for constant-parameter GBM, not the Euler--Maruyama 
 
 \section{Estimating Drift and Volatility Correctly}
 
-For equally spaced observations, define log returns $g_j:=\log(S_{t_j}/S_{t_{j-1}})$ over $\Delta t$ years. Under GBM,
+For equally spaced observations, define the growth rate $g_j:=(1/\Delta t)\log(S_{t_j}/S_{t_{j-1}})$ and its associated log return $r_j:=(\Delta t)g_j$. Under GBM,
 \begin{equation}
   \label{eq:log-return-law}
   g_j\overset{\mathrm{iid}}{\sim}
   \mathcal{N}\!\left[
-  \left(\mu-\frac{\sigma^2}{2}\right)\Delta t,
-  \sigma^2\Delta t
+  g-\frac{\sigma^2}{2},
+  \frac{\sigma^2}{\Delta t}
   \right].
 \end{equation}
-If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of log returns, the natural moment estimates are
+If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of growth rates, the natural moment estimates are
 \begin{equation}
   \label{eq:gbm-estimates}
-  \widehat\sigma^2=\frac{s_g^2}{\Delta t},
+  \widehat\sigma^2=s_g^2\Delta t,
   \qquad
-  \widehat\mu=\frac{\bar g}{\Delta t}+\frac{1}{2}\widehat\sigma^2.
+  \widehat g_{\mathrm{SDE}}=\bar g+\frac{1}{2}\widehat\sigma^2.
 \end{equation}
-The annualized mean log-growth rate $\bar g/\Delta t$ estimates $\mu-\sigma^2/2$, not $\mu$. Omitting the half-variance adjustment silently changes the meaning of the drift parameter in \eqnref{gbm-sde}.
+The sample mean $\bar g$ estimates the expected continuously compounded growth rate $g_{\mathrm{SDE}}-\sigma^2/2$, not the arithmetic SDE drift itself. Omitting the half-variance adjustment silently changes the meaning of the model parameter.
 
-Drift is difficult to estimate over short samples because expected return is small relative to return noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or return-moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
+The growth parameter is difficult to estimate over short samples because expected growth is small relative to growth-rate noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or growth-rate moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
 
 \notebooklink
   {L5b: Estimating Single-Asset GBM Parameters}
@@ -163,10 +163,10 @@ Use the present-value return definition from L5a without costs: $\rho_T:=e^{-r_b
   \Pmeasure(\rho_T>\rho_\star)
   =1-\PhiCDF\!\left(
   \frac{\log(1+\rho_\star)-
-  (\mu-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
+  (g-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
   \right),
 \end{equation}
-where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $\mu$ and $\sigma$. Replacing $\mu$ by a risk-neutral rate changes the measure and no longer answers an empirical probability-of-profit question.
+where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $g$ and $\sigma$. Replacing $g$ by a risk-neutral rate changes the measure and no longer answers an empirical probability-of-profit question.
 
 \notebooklink
   {L5b: GBM NPV Trade Rule}
@@ -186,7 +186,7 @@ GBM can still be useful for short-horizon scenarios, benchmarking, and deriving 
   {Quadratic variation matters}
   {The It\^o correction $-\sigma^2/2$ appears because Brownian squared increments contribute at order $dt$.}
   {Drift names must be consistent}
-  {In the SDE, $\mu$ governs expected price growth; the mean log-growth rate is $\mu-\sigma^2/2$.}
+  {In the SDE, $g$ governs expected price growth; the mean log-growth rate is $g-\sigma^2/2$.}
   {Tractability has a cost}
   {Independent Gaussian increments give exact simulation and closed-form probabilities but exclude heavy tails and volatility clustering.}
   {Next, couple several GBM assets with correlated shocks and generate portfolio weights from a Dirichlet distribution.}

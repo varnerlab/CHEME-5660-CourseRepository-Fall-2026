@@ -3,20 +3,20 @@
 # --- Cleaning & transforms ----------------------------------------------------
 
 # Drop missings/non-finite, convert to Float64
-function clean_mu(mu::AbstractVector{<:Real})
+function clean_growth_rates(g::AbstractVector{<:Real})
     out = Float64[]
-    for x in mu
+    for x in g
         if x !== missing && isfinite(x)
             push!(out, float(x))
         end
     end
-    @assert !isempty(out) "Input μ contains no finite values."
+    @assert !isempty(out) "Input g contains no finite values."
     return out
 end
 
-# Movement factors for log-return growth rates: F = exp(μ * Δt)
-movement_factors_from_mu(mu::AbstractVector{<:Real}, dt::Real=1.0) =
-    exp.(mu .* dt)
+# Movement factors for log-return growth rates: F = exp(g * Δt)
+movement_factors_from_growth_rates(g::AbstractVector{<:Real}, dt::Real=1.0) =
+    exp.(g .* dt)
 
 # --- Bin edge constructors ----------------------------------------------------
 
@@ -81,37 +81,37 @@ end
 # --- Main builder -------------------------------------------------------------
 
 """
-    build_nary_lattice_from_mu(mu; n=3, dt=1.0, method=:quantile)
+    build_nary_lattice_from_growth_rate(g; n=3, dt=1.0, method=:quantile)
 
-Construct an n-state one-step lattice from growth rates μ (log-returns per unit time).
+Construct an n-state one-step lattice from growth rates g (log-returns per unit time).
 
 Inputs
-- `mu`     :: Vector of μ_{j,j-1}
+- `g`      :: Vector of growth rates g_{j,j-1}
 - `n`      :: number of next-day states (n ≥ 2)
-- `dt`     :: Δt for your μ definition (e.g., 1.0 for daily if μ is per day)
-- `method` :: :quantile (equal-mass bins) or :equalwidth (uniform in μ space)
+- `dt`     :: Δt for your g definition (e.g., 1.0 for daily if g is per day)
+- `method` :: :quantile (equal-mass bins) or :equalwidth (uniform in g space)
 
 Returns NamedTuple:
-- `edges`       :: bin edges in μ-space (e₀ < … < eₙ)
-- `avg_factor`  :: f_k = mean(exp(μΔt) | μ ∈ bin k)
+- `edges`       :: bin edges in g-space (e₀ < … < eₙ)
+- `avg_factor`  :: f_k = mean(exp(gΔt) | g ∈ bin k)
 - `freq`        :: p_k = count_k / N
 - `counts`      :: counts per bin
 - `labels`      :: ["S1", …, "Sn"]
 - `method`, `dt`, `N`
 """
-function build_nary_lattice_from_growth_rate(μ::AbstractVector{<:Real};
+function build_nary_lattice_from_growth_rate(g::AbstractVector{<:Real};
     n::Int=3, dt::Real=1.0, method::Symbol=:quantile)
 
     @assert n ≥ 2 "n must be ≥ 2"
-    muv = clean_mu(μ)
-    N   = length(muv)
-    F   = movement_factors_from_mu(muv, dt)
+    gv = clean_growth_rates(g)
+    N  = length(gv)
+    F  = movement_factors_from_growth_rates(gv, dt)
 
-    edges = method === :quantile  ? compute_edges_quantile(muv, n) :
-            method === :equalwidth ? compute_edges_equalwidth(muv, n) :
+    edges = method === :quantile  ? compute_edges_quantile(gv, n) :
+            method === :equalwidth ? compute_edges_equalwidth(gv, n) :
             error("method must be :quantile or :equalwidth")
 
-    idx = assign_bins(muv, edges)
+    idx = assign_bins(gv, edges)
     counts, _, avg_factor, freq = aggregate_bin_stats(F, idx, n)
     labels = ["S$(k)" for k in 1:n]
 
@@ -126,7 +126,7 @@ function print_lattice(summary; digits=6)
                                     summary.freq, summary.counts, summary.labels
     n = length(labs)
     println("n-ary lattice (method=$(summary.method), Δt=$(summary.dt), N=$(summary.N))")
-    println(rpad("State",6), rpad("μ-bin [low, high)",32), rpad("avg factor",14), rpad("freq",10), "count")
+    println(rpad("State",6), rpad("g-bin [low, high)",32), rpad("avg factor",14), rpad("freq",10), "count")
     for k in 1:n
         low, high = edges[k], edges[k+1]
         hi_br = (k == n) ? "]" : ")"
