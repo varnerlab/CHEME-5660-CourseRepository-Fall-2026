@@ -10,11 +10,11 @@
   % Span label ------------------------------------------------
   \draw[vn brace] (0.45,1.65) -- (5.85,1.65)
     node[midway,above=7pt,text=vnink]
-    {\bfseries coupon security: $nT$ coupons, then par at maturity};
+    {\bfseries coupon security: $N=nT$ coupons, then par at maturity};
 
   % Timeline --------------------------------------------------
   \draw[vn timeline] (0,0) -- (6.50,0) node[right] {time};
-  \foreach \x/\lab/\unit in {0.45/0/n0,1.85/1/n1,3.25/2/n2,5.85/nT/nN}{
+  \foreach \x/\lab/\unit in {0.45/0/n0,1.85/1/n1,3.25/2/n2,5.85/N/nN}{
     \node[vn unit] (\unit) at (\x,0) {};
     \node[below=4pt] at (\unit) {$j=\lab$};
   }
@@ -39,11 +39,11 @@
   % Transport to the valuation date ----------------------------
   \draw[vn transport] (5.85,-0.94) -- (0.60,-0.94)
     node[midway,fill=white,inner sep=3pt,text=vnlink]
-    {$\mathrm{PV}_{0}(\bar{c}_{j})=\mathcal{D}_{j,0}^{-1}(\bar{r})\,\bar{c}_{j}$};
+    {$\mathrm{PV}_{0}(\bar{c}_{j})=\mathcal{D}_{j,0}^{-1}(y;n)\,\bar{c}_{j}$};
   % Tie the abstract net cash flow to the concrete coupon and par amounts.
   \node[vn annotation,anchor=north west] at (0.47,-1.30)
-    {net cash flow: $\bar{c}_{0}=-V_{B}$,\;\; $\bar{c}_{j}=C$ for $0<j<nT$,%
-     \;\; $\bar{c}_{nT}=C+V_{P}$};
+    {net cash flow: $\bar{c}_{0}=-V_{B}$,\;\; $\bar{c}_{j}=C$ for $0<j<N$,%
+     \;\; $\bar{c}_{N}=C+V_{P}$};
 
 \end{tikzpicture}
 \end{document}

@@ -16,8 +16,8 @@
   \draw[vn timeline] (0,0) -- (4.05,0) node[right] {time};
   \node[vn unit] (b0) at (0.45,0) {};
   \node[vn unit] (bT) at (3.40,0) {};
-  \node[below=4pt] at (b0) {$j=0$};
-  \node[below=4pt] at (bT) {$j=nT$};
+  \node[below=4pt] at (b0) {$t=0$};
+  \node[below=4pt] at (bT) {$t=T$};
 
   % Purchase price paid at the valuation date ------------------
   \draw[vn paid] (b0.north) -- (0.45,1.05);
@@ -33,15 +33,11 @@
   % A single future flow means the transport step is itself the price.
   \draw[vn transport] (3.40,-0.94) -- (0.60,-0.94)
     node[midway,fill=white,inner sep=3pt,text=vnlink]
-    {$V_{B}=\mathcal{D}_{nT,0}^{-1}(\bar{r})\,V_{P}$};
-  \node[vn callout,anchor=north west] at (0.45,-1.27)
-    {common units: purchase-date dollars};
+    {$V_{B}=\mathcal{D}_{T,0}^{-1}(y;n)\,V_{P}=e^{-g_yT}V_P$};
+  \node[vn annotation,anchor=north west] at (0.47,-1.35)
+    {dollar gain: $V_{P}-V_{B}$; there are no coupons};
   \node[vn annotation,anchor=north west] at (0.47,-1.95)
-    {the return is the gap $V_{P}-V_{B}$; there are no coupons};
-  % Bridge the axis (compounding periods) to the quoted maturity (years):
-  % a bill matures in under a year, so $nT$ need not be a whole number.
-  \node[vn annotation,anchor=north west] at (0.47,-2.55)
-    {$j$ counts compounding periods, $n=2$ per year, over a maturity of $T$ years};
+    {$g_B=T^{-1}\log(V_P/V_B)$,\quad $r_B=Tg_B$};
 
 \end{tikzpicture}
 \end{document}
