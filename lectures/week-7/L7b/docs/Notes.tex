@@ -8,7 +8,7 @@
 \lecturenotes{7b}{Introduction to Single-Index Models}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Decompose asset returns}
+  {Decompose asset growth rates}
   {Separate common market exposure from firm-specific variation and interpret alpha, beta, and the residual.}
   {Build the SIM covariance}
   {Derive the low-dimensional mean and covariance structure implied by a single-index model.}
@@ -17,17 +17,17 @@
 
 \section{Why Replace a Full Covariance Matrix?}
 
-A portfolio of $m$ risky assets requires $m$ expected returns and $m(m+1)/2$ distinct covariance entries. The number of pairwise terms grows quadratically, estimates become noisy when the history is short relative to the asset universe, and an inverse covariance matrix can magnify that noise. Yet many securities visibly move together when market-wide news arrives. A factor model makes that shared source of movement explicit.
+A portfolio of $m$ risky assets requires $m$ expected growth rates and $m(m+1)/2$ distinct growth-rate covariance entries. The number of pairwise terms grows quadratically, estimates become noisy when the history is short relative to the asset universe, and an inverse covariance matrix can magnify that noise. Yet many securities visibly move together when market-wide news arrives. A factor model makes that shared source of movement explicit.
 
 The single-index model (SIM), introduced by William Sharpe as a simplified model for portfolio analysis, compresses co-movement into exposure to one observed index. It is both a statistical regression and a covariance model. Those roles are related but not identical: fitting separate regressions does not by itself prove that their residuals are mutually uncorrelated.
 
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=1.05cm and 1.45cm]
-    \node[draw=vnink,fill=vnsoft,minimum width=2.15cm,minimum height=0.78cm] (market) {market return $R_M$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=1.25cm,minimum width=2.15cm] (a1) {asset $1$: $R_1$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,minimum width=2.15cm] (a2) {asset $2$: $R_2$};
-    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=-1.25cm,minimum width=2.15cm] (am) {asset $m$: $R_m$};
+    \node[draw=vnink,fill=vnsoft,minimum width=2.15cm,minimum height=0.78cm] (market) {market growth $g_M$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=1.25cm,minimum width=2.15cm] (a1) {asset $1$: $g_1$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,minimum width=2.15cm] (a2) {asset $2$: $g_2$};
+    \node[draw=vnrule,fill=vnpanel,right=2.25cm of market,yshift=-1.25cm,minimum width=2.15cm] (am) {asset $m$: $g_m$};
     \draw[vnlink,thick,->] (market.east) -- node[above,sloped] {$\beta_1$} (a1.west);
     \draw[vnlink,thick,->] (market.east) -- node[above] {$\beta_2$} (a2.west);
     \draw[vnlink,thick,->] (market.east) -- node[below,sloped] {$\beta_m$} (am.west);
@@ -38,97 +38,97 @@ The single-index model (SIM), introduced by William Sharpe as a simplified model
     \draw[vnmuted,->] (e2)--(a2);
     \draw[vnmuted,->] (em)--(am);
   \end{tikzpicture}
-  \caption{One common market return reaches every asset through its beta loading, while each residual records variation not explained by that index. The diagonal-residual assumption makes the residual arrows mutually uncorrelated; it should be checked rather than silently presumed.}
+  \caption{One common market growth rate reaches every asset through its beta loading, while each residual records variation not explained by that index. The diagonal-residual assumption makes the residual arrows mutually uncorrelated; it should be checked rather than silently presumed.}
   \label{fig:sim-graph}
 \end{figure}
 
-\section{The Single-Index Return Model}
+\section{The Single-Index Growth Model}
 
-Fix one return horizon, such as one trading day. Let $R_M\in\R$ be the market-index return over that horizon and let $R_i\in\R$ be the return of risky asset $i\in\{1,\ldots,m\}$. A SIM represents each asset as
+Fix one sampling interval $\Delta t$, such as one trading day expressed in years. Let $g_M\in\R$ be the market-index continuously compounded growth rate and let $g_i\in\R$ be the growth rate of risky asset $i\in\{1,\ldots,m\}$. A SIM represents each asset as
 \begin{equation}
   \label{eq:sim-scalar}
-  R_i=\alpha_i+\beta_iR_M+\varepsilon_i.
+  g_i=\alpha_{g,i}+\beta_i g_M+\varepsilon_{g,i}.
 \end{equation}
-Here $\alpha_i\in\R$ is an intercept per observation period, $\beta_i\in\R$ is a dimensionless market loading, and $\varepsilon_i\in\R$ is the same-period residual. The conventional population assumptions are
+Here $\alpha_{g,i}$ and $\varepsilon_{g,i}$ have units time$^{-1}$, while $\beta_i$ is a dimensionless market loading. The conventional population assumptions are
 \begin{equation}
   \label{eq:sim-assumptions}
-  \mathbb E[\varepsilon_i]=0,
+  \mathbb E[\varepsilon_{g,i}]=0,
   \qquad
-  \operatorname{Cov}(\varepsilon_i,R_M)=0,
+  \operatorname{Cov}(\varepsilon_{g,i},g_M)=0,
   \qquad
-  \operatorname{Cov}(\varepsilon_i,\varepsilon_j)=0\quad(i\neq j).
+  \operatorname{Cov}(\varepsilon_{g,i},\varepsilon_{g,j})=0\quad(i\neq j).
 \end{equation}
 The first two conditions define a linear projection when the parameters are population least-squares coefficients. The third is an additional covariance-model restriction. Market proxies, sector effects, omitted factors, and synchronized shocks can leave correlated residuals and violate it.
 
 \begin{definition}{Systematic and idiosyncratic components}{risk-components}
-For the SIM in \eqnref{sim-scalar}, $\beta_iR_M$ is the asset's \emph{systematic component}: its variation is inherited from the common index. The residual $\varepsilon_i$ is the \emph{idiosyncratic component}: variation orthogonal to the chosen index under \eqnref{sim-assumptions}. Idiosyncratic does not mean predictable, harmless, or independent through time.
+For the SIM in \eqnref{sim-scalar}, $\beta_i g_M$ is the asset's \emph{systematic component}: its variation is inherited from the common index. The residual $\varepsilon_{g,i}$ is the \emph{idiosyncratic component}: variation orthogonal to the chosen index under \eqnref{sim-assumptions}. Idiosyncratic does not mean predictable, harmless, or independent through time.
 \end{definition}
 
-If $\sigma_M^2:=\operatorname{Var}(R_M)>0$, the population linear-projection coefficients satisfy
+If $\sigma_{g,M}^2:=\operatorname{Var}(g_M)>0$, the population linear-projection coefficients satisfy
 \begin{equation}
   \label{eq:projection-coefficients}
-  \beta_i=\frac{\operatorname{Cov}(R_i,R_M)}{\sigma_M^2},
+  \beta_i=\frac{\operatorname{Cov}(g_i,g_M)}{\sigma_{g,M}^2},
   \qquad
-  \alpha_i=\mathbb E[R_i]-\beta_i\mathbb E[R_M].
+  \alpha_{g,i}=\mathbb E[g_i]-\beta_i\mathbb E[g_M].
 \end{equation}
-Thus beta measures sensitivity to the selected index and horizon. A beta of $1.4$ does not mean the asset always moves by $1.4$ times the market; \eqnref{sim-scalar} includes an intercept and a residual on every observation.
+Thus beta measures sensitivity to the selected index and sampling convention. A beta of $1.4$ does not mean the asset always moves by $1.4$ times the market; \eqnref{sim-scalar} includes an intercept and a residual on every observation. For $r=(\Delta t)g$, the return-form coefficients satisfy $\alpha_{r,i}=(\Delta t)\alpha_{g,i}$, $\varepsilon_{r,i}=(\Delta t)\varepsilon_{g,i}$, and the same $\beta_i$.
 
 \section{Mean and Covariance Implied by the SIM}
 
-Let $\boldsymbol\alpha,\boldsymbol\beta\in\R^m$ collect the intercepts and betas, let $\boldsymbol\varepsilon\in\R^m$ collect residuals, and let $D:=\operatorname{diag}(\sigma_{\varepsilon,1}^2,\ldots,\sigma_{\varepsilon,m}^2)$, where $\sigma_{\varepsilon,i}^2:=\operatorname{Var}(\varepsilon_i)$. The vector model is
+Let $\boldsymbol\alpha_g,\boldsymbol\beta\in\R^m$ collect the growth intercepts and betas, let $\boldsymbol\varepsilon_g\in\R^m$ collect growth residuals, and let $D_g:=\operatorname{diag}(\sigma_{g,\varepsilon,1}^2,\ldots,\sigma_{g,\varepsilon,m}^2)$, where $\sigma_{g,\varepsilon,i}^2:=\operatorname{Var}(\varepsilon_{g,i})$. The vector model is
 \begin{equation}
   \label{eq:sim-vector}
-  \mathbf R=\boldsymbol\alpha+\boldsymbol\beta R_M+\boldsymbol\varepsilon.
+  \mathbf g=\boldsymbol\alpha_g+\boldsymbol\beta g_M+\boldsymbol\varepsilon_g.
 \end{equation}
 Under \eqnref{sim-assumptions}, its moments have the low-rank-plus-diagonal form in \propref{sim-moments}.
 
 \begin{proposition}{Single-index moments}{sim-moments}
-Let $\mathbf R\in\R^m$ satisfy \eqnref{sim-vector}. Suppose $\mathbb E[\boldsymbol\varepsilon]=\mathbf0$, $\operatorname{Cov}(\boldsymbol\varepsilon,R_M)=\mathbf0$, and $\operatorname{Cov}(\boldsymbol\varepsilon)=D$, where $D$ is the diagonal matrix of residual variances defined above. If $\mu_M:=\mathbb E[R_M]$ and $\sigma_M^2:=\operatorname{Var}(R_M)$, then
+Let $\mathbf g\in\R^m$ satisfy \eqnref{sim-vector}. Suppose $\mathbb E[\boldsymbol\varepsilon_g]=\mathbf0$, $\operatorname{Cov}(\boldsymbol\varepsilon_g,g_M)=\mathbf0$, and $\operatorname{Cov}(\boldsymbol\varepsilon_g)=D_g$. If $\bar g_M:=\mathbb E[g_M]$ and $\sigma_{g,M}^2:=\operatorname{Var}(g_M)$, then
 \begin{equation}
   \label{eq:sim-moments}
-  \boldsymbol\mu:=\mathbb E[\mathbf R]
-  =\boldsymbol\alpha+\boldsymbol\beta\mu_M,
+  \bar{\mathbf g}:=\mathbb E[\mathbf g]
+  =\boldsymbol\alpha_g+\boldsymbol\beta\bar g_M,
   \qquad
-  \Sigma:=\operatorname{Cov}(\mathbf R)
-  =\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D.
+  \Sigma_g:=\operatorname{Cov}(\mathbf g)
+  =\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g.
 \end{equation}
-Consequently, $\operatorname{Cov}(R_i,R_j)=\beta_i\beta_j\sigma_M^2$ for $i\neq j$, while $\operatorname{Var}(R_i)=\beta_i^2\sigma_M^2+\sigma_{\varepsilon,i}^2$.
+Consequently, $\operatorname{Cov}(g_i,g_j)=\beta_i\beta_j\sigma_{g,M}^2$ for $i\neq j$, while $\operatorname{Var}(g_i)=\beta_i^2\sigma_{g,M}^2+\sigma_{g,\varepsilon,i}^2$.
 \end{proposition}
 
-The matrix $\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}$ has rank at most one. Instead of estimating every cross-covariance separately, the SIM estimates $m$ betas, $m$ residual variances, and one market variance. This reduction buys stability only if the omitted residual correlations are small enough for the intended use.
+The matrix $\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}$ has rank at most one. Instead of estimating every cross-covariance separately, the SIM estimates $m$ betas, $m$ residual growth variances, and one market growth variance. This reduction buys stability only if the omitted residual correlations are small enough for the intended use.
 
 \section{Portfolio Risk Becomes Interpretable}
 
-Let $\mathbf w\in\R^m$ be fixed portfolio weights. The portfolio return $R_p:=\mathbf w^{\mathsf T}\mathbf R$ has market beta $\beta_p:=\mathbf w^{\mathsf T}\boldsymbol\beta$ and residual $\varepsilon_p:=\mathbf w^{\mathsf T}\boldsymbol\varepsilon$. Substituting \eqnref{sim-vector} gives
+Let $\mathbf w\in\R^m$ be fixed portfolio weights. The portfolio growth rate $g_p:=\mathbf w^{\mathsf T}\mathbf g$ has market beta $\beta_p:=\mathbf w^{\mathsf T}\boldsymbol\beta$ and residual $\varepsilon_{g,p}:=\mathbf w^{\mathsf T}\boldsymbol\varepsilon_g$. Substituting \eqnref{sim-vector} gives
 \begin{equation}
   \label{eq:portfolio-sim}
-  R_p=\mathbf w^{\mathsf T}\boldsymbol\alpha+\beta_pR_M+\varepsilon_p,
+  g_p=\mathbf w^{\mathsf T}\boldsymbol\alpha_g+\beta_p g_M+\varepsilon_{g,p},
   \qquad
-  \operatorname{Var}(R_p)=\beta_p^2\sigma_M^2+\mathbf w^{\mathsf T}D\mathbf w.
+  \operatorname{Var}(g_p)=\beta_p^2\sigma_{g,M}^2+\mathbf w^{\mathsf T}D_g\mathbf w.
 \end{equation}
-The first variance term is common-factor risk. The second is residual risk. For an equal-weight portfolio with $w_i=1/m$ and residual variances bounded by a constant $C$, the residual variance satisfies
+The first variance term is common-factor risk. The second is residual risk. For an equal-weight portfolio with $w_i=1/m$ and residual variances bounded by a constant $K$, the residual variance satisfies
 \begin{equation}
   \label{eq:diversification-bound}
-  \mathbf w^{\mathsf T}D\mathbf w
-  =\frac{1}{m^2}\sum_{i=1}^{m}\sigma_{\varepsilon,i}^2
-  \leq\frac{C}{m}.
+  \mathbf w^{\mathsf T}D_g\mathbf w
+  =\frac{1}{m^2}\sum_{i=1}^{m}\sigma_{g,\varepsilon,i}^2
+  \leq\frac{K}{m}.
 \end{equation}
 Thus firm-specific variance can vanish as the portfolio broadens under the diagonal-residual assumption, while systematic variance generally remains. Concentrated weights or correlated residuals can destroy this conclusion.
 
 \section{Estimating Alpha and Beta}
 
-For one asset, observe $n$ paired returns $\{(R_{M,t},R_{i,t})\}_{t=1}^n$. Let $\mathbf y\in\R^n$ contain the asset returns and let $X\in\R^{n\times2}$ have row $t$ equal to $(1,R_{M,t})$. When $X$ has full column rank, ordinary least squares estimates $\boldsymbol\theta_i:=(\alpha_i,\beta_i)^{\mathsf T}$ by
+For one asset, observe $n$ paired growth rates $\{(g_{M,t},g_{i,t})\}_{t=1}^n$. Let $\mathbf y\in\R^n$ contain the asset growth rates and let $X\in\R^{n\times2}$ have row $t$ equal to $(1,g_{M,t})$. When $X$ has full column rank, ordinary least squares estimates $\boldsymbol\theta_i:=(\alpha_{g,i},\beta_i)^{\mathsf T}$ by
 \begin{equation}
   \label{eq:ols}
   \widehat{\boldsymbol\theta}_i
   =(X^{\mathsf T}X)^{-1}X^{\mathsf T}\mathbf y,
   \qquad
-  \widehat{\boldsymbol\varepsilon}_i
+  \widehat{\boldsymbol\varepsilon}_{g,i}
   =\mathbf y-X\widehat{\boldsymbol\theta}_i.
 \end{equation}
-Numerically, a QR or singular-value decomposition is preferable to explicitly forming the inverse in \eqnref{ols}. The residual variance estimate is $\widehat\sigma_{\varepsilon,i}^2=\|\widehat{\boldsymbol\varepsilon}_i\|_2^2/(n-2)$ under the usual homoskedastic regression convention.
+Numerically, a QR or singular-value decomposition is preferable to explicitly forming the inverse in \eqnref{ols}. The growth-residual variance estimate is $\widehat\sigma_{g,\varepsilon,i}^2=\|\widehat{\boldsymbol\varepsilon}_{g,i}\|_2^2/(n-2)$ under the usual homoskedastic regression convention. Do not divide this value by $\Delta t$: the observations are already growth rates. The corresponding return residual variance is $(\Delta t)^2\widehat\sigma_{g,\varepsilon,i}^2$, while its GBM covariance-rate contribution is $\Delta t\,\widehat\sigma_{g,\varepsilon,i}^2$.
 
-Classical standard errors and Student-$t$ confidence intervals additionally rely on assumptions about conditional variance and temporal dependence. Financial returns can be heteroskedastic and serially dependent, so heteroskedasticity/autocorrelation-consistent errors, block bootstrap intervals, or rolling estimates may be more credible than an i.i.d. formula. Whatever method is used, the training window and return horizon must be stated.
+Classical standard errors and Student-$t$ confidence intervals additionally rely on assumptions about conditional variance and temporal dependence. Financial growth rates can be heteroskedastic and serially dependent, so heteroskedasticity/autocorrelation-consistent errors, block bootstrap intervals, or rolling estimates may be more credible than an i.i.d. formula. Whatever method is used, the training window and sampling interval must be stated.
 
 \notebooklink
   {L7b: SVD Estimation of Single-Index Models}
@@ -142,16 +142,16 @@ Classical standard errors and Student-$t$ confidence intervals additionally rely
 
 \section{What \texorpdfstring{$R^2$}{R-squared}, Alpha, and Beta Do Not Prove}
 
-In a regression with an intercept, $R_i^2:=1-\sum_t\widehat\varepsilon_{i,t}^2/\sum_t(R_{i,t}-\overline R_i)^2$ is the sample fraction of asset-return variation explained by the fitted market regressor. It is not the probability that the model is true, a forecast-accuracy guarantee, or a measure of investment quality. A low $R^2$ can coexist with a useful beta estimate, and a high $R^2$ can coexist with unstable parameters or omitted nonlinear structure.
+In a regression with an intercept, $R_i^2:=1-\sum_t\widehat\varepsilon_{g,i,t}^2/\sum_t(g_{i,t}-\bar g_i)^2$ is the sample fraction of asset-growth variation explained by the fitted market regressor. It is not the probability that the model is true, a forecast-accuracy guarantee, or a measure of investment quality. A low $R^2$ can coexist with a useful beta estimate, and a high $R^2$ can coexist with unstable parameters or omitted nonlinear structure.
 
 Likewise, a positive estimated alpha is an intercept conditional on the chosen market proxy, return convention, sample window, and specification. It is not automatically abnormal performance. Beta is exposure to the selected factor, not total risk. Before using a SIM covariance in an optimizer, inspect residual cross-correlations, rolling stability, out-of-sample error, and sensitivity to the market proxy.
 
-The notebooks work with continuously compounded growth rates. For small intervals, log returns and simple returns are close, but they are not identical. Means, intercepts, risk-free adjustments, and annualization must all use a compatible convention; a coefficient estimated from daily log returns should not be inserted unexamined into a model written for annual simple returns.
+The notebooks work with continuously compounded growth rates $g=r/\Delta t$. Means, intercepts, residuals, risk-free adjustments, and covariances must all use this convention. In particular, $\Sigma_r=(\Delta t)^2\Sigma_g$ and the GBM covariance rate is $C=\Delta t\,\Sigma_g$. Simple returns remain distinct from both quantities.
 
 \keytakeaways
   {In this lecture, we replaced a dense covariance description with one common market factor plus asset-specific residuals and connected that structure to regression estimation.}
   {SIM is a covariance restriction}
-  {The formula $\Sigma=\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D$ requires residuals to be uncorrelated across assets, not merely fitted separately.}
+  {The formula $\Sigma_g=\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g$ requires residuals to be uncorrelated across assets, not merely fitted separately.}
   {Risk has two components}
   {Portfolio market exposure is governed by $\mathbf w^{\mathsf T}\boldsymbol\beta$; diagonal residual risk can diversify, but systematic risk remains.}
   {Diagnostics limit interpretation}

@@ -9,60 +9,60 @@
 
 \learningobjectives
   {Construct SIM portfolio inputs}
-  {Build expected-return and positive-semidefinite covariance estimates from market, beta, alpha, and residual-risk estimates.}
+  {Build expected-growth and positive-semidefinite growth-rate covariance estimates from market, beta, alpha, and residual-risk estimates.}
   {Solve constrained allocations}
   {Formulate risky-only and risky/risk-free minimum-variance problems while distinguishing lending, borrowing, and short-sale constraints.}
   {Validate the resulting portfolio}
   {Compare SIM and empirical allocations out of sample without treating a fitted frontier as realized performance.}
 
-\section{From a Return Model to a Portfolio Decision}
+\section{From a Growth Model to a Portfolio Decision}
 
 The single-index model replaces a dense collection of sample covariances with one market factor and asset-specific residual risks. That parsimony is useful only when it is carried into an optimization problem with compatible units, feasible trading constraints, and honest validation. A smooth fitted frontier is a model output, not evidence that the selected portfolio will perform well.
 
-For $m$ risky assets over one fixed return horizon, let $\boldsymbol\alpha,\boldsymbol\beta\in\R^m$ be SIM intercepts and market loadings, let $\mu_M\in\R$ and $\sigma_M^2\geq0$ be the market return mean and variance, and let $D:=\operatorname{diag}(\sigma_{\varepsilon,1}^2,\ldots,\sigma_{\varepsilon,m}^2)$ contain nonnegative residual variances. The SIM portfolio inputs are
+For $m$ risky assets sampled over a fixed interval $\Delta t$, let $\boldsymbol\alpha_g,\boldsymbol\beta\in\R^m$ be growth-SIM intercepts and market loadings, let $\bar g_M\in\R$ and $\sigma_{g,M}^2\geq0$ be the market growth-rate mean and variance, and let $D_g:=\operatorname{diag}(\sigma_{g,\varepsilon,1}^2,\ldots,\sigma_{g,\varepsilon,m}^2)$ contain nonnegative growth-residual variances. The growth-based SIM portfolio inputs are
 \begin{equation}
   \label{eq:sim-inputs}
-  \boldsymbol\mu=\boldsymbol\alpha+\boldsymbol\beta\mu_M,
+  \bar{\mathbf g}=\boldsymbol\alpha_g+\boldsymbol\beta\bar g_M,
   \qquad
-  \Sigma=\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D.
+  \Sigma_g=\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g.
 \end{equation}
-Every quantity in \eqnref{sim-inputs} must use the same horizon and return convention. If the notebooks estimate annualized residual variance rates from daily log-growth residuals, the factor variance and expected growth inputs must be annualized consistently.
+Every quantity in \eqnref{sim-inputs} uses growth-rate units: $\bar{\mathbf g}$ and $\boldsymbol\alpha_g$ have units time$^{-1}$, while $\Sigma_g$ and $D_g$ have units time$^{-2}$. For the associated log return $\mathbf r=(\Delta t)\mathbf g$, $\Sigma_r=(\Delta t)^2\Sigma_g$. The GBM covariance rate is a third object, $C=\Sigma_r/\Delta t=\Delta t\,\Sigma_g$; it should not be inserted into a growth-rate variance formula without relabeling the objective.
 
 \begin{proposition}{The SIM covariance is positive semidefinite}{sim-psd}
-Let $\boldsymbol\beta\in\R^m$, $\sigma_M^2\geq0$, and let $D\in\R^{m\times m}$ be diagonal with nonnegative entries. Then $\Sigma:=\sigma_M^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D$ is symmetric positive semidefinite because, for every $\mathbf x\in\R^m$,
+Let $\boldsymbol\beta\in\R^m$, $\sigma_{g,M}^2\geq0$, and let $D_g\in\R^{m\times m}$ be diagonal with nonnegative entries. Then $\Sigma_g:=\sigma_{g,M}^2\boldsymbol\beta\boldsymbol\beta^{\mathsf T}+D_g$ is symmetric positive semidefinite because, for every $\mathbf x\in\R^m$,
 \begin{equation}
   \label{eq:sim-psd}
-  \mathbf x^{\mathsf T}\Sigma\mathbf x
-  =\sigma_M^2(\boldsymbol\beta^{\mathsf T}\mathbf x)^2
-  +\sum_{i=1}^{m}D_{ii}x_i^2\geq0.
+  \mathbf x^{\mathsf T}\Sigma_g\mathbf x
+  =\sigma_{g,M}^2(\boldsymbol\beta^{\mathsf T}\mathbf x)^2
+  +\sum_{i=1}^{m}(D_g)_{ii}x_i^2\geq0.
 \end{equation}
-It is positive definite if every diagonal entry of $D$ is strictly positive.
+It is positive definite if every diagonal entry of $D_g$ is strictly positive.
 \end{proposition}
 
 Positive semidefiniteness makes the variance objective convex. It does not establish that the covariance estimate is accurate. Residual cross-correlations, changing betas, and an inadequate market proxy can all produce a valid matrix that is a poor description of future co-movement.
 
 \section{Risky-Only Allocation with SIM Moments}
 
-Let $\mathbf w\in\R^m$ denote risky-asset dollar weights and let $\mu_\star\in\R$ be a target return for the same horizon. A long-only minimum-variance allocation solves
+Let $\mathbf w\in\R^m$ denote risky-asset dollar weights and let $g_\star\in\R$ be a target growth rate under the same sampling convention. A long-only minimum-variance allocation solves
 \begin{equation}
   \label{eq:risky-qp}
   \begin{aligned}
-  \min_{\mathbf w\in\R^m}\quad &\frac12\mathbf w^{\mathsf T}\Sigma\mathbf w\\
+  \min_{\mathbf w\in\R^m}\quad &\frac12\mathbf w^{\mathsf T}\Sigma_g\mathbf w\\
   \text{subject to}\quad
     &\mathbf1^{\mathsf T}\mathbf w=1,\\
-    &\boldsymbol\mu^{\mathsf T}\mathbf w\geq\mu_\star,\\
+    &\bar{\mathbf g}^{\mathsf T}\mathbf w\geq g_\star,\\
     &\mathbf w\geq\mathbf0.
   \end{aligned}
 \end{equation}
-The inequality form asks for at least the target. When expected returns contain estimation noise, the optimum may overshoot the target; report the achieved return and solver status rather than assuming equality. Varying $\mu_\star$ traces the modeled constrained boundary. If short sales are permitted, remove or replace the lower bounds and state any leverage or gross-exposure limit.
+The inequality form asks for at least the target. When expected growth rates contain estimation noise, the optimum may overshoot the target; report the achieved growth and solver status rather than assuming equality. Varying $g_\star$ traces the modeled constrained boundary. If short sales are permitted, remove or replace the lower bounds and state any leverage or gross-exposure limit.
 
-The rank-one structure also gives a computational shortcut. If $D$ is positive definite, the Sherman--Morrison identity yields
+The rank-one structure also gives a computational shortcut. If $D_g$ is positive definite, the Sherman--Morrison identity yields
 \begin{equation}
   \label{eq:sim-inverse}
-  \Sigma^{-1}
-  =D^{-1}
-  -\frac{\sigma_M^2D^{-1}\boldsymbol\beta\boldsymbol\beta^{\mathsf T}D^{-1}}
-  {1+\sigma_M^2\boldsymbol\beta^{\mathsf T}D^{-1}\boldsymbol\beta}.
+  \Sigma_g^{-1}
+  =D_g^{-1}
+  -\frac{\sigma_{g,M}^2D_g^{-1}\boldsymbol\beta\boldsymbol\beta^{\mathsf T}D_g^{-1}}
+  {1+\sigma_{g,M}^2\boldsymbol\beta^{\mathsf T}D_g^{-1}\boldsymbol\beta}.
 \end{equation}
 Equation~\eqref{eq:sim-inverse} explains why a factor model can scale well, but a constrained quadratic-program solver remains the appropriate tool for \eqnref{risky-qp}.
 
@@ -73,21 +73,21 @@ Equation~\eqref{eq:sim-inverse} explains why a factor model can scale well, but 
 
 \section{Adding a Horizon-Matched Risk-Free Asset}
 
-Let $r_f\in\R$ be a known return over the decision horizon, let $w_f\in\R$ be its dollar weight, and let $\mathbf x\in\R^m$ contain risky-asset weights. Because a risk-free payoff has zero covariance with risky returns under the model, only $\mathbf x$ enters portfolio variance. The target-return problem is
+Let $g_f\in\R$ be a known continuously compounded risk-free growth rate, let $w_f\in\R$ be its dollar weight, and let $\mathbf x\in\R^m$ contain risky-asset weights. Because a risk-free payoff has zero growth-rate variance under the model, only $\mathbf x$ enters portfolio variance. The target-growth problem is
 \begin{equation}
   \label{eq:risky-riskfree-qp}
   \begin{aligned}
-  \min_{\mathbf x,w_f}\quad &\frac12\mathbf x^{\mathsf T}\Sigma\mathbf x\\
+  \min_{\mathbf x,w_f}\quad &\frac12\mathbf x^{\mathsf T}\Sigma_g\mathbf x\\
   \text{subject to}\quad
     &\mathbf1^{\mathsf T}\mathbf x+w_f=1,\\
-    &\boldsymbol\mu^{\mathsf T}\mathbf x+r_fw_f\geq\mu_\star.
+    &\bar{\mathbf g}^{\mathsf T}\mathbf x+g_fw_f\geq g_\star.
   \end{aligned}
 \end{equation}
-Long-only risky assets impose $\mathbf x\geq\mathbf0$. Risk-free lending imposes $w_f\geq0$; allowing $w_f<0$ represents borrowing at the same rate $r_f$, a strong idealization. Eliminating $w_f=1-\mathbf1^{\mathsf T}\mathbf x$ rewrites the return constraint as
+Long-only risky assets impose $\mathbf x\geq\mathbf0$. Risk-free lending imposes $w_f\geq0$; allowing $w_f<0$ represents borrowing at the same growth rate $g_f$, a strong idealization. Eliminating $w_f=1-\mathbf1^{\mathsf T}\mathbf x$ rewrites the growth constraint as
 \begin{equation}
   \label{eq:excess-return-constraint}
-  (\boldsymbol\mu-r_f\mathbf1)^{\mathsf T}\mathbf x
-  \geq\mu_\star-r_f.
+  (\bar{\mathbf g}-g_f\mathbf1)^{\mathsf T}\mathbf x
+  \geq g_\star-g_f.
 \end{equation}
 If lending only is allowed, $w_f\geq0$ additionally requires $\mathbf1^{\mathsf T}\mathbf x\leq1$. If borrowing is allowed without limit, that inequality disappears. These are different feasible sets and should never share an unlabeled ``capital allocation line.''
 
@@ -97,27 +97,27 @@ A zero-coupon Treasury STRIP delivers a specified nominal payment only when its 
 
 \section{The Capital Allocation Geometry and Its Limits}
 
-Let $T$ be a feasible risky portfolio with expected return $\mu_T>r_f$ and standard deviation $\sigma_T>0$. If $y\geq0$ is the total risky weight, combining $y$ in $T$ with $1-y$ in the risk-free asset gives
+Let $T$ be a feasible risky portfolio with expected growth $\bar g_T>g_f$ and growth-rate standard deviation $\sigma_{g,T}>0$. If $y\geq0$ is the total risky weight, combining $y$ in $T$ with $1-y$ in the risk-free asset gives
 \begin{equation}
   \label{eq:cal-parameterization}
-  \mu_p=r_f+y(\mu_T-r_f),
+  \bar g_p=g_f+y(\bar g_T-g_f),
   \qquad
-  \sigma_p=y\sigma_T.
+  \sigma_{g,p}=y\sigma_{g,T}.
 \end{equation}
-For unrestricted lending and borrowing at one rate, the efficient risky fund maximizes $(\mu_T-r_f)/\sigma_T$ and \eqnref{cal-parameterization} traces a ray. With lending but no borrowing, only $0\leq y\leq1$ is available on that straight segment; beyond $T$, the constrained efficient set generally returns to the risky-asset boundary. Position limits, different borrowing rates, and short-sale constraints can introduce additional kinks.
+For unrestricted lending and borrowing at one rate, the efficient risky fund maximizes $(\bar g_T-g_f)/\sigma_{g,T}$ and \eqnref{cal-parameterization} traces a ray. With lending but no borrowing, only $0\leq y\leq1$ is available on that straight segment; beyond $T$, the constrained efficient set generally returns to the risky-asset boundary. Position limits, different borrowing rates, and short-sale constraints can introduce additional kinks.
 
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[x=1.05cm,y=0.78cm,>=Latex,font=\sffamily\small]
     \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(8.2,0) node[right] {$\sigma$};
-    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,5.8) node[above] {$\mu$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,5.8) node[above] {$\bar g$};
     \draw[vnlink,line width=1.5pt,domain=2.0:6.8,samples=70,smooth]
       plot (\x,{1.65+0.18*(\x-2.0)^2});
     \coordinate (rf) at (0,0.85);
     \coordinate (tan) at (4.65,{1.65+0.18*(4.65-2.0)^2});
     \draw[vncarnelian,line width=1.6pt] (rf)--(tan);
     \draw[vncarnelian,dashed,line width=1.2pt] (tan)--($(rf)!1.55!(tan)$);
-    \fill[vnink] (rf) circle (2pt) node[left] {$r_f$};
+    \fill[vnink] (rf) circle (2pt) node[left] {$g_f$};
     \fill[vncarnelian] (tan) circle (2.2pt) node[above left] {$T$};
     \node[text=vncarnelian,rotate=30] at (2.25,2.2) {lending segment};
     \node[text=vncarnelian] at (6.55,4.7) {borrowing extension};
@@ -127,7 +127,7 @@ For unrestricted lending and borrowing at one rate, the efficient risky fund max
   \label{fig:constrained-cal}
 \end{figure}
 
-The classical separation theorem says investors with common inputs choose the same tangency fund and vary only $y$. This statement relies on mean--variance preferences, common beliefs, one frictionless borrowing/lending rate, and compatible unconstrained opportunities. Once constraints bind, different target returns can select different risky compositions; two-fund separation need not survive globally.
+The classical separation theorem says investors with common inputs choose the same tangency fund and vary only $y$. This statement relies on mean--variance preferences, common beliefs, one frictionless borrowing/lending rate, and compatible unconstrained opportunities. Once constraints bind, different target growth rates can select different risky compositions; two-fund separation need not survive globally.
 
 \notebooklink
   {L8b: SIM Risky/Risk-Free Minimum-Variance Allocation}
@@ -141,9 +141,9 @@ The classical separation theorem says investors with common inputs choose the sa
 
 \section{A Defensible Estimation and Validation Workflow}
 
-Use a training window to estimate $\boldsymbol\alpha$, $\boldsymbol\beta$, $D$, $\mu_M$, and $\sigma_M^2$. Freeze those inputs, solve the allocation, and then evaluate the fixed rule on later observations. Re-estimation and rebalancing dates must be specified in advance; otherwise information leakage can make an impossible strategy look successful.
+Use a training window to estimate $\boldsymbol\alpha_g$, $\boldsymbol\beta$, $D_g$, $\bar g_M$, and $\sigma_{g,M}^2$. Freeze those inputs, solve the allocation, and then evaluate the fixed rule on later observations. Re-estimation and rebalancing dates must be specified in advance; otherwise information leakage can make an impossible strategy look successful.
 
-Compare at least three models on the same universe and constraints: the SIM covariance, the full sample covariance, and a simple baseline such as equal weighting or a broad index. Record expected return, modeled variance, realized return and drawdown, turnover, costs, and constraint activity. A lower realized variance in one test window is evidence about that window, not proof of universal dominance.
+Compare at least three models on the same universe and constraints: the SIM growth covariance, the full sample growth covariance, and a simple baseline such as equal weighting or a broad index. Record expected growth, modeled variance, realized wealth change and drawdown, turnover, costs, and constraint activity. A lower realized variance in one test window is evidence about that window, not proof of universal dominance.
 
 Parameter uncertainty must also reach the portfolio decision. Refit the SIM over bootstrap or rolling samples, re-solve the optimizer, and inspect the distribution of weights and risk estimates. If small input changes produce radically different positions, constraints, shrinkage, or a simpler portfolio may be more defensible than the nominal optimum.
 

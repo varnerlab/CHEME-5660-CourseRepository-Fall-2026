@@ -2,6 +2,7 @@
 \usepackage{varnernotes}
 
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\Cov}{\operatorname{Cov}}
 
 \begin{document}
 
@@ -27,6 +28,16 @@ Let $\mathbf g\in\R^m$ be a random vector of risky-asset growth rates, with mean
   \sigma_{g,p}^2=\mathbf w^{\mathsf T}\Sigma\mathbf w.
 \end{equation}
 The cross terms $2w_iw_j\Sigma_{ij}$ create diversification effects. Growth-rate covariance has units of inverse time squared; all inputs must use a common time convention. The associated log return over $\Delta t$ is $r_p=(\Delta t)g_p$.
+
+For a fixed observation interval, let $\Sigma_r:=\Cov(\mathbf r)$, $\Sigma_g:=\Cov(\mathbf g)$, and let $C$ denote the diffusion covariance rate used by GBM. Because $\mathbf r=(\Delta t)\mathbf g$,
+\begin{equation}
+  \label{eq:covariance-conversion}
+  \Sigma_r=(\Delta t)^2\Sigma_g,
+  \qquad
+  C=\frac{\Sigma_r}{\Delta t}=\Delta t\,\Sigma_g.
+\end{equation}
+This lecture uses $\Sigma=\Sigma_g$ throughout the allocation problems. Replacing it by $\Sigma_r$ merely scales an unconstrained variance objective by $(\Delta t)^2$, but means and targets must also satisfy $\bar{\mathbf r}=(\Delta t)\bar{\mathbf g}$ and $r_\star=(\Delta t)g_\star$. The covariance rate $C$ is reserved for GBM simulation and annualized-volatility reporting.
+For daily observations with $\Delta t=1/252$, the diffusion model implies $\Sigma_g=252C$. Thus growth-rate variances can look numerically ``huge'' compared with conventional annual covariance-rate entries; that factor is the required unit conversion, not an estimation failure. Portfolio weights are unchanged by this common positive rescaling when every other constraint is expressed consistently, but reported risk and Sharpe-ratio horizons are not interchangeable.
 
 \section{The Global Minimum-Variance Portfolio}
 
@@ -119,7 +130,7 @@ For $y\geq0$, eliminating $y$ gives the capital allocation line (CAL):
   \label{eq:cal-line}
   g_c=g_f+\frac{g_p-g_f}{\sigma_p}\sigma_c.
 \end{equation}
-The slope is the risky portfolio's Sharpe ratio under the stated horizon and risk-free convention. Values $0<y<1$ lend some wealth at $r_f$; $y=1$ holds only the risky portfolio; and $y>1$ represents leveraged risky exposure financed by borrowing. A single identical lending and borrowing rate is an idealization.
+The slope is the risky portfolio's Sharpe ratio under the stated horizon and risk-free convention. Values $0<y<1$ lend some wealth at $g_f$; $y=1$ holds only the risky portfolio; and $y>1$ represents leveraged risky exposure financed by borrowing. A single identical lending and borrowing rate is an idealization.
 
 Among all risky portfolios, the tangency portfolio maximizes the CAL slope. Without long-only constraints, its weights have the closed form in \propref{tangency}.
 

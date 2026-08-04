@@ -50,6 +50,15 @@ Let $\mathbf w_t^+\in\R^m$ be post-trade risky-asset weights at time $t$, with $
 \end{equation}
 The superscripts $+$ and $-$ mean immediately after and immediately before a trade, respectively. Equation~\eqref{eq:weight-drift} is a self-financing accounting identity before costs: asset values grow at different rates, while the denominator rescales them to fractions of total wealth.
 
+With the course convention $r_{i,t+1}=(\Delta t)g_{i,t+1}$ for continuously compounded log return, $1+R_{i,t+1}=\exp(r_{i,t+1})$. The same exact update is therefore
+\begin{equation}
+  \label{eq:weight-drift-growth}
+  w_{i,t+1}^-
+  =\frac{w_{i,t}^+\exp((\Delta t)g_{i,t+1})}
+  {\sum_j w_{j,t}^+\exp((\Delta t)g_{j,t+1})}.
+\end{equation}
+Do not replace the gross price relative by $1+(\Delta t)g_{i,t+1}$ except as a stated small-move approximation.
+
 \begin{proposition}{When weights do not drift}{no-drift}
 Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift} satisfies $w_{i,t+1}^-=w_{i,t}^+$ if and only if
 \begin{equation}
@@ -59,7 +68,7 @@ Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift
 Thus all positively weighted assets must earn the same return over the interval for every weight to remain unchanged. Assets held at zero weight impose no condition.
 \end{proposition}
 
-If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With covariance estimate $\Sigma_t$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_t\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
+If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With growth-rate covariance estimate $\Sigma_{g,t}$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_{g,t}\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
 
 \notebooklink
   {L9a: Portfolio Drift After a Maximum-Sharpe Allocation}
@@ -73,7 +82,7 @@ Let $\mathbf w_t^\star$ be the current target and let $d(\mathbf w_t^-,\mathbf w
 \begin{enumerate}[leftmargin=1.7em]
   \item \textbf{Calendar rebalancing.} Trade on predetermined dates---for example, monthly or quarterly---regardless of drift. It is simple to audit but can trade when nothing material changed and wait too long after a large move.
   \item \textbf{Threshold rebalancing.} Trade when $d$ exceeds a band, such as $\|\mathbf w_t^- - \mathbf w_t^\star\|_\infty>\delta$ for tolerance $\delta>0$. This creates a no-trade region but requires a convention for returning to the target, the nearest band edge, or somewhere between.
-  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target return, and trading penalties. The action can be partial rather than all-or-nothing.
+  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target growth, and trading penalties. The action can be partial rather than all-or-nothing.
 \end{enumerate}
 
 A hybrid policy checks thresholds only on scheduled dates. Every rule needs an explicit clock, input timestamp, and action. ``Rebalance when needed'' is not reproducible.
@@ -92,15 +101,15 @@ One convex cost-aware update uses risk-aversion coefficient $\gamma>0$ and turno
   \label{eq:cost-aware-rebalance}
   \begin{aligned}
   \min_{\mathbf w\in\R^m}\quad
-    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_t\mathbf w
-      -\boldsymbol\mu_t^{\mathsf T}\mathbf w
+    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_{g,t}\mathbf w
+      -\bar{\mathbf g}_t^{\mathsf T}\mathbf w
       +\lambda\|\mathbf w-\mathbf w_t^-\|_1\\
   \text{subject to}\quad
     &\mathbf1^{\mathsf T}\mathbf w=1,
     \qquad \boldsymbol\ell\leq\mathbf w\leq\mathbf u.
   \end{aligned}
 \end{equation}
-Here $\boldsymbol\mu_t\in\R^m$ and $\Sigma_t\in\R^{m\times m}$ are information-time expected-return and covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
+Here $\bar{\mathbf g}_t\in\R^m$ and $\Sigma_{g,t}\in\R^{m\times m}$ are information-time expected-growth and growth-rate covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. If same-horizon log-return inputs are used instead, convert every input consistently: $\bar{\mathbf r}_t=(\Delta t)\bar{\mathbf g}_t$ and $\Sigma_{r,t}=(\Delta t)^2\Sigma_{g,t}$. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
 
 \section{Backtesting a Dynamic Policy Without Looking Ahead}
 

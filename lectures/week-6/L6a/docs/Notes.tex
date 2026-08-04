@@ -11,7 +11,7 @@
 
 \learningobjectives
   {Model correlated assets}
-  {Write and solve a multivariate GBM model whose matrix square root generates a specified return covariance structure.}
+  {Write and solve a multivariate GBM model whose matrix square root generates a specified log-return covariance rate.}
   {Estimate covariance}
   {Construct, annualize, and validate a sample covariance matrix while distinguishing covariance from correlation.}
   {Sample portfolio weights}
@@ -21,14 +21,22 @@
 
 Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
 
-Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic growth parameters in $\boldsymbol{g}\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
+Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic GBM drifts in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
 \begin{equation}
   \label{eq:mgbm-sde}
   \frac{dS_{i,t}}{S_{i,t}}
-  =g_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
+  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
   \qquad i\in\{1,\ldots,m\}.
 \end{equation}
-The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $\Sigma_{ii}=\sigma_i^2$, while $\Sigma_{ik}$ records instantaneous covariance between assets $i$ and $k$.
+The diffusion covariance rate is $C:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $C_{ii}=\sigma_i^2$, while $C_{ik}$ records instantaneous log-return covariance per unit time. Applying It\^o's lemma to $\log S_{i,t}$ gives the expected continuously compounded growth rate
+\begin{equation}
+  \label{eq:drift-growth-relation}
+  \bar g_i:=\E[g_{i,t,\Delta t}]
+  =\mu_i-\frac12 C_{ii},
+  \qquad
+  \mu_i=\bar g_i+\frac12 C_{ii}.
+\end{equation}
+Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,t,\Delta t}:=(\Delta t)^{-1}\log(S_{i,t+\Delta t}/S_{i,t})$ is the realized growth rate. Both have units years$^{-1}$, but they are different quantities.
 
 \begin{figure}[ht]
   \centering
@@ -43,10 +51,10 @@ The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose en
       minimum width=2.55cm,minimum height=0.78cm] (s) at (10.0,0) {joint price update};
     \foreach \u/\v in {z/a,a/az,az/s}
       \draw[vnlink,line width=1.0pt,-{Latex[length=3mm]}] (\u)--(\v);
-    \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=\Sigma$};
-    \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=\Sigma$};
+    \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=C$};
+    \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=C$};
   \end{tikzpicture}
-  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $\Sigma$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
+  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $C$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
   \label{fig:correlated-shocks}
 \end{figure}
 
@@ -55,32 +63,45 @@ The instantaneous return covariance matrix is $\Sigma:=AA^{\mathsf T}$, whose en
 The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
 
 \begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
-Let $A\in\R^{m\times m}$, $\Sigma:=AA^{\mathsf T}$, $\boldsymbol{g}\in\R^m$, and $\Delta t>0$ years. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
+Let $A\in\R^{m\times m}$, $C:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. Define $\bar g_i:=\mu_i-C_{ii}/2$. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
 \begin{equation}
   \label{eq:mgbm-transition}
   S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
-  \left(g_i-\frac{1}{2}\Sigma_{ii}\right)\Delta t
+  \bar g_i\Delta t
   +\sqrt{\Delta t}\,(A\mathbf Z)_i
   \right].
 \end{equation}
-The log-return vector $\mathbf g_t:=\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$, where $\oslash$ denotes componentwise division, has covariance
+Define the dimensionless log-return vector $\mathbf r_t:=\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and the realized growth-rate vector $\mathbf g_t:=\mathbf r_t/\Delta t$. Then
 \begin{equation}
   \label{eq:mgbm-log-covariance}
-  \Cov(\mathbf g_t)=\Sigma\Delta t.
+  \mathbf g_t=\bar{\mathbf g}+\frac{1}{\sqrt{\Delta t}}A\mathbf Z,
+  \qquad
+  \E[\mathbf g_t]=\bar{\mathbf g}=\boldsymbol\mu-\frac12\operatorname{diag}(C),
+  \qquad
+  \Cov(\mathbf r_t)=C\Delta t,
+  \qquad
+  \Cov(\mathbf g_t)=\frac{C}{\Delta t}.
 \end{equation}
 \end{proposition}
 
-Equation \eqnref{mgbm-log-covariance} gives the scaling rule. If a sample covariance $\widehat\Sigma_{\Delta t}$ is computed from log returns observed every $\Delta t$ years, the constant-i.i.d. model's annual covariance-rate estimate is $\widehat\Sigma:=\widehat\Sigma_{\Delta t}/\Delta t$. Multiplying by ``252'' is the special case $\Delta t\approx1/252$ year; it is an assumption about sampling and scaling, not a universal constant.
+Equation \eqnref{mgbm-log-covariance} gives the scaling rule. Writing $\Sigma_r:=\Cov(\mathbf r_t)$ and $\Sigma_g:=\Cov(\mathbf g_t)$,
+\begin{equation}
+  \label{eq:three-covariances}
+  \Sigma_r=(\Delta t)^2\Sigma_g,
+  \qquad
+  C=\frac{\Sigma_r}{\Delta t}=\Delta t\,\Sigma_g.
+\end{equation}
+The three matrices are not interchangeable: $\Sigma_g$ is appropriate for a growth-rate portfolio objective, while $C$ drives GBM shocks. Multiplying a daily log-return covariance by ``252'' estimates $C$; it does not estimate $\Sigma_g$.
 
 \section{Estimating and Validating the Covariance Matrix}
 
-Let $G\in\R^{n\times m}$ store $n$ observed return vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased sample covariance is
+Let $G\in\R^{n\times m}$ store $n$ observed growth-rate vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased growth-rate covariance is
 \begin{equation}
   \label{eq:sample-covariance}
-  \widehat\Sigma_{\Delta t}:=
+  \widehat\Sigma_g:=
   \frac{1}{n-1}\widetilde G^{\mathsf T}\widetilde G.
 \end{equation}
-It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_{\Delta t}\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. These are required invariants and useful implementation tests.
+It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_g\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. For GBM simulation, use $\widehat C=\Delta t\,\widehat\Sigma_g$.
 
 Covariance depends on units and volatility scale. Correlation normalizes those effects:
 \begin{equation}
@@ -98,7 +119,7 @@ Sampling error is often the dominant problem. Pairwise estimates can shift acros
 \notebooklink
   {L6a: Computing and Analyzing a Covariance Matrix}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-CovarianceMatrix-Fall-2026.ipynb}
-  {Center a multi-asset return matrix, calculate its covariance matrix, inspect pairwise relationships, and verify numerical invariants.}
+  {Center a multi-asset growth-rate matrix, calculate $\widehat\Sigma_g$, convert it to the GBM covariance rate $\widehat C$, and verify numerical invariants.}
 
 \section{Buy-and-Hold Portfolio Wealth}
 
@@ -154,6 +175,8 @@ Small equal concentrations place more mass near sparse corners, while large equa
 \thispagestyle{fancy}
 \keytakeaways
   {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks, and used Dirichlet draws to explore valid portfolio weights.}
+  {Drift and growth are distinct}
+  {The price SDE uses $\boldsymbol\mu$, while realized growth is $\mathbf g_t=(\Delta t)^{-1}\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and $\E[\mathbf g_t]=\boldsymbol\mu-\tfrac12\operatorname{diag}(C)$.}
   {Covariance drives joint risk}
   {A matrix square root maps independent shocks into correlated log returns with covariance $\Sigma\Delta t$.}
   {Estimates require structural checks}
