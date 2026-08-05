@@ -30,6 +30,7 @@ module VLQuantitativeFinancePackage
     export MyMarkowitzRiskyAssetOnlyPortfolioChoiceProblem, MyMarkowitzRiskyRiskFreePortfolioChoiceProblem, MySharpeRatioPortfolioChoiceProblem
     export MyBiomialLatticeEquityNodeModel, MyBinomialEquityPriceTree
     export MySingleIndexModel, AbstractReturnModel
+    export MySIMParameterEstimate, MyCobbDouglasChoiceProblem, MyCESChoiceProblem, MyEWLSState
     export RealWorldBinomialProbabilityMeasure, RiskNeutralBinomialProbabilityMeasure, RealWorldGeneralProbabilityMeasure, AbstractProbabilityMeasure
     export MyOrnsteinUhlenbeckModel, MyHestonModel, EulerMaruyamaMethod
     export MySisoLegSHippoModel, estimate_hippo_parameters, prediction
@@ -52,6 +53,14 @@ module VLQuantitativeFinancePackage
     export build, payoff, profit, premium, sample, sample_endpoint, price, strip, populate, solve, YTM, typicalprice, discount
     export estimate_implied_volatility
     export expectation, variance
+
+    # adaptive portfolio functions -
+    export sim_portfolio_inputs, build_sim_covariance, minimum_variance_weights, covariance_from_volatility
+    export simulate_rebalanced_path, evaluate_rebalancing_scenario
+    export adaptive_preference_weights, allocate_cobb_douglas, allocate_ces
+    export compute_ema, adaptive_target_weights, run_rebalancing_engine
+    export ewls_init, ewls_update!, ewls_path
+    export evaluate_validation_gates, route_portfolio_event
     
     # export the greeks -
     export theta, delta, gamma, vega, rho
@@ -60,4 +69,5 @@ module VLQuantitativeFinancePackage
     export MyTrainingMarketDataSet;
     export MyTestingMarketDataSet;
     export MyOptionsChainDataSet;
+    export MySIMCalibration, MyCurrentPrices, MyAdaptivePortfolioCourseData
 end

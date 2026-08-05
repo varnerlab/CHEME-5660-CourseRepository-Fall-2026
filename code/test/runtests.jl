@@ -6,6 +6,7 @@ using Test
     include("test_lattice.jl")
     include("test_greeks.jl")
     include("test_portfolio.jl")
+    include("test_adaptive_portfolio.jl")
     include("test_stochastic.jl")
     include("test_smoke.jl")
     include("test_aqua.jl")

@@ -2594,7 +2594,7 @@ uuid = "41fe7b60-77ed-43a1-b4f0-825fd5a5650d"
 version = "0.2.0"
 
 [[deps.VLQuantitativeFinancePackage]]
-deps = ["COSMO", "CSV", "DataFrames", "DataStructures", "Distributions", "FileIO", "JLD2", "JuMP", "LinearAlgebra", "LsqFit", "MadNLP", "Optim", "Statistics", "StatsBase", "TOML"]
+deps = ["COSMO", "CSV", "DataFrames", "DataStructures", "Distributions", "FileIO", "JLD2", "JuMP", "LinearAlgebra", "LsqFit", "MadNLP", "Optim", "Random", "Statistics", "StatsBase", "TOML"]
 path = "code"
 uuid = "4119e0bf-20d0-4785-913e-5ebdb0caa218"
 version = "1.0.0-DEV"

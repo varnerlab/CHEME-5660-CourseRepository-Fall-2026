@@ -68,4 +68,42 @@ function  MyOptionsChainDataSet(; ticker::String = "amd")::NamedTuple
     return (metadata=metadata, data=data);
 end
 
+# --- Adaptive portfolio teaching data -----------------------------------------
+
+const _PATH_TO_ADAPTIVE_PORTFOLIO_DATA = joinpath(_PATH_TO_DATA, "adaptive_portfolio")
+
+"""Load the frozen 2014–2024 Single Index Model calibration used by the adaptive-portfolio examples."""
+MySIMCalibration() = _jld2(joinpath(_PATH_TO_ADAPTIVE_PORTFOLIO_DATA, "sim-calibration.jld2"))
+
+"""Load the frozen price snapshot paired with [`MySIMCalibration`](@ref)."""
+MyCurrentPrices() = _jld2(joinpath(_PATH_TO_ADAPTIVE_PORTFOLIO_DATA, "current-prices.jld2"))
+
+"""
+    MyAdaptivePortfolioCourseData(name::Symbol)
+
+Load one of the compact, frozen eCornell-derived teaching artifacts vendored with
+the package. Valid names are `:engine_run`, `:scorecard`, `:ewls_replay`,
+`:compliance`, `:daily_bars`, and `:daily_tape`.
+"""
+function MyAdaptivePortfolioCourseData(name::Symbol)::Dict{String,Any}
+    filenames = Dict(
+        :engine_run => "engine-run-data.jld2",
+        :scorecard => "session2-scorecard.jld2",
+        :ewls_replay => "ewls-replay-results.jld2",
+        :compliance => "compliance-config.jld2",
+        :daily_bars => "daily-baseline-bars.jld2",
+        :daily_tape => "daily-baseline-tape.jld2",
+    )
+    haskey(filenames, name) || throw(ArgumentError("unknown adaptive portfolio dataset: $(name)"))
+    path = joinpath(_PATH_TO_ADAPTIVE_PORTFOLIO_DATA, filenames[name])
+    if name == :engine_run
+        # `context` was serialized with the short course's package-specific type.
+        # Its inputs are duplicated as portable arrays and dictionaries in this file.
+        return jldopen(path, "r") do file
+            Dict{String,Any}(key => file[key] for key in keys(file) if key != "context")
+        end
+    end
+    return _jld2(path)
+end
+
 # -- PUBLIC FUNCTIONS ABOVE HERE ------------------------------------------------------------------------------ #

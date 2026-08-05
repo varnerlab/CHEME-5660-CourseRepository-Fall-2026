@@ -1,5 +1,8 @@
-# L15a — Autotrader laboratory
+# L15a — Autotrader diagnostics, risk controls, and validation
 
-Planned production meeting for diagnostics, risk controls, and iterative
-strategy improvement. This slot is intentionally reserved by the revised Fall
-2026 schedule; lecture notes and examples remain to be developed.
+The production lecture introduces online SIM estimation, paired diagnostic comparisons, and explicit deployment gates.
+
+- [`CHEME-5660-L15a-Lecture-Autotrader-Validation-Fall-2026.ipynb`](CHEME-5660-L15a-Lecture-Autotrader-Validation-Fall-2026.ipynb)
+- [`CHEME-5660-L15a-Example-EWLS-Replay-Fall-2026.ipynb`](CHEME-5660-L15a-Example-EWLS-Replay-Fall-2026.ipynb)
+- [`CHEME-5660-L15a-Example-Validation-Gates-Fall-2026.ipynb`](CHEME-5660-L15a-Example-Validation-Gates-Fall-2026.ipynb)
+- [`advanced/`](advanced/) contains the EWLS and policy-gradient derivations.

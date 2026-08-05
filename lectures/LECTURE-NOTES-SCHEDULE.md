@@ -22,7 +22,7 @@ and Thanksgiving Break (14b) do not require production theory notes.
 | 5b | Sep 24 | 2 | Minimum-variance allocation, efficient frontier, CAL, and market portfolio | `week-5/L5b` | Built; visual QA passed after reorg |
 | 6a | Sep 29 | 2 | Introduction to single-index models | `week-6/L6a` | Built; visual QA passed after reorg |
 | 6b | Oct 1 | 2 | SIM-based risky/risk-free minimum-variance allocation | `week-6/L6b` | Built; visual QA passed after reorg |
-| 7b | Oct 8 | 2 | Dynamic rebalancing of minimum-variance portfolios | `week-7/L7b` | Built; visual QA passed after reorg |
+| 7b | Oct 8 | 2 | Dynamic rebalancing of minimum-variance portfolios | `week-7/L7b`; course-native stress-testing example added | Built; eCornell stress-testing concepts integrated |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b` | Built; visual QA passed after reorg |
 | 9a | Oct 20 | 3 | European BSM and American CRR option pricing | `week-9/L9a` | Built; visual QA passed after reorg |
 | 9b | Oct 22 | 3 | Intrinsic and extrinsic value of American options | `week-9/L9b` | Built; visual QA passed after reorg |
@@ -32,11 +32,11 @@ and Thanksgiving Break (14b) do not require production theory notes.
 | 11b | Nov 5 | 3 | Standard-listed protective collars and defined-outcome ETFs: TJUL comparison | `week-11/L11b`; Wheel material in `advanced/` | Built; visual QA passed after reorg |
 | 12a | Nov 10 | 4 | Stochastic multi-armed bandits and exploration versus exploitation | `week-12/L12a`; Markov/HMM material in `advanced/` | Built; visual QA passed after reorg |
 | 12b | Nov 12 | 4 | Binary Bernoulli bandit ticker picker | `week-12/L12b` | Built; visual QA passed after reorg |
-| 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a` | Built; visual QA passed after reorg |
+| 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a`; former Bandit/MWA lecture in `advanced/` | Built; adaptive-utility lecture and examples integrated |
 | 13b | Nov 19 | 4 | Market crashes and agent-based Wolfram Markets | `week-13/L13b` | Built; visual QA passed after reorg |
 | 14a | Nov 24 | 4 | Building and testing the course Autotrader | `week-14/L14a` | Built; visual QA passed after reorg |
-| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a` | Planned; new production material |
-| 15b | Dec 3 | 4 | Final trading challenge, model review, and course synthesis | `week-15/L15b` | Planned; new production material |
+| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS and validation-gate examples plus derivations | Built; production lecture and course-native examples added |
+| 15b | Dec 3 | 4 | Final trading challenge, model review, and course synthesis | `week-15/L15b`; captured decision-queue example | Built; credential-free production workflow added |
 
 ## Calendar-sensitive content rules
 
@@ -48,7 +48,9 @@ and Thanksgiving Break (14b) do not require production theory notes.
 - Optional extensions live in an `advanced/` subfolder of the applicable
   lecture directory. L2b contains the former Week 3 yield-curve, stochastic-rate,
   and STRIPS material; L11b contains the Wheel lecture and supporting examples;
-  L12a contains the Markov/HMM enrichment module.
+  L12a contains the Markov/HMM enrichment module; L13a contains the former
+  Bandit/MWA lecture and the CES derivation; L15a contains online-learning
+  derivations.
 - The Goldman Sachs guest Q/A remains L7a, Fall Break remains L8a, and
   Thanksgiving Break remains L14b. Production topics do not move into those
   calendar slots.

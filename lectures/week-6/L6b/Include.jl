@@ -33,6 +33,7 @@ using PrettyTables
 using StatsBase
 using KernelFunctions
 using HypothesisTests
+using Random
 
 # load my codes -
 # include(joinpath(_PATH_TO_SRC, "Files.jl"));

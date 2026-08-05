@@ -16,7 +16,10 @@ makedocs(
             "Equity securities" => "equity.md",
             "Derivative securities" => "derivatives.md",
         ],
-        "Portfolio management" => "portfolio.md",
+        "Portfolio management" => [
+            "Classical portfolios" => "portfolio.md",
+            "Adaptive portfolios" => "adaptive.md",
+        ],
         "Decisions" => [
             "Markov models" => "markov.md",
             "Bandits" => "bandits.md",

@@ -1,0 +1,41 @@
+# Adaptive portfolios
+
+These routines support the CHEME 5660 progression from the Single Index Model
+and minimum-variance allocation to utility-based rebalancing, recursive
+estimation, validation gates, and captured operational decisions.
+
+## SIM and stress testing
+
+```@docs
+VLQuantitativeFinancePackage.MySIMParameterEstimate
+VLQuantitativeFinancePackage.sim_portfolio_inputs
+VLQuantitativeFinancePackage.build_sim_covariance
+VLQuantitativeFinancePackage.minimum_variance_weights
+VLQuantitativeFinancePackage.covariance_from_volatility
+VLQuantitativeFinancePackage.simulate_rebalanced_path
+VLQuantitativeFinancePackage.evaluate_rebalancing_scenario
+```
+
+## Utility allocation and rebalancing
+
+```@docs
+VLQuantitativeFinancePackage.MyCobbDouglasChoiceProblem
+VLQuantitativeFinancePackage.MyCESChoiceProblem
+VLQuantitativeFinancePackage.adaptive_preference_weights
+VLQuantitativeFinancePackage.allocate_cobb_douglas
+VLQuantitativeFinancePackage.allocate_ces
+VLQuantitativeFinancePackage.compute_ema
+VLQuantitativeFinancePackage.adaptive_target_weights
+VLQuantitativeFinancePackage.run_rebalancing_engine
+```
+
+## Recursive estimation and controls
+
+```@docs
+VLQuantitativeFinancePackage.MyEWLSState
+VLQuantitativeFinancePackage.ewls_init
+VLQuantitativeFinancePackage.ewls_update!
+VLQuantitativeFinancePackage.ewls_path
+VLQuantitativeFinancePackage.evaluate_validation_gates
+VLQuantitativeFinancePackage.route_portfolio_event
+```

@@ -13,3 +13,15 @@ We have also included an options chain dataset that we use for examples and acti
 ```@docs
 VLQuantitativeFinancePackage.MyOptionsChainDataSet
 ```
+
+## Adaptive portfolio data
+
+The package also contains compact, frozen artifacts used by the SIM,
+rebalancing, EWLS, validation, and captured-operations examples. The loaders
+keep notebooks independent of the source repository's directory layout.
+
+```@docs
+VLQuantitativeFinancePackage.MySIMCalibration
+VLQuantitativeFinancePackage.MyCurrentPrices
+VLQuantitativeFinancePackage.MyAdaptivePortfolioCourseData
+```
