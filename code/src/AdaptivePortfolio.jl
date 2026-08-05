@@ -56,6 +56,183 @@ function build(::Type{MySIMParameterEstimate}, data::NamedTuple)::MySIMParameter
     return model
 end
 
+"""Estimate one Single Index Model with optional ridge regularization.
+
+Both input series must use the same sampling convention. In the course notebooks
+they are annualized continuous-growth-rate observations, so `σ_ε` is the sample
+standard deviation of the residual growth-rate observations in that convention.
+"""
+function estimate_sim(market_returns::AbstractVector, asset_returns::AbstractVector,
+        ticker::AbstractString; δ::Real=0.0)
+    length(market_returns) == length(asset_returns) ||
+        throw(DimensionMismatch("market and asset return series must have equal length"))
+    length(market_returns) > 2 || throw(ArgumentError("at least three observations are required"))
+    δ >= 0 || throw(ArgumentError("δ must be nonnegative"))
+    market = Float64.(market_returns)
+    asset = Float64.(asset_returns)
+    all(isfinite, market) && all(isfinite, asset) ||
+        throw(ArgumentError("return series must contain only finite values"))
+    var(market) > eps(Float64) || throw(ArgumentError("market return series must have positive variance"))
+
+    X = hcat(ones(length(market)), market)
+    penalty = Float64(δ) * Matrix{Float64}(I, 2, 2)
+    θ = (X' * X + penalty) \ (X' * asset)
+    residuals = asset - X * θ
+    residual_variance = dot(residuals, residuals) / (length(asset) - 2)
+    total_variation = sum(abs2, asset .- mean(asset))
+    r² = total_variation > eps(Float64) ?
+        1 - dot(residuals, residuals) / total_variation :
+        (dot(residuals, residuals) <= eps(Float64) ? 1.0 : 0.0)
+    return build(MySIMParameterEstimate, (ticker=String(ticker), α=θ[1], β=θ[2],
+        σ_ε=sqrt(max(residual_variance, 0.0)), r²=r²))
+end
+
+"""Bootstrap SIM parameter uncertainty with residual or Gaussian innovations.
+
+`method=:residual` resamples centered fitted residuals and preserves their
+empirical heavy-tailed shape. `method=:parametric` draws Gaussian innovations
+with the fitted residual standard deviation. Confidence intervals are empirical
+percentile intervals. The analytical covariance uses the full ridge sandwich,
+which reduces to the familiar OLS expression when `δ == 0`.
+"""
+function bootstrap_sim(market_returns::AbstractVector, asset_returns::AbstractVector,
+        ticker::AbstractString; δ::Real=0.0, n_bootstrap::Integer=1000,
+        seed::Integer=5660, method::Symbol=:residual, confidence::Real=0.95)
+    n_bootstrap > 1 || throw(ArgumentError("n_bootstrap must exceed one"))
+    method in (:residual, :parametric) ||
+        throw(ArgumentError("method must be :residual or :parametric"))
+    0 < confidence < 1 || throw(ArgumentError("confidence must lie between zero and one"))
+
+    market = Float64.(market_returns)
+    asset = Float64.(asset_returns)
+    point = estimate_sim(market, asset, ticker; δ)
+    X = hcat(ones(length(market)), market)
+    XtX = X' * X
+    Kinv = inv(XtX + Float64(δ) * Matrix{Float64}(I, 2, 2))
+    θ = [point.α, point.β]
+    fitted = X * θ
+    residuals = asset - fitted
+    centered_residuals = residuals .- mean(residuals)
+    residual_variance = dot(residuals, residuals) / (length(asset) - 2)
+    theoretical_covariance = residual_variance .* (Kinv * XtX * Kinv')
+
+    rng = MersenneTwister(seed)
+    samples = Matrix{Float64}(undef, n_bootstrap, 3)
+    for b in 1:n_bootstrap
+        innovations = method == :residual ?
+            rand(rng, centered_residuals, length(residuals)) :
+            sqrt(residual_variance) .* randn(rng, length(residuals))
+        synthetic = fitted + innovations
+        θb = Kinv * (X' * synthetic)
+        rb = synthetic - X * θb
+        samples[b, 1] = θb[1]
+        samples[b, 2] = θb[2]
+        samples[b, 3] = sqrt(max(dot(rb, rb) / (length(asset) - 2), 0.0))
+    end
+
+    tail_probability = (1 - confidence) / 2
+    interval(column) = let q = quantile(view(samples, :, column),
+            [tail_probability, 1 - tail_probability]); (q[1], q[2]) end
+    return (
+        point_estimate=point,
+        samples=samples,
+        alpha_samples=view(samples, :, 1),
+        beta_samples=view(samples, :, 2),
+        sigma_epsilon_samples=view(samples, :, 3),
+        confidence_intervals=(alpha=interval(1), beta=interval(2), sigma_epsilon=interval(3)),
+        bootstrap_standard_errors=(alpha=std(view(samples, :, 1)),
+            beta=std(view(samples, :, 2)), sigma_epsilon=std(view(samples, :, 3))),
+        theoretical_covariance=theoretical_covariance,
+        theoretical_standard_errors=(alpha=sqrt(theoretical_covariance[1, 1]),
+            beta=sqrt(theoretical_covariance[2, 2])),
+        method=method,
+        confidence=Float64(confidence),
+        seed=Int(seed),
+    )
+end
+
+"""Propagate fitted SIM bootstrap draws into portfolio risk and weight uncertainty."""
+function propagate_sim_uncertainty(bootstrap_results::AbstractVector,
+        μ_m::Real, σ_m::Real; n_scenarios::Integer=1000, seed::Integer=5660)
+    isempty(bootstrap_results) && throw(ArgumentError("at least one bootstrap result is required"))
+    n_scenarios > 1 || throw(ArgumentError("n_scenarios must exceed one"))
+    σ_m > 0 || throw(ArgumentError("σ_m must be positive"))
+    points = getproperty.(bootstrap_results, :point_estimate)
+    α = getproperty.(points, :α)
+    β = getproperty.(points, :β)
+    σ_ε = getproperty.(points, :σ_ε)
+    μ̂, Σ̂ = sim_portfolio_inputs(α, β, σ_ε, μ_m, σ_m)
+    ŵ = minimum_variance_weights(Σ̂)
+
+    fixed_variance = Vector{Float64}(undef, n_scenarios)
+    optimal_variance = similar(fixed_variance)
+    fixed_growth = similar(fixed_variance)
+    weight_distance = similar(fixed_variance)
+    rng = MersenneTwister(seed)
+    for s in 1:n_scenarios
+        scenario = [result.samples[rand(rng, axes(result.samples, 1)), :] for result in bootstrap_results]
+        αs = first.(scenario)
+        βs = getindex.(scenario, 2)
+        σ_εs = getindex.(scenario, 3)
+        μs, Σs = sim_portfolio_inputs(αs, βs, σ_εs, μ_m, σ_m)
+        ws = minimum_variance_weights(Σs)
+        fixed_variance[s] = dot(ŵ, Σs * ŵ)
+        optimal_variance[s] = dot(ws, Σs * ws)
+        fixed_growth[s] = dot(ŵ, μs)
+        weight_distance[s] = 0.5 * sum(abs.(ws .- ŵ))
+    end
+    return (point_expected_growth=μ̂, point_covariance=Σ̂, point_weights=ŵ,
+        fixed_variance=fixed_variance, optimal_variance=optimal_variance,
+        variance_regret=fixed_variance .- optimal_variance,
+        fixed_growth=fixed_growth, weight_distance=weight_distance)
+end
+
+"""Estimate a Hill tail index from positive, negative, or absolute observations."""
+function hill_tail_index(x::AbstractVector; k::Union{Nothing,Integer}=nothing,
+        tail::Symbol=:absolute)
+    tail in (:right, :left, :absolute) ||
+        throw(ArgumentError("tail must be :right, :left, or :absolute"))
+    values = Float64.(filter(isfinite, x))
+    length(values) > 3 || throw(ArgumentError("at least four finite observations are required"))
+    exceedances = tail == :right ? filter(>(0), values) :
+        tail == :left ? abs.(filter(<(0), values)) : filter(>(0), abs.(values))
+    length(exceedances) > 2 || throw(ArgumentError("the selected tail has too few observations"))
+    ordered = sort(exceedances; rev=true)
+    number_used = isnothing(k) ? floor(Int, sqrt(length(ordered))) : Int(k)
+    1 <= number_used < length(ordered) ||
+        throw(ArgumentError("k must satisfy 1 <= k < the number of tail observations"))
+    threshold = ordered[number_used + 1]
+    threshold > 0 || throw(ArgumentError("the Hill threshold must be positive"))
+    hill_gamma = mean(log.(view(ordered, 1:number_used) ./ threshold))
+    hill_gamma > 0 || throw(ArgumentError("the selected observations do not define a positive tail index"))
+    return 1 / hill_gamma
+end
+
+"""Compute the biased sample autocorrelation at selected nonnegative lags."""
+function sample_autocorrelation(x::AbstractVector, lags::AbstractVector{<:Integer})
+    values = Float64.(x)
+    all(isfinite, values) || throw(ArgumentError("series must contain only finite values"))
+    isempty(values) && throw(ArgumentError("series must not be empty"))
+    all(lag -> 0 <= lag < length(values), lags) ||
+        throw(ArgumentError("lags must be in 0:(length(x)-1)"))
+    centered = values .- mean(values)
+    denominator = dot(centered, centered)
+    denominator > eps(Float64) || throw(ArgumentError("series must have positive variance"))
+    return [lag == 0 ? 1.0 : dot(view(centered, 1:length(values)-lag),
+        view(centered, 1+lag:length(values))) / denominator for lag in lags]
+end
+
+"""Return a compact heavy-tail and dependence diagnostic for a growth-rate series."""
+function stylized_facts_report(x::AbstractVector; lags::AbstractVector{<:Integer}=[1, 5, 20],
+        hill_k::Union{Nothing,Integer}=nothing)
+    values = Float64.(x)
+    return (tail_index=hill_tail_index(values; k=hill_k, tail=:absolute),
+        lags=collect(lags), raw_acf=sample_autocorrelation(values, lags),
+        absolute_acf=sample_autocorrelation(abs.(values), lags),
+        squared_acf=sample_autocorrelation(values .^ 2, lags),
+        white_noise_95_band=1.96 / sqrt(length(values)))
+end
+
 function build(::Type{MyCobbDouglasChoiceProblem}, data::NamedTuple)::MyCobbDouglasChoiceProblem
     model = MyCobbDouglasChoiceProblem()
     model.gamma = Float64.(data.gamma)

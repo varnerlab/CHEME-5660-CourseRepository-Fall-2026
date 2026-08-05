@@ -145,7 +145,7 @@ Use a training window to estimate $\boldsymbol\alpha_g$, $\boldsymbol\beta$, $D_
 
 Compare at least three models on the same universe and constraints: the SIM growth covariance, the full sample growth covariance, and a simple baseline such as equal weighting or a broad index. Record expected growth, modeled variance, realized wealth change and drawdown, turnover, costs, and constraint activity. A lower realized variance in one test window is evidence about that window, not proof of universal dominance.
 
-Parameter uncertainty must also reach the portfolio decision. Refit the SIM over bootstrap or rolling samples, re-solve the optimizer, and inspect the distribution of weights and risk estimates. If small input changes produce radically different positions, constraints, shrinkage, or a simpler portfolio may be more defensible than the nominal optimum.
+Parameter uncertainty must also reach the portfolio decision. Refit the SIM over bootstrap or rolling samples, preserve each asset's joint $(\alpha,\beta,\sigma_{g,\varepsilon})$ draw, re-solve the optimizer, and inspect the distributions of weights, risk estimates, and variance regret. Comparing empirical-residual and Gaussian parametric propagation exposes sensitivity to the innovation assumption. If small input changes produce radically different positions, constraints, shrinkage, or a simpler portfolio may be more defensible than the nominal optimum.
 
 \keytakeaways
   {In this lecture, we inserted the SIM's low-rank-plus-diagonal moments into constrained risky-only and risky/risk-free allocation problems and separated model geometry from implementable trading rules.}

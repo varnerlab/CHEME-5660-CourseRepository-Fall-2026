@@ -14,14 +14,14 @@ and Thanksgiving Break (14b) do not require production theory notes.
 | 1b | Aug 27 | 1 | Time value of money, abstract assets, and net present value | `week-1/L1b` | Built; visual QA passed after L1a split |
 | 2a | Sep 1 | 1 | Pricing Treasury bills, notes, and bonds by NPV | `week-2/L2a` | Built; visual QA passed |
 | 2b | Sep 3 | 1 | Yield, price sensitivity, duration, convexity, and the yield curve | `week-2/L2b`; deeper term-structure work in `advanced/` | Built; visual QA passed after reorg |
-| 3a | Sep 8 | 2 | Equity markets and stylized facts of growth rates | `week-3/L3a` | Built; visual QA passed after reorg |
+| 3a | Sep 8 | 2 | Equity markets and stylized facts of growth rates | `week-3/L3a` | Built; stylized-facts second pass and visual QA passed |
 | 3b | Sep 10 | 2 | Equity-price lattices under real-world and risk-neutral measures | `week-3/L3b` | Built; visual QA passed after reorg |
 | 4a | Sep 15 | 2 | Lattice trade rules and probability of profit | `week-4/L4a` | Built; visual QA passed after reorg |
 | 4b | Sep 17 | 2 | Single-asset geometric Brownian motion | `week-4/L4b` | Built; visual QA passed after reorg |
 | 5a | Sep 22 | 2 | Multivariate GBM and Dirichlet portfolio weights | `week-5/L5a` | Built; visual QA passed after reorg |
 | 5b | Sep 24 | 2 | Minimum-variance allocation, efficient frontier, CAL, and market portfolio | `week-5/L5b` | Built; visual QA passed after reorg |
-| 6a | Sep 29 | 2 | Introduction to single-index models | `week-6/L6a` | Built; visual QA passed after reorg |
-| 6b | Oct 1 | 2 | SIM-based risky/risk-free minimum-variance allocation | `week-6/L6b` | Built; visual QA passed after reorg |
+| 6a | Sep 29 | 2 | Introduction to single-index models | `week-6/L6a` | Built; SIM uncertainty second pass and visual QA passed |
+| 6b | Oct 1 | 2 | SIM-based risky/risk-free minimum-variance allocation | `week-6/L6b` | Built; bootstrap propagation second pass and visual QA passed |
 | 7b | Oct 8 | 2 | Dynamic rebalancing of minimum-variance portfolios | `week-7/L7b`; course-native stress-testing example added | Built; eCornell stress-testing concepts integrated |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b` | Built; visual QA passed after reorg |
 | 9a | Oct 20 | 3 | European BSM and American CRR option pricing | `week-9/L9a` | Built; visual QA passed after reorg |

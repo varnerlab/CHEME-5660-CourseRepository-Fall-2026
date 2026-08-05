@@ -55,7 +55,9 @@ module VLQuantitativeFinancePackage
     export expectation, variance
 
     # adaptive portfolio functions -
+    export estimate_sim, bootstrap_sim, propagate_sim_uncertainty
     export sim_portfolio_inputs, build_sim_covariance, minimum_variance_weights, covariance_from_volatility
+    export hill_tail_index, sample_autocorrelation, stylized_facts_report
     export simulate_rebalanced_path, evaluate_rebalancing_scenario
     export adaptive_preference_weights, allocate_cobb_douglas, allocate_ces
     export compute_ema, adaptive_target_weights, run_rebalancing_engine
