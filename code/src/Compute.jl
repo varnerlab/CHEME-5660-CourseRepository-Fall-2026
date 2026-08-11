@@ -1104,13 +1104,31 @@ end
 
 # --- lattice model methods ------------------------------------------------------------- #
 """
-    solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ = 100.0)
+    solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ = 100.0, Δt = 1.0)
 
 Price a terminal payment of `Vₚ` by backward induction through a populated
 symmetric binary short-rate lattice. The method updates each lattice node's
 `price` field and returns `model`.
+
+Node rates are **annualized** one-period short rates, and `Δt` is the step length
+in years, so each layer discounts with simple one-step compounding:
+
+```
+V[k,j] = ( p*V[k+1,up] + (1-p)*V[k+1,down] ) / (1 + r[k,j]*Δt)
+```
+
+### Arguments
+- `Vₚ::Float64`: terminal payment at every leaf. Default `100.0`.
+- `Δt::Float64`: step length in years. Default `1.0`, i.e. annual steps, for which
+  the discount factor reduces to `1/(1+r)`. Pass `0.5` for semiannual layers, and
+  so on.
+
+Throws a `DomainError` unless `Δt > 0`, `p ∈ [0,1]`, and `1 + r*Δt > 0` at every
+node. All three are checked before any node is written, so a rejected model is
+left untouched rather than partially repriced.
 """
-function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0)
+function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0,
+    Δt::Float64 = 1.0)
 
     # initialize -
     # ...
@@ -1121,6 +1139,16 @@ function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 =
     connectivity = model.connectivity;
     nodes = model.data;
     p = model.p;
+
+    # validate everything *before* touching any node: solve mutates the lattice in
+    # place, so a check that fires mid-recursion would leave it half repriced -
+    Δt > 0 || throw(DomainError(Δt, "the step length Δt must be positive (years)"));
+    0 ≤ p ≤ 1 || throw(DomainError(p, "the up probability p must lie in [0,1]"));
+    for (i, node) ∈ nodes
+        growth = 1 + node.rate*Δt;
+        growth > 0 || throw(DomainError(growth,
+            "1 + r*Δt must be positive: node $(i) has rate $(node.rate) and Δt = $(Δt)"));
+    end
 
     # all the leaves, have the par value -
     leaves = levels[T];
@@ -1142,10 +1170,11 @@ function solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 =
             up_node_index = children_nodes[1];
             down_node_index = children_nodes[2];
 
-            # compute the dfactor -
+            # compute the dfactor - the node rate is annualized, so it is scaled by
+            # the step length Δt before discounting one layer (checked above) -
             parent_node = nodes[i]
             rate_parent = parent_node.rate;
-            dfactor = 1/(1+rate_parent);
+            dfactor = 1/(1 + rate_parent*Δt);
 
             # compute the future_payback, and current payback
             node_price = dfactor*((p*nodes[up_node_index].price)+(1-p)*(nodes[down_node_index].price))

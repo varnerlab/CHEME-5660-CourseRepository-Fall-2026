@@ -591,7 +591,8 @@ This node type is created during the initialization of a lattice model and is us
 
 ### Fields
 - `probability::Float64`: The probability of reaching the node in the binary lattice
-- `rate::Float64`: The interest rate at the node
+- `rate::Float64`: The **annualized** one-period short rate at the node, in decimal units per year.
+   Pricing scales it by the step length, discounting one layer with `1/(1 + rate*Δt)`; see `solve`.
 - `price::Float64`: The price at the node (used for Treasury security pricing)
 """
 mutable struct MyBinaryInterestRateLatticeNodeModel
@@ -614,8 +615,12 @@ The `MySymmetricBinaryInterestRateLatticeModel` mutable struct represents a bina
 - `u::Float64`: The up-factor for the lattice
 - `d::Float64`: The down-factor for the lattice
 - `p::Float64`: The probability of an up move in the lattice
-- `rₒ::Float64`: The initial interest rate (the root value of the lattice)
+- `rₒ::Float64`: The initial **annualized** interest rate (the root value of the lattice), in decimal units per year.
 - `T::Int64`: The number of levels in the tree (zero based), so the tree will have a total of `T + 1` levels (including the root level).
+
+Note that `T` counts lattice *levels*, not elapsed years. The lattice carries no time
+grid of its own: the step length is supplied at pricing time as the `Δt` keyword of
+`solve`, which discounts one layer with `1/(1 + rate*Δt)`.
 
 ### Computed fields
 - `connectivity::Union{Nothing,Dict{Int64, Array{Int64,1}}}`: A dictionary that holds the connectivity of the lattice where the `key` is the node index and the `value` is an array of the connected nodes.

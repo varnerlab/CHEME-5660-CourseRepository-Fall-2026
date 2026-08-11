@@ -100,4 +100,71 @@ using VLQuantitativeFinancePackage
         @test isapprox(m.data[2].price, 100.0 / 1.045; atol = 1e-8)
         @test isapprox(m.data[0].price, 0.5 * (100.0 / 1.055 + 100.0 / 1.045) / 1.05; atol = 1e-8)
     end
+
+    @testset "rate-lattice solve honours the step length Δt" begin
+        # Node rates are annualized, so a half-year layer must discount with
+        # 1 + r*Δt, not 1 + r. Default Δt = 1.0 reproduces the annual case above.
+        params = (u = 1.1, d = 0.9, p = 0.5, rₒ = 0.05, T = 2)
+        Δt = 0.5
+
+        m = build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate
+        m = solve(m; Vₚ = 100.0, Δt = Δt)
+        @test isapprox(m.data[1].price, 100.0 / (1 + 0.055 * Δt); atol = 1e-8)
+        @test isapprox(m.data[2].price, 100.0 / (1 + 0.045 * Δt); atol = 1e-8)
+        @test isapprox(m.data[0].price,
+            0.5 * (100.0 / (1 + 0.055 * Δt) + 100.0 / (1 + 0.045 * Δt)) / (1 + 0.05 * Δt);
+            atol = 1e-8)
+
+        # a shorter step discounts less, so the claim is worth more
+        annual = solve(build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate; Vₚ = 100.0)
+        @test m.data[0].price > annual.data[0].price
+
+        # the default is exactly the annual case
+        explicit = solve(build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate;
+            Vₚ = 100.0, Δt = 1.0)
+        @test isapprox(explicit.data[0].price, annual.data[0].price; atol = 1e-12)
+
+        # 1 + r*Δt must stay positive
+        bad = build(MySymmetricBinaryInterestRateLatticeModel,
+            (u = 1.1, d = 0.9, p = 0.5, rₒ = -0.05, T = 2)) |> populate
+        @test_throws DomainError solve(bad; Vₚ = 100.0, Δt = 25.0)
+    end
+
+    @testset "rate-lattice solve weights up and down correctly" begin
+        # With p = 0.5 an up/down weight swap is invisible, so weight the branches
+        # unequally and pin the root explicitly. data[1] is the up child, data[2] down.
+        Δt = 0.5
+        m = build(MySymmetricBinaryInterestRateLatticeModel,
+            (u = 1.1, d = 0.9, p = 0.8, rₒ = 0.05, T = 2)) |> populate
+        m = solve(m; Vₚ = 100.0, Δt = Δt)
+
+        up = 100.0 / (1 + 0.055 * Δt)     # higher rate  -> discounted harder
+        down = 100.0 / (1 + 0.045 * Δt)
+        @test isapprox(m.data[1].price, up; atol = 1e-10)
+        @test isapprox(m.data[2].price, down; atol = 1e-10)
+        @test isapprox(m.data[0].price, (0.8 * up + 0.2 * down) / (1 + 0.05 * Δt); atol = 1e-10)
+
+        # the swapped weighting is genuinely distinguishable, so this test has teeth
+        @test !isapprox(m.data[0].price, (0.2 * up + 0.8 * down) / (1 + 0.05 * Δt); atol = 1e-6)
+    end
+
+    @testset "rate-lattice solve validates before it mutates" begin
+        params = (u = 1.1, d = 0.9, p = 0.5, rₒ = 0.05, T = 2)
+
+        # Δt must be a positive number of years
+        @test_throws DomainError solve(build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate; Δt = 0.0)
+        @test_throws DomainError solve(build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate; Δt = -0.5)
+
+        # p must be a probability
+        badp = build(MySymmetricBinaryInterestRateLatticeModel,
+            (u = 1.1, d = 0.9, p = 1.5, rₒ = 0.05, T = 2)) |> populate
+        @test_throws DomainError solve(badp; Vₚ = 100.0)
+
+        # solve mutates in place, so a rejected call must leave prices untouched
+        # rather than half repriced
+        m = solve(build(MySymmetricBinaryInterestRateLatticeModel, params) |> populate; Vₚ = 100.0)
+        before = Dict(i => n.price for (i, n) ∈ m.data)
+        @test_throws DomainError solve(m; Vₚ = 250.0, Δt = -1.0)
+        @test all(isapprox(m.data[i].price, before[i]; atol = 1e-12) for i ∈ keys(before))
+    end
 end

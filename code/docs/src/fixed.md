@@ -71,7 +71,7 @@ VLQuantitativeFinancePackage.build(model::Type{MySymmetricBinaryInterestRateLatt
 VLQuantitativeFinancePackage.populate(model::MySymmetricBinaryInterestRateLatticeModel)
 VLQuantitativeFinancePackage.expectation(model::MySymmetricBinaryInterestRateLatticeModel)
 VLQuantitativeFinancePackage.variance(model::MySymmetricBinaryInterestRateLatticeModel)
-VLQuantitativeFinancePackage.solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0)
+VLQuantitativeFinancePackage.solve(model::MySymmetricBinaryInterestRateLatticeModel; Vₚ::Float64 = 100.0, Δt::Float64 = 1.0)
 ```
 
 ## Separating the principal and interest payments
