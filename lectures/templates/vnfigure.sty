@@ -1,0 +1,33 @@
+% ============================================================
+% vnfigure.sty -- house style for standalone CHEME 5660 figures
+% Engine: XeLaTeX
+%
+% CANONICAL SOURCE. Each lecture's figs/ directory holds a thin wrapper
+% vnfigure.sty that \inputs this file, mirroring how each docs/ directory
+% wraps templates/varnernotes.sty.
+%
+% Type and palette mirror templates/varnernotes.sty, and the cash-flow
+% drawing grammar is \input from templates/vnflow.sty -- the same file the
+% notes use -- so a figure rendered to SVG for a notebook is visually
+% identical to the same figure typeset inside the notes.
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage{fontspec}
+\IfFontExistsTF{Arial}
+  {\setsansfont{Arial}}
+  {\setsansfont{TeX Gyre Heros}}
+
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage[
+  warnings-off={mathtools-colon,mathtools-overbracket}
+]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning}
+
+% Palette + shared cash-flow grammar. Path is relative to the compile
+% directory, which for figures is a lecture figs/.
+\input{../../../templates/vnflow.sty}

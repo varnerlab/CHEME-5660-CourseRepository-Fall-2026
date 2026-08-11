@@ -28,24 +28,24 @@ Burton Malkiel's bond-pricing principles organize the central comparative static
 To isolate interest-rate risk, freeze the promised cash flows and vary only the yield used to discount them. The resulting yield-based valuation is defined locally in \defnref{yield-price}.
 
 \begin{definition}{Yield-based bond price}{yield-price}
-Let the positive integer $n$ denote the number of coupon intervals per year, let the positive integer $N$ denote the number of remaining payment dates, and let $X_j>0$ dollars be the fixed cash flow paid at coupon index $j\in\{1,\ldots,N\}$. Let the nominal annual yield to maturity be $r$ with $1+r/n>0$. Under a flat-yield convention, the time-0 dirty price $\B(r)$---the value including any accrued interest---is given by \eqnref{yield-price}:
+Let the positive integer $n$ denote the number of coupon intervals per year, let the positive integer $N$ denote the number of remaining payment dates, and let $X_j>0$ dollars be the fixed cash flow paid at coupon index $j\in\{1,\ldots,N\}$. Let the nominal annual yield to maturity be $y$ with $1+y/n>0$. Under a flat-yield convention, the time-0 dirty price $\B(y)$---the value including any accrued interest---is given by \eqnref{yield-price}:
 \begin{equation}
   \label{eq:yield-price}
-  \B(r):=\sum_{j=1}^{N}X_j\left(1+\frac{r}{n}\right)^{-j}.
+  \B(y):=\sum_{j=1}^{N}X_j\left(1+\frac{y}{n}\right)^{-j}.
 \end{equation}
-The yield $r$ is the single internal discount rate applied to every promised payment; it is not a complete term structure of spot rates.
+The yield $y$ is the single internal discount rate applied to every promised payment; it is not a complete term structure of spot rates.
 \end{definition}
 
-The common factor $q:=1+r/n$ converts the notation in \eqnref{yield-price} into a sum of positive discounted claims. Differentiating that sum establishes both the direction and curvature of the price response (\thmref{yield-shape}).
+The common factor $q:=1+y/n$ converts the notation in \eqnref{yield-price} into a sum of positive discounted claims. Differentiating that sum establishes both the direction and curvature of the price response (\thmref{yield-shape}).
 
 \begin{theorem}{Monotonicity and convexity of an option-free bond}{yield-shape}
-Under the assumptions of \defnref{yield-price}, let $q:=1+r/n>0$. The first and second derivatives of the dirty price with respect to the nominal annual yield are given by \eqnref{yield-derivatives}:
+Under the assumptions of \defnref{yield-price}, let $q:=1+y/n>0$. The first and second derivatives of the dirty price with respect to the nominal annual yield are given by \eqnref{yield-derivatives}:
 \begin{equation}
   \label{eq:yield-derivatives}
-  \frac{d\B}{dr}
+  \frac{d\B}{dy}
   =-\frac{1}{n}\sum_{j=1}^{N}jX_jq^{-j-1}<0,
   \qquad
-  \frac{d^2\B}{dr^2}
+  \frac{d^2\B}{dy^2}
   =\frac{1}{n^2}\sum_{j=1}^{N}j(j+1)X_jq^{-j-2}>0.
 \end{equation}
 Consequently, the bond price is strictly decreasing and strictly convex as a function of yield. The result assumes fixed positive cash flows and therefore does not automatically apply to securities whose cash flows change when rates change, such as callable bonds.
@@ -56,8 +56,8 @@ The signs in \eqnref{yield-derivatives} explain the price-yield geometry: a high
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[x=1.15cm,y=0.88cm,>=Latex,font=\sffamily\small]
-    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(7.2,0) node[right]{yield $r$};
-    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,4.7) node[above]{price $\B(r)$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(7.2,0) node[right]{yield $y$};
+    \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,4.7) node[above]{price $\B(y)$};
     \draw[vnlink,line width=1.4pt,domain=0.45:6.7,samples=80,smooth]
       plot (\x,{5.25/(0.75+0.42*\x)});
     \coordinate (mid) at (3.45,{5.25/(0.75+0.42*3.45)});
@@ -67,9 +67,9 @@ The signs in \eqnref{yield-derivatives} explain the price-yield geometry: a high
     \fill[vnlink] (low) circle (1.8pt);
     \fill[vncarnelian] (high) circle (1.8pt);
     \draw[vnrule,dashed] (2.15,0)--(low) (3.45,0)--(mid) (4.75,0)--(high);
-    \node[below] at (2.15,0) {$r_-$};
-    \node[below] at (3.45,0) {$r_0$};
-    \node[below] at (4.75,0) {$r_+$};
+    \node[below] at (2.15,0) {$y_-$};
+    \node[below] at (3.45,0) {$y_0$};
+    \node[below] at (4.75,0) {$y_+$};
     \draw[vnrule,dashed] (1.82,3.18)--(low) (1.82,2.39)--(mid);
     \draw[vnlink,<->,line width=0.9pt] (1.82,2.39)--(1.82,3.18)
       node[midway,left,text=vnlink]{gain};
@@ -79,7 +79,7 @@ The signs in \eqnref{yield-derivatives} explain the price-yield geometry: a high
     \node[anchor=west,text=vnmuted] at (5.05,3.35) {decreasing};
     \node[anchor=west,text=vnmuted] at (5.05,2.95) {and convex};
   \end{tikzpicture}
-  \caption{The price-yield curve for a fixed positive cash-flow stream. The comparison yields are $r_-:=r_0-\Delta r$ and $r_+:=r_0+\Delta r$ for an equal change $\Delta r>0$ from the initial yield $r_0$. Convexity makes the vertical price gain from the rate decrease exceed the price loss from the equal rate increase.}
+  \caption{The price-yield curve for a fixed positive cash-flow stream. The comparison yields are $y_-:=y_0-\Delta y$ and $y_+:=y_0+\Delta y$ for an equal change $\Delta y>0$ from the initial yield $y_0$. Convexity makes the vertical price gain from the rate decrease exceed the price loss from the equal rate increase.}
   \label{fig:price-yield}
 \end{figure}
 
@@ -95,23 +95,23 @@ The bill-sensitivity notebook tests the first part of \thmref{yield-shape} using
 The derivative signs answer \emph{which direction}; risk management also needs \emph{how much}. Normalizing the derivatives by price produces two local measures with interpretable units (\defnref{duration-convexity}).
 
 \begin{definition}{Modified duration and convexity}{duration-convexity}
-For the positive fixed cash flows, nominal annual yield $r$, coupon frequency $n$, and price $\B(r)>0$ defined in \defnref{yield-price}, the modified duration $D_{\mathrm{mod}}(r)$ and convexity $K(r)$ are defined by \eqnref{risk-measures}:
+For the positive fixed cash flows, nominal annual yield $y$, coupon frequency $n$, and price $\B(y)>0$ defined in \defnref{yield-price}, the modified duration $D_{\mathrm{mod}}(y)$ and convexity $K(y)$ are defined by \eqnref{risk-measures}:
 \begin{equation}
   \label{eq:risk-measures}
-  D_{\mathrm{mod}}(r):=-\frac{1}{\B(r)}\frac{d\B}{dr},
+  D_{\mathrm{mod}}(y):=-\frac{1}{\B(y)}\frac{d\B}{dy},
   \qquad
-  K(r):=\frac{1}{\B(r)}\frac{d^2\B}{dr^2}.
+  K(y):=\frac{1}{\B(y)}\frac{d^2\B}{dy^2}.
 \end{equation}
-When the yield $r$ is expressed as a decimal per year, modified duration has units of years and convexity has units of years squared. Both measures are positive under the assumptions of \thmref{yield-shape}.
+When the yield $y$ is expressed as a decimal per year, modified duration has units of years and convexity has units of years squared. Both measures are positive under the assumptions of \thmref{yield-shape}.
 \end{definition}
 
-For a small yield shock $\Delta r$, a second-order Taylor approximation combines the two normalized sensitivities. The approximate fractional price change is given by \eqnref{duration-convexity-approximation}:
+For a small yield shock $\Delta y$, a second-order Taylor approximation combines the two normalized sensitivities. The approximate fractional price change is given by \eqnref{duration-convexity-approximation}:
 \begin{equation}
   \label{eq:duration-convexity-approximation}
   \frac{\Delta\B}{\B}
-  \approx-D_{\mathrm{mod}}\Delta r+\frac{1}{2}K(\Delta r)^2.
+  \approx-D_{\mathrm{mod}}\Delta y+\frac{1}{2}K(\Delta y)^2.
 \end{equation}
-The duration term supplies the local slope, while the convexity term corrects the straight-line approximation for curvature. This formula uses a decimal yield change: a 25-basis-point shock is $\Delta r=0.0025$, where one basis point is $10^{-4}$.
+The duration term supplies the local slope, while the convexity term corrects the straight-line approximation for curvature. This formula uses a decimal yield change: a 25-basis-point shock is $\Delta y=0.0025$, where one basis point is $10^{-4}$.
 
 \section{How Contract Structure Changes Sensitivity}
 

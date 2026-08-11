@@ -90,10 +90,21 @@ mathematical role, domain or admissible values, and physical or financial units
 when applicable. This rule includes operators, subscripts, superscripts,
 summation indices, norms, asymptotic notation such as $O(x^3)$, and conventional
 constants such as $e$; familiarity is not a substitute for a definition.
-Pair the descriptive term with its symbol in prose: write “the discount rate
-$r$,” “the investment horizon $T$,” or “the compounding frequency $n$” rather
-than introducing a bare $r$, $T$, or $n$. Reintroduce the descriptive term when
-a symbol returns after a substantial gap or when doing so prevents ambiguity.
+Pair the descriptive term with its symbol in prose: write “the nominal annual
+yield $y$,” “the investment horizon $T$,” or “the compounding frequency $n$”
+rather than introducing a bare $y$, $T$, or $n$. Reintroduce the descriptive
+term when a symbol returns after a substantial gap or when doing so prevents
+ambiguity.
+
+Course symbol conventions are semantic, not global. Use $y$ for a nominal
+periodically compounded yield, $g$ (or $g_f$, $r_f$) for a continuously
+compounded growth or risk-free rate, $j\in\{0,\ldots,N\}$ for a discrete
+cash-flow or coupon index with $N=nT$, and $t,T$ for elapsed or maturity time in
+years. Reserve $r$ for a continuously compounded rate in continuous-time models
+(Black--Scholes, CRR, short-rate) or for a dimensionless log return
+$r=(\Delta t)g$; do not use it for a nominal yield. Write $\mathcal{D}$ for a
+forward accumulation factor and $\mathcal{D}^{-1}$ for the present-value
+discount factor, and say which you mean.
 
 Every definition, theorem, proposition, and remark must be locally complete and
 understandable on its own. Restate the meanings of all symbols used inside the
@@ -103,13 +114,13 @@ reader to search the surrounding paragraphs for them.
 
 Good:
 
-> Let the nominal annual discount rate be $r\in\mathbb{R}$, let the investment
-> horizon be $T\geq 0$ years, and let the positive integer $n$ denote the number
-> of compounding intervals per year.
+> Let the nominal annual yield be $y\in\mathbb{R}$, let the investment horizon
+> be $T\geq 0$ years, and let the positive integer $n$ denote the number of
+> compounding intervals per year, with $1+y/n>0$.
 
 Avoid:
 
-> For fixed $r$ and $T$, as $n\to\infty$, ...
+> For fixed $y$ and $T$, as $n\to\infty$, ...
 
 ## Required review check
 

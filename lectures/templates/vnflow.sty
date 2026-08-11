@@ -1,0 +1,44 @@
+% ============================================================
+% vnflow.sty -- shared palette and cash-flow figure grammar
+%
+% CANONICAL SOURCE. This file is \input by BOTH
+%   templates/varnernotes.sty  (figures typeset directly inside lecture notes)
+%   templates/vnfigure.sty     (standalone figures rendered to PDF/SVG)
+% so that a figure drawn for a notebook and the same figure set in the notes
+% use identical colours and identical drawing styles by construction.
+%
+% The including file must already have loaded tikz together with the
+% arrows.meta and decorations.pathreplacing libraries.
+% ============================================================
+
+% Palette -------------------------------------------------------
+\definecolor{vnink}{HTML}{202124}
+\definecolor{vnmuted}{HTML}{5F6368}
+\definecolor{vnrule}{HTML}{AEB4BA}
+\definecolor{vnpanel}{HTML}{F2F3F4}
+\definecolor{vnsoft}{HTML}{F8F9FA}
+\definecolor{vnlink}{HTML}{1A5276}
+\definecolor{vncarnelian}{HTML}{B31B1B}
+
+% Cash-flow figure grammar --------------------------------------
+% CHEME flow convention: an arrow LEAVING a time-point unit is money paid;
+% an arrow ENTERING one is money received. This is the course rule, and it is
+% deliberately NOT the common finance "up = inflow" convention. Draw every
+% cash-flow timeline with `vn paid` / `vn received` so the convention is
+% stated once here rather than re-derived per figure.
+%
+% Caution: TikZ's `font=` key REPLACES the picture-level font rather than
+% appending to it. Any style setting a size must therefore restate
+% \sffamily, or the label silently reverts to the serif body face.
+\tikzset{
+  vn timeline/.style     = {vnink,line width=0.8pt,-{Latex[length=3mm]}},
+  vn unit/.style         = {draw=vnink,circle,fill=white,line width=0.7pt,
+                            minimum size=5mm,inner sep=0pt},
+  vn paid/.style         = {vncarnelian,line width=1.4pt,-{Latex[length=3mm]}},
+  vn received/.style     = {vnlink,line width=1.4pt,-{Latex[length=3mm]}},
+  vn brace/.style        = {decorate,decoration={brace,amplitude=5pt},vnmuted},
+  vn transport/.style    = {vnlink,line width=0.9pt,-{Latex[length=3mm]}},
+  vn callout/.style      = {draw=vnrule,fill=vnsoft,rounded corners=1pt,
+                            inner xsep=8pt,inner ysep=5pt},
+  vn annotation/.style   = {text=vnmuted,font=\sffamily\footnotesize},
+}

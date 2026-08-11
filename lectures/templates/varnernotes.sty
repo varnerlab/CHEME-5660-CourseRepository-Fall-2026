@@ -56,14 +56,12 @@
 % full (two-sided) justification. Displayed mathematics remains centered.
 \AtBeginDocument{\raggedright}
 
-% Palette: intentionally restrained and print-friendly ----------
-\definecolor{vnink}{HTML}{202124}
-\definecolor{vnmuted}{HTML}{5F6368}
-\definecolor{vnrule}{HTML}{AEB4BA}
-\definecolor{vnpanel}{HTML}{F2F3F4}
-\definecolor{vnsoft}{HTML}{F8F9FA}
-\definecolor{vnlink}{HTML}{1A5276}
-\definecolor{vncarnelian}{HTML}{B31B1B}
+% Palette and cash-flow figure grammar --------------------------
+% Both live in templates/vnflow.sty, which standalone figures also \input via
+% templates/vnfigure.sty. Sharing the file means a timeline typeset inside
+% these notes and the same timeline rendered to SVG for a notebook cannot
+% drift apart. Path is relative to the compile directory (a lecture docs/).
+\input{../../../templates/vnflow.sty}
 
 \hypersetup{
   colorlinks=true,

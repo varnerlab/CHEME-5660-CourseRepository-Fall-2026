@@ -1,0 +1,54 @@
+% Abstract-asset timeline -- SHARED SOURCE.
+%
+% \input by two places; do not duplicate the picture:
+%   ../docs/Style-Specimen.tex          (typeset directly into the L1b notes)
+%   Fig-L1b-AbstractAsset-Timeline.tex  (standalone -> PDF -> SVG for notebooks)
+% Editing this file updates both. Rebuild the SVG with `make` in this directory.
+%
+% Drawing grammar and the CHEME flow convention come from templates/vnflow.sty:
+%   arrow LEAVING a time-point unit  = cash paid
+%   arrow ENTERING a time-point unit = cash received
+% The signed net cash flow \bar c_j already carries its sign, so labels are
+% written WITHOUT an extra minus; the arrow direction conveys direction.
+%
+% Indexing matches the notebooks and L2a: j = 0,1,...,N with N = nT.
+\begin{tikzpicture}[x=2.25cm,y=1cm,>=Latex,font=\sffamily\small]
+
+  \draw[vn brace] (0.35,1.65) -- (6.15,1.65)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries abstract asset $\mathcal{A}=\{\bar c_0,\bar c_1,\ldots,\bar c_N\}$};
+
+  \draw[vn timeline] (0,0) -- (6.65,0) node[right] {time};
+  \foreach \x/\lab/\unit in {0.35/0/u0,1.75/1/u1,3.15/2/u2,6.0/N/uN}{
+    \node[vn unit] (\unit) at (\x,0) {};
+    \node[below=4pt] at (\x,0) {$j=\lab$};
+  }
+  \node at (4.55,0.02) {$\cdots$};
+
+  % j = 0: arrow leaves the unit -> cash paid (the purchase)
+  \draw[vn paid] (u0.north) -- (0.35,1.05);
+  \node[right,text=vncarnelian] at (0.35,0.62) {$\bar c_0$};
+  \node[above,vn annotation] at (0.35,1.05) {cash paid};
+
+  % j = 1: arrow enters the unit -> cash received
+  \draw[vn received] (1.75,1.05) -- (u1.north);
+  \node[right,text=vnlink] at (1.75,0.62) {$\bar c_1$};
+
+  % j = 2: arrow leaves the unit -> cash paid
+  \draw[vn paid] (u2.north) -- (3.15,1.05);
+  \node[right,text=vncarnelian] at (3.15,0.62) {$\bar c_2$};
+
+  % j = N: arrow enters the unit -> cash received (the sale)
+  \draw[vn received] (6.0,1.05) -- (uN.north);
+  \node[right,text=vnlink] at (6.0,0.62) {$\bar c_N$};
+  \node[above,vn annotation] at (6.0,1.05) {cash received};
+
+  % Transport every dated flow to the common valuation date
+  \draw[vn transport] (6.0,-0.94) -- (0.50,-0.94)
+    node[midway,fill=white,inner sep=3pt,text=vnlink]
+    {$\bar c_j\mapsto\mathcal{D}_{j,0}^{-1}(y;n)\,\bar c_j$};
+  \node[vn callout,anchor=north west] at (0.35,-1.27)
+    {common units: time-0 dollars};
+  \node[vn annotation,anchor=west] at (3.35,-1.57)
+    {discount future cash flows to the valuation date};
+\end{tikzpicture}

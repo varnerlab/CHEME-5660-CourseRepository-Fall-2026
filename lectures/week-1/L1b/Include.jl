@@ -1,5 +1,6 @@
-# setup paths -
-const _ROOT = pwd();
+# setup paths - anchor to this file's directory, not the working directory,
+# so the notebook behaves the same however it was opened -
+const _ROOT = @__DIR__;
 const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
@@ -11,6 +12,8 @@ let d = @__DIR__
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
     end
+    isfile(joinpath(d, "Project.toml")) ||
+        error("no Project.toml found in any directory above $(@__DIR__)");
     Pkg.activate(d); Pkg.instantiate();
 end
 
