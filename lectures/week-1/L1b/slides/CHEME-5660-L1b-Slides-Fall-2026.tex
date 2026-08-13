@@ -1,0 +1,279 @@
+% L1b takeaway deck.
+%
+% THE DECK MIRRORS THE NOTEBOOK. These slides are a surrogate for
+% CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb, shown in lecture in its
+% place: the notebook carries more detail, but the deck must cover at minimum the
+% same material in the same order, with frame titles matching notebook headings.
+% Adding a section to the notebook means adding a slide here.
+%
+% Notebook outline as of this writing, and where each part lands:
+%
+%   (deck only)                          -> title
+%   Disclaimer and Risks       [last]    -> slide 2   (always near the front)
+%   Learning Objectives        [cell 0]  -> Objectives for Today
+%   Setup, Data, Prerequisites           -> not slided; notebook housekeeping
+%   Time Value of Money        [cell 4]  -> Time Value of Money
+%   Discrete Compounding       [cell 5]  -> Discrete Compounding and Accumulation Factors
+%   Continuous Compounding     [cell 6]  -> Continuous Compounding
+%   Who Sets the Valuation Rate[cell 11] -> Who Sets the Valuation Rate? + What Rate Should I Use?
+%   Abstract Assets and Net Cash Flows   -> An Abstract Asset (figure) + Net Cash Flows
+%   Net Present Value          [cell 14] -> Net Present Value
+%   Summary                    [cell 16] -> Summary
+%
+% The 2024 decks opened with a "2-minute rapid review" transition frame. That is
+% a holdover: it belongs to a concept-review notebook section, and L1b has none,
+% so it is not used here. \transitionframe is still in vnslides.sty for decks
+% whose notebook does open that way.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\title{{\vnheavy L1b}: Time Value of Money, Abstract Assets, and Net Present Value}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+% ---- title ---------------------------------------------------
+\vntitlepage
+
+% ---- disclaimer ----------------------------------------------
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+% ---- objectives ----------------------------------------------
+\begin{frame}{Objectives for Today}
+  \vspace{0.4em}
+  Today we put \hilite{dated cash flows} on a common footing, build the factors
+  that move value through time, and use them to value an \hilite{abstract asset}.
+
+  \vspace{0.9em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{The time value of money}: cash flows at different dates are
+      different claims, and cannot be added until they share a valuation date.
+    \item \hilite{An abstract asset}: a sequence of dated signed cash flows. The
+      same representation covers a bond, a stock, a factory, or a car.
+    \item \hilite{Net present value}: discount each signed cash flow to the
+      valuation date, then add. Its sign is a statement about the rate you
+      declared, not a guarantee of profit.
+  \end{itemize}
+  \vspace{-0.4em}
+
+  \slidenote{Companion notes:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}{L1b lecture notes and notebooks}}
+\end{frame}
+
+% ---- examples ------------------------------------------------
+\begin{frame}{Lectures and Examples}
+  \vspace{0.8em}
+  % Notebook names run to ~60 characters; \large wraps the longest one onto a
+  % second line and the block stops looking like a list.
+  % Lead-in matches the notebook's kind: the lecture notebook is not an example.
+  {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
+
+  \vspace{1.2em}
+  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
+
+  \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
+\end{frame}
+
+% ---- TVM -----------------------------------------------------
+\begin{frame}{Time Value of Money}
+  Cash flows delivered on different dates are \hilite{different dated claims}.
+  Before they can be compared or added, they must be expressed at a common
+  valuation date under a stated conversion rule.
+
+  \vspace{0.5em}
+  Let $P$ be an amount held at time $0$, and let $y$ be a quoted \hilite{nominal
+  annual yield} used for valuation. With one compounding interval per year, the
+  amount after one year is given by:
+  \[
+    F_1=\underbrace{(1+y)}_{\mathcal D_{1,0}(y;1)}P .
+  \]
+
+  For $y>0$ the factor $\mathcal D_{1,0}(y;1)>1$ moves time-0 dollars forward and
+  is the \hilite{forward accumulation factor}; its inverse
+  $\mathcal D_{1,0}^{-1}(y;1)<1$ moves future dollars back and is the
+  \hilite{discount factor}.
+
+  \slidenote{Careful:}{a later dollar is not \emph{automatically} worth less. That depends on the rate $y$ you declare.}
+\end{frame}
+
+% ---- math: accumulation --------------------------------------
+\begin{frame}{Discrete Compounding and Accumulation Factors}
+  Let $P$ be an amount held at time $0$, let $j=0,1,2,\ldots$ index the
+  \hilite{compounding periods}, and let $i_\ell>-1$ be the \hilite{effective rate}
+  earned over the interval $\ell\rightarrow\ell+1$. Then the amount $F_j$ after
+  $j$ periods is given by:
+  \[
+    F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P .
+  \]
+
+  If the same nominal annual yield $y$ applies in every interval, with $n$
+  intervals per year, then $i_\ell=y/n$ for every $\ell$ and the product
+  collapses to:
+  \[
+    \underbrace{\mathcal D_{j,0}(y;n)=\left(1+\frac{y}{n}\right)^{j}}_{\text{\footnotesize accumulation}},
+    \qquad
+    \underbrace{\mathcal D_{j,0}^{-1}(y;n)=\left(1+\frac{y}{n}\right)^{-j}}_{\text{\footnotesize discount}}.
+  \]
+
+  \slidenote{Careful:}{a flat $y$ is an \emph{assumption}. In L2b, $y$ varies with the date.}
+\end{frame}
+
+% ---- math: continuous ----------------------------------------
+\begin{frame}{Continuous Compounding}
+  Let $g(t)$ be a \hilite{continuously compounded growth rate}, carrying units of
+  inverse time, and let $T$ be the horizon. The forward accumulation factor over
+  $0\rightarrow T$ is given by:
+  \[
+    \mathcal D_{T,0}(g)=\exp\left(\int_0^T g(u)\,du\right),
+  \]
+
+  which for constant $g$ collapses to:
+  \[
+    \underbrace{\mathcal D_{T,0}(g)=e^{gT}}_{\text{\footnotesize accumulation}},
+    \qquad
+    \underbrace{\mathcal D_{T,0}^{-1}(g)=e^{-gT}}_{\text{\footnotesize discount}}.
+  \]
+
+  A nominal annual yield $y$ compounded $n$ times per year has the continuously
+  compounded equivalent $g_y:=n\log\left(1+y/n\right)$, so
+  $\left(1+y/n\right)^{nT}=e^{g_yT}$: these are \hilite{two representations of one
+  accumulation rule}, not two different rules.
+
+  \slidenote{Log return:}{the dimensionless product $r=(\Delta t)\,g$. L2a and L3a build on it.}
+\end{frame}
+
+% ---- who sets the rate ---------------------------------------
+\begin{frame}{Who Sets the Valuation Rate?}
+  A valuation rate is \hilite{not universal}. It depends on the cash flow, market
+  convention, horizon, and the risks being modeled: no single policy rate prices
+  every asset.
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{The Federal Reserve}}}
+  \vspace{0.25em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Steers short-term rates through \hilite{interest on reserve balances}
+      (IORB), supported by the overnight reverse repo facility; open market
+      operations manage the supply of reserves.
+    \item The \hilite{FOMC} sets a target range for the federal funds rate, the
+      overnight rate on unsecured reserve balances traded between eligible
+      institutions.
+    \item Other market rates respond to policy and market conditions, but are
+      \hilite{not mechanically pegged} to the federal funds rate.
+  \end{itemize}
+
+  \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar: what does the market imply about the next meeting?}}
+\end{frame}
+
+\begin{frame}{What Valuation Rate Should I Use?}
+  There is no universal answer, and this lecture does not need one: here the
+  yield $y$ is a \hilite{declared model input}. Choosing it well means matching
+  the rate to the cash flow: same currency, same horizon, and an explicit
+  statement of any adjustment made for credit, liquidity, or risk.
+
+  \vspace{0.8em}
+  {\large\textbf{\ink{Two cautions we rely on later}}}
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item A quoted \hilite{bond yield} and an estimated \hilite{equity required
+      return} are different kinds of number: the first is a contractual promise
+      conditional on no default, the second is a forecast.
+    \item Expected compensation attaches to \hilite{systematic} risk, the part
+      that cannot be diversified away. Taking on more of the part that
+      \emph{can} be does not by itself raise expected return, and an expected
+      return is not a realized one.
+  \end{itemize}
+\end{frame}
+
+% ---- figure --------------------------------------------------
+\begin{frame}{An Abstract Asset}
+  \vspace{0.2em}
+  \begin{center}
+    \resizebox{\textwidth}{!}{\input{../figs/abstract-asset-timeline.tex}}
+  \end{center}
+\end{frame}
+
+% ---- net cash flows ------------------------------------------
+\begin{frame}{Net Cash Flows}
+  An abstract asset is a \hilite{sequence of dated cash flows} denominated in a
+  currency. At cash-flow index $j$, let $\mathbf c_j\in\mathbb R_{\geq0}^{m}$
+  collect $m$ nonnegative magnitudes and let
+  $\symbf{\nu}_j\in\{-1,+1\}^{m}$ give their directions, where $+1$ denotes an
+  inflow and $-1$ an outflow. The \hilite{signed net cash flow} at index $j$ is
+  given by:
+  \[
+    \bar c_j=\left\langle\mathbf c_j,\symbf{\nu}_j\right\rangle
+    =\sum_{i=1}^{m}c_{j,i}\,\nu_{j,i}.
+  \]
+
+  Over the dates $j=0,1,\ldots,N$, the undiscounted total $\sum_{j=0}^{N}\bar c_j$
+  is \hilite{not} a time-0 value: its terms are dollars from different dates.
+
+  \slidenote{Next:}{discount every term to a common date, and the result is net present value.}
+\end{frame}
+
+% ---- math: NPV -----------------------------------------------
+\begin{frame}{Net Present Value}
+  \vspace{0.2em}
+  Let $\bar c_j$ be the \hilite{signed net cash flow} on date $j$, positive for
+  an inflow and negative for an outflow, over the dates $j=0,1,\ldots,N$. Discount
+  each one to the valuation date with $\mathcal D_{j,0}^{-1}(y;n)$, \hilite{then}
+  add. The net present value at time $0$ is given by:
+  \[
+    \operatorname{NPV}_0(y)=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}(y;n)\,\bar c_j
+    =\underbrace{\left\langle \mathcal D_{\star,0}^{-1}(y;n),\ \bar{\mathbf c}\right\rangle}_{\text{\footnotesize time-0 dollars}} .
+  \]
+
+  \vspace{0.2em}
+  The $\star$ runs over every cash-flow index, so $\mathcal D_{\star,0}^{-1}(y;n)$
+  and $\bar{\mathbf c}$ are ordered $(N+1)$-vectors and NPV is a single scalar
+  product, which is exactly how we compute it in code.
+
+  \slidenote{Worked example:}{ten years of Model S ownership, $\operatorname{NPV}_0=-\$121{,}484$}
+\end{frame}
+
+% ---- summary -------------------------------------------------
+% Summary frames follow the notebook's Summary cell: one summary sentence, the
+% three key takeaways, one concluding sentence. See vnslides.sty rule 7.
+\begin{frame}{Summary}
+  This lecture introduced time-value-of-money calculations and the
+  representation of investments as dated cash flows.
+
+  \vspace{0.6em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.25em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \textbf{\ink{Dated dollars must be compared at a common valuation date.}}
+      A forward accumulation factor carries value forward and its inverse
+      discounts it back, so cash flows can be added only once they share a date.
+    \item \textbf{\ink{Rate conventions must be stated.}} A nominal yield quoted
+      with a compounding frequency and its continuously compounded equivalent
+      describe one accumulation rule, so the convention travels with the number.
+    \item \textbf{\ink{NPV values an asset relative to a declared rate.}} The sign
+      of the result is a statement about the cash-flow model and the discount
+      rate you declared.
+  \end{itemize}
+
+  \vspace{0.6em}
+  These ideas provide the valuation framework used throughout the course.
+\end{frame}
+
+\end{document}

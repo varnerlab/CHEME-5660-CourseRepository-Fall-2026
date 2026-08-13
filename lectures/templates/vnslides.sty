@@ -1,0 +1,273 @@
+% ============================================================
+% vnslides.sty -- CHEME 5660 lecture-deck style (beamer)
+% Engine: XeLaTeX
+%
+% CANONICAL SOURCE. Each lecture's slides/ directory holds a thin wrapper
+% vnslides.sty that \inputs this file, mirroring how docs/ wraps
+% templates/varnernotes.sty and figs/ wraps templates/vnfigure.sty.
+%
+% Design target: the Fall-2024 Keynote decks. White field, no chrome, one sans
+% face, two colours, generous whitespace. Built up from beamer's `default`
+% theme rather than down from Madrid/Warsaw -- those carry headline bars,
+% navigation dots and shaded blocks that all have to be removed anyway.
+%
+% Palette below the rule is shared with the notes and the standalone figures via
+% templates/vnflow.sty, so a TikZ figure drops into a slide unchanged.
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{vnslides}[2026/08/11 CHEME 5660 lecture deck style]
+
+% ---------- chrome removal -----------------------------------
+\usetheme{default}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{blocks}[default]
+\setbeamercolor{background canvas}{bg=white}
+\beamertemplatenavigationsymbolsempty
+
+% ---------- type ---------------------------------------------
+\RequirePackage{fontspec}
+% Body copy is Helvetica Neue LIGHT, not Regular. Regular reads heavy at
+% projection size and is what makes a deck look chunky; the Fall-2024 decks set
+% their running text light and reserved weight for headings only.
+\IfFontExistsTF{Helvetica Neue Light}
+  {\setsansfont{Helvetica Neue Light}[
+      BoldFont={Helvetica Neue Medium},
+      ItalicFont={Helvetica Neue Light Italic},
+      BoldItalicFont={Helvetica Neue Medium Italic}]
+   \newfontfamily\vnlight{Helvetica Neue Light}
+   \newfontfamily\vnmedium{Helvetica Neue Medium}
+   \newfontfamily\vnheavy{Helvetica Neue Bold}}
+  {\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{TeX Gyre Heros}}
+   \newcommand{\vnlight}{\normalfont}
+   \newcommand{\vnmedium}{\bfseries}
+   \newcommand{\vnheavy}{\bfseries}}
+\renewcommand{\familydefault}{\sfdefault}
+
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage{unicode-math}
+\setmathfont{latinmodern-math.otf}
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning}
+\RequirePackage{graphicx}
+
+% Shared palette + cash-flow drawing grammar. Relative to the compile
+% directory, which for a deck is a lecture slides/.
+\input{../../../templates/vnflow.sty}
+
+% ---------- deck palette -------------------------------------
+% Sampled from the Fall-2024 decks rather than guessed. Note vnaccent is a
+% coral, NOT vncarnelian (#B31B1B): the decks have always used the lighter hue.
+\definecolor{vnslideink}{HTML}{333333}   % headings, emphatic body
+\definecolor{vnslidebody}{HTML}{5E5E5E}  % ordinary body copy
+\definecolor{vnaccent}{HTML}{FF644E}     % the coral
+\definecolor{vnslidelink}{HTML}{579ACA}  % hyperlinks
+
+\setbeamercolor{normal text}{fg=vnslidebody}
+\setbeamercolor{frametitle}{fg=vnslideink}
+\setbeamercolor{title}{fg=vnslideink}
+\setbeamercolor{itemize item}{fg=vnslidebody}
+\setbeamercolor{itemize subitem}{fg=vnslidebody}
+\setbeamercolor{structure}{fg=vnslideink}
+
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+% The deck title is set LIGHT like the body, not bold. Weight is carried by the
+% lecture tag alone -- see nheavy in the 	itle{...} of a deck.
+\setbeamerfont{title}{size=\LARGE}
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+
+% ONE left margin, used by the body, the frame title and the footer lockup, so
+% the three cannot drift out of alignment.
+\newlength{\vnmargin}
+\setlength{\vnmargin}{0.055\paperwidth}
+\setbeamersize{text margin left=\vnmargin,text margin right=0.075\paperwidth}
+
+% Ragged right, never justified: the reference decks set flush-left with an even
+% word space, and justification on a short slide measure opens ugly rivers.
+% Hyphenation off for the same reason -- a broken word reads as a typo on a slide.
+\AtBeginDocument{\raggedright}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\tolerance=2000
+\emergencystretch=3em
+
+% Display equations. The 11pt defaults leave ~11pt above and below a \[...\],
+% which on a slide reads as a hole rather than a separation and is what tips a
+% two-display frame overfull. These must be attached to \normalsize, not merely
+% set once: \@setfontsize rewrites all four lengths on every size change, and
+% beamer changes size when it opens a frame, so an \AtBeginDocument setting is
+% silently discarded before the first slide is typeset.
+\RequirePackage{etoolbox}
+\newcommand{\vndisplayskips}{%
+  \setlength{\abovedisplayskip}{0.55em plus 0.15em minus 0.15em}%
+  \setlength{\belowdisplayskip}{0.55em plus 0.15em minus 0.15em}%
+  \setlength{\abovedisplayshortskip}{0.25em plus 0.1em}%
+  \setlength{\belowdisplayshortskip}{0.35em plus 0.1em minus 0.1em}}
+\apptocmd{\normalsize}{\vndisplayskips}{}{%
+  \PackageWarning{vnslides}{could not attach display skips to \string\normalsize}}
+\AtBeginDocument{\normalsize}
+
+\setbeamertemplate{itemize item}{\textbullet}
+\setbeamertemplate{itemize subitem}{--}
+% beamer already insets the frametitle box by the text margin, so adding another
+% \hspace here double-indents the title relative to the body copy.
+\setbeamertemplate{frametitle}{%
+  \vskip0.9em%
+  \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par}
+
+\RequirePackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor=vnslidelink,linkcolor=vnslidelink,
+  citecolor=vnslidelink,pdfborder={0 0 0}}
+
+% ---------- footer lockup ------------------------------------
+% "Cornell Duffield Engineering", set small and light: it is a standing mark, not
+% content, and should sit quietly under the body copy. Medium on the unit name,
+% light on the rest -- no bold anywhere.
+% Size is set absolutely rather than with \scriptsize so it does not track the
+% deck's base size: the mark should stay the same physical size on every slide.
+\newcommand{\vnlockup}{%
+  {\fontsize{4.5}{5.4}\selectfont\color{vnslidebody}%
+   {\vnmedium Cornell}\;{\vnlight Duffield Engineering}}}
+% The template's height is what reserves the bottom band, so give it a real strut
+% above and below -- otherwise body copy runs underneath the lockup. \vnmargin
+% keeps it flush with the body text and the frame title.
+\setbeamertemplate{footline}{%
+  \vskip0.9em%
+  \leavevmode\hbox{\hspace*{\vnmargin}\vnlockup\hfill}%
+  \vskip0.9em}
+
+% ---------- content conventions (house rules) -----------------
+% These are editorial, not typographic, but they belong next to the style because
+% every deck in the course is held to them.
+%
+% THE DECK MIRRORS THE NOTEBOOK. A deck is a surrogate for its lecture notebook,
+% shown in lecture in the notebook's place: 2024 was slides only and read as too
+% thin on math, 2025 was notebooks only and read as hard to follow, so a deck now
+% has to be presentable AND complete. It must cover at minimum the same material,
+% in the same order, with frame titles matching notebook headings. Adding a
+% section to a notebook means adding a slide to its deck; to audit a deck, diff
+% its frame list against the notebook's "##" headings.
+%
+% Two deliberate exceptions:
+%   - the title and disclaimer slides are ALWAYS present near the front, wherever
+%     they sit in the notebook (notebooks put Disclaimer and Risks last);
+%   - Setup / Data / Prerequisites is notebook housekeeping and gets no slide.
+%
+% \transitionframe below corresponds to a *concept review* notebook section. The
+% 2024 decks opened with one ("2-minute rapid review") as a matter of habit; use
+% it only when the notebook actually opens that way.
+%
+% Then, on every slide:
+%
+%   1. Define every symbol before it appears in a display. If the equation uses
+%      P, F_j, j, i_ell, N or \bar c_j, the prose above it names each one.
+%   2. Never drop a display in cold -- the prose hands off with a linker ending
+%      in a colon: "... the amount $F_j$ after $j$ periods is given by:".
+%   3. \underbrace-label the factors that carry meaning (accumulation, discount,
+%      time-0 dollars). One or two words: a longer label widens the display and
+%      tips the frame overfull.
+%   4. Lead-in labels match the artifact. A lecture notebook is "Lecture:", a
+%      worked example is "Example:"; the frame listing both is titled
+%      "Lectures and Examples".
+%   5. NO EM DASHES. "---" is forbidden anywhere in slide copy. Use a colon when
+%      the second clause explains the first, a comma for an aside, or a full
+%      stop. This one is easy to reintroduce by habit -- grep the deck for "---"
+%      before calling it done.
+%   6. No forward vocabulary. Every term on a slide is either introduced in an
+%      earlier lecture or defined on the spot; a term the course has not reached
+%      yet appears as a pointer ("in L2b, y varies with the date"), never used as
+%      if known. Watch for words the NOTEBOOK also leaves undefined -- "benchmark"
+%      appears 11 times in the L1b notebook and is defined neither there nor in
+%      L1a, so the slides say "the rate you declare" instead, which L1a does
+%      define. Mirroring the notebook does not mean inheriting its gaps.
+%   7. The Summary frame carries the notebook's Summary structure, all three
+%      parts: one summary sentence naming what the lecture introduced, then a
+%      "Key takeaways" heading over EXACTLY three bullets, then one concluding
+%      sentence placing the lecture in the course. Bullets alone are not a
+%      summary -- the two sentences are what open and close it. The Objectives
+%      frame is the mirror image at the front of the deck (lead sentence,
+%      "Today's concepts" heading, three bullets), so the two bookend the deck.
+%
+% A slide is projected without the notes in hand, so it has to stand alone. Take
+% the symbol definitions from the lecture's companion notebook rather than
+% rewording them, so the deck and the notebook agree.
+
+% ---------- author-facing commands ---------------------------
+% \hilite{...}  coral emphasis inside running text (\accent is a TeX primitive)
+% \dim{...}      recede a clause to the body grey
+\newcommand{\hilite}[1]{\textcolor{vnaccent}{#1}}
+\newcommand{\dimmed}[1]{\textcolor{vnslidebody}{#1}}
+\newcommand{\ink}[1]{\textcolor{vnslideink}{#1}}
+
+% A full-bleed centred statement, no frame title. Used for the rapid-review and
+% section-transition slides.
+\newcommand{\transitionframe}[1]{%
+  \begin{frame}
+    \vfill
+    \begin{center}
+      \begin{minipage}{0.82\paperwidth}
+        \centering\Large\ink{#1}
+      \end{minipage}
+    \end{center}
+    \vfill
+  \end{frame}}
+
+% A hairline rule with a small note beneath it, sitting at the foot of the
+% content area -- the "Link: ..." / "Click me for notes" pattern.
+\newcommand{\slidenote}[2]{%
+  \vfill
+  {\color{vnrule}\rule{0.22\paperwidth}{0.4pt}}\par\vspace{0.35em}
+  {\footnotesize\textbf{#1}\hspace{0.6em}#2}}
+
+% Title slide: seal at left, title block to its right.
+%
+% The seal lives once in templates/assets/ and is shared by every deck, as vector
+% PDF so it stays sharp at any size. templates/assets/cornell-seal-carnelian.pdf
+% is the official #B31B1B variant -- note that is exactly vncarnelian, i.e. the
+% notes already use the official Cornell red while the decks run a lighter coral.
+% Override per deck with \vnseal{...} if a lecture needs something else.
+\newcommand{\vnseal}[1]{\def\@vnseal{#1}}
+\vnseal{../../../templates/assets/cornell-seal.pdf}
+% Widths are relative to \textwidth, not \paperwidth: the text area is already
+% inset by the margins, and paperwidth-relative boxes overflow and wrap the seal
+% onto its own line.
+% Sizes are absolute, and were set by measuring the Fall-2024 title page: as a
+% fraction of slide height the title band is 5.33%, the course line 2.78% and the
+% copyright 1.56%. Beamer's \LARGE/\large/\scriptsize at an 11pt base overshot all
+% three (1.16x, 1.55x and 1.93x respectively), which is what made the seal look
+% small -- it was the type that was oversized, not the mark. The title runs a
+% little over its measured band (17pt against 13.6pt): at the true fraction it
+% loses to the seal, which is a heavier mark than the 2024 deck carried.
+%
+% Two traps in the three-line block below, both of which open the gaps back up:
+%
+%   1. Space the lines in pt, never em. An \vspace{0.75em} between two groups is
+%      measured against the AMBIENT font -- beamer's 11pt body -- not against the
+%      8pt or 4.6pt type it is separating, so it lands ~2x too wide.
+%   2. Every line needs its \par INSIDE its own \fontsize group. The baselineskip
+%      glue above a line is chosen when the line is contributed at the \par; let
+%      the group close first and the line is set with the ambient 11pt leading.
+%      This is what made the copyright sit further from the course line than the
+%      course line sat from the title, despite an identical \vspace.
+%
+% Result is a descending ladder, ~13.9pt then ~9.1pt baseline to baseline.
+\newcommand{\vntitlepage}{%
+  \begin{frame}
+    \vfill
+    \begin{minipage}[c]{0.21\textwidth}
+      \includegraphics[width=\linewidth]{\@vnseal}
+    \end{minipage}%
+    \hspace{0.045\textwidth}%
+    \begin{minipage}[c]{0.72\textwidth}
+      \raggedright
+      {\fontsize{17}{20.5}\selectfont\usebeamercolor[fg]{title}\inserttitle\par}
+      \vspace{3pt}
+      {\fontsize{8}{10}\selectfont\dimmed{\insertsubtitle}\par}
+      \vspace{3pt}
+      {\fontsize{4.6}{5.6}\selectfont\dimmed{\insertauthor}\par}
+    \end{minipage}
+    \vfill
+  \end{frame}}
