@@ -1,0 +1,186 @@
+% L3a conceptual plate: one venue's order book, the top of book across venues,
+% and the consolidated NBBO those quotes produce.
+%
+% Quote data is chosen so the NBBO is a COMPOSITE: the best bid sits on Cboe
+% BZX and the best ask on Nasdaq, so the consolidated spread ($0.02) is tighter
+% than any single venue's. A degenerate example where one venue wins both sides
+% teaches that the NBBO is just "the best venue", which is precisely wrong.
+% The NYSE and Nasdaq quotes match the two-venue example in the lecture prose.
+\documentclass[tikz,border=0pt]{standalone}
+\usepackage{vnfigure}
+
+% Type scale ---------------------------------------------------------------
+% Five steps; every label in the figure picks one. Sizes are grouped by role,
+% not chosen per node, so a change to a role is a one-line change here.
+% Each macro restates \sffamily because TikZ's font= key REPLACES the
+% picture-level font rather than appending to it (see vnflow.sty).
+\newcommand{\fLabel}{\sffamily\fontsize{7.4}{9}\selectfont}      % column heads, in-panel labels
+\newcommand{\fMeta}{\sffamily\fontsize{8.2}{10}\selectfont}      % panel eyebrows, venue attribution
+\newcommand{\fData}{\sffamily\fontsize{9}{11}\selectfont}        % prices, sizes, venue names, title gloss
+\newcommand{\fDisplay}{\sffamily\fontsize{13}{16}\selectfont}    % NBBO headline prices
+\newcommand{\fTitle}{\sffamily\fontsize{19}{22}\selectfont}      % plate title
+
+% Stroke weights -----------------------------------------------------------
+% Four roles: 0.5pt hairline (table rules, thin separators, icon detail),
+% 0.7pt border (panel outlines, section dividers, icon secondary strokes),
+% 0.9pt emphasis (icon primary strokes), 1.5pt accent (title rule).
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily]
+  % 16:9 for slides. Panels are sized to their CONTENT, not to each other, so
+  % nothing is stretched to fit; equal heights and aligned edges are what make
+  % them read as peers. Measured widths drive this:
+  %   0.86 margin + 3.86 + 0.43 + 5.65 + 0.44 + 3.90 + 0.86 margin = 16.00.
+  \path[use as bounding box] (0,0) rectangle (16,9);
+  \fill[white] (0,0) rectangle (16,9);
+
+  % Content spans y 2.18--8.68 below, so this centres it: (9-6.50)/2 = 1.25.
+  \begin{scope}[yshift=-0.93cm]
+
+  % Title ------------------------------------------------------------------
+  % The plate makes one claim now, so the title states it and the old section
+  % heading ("Order book and NBBO") is gone as a restatement of the title.
+  \node[anchor=west,font=\fTitle\bfseries,
+        text=vnink] at (0.75,8.35) {Order books and the NBBO};
+  \draw[vncarnelian,line width=1.5pt] (0.75,7.89) -- (1.92,7.89);
+
+  % Expand the acronym on first use, tied close under the title it belongs to.
+  \node[anchor=west,font=\fData,text=vnmuted]
+    at (0.86,7.55) {National Best Bid and Offer};
+
+  % Panels -------------------------------------------------------------------
+  % Raised as a block now that the section heading is gone; coordinates inside
+  % are unchanged from the two-column version.
+  \begin{scope}[yshift=0.63cm]
+
+  % One venue's order book -------------------------------------------------
+  \draw[vnrule!70,rounded corners=4pt,line width=0.7pt]
+    (0.86,1.55) rectangle (4.72,6.28);
+  \node[anchor=west,font=\fMeta,text=vnmuted]
+    at (1.16,5.96) {NASDAQ \;\textbullet\; XYZ};
+
+  \node[anchor=west,font=\fMeta,text=vnlink]
+    at (1.16,5.50) {SELL / ASK};
+  \node[font=\fLabel,text=vnmuted]
+    at (3.25,5.50) {SIZE};
+  \node[font=\fLabel,text=vnmuted]
+        at (4.10,5.50) {PRICE};
+
+  % Ask depth: lowest ask sits nearest the spread.
+  \foreach \y/\size/\price in {
+      5.10/200/50.07,
+      4.68/400/50.05} {
+    \fill[vnlink!4,rounded corners=2pt] (1.16,{\y-0.17}) rectangle (4.43,{\y+0.17});
+    \node[font=\fData,text=vnmuted]
+      at (3.25,\y) {\size};
+    \node[font=\fData,text=vnlink]
+      at (4.10,\y) {\price};
+  }
+  \fill[vnlink!10,rounded corners=2pt] (1.16,4.09) rectangle (4.43,4.43);
+  \node[anchor=west,font=\fLabel,text=vnlink]
+    at (1.34,4.26) {BEST};
+  \node[font=\fData,text=vnmuted]
+    at (3.25,4.26) {100};
+  \node[font=\fData\bfseries,text=vnlink]
+    at (4.10,4.26) {50.04};
+
+  % Spread between the best displayed prices.
+  \draw[vnrule!70,line width=0.5pt] (1.28,3.84) -- (4.31,3.84);
+  \node[font=\fLabel,text=vnmuted,
+        fill=white,inner xsep=5pt] at (2.80,3.84) {spread = \$0.03};
+
+  \node[anchor=west,font=\fMeta,text=vncarnelian]
+    at (1.16,3.42) {BUY / BID};
+
+  % Bid depth: highest bid sits nearest the spread.
+  \fill[vncarnelian!9,rounded corners=2pt] (1.16,2.83) rectangle (4.43,3.17);
+  \node[anchor=west,font=\fLabel,text=vncarnelian]
+    at (1.34,3.00) {BEST};
+  \node[font=\fData,text=vnmuted]
+    at (3.25,3.00) {300};
+  \node[font=\fData\bfseries,text=vncarnelian]
+    at (4.10,3.00) {50.01};
+  \foreach \y/\size/\price in {
+      2.58/500/50.00,
+      2.16/200/49.99} {
+    \fill[vncarnelian!4,rounded corners=2pt] (1.16,{\y-0.17}) rectangle (4.43,{\y+0.17});
+    \node[font=\fData,text=vnmuted]
+      at (3.25,\y) {\size};
+    \node[font=\fData,text=vncarnelian]
+      at (4.10,\y) {\price};
+  }
+
+  % Panel 2: the same instrument quoted on every venue ---------------------
+  % x 5.15--10.80. Column edges come from measured text, not estimates:
+  % "Cboe BZX" is 1.46 wide, a price 0.79, and the SPREAD header 1.07 -- that
+  % header, not the data, sets the last column. Gaps are a uniform 0.26.
+  % SPREAD is each venue's OWN spread, which is what makes the consolidated
+  % spread in panel 3 a claim the reader can check.
+  \draw[vnrule!70,rounded corners=4pt,line width=0.7pt]
+    (5.15,1.55) rectangle (10.80,6.28);
+  \node[anchor=west,font=\fMeta,text=vnmuted,inner sep=0pt]
+    at (5.45,5.96) {TOP OF BOOK \;\textbullet\; XYZ};
+
+  % inner sep=0pt throughout this table: TikZ's default 0.33em padding makes
+  % anchor=east place the NODE BOX edge at the column coordinate, not the
+  % glyph edge, which slid every number ~1.1mm left of its tint chip.
+  \node[anchor=west,font=\fLabel,text=vnmuted,inner sep=0pt]     at (5.45,5.50) {VENUE};
+  \node[anchor=east,font=\fLabel,text=vncarnelian,inner sep=0pt] at (8.10,5.50) {BID};
+  \node[anchor=east,font=\fLabel,text=vnlink,inner sep=0pt]      at (9.17,5.50) {ASK};
+  \node[anchor=east,font=\fLabel,text=vnmuted,inner sep=0pt]     at (10.50,5.50) {SPREAD};
+  \draw[vnrule!70,line width=0.5pt] (5.45,5.34) -- (10.50,5.34);
+
+  % The best bid and the best ask sit on DIFFERENT venues, so the winning
+  % cells are tinted rather than a whole row -- the same tints the order book
+  % uses to mark its own best prices. A price is 0.79 wide, so a chip centred
+  % on a column right edge R spans R-0.895 to R+0.075 -- the extra 0.015
+  % left shift centres the chip on the glyph INK rather than on the advance
+  % width, whose right side bearing the chip would otherwise inherit.
+  \fill[vnlink!16,rounded corners=2pt]      (8.275,4.13) rectangle (9.245,4.47);
+  \fill[vncarnelian!14,rounded corners=2pt] (7.205,3.48) rectangle (8.175,3.82);
+
+  \foreach \y/\venue/\bid/\ask/\spr in {
+      4.95/NYSE/50.00/50.05/0.05,
+      4.30/Nasdaq/50.01/50.04/0.03,
+      3.65/Cboe BZX/50.02/50.06/0.04,
+      3.00/IEX/50.01/50.06/0.05} {
+    \node[anchor=west,font=\fData,text=vnink,inner sep=0pt]       at (5.45,\y) {\venue};
+    \node[anchor=east,font=\fData,text=vncarnelian,inner sep=0pt] at (8.10,\y) {\bid};
+    \node[anchor=east,font=\fData,text=vnlink,inner sep=0pt]      at (9.17,\y) {\ask};
+    \node[anchor=east,font=\fData,text=vnmuted,inner sep=0pt]     at (10.50,\y) {\spr};
+  }
+  \draw[vnrule!40,line width=0.5pt] (5.45,4.625) -- (10.50,4.625);
+  \draw[vnrule!40,line width=0.5pt] (5.45,3.975) -- (10.50,3.975);
+  \draw[vnrule!40,line width=0.5pt] (5.45,3.325) -- (10.50,3.325);
+
+  \node[anchor=north west,font=\fLabel,text=vnmuted,align=left,inner sep=0pt]
+    at (5.45,2.55) {best bid and best ask sit\\on different venues};
+
+  % Panel 3: the consolidated quote those venues produce --------------------
+  % x 11.24--15.14. Tinted to mark it as the result rather than an input; the
+  % border weight matches its two peers so all three read as one row.
+  \fill[vnlink!6,rounded corners=4pt] (11.24,1.55) rectangle (15.14,6.28);
+  \draw[vnrule!70,rounded corners=4pt,line width=0.7pt]
+    (11.24,1.55) rectangle (15.14,6.28);
+  \node[anchor=west,font=\fMeta,text=vnmuted]
+    at (11.54,5.96) {NBBO \;\textbullet\; XYZ};
+  \draw[vnrule!70,line width=0.5pt] (11.54,5.76) -- (14.84,5.76);
+
+  \draw[vnrule!60,line width=0.5pt] (13.19,3.85) -- (13.19,5.45);
+  \node[font=\fLabel,text=vncarnelian]            at (12.215,5.30) {BEST BID};
+  \node[font=\fDisplay\bfseries,text=vncarnelian] at (12.215,4.68) {\$50.02};
+  \node[font=\fMeta,text=vnmuted]                 at (12.215,4.12) {Cboe BZX};
+  \node[font=\fLabel,text=vnlink]                 at (14.165,5.30) {BEST ASK};
+  \node[font=\fDisplay\bfseries,text=vnlink]      at (14.165,4.68) {\$50.04};
+  \node[font=\fMeta,text=vnmuted]                 at (14.165,4.12) {Nasdaq};
+
+  \draw[vnrule!70,line width=0.5pt] (11.54,3.60) -- (14.84,3.60);
+  \node[font=\fData\bfseries,text=vnink] at (13.19,3.22) {spread \$0.02};
+  \node[font=\fLabel,text=vnmuted,align=center] at (13.19,2.55)
+    {tighter than any single\\venue's own spread};
+
+  \end{scope}   % panels
+  \end{scope}   % composition
+
+\end{tikzpicture}
+\end{document}

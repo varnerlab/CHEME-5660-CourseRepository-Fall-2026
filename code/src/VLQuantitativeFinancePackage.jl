@@ -35,6 +35,11 @@ module VLQuantitativeFinancePackage
     export MyOrnsteinUhlenbeckModel, MyHestonModel, EulerMaruyamaMethod
     export MySisoLegSHippoModel, estimate_hippo_parameters, prediction
     export MyGeneralAdjacencyRecombiningCommodityPriceTree
+
+    # limit-order-book types -
+    export OrderSide, Buy, Sell, TimeInForce, GTC, IOC, FOK
+    export MyLimitOrder, MyMarketOrder, MyOrderBookFill
+    export MyOrderBookExecutionReport, MyOrderBookLevel, MyOrderBookSnapshot, MyOrderBook
     
     # Markov models, MDPs, Bandits types and methods -
     export MyHiddenMarkovModel,MyHiddenMarkovModelWithJumps,MyPeriodicRectangularGridWorldModel
@@ -63,6 +68,15 @@ module VLQuantitativeFinancePackage
     export compute_ema, adaptive_target_weights, run_rebalancing_engine
     export ewls_init, ewls_update!, ewls_path
     export evaluate_validation_gates, route_portfolio_event
+
+    # limit-order-book functions -
+    export submit_order!, cancel_order!, clear_order_book!
+    export order_book_depth, order_book_snapshot, validate_order_book
+    export best_quote_ticks, best_quotes, midpoint_ticks, midprice, bid_ask_spread
+    export displayed_volume, resting_order_count, account_orders
+    export order_book_imbalance, microprice
+    export ticks_to_price, price_to_ticks
+    export execution_vwap_ticks, execution_vwap, executed_notional, implementation_shortfall
     
     # export the greeks -
     export theta, delta, gamma, vega, rho

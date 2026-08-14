@@ -10,6 +10,7 @@ makedocs(
         "Home" => "index.md",
 
         "Data" => "data.md",
+        "Market microstructure" => "microstructure.md",
 
         "Instruments" => [
             "Treasury securities" => "fixed.md",

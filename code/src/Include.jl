@@ -40,3 +40,4 @@ include(joinpath(_PATH_TO_SRC, "Files.jl"));
 include(joinpath(_PATH_TO_SRC, "Trees.jl"));
 include(joinpath(_PATH_TO_SRC, "Sharpe.jl"));
 include(joinpath(_PATH_TO_SRC, "AdaptivePortfolio.jl"));
+include(joinpath(_PATH_TO_SRC, "OrderBook.jl"));
