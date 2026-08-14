@@ -43,12 +43,25 @@
 % uses (vnink, vnlink, vncarnelian, vnrule, vnmuted) reach this file through
 % templates/vnflow.sty, which vnslides.sty inputs.
 %
-% NOTATION. The deck follows the NOTEBOOK, not the notes: price is V_B here and
-% \mathcal{B} in docs/Notes.tex. That includes keeping the notebook's V_{B,y} and
-% V_{B,T} for the two sensitivity MAGNITUDES. A reviewer flagged the comma
-% subscript as looking like a partial derivative; it was kept anyway, because
-% diverging from the companion notebook is the worse fault under the governing
-% rule. The frame states explicitly that the derivatives are their negatives.
+% NOTATION. Deck, notebook and docs/Notes.tex now agree, and all three follow the
+% course-wide conventions set in L1b and L2a:
+%   price            V_B            (the notes' \mathcal{B} was retired)
+%   coupon rate      c              (L2b's \bar c was retired; L2a uses c)
+%   discount factor  \mathcal D_{j,0}^{-1}(y;n)   -- note the ;n argument
+%   bill factor      \mathcal D_{T,0}^{-1}(y;n) = (1+y/n)^{-nT}
+%   continuous rate  g_y := n\log(1+y/n)
+% There is deliberately NO one-letter growth factor. L2b used to write q := 1+y/n,
+% which collided with the risk-neutral up probability q in L3b and in this
+% lecture's own advanced/yield_curve notes. Per commit ff4dbb3, q is spoken for.
+% Discount factors are named \mathcal D^{-1} in valuation statements, but written
+% out as (1+y/n)^{-j} wherever a derivative is being taken, so the power rule
+% stays visible.
+%
+% The notebook's V_{B,y} and V_{B,T} are kept for the two sensitivity MAGNITUDES.
+% A reviewer flagged the comma subscript as looking like a partial derivative; it
+% was kept anyway, because diverging from the companion notebook is the worse
+% fault under the governing rule. The frame states explicitly that the
+% derivatives are their negatives.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -197,11 +210,11 @@ have a risky price.}}
   \vspace{0.5em}
   Let $V_P>0$ be the face value, $T>0$ the remaining maturity in years, $n$ the
   number of compounding intervals per year, and $y$ the nominal annual yield used
-  to discount the single promised payment. Write $q:=1+y/n$ for the per-period
-  growth factor, so the L2a discount factor is
-  $\mathcal D^{-1}_{nT,0}(y)=q^{-nT}$. The price is given by:
+  to discount the single promised payment. The per-period factor $1+y/n$ is the
+  growth factor over one interval, so the L2a discount factor is
+  $\mathcal D_{T,0}^{-1}(y;n)=\left(1+y/n\right)^{-nT}$. The price is given by:
   \[
-    V_B=\underbrace{q^{-nT}}_{\text{\footnotesize discount}}V_P .
+    V_B=\underbrace{\left(1+y/n\right)^{-nT}}_{\text{\footnotesize discount}}V_P .
   \]
 
   \vspace{0.2em}
@@ -213,20 +226,20 @@ have a risky price.}}
 \begin{frame}{Deriving the Price Sensitivity}
   \vspace{0.2em}
   Three quantities could move the price: the yield $y$, the annual coupon rate
-  $\bar c$, and the maturity $T$. A bill's contract fixes $\bar c=0$ permanently,
-  so $d\bar c=0$ and that channel is closed. Holding $V_P$ and $n$ fixed, the
+  $c$, and the maturity $T$. A bill's contract fixes $c=0$ permanently,
+  so $dc=0$ and that channel is closed. Holding $V_P$ and $n$ fixed, the
   remaining two channels give the total differential:
   \[
     dV_B
-    =-\underbrace{V_Pq^{-nT}\left(\frac{T}{q}\right)}_{V_{B,y}}dy
-    \;-\;\underbrace{V_Pq^{-nT}\bigl(n\ln q\bigr)}_{V_{B,T}}dT .
+    =-\underbrace{V_P\left(1+y/n\right)^{-nT}\left(\frac{T}{1+y/n}\right)}_{V_{B,y}}dy
+    \;-\;\underbrace{V_P\left(1+y/n\right)^{-nT}\bigl(n\log\left(1+y/n\right)\bigr)}_{V_{B,T}}dT .
   \]
 
   \vspace{0.2em}
   \hilite{Stated carefully:} the coupon channel does \emph{not} drop out because a
   bill pays no coupons. The coupon-bearing family of the next section has
-  $\partial V_B/\partial\bar c=(V_P/n)\sum_{j}q^{-j}>0$, which stays strictly
-  positive even when evaluated at $\bar c=0$. A bill is not insensitive to
+  $\partial V_B/\partial c=(V_P/n)\sum_{j}\mathcal D_{j,0}^{-1}(y;n)>0$, which stays strictly
+  positive even when evaluated at $c=0$. A bill is not insensitive to
   coupons: it is a security whose coupon cannot move.
 \end{frame}
 
@@ -253,22 +266,22 @@ have a risky price.}}
 \end{frame}
 
 \begin{frame}{The Two Sensitivity Magnitudes}
-  \vspace{0.2em}
-  Read $V_{B,y}$ and $V_{B,T}$ as \hilite{magnitudes}, not as the derivatives
+  \vspace{-0.3em}
+  Read $V_{B,y}$ and $V_{B,T}$ as \hilite{magnitudes}, not the derivatives
   themselves: the derivatives are their negatives, which is why the minus signs
-  appear explicitly above. Under the standing assumption $y>0$, both are positive:
+  appear above. Under the standing assumption $y>0$, both are positive:
   \[
-    V_{B,y}=\underbrace{V_Pq^{-nT}}_{=\,V_B}\underbrace{\left(\frac{T}{q}\right)}_{>\,0},
+    V_{B,y}=\underbrace{V_P(1+y/n)^{-nT}}_{=\,V_B}\underbrace{\left(\frac{T}{1+y/n}\right)}_{>\,0},
     \qquad
-    V_{B,T}=\underbrace{V_Pq^{-nT}}_{=\,V_B}\underbrace{\bigl(n\ln q\bigr)}_{=\,g_y},
+    V_{B,T}=\underbrace{V_P(1+y/n)^{-nT}}_{=\,V_B}\underbrace{\bigl(n\log(1+y/n)\bigr)}_{=\,g_y},
   \]
-  where $g_y:=n\ln q$ is the continuously compounded equivalent of $y$ from L2a.
+  where $g_y:=n\log(1+y/n)$ is the continuously compounded equivalent of $y$ from L2a.
 
-  \vspace{0.3em}
-  Given a well-posed price, $q>0$, the first magnitude is positive for any
-  $T>0$. The second needs $y>0$, because $g_y$ carries the sign of $y$: at $y=0$
+  \vspace{0.1em}
+  Given a well-posed price, $1+y/n>0$, the first magnitude is positive for any
+  $T>0$. The second needs $y>0$: $g_y$ carries the sign of $y$, so at $y=0$
   maturity stops mattering, and for $-n<y<0$ a longer bill would be worth
-  \emph{more} and would trade above par.
+  \emph{more} and trade above par.
 
   \slidenote{Careful:}{negative nominal yields have occurred in other sovereign markets. State the condition.}
 \end{frame}
@@ -297,21 +310,26 @@ have a risky price.}}
 
 % ---- coupon notes and bonds ----------------------------------
 \begin{frame}{Coupon-Bearing Treasury Notes and Bonds}
-  \vspace{0.2em}
-  Now let the security pay coupons. Let $\bar c$ be the annual coupon rate,
-  written $c$ in L2a, so each payment is $C:=(\bar c/n)V_P$, and let $N:=nT$ be
-  the number of remaining payment dates, indexed by $j=1,\ldots,N$. From L2a the
-  price is given by:
+  \vspace{-0.7em}
+  Now let the security pay coupons. Let $c$ be the annual coupon rate, so each
+  payment is $C:=(c/n)V_P$, and let $N:=nT$ count the remaining payment dates,
+  indexed by $j=1,\ldots,N$. From L2a:
   \[
-    V_B=\mathcal D^{-1}_{N,0}(y)\,V_P+C\sum_{j=1}^{N}\mathcal D^{-1}_{j,0}(y),
-    \qquad \mathcal D^{-1}_{j,0}(y)=q^{-j}.
+    V_B=\mathcal D_{N,0}^{-1}(y;n)\,V_P+C\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n),
+    \qquad \mathcal D_{j,0}^{-1}(y;n)=\left(1+y/n\right)^{-j}.
   \]
-  Holding that cash-flow schedule fixed, the yield and coupon sensitivities are:
+  \vspace{-1.0em}
+
+  Holding that schedule fixed, the yield and coupon sensitivities are:
+  \vspace{-0.3em}
   \[
-    \frac{\partial V_B}{\partial y}
-      =-\frac{1}{nq}\left[NV_Pq^{-N}+C\sum_{j=1}^{N}jq^{-j}\right]<0,
-    \qquad
-    \frac{\partial V_B}{\partial\bar c}=\frac{V_P}{n}\sum_{j=1}^{N}q^{-j}>0 .
+    \begin{aligned}
+      \frac{\partial V_B}{\partial y}
+        &=-\frac{1}{n(1+y/n)}\left[NV_P\,\mathcal D_{N,0}^{-1}(y;n)
+          +C\sum_{j=1}^{N}j\,\mathcal D_{j,0}^{-1}(y;n)\right]<0,\\[0.2em]
+      \frac{\partial V_B}{\partial c}
+        &=\frac{V_P}{n}\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n)>0 .
+    \end{aligned}
   \]
 
   \slidenote{Careful:}{$N$ is a discrete schedule index. Differentiating a finite sum whose upper limit is $nT$ with respect to a smooth $T$ is not a valid total differential.}
@@ -324,13 +342,13 @@ have a risky price.}}
       final principal are discounted more heavily, so $V_B\downarrow$ as
       $y\uparrow$.
     \item \hilite{Increasing in the coupon rate, but not proportional to it}:
-      $\partial V_B/\partial\bar c$ does not depend on $\bar c$, and the
-      discounted par payment survives even at $\bar c=0$. Doubling the coupon
+      $\partial V_B/\partial c$ does not depend on $c$, and the
+      discounted par payment survives even at $c=0$. Doubling the coupon
       doubles the coupon stream, not the price.
     \item \hilite{Maturity does not set the price direction by itself}: a
-      \hilite{discount bond} ($\bar c<y$) drifts up toward par as maturity
-      shortens, a \hilite{premium bond} ($\bar c>y$) drifts down toward par, and a
-      \hilite{par bond} ($\bar c=y$) sits at par on a coupon date.
+      \hilite{discount bond} ($c<y$) drifts up toward par as maturity
+      shortens, a \hilite{premium bond} ($c>y$) drifts down toward par, and a
+      \hilite{par bond} ($c=y$) sits at par on a coupon date.
   \end{itemize}
 
   \slidenote{Careful:}{Malkiel's maturity result is about \emph{sensitivity to a yield change}, not about the price level.}
@@ -353,7 +371,7 @@ have a risky price.}}
   period $j$, with at least one $X_j>0$. Then one expression covers both
   securities:
   \[
-    V_B(y)=\sum_{j=1}^{N}X_j\,q^{-j}.
+    V_B(y)=\sum_{j=1}^{N}X_j\,\mathcal D_{j,0}^{-1}(y;n).
   \]
   A note pays $X_j=C$ for $j<N$ and $X_N=C+V_P$; a bill pays $X_j=0$ for $j<N$
   and $X_N=V_P$.
@@ -364,13 +382,14 @@ have a risky price.}}
   Differentiate the price twice with respect to the yield, holding the cash flows
   $X_j$ and the schedule length $N$ fixed:
   \[
-    \frac{dV_B}{dy}=-\frac{1}{n}\sum_{j=1}^{N}j\,X_j\,q^{-j-1}<0,
-    \qquad
-    \frac{d^2V_B}{dy^2}=\frac{1}{n^2}\sum_{j=1}^{N}j(j+1)X_j\,q^{-j-2}>0 .
+    \begin{aligned}
+      \frac{dV_B}{dy}&=-\frac{1}{n}\sum_{j=1}^{N}j\,X_j\left(1+y/n\right)^{-j-1}<0,\\[0.2em]
+      \frac{d^2V_B}{dy^2}&=\frac{1}{n^2}\sum_{j=1}^{N}j(j+1)X_j\left(1+y/n\right)^{-j-2}>0 .
+    \end{aligned}
   \]
 
   \vspace{0.2em}
-  The strict signs follow from $q>0$ and from at least one $X_j$ being strictly
+  The strict signs follow from $1+y/n>0$ and from at least one $X_j$ being strictly
   positive: no term of either sum is negative, and at least one term of each is
   positive.
 
@@ -432,7 +451,7 @@ have a risky price.}}
   \hilite{Modified is not Macaulay.} The \hilite{Macaulay duration}
   $D_{\mathrm{mac}}$ is the present-value-weighted average time to payment, and
   $D_{\mathrm{mod}}=D_{\mathrm{mac}}/(1+y/n)$. For a bill, every dollar arrives at
-  maturity, so $D_{\mathrm{mac}}=T$ and $D_{\mathrm{mod}}=T/q$, which is exactly
+  maturity, so $D_{\mathrm{mac}}=T$ and $D_{\mathrm{mod}}=T/(1+y/n)$, which is exactly
   the ratio $V_{B,y}/V_B$ we derived earlier.
 \end{frame}
 
@@ -483,22 +502,22 @@ have a risky price.}}
   \vspace{0.2em}
   Two ground rules. Every theorem assumes an option-free security with fixed
   positive cash flows and holds the other contract terms fixed. And the maturity
-  theorems compare bonds \hilite{selling at par}, $\bar c=y$, measuring changes
+  theorems compare bonds \hilite{selling at par}, $c=y$, measuring changes
   from that starting point. That restriction is not a technicality.
 
   \vspace{0.4em}
-  Substituting $C=(\bar c/n)V_P$ and summing the geometric series puts the coupon
-  bond in closed form. Differentiating that at fixed $\bar c$, then setting
-  $\bar c=y$, gives the modified duration of a par bond:
+  Substituting $C=(c/n)V_P$ and summing the geometric series puts the coupon
+  bond in closed form. Differentiating that at fixed $c$, then setting
+  $c=y$, gives the modified duration of a par bond:
   \[
-    \frac{V_B}{V_P}=\frac{\bar c}{y}+\left(1-\frac{\bar c}{y}\right)q^{-N}
+    \frac{V_B}{V_P}=\frac{c}{y}+\left(1-\frac{c}{y}\right)\left(1+y/n\right)^{-N}
     \qquad\Longrightarrow\qquad
-    D_{\mathrm{mod}}(N)=\frac{1-q^{-N}}{y} .
+    D_{\mathrm{mod}}(N)=\frac{1-\left(1+y/n\right)^{-N}}{y} .
   \]
 
   \vspace{0.2em}
-  \hilite{Order matters.} Differentiate at fixed $\bar c$, and only \emph{then}
-  set $\bar c=y$. Setting $\bar c=y$ first differentiates along the par locus,
+  \hilite{Order matters.} Differentiate at fixed $c$, and only \emph{then}
+  set $c=y$. Setting $c=y$ first differentiates along the par locus,
   where the price is pinned at $V_P$, and returns zero. Assume $y>0$ throughout.
 \end{frame}
 
@@ -509,15 +528,15 @@ have a risky price.}}
       $dV_B/dy<0$, or equivalently $D_{\mathrm{mod}}>0$. Every promised payment is
       positive, so raising $y$ discounts each more heavily.
     \item \hilite{Theorem 2}, longer maturity increases yield sensitivity:
-      $D_{\mathrm{mod}}(N)=(1-q^{-N})/y$ is strictly increasing in $N$. A par bond
-      starts at $V_B=V_P$ at every maturity, so the dollar sensitivity
-      $-dV_B/dy=V_PD_{\mathrm{mod}}(N)$ rises too: starting at par aligns the
-      percentage and dollar rankings.
+      $D_{\mathrm{mod}}(N)=\bigl(1-(1+y/n)^{-N}\bigr)/y$ is strictly increasing in
+      $N$. A par bond starts at $V_B=V_P$ at every maturity, so the dollar
+      sensitivity $-dV_B/dy=V_PD_{\mathrm{mod}}(N)$ rises too: starting at par
+      aligns the percentage and dollar rankings.
     \item \hilite{Theorem 3}, the gain diminishes: one extra period raises
       modified duration by
-      $D_{\mathrm{mod}}(N+1)-D_{\mathrm{mod}}(N)=q^{-N-1}/n$, and successive
-      increments shrink by the constant factor $q^{-1}<1$, so $D_{\mathrm{mod}}$
-      climbs toward the ceiling $1/y$.
+      $D_{\mathrm{mod}}(N+1)-D_{\mathrm{mod}}(N)=(1+y/n)^{-N-1}/n$, and successive
+      increments shrink by the constant factor $(1+y/n)^{-1}<1$, so
+      $D_{\mathrm{mod}}$ climbs toward the ceiling $1/y$.
   \end{itemize}
 
   \slidenote{Note:}{$1/y$ is the modified duration of a \emph{perpetuity}, a security that pays its coupon forever and never repays principal.}
@@ -539,17 +558,17 @@ have a risky price.}}
       it runs the other way: more cash flow means a larger $-dV_B/dy$.
   \end{itemize}
 
-  \slidenote{Excluded edge:}{at $N=1$ everything arrives on one date and $D_{\mathrm{mod}}=1/(nq)$, however large the coupon.}
+  \slidenote{Excluded edge:}{at $N=1$ everything arrives on one date and $D_{\mathrm{mod}}=1/\left[n(1+y/n)\right]$, however large the coupon.}
 \end{frame}
 
 \begin{frame}{What the Par Restriction Is Doing}
   \vspace{0.3em}
   Outside the par comparison, the percentage and dollar statements part company.
-  For a zero-coupon bill, $D_{\mathrm{mod}}=T/q$ grows without bound, but the
+  For a zero-coupon bill, $D_{\mathrm{mod}}=T/(1+y/n)$ grows without bound, but the
   dollar sensitivity is a product of a growing and a shrinking factor:
   \[
-    -\frac{dV_B}{dy}=V_P\,\underbrace{\frac{T}{q}}_{\text{\footnotesize growing}}
-    \underbrace{q^{-nT}}_{\text{\footnotesize shrinking}} .
+    -\frac{dV_B}{dy}=V_P\,\underbrace{\frac{T}{1+y/n}}_{\text{\footnotesize growing}}
+    \underbrace{\left(1+y/n\right)^{-nT}}_{\text{\footnotesize shrinking}} .
   \]
   So it rises, peaks, and falls. With $V_P=100$, $n=1$, $y=5\%$ it peaks near
   $T\approx20.5$ years at about 718 USD per unit of yield, then falls to about

@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
-\newcommand{\B}{\mathcal{B}}
+\newcommand{\B}{V_{B}}
 
 \begin{document}
 
@@ -25,18 +25,18 @@ Burton Malkiel's bond-pricing principles organize the central comparative static
 
 \section{Which Variables Move the Price?}
 
-Before restricting attention to the yield, it is worth asking which variables move a bond price at all. A zero-coupon Treasury bill answers that question cleanly, because a single promised payment gives a price that is smooth in both arguments. Let $V_P>0$ dollars denote the face value paid at maturity, let $T>0$ years denote the remaining time to maturity, let the positive integer $n$ denote the number of compounding intervals per year, and let $y$ denote the nominal annual yield with $q:=1+y/n>0$. Holding $n$ fixed, the bill price is $\B(y,T)=V_Pq^{-nT}$, and its total differential is given by \eqnref{bill-differential}:
+Before restricting attention to the yield, it is worth asking which variables move a bond price at all. A zero-coupon Treasury bill answers that question cleanly, because a single promised payment gives a price that is smooth in both arguments. Let $V_P>0$ dollars denote the face value paid at maturity, let $T>0$ years denote the remaining time to maturity, let the positive integer $n$ denote the number of compounding intervals per year, and let $y$ denote the nominal annual yield with $1+y/n>0$. Holding $n$ fixed, the bill price is $\B(y,T)=V_P\left(1+y/n\right)^{-nT}$, and its total differential is given by \eqnref{bill-differential}:
 \begin{equation}
   \label{eq:bill-differential}
   d\B
-  =\underbrace{\left(-V_Pq^{-nT}\,\frac{T}{q}\right)}_{\partial\B/\partial y}dy
-  +\underbrace{\left(-V_Pq^{-nT}\,n\ln q\right)}_{\partial\B/\partial T}dT.
+  =\underbrace{\left(-V_P\left(1+y/n\right)^{-nT}\,\frac{T}{1+y/n}\right)}_{\partial\B/\partial y}dy
+  +\underbrace{\left(-V_P\left(1+y/n\right)^{-nT}\,n\log\left(1+y/n\right)\right)}_{\partial\B/\partial T}dT.
 \end{equation}
 The structure is the one a chemical engineer already knows from thermodynamic state functions: enumerate the independent variables, take one partial derivative per channel, and read off how each channel contributes. Here $y$ is a market valuation variable while $T$ is a contract term, so the two increments describe different experiments.
 
-A third channel exists but is closed. Embedding the bill in the coupon-bearing family at a fixed payment count $N=nT$ gives $\partial\B/\partial\bar c=(V_P/n)\sum_{j=1}^{N}q^{-j}>0$ for the annual coupon rate $\bar c$, and this remains strictly positive when evaluated at $\bar c=0$. A bill therefore contributes no coupon term to \eqnref{bill-differential} because its contract fixes $\bar c=0$, so $d\bar c=0$, and not because the coupon derivative vanishes.
+A third channel exists but is closed. Embedding the bill in the coupon-bearing family at a fixed payment count $N=nT$ gives $\partial\B/\partial c=(V_P/n)\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n)>0$ for the annual coupon rate $c$, and this remains strictly positive when evaluated at $c=0$. A bill therefore contributes no coupon term to \eqnref{bill-differential} because its contract fixes $c=0$, so $dc=0$, and not because the coupon derivative vanishes.
 
-Two cautions attach to the maturity channel. First, $\partial\B/\partial T<0$ requires $y>0$: at $y=0$ we have $\ln q=0$ and maturity does not move the price, while for $-n<y<0$ we have $\ln q<0$ and the sign reverses. Second, $dT$ conflates two experiments. Changing the contractual maturity compares two different securities, whereas the passage of holding time gives $dT=-dt$ along a single position. Both are smooth for a bill, whose price depends on $T$ only through the exponent. Neither is globally smooth for a coupon security, whose payment count is an integer: between coupon events its dirty price varies smoothly with elapsed time, but a coupon leaving the schedule breaks that smoothness, a point taken up again below.
+Two cautions attach to the maturity channel. First, $\partial\B/\partial T<0$ requires $y>0$: at $y=0$ we have $\log\left(1+y/n\right)=0$ and maturity does not move the price, while for $-n<y<0$ we have $\log\left(1+y/n\right)<0$ and the sign reverses. Second, $dT$ conflates two experiments. Changing the contractual maturity compares two different securities, whereas the passage of holding time gives $dT=-dt$ along a single position. Both are smooth for a bill, whose price depends on $T$ only through the exponent. Neither is globally smooth for a coupon security, whose payment count is an integer: between coupon events its dirty price varies smoothly with elapsed time, but a coupon leaving the schedule breaks that smoothness, a point taken up again below.
 
 Finally, a total differential is linear in its increments by construction, so \eqnref{bill-differential} enumerates the channels but cannot describe curvature within any one of them. The remainder of these notes does the complementary thing: fix the cash-flow schedule, keep only the yield channel, and go to second order.
 
@@ -53,17 +53,17 @@ Let the positive integer $n$ denote the number of compounding intervals per year
 The yield $y$ is the single internal discount rate applied to every promised payment; it is not a complete term structure of spot rates. Permitting $X_j=0$ on periods carrying no payment lets a zero-coupon bill share this definition, with $X_N=V_P$ its only nonzero flow. The integer exponents place the valuation date on a coupon date; a general settlement date requires fractional-period timing conventions that these notes do not need.
 \end{definition}
 
-The common factor $q=1+y/n$ introduced above converts the notation in \eqnref{yield-price} into a sum of nonnegative discounted claims, at least one of which is strictly positive. Differentiating that sum establishes both the direction and curvature of the price response (\thmref{yield-shape}).
+The $j$-period discount factor $\mathcal D_{j,0}^{-1}(y;n)=\left(1+y/n\right)^{-j}$ converts the notation in \eqnref{yield-price} into a sum of nonnegative discounted claims, at least one of which is strictly positive. Differentiating that sum establishes both the direction and curvature of the price response (\thmref{yield-shape}).
 
 \begin{theorem}{Monotonicity and convexity of an option-free bond}{yield-shape}
-Under the assumptions of \defnref{yield-price}, let $q:=1+y/n>0$. The first and second derivatives of the dirty price with respect to the nominal annual yield are given by \eqnref{yield-derivatives}:
+Under the assumptions of \defnref{yield-price}, assume $1+y/n>0$. The first and second derivatives of the dirty price with respect to the nominal annual yield are given by \eqnref{yield-derivatives}:
 \begin{equation}
   \label{eq:yield-derivatives}
   \frac{d\B}{dy}
-  =-\frac{1}{n}\sum_{j=1}^{N}jX_jq^{-j-1}<0,
+  =-\frac{1}{n}\sum_{j=1}^{N}jX_j\left(1+y/n\right)^{-j-1}<0,
   \qquad
   \frac{d^2\B}{dy^2}
-  =\frac{1}{n^2}\sum_{j=1}^{N}j(j+1)X_jq^{-j-2}>0.
+  =\frac{1}{n^2}\sum_{j=1}^{N}j(j+1)X_j\left(1+y/n\right)^{-j-2}>0.
 \end{equation}
 The strict inequalities hold because no term of either sum is negative and at least one term of each is positive. Consequently, the bond price is strictly decreasing and strictly convex as a function of yield. The result assumes a fixed, nonnegative, and not identically zero cash-flow schedule, and therefore does not automatically apply to securities whose cash flows change when rates change, such as callable bonds.
 \end{theorem}
@@ -134,14 +134,14 @@ The duration term supplies the local slope, while the convexity term corrects th
 
 The \emph{Macaulay duration} $D_{\mathrm{mac}}$ is the present-value-weighted average time to payment, and the modified duration of \defnref{duration-convexity} is that average discounted by one period, $D_{\mathrm{mod}}=D_{\mathrm{mac}}/(1+y/n)$. Because the two differ only by that positive factor, both respond to payment timing in the same way: moving more value toward distant dates increases exposure to discount-rate changes, and moving value toward earlier dates reduces it. That principle gives the carefully qualified maturity and coupon comparisons associated with Malkiel.
 
-\textbf{Maturity effect.}\enspace Assume $y>0$ throughout this comparison. Malkiel's maturity statements compare bonds selling at par, and that restriction supplies a closed form. Summing the geometric series in \eqnref{yield-price} for a coupon rate $\bar c$ gives $\B/V_P=\bar c/y+(1-\bar c/y)q^{-N}$. Differentiating with respect to $y$ at fixed $\bar c$, and only then setting $\bar c=y$ so that $\B=V_P$, yields the par-bond modified duration and its increment, given by \eqnref{par-duration}:
+\textbf{Maturity effect.}\enspace Assume $y>0$ throughout this comparison. Malkiel's maturity statements compare bonds selling at par, and that restriction supplies a closed form. Summing the geometric series in \eqnref{yield-price} for a coupon rate $c$ gives $\B/V_P=c/y+(1-c/y)\left(1+y/n\right)^{-N}$. Differentiating with respect to $y$ at fixed $c$, and only then setting $c=y$ so that $\B=V_P$, yields the par-bond modified duration and its increment, given by \eqnref{par-duration}:
 \begin{equation}
   \label{eq:par-duration}
-  D_{\mathrm{mod}}(N)=\frac{1-q^{-N}}{y},
+  D_{\mathrm{mod}}(N)=\frac{1-\left(1+y/n\right)^{-N}}{y},
   \qquad
-  D_{\mathrm{mod}}(N+1)-D_{\mathrm{mod}}(N)=\frac{q^{-N-1}}{n}.
+  D_{\mathrm{mod}}(N+1)-D_{\mathrm{mod}}(N)=\frac{\left(1+y/n\right)^{-N-1}}{n}.
 \end{equation}
-The first expression increases strictly with $N$ and is bounded above by $1/y$, the modified duration of a perpetuity, while the second shows the successive increments shrinking by the constant factor $q^{-1}<1$. Those two facts are Malkiel's maturity results. Because a par bond has the same initial price $V_P$ at every maturity, the dollar sensitivity $-d\B/dy=V_PD_{\mathrm{mod}}(N)$ inherits both properties, so the percentage and dollar rankings agree here. Outside the par comparison they need not: for a zero-coupon security, modified duration grows without bound in $T$, yet the dollar sensitivity $-d\B/dy=V_PTq^{-nT-1}$ rises, peaks at $T=1/(n\ln q)$, and then declines, because the shrinking price eventually outweighs the growing duration. These are all comparisons of yield sensitivity, not a claim that adding another coupon period always lowers the bond's price.
+The first expression increases strictly with $N$ and is bounded above by $1/y$, the modified duration of a perpetuity, while the second shows the successive increments shrinking by the constant factor $\left(1+y/n\right)^{-1}<1$. Those two facts are Malkiel's maturity results. Because a par bond has the same initial price $V_P$ at every maturity, the dollar sensitivity $-d\B/dy=V_PD_{\mathrm{mod}}(N)$ inherits both properties, so the percentage and dollar rankings agree here. Outside the par comparison they need not: for a zero-coupon security, modified duration grows without bound in $T$, yet the dollar sensitivity $-d\B/dy=V_PT\left(1+y/n\right)^{-nT-1}$ rises, peaks at $T=1/\left(n\log\left(1+y/n\right)\right)$, and then declines, because the shrinking price eventually outweighs the growing duration. These are all comparisons of yield sensitivity, not a claim that adding another coupon period always lowers the bond's price.
 
 \textbf{Coupon effect.}\enspace Holding yield, maturity, face value, and coupon frequency fixed, a higher coupon shifts a larger fraction of present value toward earlier dates. The resulting percentage price sensitivity is therefore lower. The comparison requires at least two remaining payment dates: if a single payment remains, all value arrives on one date and the modified duration is $1/\bigl(n(1+y/n)\bigr)$ years regardless of the coupon.
 
