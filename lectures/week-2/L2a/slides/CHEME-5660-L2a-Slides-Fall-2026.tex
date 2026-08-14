@@ -1,0 +1,330 @@
+% L2a takeaway deck.
+%
+% THE DECK MIRRORS THE NOTEBOOK. These slides are a surrogate for
+% CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb, shown in lecture in
+% its place: the notebook carries more detail, but the deck must cover at minimum
+% the same material in the same order, with frame titles matching notebook
+% headings. Adding a section to the notebook means adding a slide here.
+% See the content conventions in templates/vnslides.sty.
+%
+% Notebook outline, and where each part lands:
+%
+%   (deck only)                              -> title
+%   Disclaimer and Risks          [last]     -> slide 2  (always near the front)
+%   Learning Objectives           [cell 1]   -> Objectives for Today
+%   Examples                                 -> Lectures and Examples
+%   Concept Review                           -> transition frame + two review slides
+%     Time Value of Money, Yields, ...       -> Review: Yields and Accumulation Factors
+%     Abstract Assets and NPV                -> Review: Abstract Assets and NPV
+%   Treasury Bills                           -> Treasury Bills (+ cash-flow figure)
+%     Valuing a T-Bill                       -> Valuing a T-Bill
+%   Treasury Notes and Bonds                 -> Treasury Notes and Bonds (+ figure)
+%     Valuing Notes and Bonds                -> Valuing Notes and Bonds
+%   Are Treasury securities risk-free?       -> Are Treasury Securities Risk-Free?
+%     Case Study: LTCM                       -> Case Study: LTCM
+%     Case Study: 2008 Financial Crisis      -> Case Study: The 2008 Financial Crisis
+%   Summary                                  -> Summary
+%   Today?                                   -> closing transition frame
+%
+% Unlike L1b, this notebook DOES open with a concept-review section, so this deck
+% uses \transitionframe as intended rather than as a 2024 holdover.
+%
+% Figures: L2a's figs/*.tex are standalone documents, not \input-able fragments
+% the way L1b's abstract-asset-timeline.tex is, so the built PDFs are included
+% directly. If those figures are ever refactored into fragments, switch to
+% \resizebox{...}{!}{\input{...}} to match the L1b deck.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\title{{\vnheavy L2a}: Are Risk-Free Assets Really Risk-Free?}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+% ---- title ---------------------------------------------------
+\vntitlepage
+
+% ---- disclaimer ----------------------------------------------
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+% ---- objectives ----------------------------------------------
+\begin{frame}{Objectives for Today}
+  \vspace{0.4em}
+  Today we introduce U.S. marketable Treasury securities, build their cash-flow
+  and pricing conventions, and ask what \hilite{risk-free} does and does not mean.
+
+  \vspace{0.9em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Describe Treasury securities}: distinguish bills, notes, and
+      bonds, why the government issues them, and what makes them attractive.
+    \item \hilite{Value Treasury cash flows}: represent each security as dated
+      cash flows, and connect market prices to discount factors and quoted yields.
+    \item \hilite{Evaluate the risk-free label}: why Treasuries serve as a
+      reference point, and what inflation, reinvestment, liquidity, and
+      mark-to-market risks remain.
+  \end{itemize}
+  \vspace{-0.4em}
+
+  \slidenote{Companion notes:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}{L2a lecture notes and notebooks}}
+\end{frame}
+
+% ---- examples ------------------------------------------------
+\begin{frame}{Lectures and Examples}
+  \vspace{0.5em}
+  {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb}}
+
+  \vspace{1.0em}
+  We compute the price of Treasury securities at auction, then compare the
+  computed price with the actual auction price.
+
+  \vspace{0.8em}
+  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L2a-TBills-Pricing-Fall-2026-WorkedExample.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L2a-NotesBonds-Pricing-Fall-2026-WorkedExample.ipynb}}
+
+  \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
+\end{frame}
+
+% ---- concept review ------------------------------------------
+\transitionframe{Quick review before we start: \hilite{the time value of money,
+abstract assets, and net present value.}}
+
+\begin{frame}{Review: Yields and Accumulation Factors}
+  \hilite{Dated dollars have different units.} A dollar today and a dollar at a
+  future date cannot be added until a stated rule expresses them at a common
+  valuation date.
+
+  \vspace{0.4em}
+  Let $P$ be an amount held today, let $y$ be a quoted \hilite{nominal annual
+  yield}, and let $n$ be the number of compounding intervals per year. At period
+  index $j$, the equivalent future amount is given by:
+  \[
+    F_j=\underbrace{\left(1+y/n\right)^{j}}_{\mathcal D_{j,0}(y;n)}\,P .
+  \]
+
+  $\mathcal D_{j,0}(y;n)$ converts time-0 dollars into period-$j$ dollars and its
+  inverse converts them back. The continuously compounded equivalent is
+  $g_y:=n\log(1+y/n)$, so $\mathcal D_{T,0}(y;n)=(1+y/n)^{nT}=e^{g_yT}$ over $T$
+  years.
+
+  \slidenote{Careful:}{$g$ is a growth rate and $r=(\Delta t)\,g$ its log return. Convert a quoted $y$ before comparing.}
+\end{frame}
+
+\begin{frame}{Review: Abstract Assets and Net Present Value}
+  \vspace{0.3em}
+  \hilite{Abstract assets} describe financial value as dated signed cash flows.
+  Because dated dollars have different units, each cash flow must be converted to
+  a common valuation date before the values are added.
+
+  \vspace{0.5em}
+  Let $N$ be the final cash-flow index and let $\bar c_j$ be the \hilite{signed
+  net cash flow} at index $j$. Under a constant nominal yield $y$, the time-0 net
+  present value is given by:
+  \[
+    \operatorname{NPV}_{0}(y)=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}(y;n)\,\bar c_j .
+  \]
+
+  \vspace{0.3em}
+  Every term in the sum is measured in time-0 dollars.
+
+  \slidenote{Today:}{set $\operatorname{NPV}_0=0$ and solve for the price. That is what pricing a Treasury security means.}
+\end{frame}
+
+% ---- T-bills -------------------------------------------------
+\begin{frame}{Treasury Bills}
+  \vspace{0.4em}
+  A U.S. Treasury bill is a short-term \hilite{zero-coupon} debt security issued
+  by the Department of the Treasury, with maturities running from a few days to
+  one year. Bills are sold below face value and pay no periodic interest.
+
+  \vspace{0.8em}
+  Writing $V_B$ for the purchase price and $V_P$ for the face value, the
+  difference $V_P-V_B$ is a \hilite{nominal dollar gain, not a return}: it is a
+  dollar amount, and it says nothing about the rate until a horizon and a
+  convention are attached to it.
+
+  \slidenote{Where to buy:}{\href{https://www.treasurydirect.gov}{TreasuryDirect}, or a bank or broker. Bills may be held to maturity or sold in the secondary market.}
+\end{frame}
+
+\begin{frame}{Treasury Bill Cash Flows}
+  \vspace{0.2em}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{../figs/Fig-L2a-TBill-CashFlows.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Valuing a T-Bill}
+  A bill has two cash-flow events for the investor: the purchase price $-V_B$ at
+  time $0$, and the face-value receipt $+V_P$ at maturity $T>0$ years. Let $y$ be
+  a nominal annual yield with frequency $n$, and $g_y=n\log(1+y/n)$. Setting
+  $\operatorname{NPV}_0(y)=0$ and solving for the price gives:
+  \[
+    V_B=\mathcal D_{T,0}^{-1}(y;n)\,V_P=\left(1+\frac{y}{n}\right)^{-nT}V_P=e^{-g_yT}V_P .
+  \]
+
+  Its holding-period growth rate and log return are given by:
+  \[
+    g_B=\frac{1}{T}\log\left(\frac{V_P}{V_B}\right),
+    \qquad
+    r_B=T\,g_B ,
+    \qquad\text{and here } g_B=g_y .
+  \]
+
+  \slidenote{Careful:}{quoted bank-discount and investment rates are \emph{not} automatically $y$ or $g_y$. Reconcile conventions first.}
+\end{frame}
+
+% ---- notes and bonds -----------------------------------------
+\begin{frame}{Treasury Notes and Bonds}
+  \vspace{0.2em}
+  Treasury notes and bonds pay \hilite{semiannual coupons} and repay face value
+  at maturity. They share one cash-flow structure and differ in their standard
+  maturity ranges.
+
+  \vspace{0.5em}
+  Let $T>0$ be maturity in years, let $n$ be the coupon frequency per year, and
+  let $N=nT$ be the number of remaining coupon dates. The annual coupon rate is
+  $c$, so each coupon pays $C=(c/n)V_P$. From the investor's perspective the
+  dated net cash flows are:
+  \[
+    \bar c_0=-V_B,
+    \qquad
+    \bar c_j=C \;\; (j=1,\ldots,N-1),
+    \qquad
+    \bar c_N=C+V_P .
+  \]
+\end{frame}
+
+\begin{frame}{Note and Bond Cash Flows}
+  \vspace{0.2em}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{../figs/Fig-L2a-NoteBond-CashFlows.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Valuing Notes and Bonds}
+  \vspace{0.3em}
+  Let $y$ be the constant nominal annual yield used for valuation. Setting the
+  net present value to zero and solving for the price gives:
+  \begin{align*}
+    0 &= \underbrace{-V_B}_{\text{\footnotesize cost}}
+       + \underbrace{\mathcal D_{N,0}^{-1}(y;n)V_P}_{\text{\footnotesize par payment}}
+       + \underbrace{C\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n)}_{\text{\footnotesize coupon payments}}\\[0.3em]
+    V_B &= \mathcal D_{N,0}^{-1}(y;n)V_P+C\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n),
+    \qquad \mathcal D_{j,0}^{-1}(y;n)=\left(1+\frac{y}{n}\right)^{-j}.
+  \end{align*}
+
+  \vspace{0.2em}
+  The nominal yield $y$ is a quotation and valuation convention. Its continuously
+  compounded equivalent is $g_y=n\log(1+y/n)$, but a coupon security's realized
+  growth also depends on what the coupons earn once received, and on any sale
+  price before maturity.
+\end{frame}
+
+% ---- risk ----------------------------------------------------
+\begin{frame}{Are Treasury Securities Risk-Free?}
+  \vspace{0.3em}
+  \hilite{Not completely.} They are called risk-free because the chance of a
+  missed promised nominal-dollar payment is low. That is not a guarantee of
+  profit over every holding period.
+
+  \vspace{0.8em}
+  {\large\textbf{\ink{Two risks that matter here}}}
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Default risk}: the issuer may fail to make a promised payment.
+      This is low for U.S. Treasury securities, but it is not equally low for
+      every sovereign issuer.
+    \item \hilite{Interest-rate risk}: if market yields change, the security's
+      price changes. An investor who sells before maturity may realize a gain or
+      a loss.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Case Study: Long-Term Capital Management}
+  \vspace{0.2em}
+  LTCM was a fixed-income fund founded in 1994 by Nobel laureates and
+  experienced traders. At its peak it held over \$1 trillion in positions,
+  borrowing roughly \$25 for every \$1 of its own capital.
+
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Returns after fees ran about 21\%, 43\%, and 41\% over its first three
+      years.
+    \item In 1998 it lost roughly \$4.6 billion in four months, through exposure
+      to the Asian and Russian financial crises.
+    \item The Federal Reserve Bank of New York organized a \$3.6 billion rescue
+      by a group of banks to keep the losses from spreading.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Its positions assumed certain government-bond prices would stay in line. When
+  Russia defaulted, investors fled to the safest securities and those
+  relationships broke.
+
+  \slidenote{Careful:}{the fund modeled prices, but not what happens to sovereign credit in a crisis.}
+\end{frame}
+
+\begin{frame}{Case Study: The 2008 Financial Crisis}
+  \vspace{0.5em}
+  A second episode, closer to home, in which assumptions about safety and
+  default were tested across the whole financial system.
+
+  \vspace{1.2em}
+  {\normalsize\textbf{\ink{Overview:}}
+   \href{https://www.youtube.com/watch?v=GPOv72Awo68}{a short introduction to the 2008 crisis}}
+
+  \vspace{0.9em}
+  {\normalsize\textbf{\ink{Deeper dive:}}
+   \href{https://www.govinfo.gov/content/pkg/GPO-FCIC/pdf/GPO-FCIC.pdf}{the Financial Crisis Inquiry Commission Report}}
+\end{frame}
+
+% ---- summary -------------------------------------------------
+\begin{frame}{Summary}
+  This lecture introduced the cash-flow structures, valuation, and risks of U.S.
+  Treasury securities.
+
+  \vspace{0.45em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \textbf{\ink{Cash flows determine value.}} A bill has one payment at
+      maturity, while notes and bonds pay coupons and return face value. In each
+      case the price follows from converting every cash flow to a common
+      valuation date and setting the net present value to zero.
+    \item \textbf{\ink{Rate conventions matter.}} Yield quotations, compounding
+      frequency, and day-count conventions must be reconciled before rates or
+      prices are compared.
+    \item \textbf{\ink{Risk-free does not mean price-risk free.}} Treasury
+      securities carry low nominal default risk, but their market prices move
+      when yields move, so selling before maturity may produce a gain or a loss.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Treasury securities connect dated cash flows, discounting, and market risk.
+\end{frame}
+
+% ---- closing -------------------------------------------------
+\transitionframe{That's a wrap. \hilite{What are some of the interesting things
+we discussed today?}}
+
+\end{document}
