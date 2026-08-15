@@ -96,7 +96,7 @@ For any one-step payoff $H_u$ dollars in the up state and $H_d$ dollars in the d
   \label{eq:one-step-claim}
   V_0=\frac{qH_u+(1-q)H_d}{R_f}.
 \end{equation}
-This is an expectation under $\Qmeasure$, not a statement that the real-world expected payoff equals the price grown at $R_f$. L7b will apply the recursion to options.
+This is an expectation under $\Qmeasure$, not a statement that the real-world expected payoff equals the price grown at $R_f$. L9a will apply the recursion to options.
 
 \begin{table}[ht]
   \centering
@@ -144,6 +144,18 @@ This is not a reason to discard lattices. It is a reason to match the tool to th
   {L3b: Lattice Models for Equity Prices}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb}
   {Derive terminal node distributions and test which return stylized facts follow from a fixed-parameter binomial model.}
+
+\section*{Optional Advanced Material}
+
+\notebooklink
+  {L3b Advanced: Recombination and Computational Cost}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/advanced/recombination/CHEME-5660-L3b-Advanced-Recombination-ComputationalCost-Fall-2026.ipynb}
+  {Compare the full path tree with the recombined lattice, count the computational savings, and identify when time-dependent move factors stop recombining.}
+
+\notebooklink
+  {L3b Advanced: Bootstrap Lattice Calibration}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/advanced/calibration/CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb}
+  {Bootstrap historical growth rates, measure uncertainty in $(u,d,p)$, and carry that uncertainty into lattice forecasts and a holdout check.}
 
 \newpage
 \thispagestyle{fancy}
