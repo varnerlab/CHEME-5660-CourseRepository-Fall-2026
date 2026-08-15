@@ -1,9 +1,9 @@
 % L1b takeaway deck.
 %
-% THE DECK MIRRORS THE NOTEBOOK. These slides are a surrogate for
-% CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb, shown in lecture in its
-% place: the notebook carries more detail, but the deck must cover at minimum the
-% same material in the same order, with frame titles matching notebook headings.
+% THE DECK MIRRORS THE NOTEBOOK. The instructor shows
+% CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb while students follow
+% along and take notes on these slides. The deck therefore covers the same
+% material in the same order, with frame titles matching notebook headings.
 % Adding a section to the notebook means adding a slide here.
 %
 % Notebook outline as of this writing, and where each part lands:
@@ -58,15 +58,15 @@
 % ---- objectives ----------------------------------------------
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
-  Today we put \hilite{dated cash flows} on a common footing, build the factors
-  that move value through time, and use them to value an \hilite{abstract asset}.
+  Today we compare \hilite{cash flows at different dates}, derive accumulation
+  and discount factors, and use them to value an \hilite{abstract asset}.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{The time value of money}: cash flows at different dates are
-      different claims, and cannot be added until they share a valuation date.
+    \item \hilite{The time value of money}: cash flows at different dates cannot
+      be added until they are expressed at the same valuation date.
     \item \hilite{An abstract asset}: a sequence of dated signed cash flows. The
       same representation covers a bond, a stock, a factory, or a car.
     \item \hilite{Net present value}: discount each signed cash flow to the
@@ -94,9 +94,9 @@
 
 % ---- TVM -----------------------------------------------------
 \begin{frame}{Time Value of Money}
-  Cash flows delivered on different dates are \hilite{different dated claims}.
-  Before they can be compared or added, they must be expressed at a common
-  valuation date under a stated conversion rule.
+  A dollar today and a dollar at a future date are \hilite{not directly
+  comparable}. Before we compare or add them, we must express both at the same
+  valuation date using a stated conversion rule.
 
   \vspace{0.5em}
   Let $P$ be an amount held at time $0$, and let $y$ be a quoted \hilite{nominal
@@ -180,7 +180,7 @@
       \hilite{not mechanically pegged} to the federal funds rate.
   \end{itemize}
 
-  \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar: what does the market imply about the next meeting?}}
+  \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
 \end{frame}
 
 \begin{frame}{What Valuation Rate Should I Use?}
@@ -194,12 +194,13 @@
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item A quoted \hilite{bond yield} and an estimated \hilite{equity required
-      return} are different kinds of number: the first is a contractual promise
-      conditional on no default, the second is a forecast.
-    \item Expected compensation attaches to \hilite{systematic} risk, the part
-      that cannot be diversified away. Taking on more of the part that
-      \emph{can} be does not by itself raise expected return, and an expected
-      return is not a realized one.
+      return} are different kinds of number. A bond yield is the discount rate
+      that matches price to promised cash flows; an equity required return is an
+      estimate of future compensation for risk.
+    \item Investors expect compensation for \hilite{systematic} risk: the risk
+      that diversification cannot remove. Taking more diversifiable risk does
+      not by itself raise expected return, and an expected return is not a
+      realized return.
   \end{itemize}
 \end{frame}
 

@@ -22,6 +22,8 @@ An equity price has many possible futures. A binomial lattice makes uncertainty 
 
 Let $S_0>0$ dollars per share be the initial ex-dividend price. Over each step of length $\Delta t>0$ years, the price is multiplied by the constant up factor $u>0$ or down factor $d>0$, with $d<u$. Multiplication commutes, so a path with $k$ up moves and $n-k$ down moves reaches the same node regardless of the order of those moves. This is the source of recombination (\figref{equity-lattice}).
 
+At every step, the same two moves remain available. In sampling language, the move sequence draws from $\{u,d\}$ with replacement. That repeated availability is distinct from recombination: replacement describes how moves are sampled, while recombination describes different move orders merging at the same price node. Once equivalent states are merged, the lattice is a directed acyclic graph rather than a tree in the strict graph-theoretic sense.
+
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[x=2.05cm,y=0.82cm,>=Latex,font=\sffamily\small]
@@ -51,7 +53,7 @@ Assume first that successive moves are independent and that an up move has const
 Let $S_0>0$, $u>d>0$, $p\in[0,1]$, and let the positive integer $n$ be the number of independent lattice steps. Let $K_n\sim\operatorname{Binomial}(n,p)$ denote the number of up moves. Conditional on $K_n=k$, where $k\in\{0,\ldots,n\}$, the terminal share price and its real-world probability are
 \begin{equation}
   \label{eq:terminal-distribution}
-  S_{n,k}=S_0u^kd^{,n-k},
+  S_{n,k}=S_0u^kd^{n-k},
   \qquad
   \Pmeasure(K_n=k)=\binom{n}{k}p^k(1-p)^{n-k}.
 \end{equation}

@@ -13,13 +13,13 @@
   {Derive security prices}
   {Derive zero-coupon and coupon-bearing Treasury prices from the zero-NPV condition under a stated discounting convention.}
   {Evaluate risk claims}
-  {Assess which risks are suppressed---and which remain---when a Treasury security is treated as risk-free.}
+  {Identify which risks the risk-free assumption excludes and which risks still matter.}
 
 \section{Why Does the Treasury Borrow?}
 
 When federal expenditures exceed tax and other receipts, the U.S. Department of the Treasury finances the resulting deficit by issuing debt. A Treasury security is therefore a contract: an investor supplies dollars today, and the federal government promises a specified pattern of future payments. The phrase \emph{fixed income} describes those contractual payments; it does not imply that the security's market price remains fixed.
 
-Marketable Treasury securities differ primarily in maturity and cash-flow pattern (\tabref{treasury-classes}). Bills promise one maturity payment, whereas notes and bonds promise periodic coupons plus repayment of principal. Those structural differences determine the appropriate abstract-asset model before any price is calculated.
+Marketable Treasury securities differ mainly in maturity and promised payments (\tabref{treasury-classes}). Bills make one payment at maturity. Notes and bonds pay coupons and then repay principal. We must identify those cash flows before calculating a price.
 
 \begin{table}[ht]
   \centering
@@ -38,11 +38,11 @@ Marketable Treasury securities differ primarily in maturity and cash-flow patter
   \end{tabular}
 \end{table}
 
-Treasury auctions translate bids into an issue rate, yield, or discount margin. Noncompetitive bidders accept the auction result, while competitive bidders specify an acceptable rate or yield. The auction allocates securities from the lowest acceptable financing cost upward, and all successful bidders receive the same accepted rate, yield, or margin. Valuation begins after those contract terms and a market discounting convention are stated.
+Treasury auctions use bids to determine an issue rate, yield, or discount margin. Noncompetitive bidders accept the auction result. Competitive bidders state the rate or yield they will accept. The Treasury accepts competitive bids from the lowest financing cost upward until the offering is filled, and all successful bidders receive the same accepted rate, yield, or margin. We can value the security once those terms and the discounting convention are known.
 
 \section{Cash-Flow Structure Comes First}
 
-From the investor's perspective, purchasing any Treasury security creates a payment today and receipts later. The bill and coupon-security timelines expose the essential modeling difference: one future receipt versus a stream of coupons followed by principal repayment (\figref{treasury-cash-flows}). In both cases, arrows leaving a time-point unit denote money paid and arrows entering one denote money received.
+From the investor's perspective, purchasing a Treasury security means paying today and receiving money later. The timelines show the key difference: a bill makes one future payment, while a note or bond pays coupons and then repays principal (\figref{treasury-cash-flows}). An arrow leaving a timeline marker is money paid; an arrow entering it is money received.
 
 \begin{figure}[ht]
   \centering
@@ -78,7 +78,7 @@ From the investor's perspective, purchasing any Treasury security creates a paym
   \label{fig:treasury-cash-flows}
 \end{figure}
 
-The one-payment structure in \figref{treasury-cash-flows} defines a zero-coupon Treasury bill (\defnref{treasury-bill}) and separates its purchase price from its maturity value.
+The first timeline in \figref{treasury-cash-flows} describes a zero-coupon Treasury bill (\defnref{treasury-bill}). It separates the price paid today from the face value received at maturity.
 
 \begin{definition}{Treasury bill}{treasury-bill}
 Let time $0$ be the purchase date and let the maturity time be $T>0$ years. A Treasury bill is a zero-coupon debt security with purchase price $V_B$ dollars at time $0$ and face value $V_P$ dollars paid at time $T$. The term \emph{zero coupon} means that no contractual interest payment occurs between purchase and maturity. The nominal dollar gain at maturity is $V_P-V_B$; it is not itself a return. The continuously compounded holding-period growth rate and its associated dimensionless log return are
@@ -149,7 +149,7 @@ Let the positive integers $n$ and $N=nT$ denote the coupon frequency per year an
 The summation index $j$ enumerates coupon dates, and each reciprocal factor converts that date's dollars to time-0 dollars.
 \end{theorem}
 
-The two terms in \eqnref{coupon-price} separate the economic claims: the sum is the present value of the coupon stream, and the final term is the present value of principal repayment. The zero-NPV derivation is therefore:
+The two terms in \eqnref{coupon-price} have simple meanings: the sum is the present value of the coupons, and the final term is the present value of principal. The zero-NPV derivation is therefore:
 \begin{align*}
   0
     &= -V_B+\sum_{j=1}^{N}\D_{j,0}^{-1}(y;n)C
@@ -180,7 +180,7 @@ Calling a Treasury security risk-free is a modeling statement, not a description
 
 \textbf{Inflation and reinvestment risk.}\enspace Nominal repayment does not guarantee purchasing power. Coupon-bearing securities also require the investor to reinvest intermediate coupons at rates that are unknown when the security is purchased.
 
-The useful engineering habit is to attach the qualifier to the claim: risk-free \emph{with respect to which uncertainty, over what holding period, and under which model assumptions?}
+Always qualify the phrase \emph{risk-free}: which risk is excluded, over what holding period, and under which assumptions?
 
 \keytakeaways
   {In this lecture, we represented Treasury bills, notes, and bonds as abstract assets and derived their prices by discounting promised cash flows to a common valuation date.}

@@ -1,9 +1,9 @@
 % L2b takeaway deck.
 %
-% THE DECK MIRRORS THE NOTEBOOK. These slides are a surrogate for
-% CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb, shown in
-% lecture in its place: the notebook carries more detail, but the deck must cover
-% at minimum the same material in the same order, with frame titles matching
+% THE DECK MIRRORS THE NOTEBOOK. The instructor shows
+% CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb while
+% students follow along and take notes on these slides. The deck therefore
+% covers the same material in the same order, with frame titles matching
 % notebook headings. Adding a section to the notebook means adding a slide here.
 % See the content conventions in templates/vnslides.sty.
 %
@@ -18,18 +18,19 @@
 %     Case Study: SVB                            -> Case Study: ... Silicon Valley Bank
 %   Zero-Coupon Treasury Bill                    -> Zero-Coupon Treasury Bill
 %     Deriving the Price Sensitivity             -> Deriving the Price Sensitivity
-%     Is the Maturity Channel Legitimate?        -> Is the Maturity Channel Legitimate?
+%     Is the Maturity Channel Legitimate?        -> What Does a Change in Maturity Mean?
 %     The Two Sensitivity Magnitudes             -> The Two Sensitivity Magnitudes
 %     What This Says to Us                       -> What This Says to Us: the Bill
+%     Optional zero-coupon extension             -> Optional: Bill Maturity Sensitivity
 %   Coupon-Bearing Treasury Notes and Bonds      -> Coupon-Bearing Treasury Notes and Bonds
 %     What This Says to Us                       -> What This Says to Us: Notes and Bonds
 %   Duration and Convexity                       -> Duration and Convexity
 %     Two Derivatives, One Shape                 -> Two Derivatives, One Shape (+ figure)
 %     The Two Risk Measures                      -> The Two Risk Measures
-%     Using Them: Second-Order Approximation     -> Using Them: ... (+ worked estimate)
+%     Using Them: Second-Order Approximation     -> approximation + worked estimate
 %   Connection to Malkiel's Theorems             -> Connection to ... (+ 3 theorem slides)
 %   From One Yield to the Yield Curve            -> From One Yield to the Yield Curve
-%     Optional advanced path                     -> Optional Advanced Paths
+%     Other optional advanced paths              -> Other Optional Advanced Paths
 %   Summary                                      -> Summary
 %   Today?                                       -> closing transition frame
 %
@@ -105,9 +106,9 @@
   portfolio move?}
 
   \vspace{0.9em}
-  That question has a precise answer, and today we build it. The tools are the
-  slope and the curvature of the price-yield relationship, and a vocabulary for
-  saying which rate actually moved.
+  That question has a conditional answer: it depends on the portfolio cash
+  flows and on which yields move. Today we use the slope and curvature of the
+  price-yield relationship to estimate the change.
 
   \slidenote{Careful:}{a half-point move in the \emph{policy rate} is not a half-point move in \emph{your security's yield}. We return to that.}
 \end{frame}
@@ -122,8 +123,8 @@
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Price-yield geometry}: explain why a fixed positive cash-flow
-      stream has a decreasing, convex price-yield curve.
+    \item \hilite{Price versus yield}: explain why the price of a fixed positive
+      cash-flow stream decreases with yield and follows a convex curve.
     \item \hilite{Duration and convexity}: define both measures, estimate the
       local price effect of a yield change, and interpret their units.
     \item \hilite{Yield-curve vocabulary}: distinguish yield to maturity, par
@@ -161,7 +162,7 @@ have a risky price.}}
   \vspace{0.3em}
   \hilite{No.} Treasuries carry low default risk because they are obligations of
   the U.S. government, which is why the rate you declare is so often taken from
-  them. That label is conditional. Two of the surviving risks matter today.
+  them. That label is conditional. Two risks that remain matter today.
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.45em}
@@ -195,8 +196,8 @@ have a risky price.}}
   \end{itemize}
 
   \vspace{0.3em}
-  Rate sensitivity was one component of a coupled balance-sheet and liquidity
-  problem, not a complete explanation by itself.
+  Falling bond values and deposit withdrawals reinforced each other. Interest-rate
+  risk was important, but it was not the only cause of the failure.
 
   \slidenote{Overview:}{\href{https://www.youtube.com/watch?v=7tNt7WaP4iA}{the collapse of Silicon Valley Bank, from PBS}}
 \end{frame}
@@ -205,7 +206,8 @@ have a risky price.}}
 \begin{frame}{Zero-Coupon Treasury Bill}
   \vspace{0.3em}
   Start with the simplest security: a bill that pays nothing until maturity and
-  then returns its face value. It is the hydrogen atom of fixed income.
+  then returns its face value. This simple cash-flow pattern makes a bill a useful
+  starting point.
 
   \vspace{0.5em}
   Let $V_P>0$ be the face value, $T>0$ the remaining maturity in years, $n$ the
@@ -219,16 +221,16 @@ have a risky price.}}
 
   \vspace{0.2em}
   \hilite{Standing assumption:} $y>0$ throughout this lecture, as it has been for
-  the Treasury data we use. Several results below fail without it, and we flag
-  each place where it does real work.
+  the Treasury data we use. We will identify every result that depends on this
+  assumption.
 \end{frame}
 
 \begin{frame}{Deriving the Price Sensitivity}
   \vspace{0.2em}
   Three quantities could move the price: the yield $y$, the annual coupon rate
-  $c$, and the maturity $T$. A bill's contract fixes $c=0$ permanently,
-  so $dc=0$ and that channel is closed. Holding $V_P$ and $n$ fixed, the
-  remaining two channels give the total differential:
+  $c$, and the maturity $T$. A bill's contract fixes $c=0$, so $dc=0$.
+  Holding $V_P$ and $n$ fixed, only changes in $y$ and $T$ remain in the total
+  differential:
   \[
     dV_B
     =-\underbrace{V_P\left(1+y/n\right)^{-nT}\left(\frac{T}{1+y/n}\right)}_{V_{B,y}}dy
@@ -236,19 +238,19 @@ have a risky price.}}
   \]
 
   \vspace{0.2em}
-  \hilite{Stated carefully:} the coupon channel does \emph{not} drop out because a
-  bill pays no coupons. The coupon-bearing family of the next section has
+  \hilite{Why there is no $dc$ term:} the bill's coupon rate is fixed and cannot
+  change. In the coupon-bearing family of the next section,
   $\partial V_B/\partial c=(V_P/n)\sum_{j}\mathcal D_{j,0}^{-1}(y;n)>0$, which stays strictly
-  positive even when evaluated at $c=0$. A bill is not insensitive to
-  coupons: it is a security whose coupon cannot move.
+  positive at $c=0$. The derivative is not zero; the contract simply requires
+  $dc=0$.
 \end{frame}
 
-\begin{frame}{Is the Maturity Channel Legitimate?}
+\begin{frame}{What Does a Change in Maturity Mean?}
   \vspace{0.3em}
   A bill promises one payment, so its price depends on $T$ only through the
   exponent $nT$. No intermediate payment can be added or removed, so
-  $\partial V_B/\partial T$ is well defined here. But two experiments hide behind
-  the symbol $dT$:
+  $\partial V_B/\partial T$ is well defined here. But $dT$ can describe two
+  different comparisons:
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
@@ -265,7 +267,7 @@ have a risky price.}}
   \slidenote{Later:}{both distinctions return when we price coupon-bearing notes and bonds.}
 \end{frame}
 
-\begin{frame}{The Two Sensitivity Magnitudes}
+\begin{frame}{Yield and Maturity Sensitivities}
   \vspace{-0.3em}
   Read $V_{B,y}$ and $V_{B,T}$ as \hilite{magnitudes}, not the derivatives
   themselves: the derivatives are their negatives, which is why the minus signs
@@ -286,7 +288,7 @@ have a risky price.}}
   \slidenote{Careful:}{negative nominal yields have occurred in other sovereign markets. State the condition.}
 \end{frame}
 
-\begin{frame}{What This Says to Us: the Bill}
+\begin{frame}{How Yield and Maturity Change a Bill's Price}
   \vspace{0.4em}
   {\large\textbf{\ink{Decreasing in the yield}}}
   \vspace{0.2em}
@@ -305,7 +307,20 @@ have a risky price.}}
   \emph{higher} than you paid, because fewer periods remain to discount. At $y=0$
   exactly, every discount factor is one and the price does not move at all.
 
-  \slidenote{Optional extension:}{\dimmed{advanced/malkiel/}, which develops the full maturity comparison on Treasury bill auction data.}
+\end{frame}
+
+\begin{frame}{Optional: Bill Maturity Sensitivity}
+  \vspace{0.6em}
+  The required lecture now moves to coupon-bearing notes and bonds. The advanced
+  bill notebook stays here in the sequence because it extends the maturity
+  discussion we just completed.
+
+  \vspace{1.0em}
+  {\normalsize\textbf{Question:} How does a zero-coupon bill's price sensitivity
+  change as its remaining maturity changes?}
+
+  \vspace{1.0em}
+  {\normalsize\textbf{Notebook:} \dimmed{advanced/malkiel/ --- Treasury bill maturity example}}
 \end{frame}
 
 % ---- coupon notes and bonds ----------------------------------
@@ -335,7 +350,7 @@ have a risky price.}}
   \slidenote{Careful:}{$N$ is a discrete schedule index. Differentiating a finite sum whose upper limit is $nT$ with respect to a smooth $T$ is not a valid total differential.}
 \end{frame}
 
-\begin{frame}{What This Says to Us: Notes and Bonds}
+\begin{frame}{How Bond Features Change Its Price}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
     \item \hilite{Decreasing in the yield}: now \emph{both} the coupons and the
@@ -357,19 +372,18 @@ have a risky price.}}
 % ---- duration and convexity ----------------------------------
 \begin{frame}{Duration and Convexity}
   \vspace{0.2em}
-  The derivatives so far answer \emph{which direction}. Risk management needs
-  \emph{how much}, in units comparable across positions of different size.
+  Derivatives tell us the direction of a price change. Risk management also
+  needs its size in units that can be compared across positions.
 
   \vspace{0.5em}
-  Everything here assumes an \hilite{option-free} security: one whose promised
-  cash flows are fixed in advance and do not change when yields change.
-  Conventional noncallable Treasuries qualify; callable, inflation-indexed, and
-  mortgage-backed securities do not.
+  We assume an \hilite{option-free} security: its promised cash flows do not
+  change when yields change. Conventional noncallable Treasuries qualify;
+  callable, inflation-indexed, and mortgage-backed securities do not.
 
   \vspace{0.5em}
   Let $N$ be the number of remaining periods and $X_j\ge0$ the dollar cash flow at
-  period $j$, with at least one $X_j>0$. Then one expression covers both
-  securities:
+  period $j$, with at least one $X_j>0$. The same price formula covers both
+  bills and coupon-bearing securities:
   \[
     V_B(y)=\sum_{j=1}^{N}X_j\,\mathcal D_{j,0}^{-1}(y;n).
   \]
@@ -455,7 +469,7 @@ have a risky price.}}
   the ratio $V_{B,y}/V_B$ we derived earlier.
 \end{frame}
 
-\begin{frame}{Using Them: the Second-Order Price Approximation}
+\begin{frame}{Duration Gives the Slope; Convexity Adds Curvature}
   \vspace{0.2em}
   A second-order Taylor expansion of $V_B(y)$ about the current yield, divided by
   the price, turns the two measures into a repricing estimate. For a yield change
@@ -477,7 +491,7 @@ have a risky price.}}
   \slidenote{Careful:}{a 50-basis-point move in the \emph{policy rate} does not imply $\Delta y=0.0050$ for a given security.}
 \end{frame}
 
-\begin{frame}{Using Them: a Worked Repricing Estimate}
+\begin{frame}{Estimate a Bond's Price Change}
   \vspace{0.4em}
   Take a note with $D_{\mathrm{mod}}=7.2$ years and $K=65$ years$^2$, and shock
   its own yield by $+50$ basis points, so $\Delta y=0.0050$:
@@ -561,9 +575,10 @@ have a risky price.}}
   \slidenote{Excluded edge:}{at $N=1$ everything arrives on one date and $D_{\mathrm{mod}}=1/\left[n(1+y/n)\right]$, however large the coupon.}
 \end{frame}
 
-\begin{frame}{What the Par Restriction Is Doing}
+\begin{frame}{Why Malkiel Compares Bonds at Par}
   \vspace{0.3em}
-  Outside the par comparison, the percentage and dollar statements part company.
+  Outside the par comparison, percentage and dollar sensitivities can rank
+  securities differently.
   For a zero-coupon bill, $D_{\mathrm{mod}}=T/(1+y/n)$ grows without bound, but the
   dollar sensitivity is a product of a growing and a shrinking factor:
   \[
@@ -603,15 +618,12 @@ have a risky price.}}
   They do not, by themselves, identify a unique forecast of future short rates.
 \end{frame}
 
-\begin{frame}{Optional Advanced Paths}
+\begin{frame}{Other Optional Advanced Paths}
   \vspace{0.6em}
   The required sequence moves to equity markets in L3a. Students who want more
   can continue under \dimmed{week-2/L2b/advanced/}:
 
   \vspace{1.0em}
-  {\normalsize\textbf{\ink{Example:}} \dimmed{zero-coupon maturity sensitivity, using Treasury bill auction data}}
-
-  \vspace{0.8em}
   {\normalsize\textbf{\ink{Example:}} \dimmed{yield-curve and stochastic short-rate notebooks}}
 
   \vspace{0.8em}

@@ -19,9 +19,9 @@
 
 L2a treated promised Treasury payments as known, but a holder who sells before maturity receives a market price. That price changes whenever the return available on comparable new securities changes. A fixed promise and a fluctuating resale value are therefore entirely compatible.
 
-The 2023 failure of Silicon Valley Bank provides the motivating systems lesson. The bank combined long-duration fixed-rate assets, concentrated uninsured funding, and inadequate interest-rate and liquidity risk management. Rising rates reduced the fair value of its securities; deposit withdrawals then forced the institution to confront losses that a hold-to-maturity story had obscured. Bond sensitivity is thus one component of a coupled balance-sheet and liquidity problem, not a complete explanation by itself.
+The 2023 failure of Silicon Valley Bank shows why bond-price risk matters. The bank held long-duration fixed-rate assets and relied heavily on uninsured deposits. Rising rates reduced the fair value of its securities. When depositors withdrew funds, the bank had to confront losses that its hold-to-maturity accounting had kept out of view. Falling bond values and deposit withdrawals reinforced each other, so interest-rate risk was important but was not the only cause of the failure.
 
-Burton Malkiel's bond-pricing principles organize the central comparative statics: price moves opposite yield, the price-yield curve is convex, longer maturity generally increases percentage sensitivity, and a larger coupon generally reduces it. These statements require an option-free fixed cash-flow model and comparisons that hold the other contract terms fixed.
+Burton Malkiel's bond-pricing principles summarize how bond prices change: price moves opposite yield, the price-yield curve is convex, longer maturity generally increases percentage sensitivity, and a larger coupon generally reduces it. These statements assume an option-free bond with fixed cash flows and hold the other contract terms fixed.
 
 \section{Which Variables Move the Price?}
 
@@ -32,17 +32,19 @@ Before restricting attention to the yield, it is worth asking which variables mo
   =\underbrace{\left(-V_P\left(1+y/n\right)^{-nT}\,\frac{T}{1+y/n}\right)}_{\partial\B/\partial y}dy
   +\underbrace{\left(-V_P\left(1+y/n\right)^{-nT}\,n\log\left(1+y/n\right)\right)}_{\partial\B/\partial T}dT.
 \end{equation}
-The structure is the one a chemical engineer already knows from thermodynamic state functions: enumerate the independent variables, take one partial derivative per channel, and read off how each channel contributes. Here $y$ is a market valuation variable while $T$ is a contract term, so the two increments describe different experiments.
+The calculation follows the same procedure used for thermodynamic state functions: list the independent variables and differentiate with respect to each one. Here $y$ is a market variable, while $T$ is a contract term, so changes in $y$ and $T$ represent different comparisons.
 
-A third channel exists but is closed. Embedding the bill in the coupon-bearing family at a fixed payment count $N=nT$ gives $\partial\B/\partial c=(V_P/n)\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n)>0$ for the annual coupon rate $c$, and this remains strictly positive when evaluated at $c=0$. A bill therefore contributes no coupon term to \eqnref{bill-differential} because its contract fixes $c=0$, so $dc=0$, and not because the coupon derivative vanishes.
+The coupon rate is a third possible variable. In the coupon-bearing family with fixed payment count $N=nT$, $\partial\B/\partial c=(V_P/n)\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}(y;n)>0$, even at $c=0$. A bill has no coupon term in \eqnref{bill-differential} because its contract fixes $c=0$ and therefore $dc=0$. The coupon derivative itself is not zero.
 
-Two cautions attach to the maturity channel. First, $\partial\B/\partial T<0$ requires $y>0$: at $y=0$ we have $\log\left(1+y/n\right)=0$ and maturity does not move the price, while for $-n<y<0$ we have $\log\left(1+y/n\right)<0$ and the sign reverses. Second, $dT$ conflates two experiments. Changing the contractual maturity compares two different securities, whereas the passage of holding time gives $dT=-dt$ along a single position. Both are smooth for a bill, whose price depends on $T$ only through the exponent. Neither is globally smooth for a coupon security, whose payment count is an integer: between coupon events its dirty price varies smoothly with elapsed time, but a coupon leaving the schedule breaks that smoothness, a point taken up again below.
+The maturity derivative needs two qualifications. First, $\partial\B/\partial T<0$ requires $y>0$. At $y=0$, $\log\left(1+y/n\right)=0$, so maturity does not change the price. For $-n<y<0$, the sign reverses.
 
-Finally, a total differential is linear in its increments by construction, so \eqnref{bill-differential} enumerates the channels but cannot describe curvature within any one of them. The remainder of these notes does the complementary thing: fix the cash-flow schedule, keep only the yield channel, and go to second order.
+Second, $dT$ can describe two different comparisons. Changing the contractual maturity compares two securities. The passage of time changes the remaining maturity of one security, giving $dT=-dt$. Both changes are smooth for a bill because its price depends on $T$ only through the exponent. A coupon security is different: its dirty price changes smoothly between coupon dates, but the payment schedule changes when a coupon leaves the schedule.
+
+A total differential is linear, so \eqnref{bill-differential} describes first-order changes but not curvature. For the rest of these notes, we hold the cash-flow schedule fixed, vary only the yield, and include the second derivative.
 
 \section{Price as a Function of Yield}
 
-To isolate interest-rate risk, freeze the promised cash flows and vary only the yield used to discount them. The resulting yield-based valuation is defined locally in \defnref{yield-price}.
+To isolate interest-rate risk, hold the promised cash flows fixed and vary only the yield used to discount them. \defnref{yield-price} defines the resulting bond price.
 
 \begin{definition}{Yield-based bond price}{yield-price}
 Let the positive integer $n$ denote the number of compounding intervals per year, let the positive integer $N$ denote the number of remaining compounding periods, and let $X_j\ge 0$ dollars be the fixed cash flow paid at period index $j\in\{1,\ldots,N\}$, with at least one $X_j>0$. Let the nominal annual yield to maturity be $y$ with $1+y/n>0$. Under a flat-yield convention, the time-0 dirty price $\B(y)$, meaning the value including any accrued interest, is given by \eqnref{yield-price}:
@@ -68,7 +70,7 @@ Under the assumptions of \defnref{yield-price}, assume $1+y/n>0$. The first and 
 The strict inequalities hold because no term of either sum is negative and at least one term of each is positive. Consequently, the bond price is strictly decreasing and strictly convex as a function of yield. The result assumes a fixed, nonnegative, and not identically zero cash-flow schedule, and therefore does not automatically apply to securities whose cash flows change when rates change, such as callable bonds.
 \end{theorem}
 
-The signs in \eqnref{yield-derivatives} explain the price-yield geometry: a higher yield lowers every discounted payment, while positive curvature makes the gain from a yield decrease larger than the loss from an equal yield increase, measured from the same starting yield (\figref{price-yield}).
+The signs in \eqnref{yield-derivatives} explain the shape of the price-yield curve. A higher yield lowers every discounted payment. Positive curvature makes the gain from a yield decrease larger than the loss from an equal yield increase, measured from the same starting yield (\figref{price-yield}).
 
 \begin{figure}[ht]
   \centering
@@ -100,7 +102,7 @@ The signs in \eqnref{yield-derivatives} explain the price-yield geometry: a high
   \label{fig:price-yield}
 \end{figure}
 
-The bill-sensitivity notebook tests the first part of \thmref{yield-shape} using zero-coupon Treasury auction data, where the single maturity payment makes the mechanism especially transparent.
+The bill-sensitivity notebook tests the first part of \thmref{yield-shape} using zero-coupon Treasury auction data. With only one maturity payment, the relationship is easy to see.
 
 \notebooklink
   {L2b: Treasury Bill Price Sensitivity}
@@ -141,7 +143,11 @@ The \emph{Macaulay duration} $D_{\mathrm{mac}}$ is the present-value-weighted av
   \qquad
   D_{\mathrm{mod}}(N+1)-D_{\mathrm{mod}}(N)=\frac{\left(1+y/n\right)^{-N-1}}{n}.
 \end{equation}
-The first expression increases strictly with $N$ and is bounded above by $1/y$, the modified duration of a perpetuity, while the second shows the successive increments shrinking by the constant factor $\left(1+y/n\right)^{-1}<1$. Those two facts are Malkiel's maturity results. Because a par bond has the same initial price $V_P$ at every maturity, the dollar sensitivity $-d\B/dy=V_PD_{\mathrm{mod}}(N)$ inherits both properties, so the percentage and dollar rankings agree here. Outside the par comparison they need not: for a zero-coupon security, modified duration grows without bound in $T$, yet the dollar sensitivity $-d\B/dy=V_PT\left(1+y/n\right)^{-nT-1}$ rises, peaks at $T=1/\left(n\log\left(1+y/n\right)\right)$, and then declines, because the shrinking price eventually outweighs the growing duration. These are all comparisons of yield sensitivity, not a claim that adding another coupon period always lowers the bond's price.
+The first expression increases with $N$ but remains below $1/y$, the modified duration of a perpetuity. The second expression shows that each additional period adds less duration than the previous one. These are Malkiel's maturity results.
+
+For par bonds, the initial price is $V_P$ at every maturity. The dollar sensitivity $-d\B/dy=V_PD_{\mathrm{mod}}(N)$ therefore has the same ranking as the percentage sensitivity. This agreement need not hold away from par.
+
+For example, the modified duration of a zero-coupon security grows without bound as $T$ increases. Its dollar sensitivity, $-d\B/dy=V_PT\left(1+y/n\right)^{-nT-1}$, first rises and then falls. It reaches its maximum at $T=1/\left(n\log\left(1+y/n\right)\right)$ because the declining price eventually outweighs the growing duration. These statements concern sensitivity to yield; they do not say that adding another coupon period always lowers the bond's price.
 
 \textbf{Coupon effect.}\enspace Holding yield, maturity, face value, and coupon frequency fixed, a higher coupon shifts a larger fraction of present value toward earlier dates. The resulting percentage price sensitivity is therefore lower. The comparison requires at least two remaining payment dates: if a single payment remains, all value arrives on one date and the modified duration is $1/\bigl(n(1+y/n)\bigr)$ years regardless of the coupon.
 
@@ -149,10 +155,9 @@ The first expression increases strictly with $N$ and is bounded above by $1/y$, 
 
 \section{From One Yield to a Curve of Discount Rates}
 
-Yield to maturity compresses a security's price and complete promised cash-flow
-schedule into one internal rate of return. That scalar is useful for quoting and
-comparison, but it is not the collection of discount rates used by an
-arbitrage-consistent term-structure model. A \emph{spot rate} applies to a
+Yield to maturity summarizes a security's price and promised cash flows with one
+internal rate of return. That rate is useful for quoting and comparison, but it
+is not a complete set of discount rates. A \emph{spot rate} applies to a
 single payment at one maturity; the resulting spot curve supplies one discount
 factor for each payment date. A \emph{par yield} is the coupon rate that makes a
 hypothetical coupon security trade at par under that discount curve.
@@ -166,10 +171,10 @@ the flat-yield expression in \eqnref{yield-price} with
 where $D(0,t_j)$ is the time-0 discount factor for maturity $t_j$. The curve's
 level, slope, and curvature summarize how required compensation varies across
 maturities; they do not by themselves identify a unique forecast of future
-short rates. This distinction is the essential bridge from fixed income to the
-multi-period asset models used in Week 3.
+short rates. This distinction prepares us for the multi-period asset models used
+in Week 3.
 
-The coupon-security notebook evaluates these comparative statics on Treasury note data and shows how coupon placement changes the response to a yield shock.
+The coupon-security notebook uses Treasury note data to show how price changes with yield and coupon timing.
 
 \newpage
 \thispagestyle{fancy}

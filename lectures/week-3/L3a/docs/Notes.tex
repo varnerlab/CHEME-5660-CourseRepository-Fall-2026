@@ -10,14 +10,14 @@
   {Explain what common stock represents and distinguish the corporation, an exchange, an index, and an exchange-traded fund.}
   {Compute growth rates}
   {Calculate continuously compounded growth rates and convert them to log returns using $r=(\Delta t)g$.}
-  {Diagnose stylized facts}
-  {Use empirical distributions, autocorrelation, and conditional-volatility evidence to challenge an equity-return model.}
+  {Test return models}
+  {Use return distributions and autocorrelation to check whether a model matches observed market data.}
 
 \section{Why Corporations Sell Ownership Claims}
 
-Large ventures often require more capital and a longer horizon than one owner can supply. The joint-stock form separates the corporation from any single investor and divides the residual ownership claim into transferable shares. A common shareholder may receive voting rights and dividends, but stands behind contractual creditors in liquidation. Limited liability ordinarily caps the shareholder's loss at the invested amount; it does not protect the share price from falling to zero.
+Large ventures often need more capital and more time than one owner can provide. A corporation can raise that capital by dividing ownership into shares that investors can trade. A common shareholder may receive voting rights and dividends, but creditors are paid first if the corporation is liquidated. Limited liability usually limits the shareholder's loss to the amount invested; it does not prevent the share price from falling to zero.
 
-An \emph{equity security} is therefore a residual claim on a corporation, not a promise of fixed repayment. Its value depends on uncertain future distributions and resale opportunities. The market price aggregates heterogeneous beliefs, constraints, information, and orders into one executable quotation at a particular time.
+An \emph{equity security} is therefore an ownership claim on what remains after the corporation meets its contractual obligations. It is not a promise of fixed repayment. Its value depends on uncertain future distributions and the price another investor may later pay. The market price is the price available to buyers and sellers at a particular time and trading venue.
 
 An exchange supplies listing and trading rules and an organized venue for matching orders. Clearing and settlement complete the obligations created by trades, often through specialized infrastructure distinct from the matching engine. A stock index, such as the S\&P 500, is a rule-based numerical portfolio benchmark; it cannot itself be purchased. An exchange-traded fund (ETF) is a security whose shares trade intraday and whose portfolio may seek to track an index. These objects interact, but they are not interchangeable.
 
@@ -36,7 +36,7 @@ Let $S_{t-1}>0$ and $S_t>0$ be consecutive share prices separated by $\Delta t>0
 Thus $g_t$ has units inverse years and $r_t$ is dimensionless. If dividends are included, use a consistently adjusted total-return price series before applying the definition.
 \end{definition}
 
-The choice between price and total return is substantive. A price-only series omits dividends, while an adjusted-price vendor may incorporate dividends and splits through its own convention. Data transformations must be documented before statistical conclusions are compared.
+The choice between price return and total return matters. A price-only series omits dividends. An adjusted-price series may include dividends and splits according to the data vendor's convention. Document those adjustments before comparing statistics.
 
 Log returns add across nonoverlapping time intervals (\propref{log-additivity}); equivalently, cumulative log return is a time-weighted sum of growth rates.
 
@@ -63,6 +63,15 @@ The result is exact; the common approximation $\log(1+R_t)\approx R_t$ is only l
 
 An excess growth rate compares the equity with a benchmark rate over the same interval. If $g_{f,t}$ is the benchmark growth rate, then $\bar g_t:=g_t-g_{f,t}$ and the corresponding excess log return is $\bar r_t=(\Delta t)\bar g_t$.
 
+\section{Common Patterns Across Many Assets}
+
+For $m$ dates and $n$ assets, collect centered returns in a matrix $G\in\mathbb{R}^{m\times n}$. Its singular value decomposition $G=U\Sigma V^{\mathsf T}$ writes the data as ordered rank-one patterns. Large singular values identify common patterns that account for much of the variation across assets. SVD finds patterns in the data; it does not explain their economic causes. Results depend on centering, scaling, missing-data treatment, and the selected assets.
+
+\notebooklink
+  {L3a: SVD of S\&P 500 Growth Rates}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}
+  {Construct a multi-asset growth-rate matrix and use singular values and singular vectors to study common market patterns.}
+
 \section{Reward, Risk, and the Measurement Horizon}
 
 The sample mean estimates average return under a chosen sampling rule; the sample standard deviation measures dispersion around that sample mean. Neither statistic alone describes downside magnitude, tail probability, drawdown, or liquidity. Moreover, annualizing daily volatility by multiplying by the square root of the number of periods relies on assumptions about scaling and dependence that empirical data may violate.
@@ -74,11 +83,11 @@ The sample mean estimates average return under a chosen sampling rule; the sampl
   \label{fig:risk-reward}
 \end{figure}
 
-The engineering question is not simply ``how volatile is this asset?'' It is ``which loss mechanism matters for this decision, over which horizon, and is the selected statistic sensitive to it?'' Value at risk, expected shortfall, maximum drawdown, downside deviation, beta, and tracking error each answer different questions.
+Do not ask only ``how volatile is this asset?'' Ask what type of loss matters, over what horizon, and whether the chosen statistic will detect it. Value at risk, expected shortfall, maximum drawdown, downside deviation, beta, and tracking error answer different questions.
 
 \section{Stylized Facts as Model Requirements}
 
-A stylized fact is a recurring empirical pattern observed across many assets or markets. It is not an exact law for every ticker and every sample. Stylized facts constrain useful models: a model that structurally cannot generate an important observed pattern should not be trusted for questions driven by that pattern.
+A stylized fact is a recurring pattern observed across many assets or markets. It is not an exact law for every ticker or sample. A useful model should be able to reproduce the patterns that matter for the question being studied.
 
 \textbf{Heavy tails.}\enspace Large-magnitude returns occur more frequently than a fitted Gaussian model predicts. Sample kurtosis, quantile comparisons, tail plots, and tests such as Anderson--Darling can reveal distributional mismatch, but tail-index estimation is sensitive to the threshold and sample size. ``Heavy-tailed'' should be supported by a stated mathematical or empirical criterion rather than used as a synonym for volatile.
 
@@ -101,21 +110,12 @@ A stylized fact is a recurring empirical pattern observed across many assets or 
   \label{fig:volatility-clustering}
 \end{figure}
 
-The empirical notebook calculates these diagnostics for common stocks and ETFs. Its role is model criticism: the output should be compared with the assumptions and implications of the models introduced in L3b and L3b.
+The empirical notebook calculates these diagnostics for common stocks and ETFs. Use the results to check the assumptions and predictions of the models introduced in L3b and later lectures.
 
 \notebooklink
   {L3a: Stylized Facts of Stocks and ETFs}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}
   {Compare Normal, Laplace, and Student-$t$ fits; inspect Hill tail-index stability; and contrast signed-return with magnitude autocorrelation.}
-
-\section{Many Assets Share Common Modes}
-
-For $m$ dates and $n$ assets, collect centered returns in a matrix $G\in\mathbb{R}^{m\times n}$. Its singular value decomposition $G=U\Sigma V^{\mathsf T}$ expresses the data as ordered rank-one modes. Large singular values identify directions explaining substantial squared variation, often including a broad market-like co-movement. SVD is descriptive linear algebra: a mode is not automatically a causal economic factor, and results depend on centering, scaling, missing-data treatment, and the selected universe.
-
-\notebooklink
-  {L3a: SVD of S\&P 500 Growth Rates}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}
-  {Construct a multi-asset growth-rate matrix and use singular values and singular vectors to study common market modes.}
 
 \newpage
 \thispagestyle{fancy}
@@ -125,8 +125,8 @@ For $m$ dates and $n$ assets, collect centered returns in a matrix $G\in\mathbb{
   {Price versus total return, sampling interval, corporate-action adjustment, and compounding must be stated before statistics are compared.}
   {Dependence hides beyond returns}
   {Small autocorrelation in signed returns does not imply independence; absolute and squared returns often reveal persistent conditional volatility.}
-  {Stylized facts are validation targets}
-  {Heavy tails and volatility clustering expose risks that a fixed-variance Gaussian or i.i.d. model can systematically understate.}
+  {Models should match observed patterns}
+  {Heavy tails and volatility clustering reveal risks that a fixed-variance Gaussian or i.i.d. model can understate.}
   {Next, build a binomial equity lattice and separate real-world probabilities used for forecasting from risk-neutral probabilities used for pricing.}
 
 \begin{readinglist}

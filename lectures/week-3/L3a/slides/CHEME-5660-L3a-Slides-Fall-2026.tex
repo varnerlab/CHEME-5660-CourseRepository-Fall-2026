@@ -1,9 +1,9 @@
 % L3a takeaway deck.
 %
-% THE DECK MIRRORS THE NOTEBOOK. These slides are a surrogate for
-% CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb,
-% shown in lecture in its place. The notebook carries more detail, but the deck
-% covers the same material in the same order and uses matching frame titles.
+% THE DECK MIRRORS THE NOTEBOOK. The instructor shows
+% CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb
+% while students follow along and take notes on these slides. The deck covers
+% the same material in the same order and uses matching frame titles.
 % See the content conventions in templates/vnslides.sty.
 %
 % Notebook outline, and where each part lands:
@@ -14,10 +14,10 @@
 %   Examples                            => Lectures and Examples
 %   Exchanges, Stocks, and ETFs         => overview plus four concept frames
 %   Reward                              => reward, returns, excess growth, algorithm
+%   SVD example                         => common-patterns frame
 %   Risk                                => volatility, risk-reward figure, other measures
 %   Stylized Facts                      => overview plus four diagnostic frames
 %   Example                             => empirical notebook frame
-%   SVD example                         => common-modes frame
 %   Summary                             => Summary
 %   Today?                              => closing transition frame
 %
@@ -69,8 +69,8 @@
       exchange, a stock index, and an exchange-traded fund.
     \item \hilite{Compute growth rates}: calculate continuously compounded
       growth rates and convert them to log returns using $r=(\Delta t)g$.
-    \item \hilite{Diagnose stylized facts}: use empirical distributions,
-      autocorrelation, and conditional-volatility evidence to challenge a model.
+    \item \hilite{Test return models}: use return distributions and
+      autocorrelation to check whether a model matches observed market data.
   \end{itemize}
   \vspace{-0.4em}
 
@@ -86,8 +86,8 @@
   {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}}
 
   \vspace{0.7em}
-  Decompose the growth-rate matrix for S\&P 500 constituents into ordered
-  common modes.
+  Use SVD to identify common patterns in the growth rates of S\&P 500
+  constituents.
 
   \vspace{0.8em}
   {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}}
@@ -117,7 +117,7 @@
       may seek to track an index and whose shares trade during the day.
   \end{itemize}
 
-  \slidenote{Today:}{market prices are executable quotations at a stated time, not intrinsic values detached from a venue and data convention.}
+  \slidenote{Today:}{a market price is the price available at a particular time and trading venue.}
 \end{frame}
 
 \begin{frame}{\large Exchanges Connect Buyers and Sellers}
@@ -252,7 +252,7 @@
   time.
 \end{frame}
 
-\begin{frame}{Excess Growth Measures Relative Performance}
+\begin{frame}{Excess Growth Compares an Asset with a Benchmark}
   \vspace{0.3em}
   Let $g_t$ be the equity growth rate and let $g_{f,t}$ be a declared benchmark
   growth rate over the same interval. The \hilite{excess growth rate} and excess
@@ -295,6 +295,27 @@
   growth rate.
 \end{frame}
 
+\begin{frame}{Common Patterns Across Many Assets}
+  Let $G\in\mathbb R^{m\times n}$ collect centered growth rates for $m$ dates and
+  $n$ assets. Its singular value decomposition is:
+  \[
+    G=U\Sigma V^{\mathsf T}
+    =\sum_{j=1}^{\operatorname{rank}(G)}
+      \underbrace{\sigma_j\mathbf u_j\mathbf v_j^{\mathsf T}}_{\text{\footnotesize rank-one pattern}},
+    \qquad \sigma_1\geq\sigma_2\geq\cdots\geq0.
+  \]
+
+  Large singular values identify common patterns that account for much of the
+  variation across assets.
+
+  \vspace{0.5em}
+  SVD finds patterns in the data; it does not explain their economic causes.
+  Results depend on centering, scaling, missing-data treatment, and the selected
+  assets.
+
+  \slidenote{Notebook:}{\dimmed{CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}}
+\end{frame}
+
 % ==== risk ===================================================
 \begin{frame}{Risk}
   \vspace{0.2em}
@@ -316,7 +337,7 @@
   magnitude of a specific loss.
 \end{frame}
 
-\begin{frame}{\large Risk and Reward Measure Different Questions}
+\begin{frame}{\large Return and Risk Measure Different Things}
   \vspace{0.1em}
   \begin{center}
     \includegraphics[width=0.78\textwidth,height=0.68\textheight,keepaspectratio]{../figs/Fig-RiskReward-Asset-Schematic.pdf}
@@ -329,7 +350,7 @@
 
 \begin{frame}{Other Risk Measures}
   \vspace{0.2em}
-  Choose the statistic that detects the loss mechanism relevant to the decision.
+  Choose a risk measure that matches the type of loss relevant to the decision.
 
   \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
@@ -344,7 +365,7 @@
       benchmark.
   \end{itemize}
 
-  \slidenote{Engineering question:}{which loss mechanism matters, over which horizon, and is the selected statistic sensitive to it?}
+  \slidenote{Ask:}{what type of loss matters, over what horizon, and will this statistic detect it?}
 \end{frame}
 
 % ==== stylized facts =========================================
@@ -352,7 +373,7 @@
   \vspace{0.3em}
   A \hilite{stylized fact} is a recurring empirical pattern observed across many
   assets or markets. It is not an exact law for every ticker and sample. It is a
-  requirement that a useful model should confront.
+  pattern that a useful model should be able to reproduce.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
@@ -485,27 +506,6 @@
   \end{itemize}
 
   \slidenote{Notebook:}{\dimmed{CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}}
-\end{frame}
-
-\begin{frame}{Many Assets Share Common Modes}
-  Let $G\in\mathbb R^{m\times n}$ collect centered growth rates for $m$ dates and
-  $n$ assets. Its singular value decomposition is:
-  \[
-    G=U\Sigma V^{\mathsf T}
-    =\sum_{j=1}^{\operatorname{rank}(G)}
-      \underbrace{\sigma_j\mathbf u_j\mathbf v_j^{\mathsf T}}_{\text{\footnotesize rank-one mode}},
-    \qquad \sigma_1\geq\sigma_2\geq\cdots\geq0.
-  \]
-
-  Large singular values identify directions that explain substantial squared
-  variation, often including a broad market-like co-movement.
-
-  \vspace{0.5em}
-  SVD is descriptive linear algebra, not automatic causal economics. The modes
-  depend on centering, scaling, missing-data treatment, and the selected asset
-  universe.
-
-  \slidenote{Notebook:}{\dimmed{CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}}
 \end{frame}
 
 % ==== summary ================================================
