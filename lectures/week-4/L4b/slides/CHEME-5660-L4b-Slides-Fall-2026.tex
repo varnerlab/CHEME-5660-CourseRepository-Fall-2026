@@ -1,0 +1,603 @@
+% L4b student companion deck.
+%
+% The frame order mirrors the lecture notebook so students can take notes while
+% the instructor works through the notebook. The disclaimer is intentionally
+% slide 2, by instructor preference.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Pmeasure}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\gbar}{\bar g}
+\newcommand{\Dacc}{\mathcal{D}_{T,0}(g_b)}
+\newcommand{\Ddis}{\mathcal{D}_{T,0}^{-1}(g_b)}
+
+\title{\texorpdfstring{{\vnheavy L4b}}{L4b}: Single Asset Geometric Brownian Motion Models}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today we introduce our first continuous-time price model, geometric Brownian
+  motion, estimate its parameters from data, test it against the stylized
+  facts, and compute a closed-form target probability for a scheduled trade.
+
+  \vspace{0.8em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Model share prices with GBM}: the stochastic differential
+      equation, the Wiener process, the exact lognormal solution, and the exact
+      one-step transition used for Monte Carlo.
+    \item \hilite{Estimate drift and volatility}: derive the growth-rate law,
+      estimate the mean growth rate and volatility from a growth-rate series,
+      and recover the arithmetic drift.
+    \item \hilite{Test the model and evaluate a trade}: check GBM against the
+      stylized facts, then derive the probability that a scheduled long
+      position clears a target return.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \dimmed{CHEME-5660-L4b-Lecture-SingleAsset-\allowbreak GeometricBrownianMotion-TradeRule-Fall-2026.ipynb}}
+
+  \vspace{0.9em}
+  {\normalsize\textbf{\ink{Example 1:}}\par
+  \dimmed{CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}}
+
+  \vspace{0.9em}
+  {\normalsize\textbf{\ink{Example 2:}}\par
+  \dimmed{CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}}
+
+  \vspace{0.8em}
+  The first example estimates the mean growth rate and volatility of a GBM model
+  from historical prices, recovers the drift, and simulates sample paths. The
+  second computes the probability that a scheduled long position clears a target
+  present-value return.
+\end{frame}
+
+\begin{frame}{Company Profile: Jane Street}
+  \vspace{0.4em}
+  Jane Street is a privately held \hilite{quantitative trading firm}: it trades
+  across asset classes on more than 200 venues, deploys mainly its own capital,
+  and is a major market maker in exchange-traded funds.
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Client posture}: Citadel Securities handles a large share of
+      U.S. retail order flow; Jane Street is primarily proprietary and
+      institution facing.
+    \item \hilite{Product emphasis}: Jane Street is synonymous with ETFs; Citadel
+      Securities with U.S. equities, options, and FX market making.
+    \item \hilite{Engineering culture}: Jane Street optimizes for correctness and
+      composability (functional programming in OCaml); Citadel Securities for
+      reliability and throughput at scale.
+  \end{itemize}
+
+  \slidenote{Role in this lecture:}{both firms depend on quantitative models of prices and execution; today we build one baseline price model.}
+\end{frame}
+
+\begin{frame}{Concept Review: N-Ary Tree Models}
+  A binomial lattice allows only two price movements per step. If two possible
+  futures are not enough, an \hilite{N-ary lattice} allows $m$ branches with
+  factors $f_1,\ldots,f_m$ and probabilities $p_1,\ldots,p_m$.
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item A recombining node is indexed by its branch-count vector; its
+      probability is multinomial (L4a).
+    \item More branches make the set of possible prices finer (at the cost of
+      more states); a smaller time step brings the steps closer together.
+  \end{itemize}
+
+  \vspace{0.3em}
+  Today's idea: replace the discrete set of prices with a \hilite{continuous}
+  one and the discrete steps with continuous time. Refinement alone is not
+  enough; with the right scaling the lattice converges to a continuous model,
+  and that model is geometric Brownian motion.
+  \slidenote{Example:}{\dimmed{CHEME-5660-L4a-Example-N-Aray-Lattice-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Single Asset Geometric Brownian Motion (GBM)}
+  Let $S(t)>0$ be the share price at time $t$ on a horizon $0\le t\le T$. Let
+  $\mu\in\mathbb{R}$ (units: inverse years) be a constant arithmetic drift,
+  $\sigma>0$ (units: inverse years to the one-half power) a constant
+  \hilite{volatility}, and $dW(t)$ the increment of a Wiener process (next
+  frame). Geometric Brownian motion (GBM) is a continuous-time random walk whose
+  drift and noise are both proportional to the price:
+  \[
+    \frac{dS(t)}{S(t)}
+    =\underbrace{\mu\,dt}_{\text{drift}}
+    +\underbrace{\sigma\,dW(t)}_{\text{noise}}.
+  \]
+
+  \vspace{0.3em}
+  We will see that the log price is a Brownian motion with drift. We reserve
+  $g$ for an observed continuously compounded growth rate. The drift $\mu$ and
+  a growth rate $g$ share inverse-time units, but they are different
+  quantities; the relationship is made precise below.
+\end{frame}
+
+\begin{frame}{The Wiener Process}
+  A Wiener process $\{W(t),\,0\le t\le T\}$ is a continuous real-valued
+  stochastic process with three properties:
+
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item The noise vanishes at zero: $W(0)=0$ with probability one.
+    \item Increments over disjoint intervals
+      $W(t_1)-W(t_0),\ldots,W(t_k)-W(t_{k-1})$ are independent for any
+      $0\le t_0<t_1<\cdots<t_k\le T$.
+    \item Each increment is normal with mean zero and variance equal to the
+      elapsed time, $W(t)-W(s)\sim\mathcal{N}(0,t-s)$ for $0\le s<t\le T$.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The third property lets us write any increment as a scaled standard normal:
+  \[
+    W(t)-W(s)=\sqrt{t-s}\;Z,\qquad Z\sim\mathcal{N}(0,1).
+  \]
+\end{frame}
+
+\begin{frame}{The Analytical Solution}
+  Take $t_0=0$ and let $S_0$ be today's price. Solving the SDE with It\^o
+  calculus gives the share price at a fixed future time $T$:
+  \[
+    \boxed{S_T=S_0\exp\!\Bigl[
+      \underbrace{\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T}_{\text{mean log growth}}
+      +\underbrace{\sigma\sqrt{T}\,Z}_{\text{shock}}\Bigr],
+    \qquad Z\sim\mathcal{N}(0,1).}
+  \]
+
+  Thus the log price ratio $\ln(S_T/S_0)$ is normal with mean
+  $(\mu-\sigma^2/2)T$ and variance $\sigma^2T$, and the price $S_T$ is
+  \hilite{lognormal} and strictly positive.
+
+  \vspace{0.4em}
+  The $-\sigma^2/2$ term comes out of the It\^o calculus in the derivation
+  notebook; it is the \hilite{half-variance correction} we meet again below.
+
+  \slidenote{Derivation:}{\dimmed{CHEME-5660-L4b-GBM-Solution-Derivation-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Mean and Variance of the GBM Price}
+  From the lognormal moments, the expectation and variance of $S_T$ are:
+  \[
+    \underbrace{\E(S_T)}_{\text{mean price}}=S_0e^{\mu T},
+    \qquad
+    \underbrace{\Var(S_T)}_{\text{price variance}}
+    =S_0^2e^{2\mu T}\bigl(e^{\sigma^2T}-1\bigr).
+  \]
+
+  The expected price grows at the arithmetic drift $\mu$. The median price
+  $S_0e^{(\mu-\sigma^2/2)T}$ grows at the smaller rate $\mu-\sigma^2/2$.
+
+  \vspace{0.5em}
+  The gap is the \hilite{half-variance correction}: the lognormal distribution
+  is right skewed, so its mean sits above its median.
+\end{frame}
+
+\begin{frame}{Discrete Time GBM Model}
+  We observe prices on a grid $t_j=j\Delta t$, $j=0,1,\ldots,N$, with time step
+  $\Delta t$ (years) and horizon $T=N\Delta t$. Applying the fixed-horizon
+  solution over one step gives the \hilite{one-step transition}:
+  \[
+    \boxed{S_{t_j}=S_{t_{j-1}}\exp\!\Bigl[
+      \bigl(\mu-\tfrac{\sigma^2}{2}\bigr)\Delta t
+      +\sigma\sqrt{\Delta t}\,Z_j\Bigr],\qquad j=1,\ldots,N,}
+  \]
+  with $Z_1,\ldots,Z_N$ \hilite{independent} standard normals. For constant
+  $\mu$ and $\sigma$ this is exact at the grid points, not a numerical
+  time-stepping approximation.
+
+  \vspace{0.4em}
+  Jumping directly from $S_0$ to $t_j$ uses the cumulative shock
+  $\tilde Z_j=j^{-1/2}\sum_{i\le j}Z_i$:
+  \[
+    S_{t_j}=S_0\exp\!\Bigl[\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)t_j
+      +\sigma\sqrt{t_j}\,\tilde Z_j\Bigr].
+  \]
+  $\tilde Z_j$ is standard normal at each $j$ but \hilite{not} independent
+  across $j$ (correlation $\sqrt{t_j/t_k}$ for $j<k$): use it for one horizon,
+  use the transition for paths.
+\end{frame}
+
+\begin{frame}{Monte Carlo Simulation of GBM}
+  Given $S_0$, $\mu$, $\sigma$, $\Delta t$, $N$ steps, and $M$ paths, store the
+  simulated prices in $\mathbf{S}\in\mathbb{R}^{(N+1)\times M}$, one path per
+  column, rows indexed by $j=0,\ldots,N$.
+
+  \vspace{0.5em}
+  For each sample path (each column of $\mathbf{S}$):
+  \begin{enumerate}\setlength{\itemsep}{0.45em}
+    \item Set the price in row $j=0$ to $S_0$.
+    \item For $j=1,\ldots,N$: draw $Z_j\sim\mathcal{N}(0,1)$ and apply the
+      one-step transition:
+      \[
+        S_{t_j}\gets S_{t_{j-1}}\exp\!\Bigl[
+          \bigl(\mu-\tfrac{\sigma^2}{2}\bigr)\Delta t
+          +\sigma\sqrt{\Delta t}\,Z_j\Bigr].
+      \]
+  \end{enumerate}
+
+  \vspace{0.3em}
+  The result is $M$ possible future trajectories of $N$ steps each. Their
+  spread is process uncertainty; the uncertainty in $\mu$ and $\sigma$ is a
+  separate layer.
+  \slidenote{Implementation:}{the \texttt{sample(...)} function in the course package.}
+\end{frame}
+
+\begin{frame}{Estimation of GBM Parameters}
+  Divide the one-step transition by $S_{t_{j-1}}$, take logarithms, and divide
+  by $\Delta t$. The \hilite{one-step growth rate} $g_j$ over
+  $t_{j-1}\to t_j$, the same quantity we computed from data in L3a, is:
+  \[
+    \boxed{g_j\equiv\frac{1}{\Delta t}\ln\frac{S_{t_j}}{S_{t_{j-1}}}
+    =\underbrace{\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)}_{\text{mean growth }\gbar}
+    +\underbrace{\frac{\sigma}{\sqrt{\Delta t}}}_{\text{growth-rate std}}\,Z_j.}
+  \]
+
+  Because the $Z_j$ are independent standard normals, growth rates over equally
+  spaced, non-overlapping steps are independent and normal with mean
+  $\gbar\equiv\mu-\sigma^2/2$ and variance $\sigma^2/\Delta t$.
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Drift versus growth}: $\mu$ is the SDE drift; the mean growth
+      rate $\gbar$ is what a growth-rate series measures. They differ by the
+      half-variance correction.
+    \item \hilite{Risk}: $\sigma$ sets the growth-rate standard deviation
+      $\sigma/\sqrt{\Delta t}$ and the one-step log-return standard deviation
+      $\sigma\sqrt{\Delta t}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Volatility}
+  From $N+1$ prices on the grid we form $N$ growth rates $g_1,\ldots,g_N$. Their
+  sample mean $g'$ and sample standard deviation $\sigma_g$ (our L3a risk
+  measure) are:
+  \[
+    g'=\frac1N\sum_{j=1}^Ng_j,
+    \qquad
+    \underbrace{\sigma_g}_{\text{growth-rate std}}
+    =\sqrt{\frac{1}{N-1}\sum_{j=1}^N\bigl(g_j-g'\bigr)^2}.
+  \]
+
+  (Denominator $N-1$: $N$ observations less the one mean estimated from them.)
+  But $\sigma_g$ is \hilite{not} the GBM volatility. Since
+  $\Var(g_j)=\sigma^2/\Delta t$, $\sigma_g$ estimates $\sigma/\sqrt{\Delta t}$,
+  and the volatility estimate is:
+  \[
+    \boxed{\hat\sigma=\sigma_g\sqrt{\Delta t}.}
+  \]
+
+  For daily data $\Delta t=1/252$: divide the daily growth-rate standard
+  deviation by $\sqrt{252}$, or equivalently multiply the daily log-return
+  standard deviation by $\sqrt{252}$.
+\end{frame}
+
+\begin{frame}{Drift}
+  Under GBM the arithmetic drift is $\mu=\gbar+\sigma^2/2$. Given an estimate
+  $\widehat{\gbar}$ of the mean growth rate, the drift estimate is:
+  \[
+    \underbrace{\hat\mu}_{\text{SDE drift}}
+    =\underbrace{\widehat{\gbar}}_{\text{mean growth}}
+    +\underbrace{\tfrac12\hat\sigma^2}_{\text{correction}}.
+  \]
+
+  Two common ways to estimate $\gbar$:
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Method 1, average growth rate}: $\widehat{\gbar}=g'$, the
+      sample mean, which is also the maximum likelihood estimate under GBM.
+    \item \hilite{Method 2, linear regression}: regress log price on time; the
+      slope estimates $\gbar$, but the residuals are a Brownian path, so the
+      ordinary standard errors and residual checks do not apply.
+  \end{itemize}
+
+  \vspace{0.4em}
+  The drift is the harder estimate: mean growth is small relative to
+  growth-rate noise, so both methods carry substantial sampling error.
+\end{frame}
+
+\begin{frame}{Linear Regression: The Model}
+  Take the logarithm of the cumulative GBM solution at grid point $t_j$:
+  \[
+    \ln S_{t_j}
+    =\underbrace{\ln S_0}_{\text{intercept}}
+    +\underbrace{\gbar\,t_j}_{\text{trend}}
+    +\underbrace{\sigma W(t_j)}_{\text{error}},
+    \qquad j=0,\ldots,N.
+  \]
+
+  The noise has mean zero, so the \hilite{expected} log price is a line with
+  slope $\gbar$: regressing log price on time recovers that line, and the
+  Wiener term is the error term.
+
+  \vspace{0.3em}
+  That error is a Brownian path: neighboring values are strongly correlated,
+  its variance $\sigma^2t_j$ grows along the sample, and the fitted residuals
+  inherit both features. Least squares still gives a sensible slope, but
+  textbook standard errors, confidence intervals, and residual-normality tests
+  assume independent, identically distributed errors and are not calibrated
+  here.
+  \slidenote{Example 1:}{the Anderson--Darling normality test on these residuals rejects: a warning about the test's assumptions, not a verdict on GBM.}
+\end{frame}
+
+\begin{frame}{Linear Regression: The Normal Equations}
+  Stack the $N+1$ log prices as an overdetermined system
+  $\hat{\mathbf X}\boldsymbol\theta+\boldsymbol\epsilon=\mathbf y$, where
+  $\boldsymbol\theta$ holds the intercept $\ln S_0$ (left free, not pinned
+  to day one) and the slope $\gbar$, $\boldsymbol\epsilon$ is the error
+  vector, and the augmented design matrix $\hat{\mathbf X}$ carries a column
+  of ones:
+  \[
+    \hat{\mathbf X}=
+    \begin{bmatrix}1&t_0\\1&t_1\\\vdots&\vdots\\1&t_N\end{bmatrix},
+    \qquad
+    \mathbf y=
+    \begin{bmatrix}\ln S_{t_0}\\\ln S_{t_1}\\\vdots\\\ln S_{t_N}\end{bmatrix}.
+  \]
+
+  The least-squares estimate is the solution of the normal equations:
+  \[
+    \boxed{\hat{\boldsymbol\theta}
+    =(\hat{\mathbf X}^{\top}\hat{\mathbf X})^{-1}\hat{\mathbf X}^{\top}\mathbf y.}
+  \]
+  Its second component is the regression estimate $\widehat{\gbar}$.
+  \slidenote{Example 1:}{\dimmed{CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Stylized Facts}
+  Does GBM capture the empirical regularities of asset growth rates?
+
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{Heavy tails}: empirical growth rates have heavier tails than a
+      normal distribution, so extreme moves are more likely than a Gaussian
+      predicts.
+    \item \hilite{Absence of autocorrelation}: if prices follow a random walk,
+      growth rates over non-overlapping intervals are uncorrelated, and there is
+      no predictability to exploit.
+    \item \hilite{Volatility clustering}: large moves tend to follow large moves
+      and small moves follow small moves, so volatility alternates between
+      high and low regimes.
+  \end{itemize}
+
+  \vspace{0.5em}
+  We test each against the growth-rate law we just derived.
+\end{frame}
+
+\begin{frame}{Growth Over a Horizon Under GBM}
+  Define the \hilite{horizon-average growth rate} over $0\to T$ as
+  $g_{T,0}\equiv(1/T)\ln(S_T/S_0)$, in the same to-from subscript order as the
+  discount factor $\mathcal D_{T,0}$. Substituting the GBM solution and dividing
+  by $T$ gives:
+  \[
+    \boxed{\underbrace{g_{T,0}}_{\text{horizon-average growth}}
+    =\gbar+\frac{\sigma}{\sqrt{T}}\,Z,\qquad Z\sim\mathcal N(0,1).}
+  \]
+
+  So $g_{T,0}$ is normal with mean $\gbar$ and variance $\sigma^2/T$; the
+  one-step case is $T=\Delta t$.
+
+  \vspace{0.4em}
+  The uncertainty of the horizon-average growth rate shrinks as $T$ grows while
+  its mean stays put. The price does not settle down: $\ln(S_T/S_0)=T\,g_{T,0}$
+  has variance $\sigma^2T$, which grows with $T$.
+\end{frame}
+
+\begin{frame}{Heavy Tails and Volatility Clustering}
+  \vspace{0.3em}
+  \textbf{\ink{Heavy tails: not captured.}} One-step and horizon-average growth
+  rates are both normal under GBM. The lognormal price has a long right tail,
+  but that is not a heavy-tailed \hilite{growth-rate} distribution.
+
+  \vspace{1.0em}
+  \textbf{\ink{Volatility clustering: not captured.}} The volatility $\sigma$ is
+  constant, so there is no mechanism for high- and low-volatility periods to
+  alternate.
+
+  \vspace{1.0em}
+  Both failures follow from the same assumption: independent Gaussian increments
+  with a constant variance rate. That assumption is what makes the model exactly
+  solvable.
+\end{frame}
+
+\begin{frame}{Autocorrelation of One-Step Growth Rates}
+  From the growth-rate law, $g_j=\gbar+(\sigma/\sqrt{\Delta t})Z_j$ with
+  independent shocks. The autocovariance at lag $\tau\ge1$ is:
+  \[
+    \Cov(g_j,g_{j+\tau})
+    =\frac{\sigma^2}{\Delta t}\,\Cov(Z_j,Z_{j+\tau})=0,
+  \]
+  because $Z_j$ and $Z_{j+\tau}$ are independent. With
+  $\Var(g_j)=\sigma^2/\Delta t$, the autocorrelation function is:
+  \[
+    \boxed{\rho_g(\tau)=\frac{\Cov(g_j,g_{j+\tau})}{\Var(g_j)}=0,\qquad\tau\ge1.}
+  \]
+
+  \textbf{\ink{Absence of autocorrelation: captured}} for one-step growth rates
+  over non-overlapping intervals. This says nothing about squared growth rates,
+  whose dependence (L3a) GBM also cannot produce.
+\end{frame}
+
+\begin{frame}{GBM Trade Rule}
+  Buy $n_0>0$ shares at $S_0$ at time $0$; sell all $n_0$ shares at $S_T$ at
+  the scheduled exit $T=N\Delta t$, $N\ge1$ (frictionless: no costs, price
+  return only). With
+  annual continuously compounded benchmark growth rate $g_b$, $\Dacc=e^{g_bT}$ is the accumulation factor and
+  $\Ddis=e^{-g_bT}$ discounts the sale to time 0:
+  \[
+    \operatorname{NPV}(g_b,T)
+    =\underbrace{-n_0S_0}_{\text{entry (now)}}
+    +\underbrace{n_0S_T\,\Ddis}_{\text{exit (future)}}.
+  \]
+
+  Dividing by the initial investment gives the \hilite{scaled NPV}, a
+  dimensionless present-value return on the share cost:
+  \[
+    \underbrace{\rho_T}_{\text{scaled NPV}}
+    :=\frac{\operatorname{NPV}(g_b,T)}{n_0S_0}
+    =\Bigl(\frac{S_T}{S_0}\Bigr)e^{-g_bT}-1.
+  \]
+
+  This is the L4a rule with one change: $S_T$ now follows GBM instead of a
+  binomial lattice.
+\end{frame}
+
+\begin{frame}{Substitute the GBM Solution}
+  Replacing $S_T$ by the GBM solution puts all of the randomness in one
+  standard normal $Z$:
+  \[
+    \boxed{\rho_T
+    =\exp\!\Bigl[\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T+\sigma\sqrt{T}\,Z\Bigr]
+      \underbrace{e^{-g_bT}}_{\text{discount}}-1,
+    \qquad Z\sim\mathcal N(0,1).}
+  \]
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Short holding period}: for a few days or weeks and a realistic
+      benchmark, $|g_b|T$ is small, $e^{-g_bT}\approx1$, and
+      $\rho_T\approx S_T/S_0-1$ is the fractional price change.
+    \item \hilite{Longer holding period}: whenever $|g_b|T$ is not small, keep
+      the discount factor.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Either way $\rho_T$ is a continuous random variable driven by $Z$, so a target
+  probability is a one-line standardization.
+\end{frame}
+
+\begin{frame}{Cumulative Probability of a Trade Exit}
+  Let $\rho_\star>-1$ be a target (under GBM $S_T>0$, so $\rho_T>-1$
+  always). We ask for the probability that $\rho_T$ at the scheduled exit
+  \hilite{strictly exceeds} the target. Moving the non-random terms to the
+  right:
+  \[
+    \Pmeasure(\rho_T>\rho_\star)
+    =\Pmeasure\!\Bigl(\ln\tfrac{S_T}{S_0}>\ln(1+\rho_\star)+g_bT\Bigr).
+  \]
+
+  Under GBM, $\ln(S_T/S_0)$ is normal with mean $(\mu-\sigma^2/2)T$ and
+  standard deviation $\sigma\sqrt T$. Standardizing both sides:
+  \[
+    \Pmeasure(\rho_T>\rho_\star)
+    =\Pmeasure\!\left(
+      \underbrace{\frac{\ln(S_T/S_0)-(\mu-\sigma^2/2)T}{\sigma\sqrt T}}_{Z\sim\mathcal N(0,1)}
+      >\frac{\ln(1+\rho_\star)+g_bT-(\mu-\sigma^2/2)T}{\sigma\sqrt T}\right).
+  \]
+
+  As in L4a, this is the scheduled terminal exit; a monitored take-profit or
+  stop-loss is a first-passage question.
+\end{frame}
+
+\begin{frame}{The Closed-Form Target Probability}
+  A standard normal exceeds $z$ with probability $1-\Phi(z)$, where $\Phi$ is
+  the standard normal cumulative distribution function. Therefore:
+  \[
+    \boxed{\Pmeasure(\rho_T>\rho_\star)
+    =1-\Phi\!\left(
+      \frac{\ln(1+\rho_\star)+g_bT-\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T}
+           {\sigma\sqrt T}\right).}
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item The probability uses the \hilite{real-world} $\mu$ and $\sigma$
+      estimated from data. A risk-neutral drift, which we will use to price
+      derivatives later, changes the measure and no longer answers a
+      probability-of-profit question.
+    \item For a short holding period $g_bT\approx0$ and the benchmark drops out
+      of the numerator.
+    \item A target of $-1$ or below is cleared with probability one.
+  \end{itemize}
+  \slidenote{Example 2:}{\dimmed{CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}}
+\end{frame}
+
+% ==== optional advanced material =============================
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.2em}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \textbf{\ink{Lattice to GBM}}\quad{\footnotesize\dimmed{advanced/lattice-limit/}}
+
+      Match the binomial factors to $\mu$ and $\sigma$ and watch the terminal
+      lattice distribution converge to the lognormal as the step count grows.
+
+      \vspace{0.6em}
+      \textbf{\ink{First-passage rules under GBM}}\quad{\footnotesize\dimmed{advanced/first-passage/}}
+
+      A closed form for reaching one barrier, the L4a recursion and Monte Carlo
+      for two, and the effect of the monitoring frequency.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{\ink{Drift uncertainty}}\quad{\footnotesize\dimmed{advanced/drift-uncertainty/}}
+
+      Why the drift estimate depends on the calendar span, not the sampling
+      frequency, and what that does to the target probability.
+
+      \vspace{0.6em}
+      \textbf{\ink{Monte Carlo versus analytic}}\quad{\footnotesize\dimmed{advanced/monte-carlo/}}
+
+      Estimate the target probability by simulation with standard errors, and
+      compare the exact transition with an Euler scheme.
+    \end{column}
+  \end{columns}
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-4/L4b/advanced}{lectures/week-4/L4b/advanced}, also linked from the lecture notebook.}
+\end{frame}
+
+\begin{frame}{Summary}
+  Today we introduced geometric Brownian motion as our first continuous-time
+  price model, estimated its parameters from growth-rate data, tested it
+  against the stylized facts, and derived a closed-form probability for a
+  scheduled trade.
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{GBM is a tractable lognormal model}: exact solution, exact
+      one-step simulation with independent normal shocks, mean growing at the
+      drift.
+    \item \hilite{Drift and growth are different parameters}: the growth-rate
+      series gives $\gbar$ and, through $\sigma_g\sqrt{\Delta t}$, the
+      volatility; the drift follows from the half-variance correction.
+    \item \hilite{One stylized fact passed, two failed}: growth rates are
+      uncorrelated but Gaussian with constant volatility; the terminal target
+      probability is one minus a standard normal CDF.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Next, we extend GBM to several correlated assets and use it to build
+  portfolios.
+\end{frame}
+
+\transitionframe{Today: the lattice becomes a continuous process, and the trade rule gets a closed form.}
+
+\end{document}

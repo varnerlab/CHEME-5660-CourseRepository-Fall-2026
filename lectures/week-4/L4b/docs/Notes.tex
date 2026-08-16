@@ -139,31 +139,33 @@ For equally spaced observations, define the growth rate $g_j:=(1/\Delta t)\log(S
   \frac{\sigma^2}{\Delta t}
   \right].
 \end{equation}
-If $\bar g$ is the sample mean and $s_g^2$ is the sample variance of growth rates, the natural moment estimates are
+Write $\bar g:=\mu-\sigma^2/2$ for the mean growth rate. If $g'$ is the sample mean and $\sigma_g$ is the sample standard deviation of the growth rates (the L3a risk measure), the natural moment estimates are
 \begin{equation}
   \label{eq:gbm-estimates}
-  \widehat\sigma^2=s_g^2\Delta t,
+  \widehat\sigma=\sigma_g\sqrt{\Delta t},
   \qquad
-  \widehat\mu=\bar g+\frac{1}{2}\widehat\sigma^2.
+  \widehat{\bar g}=g',
+  \qquad
+  \widehat\mu=\widehat{\bar g}+\frac{1}{2}\widehat\sigma^2.
 \end{equation}
-The sample mean $\bar g$ estimates the expected continuously compounded growth rate $\mu-\sigma^2/2$, not the arithmetic SDE drift itself. Omitting the half-variance adjustment silently changes the meaning of the model parameter.
+The sample mean $g'$ estimates the mean growth rate $\bar g=\mu-\sigma^2/2$, not the arithmetic SDE drift itself, and $\sigma_g$ estimates $\sigma/\sqrt{\Delta t}$, not $\sigma$. Omitting the half-variance adjustment, or the $\sqrt{\Delta t}$ scaling, silently changes the meaning of the model parameter.
 
 The drift parameter is difficult to estimate over short samples because expected growth is small relative to growth-rate noise. Regressing log price on time does not remove stochastic residuals and generally creates serially correlated regression errors. Likelihood or growth-rate moment methods align more directly with \eqnref{log-return-law}, but they remain vulnerable to changing regimes, outliers, selection choices, and model misspecification.
 
 \notebooklink
   {L4b: Estimating Single-Asset GBM Parameters}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}
-  {Estimate drift and volatility from historical prices, simulate paths, and compare distributional diagnostics with observed growth rates.}
+  {Estimate the mean growth rate and volatility from historical prices, test the estimation assumptions, simulate paths, and compare exact lognormal quantile bands with an observed price trajectory.}
 
 \section{Closed-Form Target Probability}
 
-Use the present-value return definition from L4a without costs: $\rho_T:=e^{-r_bT}S_T/S_0-1$. For a target $\rho_\star>-1$, substitute \eqnref{gbm-solution} and standardize the normal shock. The success probability is
+Use the present-value return definition from L4a without costs, with $g_b$ the continuously compounded annual benchmark growth rate: $\rho_T:=e^{-g_bT}S_T/S_0-1$. For a target $\rho_\star>-1$, substitute \eqnref{gbm-solution} and standardize the normal shock. The success probability is
 \begin{equation}
   \label{eq:gbm-pop}
   \Pmeasure(\rho_T>\rho_\star)
   =1-\PhiCDF\!\left(
   \frac{\log(1+\rho_\star)-
-  (\mu-r_b-\sigma^2/2)T}{\sigma\sqrt{T}}
+  (\mu-g_b-\sigma^2/2)T}{\sigma\sqrt{T}}
   \right),
 \end{equation}
 where $\PhiCDF$ is the standard normal cumulative distribution function and the probability uses the real-world parameters $\mu$ and $\sigma$. Replacing $\mu$ by a risk-neutral drift changes the measure and no longer answers an empirical probability-of-profit question.
@@ -171,7 +173,7 @@ where $\PhiCDF$ is the standard normal cumulative distribution function and the 
 \notebooklink
   {L4b: GBM NPV Trade Rule}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}
-  {Evaluate a benchmark-relative terminal return probability under GBM and compare the analytic result with Monte Carlo estimates.}
+  {Evaluate the probability that a scheduled long position clears a target return under GBM, check the implementation against the median case, and plot the probability against the target.}
 
 \section{Which Stylized Facts Does GBM Encode?}
 
@@ -180,13 +182,36 @@ GBM growth rates over nonoverlapping equal-length intervals are independent Gaus
 GBM can still be useful for short-horizon scenarios, benchmarking, and deriving analytical intuition. Its adequacy must be judged against the decision: a model used to estimate extreme loss or dynamic hedging error demands stronger tail and volatility validation than one used to teach stochastic calculus.
 
 \newpage
+\section*{Optional Advanced Material}
+
+\notebooklink
+  {L4b Advanced: From the Binomial Lattice to GBM}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/lattice-limit/CHEME-5660-L4b-Advanced-LatticeToGBM-Fall-2026.ipynb}
+  {Match the binomial factors and probability to $\mu$ and $\sigma$, and watch the terminal lattice distribution converge to the lognormal as the step count grows.}
+
+\notebooklink
+  {L4b Advanced: First-Passage Rules Under GBM}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/first-passage/CHEME-5660-L4b-Advanced-FirstPassage-GBM-Fall-2026.ipynb}
+  {Compute the closed-form probability of reaching a take-profit level under GBM, evaluate two-barrier take-profit and stop-loss rules with the L4a absorbing recursion and Monte Carlo, and quantify the effect of the monitoring frequency.}
+
+\notebooklink
+  {L4b Advanced: Drift Uncertainty}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb}
+  {Show that the drift estimate depends on the calendar span rather than the sampling frequency, and propagate that uncertainty into the target probability.}
+
+\notebooklink
+  {L4b Advanced: Monte Carlo Versus the Closed Form}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/monte-carlo/CHEME-5660-L4b-Advanced-MonteCarlo-TargetProbability-Fall-2026.ipynb}
+  {Estimate the target probability by simulation with standard errors, and compare the exact transition with an Euler time-stepping scheme.}
+
+\newpage
 \thispagestyle{fancy}
 \keytakeaways
   {In this lecture, we solved GBM with It\^o's lemma, separated arithmetic drift from mean log growth, and derived an exact terminal target probability.}
   {Quadratic variation matters}
   {The It\^o correction $-\sigma^2/2$ appears because Brownian squared increments contribute at order $dt$.}
   {Drift names must be consistent}
-  {The SDE uses arithmetic drift $\mu$; realized growth is $g_{t,\Delta t}=(1/\Delta t)\log(S_{t+\Delta t}/S_t)$ with mean $\mu-\sigma^2/2$.}
+  {The SDE uses arithmetic drift $\mu$; the one-step growth rate $g_j=(1/\Delta t)\log(S_{t_j}/S_{t_{j-1}})$ has mean $\bar g=\mu-\sigma^2/2$ and standard deviation $\sigma/\sqrt{\Delta t}$.}
   {Tractability has a cost}
   {Independent Gaussian increments give exact simulation and closed-form probabilities but exclude heavy tails and volatility clustering.}
   {Next, couple several GBM assets with correlated shocks and generate portfolio weights from a Dirichlet distribution.}
