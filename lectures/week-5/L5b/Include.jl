@@ -21,6 +21,7 @@ using CSV
 using Dates
 using LinearAlgebra
 using Statistics
+using Random
 using StatsBase
 using Plots
 using Colors

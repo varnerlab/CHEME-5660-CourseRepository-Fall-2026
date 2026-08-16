@@ -11,8 +11,9 @@ This course is for engineers and scientists interested in quantitative finance. 
 2. In a terminal, from this folder (repo root or unzipped bundle root):
    `julia --project=. -e 'using Pkg; Pkg.instantiate()'`  *(one time; several minutes)*
 3. Smoke test: `julia --project=. -e 'using VLQuantitativeFinancePackage; println("SETUP-OK")'`
+4. Register the Jupyter kernel: `julia scripts/setup.jl` (or open [`scripts/setup.jl`](scripts/setup.jl) in VS Code and run it). This installs a **Julia (CHEME 5660)** kernel that launches Julia through juliaup, so it keeps working after Julia updates. If Jupyter ever reports "kernel not found" for a course notebook, run it again and restart Jupyter.
 
-Every lecture notebook begins by including its `Include*.jl` setup file, which activates this environment automatically — after the one-time setup, notebooks just run.
+Every lecture notebook begins by including its `Include*.jl` setup file, which activates this environment automatically — after the one-time setup, notebooks just run. (The VS Code Julia extension supplies its own kernel and does not need step 4.)
 
 ## Weekly materials
 | Week | Topic | Notebooks | Notes | Download |

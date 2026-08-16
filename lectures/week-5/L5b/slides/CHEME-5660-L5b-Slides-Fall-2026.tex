@@ -1,0 +1,485 @@
+% L5b student companion deck.
+%
+% The frame order mirrors the lecture notebook so students can take notes while
+% the instructor works through the notebook. The disclaimer is intentionally
+% slide 2, by instructor preference.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Pmeasure}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\SR}{\operatorname{SR}}
+\newcommand{\gbar}{\bar g}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bC}{\mathbf{C}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\Sig}{\boldsymbol{\Sigma}_{g}}
+\newcommand{\Sg}{\hat{\boldsymbol{\Sigma}}_{g}}
+\newcommand{\Ch}{\hat{\mathbf{C}}}
+\newcommand{\Tan}{\mathcal{T}}
+
+\title{\texorpdfstring{{\vnheavy L5b}}{L5b}: Minimum-Variance Portfolios, the Efficient Frontier, and the Capital Allocation Line}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today we take the estimated growth-rate means and covariance of L5a and ask how
+  much of our wealth to put in each asset: minimum-variance portfolios, the
+  efficient frontier, and what a risk-free asset does to the choice.
+
+  \vspace{0.6em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Formulate portfolio reward and risk}: the expected growth rate
+      and growth-rate variance of a portfolio as functions of $\bw$,
+      $\bar{\bg}$, and $\Sig$, and what the one-period objective does and does
+      not describe.
+    \item \hilite{Construct minimum-variance portfolios and the frontier}: the
+      global minimum-variance portfolio in closed form, the long-only quadratic
+      program, and the feasible set, the frontier, and its efficient branch.
+    \item \hilite{Add a risk-free asset}: the capital allocation line, the
+      tangent portfolio, two-fund separation and what breaks it, and when the
+      tangent portfolio is the market portfolio.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \dimmed{CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 1:}}\par
+  \dimmed{CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 2:}}\par
+  \dimmed{CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb}}
+
+  \vspace{0.6em}
+  The first example estimates the inputs for a chosen set of firms, computes the
+  minimum-variance portfolios and the efficient frontier, finds the tangent
+  portfolio and the capital allocation line, and checks the optimized portfolios
+  on 2025 data the optimizer never saw. The second simulates the minimum-variance
+  allocation with correlated MAGBM paths and evaluates its scaled NPV.
+\end{frame}
+
+% ==== concept review =========================================
+\begin{frame}{Concept Review: MAGBM and the Covariance Matrix}
+  L5a: $M$ assets with mean growth rates $\gbar_i$, covariance rate $\bC$ with
+  factor $\bA\bA^{\top}=\bC$, one shock vector $\bZ$ per step shared by all:
+  \[
+    S_i(t+\Delta t)=S_i(t)\exp\!\Bigl[\gbar_i\,\Delta t+\sqrt{\Delta t}\,(\bA\bZ)_i\Bigr],
+    \qquad
+    \bg=\bar{\bg}+\tfrac{1}{\sqrt{\Delta t}}\bA\bZ
+    \;\Longrightarrow\;
+    \Cov(\bg)=\tfrac{\bC}{\Delta t}.
+  \]
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item From $N$ days of data: sample means $\bg'$ (estimate of $\bar{\bg}$),
+      $\Sg=\tilde{\mathbf G}^{\top}\tilde{\mathbf G}/(N-1)$ with $\tilde{\mathbf G}$
+      the centered growth-rate data matrix, $\Ch=\Delta t\,\Sg$,
+      $\rho_{ij}=\hat\Sigma_{g,ij}/\sqrt{\hat\Sigma_{g,ii}\hat\Sigma_{g,jj}}$.
+    \item \hilite{Positive semidefinite by construction}:
+      $\mathbf v^{\top}\Sg\mathbf v=\lVert\tilde{\mathbf G}\mathbf v\rVert_2^2/(N-1)\ge0$,
+      so today's minimization is convex; $N\gg M$ makes it positive definite.
+  \end{itemize}
+  \slidenote{Catch-up:}{\dimmed{../L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb} (Task 2, if not reached in L5a)}
+\end{frame}
+
+\begin{frame}{Concept Review: Portfolio Wealth and the Trade Rule}
+  For initial wealth $W_0$ and weights $\bw$ on the long-only simplex
+  ($w_i\ge0$, $\sum_iw_i=1$), buy $n_i=w_iW_0/S_i(0)$ shares and hold them:
+  \[
+    W_t=\sum_{i\in\mathcal P}n_iS_i(t),
+    \qquad
+    \rho_T=\frac{W_T}{W_0}\,e^{-g_bT}-1,
+  \]
+  with $g_b$ the benchmark growth rate and $T$ the holding period (L4b's scaled
+  NPV, with wealth in place of the share position). A target $\rho_\star$ turns
+  it into a probability, estimated by simulation for a portfolio because a sum
+  of correlated lognormals has no closed form.
+
+  \vspace{0.4em}
+  L5a explored $\bw$ with Dirichlet draws and preferred no point of the simplex.
+  \hilite{Today we optimize.}
+\end{frame}
+
+% ==== MPT ====================================================
+\begin{frame}{Modern Portfolio Theory: Portfolio Reward}
+  Markowitz (1952): an asset is not judged in isolation; what matters is how its
+  growth rate moves with the rest of the portfolio. Take $M$ risky assets held
+  at weights $\bw$ ($\sum_iw_i=1$) over one period, with growth rates $\bg$,
+  mean $\bar{\bg}=\E[\bg]$, and covariance $\Sig=\Cov(\bg)$. The portfolio
+  growth rate over the period is the weighted growth rate, so its reward is:
+  \[
+    g_p=\bw^{\top}\bg
+    \quad\Longrightarrow\quad
+    \boxed{\E[g_p]=\sum_{i\in\mathcal P}w_i\,\E[g_i]=\bw^{\top}\bar{\bg}}
+  \]
+  estimated from data by $\bw^{\top}\bg'$; units inverse years.
+
+  \vspace{0.4em}
+  Reward is linear in the weights. Risk is not, and that asymmetry is the whole
+  subject.
+\end{frame}
+
+\begin{frame}{What the Objective Is and Is Not}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item One period at weights $\bw$: exact simple return
+      $R_p=\sum_iw_i(e^{g_i\Delta t}-1)$, exact log growth rate
+      $\Delta t^{-1}\ln\bigl(\sum_iw_ie^{g_i\Delta t}\bigr)$; to first order in
+      $\Delta t$ both give $\bw^{\top}\bg$. So $g_p=\bw^{\top}\bg$ is the
+      \hilite{linearized} one-period growth rate.
+    \item Over many periods, the log growth of buy-and-hold wealth $W_t$ is
+      \hilite{not} the weighted sum of the assets' log growth rates: the weights
+      drift, and the logarithm of a sum is not the sum of logarithms (L5a).
+    \item MPT is a statement about this one-period statistic. The frontier, the
+      tangent portfolio, and the capital allocation line all inherit that scope.
+    \item Example 1 therefore evaluates the optimized weights afterwards with the
+      buy-and-hold wealth rule: an exact, and different, calculation.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Modern Portfolio Theory: Portfolio Risk}
+  The risk of the portfolio is the variance of its growth rate, which collects
+  every asset variance and every pairwise covariance:
+  \[
+    \boxed{\Var(g_p)=\sum_{i\in\mathcal P}\sum_{j\in\mathcal P}w_iw_j
+      \underbrace{\Cov(g_i,g_j)}_{=\,\rho_{ij}\sqrt{\Sigma_{g,ii}\Sigma_{g,jj}}}
+      =\bw^{\top}\Sig\bw}
+  \]
+  with $\sigma_{g,p}=\sqrt{\Var(g_p)}$ the portfolio's growth-rate standard
+  deviation (inverse years; the volatility would be $\sigma_{g,p}\sqrt{\Delta t}$).
+  Two assets at weights $w$ and $1-w$, $0<w<1$:
+  \[
+    \Var(g_p)=w^2\Sigma_{g,11}+(1-w)^2\Sigma_{g,22}
+      +2w(1-w)\,\rho_{12}\sqrt{\Sigma_{g,11}\Sigma_{g,22}}.
+  \]
+  At $\rho_{12}=1$ a perfect square: mixing buys nothing. For every
+  $\rho_{12}<1$ the standard deviation falls below the weighted average; if
+  $\rho_{12}$ is below the ratio of the smaller to the larger standard deviation,
+  some mixture beats either asset alone.
+  \hilite{Diversification is a statement about covariance}, not about the number
+  of holdings.
+\end{frame}
+
+\begin{frame}{Growth Rates versus Returns}
+  Everything can be written with log returns $\mathbf r=\Delta t\,\bg$ instead:
+  $\E[r_p]=\Delta t\,\E[g_p]$ (dimensionless),
+  $\Var(r_p)=\Delta t^2\,\Var(g_p)$, and
+  $\boldsymbol\Sigma_r=\Delta t^2\Sig$ (L5a's scaling rule).
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item The optimizer does not care: multiplying the covariance by any positive
+      constant, and the means and target by any (other) positive constant,
+      leaves the minimizing weights unchanged.
+    \item Every reported number does change, so the units of the risk axis, the
+      growth axis, and the Sharpe ratio must be stated.
+    \item Daily data: $\Sg=252\,\Ch$. Growth-rate variances look large next to
+      annual covariance-rate entries; that factor is the unit conversion, not an
+      estimation failure.
+  \end{itemize}
+\end{frame}
+
+% ==== minimum-variance portfolios ============================
+\begin{frame}{The Global Minimum-Variance Portfolio}
+  No growth requirement at all: the fully invested portfolio with the smallest
+  variance. Shorts allowed, budget constraint only, $\Sig$ symmetric positive
+  definite, $\bone\in\mathbb R^M$ the vector of ones:
+  \[
+    \boxed{
+    \min_{\bw}\ \tfrac12\bw^{\top}\Sig\bw
+    \ \ \text{s.t.}\ \ \bone^{\top}\bw=1
+    \quad\Longrightarrow\quad
+    \bw_{\mathrm{GMV}}=\frac{\Sig^{-1}\bone}{\bone^{\top}\Sig^{-1}\bone},
+    \qquad
+    \sigma^2_{g,\mathrm{GMV}}=\frac{1}{\bone^{\top}\Sig^{-1}\bone}}
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item The one half is a convenience; it cancels in the derivation and does
+      not move the minimizer.
+    \item Nothing keeps the weights non-negative. In Example 1 the closed form
+      shorts several volatile names to hedge the others.
+    \item Depends on $\Sig$ only, not on $\bar{\bg}$: the reason it is a
+      standard baseline (last frames).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Derivation: The Lagrangian}
+  Introduce a multiplier $\lambda\in\mathbb R$ for the budget constraint:
+  \[
+    \mathcal L(\bw,\lambda)=\tfrac12\bw^{\top}\Sig\bw-\lambda\bigl(\bone^{\top}\bw-1\bigr).
+  \]
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Stationarity: $\Sig\bw-\lambda\bone=\mathbf 0$, so
+      $\bw=\lambda\Sig^{-1}\bone$.
+    \item Budget: $\bone^{\top}\bw=1$ gives
+      $\lambda=(\bone^{\top}\Sig^{-1}\bone)^{-1}$ and the boxed weights.
+    \item Substituting back:
+      $\bw^{\top}\Sig\bw=\lambda^2\,\bone^{\top}\Sig^{-1}\bone=\lambda$, the boxed
+      variance.
+    \item $\Sig\succ0$ makes the objective strictly convex, so the stationary
+      point is the unique minimum. $\blacksquare$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Long-Only Problem}
+  Add $w_i\ge0$ for all $i$ (with the budget constraint, no leverage either): a
+  \hilite{convex quadratic program}, positive semidefinite quadratic objective,
+  linear constraints, minimizer possibly on a boundary with weights exactly
+  zero. No closed form; the course package solves it in JuMP with an
+  interior-point method:
+  \[
+    \boxed{
+    \begin{aligned}
+      \text{minimize}\ \ &\bw^{\top}\Sg\bw\\
+      \text{subject to}\ \ &\hat{\bg}^{\top}\bw\ge g_\star,\qquad
+      \bone^{\top}\bw=1,\qquad 0\le w_i\le1\ \ \forall i\in\mathcal P
+    \end{aligned}}
+  \]
+  with $\hat{\bg}$ the estimated mean growth rates and $g_\star$ the investor's
+  \hilite{target growth rate}, entering as a floor.
+
+  \vspace{0.3em}
+  Set $g_\star$ at or below the smallest single-asset mean growth rate and every
+  long-only portfolio meets the floor: the long-only GMV portfolio, whose variance can never beat the
+  closed form's (smaller feasible set). Position limits, turnover, lots, taxes,
+  and costs enter the same way.
+\end{frame}
+
+\begin{frame}{The Target-Growth Problem and the Frontier}
+  Classical form: an \hilite{equality} target $\bar{\bg}^{\top}\bw=g_\star$; the
+  minimum-variance portfolios indexed by $g_\star$ form the
+  \hilite{minimum-variance frontier}. Shorts allowed, with
+  $a=\bone^{\top}\Sig^{-1}\bone$, $b=\bone^{\top}\Sig^{-1}\bar{\bg}$,
+  $c=\bar{\bg}^{\top}\Sig^{-1}\bar{\bg}$, $d=ac-b^2$ (positive unless all means
+  are equal):
+  \[
+    \sigma_g^2(g_\star)=\frac{a\,g_\star^2-2b\,g_\star+c}{d},
+  \]
+  a hyperbola in the $(\sigma_g,g)$ plane with vertex at the GMV portfolio
+  ($g_\star=b/a$, $\sigma_g^2=1/a$).
+
+  \vspace{0.1em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Efficient frontier}: the upper branch, at or above the GMV
+      growth rate; nothing feasible has at least as much growth and no more
+      variance with one strict improvement. The lower branch is dominated by
+      the point directly above it.
+    \item Every fully invested $\bw$ lands on or to the right of the hyperbola
+      (the \hilite{attainable region}); long-only, the frontier lies on or to
+      the right of it and ends at the best single asset.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Frontier from Data: What the Floor Returns}
+  \begin{center}
+    \includegraphics[height=0.46\textheight,keepaspectratio]{../figs/Fig-MinVar-Portfolio-RA-Schematic.png}
+  \end{center}
+  \vspace{-0.4em}
+  With the target as a floor, every $g_\star$ below the GMV growth rate returns
+  the GMV portfolio (2) and every $g_\star$ above it the efficient portfolio at
+  that growth rate (1); the sweep never returns the lower branch (3). The
+  weights along the sweep show which assets carry the frontier.
+  \slidenote{Example 1:}{\dimmed{CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}}
+\end{frame}
+
+% ==== risk-free asset ========================================
+\begin{frame}{Adding a Risk-Free Asset: The Capital Allocation Line}
+  A horizon-matched risk-free asset (a Treasury bill or zero-coupon STRIP held
+  to maturity) has known growth rate $g_f$, zero variance, and zero covariance
+  with everything. Put a fraction $w_f$ in it and $1-w_f$
+  in a risky portfolio $p$ with $\E[g_p]$ and $\sigma_{g,p}>0$; the complete
+  portfolio $c$ has:
+  \[
+    \E[g_c]=g_f+(1-w_f)\bigl(\E[g_p]-g_f\bigr),
+    \qquad
+    \sigma_{g,c}=|1-w_f|\,\sigma_{g,p}.
+  \]
+  For $w_f\le1$, eliminate $w_f$ ($1-w_f=\sigma_{g,c}/\sigma_{g,p}$):
+  \[
+    \boxed{\E[g_c]=g_f+
+      \underbrace{\frac{\E[g_p]-g_f}{\sigma_{g,p}}}_{\text{Sharpe ratio }\SR_p}
+      \;\sigma_{g,c}}
+  \]
+  A straight line from $(0,g_f)$ through $p$: $0<w_f<1$ lends at $g_f$,
+  $w_f=0$ is $p$, $w_f<0$ borrows at $g_f$ (assumed equal to the lending rate;
+  a higher borrowing rate kinks the line at $p$).
+\end{frame}
+
+\begin{frame}{Which Sharpe Ratio?}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item With $\sigma_{g,p}$ in the denominator, $\SR_p$ is dimensionless
+      (inverse years over inverse years) but is the Sharpe ratio of a
+      \hilite{one-observation-interval} holding period, because $\sigma_{g,p}$
+      is the standard deviation of a one-day growth rate. Values are small.
+    \item Practice divides by the volatility
+      $\sqrt{\bw^{\top}\bC\bw}=\sqrt{\Delta t}\,\sigma_{g,p}$ instead: the
+      \hilite{annualized} Sharpe ratio $\SR_p/\sqrt{\Delta t}$, larger by
+      $\sqrt{252}\approx15.9$ for daily data.
+    \item The two conventions rank portfolios identically, so every conclusion
+      today holds under either. Quote which one. L6b onward quotes the annualized
+      value; Example 1 prints both.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Tangent Portfolio}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \vspace{0.3em}
+      Every risky portfolio has a CAL; steeper is better. The
+      \hilite{tangent portfolio} $\Tan$ maximizes the Sharpe ratio; its CAL
+      touches the efficient branch at $\Tan$. Shorts allowed, $\Sig\succ0$,
+      and $\bone^{\top}\Sig^{-1}(\bar{\bg}-g_f\bone)>0$ (GMV beats $g_f$;
+      otherwise the formula gives the minimum-Sharpe portfolio):
+      \[
+        \boxed{\bw_{\Tan}=\frac{\Sig^{-1}(\bar{\bg}-g_f\bone)}
+          {\bone^{\top}\Sig^{-1}(\bar{\bg}-g_f\bone)}}
+      \]
+      Long-only: no closed form; Example 1 takes the largest Sharpe ratio on
+      the computed efficient branch.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \includegraphics[width=\textwidth]{../figs/Fig-Frontier-CAL-Schematic.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Two-Fund Separation}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item Because the tangent portfolio's CAL dominates every other, all
+      mean--variance investors with the same inputs and the same $g_f$ hold the
+      \hilite{same risky fund} $\Tan$ and differ only in $w_f$: the investment
+      decision is separated from the financing decision (Tobin, 1958).
+    \item Exact for the unconstrained problem with a single lending and
+      borrowing rate; a long-only constraint on the risky weights alone keeps
+      it, with the constrained maximum-Sharpe portfolio as the fund.
+    \item No-borrowing and position-limit constraints, or a borrowing rate
+      above the lending rate, kink the attainable boundary; then the best risky
+      portfolio depends on where the investor sits on the line, and separation
+      holds \hilite{piecewise, not globally}.
+  \end{itemize}
+\end{frame}
+
+% ==== market portfolio =======================================
+\begin{frame}{When Is the Tangent Portfolio the Market Portfolio?}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item CAPM assumptions: same beliefs about $\bar{\bg}$ and $\Sig$, same
+      horizon, lend and borrow at one risk-free rate, every asset tradable
+      without taxes or frictions.
+    \item Then every investor holds the same tangent portfolio, and market
+      clearing makes it the \hilite{market portfolio}: all risky assets weighted
+      by market value. Its CAL is the \hilite{capital market line}; a CAL belongs
+      to any risky portfolio, the CML to that one under those assumptions.
+    \item An optimizer on a ticker list and eleven years of estimates returns a
+      \hilite{sample-dependent} tangent portfolio for that universe and model;
+      a broad index is one asset class and omits many risky assets.
+    \item An equilibrium conclusion, not a label for every maximum-Sharpe
+      solution. Example 1 compares two portfolios; it does not test the CAPM.
+  \end{itemize}
+\end{frame}
+
+% ==== estimation risk ========================================
+\begin{frame}{Estimation Risk Can Dominate Optimization}
+  \begin{itemize}\setlength{\itemsep}{0.25em}
+    \item Both closed forms carry $\Sig^{-1}$, which amplifies the least-certain
+      directions; the tangent portfolio also carries $\bar{\bg}-g_f\bone$, the
+      noisiest input (two estimators of $\gbar_i$ from the same data differ by
+      over ten percentage points per year for some firms), and answers with
+      positions beyond the budget.
+    \item Minimum-variance weights do not depend on $\bar{\bg}$: more stable, a
+      standard baseline next to equal weights.
+    \item Fit on pre-decision data, test on data the fit never saw; one split is
+      a check, not a validation. Report shrinkage, constraints, and robust
+      objectives: they change the problem.
+    \item MAGBM is a \hilite{scenario engine} for a fixed allocation, not
+      independent validation when the same data fed optimizer and simulator.
+  \end{itemize}
+  \slidenote{Example 2:}{\dimmed{CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb}}
+\end{frame}
+
+% ==== optional advanced material =============================
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/frontier-geometry/}\par
+  \dimmed{CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/estimation-risk/}\par
+  \dimmed{CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  Optional, not prerequisites for L6a. The first derives the closed-form frontier
+  for every target, checks it against a solver, shows that two fixed portfolios
+  generate the whole frontier (the two-fund theorem), and measures what a
+  short-sale limit and a long-only constraint cost; the second resamples the
+  2014 to 2024 growth rates to see how far the frontier and the optimal weights
+  move, traces the tangent portfolio's instability to the mean growth rates, and
+  pushes every resampled portfolio through 2025.
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-5/L5b/advanced}{lectures/week-5/L5b/advanced}, also linked from the lecture notebook.}
+\end{frame}
+
+\begin{frame}{Summary}
+  Today we defined a portfolio's reward and risk from its weights, means, and
+  covariance, derived the minimum-variance portfolios and the efficient
+  frontier, and added a risk-free asset to obtain the capital allocation line
+  and the tangent portfolio.
+
+  \vspace{0.3em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.1em}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Covariance determines diversification}: reward is linear in
+      the weights, variance collects every pairwise covariance; the objective
+      is a one-period statistic.
+    \item \hilite{The frontier is a family of constrained minimizations}: closed
+      forms when shorts are allowed; long-only, a convex QP whose floor target
+      returns the GMV portfolio and the efficient branch.
+    \item \hilite{A risk-free asset selects one risky fund}: the CAL slope is
+      the Sharpe ratio, the tangent portfolio maximizes it, and the market
+      portfolio needs the CAPM assumptions.
+  \end{itemize}
+
+  \vspace{0.2em}
+  Next: a single-index model in place of the full covariance matrix.
+\end{frame}
+
+\transitionframe{Today: two estimates, one quadratic program, and the line that a risk-free asset draws through it.}
+
+\end{document}

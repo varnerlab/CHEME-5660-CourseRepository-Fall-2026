@@ -11,7 +11,7 @@
 
 \learningobjectives
   {Model correlated assets}
-  {Write and solve a multivariate GBM model whose matrix square root generates a specified log-return covariance rate.}
+  {Write and solve a multiple asset GBM model whose covariance factor generates a specified log-return covariance rate.}
   {Estimate covariance}
   {Construct, annualize, and validate a sample covariance matrix while distinguishing covariance from correlation.}
   {Sample portfolio weights}
@@ -21,14 +21,14 @@
 
 Single-asset GBM models can be simulated independently, but an independently simulated portfolio erases co-movement. Firms respond together to market news, sectors share inputs, and hedges move in opposing directions. Portfolio uncertainty depends not only on each asset's volatility but also on every pairwise covariance.
 
-Let $m\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^m$, arithmetic GBM drifts in $\boldsymbol\mu\in\R^m$, and independent Wiener processes in $\mathbf{W}_t\in\R^m$. A multivariate GBM (MGBM) uses a loading matrix $A\in\R^{m\times m}$:
+Let $M\geq2$ be the number of assets. Collect the prices in $\mathbf{S}_t\in\R_{>0}^M$, arithmetic GBM drifts in $\boldsymbol\mu\in\R^M$, and independent Wiener processes in $\mathbf{W}_t\in\R^M$. A multiple asset GBM (MAGBM) uses a loading matrix (covariance factor) $A\in\R^{M\times M}$ (units years$^{-1/2}$):
 \begin{equation}
   \label{eq:mgbm-sde}
   \frac{dS_{i,t}}{S_{i,t}}
-  =\mu_i\,dt+\sum_{j=1}^{m}A_{ij}\,dW_{j,t},
-  \qquad i\in\{1,\ldots,m\}.
+  =\mu_i\,dt+\sum_{\ell=1}^{M}A_{i\ell}\,dW_{\ell,t},
+  \qquad i\in\{1,\ldots,M\}.
 \end{equation}
-The diffusion covariance rate is $C:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $C_{ii}=\sigma_i^2$, while $C_{ik}$ records instantaneous log-return covariance per unit time. Applying It\^o's lemma to $\log S_{i,t}$ gives the expected continuously compounded growth rate
+The diffusion covariance rate is $C:=AA^{\mathsf T}$, whose entries have units years$^{-1}$. Its diagonal entries satisfy $C_{ii}=\sigma_i^2$, while $C_{ij}$ records instantaneous log-return covariance per unit time. Applying It\^o's lemma to $\log S_{i,t}$ gives the expected continuously compounded growth rate
 \begin{equation}
   \label{eq:drift-growth-relation}
   \bar g_i:=\E[g_{i,t,\Delta t}]
@@ -44,7 +44,7 @@ Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,
     \node[draw=vnrule,fill=white,rounded corners=1pt,
       minimum width=2.35cm,minimum height=0.78cm] (z) at (0,0) {independent $\mathbf Z$};
     \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
-      minimum width=2.25cm,minimum height=0.78cm] (a) at (3.25,0) {matrix root $A$};
+      minimum width=2.25cm,minimum height=0.78cm] (a) at (3.25,0) {covariance factor $A$};
     \node[draw=vnrule,fill=white,rounded corners=1pt,
       minimum width=2.65cm,minimum height=0.78cm] (az) at (6.5,0) {correlated shock $A\mathbf Z$};
     \node[draw=vnink,fill=vnpanel,rounded corners=1pt,
@@ -54,7 +54,7 @@ Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,
     \node[below,text=vnmuted] at (3.25,-0.62) {$AA^{\mathsf T}=C$};
     \node[below,text=vnmuted] at (6.5,-0.62) {$\Cov(A\mathbf Z)=C$};
   \end{tikzpicture}
-  \caption{A matrix square root converts independent standard-normal shocks into shocks with covariance $C$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
+  \caption{A covariance factor $A$ with $AA^{\mathsf T}=C$ converts independent standard-normal shocks into shocks with covariance $C$. The same shock vector must drive all assets on one simulated path to preserve their joint dependence.}
   \label{fig:correlated-shocks}
 \end{figure}
 
@@ -62,8 +62,8 @@ Thus $\mu_i$ is reserved for the arithmetic drift in the price SDE, while $g_{i,
 
 The logarithm of each component receives its own It\^o correction, while the off-diagonal covariance enters through the common shock vector (\propref{mgbm-transition}).
 
-\begin{proposition}{Exact constant-parameter MGBM transition}{mgbm-transition}
-Let $A\in\R^{m\times m}$, $C:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^m$, and $\Delta t>0$ years. Define $\bar g_i:=\mu_i-C_{ii}/2$. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_m)$, the exact one-step solution of \eqnref{mgbm-sde} is
+\begin{proposition}{Exact constant-parameter MAGBM transition}{mgbm-transition}
+Let $A\in\R^{M\times M}$, $C:=AA^{\mathsf T}$, $\boldsymbol\mu\in\R^M$, and $\Delta t>0$ years. Define $\bar g_i:=\mu_i-C_{ii}/2$. For independent standard normal shocks $\mathbf Z\sim\mathcal N(\mathbf0,I_M)$, drawn fresh at every step and shared by all assets within the step, the exact one-step solution of \eqnref{mgbm-sde} is
 \begin{equation}
   \label{eq:mgbm-transition}
   S_{i,t+\Delta t}=S_{i,t}\exp\!\left[
@@ -95,26 +95,26 @@ The three matrices are not interchangeable: $\Sigma_g$ is appropriate for a grow
 
 \section{Estimating and Validating the Covariance Matrix}
 
-Let $G\in\R^{n\times m}$ store $n$ observed growth-rate vectors by rows, and let $\bar{\mathbf g}\in\R^m$ be the column mean. With $\mathbf1_n$ the length-$n$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_n\bar{\mathbf g}^{\mathsf T}$. The unbiased growth-rate covariance is
+Let $G\in\R^{N\times M}$ store $N\geq2$ observed growth-rate vectors by rows (time periods $k=1,\ldots,N$, aligned and equally spaced), and let $\mathbf g'\in\R^M$ be the vector of sample means (the sample mean $g'$ of L3a and L4b, one per asset; $\bar{\mathbf g}$ remains the population mean $\boldsymbol\mu-\tfrac12\operatorname{diag}(C)$). With $\mathbf1_N$ the length-$N$ vector of ones, define the centered matrix $\widetilde G:=G-\mathbf1_N\mathbf g'^{\mathsf T}$. The unbiased growth-rate covariance is
 \begin{equation}
   \label{eq:sample-covariance}
   \widehat\Sigma_g:=
-  \frac{1}{n-1}\widetilde G^{\mathsf T}\widetilde G.
+  \frac{1}{N-1}\widetilde G^{\mathsf T}\widetilde G.
 \end{equation}
-It is symmetric and positive semidefinite: for any $\mathbf x\in\R^m$, $\mathbf x^{\mathsf T}\widehat\Sigma_g\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(n-1)\geq0$. For GBM simulation, use $\widehat C=\Delta t\,\widehat\Sigma_g$.
+It is symmetric and positive semidefinite: for any $\mathbf x\in\R^M$, $\mathbf x^{\mathsf T}\widehat\Sigma_g\mathbf x=\lVert\widetilde G\mathbf x\rVert_2^2/(N-1)\geq0$, and $\widehat C=\Delta t\,\widehat\Sigma_g$ inherits both properties. For GBM simulation, use $\widehat C$; its diagonal reproduces the L4b volatilities, $\widehat\sigma_i=\sqrt{\widehat C_{ii}}=\sigma_{g,i}\sqrt{\Delta t}$.
 
 Covariance depends on units and volatility scale. Correlation normalizes those effects:
 \begin{equation}
   \label{eq:correlation}
-  \rho_{ik}:=\frac{\Sigma_{ik}}
-  {\sqrt{\Sigma_{ii}\Sigma_{kk}}},
-  \qquad -1\leq\rho_{ik}\leq1
+  \rho_{ij}:=\frac{\widehat\Sigma_{g,ij}}
+  {\sqrt{\widehat\Sigma_{g,ii}\widehat\Sigma_{g,jj}}},
+  \qquad -1\leq\rho_{ij}\leq1
 \end{equation}
-when both variances are positive. Zero correlation means zero linear covariance under the chosen sample and horizon; it does not generally imply statistical independence.
+when both variances are positive; $\widehat\Sigma_g$, $\widehat\Sigma_r$, and $\widehat C$ share the same correlations because they differ by positive scalars. Zero correlation means zero linear covariance under the chosen sample and horizon; it does not generally imply statistical independence.
 
-A Cholesky factor is convenient when $\widehat\Sigma$ is positive definite. Duplicated assets, short samples, or exact linear dependence can make it only semidefinite, causing an unpivoted Cholesky routine to fail. Eigenvalue or singular-value square roots can handle semidefinite matrices. Arbitrarily adding diagonal ``jitter'' changes the model and must be documented rather than hidden.
+A Cholesky factor is convenient when $\widehat\Sigma_g$ is positive definite; the symmetric square root $C^{1/2}$ is another valid covariance factor, and any $A$ with $AA^{\mathsf T}=C$ works. Duplicated assets, exact linear dependence, or too few observations make it only semidefinite (the centered matrix has rank at most $N-1$, so $M\geq N$ guarantees singularity), causing an unpivoted Cholesky routine to fail. Eigenvalue or singular-value square roots can handle semidefinite matrices. Arbitrarily adding diagonal ``jitter'' changes the model and must be documented rather than hidden.
 
-Sampling error is often the dominant problem. Pairwise estimates can shift across windows, and a matrix with $m(m+1)/2$ distinct entries becomes difficult to estimate when $m$ is large relative to $n$. Shrinkage and factor models trade some flexibility for greater stability.
+Sampling error is often the dominant problem. Pairwise estimates can shift across windows, and a matrix with $M(M+1)/2$ distinct entries becomes difficult to estimate when $M$ is large relative to $N$. Shrinkage and factor models trade some flexibility for greater stability.
 
 \notebooklink
   {L5a: Computing and Analyzing a Covariance Matrix}
@@ -123,37 +123,44 @@ Sampling error is often the dominant problem. Pairwise estimates can shift acros
 
 \section{Buy-and-Hold Portfolio Wealth}
 
-Let total initial wealth be $W_0>0$ dollars and let $\mathbf w\in\R^m$ contain initial dollar fractions. For a fully invested long-only portfolio, $w_i\geq0$ and $\mathbf1^{\mathsf T}\mathbf w=1$. Fractional-share holdings are $n_i=w_iW_0/S_{i,0}$. If no rebalancing occurs, portfolio wealth is
+Let total initial wealth be $W_0>0$ dollars and let $\mathbf w\in\R^M$ contain initial dollar fractions. For a fully invested long-only portfolio, $w_i\geq0$ and $\mathbf1^{\mathsf T}\mathbf w=1$. Fractional-share holdings are $n_i=w_iW_0/S_{i,0}$. If no rebalancing occurs, portfolio wealth is
 \begin{equation}
   \label{eq:buy-hold-wealth}
-  W_t=\sum_{i=1}^{m}n_iS_{i,t}
-  =W_0\sum_{i=1}^{m}w_i\frac{S_{i,t}}{S_{i,0}}.
+  W_t=\sum_{i=1}^{M}n_iS_{i,t}
+  =W_0\sum_{i=1}^{M}w_i\frac{S_{i,t}}{S_{i,0}}.
 \end{equation}
-The initial weights generally drift as relative prices change. A constant-weight portfolio is a different, dynamically rebalanced strategy with additional turnover and cost assumptions.
+The initial weights generally drift as relative prices change: the fraction of wealth in asset $i$ at time $t$ is $w_i(t)=n_iS_{i,t}/W_t$. A constant-weight portfolio is a different, dynamically rebalanced strategy with additional turnover and cost assumptions.
 
 \notebooklink
-  {L5b: Correlated MGBM Portfolio Simulation}
+  {L5b: Correlated MAGBM Portfolio Simulation}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb}
   {Generate correlated asset paths, construct a buy-and-hold portfolio, and compare simulated wealth with observed and benchmark wealth.}
 
 \section{Dirichlet Sampling Explores the Simplex}
 
-The feasible long-only weight set is the $(m-1)$-dimensional simplex $\Delta^{m-1}:=\{\mathbf w\in\R^m:w_i\geq0,\ \sum_iw_i=1\}$. The Dirichlet distribution generates random points on its interior and is a useful design-of-experiments tool (\defnref{dirichlet}).
+The feasible long-only weight set is the $(M-1)$-dimensional simplex $\Delta^{M-1}:=\{\mathbf w\in\R^M:w_i\geq0,\ \sum_iw_i=1\}$. The Dirichlet distribution generates random points on its interior and is a useful design-of-experiments tool (\defnref{dirichlet}).
 
 \begin{definition}{Dirichlet portfolio weights}{dirichlet}
-Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_m)$ with every concentration parameter $\alpha_i>0$, and let $\alpha_0:=\sum_{i=1}^{m}\alpha_i$. A random vector $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies on $\Delta^{m-1}$ and has mean and component variance
+Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_M)$ with every concentration parameter $\alpha_i>0$, and let $\alpha_0:=\sum_{i=1}^{M}\alpha_i$. A random vector $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies in the interior of $\Delta^{M-1}$ and has component mean, variance, and covariance
 \begin{equation}
   \label{eq:dirichlet-moments}
   \E[W_i]=\frac{\alpha_i}{\alpha_0},
   \qquad
   \operatorname{Var}(W_i)=
   \frac{\alpha_i(\alpha_0-\alpha_i)}
-  {\alpha_0^2(\alpha_0+1)}.
+  {\alpha_0^2(\alpha_0+1)},
+  \qquad
+  \operatorname{Cov}(W_i,W_j)=-\frac{\alpha_i\alpha_j}{\alpha_0^2(\alpha_0+1)}\ (i\neq j).
 \end{equation}
-For equal $\alpha_i=1$, the distribution is uniform with respect to volume on the simplex; it is not uniform in each component separately.
+For every $\alpha_i=1$, the distribution is uniform with respect to volume on the simplex; it is not uniform in each component separately (each marginal is $\operatorname{Beta}(1,M-1)$).
 \end{definition}
 
 Small equal concentrations place more mass near sparse corners, while large equal concentrations cluster weights near equal allocation. Unequal concentrations encode a directional sampling preference. None of these draws is ``optimal'' unless an objective and constraints are subsequently evaluated. Dirichlet sampling explores candidate portfolios; L5b solves a minimum-variance optimization problem.
+
+\notebooklink
+  {L5a: Sampling Portfolio Weights with the Dirichlet Distribution}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb}
+  {Draw weight vectors on the three-asset simplex for several concentration vectors, map the growth-rate mean and variance of random five-asset portfolios, and track buy-and-hold wealth and weight drift.}
 
 \begin{figure}[ht]
   \centering
@@ -172,18 +179,29 @@ Small equal concentrations place more mass near sparse corners, while large equa
 \end{figure}
 
 \newpage
+\section*{Optional Advanced Material}
+
+\notebooklink
+  {L5a Advanced: Sampling Error and Shrinkage in Covariance Estimation}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb}
+  {Compare the eigenvalue spectrum of the sample covariance with the Marchenko--Pastur law, shrink the estimate toward a structured target, and measure the effect on a minimum-variance portfolio out of sample.}
+
+\notebooklink
+  {L5a Advanced: Rolling Correlations}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb}
+  {Track pairwise and average correlations through 2014 to 2024 with rolling and exponentially weighted windows, and quantify what a constant covariance rate misses in stressed markets.}
+
+\newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks, and used Dirichlet draws to explore valid portfolio weights.}
-  {Drift and growth are distinct}
-  {The price SDE uses $\boldsymbol\mu$, while realized growth is $\mathbf g_t=(\Delta t)^{-1}\log(\mathbf S_{t+\Delta t}\oslash\mathbf S_t)$ and $\E[\mathbf g_t]=\boldsymbol\mu-\tfrac12\operatorname{diag}(C)$.}
-  {Covariance drives joint risk}
-  {A matrix square root maps independent shocks into correlated log returns with covariance $\Sigma\Delta t$.}
-  {Estimates require structural checks}
-  {A covariance estimate must be symmetric and positive semidefinite, and its scaling, window, and regularization must be documented.}
+  {In this lecture, we coupled GBM assets through a covariance matrix, built correlated shocks from independent ones with a covariance factor, estimated the covariance from growth rates, and used Dirichlet draws to explore valid portfolio weights.}
+  {Correlated assets need a shared shock and a covariance factor}
+  {One shock vector per step, mixed by $A$ with $AA^{\mathsf T}=C$, gives log returns with covariance $C\Delta t$; each asset keeps its own correction $\bar g_i=\mu_i-C_{ii}/2$.}
+  {Covariance is estimated from centered growth rates and scaled by the step}
+  {$\widehat\Sigma_g$ is symmetric and positive semidefinite by construction, $\widehat C=\Delta t\,\widehat\Sigma_g$ drives the simulation, and singularity, sampling error, and window dependence must be checked before use.}
   {Sampling is not optimization}
-  {Dirichlet draws explore the long-only simplex; concentration parameters control exploration but do not encode a minimum-risk objective.}
-  {Next, turn estimated means and covariance into the global minimum-variance portfolio, efficient frontier, capital allocation line, and tangency portfolio.}
+  {Dirichlet draws explore the long-only simplex; concentration parameters control where the draws land but do not encode a minimum-risk objective.}
+  {Next, turn estimated means and covariance into the minimum-variance portfolio and the efficient frontier, and simulate the resulting portfolios with correlated MAGBM paths.}
 
 \begin{readinglist}
   \item Harry Markowitz, \href{https://www.jstor.org/stable/2975974}{``Portfolio Selection,''} \emph{Journal of Finance} 7(1), 77--91 (1952).

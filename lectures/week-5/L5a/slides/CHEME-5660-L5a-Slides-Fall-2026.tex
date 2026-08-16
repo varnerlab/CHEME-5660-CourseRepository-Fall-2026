@@ -1,0 +1,471 @@
+% L5a student companion deck.
+%
+% The frame order mirrors the lecture notebook so students can take notes while
+% the instructor works through the notebook. The disclaimer is intentionally
+% slide 2, by instructor preference.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Pmeasure}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\gbar}{\bar g}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bC}{\mathbf{C}}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\Sg}{\hat{\boldsymbol{\Sigma}}_{g}}
+\newcommand{\Ch}{\hat{\mathbf{C}}}
+
+\title{\texorpdfstring{{\vnheavy L5a}}{L5a}: Multiple Asset Geometric Brownian Motion}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today we extend geometric Brownian motion from one asset to many correlated
+  assets, estimate the covariance that couples them from data, and introduce a
+  way to sample portfolio weights.
+
+  \vspace{0.6em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Model correlated assets}: the multiple asset GBM equation with
+      a shared shock vector and a covariance factor $\bA$ with
+      $\bA\bA^{\top}=\bC$, and its exact one-step transition.
+    \item \hilite{Estimate the covariance}: center the growth-rate data matrix,
+      compute the sample covariance and correlation, convert to the GBM
+      covariance rate with the time step, and check the structural properties.
+    \item \hilite{Describe and sample portfolio weights}: buy-and-hold wealth on
+      the long-only simplex, the Dirichlet distribution and its moments, and why
+      sampling explores but does not optimize.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \dimmed{CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 1:}}\par
+  \dimmed{CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 2:}}\par
+  \dimmed{CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 3:}}\par
+  \dimmed{CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb}}
+
+  \vspace{0.6em}
+  The first example predicts prices a single asset GBM model never saw and
+  measures how often they stay inside its bands. The second computes the
+  covariance matrix for our dataset and converts it to the GBM covariance rate.
+  The third samples portfolio weights on the simplex.
+\end{frame}
+
+\begin{frame}{Concept Review: Single Asset GBM Model}
+  Let $S(t)>0$ be the share price. With arithmetic drift $\mu$ (inverse years),
+  volatility $\sigma>0$ (inverse years to the one-half power), and Wiener
+  increment $dW(t)$, single asset GBM is:
+  \[
+    \frac{dS(t)}{S(t)}=\mu\,dt+\sigma\,dW(t).
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Drift versus growth}: the mean growth rate is
+      $\gbar=\mu-\sigma^2/2$, the expected one-step growth rate; $\mu$ and
+      $\gbar$ share units and differ by the half-variance correction.
+    \item \hilite{Risk}: $\sigma$ sets the growth-rate standard deviation
+      $\sigma/\sqrt{\Delta t}$; from data, $\hat\sigma=\sigma_g\sqrt{\Delta t}$.
+    \item \hilite{Constancy}: both are assumed constant; the out-of-sample example
+      shows what that costs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Concept Review: The One-Step Transition and Out of Sample}
+  On a grid $t_j=j\Delta t$ of $N$ steps the price advances by the exact one-step
+  transition of L4b, with independent standard normal shocks $Z_j$:
+  \[
+    \boxed{S_{t_j}=S_{t_{j-1}}\exp\!\Bigl[\gbar\,\Delta t+\sigma\sqrt{\Delta t}\,Z_j\Bigr],
+    \qquad j=1,\ldots,N.}
+  \]
+  For one fixed horizon $T$ the same solution reads
+  $S_T=S_0\exp[\gbar T+\sigma\sqrt{T}\,Z]$; the one-step form is what simulates
+  paths.
+
+  \vspace{0.2em}
+  In L4b we estimated $\gbar$ and $\sigma$ from data the model had already seen.
+  Example 1 asks the model about prices it has \hilite{not} seen: parameters
+  from 2014 to 2024, predictions for all of 2025, and a count of how often
+  the observed price stays inside the model's bands.
+  \slidenote{Example 1:}{\dimmed{CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Catch-up: The GBM Trade Rule}
+  If we did not reach the trade-rule probability at the end of L4b, we pick it
+  up now. Buy $n_0$ shares at $S_0$, sell at $S_T$ after a holding period $T>0$,
+  with benchmark growth rate $g_b$; the scaled NPV is
+  $\rho_T=\operatorname{NPV}(g_b,T)/(n_0S_0)=(S_T/S_0)e^{-g_bT}-1$. For a target
+  $\rho_\star>-1$, with $\Phi$ the standard normal cumulative distribution
+  function, single asset GBM gives the probability of clearing it in closed
+  form:
+  \[
+    \boxed{\Pmeasure(\rho_T>\rho_\star)
+    =1-\Phi\!\left(\frac{\ln(1+\rho_\star)+g_bT-\gbar\,T}{\sigma\sqrt T}\right).}
+  \]
+
+  \vspace{0.4em}
+  The derivation is the GBM Trade Rule section of the L4b lecture, and the L4b
+  trade-rule example evaluates it for a firm in our dataset. Everything else
+  today extends the price model itself, from one asset to many.
+\end{frame}
+
+\begin{frame}{Multiple Asset Geometric Brownian Motion (MAGBM) Model}
+  Independently simulated assets never move together, and co-movement is the
+  point of a portfolio. Consider assets $\mathcal P=\{1,\ldots,M\}$ with share
+  prices $S_i(t)$ and drifts $\mu_i$, a \hilite{covariance rate}
+  $\bC\in\mathbb R^{M\times M}$ (inverse years, $C_{ii}=\sigma_i^2$), a
+  \hilite{loading matrix} $\bA$ with $\bA\bA^{\top}=\bC$, and $M$ independent
+  Wiener processes $W_\ell(t)$:
+  \[
+    \frac{dS_i(t)}{S_i(t)}
+    =\underbrace{\mu_i\,dt}_{\text{drift}}
+    +\underbrace{\textstyle\sum_{\ell=1}^{M}A_{i\ell}\,dW_\ell(t)}_{\text{correlated noise}},
+    \qquad i\in\mathcal P.
+  \]
+
+  It\^o's lemma on $\ln S_i$ gives each asset its own half-variance correction:
+  the mean growth rate is $\gbar_i=\mu_i-C_{ii}/2$, exactly the single asset
+  case with $\sigma_i^2=C_{ii}$.
+
+  \vspace{0.3em}
+  Indices from here on: $i,j$ assets, $\ell$ shock coordinates, $k$ time periods.
+\end{frame}
+
+\begin{frame}{Why the \texorpdfstring{$\bA\bA^{\top}$}{AAT} Factorization?}
+  A factorization $\bA\bA^{\top}=\bC$ is a \hilite{Cholesky decomposition} when
+  $\bA$ is lower triangular; the symmetric square root $\bC^{1/2}$ is another
+  valid choice. Any covariance factor with $\bA\bA^{\top}=\bC$ will do.
+
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Independent noise becomes correlated noise}: the $W_\ell$ are
+      independent, but multiplying their increments by $\bA$ mixes them into
+      the co-movement we observe.
+    \item \hilite{It reproduces the covariance rate}: over $dt$, the noise terms
+      of assets $i$ and $j$ have covariance:
+      \[
+        \Cov\!\Bigl(\textstyle\sum_\ell A_{i\ell}\,dW_\ell,\ \sum_\ell A_{j\ell}\,dW_\ell\Bigr)
+        =\textstyle\sum_\ell A_{i\ell}A_{j\ell}\,dt=(\bA\bA^{\top})_{ij}\,dt=C_{ij}\,dt.
+      \]
+  \end{itemize}
+
+  \vspace{0.3em}
+  So $\bC$ is the covariance per unit time, and the factorization is what makes
+  the simulated assets have the covariance we asked for.
+\end{frame}
+
+\begin{frame}{The Exact One-Step Transition}
+  Let $\bZ\sim\mathcal N(\mathbf 0,\mathbf I_M)$, with $\mathbf I_M$ the
+  $M\times M$ identity, be a vector of independent standard normal shocks, drawn
+  \hilite{fresh at every step} and \hilite{shared by all assets} within that
+  step. Over a step $\Delta t$:
+  \[
+    \boxed{S_i(t+\Delta t)=S_i(t)\exp\!\Bigl[
+      \underbrace{\gbar_i\,\Delta t}_{\text{mean growth}}
+      +\underbrace{\sqrt{\Delta t}\,(\bA\bZ)_i}_{\text{correlated shock}}\Bigr],
+    \qquad i\in\mathcal P,}
+  \]
+  with $(\bA\bZ)_i=\sum_\ell A_{i\ell}Z_\ell$.
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Exact at the grid points for constant parameters; not a time-stepping
+      approximation.
+    \item Redraw $\bZ$ at every step: a path is built from independent
+      increments. One fixed horizon $T$ can instead be sampled directly with a
+      single shock vector scaled by $\sqrt T$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Scaling Rule}
+  Divide the transition by $S_i(t)$ and take logarithms: the one-step log return
+  is $r_i=\ln(S_i(t+\Delta t)/S_i(t))$ and the growth rate is $g_i=r_i/\Delta t$.
+  Collect them in vectors $\mathbf r$ and $\bg=\mathbf r/\Delta t$, the drifts in
+  $\boldsymbol\mu$, and the mean growth rates in $\bar{\bg}$:
+  \[
+    \bg=\bar{\bg}+\tfrac{1}{\sqrt{\Delta t}}\bA\bZ
+    \;\Longrightarrow\;
+    \E[\bg]=\bar{\bg}=\boldsymbol\mu-\tfrac12\operatorname{diag}(\bC),
+    \;\;
+    \underbrace{\Cov(\bg)}_{\text{growth-rate}}=\tfrac{\bC}{\Delta t},
+    \;\;
+    \underbrace{\Cov(\mathbf r)}_{\text{log-return}}=\bC\,\Delta t.
+  \]
+
+  Three different matrices, related by powers of $\Delta t$: growth-rate
+  covariance (inverse years squared), log-return covariance (dimensionless), and
+  the covariance rate $\bC$ (inverse years). Keeping them apart is the
+  multi-asset version of L4b's $\hat\sigma=\sigma_g\sqrt{\Delta t}$.
+
+  \vspace{0.3em}
+  The model needs $\bC$, and $\bC$ comes from data.
+\end{frame}
+
+\begin{frame}{Covariance: Direction and Scale}
+  \begin{center}
+    \includegraphics[height=0.62\textheight,keepaspectratio]{../figs/Fig-Cov-Schematic.png}
+  \end{center}
+  \vspace{-0.3em}
+  Top row: samples with negative, zero, and positive covariance. Bottom row: the
+  same clouds with the covariance multiplied by four; the spread doubles, the
+  direction of co-movement does not change.
+\end{frame}
+
+\begin{frame}{Empirical Covariance Matrix}
+  Take $N\ge2$ equally spaced, aligned periods of growth rates for the $M$ firms
+  in $\mathcal P$; $g^{(i)}_k$ is firm $i$'s growth rate in period $k$, and
+  $g'_i=\frac1N\sum_kg^{(i)}_k$ its sample mean. The empirical growth-rate
+  covariance $\Sg\in\mathbb R^{M\times M}$ has entries:
+  \[
+    \hat\Sigma_{g,ij}=\frac{1}{N-1}\sum_{k=1}^{N}
+    \underbrace{\bigl(g^{(i)}_k-g'_i\bigr)}_{\text{deviation}}
+    \bigl(g^{(j)}_k-g'_j\bigr),\qquad i,j\in\mathcal P.
+  \]
+
+  The diagonal $\hat\Sigma_{g,ii}$ is firm $i$'s growth-rate variance, so
+  $\sqrt{\hat\Sigma_{g,ii}}$ is L3a's $\sigma_g$ for that firm (inverse years),
+  \hilite{not} the volatility. The sign of an off-diagonal entry is the direction
+  of the relationship; its magnitude depends on both firms' scales.
+\end{frame}
+
+\begin{frame}{Correlation}
+  The standardized strength of a relationship is the \hilite{correlation}
+  $\rho_{ij}$ of firms $i$ and $j$, defined whenever both variances are
+  positive:
+  \[
+    \boxed{\rho_{ij}=\frac{\hat\Sigma_{g,ij}}{\sqrt{\hat\Sigma_{g,ii}\,\hat\Sigma_{g,jj}}}\in[-1,1]
+    \quad\Longleftrightarrow\quad
+    \hat\Sigma_{g,ij}=\rho_{ij}\sqrt{\hat\Sigma_{g,ii}\,\hat\Sigma_{g,jj}}.}
+  \]
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Correlation is what to quote when comparing pairs; covariance is what
+      the model needs.
+    \item Zero correlation means no \hilite{linear} relationship in this sample;
+      it does not imply independence.
+    \item Correlations are the same for the growth-rate covariance, the log-return
+      covariance, and the covariance rate: the scaling cancels in the ratio.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Data Matrix and the Sample Covariance}
+  Arrange the growth rates in a \hilite{data matrix} $\bG\in\mathbb R^{N\times M}$
+  (rows are periods, columns are firms) and let $\bg'=(g'_1,\ldots,g'_M)^{\top}$
+  be the vector of sample means. With $\mathbf 1\in\mathbb R^N$ the vector of
+  ones, the centered matrix and the covariance are:
+  \[
+    \tilde{\bG}=\bG-\mathbf 1\,\bg'^{\top},
+    \qquad
+    \boxed{\Sg=\frac{1}{N-1}\tilde{\bG}^{\top}\tilde{\bG}.}
+  \]
+
+  \vspace{0.3em}
+  $\mathbf 1\,\bg'^{\top}$ is an outer product: an $N\times M$ matrix whose every
+  row is the vector of sample means, so subtracting it centers each column.
+
+  \vspace{0.5em}
+  One matrix product replaces $M(M+1)/2$ pairwise sums.
+\end{frame}
+
+\begin{frame}{From the Growth-Rate Covariance to the GBM Covariance Rate}
+  The scaling rule says $\Cov(\bg)=\bC/\Delta t$, so the estimate of the
+  covariance rate the model needs is:
+  \[
+    \boxed{\Ch=\Delta t\,\Sg.}
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Its diagonal returns the L4b volatilities firm by firm:
+      $\hat\sigma_i=\sqrt{\hat C_{ii}}=\sqrt{\Delta t}\sqrt{\hat\Sigma_{g,ii}}$.
+    \item The log-return covariance is $\hat{\boldsymbol\Sigma}_r=\Delta t^2\,\Sg=\Delta t\,\Ch$.
+    \item Daily data, $\Delta t=1/252$: multiplying a daily log-return covariance
+      by 252 estimates $\Ch$; it does not estimate $\Sg$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Covariance Matrix Properties}
+  Every covariance estimate must satisfy these, and they are worth checking
+  numerically:
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Elements}: diagonal entries are variances (non-negative);
+      off-diagonal entries are covariances whose sign gives the direction.
+    \item \hilite{Symmetry}: $\hat\Sigma_{g,ij}=\hat\Sigma_{g,ji}$, directly from
+      the definition; $\Ch=\Delta t\,\Sg$ inherits it.
+    \item \hilite{Positive semidefinite}: for any weight vector
+      $\mathbf v\in\mathbb R^M$ the quadratic form is a squared length:
+      \[
+        \mathbf v^{\top}\Sg\mathbf v=\frac{1}{N-1}\lVert\tilde{\bG}\mathbf v\rVert_2^2\ge0,
+      \]
+      so a portfolio variance can never come out negative, and the L5b
+      optimization rests on this.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Caveats Before Calling the Estimate Simulation-Ready}
+  \vspace{0.3em}
+  \textbf{\ink{Only semidefinite.}} Duplicated assets, an exact linear
+  dependence, or too few observations make $\Sg$ singular; since $\tilde{\bG}$
+  has rank at most $N-1$, it is always singular once $M\ge N$. An unpivoted
+  Cholesky factorization then fails; an eigenvalue or singular-value square root
+  still works. Diagonal ``jitter'' restores invertibility but changes the model
+  and must be documented.
+
+  \vspace{0.9em}
+  \textbf{\ink{Sampling error.}} $M(M+1)/2$ distinct entries from $N$
+  observations are noisy when $M$ is not small relative to $N$; pairwise
+  estimates shift across windows and correlations change in stressed markets.
+  Shrinkage and factor models trade flexibility for stability.
+  \slidenote{Example 2:}{\dimmed{CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Portfolio Weights and Dirichlet Sampling}
+  Let $W_0>0$ be initial wealth and $\bw=(w_1,\ldots,w_M)^{\top}$ the initial
+  dollar fractions placed in each asset. Fully invested and long only:
+  $w_i\ge0$, $\sum_iw_i=1$, so $\bw$ lies on the \hilite{simplex}
+  $\Delta^{M-1}$ (a segment for two assets, a triangle for three).
+
+  \vspace{0.3em}
+  Buying $n_i=w_iW_0/S_i(0)$ fractional shares and holding them, wealth at time
+  $t$ is:
+  \[
+    \boxed{W_t=\sum_{i\in\mathcal P}n_iS_i(t)=W_0\sum_{i\in\mathcal P}w_i\,\frac{S_i(t)}{S_i(0)}.}
+  \]
+
+  \vspace{0.3em}
+  The weights drift: the fraction in asset $i$ at time $t$ is
+  $w_i(t)=n_iS_i(t)/W_t$. A constant-weight portfolio that trades back to $\bw$
+  is a different, rebalanced strategy with its own turnover and costs.
+\end{frame}
+
+\begin{frame}{Dirichlet Sampling of the Simplex}
+  Let $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_M)$ with concentration
+  parameters $\alpha_i>0$ and $\alpha_0=\sum_i\alpha_i$. A random vector
+  $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$ lies in the interior
+  of $\Delta^{M-1}$ (positive weights summing to one) with:
+  \[
+    \E[W_i]=\frac{\alpha_i}{\alpha_0},\qquad
+    \Var(W_i)=\frac{\alpha_i(\alpha_0-\alpha_i)}{\alpha_0^2(\alpha_0+1)},\qquad
+    \Cov(W_i,W_j)=-\frac{\alpha_i\alpha_j}{\alpha_0^2(\alpha_0+1)}\ (i\ne j).
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item Covariances are negative: the weights compete for one unit of wealth.
+    \item Every $\alpha_i=1$: constant density with respect to volume on the
+      simplex, not uniform in each component.
+    \item Symmetric $\alpha_i=\alpha$: below one favors allocations near the
+      boundary relative to uniform; large $\alpha$ clusters near equal weights
+      $1/M$; unequal $\alpha_i$ tilt toward the assets with larger concentration.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sampling Is Not Optimization}
+  A Dirichlet draw is a \hilite{candidate} weight vector; it becomes good or bad
+  only when an objective is evaluated for it. The simplest: to first order the
+  one-step growth rate of a portfolio held at weights $\bw$ is $g_p=\bw^{\top}\bg$
+  (a one-period, fixed-weight statistic), whose estimated variance is:
+  \[
+    \underbrace{\bw^{\top}\Sg\bw}_{\text{portfolio growth-rate variance}}\ge0.
+  \]
+
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item Sampling \hilite{explores} the simplex; the concentration vector is the
+      dial that says where.
+    \item L5b \hilite{optimizes}: it turns the estimated means and covariance into
+      the minimum-variance portfolio; its portfolio example simulates
+      buy-and-hold wealth with correlated MAGBM paths for a chosen $\bw$.
+  \end{itemize}
+  \slidenote{Example 3:}{\dimmed{CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb}}
+\end{frame}
+
+% ==== optional advanced material =============================
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/covariance-estimation/}\par
+  \dimmed{CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/rolling-correlation/}\par
+  \dimmed{CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  Optional, not prerequisites for L5b. The first measures how noisy a large
+  sample covariance is (its eigenvalues against the Marchenko--Pastur law),
+  shrinks it toward a structured target, and shows what that does to a
+  minimum-variance portfolio; the second tracks pairwise correlations through
+  2014 to 2024 with rolling and exponentially weighted windows and watches them
+  spike in stressed markets.
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-5/L5a/advanced}{lectures/week-5/L5a/advanced}, also linked from the lecture notebook.}
+\end{frame}
+
+\begin{frame}{Summary}
+  Today we extended GBM to many correlated assets, estimated the covariance that
+  couples them from historical growth rates, and introduced Dirichlet sampling
+  as a way to explore portfolio weights.
+
+  \vspace{0.3em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Correlated assets need a shared shock and a matrix square
+      root}: one shock vector per step, mixed by $\bA$ with $\bA\bA^{\top}=\bC$.
+    \item \hilite{Covariance is estimated from centered growth rates and scaled
+      by the time step}: symmetric and positive semidefinite by construction,
+      $\Ch=\Delta t\,\Sg$; singularity and sampling error must be checked.
+    \item \hilite{Weights live on the simplex, and Dirichlet draws explore it}:
+      the concentration vector says where the draws land; sampling is not
+      optimization.
+  \end{itemize}
+
+  \vspace{0.3em}
+  Next, we turn the estimated means and covariance into the minimum-variance
+  portfolio and the efficient frontier.
+\end{frame}
+
+\transitionframe{Today: one shock vector, many assets, and the matrix that ties them together.}
+
+\end{document}
