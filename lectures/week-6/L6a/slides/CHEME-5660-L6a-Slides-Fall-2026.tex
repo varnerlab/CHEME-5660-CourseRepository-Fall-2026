@@ -1,0 +1,421 @@
+% L6a student companion deck.
+%
+% The frame order mirrors the lecture notebook so students can take notes while
+% the instructor works through the notebook. The disclaimer is intentionally
+% slide 2, by instructor preference.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bal}{\boldsymbol{\alpha}}
+\newcommand{\bbe}{\boldsymbol{\beta}}
+\newcommand{\beps}{\boldsymbol{\varepsilon}}
+\newcommand{\bX}{\hat{\mathbf{X}}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bth}{\boldsymbol{\theta}}
+\newcommand{\Dg}{\mathbf{D}_{g}}
+\newcommand{\Sig}{\boldsymbol{\Sigma}_{g}}
+\newcommand{\np}{|\mathcal P|}
+
+\title{\texorpdfstring{{\vnheavy L6a}}{L6a}: Introduction to Single Index Models}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today we replace the full covariance matrix of L5a and L5b by a model with one
+  common factor: each asset's growth rate is a linear function of a market
+  index plus a residual of its own.
+
+  \vspace{0.6em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Decompose an asset's growth rate}: the single index model and
+      its assumptions, what $\alpha_i$, $\beta_i$, and the residual mean, and the
+      split of variance into a market part and an asset-specific part.
+    \item \hilite{Build the covariance a SIM implies}: rank one plus diagonal,
+      what it saves, portfolio beta and variance, and the residual assumption
+      that must be checked.
+    \item \hilite{Estimate and diagnose a SIM}: least squares, classical
+      uncertainty in growth-rate units, $R^2$, and what daily data do to the
+      assumptions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \dimmed{CHEME-5660-L6a-Lecture-SIM-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 1:}}\par
+  \dimmed{CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Example 2:}}\par
+  \dimmed{CHEME-5660-L6a-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}}
+
+  \vspace{0.6em}
+  The first example fits the SIM for one firm three equivalent ways, computes
+  its classical uncertainty next to an index fund's, fits every security in the
+  dataset, checks the residual-correlation assumption, and saves the archive L6b
+  loads. The second bootstraps the parameters two ways and audits the residuals.
+\end{frame}
+
+% ==== concept review =========================================
+\begin{frame}{Concept Review: Data Driven Minimum-Variance Allocation}
+  L5b: for a portfolio $\mathcal P$ of risky assets with weights $\bw$, the
+  linearized one-period growth rate $g_p=\bw^{\top}\bg$ has reward
+  $\E[g_p]=\bw^{\top}\bar{\bg}$ and risk $\Var(g_p)=\bw^{\top}\Sig\bw$; the
+  long-only weights for a target $g_\star$ solve:
+  \[
+    \min_{\bw}\ \bw^{\top}\Sig\bw
+    \quad\text{s.t.}\quad
+    \bw^{\top}\bar{\bg}\ge g_\star,\qquad \mathbf 1^{\top}\bw=1,\qquad w_i\ge0.
+  \]
+  Sweeping the floor traces the GMV portfolio and the efficient branch.
+
+  \vspace{0.4em}
+  Every entry is an estimate: $\bar{\bg}$ and $\Sig$, one covariance per pair of
+  assets, and L5b's advanced material showed how noisy those pairwise entries
+  are and how the optimizer amplifies the noise. \hilite{Today's question}: can
+  a model with far fewer parameters supply the same inputs?
+  \slidenote{Catch-up:}{\dimmed{../../week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}}
+\end{frame}
+
+% ==== factor models ==========================================
+\begin{frame}{Factor Models}
+  A portfolio of $\np$ assets needs $\np$ means and $\np(\np+1)/2$ covariance
+  entries; the second grows with the square of the first. Yet securities move
+  together when market-wide news arrives. A \hilite{factor model} makes the
+  shared movement explicit. Let $g_{i,t}$ be asset $i$'s growth rate on day $t$
+  (inverse years), $g_{M,t}$ the growth rate of a market index $M$ (SPY here;
+  the letter names the index), $f_{k,t}$ further factors, $\alpha_i$ an intercept
+  (inverse years), $\beta_i$ the sensitivity to the market (dimensionless),
+  $\gamma_{ik}$ the sensitivity to factor $k$, and $\varepsilon_{i,t}$ the
+  residual (inverse years):
+  \[
+    g_{i,t}=\underbrace{\alpha_i}_{\text{intercept}}
+      +\underbrace{\beta_i\,g_{M,t}}_{\text{market}}
+      +\overbrace{\textstyle\sum_{k=1}^{K}\gamma_{ik}f_{k,t}}^{\text{other factors}}
+      +\varepsilon_{i,t}.
+  \]
+
+  \vspace{0.2em}
+  Co-movement between assets is carried by the factors; the residuals are what is
+  left over.
+\end{frame}
+
+\begin{frame}{Two Named Factor Models, and the One We Keep}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{CAPM (bridge from L5b)}: an equilibrium statement about
+      expected excess \emph{simple} returns, no intercept. In annualized growth
+      rates with a risk-free growth rate $g_f$ the CAPM-style relation is
+      $g_{i,t}-g_f\approx\beta_i(g_{M,t}-g_f)+\varepsilon_{i,t}$: an
+      approximation, and a time-series regression keeps an intercept whose CAPM
+      value would be zero. We borrow the one-factor structure, not the test.
+    \item \hilite{Fama--French}: market plus a size factor (SMB) and a value
+      factor (HML), written in returns; explains more of diversified portfolios
+      at the cost of more parameters.
+    \item \hilite{Single index model}: the market factor alone. Today's model.
+  \end{itemize}
+\end{frame}
+
+% ==== SIM ====================================================
+\begin{frame}{Single Index Models (SIMs)}
+  Sharpe (1963). For asset $i\in\mathcal P$ on days $t=1,\ldots,N$, with
+  intercept $\alpha_i$ (inverse years), market exposure $\beta_i$
+  (dimensionless), and residual $\varepsilon_{i,t}$ (inverse years):
+  \[
+    \boxed{g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}}
+  \]
+  $\alpha_i$: expected growth when the market's is zero; $\varepsilon_{i,t}$:
+  the \hilite{idiosyncratic} part of the day. Population assumptions:
+  \[
+    \E[\varepsilon_{i,t}]=0,\qquad
+    \Cov(\varepsilon_{i,t},g_{M,t})=0,\qquad
+    \Cov(\varepsilon_{i,t},\varepsilon_{j,t})=0\ \ (i\ne j).
+  \]
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item The first two define $\alpha_i,\beta_i$ as the least-squares
+      projection of $g_i$ on $g_M$: free.
+    \item The third is an \hilite{extra restriction}: the market is the only
+      source of co-movement. Separate fits do not make it true; L6b's covariance
+      rests on it; Example 1 checks it.
+    \item Return form $r=\Delta t\,g$: same $\beta_i$,
+      $\alpha_{r,i}=\Delta t\,\alpha_i$, $\varepsilon_{r,i,t}=\Delta t\,\varepsilon_{i,t}$.
+      We stay in growth-rate units.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What Beta Means}
+  Covariance of both sides with $g_M$ (the intercept is a constant,
+  $\Cov(\varepsilon_i,g_M)=0$). With $\sigma_{g,M}$, $\sigma_{g,i}$ the
+  market's and asset's growth-rate standard deviations (L3a's $\sigma_g$, not
+  volatilities; both positive) and $\rho_{iM}$ their correlation:
+  \[
+    \boxed{\beta_i=\frac{\Cov(g_i,g_M)}{\Var(g_M)}
+      =\rho_{iM}\,\frac{\sigma_{g,i}}{\sigma_{g,M}}}
+    \qquad
+    \alpha_i=\E[g_i]-\beta_i\,\E[g_M].
+  \]
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item Beta is the slope of the projection: a market move of one unit comes
+      with an \emph{expected} asset move of $\beta_i$ units; the intercept and
+      the residual are there on every day.
+    \item \hilite{Dial}: $\beta_i=1$ one for one; $>1$ amplifies; $0<\beta_i<1$
+      dampens; $<0$ moves against the market. In our dataset betas run from near
+      zero to a little above two, median close to one.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Risk Splits in Two}
+  Variance of both sides, using only zero covariance between $\varepsilon_i$ and
+  $g_M$ (independence not needed), with $\sigma^2_{g,\varepsilon,i}=\Var(\varepsilon_i)$:
+  \[
+    \boxed{\underbrace{\Var(g_i)}_{\text{total}}
+      =\underbrace{\beta_i^2\,\sigma^2_{g,M}}_{\text{systematic}}
+      +\underbrace{\sigma^2_{g,\varepsilon,i}}_{\text{idiosyncratic}}}
+  \]
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item Systematic risk is inherited from the market and cannot be diversified
+      away by adding assets that share it; idiosyncratic risk is the asset's own.
+    \item The two need not be comparable: a stock can have $\beta>1$ and be
+      dominated by its residual; an index fund $\beta\approx1$ and almost none.
+      So \hilite{``beta above one'' means ``amplifies market moves''}, not
+      ``more volatile than the market''.
+    \item The fraction the market explains is
+      $\beta_i^2\sigma^2_{g,M}/\Var(g_i)=\rho_{iM}^2$: what the fitted $R^2$
+      estimates (for a non-constant asset growth rate).
+  \end{itemize}
+\end{frame}
+
+% ==== covariance =============================================
+\begin{frame}{The Covariance Implied by a SIM}
+  Stack the assets: growth rates $\bg$, intercepts $\bal$, betas $\bbe$,
+  residuals $\beps$; let $\bar g_M=\E[g_M]$, $\sigma^2_{g,M}=\Var(g_M)$, and
+  $\Dg=\operatorname{diag}(\sigma^2_{g,\varepsilon,1},\sigma^2_{g,\varepsilon,2},\ldots)$.
+  The vector model $\bg=\bal+\bbe\,g_M+\beps$ gives, under the three
+  assumptions:
+  \[
+    \boxed{\bar{\bg}=\bal+\bbe\,\bar g_M,\qquad
+      \Sig=\sigma^2_{g,M}\,\bbe\bbe^{\top}+\Dg}
+  \]
+  so $\Cov(g_i,g_j)=\beta_i\beta_j\sigma^2_{g,M}$ off the diagonal and
+  $\Var(g_i)=\beta_i^2\sigma^2_{g,M}+\sigma^2_{g,\varepsilon,i}$ on it.
+
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Rank at most one plus diagonal}: every off-diagonal covariance
+      is two betas times one number.
+    \item The compression: $2\np+1$ numbers (one beta and one residual variance
+      per asset, plus the market variance) instead of $\np(\np+1)/2$ covariances,
+      plus $\np+1$ for $\bar{\bg}$. For the S\&P 500, on the order of a thousand
+      parameters against more than a hundred thousand.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What Is Assumed Away}
+  The zeros off the diagonal of $\Dg$ are the third assumption. If two assets'
+  residuals are correlated, their true covariance is
+  $\beta_i\beta_j\sigma^2_{g,M}$ \hilite{plus} a residual covariance the model
+  sets to zero.
+
+  \vspace{0.4em}
+  Fitting each regression separately makes every residual orthogonal to the
+  market column, and nothing else. Example 1 measures the residual correlations
+  across our dataset:
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item most pairs close to zero (median absolute correlation below $0.1$),
+    \item related firms a few tenths (banks with banks up to about one half),
+    \item near-duplicate securities almost perfectly correlated.
+  \end{itemize}
+
+  \vspace{0.3em}
+  Those are the covariance errors L6b's model inherits: the number to quote when
+  asked how good the SIM covariance is.
+\end{frame}
+
+\begin{frame}{Portfolio Risk Under a SIM}
+  For fixed weights $\bw$, the linearized growth rate $g_p=\bw^{\top}\bg$ has
+  portfolio beta $\beta_p=\bw^{\top}\bbe$ and residual
+  $\varepsilon_p=\bw^{\top}\beps$:
+  \[
+    \boxed{g_p=\bw^{\top}\bal+\beta_p\,g_M+\varepsilon_p,\qquad
+      \Var(g_p)=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
+      +\underbrace{\bw^{\top}\Dg\bw}_{\text{residual risk}}}
+  \]
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item Market risk depends on the weights only through $\beta_p$; adding
+      assets with the same exposure does not reduce it.
+    \item Residual risk diversifies: equal weights $1/\np$ over $\np$ assets with
+      residual variances below $K$ give
+      $\bw^{\top}\Dg\bw=\frac{1}{\np^2}\sum_i\sigma^2_{g,\varepsilon,i}\le K/\np$.
+    \item Two conditions carry it: spread-out fixed weights, and
+      \hilite{uncorrelated residuals} (with a general residual covariance
+      $\boldsymbol\Omega_\varepsilon$ the term is
+      $\bw^{\top}\boldsymbol\Omega_\varepsilon\bw$ and does not vanish).
+  \end{itemize}
+\end{frame}
+
+% ==== estimation =============================================
+\begin{frame}{Estimation of SIM Parameters}
+  One asset at a time, $N$ aligned daily observations (the L5a data-matrix
+  columns). Response $\by=(g_{i,1},\ldots,g_{i,N})^{\top}$; design matrix
+  $\bX\in\mathbb R^{N\times2}$ with a column of ones and the market column
+  $g_{M,1},\ldots,g_{M,N}$; parameters $\bth_i=(\alpha_i,\beta_i)^{\top}$;
+  residuals $\beps$: $\by=\bX\bth_i+\beps$.
+  \[
+    \boxed{\hat{\bth}_i=\arg\min_{\bth}\lVert\by-\bX\bth\rVert_2^2
+      \;\Longrightarrow\;
+      (\bX^{\top}\bX)\hat{\bth}_i=\bX^{\top}\by
+      \;\Longrightarrow\;
+      \hat{\bth}_i=(\bX^{\top}\bX)^{-1}\bX^{\top}\by}
+  \]
+  unique when $\bX$ has full column rank. Fitted values $\hat{\by}=\bX\hat{\bth}_i$,
+  residuals $\mathbf r=\by-\hat{\by}$; $\hat\beta_i$ is the sample covariance
+  over the sample market variance, $\hat\alpha_i=g_i'-\hat\beta_ig_M'$.
+
+  \vspace{0.3em}
+  In code: never form the inverse; a QR solve (\texttt{X\textbackslash y}) or the
+  SVD gives the same estimate stably (Example 1 does it three ways). Ridge
+  versions: optional advanced material.
+  \slidenote{Example 1:}{\dimmed{CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{Uncertainty}
+  \hilite{Classical assumptions}: design held fixed, $\E[\beps\mid\bX]=\mathbf 0$,
+  errors independent across days, common variance, Gaussian,
+  $\beps\sim\mathcal N(\mathbf 0,\sigma^2_{g,\varepsilon}\mathbf I)$. Then
+  $\hat{\bth}_i=\bth_i+(\bX^{\top}\bX)^{-1}\bX^{\top}\beps$ is unbiased and
+  Gaussian with covariance $\sigma^2_{g,\varepsilon}(\bX^{\top}\bX)^{-1}$.
+  Observations are already growth rates: \hilite{no $\Delta t$}.
+  \[
+    \boxed{s^2_{g,\varepsilon}=\frac{\lVert\mathbf r\rVert_2^2}{N-2},\qquad
+      \widehat{\Cov}(\hat{\bth}_i)=s^2_{g,\varepsilon}(\bX^{\top}\bX)^{-1},\qquad
+      \mathrm{SE}(\hat\theta_j)=\sqrt{[\widehat{\Cov}(\hat{\bth}_i)]_{jj}}}
+  \]
+  $95\%$ interval: $\hat\theta_j\pm t_{0.975,N-2}\,\mathrm{SE}(\hat\theta_j)$
+  ($1.96$ for eleven years of daily data). Beta's interval is usually narrow;
+  alpha's usually wide and often covering zero. Residual diffusion volatility:
+  $\sqrt{\Delta t}\,s_{g,\varepsilon}$.
+\end{frame}
+
+\begin{frame}{Fit, and What Daily Data Do to the Assumptions}
+  \[
+    R^2=1-\frac{\lVert\mathbf r\rVert_2^2}{\sum_t(g_{i,t}-g_i')^2}=\hat\rho_{iM}^2
+    \quad\text{(least squares, intercept, non-constant response)}
+  \]
+  \vspace{-0.6em}
+  An index fund can sit near $0.85$ against SPY, a stock with a larger beta
+  near $0.25$: both consistent with the model.
+  \vspace{-0.15em}
+
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item Daily growth rates: heavy tails, clustered absolute values, and (from
+      volume-weighted average prices) positive lag-one autocorrelation: the
+      classical intervals are optimistic; a Newey--West standard error for beta
+      is $40$ to $100\%$ larger.
+    \item \hilite{Bootstrap}: $\by^{(b)}=\bX\hat{\bth}_i+\beps^{(b)}$, refit,
+      read the spread; parametric (Gaussian) or empirical-residual (keeps the
+      tails); both draw days independently. When dependence matters: HAC errors
+      or a block bootstrap. Example 2 does all of it.
+  \end{itemize}
+  \vspace{-0.2em}
+  \slidenote{Example 2:}{\dimmed{CHEME-5660-L6a-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}}
+\end{frame}
+
+\begin{frame}{What R-squared, Alpha, and Beta Do Not Prove}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item $R^2$ is the sample fraction of variation the fitted market term
+      explains: not the probability the model is true, not forecast accuracy,
+      not investment quality. Low $R^2$ with a precise beta, high $R^2$ with
+      unstable parameters: both happen.
+    \item A positive $\hat\alpha_i$ is an intercept conditional on the market
+      proxy, the window, the price series (volume-weighted average prices, not
+      total returns), and the specification; its interval usually covers zero.
+    \item Beta is exposure to the chosen index at the chosen sampling interval,
+      not total risk.
+    \item Before the SIM covariance goes into L6b's optimizer: residual
+      cross-correlations, stability across windows, sensitivity to the proxy,
+      and one unit convention throughout (growth rate, log return, covariance
+      rate differ by powers of $\Delta t$).
+  \end{itemize}
+\end{frame}
+
+% ==== optional advanced material =============================
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Advanced:}} \dimmed{advanced/sim/}\par
+  \dimmed{CHEME-5660-L6a-Advanced-SIM-Theory-Fall-2026.ipynb}}
+
+  \vspace{0.7em}
+  Optional, not a prerequisite for L6b. Derives the ridge (regularized)
+  estimator and its covariance, distinguishes the residual and parametric
+  bootstraps, keeps the growth-rate, log-return, and volatility conventions
+  straight, propagates parameter uncertainty into portfolio risk and weights,
+  and writes the maximum-Sharpe problem as a second-order cone program.
+  \slidenote{Notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-6/L6a/advanced}{lectures/week-6/L6a/advanced}, also linked from the lecture notebook.}
+\end{frame}
+
+\begin{frame}{Summary}
+  Today: the single index model, the covariance and portfolio risk it implies,
+  and least-squares estimation with classical uncertainty.
+
+  \vspace{0.2em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.1em}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{One factor splits risk in two}: beta squared times the market
+      variance plus a residual variance; beta measures exposure, $R^2$ what the
+      market explains, and they can disagree.
+    \item \hilite{The SIM covariance is rank one plus diagonal, on an
+      assumption}: one beta and one residual variance per asset; residual risk
+      diversifies only if residuals are uncorrelated, which fits do not
+      guarantee.
+    \item \hilite{Least squares estimates, daily data qualify}: growth-rate
+      units, no $\Delta t$; heavy tails, lag-one dependence, and clustering make
+      bootstrap or robust intervals the complement.
+  \end{itemize}
+
+  \vspace{0.1em}
+  Next: the SIM mean and covariance inside L5b's allocation problems.
+\end{frame}
+
+\transitionframe{Today: one index, one beta per asset, and the covariance that falls out of a single line.}
+
+\end{document}
