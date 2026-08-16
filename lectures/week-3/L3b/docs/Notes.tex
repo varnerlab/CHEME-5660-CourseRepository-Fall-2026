@@ -20,7 +20,7 @@
 
 An equity price has many possible futures. A binomial lattice makes uncertainty computationally explicit by replacing that continuum with two moves per step. The model is deliberately simple: it gives a complete distribution, preserves positive prices when its move factors are positive, and supports backward valuation. Its simplicity also makes its omissions visible.
 
-Let $S_0>0$ dollars per share be the initial ex-dividend price. Over each step of length $\Delta t>0$ years, the price is multiplied by the constant up factor $u>0$ or down factor $d>0$, with $d<u$. Multiplication commutes, so a path with $k$ up moves and $n-k$ down moves reaches the same node regardless of the order of those moves. This is the source of recombination (\figref{equity-lattice}).
+Let $S_0>0$ dollars per share be the initial ex-dividend price. Over each step of length $\Delta t>0$ years, the price is multiplied by the constant up factor $u>0$ or down factor $d>0$, with $d<u$. Multiplication commutes, so a path with $k$ up moves and $N-k$ down moves reaches the same node regardless of the order of those moves, where $N$ is the number of steps taken. This is the source of recombination (\figref{equity-lattice}).
 
 At every step, the same two moves remain available. In sampling language, the move sequence draws from $\{u,d\}$ with replacement. That repeated availability is distinct from recombination: replacement describes how moves are sampled, while recombination describes different move orders merging at the same price node. Once equivalent states are merged, the lattice is a directed acyclic graph rather than a tree in the strict graph-theoretic sense.
 
@@ -37,9 +37,9 @@ At every step, the same two moves remain available. In sampling language, the mo
       \draw[vnrule,line width=0.9pt,-{Latex[length=2.5mm]}] (\a)--(\b);
     \node[text=vnlink] at (1.0,0.62) {up};
     \node[text=vnmuted] at (1.0,-0.62) {down};
-    \node[below,text=vnmuted] at (0,-2.2) {$n=0$};
-    \node[below,text=vnmuted] at (2,-2.2) {$n=1$};
-    \node[below,text=vnmuted] at (4,-2.2) {$n=2$};
+    \node[below,text=vnmuted] at (0,-2.2) {$t=0$};
+    \node[below,text=vnmuted] at (2,-2.2) {$t=1$};
+    \node[below,text=vnmuted] at (4,-2.2) {$t=2$};
   \end{tikzpicture}
   \caption{A two-step recombining equity lattice. The middle node is shared because $S_0ud=S_0du$. Recombination does not require $ud=1$; that reciprocal constraint is an additional parameter choice used in some models.}
   \label{fig:equity-lattice}
@@ -47,17 +47,17 @@ At every step, the same two moves remain available. In sampling language, the mo
 
 \section{Terminal Prices and Their Distribution}
 
-Assume first that successive moves are independent and that an up move has constant probability $p\in[0,1]$. After $n$ steps, the number of up moves $K_n$ is binomial. This supplies both the node values and their probability mass (\propref{terminal-distribution}).
+Assume first that successive moves are independent and that an up move has constant probability $p\in[0,1]$. After $N$ steps, the number of up moves $K_N$ is binomial. This supplies both the node values and their probability mass (\propref{terminal-distribution}).
 
 \begin{proposition}{Terminal distribution in an i.i.d. binomial lattice}{terminal-distribution}
-Let $S_0>0$, $u>d>0$, $p\in[0,1]$, and let the positive integer $n$ be the number of independent lattice steps. Let $K_n\sim\operatorname{Binomial}(n,p)$ denote the number of up moves. Conditional on $K_n=k$, where $k\in\{0,\ldots,n\}$, the terminal share price and its real-world probability are
+Let $S_0>0$, $u>d>0$, $p\in[0,1]$, and let the positive integer $N$ be the number of independent lattice steps. Let $K_N\sim\operatorname{Binomial}(N,p)$ denote the number of up moves. Conditional on $K_N=k$, where $k\in\{0,\ldots,N\}$, the terminal share price and its real-world probability are
 \begin{equation}
   \label{eq:terminal-distribution}
-  S_{n,k}=S_0u^kd^{n-k},
+  S_{N,k}=S_0u^kd^{N-k},
   \qquad
-  \Pmeasure(K_n=k)=\binom{n}{k}p^k(1-p)^{n-k}.
+  \Pmeasure(K_N=k)=\binom{N}{k}p^k(1-p)^{N-k}.
 \end{equation}
-The model has $n+1$ distinct terminal nodes when $u\neq d$.
+The model has $N+1$ distinct terminal nodes when $u\neq d$.
 \end{proposition}
 
 The expected gross return per step under this probability law is $pu+(1-p)d$. Historical data can suggest estimates for $u$, $d$, and $p$, but the procedure is a model choice. Splitting past observations into positive and negative groups and averaging their move factors discards serial dependence, changing volatility, and tail structure. Estimated parameters also inherit sampling error and regime dependence.
@@ -118,16 +118,16 @@ This is an expectation under $\Qmeasure$, not a statement that the real-world ex
 
 \section{Probability of Profit Belongs to the Real-World Measure}
 
-Suppose a strategy costs $C_0>0$ dollars initially and has terminal liquidation value $W_{n,k}$ dollars at node $(n,k)$. If profit means terminal wealth exceeding the initial cost grown at benchmark gross return $R_b^n$, the probability of profit is defined by \defnref{probability-profit}.
+Suppose a strategy costs $C_0>0$ dollars initially and has terminal liquidation value $W_{N,k}$ dollars at node $(N,k)$. If profit means terminal wealth exceeding the initial cost grown at benchmark gross return $R_b^N$, the probability of profit is defined by \defnref{probability-profit}.
 
 \begin{definition}{Lattice probability of profit}{probability-profit}
-Let $K_n\sim\operatorname{Binomial}(n,p)$ under the real-world measure $\Pmeasure$, let $W_{n,k}$ be terminal strategy wealth in dollars at node $k$, let $C_0>0$ dollars be initial cost, and let $R_b>0$ be the benchmark gross return per step. The benchmark-relative probability of profit is
+Let $K_N\sim\operatorname{Binomial}(N,p)$ under the real-world measure $\Pmeasure$, let $W_{N,k}$ be terminal strategy wealth in dollars at node $k$, let $C_0>0$ dollars be initial cost, and let $R_b>0$ be the benchmark gross return per step. The benchmark-relative probability of profit is
 \begin{equation}
   \label{eq:probability-profit}
   \operatorname{POP}_{\Pmeasure}
-  :=\Pmeasure\!\left(W_{n,K_n}>C_0R_b^n\right)
-  =\sum_{k=0}^{n}\mathbf{1}_{\{W_{n,k}>C_0R_b^n\}}
-  \binom{n}{k}p^k(1-p)^{n-k},
+  :=\Pmeasure\!\left(W_{N,K_N}>C_0R_b^N\right)
+  =\sum_{k=0}^{N}\mathbf{1}_{\{W_{N,k}>C_0R_b^N\}}
+  \binom{N}{k}p^k(1-p)^{N-k},
 \end{equation}
 where $\mathbf{1}_{A}$ equals one when event $A$ occurs and zero otherwise.
 \end{definition}

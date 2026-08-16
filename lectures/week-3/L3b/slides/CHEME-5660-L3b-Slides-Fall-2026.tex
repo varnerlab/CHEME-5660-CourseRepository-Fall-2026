@@ -126,24 +126,24 @@
 
   \vspace{0.3em}
   The fixed-parameter model assumes the same $u$, $d$, and $p$ at every node and
-  independent move draws across steps. Level $n$ contains $n+1$ price states.
+  independent move draws across steps. Level $t$ contains $t+1$ price states.
 
   \slidenote{Purpose:}{the lattice replaces a continuum of possible prices with a finite map whose probabilities and payoffs can be computed exactly.}
 \end{frame}
 
 % ==== terminal distribution ==================================
 \begin{frame}{Terminal Prices and Their Distribution}
-  Let $n$ be the number of independent steps, and let $K_n$ count the up moves.
-  Under the real-world law, $K_n\sim\operatorname{Binomial}(n,p)$. Conditional on
-  $K_n=k$, where $k\in\{0,\ldots,n\}$, the terminal price is:
+  Let $N$ be the number of independent steps, and let $K_N$ count the up moves.
+  Under the real-world law, $K_N\sim\operatorname{Binomial}(N,p)$. Conditional on
+  $K_N=k$, where $k\in\{0,\ldots,N\}$, the terminal price is:
   \[
-    \underbrace{S_{n,k}=S_0u^kd^{n-k}}_{\text{\footnotesize terminal price}}.
+    \underbrace{S_{N,k}=S_0u^kd^{N-k}}_{\text{\footnotesize terminal price}}.
   \]
 
-  There are $\binom nk$ paths with that count, and every such path has probability
-  $p^k(1-p)^{n-k}$. The node probability is therefore:
+  There are $\binom Nk$ paths with that count, and every such path has probability
+  $p^k(1-p)^{N-k}$. The node probability is therefore:
   \[
-    \underbrace{\Pmeasure(K_n=k)=\binom nk p^k(1-p)^{n-k}}_{\text{\footnotesize probability of node }(n,k)}.
+    \underbrace{\Pmeasure(K_N=k)=\binom Nk p^k(1-p)^{N-k}}_{\text{\footnotesize probability of node }(N,k)}.
   \]
 
   The expected one-step gross return under this law is $pu+(1-p)d$.
@@ -151,16 +151,16 @@
 
 \begin{frame}{Paths Grow Exponentially, Nodes Grow Linearly}
   \vspace{0.3em}
-  After $n$ binary moves, the unmerged path tree contains $2^n$ paths to the
-  terminal level. The recombining lattice contains only $n+1$ terminal price nodes.
+  After $N$ binary moves, the unmerged path tree contains $2^N$ paths to the
+  terminal level. The recombining lattice contains only $N+1$ terminal price nodes.
 
   \vspace{0.8em}
   {\large\textbf{\ink{Why the compression is exact}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item Every path with $k$ up moves and $n-k$ down moves reaches
-      $S_0u^kd^{n-k}$.
-    \item The binomial coefficient $\binom nk$ records how many path orders merge
+    \item Every path with $k$ up moves and $N-k$ down moves reaches
+      $S_0u^kd^{N-k}$.
+    \item The binomial coefficient $\binom Nk$ records how many path orders merge
       into that node.
     \item Recombination preserves the terminal distribution while replacing path
       enumeration with one state per up-move count.
@@ -312,15 +312,15 @@
 \end{frame}
 
 \begin{frame}{\large Probability of Profit Belongs to the Real-World Measure}
-  Let $C_0>0$ be a strategy's initial cost, $W_{n,k}$ its terminal wealth at node
-  $(n,k)$, and $R_b>0$ a benchmark gross return per step. Under
-  $K_n\sim\operatorname{Binomial}(n,p)$, define profit by
-  $W_{n,K_n}>C_0R_b^n$. Its probability is:
+  Let $C_0>0$ be a strategy's initial cost, $W_{N,k}$ its terminal wealth at node
+  $(N,k)$, and $R_b>0$ a benchmark gross return per step. Under
+  $K_N\sim\operatorname{Binomial}(N,p)$, define profit by
+  $W_{N,K_N}>C_0R_b^N$. Its probability is:
   \[
     \operatorname{POP}_{\Pmeasure}
-    =\sum_{k=0}^{n}
-      \mathbf 1_{\{W_{n,k}>C_0R_b^n\}}
-      \binom nk p^k(1-p)^{n-k}.
+    =\sum_{k=0}^{N}
+      \mathbf 1_{\{W_{N,k}>C_0R_b^N\}}
+      \binom Nk p^k(1-p)^{N-k}.
   \]
 
   \vspace{0.3em}

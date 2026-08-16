@@ -19,11 +19,11 @@
 
 A price model describes possible states and their probabilities. A trading rule adds decisions: when to enter, how many shares to hold, what constitutes success, when to exit, and how costs are handled. Without those choices, ``probability of profit'' is not a well-defined quantity.
 
-Suppose $n_0>0$ shares are purchased at the time-0 ask price $S_0^{\mathrm{ask}}>0$ dollars per share and liquidated after $N$ steps at the bid price $S_N^{\mathrm{bid}}>0$. Let $K\geq0$ dollars collect commissions and other modeled cash costs. With a continuously compounded annual benchmark rate $r_b$ and horizon $T=N\Delta t$ years, one present-value profit measure is
+Suppose $n_0>0$ shares are purchased at the time-0 ask price $S_0^{\mathrm{ask}}>0$ dollars per share and liquidated after $N$ steps at the bid price $S_N^{\mathrm{bid}}>0$. Let $F_0\geq0$ dollars be the trading costs paid at entry and $F_T\geq0$ dollars the trading costs paid at liquidation. With a continuously compounded annual benchmark growth rate $g_b$ and horizon $T=N\Delta t$ years, one present-value profit measure is
 \begin{equation}
   \label{eq:trade-npv}
-  \Pi_0:=e^{-r_bT}n_0S_N^{\mathrm{bid}}
-  -n_0S_0^{\mathrm{ask}}-K.
+  \Pi_0:=e^{-g_bT}\left(n_0S_N^{\mathrm{bid}}-F_T\right)
+  -n_0S_0^{\mathrm{ask}}-F_0.
 \end{equation}
 Equation \eqnref{trade-npv} compares all cash flows at time 0. An equivalent future-value comparison grows the entry cost and costs to time $T$. Mixing a discounted sale value with an undiscounted target would create inconsistent units.
 
@@ -36,18 +36,18 @@ Equation \eqnref{trade-npv} compares all cash flows at time 0. An equivalent fut
     \node[below=4pt] at (t0) {$0$};
     \node[below=4pt] at (tN) {$T$};
     \draw[vncarnelian,line width=1.3pt,-{Latex[length=3mm]}]
-      (t0.north)--(0.6,1.05) node[above,text=vncarnelian] {$-n_0S_0^{\mathrm{ask}}-K$};
+      (t0.north)--(0.6,1.05) node[above,text=vncarnelian] {$-n_0S_0^{\mathrm{ask}}-F_0$};
     \draw[vnlink,line width=1.3pt,-{Latex[length=3mm]}]
-      (5.55,1.05)--(tN.north) node[above,text=vnlink] {$+n_0S_N^{\mathrm{bid}}$};
+      (5.55,1.05) node[above,text=vnlink] {$+n_0S_N^{\mathrm{bid}}-F_T$} --(tN.north);
     \draw[vnlink,line width=0.9pt,-{Latex[length=3mm]}]
       (5.35,-0.75)--(0.82,-0.75)
-      node[midway,fill=white,inner sep=3pt] {discount at $r_b$};
+      node[midway,fill=white,inner sep=3pt] {discount at $g_b$};
   \end{tikzpicture}
-  \caption{A terminal-exit long-equity rule represented as dated cash flows. Real execution introduces a bid--ask spread and costs; the benchmark rate converts the liquidation receipt to the entry date.}
+  \caption{A terminal-exit long-equity rule represented as dated cash flows. Real execution introduces a bid--ask spread and costs; the benchmark growth rate converts the liquidation receipt to the entry date.}
   \label{fig:trade-rule}
 \end{figure}
 
-The benchmark encodes an opportunity-cost hurdle. Setting $r_b=0$ asks whether nominal proceeds exceed cost. A Treasury-based or strategy-specific $r_b$ asks whether the trade beats that alternative. Neither choice converts POP into investment advice; it only makes the comparison explicit.
+The benchmark encodes an opportunity-cost hurdle. Setting $g_b=0$ asks whether nominal proceeds exceed cost. A Treasury-based or strategy-specific $g_b$ asks whether the trade beats that alternative. The corresponding one-step gross benchmark return from L3b is $R_b:=e^{g_b\Delta t}$. Neither choice converts POP into investment advice; it only makes the comparison explicit.
 
 \section{Closed-Form Binomial Tail Rule}
 
@@ -56,17 +56,17 @@ Use the real-world binomial lattice from L3b. Let $u>d>0$ be the constant price 
 Define the present-value fractional return on initial share cost by
 \begin{equation}
   \label{eq:pv-return}
-  \rho_N(K_N):=e^{-r_bT}\frac{S_N}{S_0}-1
-  =e^{-r_bT}u^{K_N}d^{N-K_N}-1.
+  \rho_N(K_N):=e^{-g_bT}\frac{S_N}{S_0}-1
+  =e^{-g_bT}u^{K_N}d^{N-K_N}-1.
 \end{equation}
 For a target $\rho_\star>-1$, the strict success event $\rho_N>\rho_\star$ becomes a threshold on the integer $K_N$ (\thmref{binomial-tail}).
 
 \begin{theorem}{Target-return probability in a binomial lattice}{binomial-tail}
-Let $u>d>0$, $p\in[0,1]$, $N\in\mathbb{N}$, $\Delta t>0$ years, $T:=N\Delta t$, and $K_N\sim\operatorname{Binomial}(N,p)$ under the real-world measure. Let the continuously compounded benchmark rate be $r_b\in\mathbb{R}$ per year and let $\rho_\star>-1$ be the dimensionless strict target for the present-value return in \eqnref{pv-return}. Define
+Let $u>d>0$, $p\in[0,1]$, $N\in\mathbb{N}$, $\Delta t>0$ years, $T:=N\Delta t$, and $K_N\sim\operatorname{Binomial}(N,p)$ under the real-world measure. Let the continuously compounded benchmark growth rate be $g_b\in\mathbb{R}$ per year and let $\rho_\star>-1$ be the dimensionless strict target for the present-value return in \eqnref{pv-return}. Define
 \begin{equation}
   \label{eq:count-threshold}
   \tau(\rho_\star):=
-  \frac{\log(1+\rho_\star)+r_bT-N\log d}{\log(u/d)},
+  \frac{\log(1+\rho_\star)+g_bT-N\log d}{\log(u/d)},
   \qquad
   k_{\min}:=\lfloor\tau(\rho_\star)\rfloor+1.
 \end{equation}
@@ -81,10 +81,10 @@ with value zero when $k_{\min}>N$ and value one when $k_{\min}\leq0$.
 \end{theorem}
 
 \begin{derivation}
-Start with $e^{-r_bT}u^kd^{N-k}-1>\rho_\star$. Move positive terms and take logarithms:
+Start with $e^{-g_bT}u^kd^{N-k}-1>\rho_\star$. Move positive terms and take logarithms:
 \begin{align*}
-  u^kd^{N-k}&>(1+\rho_\star)e^{r_bT},\\
-  k\log(u/d)&>\log(1+\rho_\star)+r_bT-N\log d.
+  u^kd^{N-k}&>(1+\rho_\star)e^{g_bT},\\
+  k\log(u/d)&>\log(1+\rho_\star)+g_bT-N\log d.
 \end{align*}
 Because $u/d>1$, division preserves the inequality, so $k>\tau(\rho_\star)$. The smallest admissible integer is $\lfloor\tau\rfloor+1$; summing the binomial masses above it gives \eqnref{binomial-tail}.
 \end{derivation}
@@ -94,7 +94,7 @@ The strict inequality matters at a node lying exactly on the threshold. A non-st
 \notebooklink
   {L4a: Cumulative Probability for a Lattice Exit Rule}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Example-CumulativeProbabilityLattice-Fall-2026.ipynb}
-  {Estimate a real-world lattice, convert target returns into node thresholds, and compare the analytic binomial tail with enumerated states.}
+  {Estimate a real-world lattice from historical data, convert strict target returns into minimum up-move counts, and evaluate the analytic binomial tail across a range of targets with explicit edge-case handling.}
 
 \section{Terminal Rules and First-Passage Rules Differ}
 
@@ -107,7 +107,7 @@ Let $S_j$ be the modeled share price at step $j\in\{0,\ldots,N\}$, and let $L_j<
   \tau_{\mathrm{exit}}:=
   \min\{j\in\{1,\ldots,N\}:S_j\leq L_j\ \text{or}\ S_j\geq U_j\},
 \end{equation}
-with $\tau_{\mathrm{exit}}:=N$ if no earlier boundary is reached. A complete rule must also specify the liquidation price and action when a boundary is crossed or both instructions are affected by a price gap.
+with $\tau_{\mathrm{exit}}:=+\infty$ if neither boundary is reached by step $N$, so that a still-open position at liquidation remains distinct from a crossing at the final step. A complete rule must also specify the liquidation price and action when a boundary is crossed or both instructions are affected by a price gap.
 \end{definition}
 
 First-passage probabilities can be computed by propagating probability only through nodes that have not yet been absorbed. In actual markets, stop orders do not guarantee their trigger price, limit orders do not guarantee execution, and discrete monitoring can miss between-step crossings. Slippage and market impact make the execution model part of the strategy model.
@@ -128,12 +128,24 @@ Under the constant independent $m$-branch model, a count vector $\mathbf{x}\in\m
 The number of count vectors at level $N$ is $\binom{N+m-1}{m-1}$. Distinct count vectors may coincide in price if the factors have additional multiplicative relationships.
 \end{proposition}
 
-More branches approximate a richer one-step distribution but do not automatically create heavy tails, volatility clustering, or accurate forecasts. Parameters, bin boundaries, and transition dependence still require out-of-sample validation. The computational notebook compares equal-mass and equal-width discretizations and checks that probability mass sums to one at each level.
+More branches approximate a richer one-step distribution but do not automatically create heavy tails, volatility clustering, or accurate forecasts. Parameters, bin boundaries, and transition dependence still require out-of-sample validation. The computational tools support equal-mass and equal-width discretizations; the notebook uses equal-width bins and checks that probability mass sums to one at the selected level.
 
 \notebooklink
   {L4a: $N$-Ary Recombining Lattices}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Example-N-Aray-Lattice-Fall-2026.ipynb}
   {Discretize an empirical growth-rate distribution into multiple branches, build multinomial states, and visualize terminal prices and probabilities.}
+
+\section*{Optional Advanced Material}
+
+\notebooklink
+  {L4a Advanced: First-Passage Exit Rules}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/advanced/first-passage/CHEME-5660-L4a-Advanced-FirstPassage-ExitRules-Fall-2026.ipynb}
+  {Propagate only probability mass for positions that remain open, compute take-profit and stop-loss first-passage probabilities, and show why terminal nodes alone cannot evaluate monitored exits.}
+
+\notebooklink
+  {L4a Advanced: Execution-Aware Probability of Profit}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/advanced/execution/CHEME-5660-L4a-Advanced-ExecutionAware-ProbabilityOfProfit-Fall-2026.ipynb}
+  {Add the bid--ask spread, fees, and slippage to the terminal trade rule, derive the new up-count threshold, and compare execution-aware probability with the frictionless result.}
 
 \newpage
 \thispagestyle{fancy}
