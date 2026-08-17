@@ -26,7 +26,7 @@ asynchronously and does not displace 7a.
 | 6a | Sep 29 | 2 | Introduction to single-index models | `week-6/L6a` | Built; SIM uncertainty second pass and visual QA passed |
 | 6b | Oct 1 | 2 | SIM-based risky/risk-free minimum-variance allocation | `week-6/L6b` | Built; bootstrap propagation second pass and visual QA passed |
 | 7a | Oct 6 | 2 | Utility-based allocation and the adaptive rebalancing engine | `week-7/L7a`; utility allocator, engine, and drift examples on course data | Built (2026-08-17 restructure); notes, deck, and three examples; Codex-reviewed |
-| 7b | Oct 8 | 2 | Online SIM estimation: updating the engine as data arrive | `week-7/L7b`; EWLS replay and scenario-ensemble examples | Rebuild in progress (spec `private/specs/2026-08-17-week7-utility-online-restructure.md`); the folder still holds the previous rebalancing lecture |
+| 7b | Oct 8 | 2 | Online SIM estimation: updating the engine as data arrive | `week-7/L7b`; EWLS replay and scenario-ensemble examples on course data | Built (2026-08-17 restructure); notes, deck, two examples, and the EWLS derivation in `advanced/`; Codex-reviewed |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b` | Built; visual QA passed after reorg |
 | 9a | Oct 20 | 3 | European BSM and American CRR option pricing | `week-9/L9a` | Built; visual QA passed after reorg |
 | 9b | Oct 22 | 3 | Intrinsic and extrinsic value of American options | `week-9/L9b` | Built; visual QA passed after reorg |
@@ -39,7 +39,7 @@ asynchronously and does not displace 7a.
 | 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a`; former Bandit/MWA lecture in `advanced/` | Built; re-scope pending (utility allocation moved to 7a on 2026-08-17; 13a to become learning the engine's knobs: bandit ticker selection and elasticity learning) |
 | 13b | Nov 19 | 4 | Market crashes and agent-based Wolfram Markets | `week-13/L13b` | Built; visual QA passed after reorg |
 | 14a | Nov 24 | 4 | Building and testing the course Autotrader | `week-14/L14a` | Built; visual QA passed after reorg |
-| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS and validation-gate examples plus derivations | Built; re-scope pending (EWLS moves to 7b on the 2026-08-17 restructure; 15a keeps the validation gates and risk controls) |
+| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS-replay and validation-gate examples plus the policy-gradient derivation | Built; re-scope pending (EWLS moved to 7b on 2026-08-17 and its derivation now lives in `week-7/L7b/advanced`; 15a keeps the validation gates and risk controls) |
 | 15b | Dec 3 | 4 | Final trading challenge, model review, and course synthesis | `week-15/L15b`; captured decision-queue example | Built; credential-free production workflow added |
 
 ## Calendar-sensitive content rules
@@ -53,8 +53,8 @@ asynchronously and does not displace 7a.
   lecture directory. L2b contains the former Week 3 yield-curve, stochastic-rate,
   and STRIPS material; L11b contains the Wheel lecture and supporting examples;
   L12a contains the Markov/HMM enrichment module; L7a contains the CES
-  derivation; L13a contains the former Bandit/MWA lecture; L15a contains
-  online-learning derivations.
+  derivation; L7b contains the EWLS recursion derivation; L13a contains the
+  former Bandit/MWA lecture; L15a contains the policy-gradient derivation.
 - Fall Break remains L8a and Thanksgiving Break remains L14b; production topics
   do not move into those calendar slots. L7a is a production lecture from Fall
   2026; a Goldman Sachs guest Q/A, if confirmed, is delivered asynchronously.

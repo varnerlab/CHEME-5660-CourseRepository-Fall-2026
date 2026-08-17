@@ -1,148 +1,212 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
+\usepackage{array}
 
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\np}{|\mathcal P|}
+\newcommand{\bx}{\mathbf x}
+\newcommand{\by}{\mathbf y}
+\newcommand{\bA}{\mathbf A}
+\newcommand{\bb}{\mathbf b}
+\newcommand{\bM}{\mathbf M}
+\newcommand{\bX}{\hat{\mathbf X}}
+\newcommand{\bth}{\boldsymbol\theta}
+\newcommand{\bal}{\boldsymbol\alpha}
+\newcommand{\bbe}{\boldsymbol\beta}
+\newcommand{\Rset}{\mathcal R}
+\newcommand{\WP}{W_{\mathcal P}}
+\newcommand{\SigSIM}{\hat\Sigma_{g,\mathrm{SIM}}}
+\newcommand{\gt}{\tilde g_{M,t}}
+\newcommand{\thalf}{t_{1/2}}
 
 \begin{document}
 
-\lecturenotes{7b}{Dynamic Rebalancing of Minimum-Variance Portfolios}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
+\lecturenotes{7b}{Online SIM Estimation: Updating the Engine as Data Arrive}{Fall 2026}{October 8, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Quantify portfolio drift}
-  {Propagate pre-trade weights through asset returns and measure the resulting changes in risk, beta, and target tracking.}
-  {Design a rebalancing rule}
-  {Distinguish calendar, threshold, and cost-aware optimization policies and state exactly when each policy trades.}
-  {Evaluate implementation effects}
-  {Account for turnover, transaction costs, taxes, discrete shares, and information timing in a dynamic backtest.}
+  {Explain why frozen parameters can fail}
+  {Read a rolling-window beta against its classical pointwise band, say what such bands do and do not establish, and trace what a change in beta or the intercept does to the preference threshold, the basket, and the SIM covariance matrix.}
+  {Derive and run the EWLS recursion}
+  {Write the exponentially weighted least-squares loss, define the decay factor and the half-life, derive the three running moments and their one-step update, solve for the parameters and the residual scale, seed the recursion with a prior of stated weight, and state the units of everything.}
+  {Compare frozen and online engines honestly}
+  {Replay the L7a engine on the realized year without look-ahead, build a SIM scenario generator with the time step in the right place, define the fail rate, lower quantile, tail mean, and drawdown quantile of an ensemble, and say what a scenario ensemble drawn from the frozen model's own parameters can and cannot show.}
 
-\section{An Optimal Portfolio Is a Time-Stamped Decision}
+\section{The Batch SIM Fit and the Engine That Reads It}
 
-A minimum-variance optimizer produces target weights for one information set, one covariance model, and one set of constraints. After prices move, a portfolio with fixed share counts no longer has those weights. Re-solving and trading continuously would chase every movement, consume liquidity, realize taxes, and expose the strategy to estimation noise. Dynamic rebalancing therefore asks a policy question: \emph{when is the benefit of returning toward a target worth the cost and risk of trading?}
-
-The distinction between a target and a policy is fundamental. A target $\mathbf w_t^\star$ says what the portfolio would hold at decision time $t$ if it could trade immediately under the current model. A rebalancing policy maps observable state---pre-trade weights, estimates, costs, tax lots, and constraints---to an action. The policy must be specified before evaluating later returns.
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=0.55cm]
-    \node[draw=vnrule,fill=vnsoft,minimum width=2.15cm,minimum height=0.75cm] (move) {market move};
-    \node[draw=vnrule,fill=vnsoft,right=of move,minimum width=2.15cm,minimum height=0.75cm] (drift) {pre-trade drift};
-    \node[draw=vnink,fill=vnpanel,right=of drift,minimum width=2.15cm,minimum height=0.75cm] (rule) {policy signal};
-    \node[draw=vnrule,fill=vnsoft,right=of rule,minimum width=2.15cm,minimum height=0.75cm] (trade) {trade and costs};
-    \node[draw=vnrule,fill=vnsoft,right=of trade,minimum width=2.15cm,minimum height=0.75cm] (hold) {post-trade hold};
-    \draw[vnlink,thick,->] (move)--(drift);
-    \draw[vnlink,thick,->] (drift)--(rule);
-    \draw[vnlink,thick,->] (rule)--(trade);
-    \draw[vnlink,thick,->] (trade)--(hold);
-    \draw[vnmuted,dashed,->] (hold.south) to[bend right=26] node[below] {next decision time} (move.south);
-  \end{tikzpicture}
-  \caption{A rebalancing strategy is a repeated event sequence. Returns create pre-trade weights; the policy observes only information available at that time, decides whether to trade, pays implementation costs, and then holds the resulting portfolio.}
-  \label{fig:rebalance-loop}
-\end{figure}
-
-\section{How Buy-and-Hold Weights Drift}
-
-Let $\mathbf w_t^+\in\R^m$ be post-trade risky-asset weights at time $t$, with $\mathbf1^{\mathsf T}\mathbf w_t^+=1$, and let $R_{i,t+1}>-1$ be asset $i$'s simple return from $t$ to $t+1$. Before any new trade, the portfolio simple return is $R_{p,t+1}:=(\mathbf w_t^+)^{\mathsf T}\mathbf R_{t+1}$ and the next pre-trade weights are
+In L6a we estimated the single index model (SIM) of asset $i$, $g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}$ for trading days $t=1,\ldots,N$ (growth rates in inverse years, $\beta_i$ dimensionless), by least squares on the whole training sample. With the response vector $\by=(g_{i,1},\ldots,g_{i,N})^{\mathsf T}$, the design matrix $\bX\in\R^{N\times2}$ whose row $t$ is $\bx_t^{\mathsf T}=(1,g_{M,t})$, and the parameter vector $\bth_i=(\alpha_i,\beta_i)^{\mathsf T}$, the estimate solves the normal equations
 \begin{equation}
-  \label{eq:weight-drift}
-  w_{i,t+1}^-
-  =\frac{w_{i,t}^+(1+R_{i,t+1})}{1+R_{p,t+1}},
-  \qquad i\in\{1,\ldots,m\}.
+  \label{eq:ols}
+  \bigl(\bX^{\mathsf T}\bX\bigr)\hat{\bth}_i=\bX^{\mathsf T}\by
+  \qquad\Longleftrightarrow\qquad
+  \Bigl(\sum_{t=1}^{N}\bx_t\bx_t^{\mathsf T}\Bigr)\hat{\bth}_i=\sum_{t=1}^{N}\bx_t\,g_{i,t},
 \end{equation}
-The superscripts $+$ and $-$ mean immediately after and immediately before a trade, respectively. Equation~\eqref{eq:weight-drift} is a self-financing accounting identity before costs: asset values grow at different rates, while the denominator rescales them to fractions of total wealth.
+where the second form writes the matrix products as sums over days, each day entering with the same weight: every day of 2014 counts as much as every day of 2024, and the answer is one number per parameter for the decade, a single pooled slope over the whole sample. The residual variance is $s^2_{g,\varepsilon,i}=\lVert\mathbf r\rVert_2^2/(N-2)$ with $\mathbf r$ the residual vector, and the classical standard errors follow from $s^2_{g,\varepsilon,i}(\bX^{\mathsf T}\bX)^{-1}$; the estimates and their standard errors for every security are in the archive that L6b and L7a read.
 
-With the course convention $r_{i,t+1}=(\Delta t)g_{i,t+1}$ for continuously compounded log return, $1+R_{i,t+1}=\exp(r_{i,t+1})$. The same exact update is therefore
+The L7a engine computes, on each day $t$, the preference weight of every asset from the SIM parameters and two market inputs computed from closes through $t-1$, the recent market growth $\gt$ and the market-state signal $\xi_t$,
 \begin{equation}
-  \label{eq:weight-drift-growth}
-  w_{i,t+1}^-
-  =\frac{w_{i,t}^+\exp((\Delta t)g_{i,t+1})}
-  {\sum_j w_{j,t}^+\exp((\Delta t)g_{j,t+1})}.
+  \label{eq:preference}
+  \gamma_i(t)=\tanh\!\left(\frac{\alpha_i}{\beta_i^{\xi_t}}+\beta_i^{1-\xi_t}\,\gt\right),
 \end{equation}
-Do not replace the gross price relative by $1+(\Delta t)g_{i,t+1}$ except as a stated small-move approximation.
+whose sign chooses the basket ($i$ is preferred exactly when $\gt>-\alpha_i/\beta_i$) and whose magnitude sets the Cobb--Douglas share of the preferred budget; the engine trades toward those targets at the close of day $t$ on a schedule $\Rset$ under a turnover cap $\tau_{\max}$ and a drawdown limit $d_{\max}$, paying a cost $c$ per dollar traded from a self-financing account. In L7a the parameters $(\alpha_i,\beta_i)$ in \eqnref{preference} were the archive values on every day of 2025. Everything else in that formula moved daily; the two parameters that decide the thresholds did not. These notes are about what happens when they do.
 
-\begin{proposition}{When weights do not drift}{no-drift}
-Assume $1+R_{p,t+1}>0$. For every asset with $w_{i,t}^+>0$, \eqnref{weight-drift} satisfies $w_{i,t+1}^-=w_{i,t}^+$ if and only if
+\section{Why Frozen Parameters Can Fail}
+
+A pooled estimate is a single slope over its whole sample; if the quantity it summarizes did not sit still, the number was right on no particular day. The way to see whether it sat still is to estimate it on windows and to draw the uncertainty of each window's estimate next to it, so that motion can be read against a scale. Refit \eqnref{ols} on a window of $L$ trading days ending on day $t$ ($L=252$ in the first example), giving $\hat\beta_i(t)$ and its classical standard error $\mathrm{SE}(\hat\beta_i(t))=\sqrt{s^2_{g,\varepsilon,i}(t)[(\bX_t^{\mathsf T}\bX_t)^{-1}]_{22}}$ from that window's design matrix $\bX_t$ and residual variance $s^2_{g,\varepsilon,i}(t)$, and draw the pointwise band $\hat\beta_i(t)\pm1.96\,\mathrm{SE}(\hat\beta_i(t))$. Two labels come attached. The band is descriptive: the classical formula assumes independent, homoskedastic residuals that daily growth rates violate (L6a), each interval is pointwise, and successive windows overlap in all but one day, so exclusions are correlated. And it gives the motion a scale: a rolling estimate wanders inside such bands even when the parameter is constant, and an excursion of many band-widths that lasts for years would be unusual under the classical model, which is what motivates a formal stability test. On the course data the excursions are of that kind: NVDA's rolling beta ran from about $1.0$ to $2.8$ across the decade against a full-sample value of $1.75$ (median band half-widths across the four firms shown: $0.12$ to $0.27$); JNJ's fell from $0.9$ toward zero and back; AAPL's moved about $0.4$ from its full-sample value in either direction, and GS's ran from $0.8$ to $1.8$ around a full-sample value of $1.2$, for years at a time. This motivates testing a predeclared updating rule; it does not prove drift, and it does not say that updating will improve the engine.
+
+A moving parameter acts on the engine in three places. Write $\mathcal P$ for the set of assets ($\np=13$ firms in the examples), $\hat{\bbe}=(\hat\beta_1,\ldots,\hat\beta_{\np})^{\mathsf T}$ for the vector of betas, and $\hat D_g=\operatorname{diag}(s^2_{g,\varepsilon,1},\ldots,s^2_{g,\varepsilon,\np})$ for the diagonal matrix of residual variances (L6b). \emph{The threshold}: asset $i$ is preferred when $\gt>-\alpha_i/\beta_i$; the frozen thresholds of the thirteen firms sit within a few tenths per year of zero, so the basket hangs on whether the recent market growth is above or below a narrow band, and an intercept that moves by a few tenths per year, the size of its sampling error at any memory shorter than a decade (L6a), moves the threshold by more than that band's width. \emph{The basket and the weights}: the magnitude of $\gamma_i(t)$ moves with both parameters through the lens $\beta_i^{\xi_t}$, and a beta estimate that goes non-positive breaks the lens, which is why L7a stated a rule for that case (assignment to the non-preferred set) and why a fast estimator makes the rule necessary rather than hypothetical. \emph{The covariance matrix}: the L6b input $\SigSIM=s^2_{g,M}\hat{\bbe}\hat{\bbe}^{\mathsf T}+\hat D_g$ carries the betas in the rank-one term and the residual variances on the diagonal; in the first example, holding $s^2_{g,M}$ fixed and swapping in the online betas and residual scales moves the matrix, after the identical first day, by 39\% to 63\% of its Frobenius norm (the square root of the sum of squared entries) on every displayed rebalance day of 2025, an input change that could produce materially different minimum-variance allocations. None of this says that updating helps; it says that freezing is a modeling choice with consequences, and that an estimator which follows the data needs a stated memory and a stated prior.
+
+\section{EWLS: Online SIM Estimation}
+
+Exponentially weighted least squares (EWLS) keeps the L6a regression and changes the weight each day carries. Fix asset $i$; for observations $s=1,\ldots,t$ let $\bx_s=(1,g_{M,s})^{\mathsf T}$ be the regressor of day $s$, $y_s=g_{i,s}$ the response, and $\bth=(\alpha,\beta)^{\mathsf T}$ the parameter vector. Choose a half-life $\thalf>0$ in trading days and set the decay factor $\delta=2^{-1/\thalf}\in(0,1)$, so that $\delta^{\thalf}=1/2$: an observation $\thalf$ days old carries half the weight of today's. The EWLS estimate at time $t$ minimizes the exponentially weighted sum of squared residuals
 \begin{equation}
-  \label{eq:no-drift}
-  R_{i,t+1}=R_{p,t+1}.
+  \label{eq:ewls-loss}
+  L_t(\bth)=\sum_{s=1}^{t}\delta^{\,t-s}\bigl(y_s-\bx_s^{\mathsf T}\bth\bigr)^2 ,
 \end{equation}
-Thus all positively weighted assets must earn the same return over the interval for every weight to remain unchanged. Assets held at zero weight impose no condition.
+whose total weight, $\sum_{s\le t}\delta^{t-s}\to1/(1-\delta)\approx\thalf/\ln2$, is about 91 current-observation equivalents for a one-quarter half-life (a count of weight, not the variance-based effective sample size, which is about twice that); for this data-only loss, ordinary least squares is the case $\delta=1$, no forgetting.
+
+\begin{theorem}{The EWLS recursion}{ewls}
+Let $\delta\in(0,1)$ be the decay factor, $\bx_s=(1,g_{M,s})^{\mathsf T}$ the regressor and $y_s=g_{i,s}$ the response of day $s$ (growth rates in inverse years), and define the weighted Gram matrix, cross-moment vector, and response second moment
+\begin{equation}
+  \label{eq:moments}
+  \bA_t=\sum_{s=1}^{t}\delta^{t-s}\bx_s\bx_s^{\mathsf T}\in\R^{2\times2},\qquad
+  \bb_t=\sum_{s=1}^{t}\delta^{t-s}\bx_s\,y_s\in\R^{2},\qquad
+  c_t=\sum_{s=1}^{t}\delta^{t-s}y_s^2\in\R .
+\end{equation}
+The minimizer of \eqnref{ewls-loss} solves the weighted normal equations $\bA_t\hat{\bth}_{i,t}=\bb_t$, unique whenever the weighted market growth rates are not all equal; the three moments obey the one-step recursion
+\begin{equation}
+  \label{eq:recursion}
+  \bA_t=\delta\,\bA_{t-1}+\bx_t\bx_t^{\mathsf T},\qquad
+  \bb_t=\delta\,\bb_{t-1}+\bx_t\,y_t,\qquad
+  c_t=\delta\,c_{t-1}+y_t^2 ;
+\end{equation}
+and the weighted residual sum of squares at the optimum equals $c_t-\hat{\bth}_{i,t}^{\mathsf T}\bb_t$, so the residual scale is the weighted root mean square residual
+\begin{equation}
+  \label{eq:sigma}
+  \hat\sigma_{\varepsilon,i,t}=\sqrt{\frac{c_t-\hat{\bth}_{i,t}^{\mathsf T}\bb_t}{[\bA_t]_{11}}},\qquad [\bA_t]_{11}=\sum_{s\le t}\delta^{t-s}.
+\end{equation}
+\end{theorem}
+
+\begin{derivation}
+Setting $\nabla_{\bth}L_t=-2\sum_{s\le t}\delta^{t-s}\bx_s(y_s-\bx_s^{\mathsf T}\bth)=\mathbf 0$ and collecting terms gives $\bA_t\bth=\bb_t$. When time advances from $t-1$ to $t$, every old weight $\delta^{(t-1)-s}$ becomes $\delta\cdot\delta^{(t-1)-s}=\delta^{t-s}$ and today's observation enters with weight one, so each weighted sum is $\delta$ times its previous value plus today's term, which is \eqnref{recursion}. Expanding the weighted residual sum of squares at any $\bth$ gives $c_t-2\bth^{\mathsf T}\bb_t+\bth^{\mathsf T}\bA_t\bth$; at the optimum $\bA_t\hat{\bth}_{i,t}=\bb_t$ makes the last term $\hat{\bth}_{i,t}^{\mathsf T}\bb_t$, and \eqnref{sigma} follows on dividing by the total weight.
+\end{derivation}
+
+The three moments are sufficient: everything the estimator reports at time $t$ is a function of them, the raw history is never stored, and the work per day is constant. A recursion has to start somewhere, and $\bA_0=\mathbf 0$ leaves the first days unidentified; we seed it with the one prior we have, the archive estimate, worth a stated number of pseudo-observations.
+
+\begin{proposition}{Prior seeding and the decaying prior}{prior}
+Let $(\bth_{i,0},\sigma_{\varepsilon,i,0})$ be a prior (the archive's $\hat\alpha_i$, $\hat\beta_i$, $s_{g,\varepsilon,i}$), $N_0>0$ a prior weight in pseudo-observations, and $\bM=\E[\bx\bx^{\mathsf T}]=\bigl(\begin{smallmatrix}1&g'_M\\ g'_M&s^2_{g,M}+g'^{\,2}_M\end{smallmatrix}\bigr)$ the second-moment matrix of the regressor built from the archive's training market mean $g'_M$ and variance $s^2_{g,M}>0$. Seed the recursion with
+\begin{equation}
+  \label{eq:seed}
+  \bA_0=N_0\,\bM,\qquad \bb_0=\bA_0\,\bth_{i,0},\qquad c_0=\bth_{i,0}^{\mathsf T}\bb_0+N_0\,\sigma^2_{\varepsilon,i,0}.
+\end{equation}
+Then (i) before any update the recursion returns $\bth_{i,0}$ and $\sigma_{\varepsilon,i,0}$ exactly; (ii) after $t$ updates the prior's weight is $\delta^tN_0$; and (iii) the seeded estimate $\hat{\bth}_{i,t}=\bA_t^{-1}\bb_t$ is the unique minimizer of the data loss plus a decaying prior-centered quadratic,
+\begin{equation}
+  \label{eq:seeded-objective}
+  J_t(\bth)=L_t(\bth)+\delta^{t}N_0\,(\bth-\bth_{i,0})^{\mathsf T}\bM\,(\bth-\bth_{i,0}).
+\end{equation}
 \end{proposition}
 
-If a single-index model supplies beta vector $\boldsymbol\beta_t$, the pre-trade portfolio beta becomes $\beta_{p,t+1}^-:=(\mathbf w_{t+1}^-)^{\mathsf T}\boldsymbol\beta_t$. Even if the beta estimates are held fixed, weight drift changes systematic exposure. With growth-rate covariance estimate $\Sigma_{g,t}$, modeled pre-trade variance is $(\mathbf w_{t+1}^-)^{\mathsf T}\Sigma_{g,t}\mathbf w_{t+1}^-$. A later model refit creates a second source of change; do not confuse parameter drift with mechanical weight drift.
+\begin{derivation}
+(i) $\bM$ is positive definite (its determinant is $s^2_{g,M}$), so $\bA_0^{-1}\bb_0=\bth_{i,0}$, and $c_0-\bth_{i,0}^{\mathsf T}\bb_0=N_0\sigma^2_{\varepsilon,i,0}$ over $[\bA_0]_{11}=N_0$ gives $\sigma^2_{\varepsilon,i,0}$. (ii) Each step multiplies the existing moments by $\delta$ before adding the new observation, so after $t$ steps $\bA_t=\delta^t\bA_0+\sum_{s\le t}\delta^{t-s}\bx_s\bx_s^{\mathsf T}$ and $\bb_t=\delta^t\bA_0\bth_{i,0}+\sum_{s\le t}\delta^{t-s}\bx_sy_s$. (iii) $J_t$ is a strictly convex quadratic with Hessian $2\bA_t$; its gradient vanishes when $\bigl(\sum_{s\le t}\delta^{t-s}\bx_s\bx_s^{\mathsf T}+\delta^tN_0\bM\bigr)\bth=\sum_{s\le t}\delta^{t-s}\bx_sy_s+\delta^tN_0\bM\bth_{i,0}$, which is $\bA_t\bth=\bb_t$ with the seeded moments of (ii).
+\end{derivation}
+
+The theorem's data-only loss and the seeded recursion are therefore two objectives; their minimizers approach one another as $\delta^tN_0$ becomes small against the accumulated data weight, and before that the estimate is a weighted compromise between the archive and the recent past. The ridge estimator of L6a's optional material and this prior both modify the normal equations, but differently: ridge adds a fixed zero-centered penalty on the slope, the prior shrinks toward the archive with the calibration geometry $\bM$ and a penalty that decays, and no equivalence is claimed.
+
+\begin{remark}{Units, the residual scale, and the speed of the prior}{units}
+EWLS consumes annualized daily growth rates from close prices, so nothing is rescaled by the time step $\Delta t=1/252$ years (one trading day) inside the recursion: $\alpha$ and $\hat\sigma_\varepsilon$ are in inverse years, $\beta$ is dimensionless, $\delta$ is a pure number applied once per observation, $\thalf$ is a count of trading days and $N_0$ a count of pseudo-observations, $[\bA_t]_{11}$ is a dimensionless weight, $[\bA_t]_{12}=[\bA_t]_{21}$ is in inverse years and $[\bA_t]_{22}$ in inverse years squared, the entries of $\bb_t$ are in inverse years and inverse years squared, and $c_t$ is in inverse years squared. The residual scale \eqnref{sigma} divides by the weight, not by the weight less two, so it is a weighted root mean square residual rather than an unbiased residual-variance estimator; it is reported, not used for inference. And every residual receives its age weight, but the information a day carries about the slope scales with the square of its centered market growth (what the day adds to the slope direction of $\bA_t$), while $N_0$ counts pseudo-observations whose market variance is the archive's, estimated on volume-weighted average prices that are smoother than the closes the recursion updates on ($4.6$ against $7.5$ per year squared over the training period): sixty-three archive pseudo-observations carry roughly the slope information of $63\times4.6/7.5\approx39$ average close-based days before any decay, and far fewer in a volatile month, so the prior lets go of the slope faster than $N_0$ suggests.
+\end{remark}
+
+\medskip\noindent\textbf{Algorithm (EWLS SIM update, online).} Given the prior for each asset, the archive market moments, $N_0$, and $\thalf$ (hence $\delta$), seed $(\bA_0,\bb_0,c_0)$ by \eqnref{seed}, the same $\bA_0$ for every asset. For each new trading day $t$: (1) after the close, observe $g_{M,t}$ and $g_{i,t}$ for every asset and form $\bx_t=(1,g_{M,t})^{\mathsf T}$; (2) update the moments of every asset by \eqnref{recursion}; (3) solve $\bA_t\hat{\bth}_{i,t}=\bb_t$ and compute $\hat\sigma_{\varepsilon,i,t}$ by \eqnref{sigma}, keeping the previous estimate if the system is numerically unidentified; (4) hand $(\hat\alpha_{i,t},\hat\beta_{i,t},\hat\sigma_{\varepsilon,i,t})$ to the engine for use on day $t+1$, never on day $t$. The course package implements the seed, the update, and the whole path (\texttt{ewls\_init}, \texttt{ewls\_update!}, \texttt{ewls\_path}).
 
 \notebooklink
-  {L7b: Portfolio Drift After a Maximum-Sharpe Allocation}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-Portfolio-Drift-Fall-2026.ipynb}
-  {Freeze initial share counts, propagate realized prices, reconstruct daily wealth fractions, and inspect how portfolio alpha and beta move away from their initial values.}
+  {L7b: Updating the Single Index Model Online with EWLS}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-EWLS-Replay-Fall-2026.ipynb}
+  {Rolling one-year betas of NVDA, AAPL, JNJ, and GS with their pointwise bands against the archive and close-based full-sample values; the EWLS recursion of \thmref{ewls} on close-based growth rates; the walk-forward half-life choice inside 2014 to 2024 (a one-quarter half-life wins on aggregate, declared before 2025 is opened, with the winner per firm printed); the 2025 paths from the archive prior of \propref{prior} with $N_0=63$; and what the update does to the thresholds, the basket, and a parameter-only $\SigSIM$.}
 
-\section{Three Families of Rebalancing Rules}
+\section{Replay Without Look-Ahead}
 
-Let $\mathbf w_t^\star$ be the current target and let $d(\mathbf w_t^-,\mathbf w_t^\star)$ be a stated distance or risk-deviation measure. Common policies include:
+The half-life is the one knob, and it must be chosen without looking at the year we are about to score. We choose it inside the training period by a walk-forward comparison: for each candidate $\thalf\in\{21,63,126,252,\infty\}$, run the recursion over the training growth rates seeded with an OLS fit on the first 252 training growth rates alone (January 6, 2014 to January 5, 2015), and on every day $t$ of 2020 to 2024 predict the firm's growth rate from the parameters estimated through $t-1$ and the market's growth on day $t$, $\hat g_{i,t|t-1}=\hat\alpha_{i,t-1}+\hat\beta_{i,t-1}g_{M,t}$, scoring the mean squared error over the days and the thirteen firms. This is a conditional one-step-ahead evaluation (the parameters are lagged, the day's market growth is not): a test of how well yesterday's parameters describe today's co-movement, not a tradable forecast. On the course data the one-quarter half-life wins on aggregate (a mean squared error $1.9\%$ below the recursion with no forgetting; one month is too noisy at $0.5\%$ below; one year sits between) and for seven of the thirteen firms, and we declare $\thalf^\star=63$ trading days before opening 2025. The criterion scores the combined prediction $\hat\alpha+\hat\beta g_{M,t}$; it neither isolates the intercept nor scores the threshold classification the engine acts on, and nothing downstream re-tunes it.
 
-\begin{enumerate}[leftmargin=1.7em]
-  \item \textbf{Calendar rebalancing.} Trade on predetermined dates---for example, monthly or quarterly---regardless of drift. It is simple to audit but can trade when nothing material changed and wait too long after a large move.
-  \item \textbf{Threshold rebalancing.} Trade when $d$ exceeds a band, such as $\|\mathbf w_t^- - \mathbf w_t^\star\|_\infty>\delta$ for tolerance $\delta>0$. This creates a no-trade region but requires a convention for returning to the target, the nearest band edge, or somewhere between.
-  \item \textbf{Cost-aware optimization.} Choose the new post-trade weights directly by balancing modeled risk, target growth, and trading penalties. The action can be partial rather than all-or-nothing.
-\end{enumerate}
+Both arms run the L7a engine on the 2025 closes with the same rules, schedule, and costs. The frozen arm reads the archive parameters on every day. The online arm restarts the recursion on the first trading day of 2025 from the archive prior with $N_0=63$ and $\thalf^\star=63$, updates it on the close-based growth rates, and on day $t$ reads the parameters that stood before day $t$'s observation was folded in: growth rates through $t-1$, the same one-day shift as the market inputs (L7a). On the first day of 2025 the two arms are identical; the parameter paths diverge from the second day, and under the monthly schedule the first day on which the engines can trade differently is the twenty-second. Walk-forward discipline is the whole of the method: the archive was estimated on the training decade, the half-life was chosen inside it, and the test year is opened once, chronologically.
 
-A hybrid policy checks thresholds only on scheduled dates. Every rule needs an explicit clock, input timestamp, and action. ``Rebalance when needed'' is not reproducible.
+What changed in 2025? The online betas moved by half a unit or more within the year and the intercepts by several tenths per year (with a one-quarter memory the intercept is the least identified parameter of the model, as it was in L6a with eleven years); the thresholds moved with them, so the two arms classified at least one firm differently on 101 of 250 days, and the online arm emptied the basket on 12 days against 57 for the frozen arm; one online beta (JNJ, in the April drawdown) went non-positive for three days and was handled by the stated rule. On the year that happened, updating hurt: the online monthly engine ended at $1.33$ times its initial wealth against $1.53$ for the frozen engine, with twice the turnover and one firing of the circuit breaker; on the daily schedule, $1.26$ against $1.40$. The second example pins the gap to dates and holdings and reruns one counterfactual. In the spring the online intercept of JNJ put that firm alone into a basket the frozen thresholds left empty, and the April fall left the online arm about 58 dollars behind; in November both arms drew down from the same peak day, the frozen engine by $9.0\%$ and the online engine by $10.1\%$, a tenth of a percent over the limit, so the breaker liquidated the online book, and with the lock covering the December rebalance day it sat in cash through year end; with the breaker disabled the same online engine ends at $1.50$, so the firing accounts for 166 of the 202 dollars of the gap. Neither episode is ``the rule, not the estimator'': the online estimates changed the holdings, the changed holdings crossed the threshold, and the discontinuous rule amplified a tenth of a percent into a quarter of the year in cash; a single path cannot separate the three cleanly, and neither number is a probability.
 
-\section{Turnover and the Cost of Returning to Target}
+\section{The Scenario Ensemble}
 
-Let $\Delta\mathbf w_t:=\mathbf w_t^+-\mathbf w_t^-$ be the planned weight change. For fully invested portfolios with no external cash flow, $\mathbf1^{\mathsf T}\Delta\mathbf w_t=0$. The one-way turnover fraction is
+To ask how two policies compare across the years the market could have produced, we need a generator of futures, and the natural one is the model the engine already carries.
+
+\begin{definition}{SIM scenario generator}{generator}
+Let $g'_M$ and $s^2_{g,M}$ be the training-period market mean and variance (inverse years, inverse years squared), $\hat\alpha_i$, $\hat\beta_i$, and $s^2_{g,\varepsilon,i}$ the archive parameters of asset $i$, $\Delta t$ one trading day in years, and $S_M(0)$, $S_i(0)$ the closes on the decision date. For days $t=1,\ldots,N$ draw the daily market growth rate and the daily residuals independently across days and across assets,
 \begin{equation}
-  \label{eq:turnover}
-  \tau_t:=\frac12\|\Delta\mathbf w_t\|_1.
+  \label{eq:generator}
+  g_{M,t}\sim\mathcal N\bigl(g'_M,\,s^2_{g,M}\bigr),\qquad
+  \varepsilon_{i,t}\sim\mathcal N\bigl(0,\,s^2_{g,\varepsilon,i}\bigr),\qquad
+  g_{i,t}=\hat\alpha_i+\hat\beta_i\,g_{M,t}+\varepsilon_{i,t},
 \end{equation}
-The factor $1/2$ avoids counting both sales and purchases as separate portfolio replacements. If a cost model charges a proportional rate $c_i\geq0$ to every dollar bought or sold in asset $i$, the cost relative to pre-trade wealth is instead approximately $\sum_i c_i|\Delta w_{i,t}|$; state which convention is being reported.
+all in inverse years, and compound the closes, $S_M(t)=S_M(t-1)\,e^{g_{M,t}\Delta t}$ and $S_i(t)=S_i(t-1)\,e^{g_{i,t}\Delta t}$. The market draw is shared by every asset on a day, so the assets co-move through the market term exactly as $\SigSIM$ says; the residuals are the only other source of variation.
+\end{definition}
 
-One convex cost-aware update uses risk-aversion coefficient $\gamma>0$ and turnover penalty $\lambda\geq0$:
-\begin{equation}
-  \label{eq:cost-aware-rebalance}
-  \begin{aligned}
-  \min_{\mathbf w\in\R^m}\quad
-    &\frac{\gamma}{2}\mathbf w^{\mathsf T}\Sigma_{g,t}\mathbf w
-      -\bar{\mathbf g}_t^{\mathsf T}\mathbf w
-      +\lambda\|\mathbf w-\mathbf w_t^-\|_1\\
-  \text{subject to}\quad
-    &\mathbf1^{\mathsf T}\mathbf w=1,
-    \qquad \boldsymbol\ell\leq\mathbf w\leq\mathbf u.
-  \end{aligned}
-\end{equation}
-Here $\bar{\mathbf g}_t\in\R^m$ and $\Sigma_{g,t}\in\R^{m\times m}$ are information-time expected-growth and growth-rate covariance estimates, while $\boldsymbol\ell,\mathbf u\in\R^m$ are position bounds. If same-horizon log-return inputs are used instead, convert every input consistently: $\bar{\mathbf r}_t=(\Delta t)\bar{\mathbf g}_t$ and $\Sigma_{r,t}=(\Delta t)^2\Sigma_{g,t}$. The penalty creates endogenous partial rebalancing: a trade occurs only when its modeled benefit overcomes its marginal penalty. Fixed commissions, bid--ask spreads, market impact, minimum lots, and taxes require richer and sometimes nonconvex models.
+The units are where such generators go wrong: the SIM is a model of daily growth rates in annualized units, so we draw those, and the time step enters once, in the exponent $g\Delta t$ that turns a growth rate into a one-day log return; the market's one-day log return therefore has mean $g'_M\Delta t$ and variance $s^2_{g,M}\Delta t^2$, the L4b GBM step with the L5a conversion between the two unit systems. On each simulated future the engines see what they saw on the realized year: the lagged market inputs on the joined series with the same gain and lag, and, for the online arm, the recursion restarted from the archive prior on that future's growth rates with the same shift.
 
-\section{Backtesting a Dynamic Policy Without Looking Ahead}
+This is a scenario engine, not a validation. Its futures have Gaussian daily draws, independent residuals, constant parameters, and moments from volume-weighted average prices that are calmer than close-to-close history; the L3a stylized facts are absent by construction, and nothing in it was checked against how 2025 unfolded. And because the frozen arm's parameters are the generator's own, exactly, the ensemble is a same-generator comparison (L5b): there are no parameter changes for the online estimates to detect, so their movements are responses to sampling noise, and what those movements do to this particular policy's wealth is an empirical question (a nonlinear policy with a breaker is not proved optimal at the true parameters), which the ensemble measures; what it cannot measure is the benefit of updating when the world drifts, because nothing in it drifts. With those two sentences attached, the ensemble is what a single year cannot give: a distribution, summarized by \tabref{metrics}, in which $\WP(t)$ is the wealth of an engine's account, $g_f$ the risk-free growth rate (L7a), and $n$ the number of futures (a count of futures, not the share counts $n_i$ of L7a).
 
-At each decision time, first mark the existing shares to current observable prices and compute $\mathbf w_t^-$. Then estimate model inputs using data whose timestamps precede the decision, construct $\mathbf w_t^\star$ or solve \eqnref{cost-aware-rebalance}, convert desired dollar changes into executable share quantities, apply fills and costs, and hold until the next permitted decision. Returns used to judge the action must occur strictly afterward.
+\begin{table}[ht]
+  \centering
+  \caption{The distributional scorecard of an ensemble of $n$ futures of $N$ days ($T=N\Delta t$ years), with terminal wealths sorted as $W_{(1)}\le\cdots\le W_{(n)}$, maximum drawdowns $D^{(p)}$, and a stated tail level (5\%), $k=\lceil0.05\,n\rceil$.}
+  \label{tab:metrics}
+  \small\sffamily
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}>{\RaggedRight}p{0.22\textwidth}>{\RaggedRight}p{0.42\textwidth}>{\RaggedRight\arraybackslash}p{0.30\textwidth}@{}}
+    \hline
+    \textbf{Metric} & \textbf{Definition} & \textbf{Reads as} \\
+    \hline
+    Median terminal wealth, median NPV & median of $W^{(p)}_{\mathcal P}(T)$; median of $-\WP(0)+W^{(p)}_{\mathcal P}(T)e^{-g_fT}$ & the typical outcome, and whether it beat cash at $g_f$ \\
+    Fail rate & fraction of futures with $W^{(p)}_{\mathcal P}(T)<\WP(0)e^{g_fT}$ (negative NPV) & how often the policy failed to beat the risk-free baseline \\
+    Lower quantile at 5\% & the order statistic $W_{(k)}$, so at least 5\% of the futures end at or below it & the cutoff below which the worst 5\% of the futures ended \\
+    Tail mean at 5\% & $\frac1k\sum_{j=1}^{k}W_{(j)}$, the average of the $k$ smallest terminal wealths & how bad the worst 5\% of the futures were on average \\
+    Drawdown median and 5\% upper cutoff & median of $D^{(p)}$; the $k$-th largest drawdown (at least 5\% of the futures at or above it) & the typical and the bad-case peak-to-trough loss along a path \\
+    \hline
+  \end{tabular}
+\end{table}
 
-Performance accounting should preserve the wealth recursion. If $C_t\geq0$ is the dollar implementation cost paid at time $t$ and $W_t^-$ is pre-trade wealth, then post-trade investable wealth is
-\begin{equation}
-  \label{eq:wealth-after-cost}
-  W_t^+=W_t^- - C_t.
-\end{equation}
-Ignoring \eqnref{wealth-after-cost} while changing weights grants the backtest free trading. Also record turnover, realized taxes or a declared pretax convention, constraint violations, cash residuals from integer shares, and failed or stale orders.
+With $n=2000$ and a level of 5\% the quantile is the hundredth smallest outcome, a definite number rather than an interpolation. When two policies run on the same futures, as the two arms do, the comparison that matters is paired: for each future, the online terminal wealth minus the frozen one, summarized by its median, its spread, and the fraction of futures on which it is positive; pairing holds the market and residual draws fixed across the two policies (it does not cancel them algebraically, the policies being nonlinear in the path), which removes most of the path-to-path noise and leaves the policy contrast. Under futures drawn from its own parameters the frozen monthly engine has a median terminal wealth of about $1.14$ times initial wealth, fails to beat the risk-free baseline on $27\%$ of the futures, has a 5\% lower quantile of $0.93$ and a tail mean of $0.89$, and a median drawdown of $10.6\%$ that sits at the breaker's limit; the realized 2025, at $1.53$, was a favorable draw for it. The online engine is a little worse on every column (median $1.12$, fail rate $31\%$, lower quantile $0.90$, drawdown cutoff $18\%$ against $17\%$); SPY held on the same futures is close to both. Paired, the online minus frozen terminal wealth has a median of about $-11$ on a thousand with a standard deviation of about $140$, and the online arm ends ahead on $44\%$ of the futures: the observed cost of updating under a generator with no drift for the estimator to learn.
 
-Use walk-forward evaluation: select policy parameters such as calendar frequency, threshold $\delta$, and penalty $\lambda$ on training or validation data, then freeze them for a later test period. Compare buy-and-hold, full-target rebalancing, and the proposed partial policy on identical price data and cost assumptions. The relevant question is not whether rebalancing preserves the model target perfectly; it is whether the net risk--return outcome improves after all implementation effects.
+\notebooklink
+  {L7b: Frozen Versus Online Parameters on the Realized Year and on a Scenario Ensemble}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/CHEME-5660-L7b-Example-Scenario-Ensemble-Fall-2026.ipynb}
+  {The realized-path scorecard for both arms on both schedules with the buy-and-hold baselines (frozen monthly $1.53$, online monthly $1.33$, GMV $1.38$, tangent $1.28$, equal weights $1.59$, SPY $1.17$); the event table and the breaker-off counterfactual; the generator of \defnref{generator}; the scorecard of \tabref{metrics} on two thousand futures; the paired-difference histogram.}
+
+\section{Validation Gates}
+
+The comparisons of these notes, frozen against online on a realized path and on an ensemble, become in L15a a set of deployment gates: pass-or-fail rules with stated limits (median terminal wealth against the frozen baseline, fail-rate and tail limits, drawdown and turnover budgets), evaluated on the same paired ensemble before an online engine may replace its frozen ancestor. Nothing here is such a gate.
+
+\section*{Optional Advanced Material}
+
+\notebooklink
+  {L7b Advanced: The EWLS Recursion and the Decaying Prior}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-7/L7b/advanced/online_learning/CHEME-5660-L7b-Advanced-EWLS-Recursion-Fall-2026.ipynb}
+  {Derive the weighted normal equations and the three sufficient statistics of \eqnref{moments} from the loss \eqnref{ewls-loss}, show the recursion \eqnref{recursion}, solve for the parameters and the residual scale \eqnref{sigma} with the cancellation at the optimum, and prove \propref{prior}: the seed returns the prior exactly, and the seeded recursion minimizes the data loss plus the decaying prior-centered quadratic \eqnref{seeded-objective}.}
 
 \newpage
 \thispagestyle{fancy}
 \keytakeaways
-  {In this lecture, we turned a static minimum-variance target into a time-indexed decision policy that observes drift, chooses an action, pays costs, and then holds.}
-  {Drift is mechanical}
-  {Fixed share counts imply $w_{i,t+1}^-=w_{i,t}^+(1+R_{i,t+1})/(1+R_{p,t+1})$; unequal returns change weights and modeled exposures.}
-  {Rebalancing is a policy}
-  {Calendar, threshold, and optimization rules differ in their decision clocks, triggers, and destinations, so each must be specified before testing.}
-  {Trading is part of the wealth equation}
-  {Turnover, spreads, impact, taxes, and discrete shares can erase a model improvement and must be deducted at the time of action.}
-  {Next, begin the derivatives unit by separating an option's contractual payoff from the investor's premium-dependent profit.}
+  {In these notes, we showed that the archive's pooled SIM parameters can mask time variation the rolling estimates make visible, replaced the batch fit with the EWLS recursion (a decay factor, a half-life, three running moments, one prior of stated weight), replayed the L7a engine on 2025 with frozen and with online parameters under a half-life declared inside the training period, and built a SIM scenario generator whose futures gave both engines a distributional scorecard and a paired comparison.}
+  {A frozen parameter is a modeling choice, and rolling bands give the motion a scale}
+  {Rolling estimates with classical pointwise bands show the course betas several band-widths from their pooled values for years at a time, which motivates testing an updating rule without proving drift; a moving intercept or beta moves the preference threshold, the basket, and the SIM covariance matrix, and a fast estimator makes the non-positive-beta rule necessary rather than hypothetical.}
+  {EWLS is least squares with a memory, and everything about it is stated}
+  {The decay factor sets the half-life, three running moments are sufficient and update in one step per day, the parameters come from a two-by-two solve and the residual scale from the same moments, the prior enters as a stated number of pseudo-observations that decay like the data, the units are annualized growth rates, and the one tuning choice, the half-life, is made by a walk-forward comparison inside the training period and declared before the test year.}
+  {Compare policies on many futures, and say what the futures are}
+  {On the realized 2025 the online engine finished behind the frozen one, mostly through one breaker firing that a counterfactual measures and that a single path cannot cleanly attribute; on two thousand futures drawn from the SIM the frozen engine's typical outcome was far below its 2025 result and the online engine paid a small price for updating under a generator with no drift to learn; the ensemble is a scenario engine calibrated on the training decade, its generator is the frozen model's own parameters, the comparison is paired, and none of it is validation.}
+  {Next, in L8b, we leave the portfolio process for derivatives and begin with the option contracts themselves; the frozen-versus-online comparison returns in L15a as a set of pass-or-fail deployment gates.}
 
 \begin{readinglist}
-  \item André F. Perold and William F. Sharpe, \href{https://www.jstor.org/stable/4479134}{``Dynamic Strategies for Asset Allocation,''} \emph{Financial Analysts Journal} 44(1), 16--27 (1988).
-  \item Michael J. Magill and George M. Constantinides, \href{https://doi.org/10.1016/0304-405X(76)90003-4}{``Portfolio Selection with Transactions Costs,''} \emph{Journal of Economic Theory} 13(2), 245--263 (1976).
-  \item Richard Grinold and Ronald Kahn, \emph{Active Portfolio Management}, 2nd ed. (1999), chapters on implementation, turnover, and transaction costs.
+  \item Simon Haykin, \emph{Adaptive Filter Theory}, 5th ed. (Pearson, 2014), the chapters on the method of least squares and recursive least-squares adaptive filters (exponentially weighted least squares as a recursion on sufficient statistics).
+  \item Lennart Ljung, \emph{System Identification: Theory for the User}, 2nd ed. (Prentice Hall, 1999), the chapter on recursive estimation methods (forgetting factors and their effective memory).
+  \item Richard O. Michaud, \href{https://doi.org/10.2469/faj.v45.n1.31}{``The Markowitz Optimization Enigma: Is `Optimized' Optimal?''} \emph{Financial Analysts Journal} 45(1), 31--42 (1989).
+  \item Stephen Boyd et al., \href{https://web.stanford.edu/~boyd/papers/pdf/multi_period_trading.pdf}{``Multi-Period Trading via Convex Optimization,''} \emph{Foundations and Trends in Optimization} 3(1), 1--76 (2017).
 \end{readinglist}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Financial decisions involve risk, and model outputs depend on assumptions.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Parameter estimates, simulated futures, and engine outputs are model-dependent and are not investment recommendations.}
 
 \end{document}

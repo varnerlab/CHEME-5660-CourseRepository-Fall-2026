@@ -636,7 +636,7 @@ TRAINING-period sample mean and variance of the market growth rate (units 1/yr a
 the defaults `(0, 1)` reproduce the legacy standardized-regressor assumption and should not be used
 with raw course growth rates. `market_variance` is read as the population variance about the mean;
 passing the corrected sample variance instead scales only the variance part of `A₀` (by `N/(N-1)`,
-not the whole prior weight), which is immaterial for the course's 2767-day training sample. Before any update the state returns `(α₀, β₀, σ_ε₀)`
+not the whole prior weight), which is immaterial for the course's training sample (2,766 growth observations from 2,767 closes). Before any update the state returns `(α₀, β₀, σ_ε₀)`
 exactly, and the same values are recovered from the sufficient statistics. The prior decays like the
 data: after `t` updates its weight is `δᵗ N₀`.
 """
@@ -690,8 +690,11 @@ after observation `t`. `prior` is a NamedTuple `(α, β, σ_ε, market_mean, mar
 `prior_weight` its weight in pseudo-observations `N₀` (defaults to `warmup`). When `prior === nothing`
 the prior is a batch OLS on the first `k = min(warmup, n)` observations, the recursion starts at
 observation `k+1`, and rows `1:k` are `NaN` (no estimate is reported for a day whose value would use
-later data; the lecture examples always pass an explicit prior estimated on the training period).
-Units follow the inputs (annualized growth rates in the course notebooks).
+later data). The warm-up seed reproduces the expanding-window OLS coefficients exactly (the seeded
+`A₀`, `b₀` are the warm-up sample's `Σxxᵀ`, `Σxy`); its `c₀` uses the dof-corrected residual
+variance, so the seeded residual variance exceeds the raw warm-up RSS/k by a factor `k/(k-2)`. The L7b
+examples use the warm-up seed for the walk-forward half-life search and an explicit archive prior
+for the 2025 replay. Units follow the inputs (annualized growth rates in the course notebooks).
 """
 function ewls_path(x::AbstractVector, y::AbstractVector; half_life::Real=60.0,
         prior::Union{Nothing,NamedTuple}=nothing, prior_weight::Union{Nothing,Real}=nothing,

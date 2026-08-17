@@ -1,5 +1,5 @@
 # L15a optional advanced material
 
-These modules supply derivations behind the online-estimation and learning methods discussed in the Autotrader validation lecture.
+This module supplies the derivation behind the learning method discussed in the Autotrader validation lecture.
 
-- [`online_learning/`](online_learning/) contains the EWLS recursion and policy-gradient derivations.
+- [`online_learning/`](online_learning/) contains the policy-gradient (REINFORCE) derivation. The EWLS recursion derivation moved to [`week-7/L7b/advanced/online_learning/`](../../../week-7/L7b/advanced/online_learning/) on 2026-08-17.
