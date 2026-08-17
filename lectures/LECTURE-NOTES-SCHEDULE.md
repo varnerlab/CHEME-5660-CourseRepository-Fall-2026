@@ -4,9 +4,12 @@ This manifest is the authoritative scope and sequence for production lecture
 notes. It records the revised Fall 2026 sequence and supersedes both the earlier
 workbook ordering and lecture ordering inferred from the Fall 2025 folders.
 
-The notes target contains 27 course lectures. L1a provides a compact course and
-institutional orientation; the Goldman Sachs guest Q/A (7a), Fall Break (8a),
-and Thanksgiving Break (14b) do not require production theory notes.
+The notes target contains 28 course lectures. L1a provides a compact course and
+institutional orientation; Fall Break (8a) and Thanksgiving Break (14b) do not
+require production theory notes. The 7a slot, formerly held for a Goldman Sachs
+guest Q/A, is a production lecture from Fall 2026 (decision of 2026-08-17: the
+guest was unconfirmed); if a guest Q/A is confirmed it is delivered
+asynchronously and does not displace 7a.
 
 | Lecture | Date | Unit | 2026 topic | Primary notebook substrate | Notes status |
 |---|---:|---:|---|---|---|
@@ -22,7 +25,8 @@ and Thanksgiving Break (14b) do not require production theory notes.
 | 5b | Sep 24 | 2 | Minimum-variance allocation, efficient frontier, CAL, and market portfolio | `week-5/L5b` | Built; visual QA passed after reorg |
 | 6a | Sep 29 | 2 | Introduction to single-index models | `week-6/L6a` | Built; SIM uncertainty second pass and visual QA passed |
 | 6b | Oct 1 | 2 | SIM-based risky/risk-free minimum-variance allocation | `week-6/L6b` | Built; bootstrap propagation second pass and visual QA passed |
-| 7b | Oct 8 | 2 | Dynamic rebalancing of minimum-variance portfolios | `week-7/L7b`; course-native stress-testing example added | Built; eCornell stress-testing concepts integrated |
+| 7a | Oct 6 | 2 | Utility-based allocation and the adaptive rebalancing engine | `week-7/L7a`; utility allocator, engine, and drift examples on course data | Built (2026-08-17 restructure); notes, deck, and three examples; Codex-reviewed |
+| 7b | Oct 8 | 2 | Online SIM estimation: updating the engine as data arrive | `week-7/L7b`; EWLS replay and scenario-ensemble examples | Rebuild in progress (spec `private/specs/2026-08-17-week7-utility-online-restructure.md`); the folder still holds the previous rebalancing lecture |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b` | Built; visual QA passed after reorg |
 | 9a | Oct 20 | 3 | European BSM and American CRR option pricing | `week-9/L9a` | Built; visual QA passed after reorg |
 | 9b | Oct 22 | 3 | Intrinsic and extrinsic value of American options | `week-9/L9b` | Built; visual QA passed after reorg |
@@ -32,10 +36,10 @@ and Thanksgiving Break (14b) do not require production theory notes.
 | 11b | Nov 5 | 3 | Standard-listed protective collars and defined-outcome ETFs: TJUL comparison | `week-11/L11b`; Wheel material in `advanced/` | Built; visual QA passed after reorg |
 | 12a | Nov 10 | 4 | Stochastic multi-armed bandits and exploration versus exploitation | `week-12/L12a`; Markov/HMM material in `advanced/` | Built; visual QA passed after reorg |
 | 12b | Nov 12 | 4 | Binary Bernoulli bandit ticker picker | `week-12/L12b` | Built; visual QA passed after reorg |
-| 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a`; former Bandit/MWA lecture in `advanced/` | Built; adaptive-utility lecture and examples integrated |
+| 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a`; former Bandit/MWA lecture in `advanced/` | Built; re-scope pending (utility allocation moved to 7a on 2026-08-17; 13a to become learning the engine's knobs: bandit ticker selection and elasticity learning) |
 | 13b | Nov 19 | 4 | Market crashes and agent-based Wolfram Markets | `week-13/L13b` | Built; visual QA passed after reorg |
 | 14a | Nov 24 | 4 | Building and testing the course Autotrader | `week-14/L14a` | Built; visual QA passed after reorg |
-| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS and validation-gate examples plus derivations | Built; production lecture and course-native examples added |
+| 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS and validation-gate examples plus derivations | Built; re-scope pending (EWLS moves to 7b on the 2026-08-17 restructure; 15a keeps the validation gates and risk controls) |
 | 15b | Dec 3 | 4 | Final trading challenge, model review, and course synthesis | `week-15/L15b`; captured decision-queue example | Built; credential-free production workflow added |
 
 ## Calendar-sensitive content rules
@@ -48,11 +52,11 @@ and Thanksgiving Break (14b) do not require production theory notes.
 - Optional extensions live in an `advanced/` subfolder of the applicable
   lecture directory. L2b contains the former Week 3 yield-curve, stochastic-rate,
   and STRIPS material; L11b contains the Wheel lecture and supporting examples;
-  L12a contains the Markov/HMM enrichment module; L13a contains the former
-  Bandit/MWA lecture and the CES derivation; L15a contains online-learning
-  derivations.
-- The Goldman Sachs guest Q/A remains L7a, Fall Break remains L8a, and
-  Thanksgiving Break remains L14b. Production topics do not move into those
-  calendar slots.
+  L12a contains the Markov/HMM enrichment module; L7a contains the CES
+  derivation; L13a contains the former Bandit/MWA lecture; L15a contains
+  online-learning derivations.
+- Fall Break remains L8a and Thanksgiving Break remains L14b; production topics
+  do not move into those calendar slots. L7a is a production lecture from Fall
+  2026; a Goldman Sachs guest Q/A, if confirmed, is delivered asynchronously.
 - L15a and L15b are deliberately reserved for applied AI/trading work so the
   final course unit no longer depends on finishing new material in one meeting.

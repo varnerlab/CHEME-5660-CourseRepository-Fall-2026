@@ -39,7 +39,7 @@ mutable struct MyEWLSState
     Swxx::Float64
     Swxy::Float64
     Swyy::Float64
-    η::Float64
+    δ::Float64        # decay factor 2^(-1/half_life), applied once per observation
     α::Float64
     β::Float64
     σ_ε::Float64
@@ -452,31 +452,226 @@ function run_rebalancing_engine(asset_returns::AbstractMatrix, signal::AbstractV
         max_drawdown=maximum(1 .- wealth ./ peak_path))
 end
 
-"""Initialize EWLS sufficient statistics from a calibrated SIM prior."""
-function ewls_init(α₀::Real, β₀::Real, σ_ε₀::Real; half_life::Real=63.0, prior_weight::Real=63.0)
+"""
+    run_utility_engine(prices, target; W0=1000.0, rebalance_days=1:T, cost_rate=5e-4,
+        turnover_cap=Inf, drawdown_limit=1.0, reentry_days=21, g_f=0.0, Δt=1/252)
+
+Backtest a self-financing rebalancing engine on a `T × K` matrix of daily close prices (USD/share).
+`target(t, state)` returns the desired risky weights `w⋆` (`w⋆ ≥ 0`, `sum(w⋆) ≤ 1`, remainder cash)
+and is called only on `t ∈ rebalance_days` when the engine is not locked in cash;
+`state = (day, wealth, weights, shares, cash, prices)` where `prices` is a COPY of today's execution
+prices `S_t` (known at the close, when the trade executes) and `wealth`, `weights` are marked at `S_t`.
+Any SIGNAL the callback uses must be built from information through day `t-1` (next-bar execution);
+the engine cannot enforce that, so the notebooks assert it.
+
+Each day: cash accrues `exp(g_f Δt)`; the book is marked to market at `S_t` (wealth `W⁻`); the
+drawdown circuit breaker is checked (`1 - W⁻/peak > drawdown_limit` liquidates to cash, bypassing the
+turnover cap, and locks the engine for `reentry_days` more days; on the first trade after the lock the
+peak is rebased to the current wealth so the breaker does not refire on the old peak); on rebalance
+days the change toward `w⋆` is capped at one-way turnover `turnover_cap` and executed at `S_t`, paying
+`cost_rate` per unit of gross traded notional, with the risky targets sized on the post-cost budget so
+that `cash = (W⁻ - C)(1 - Σ w_target) ≥ 0` and `cash + Σ nᵢ Sᵢ = W⁻ - C` exactly (targets summing to
+more than one are rejected; roundoff up to `1e-9` is renormalized, never converted into cash).
+
+Returns `(wealth, cash, shares, weights, turnover, cost, traded, rebalanced, locked, interventions)`;
+`wealth`, `cash`, `shares`, `weights` have `T+1` rows (row 1 = day 0). Growth-rate inputs never enter
+this function; the price contract removes the Δt ambiguity.
+"""
+function run_utility_engine(prices::AbstractMatrix, target; W0::Real=1000.0,
+        rebalance_days::AbstractVector{<:Integer}=1:size(prices, 1), cost_rate::Real=5e-4,
+        turnover_cap::Real=Inf, drawdown_limit::Real=1.0, reentry_days::Integer=21,
+        g_f::Real=0.0, Δt::Real=1/252)
+    T, K = size(prices)
+    T >= 1 && K >= 1 || throw(ArgumentError("prices must have at least one row and one column"))
+    all(isfinite, prices) && all(>(0), prices) || throw(ArgumentError("prices must be finite and positive"))
+    isfinite(W0) && W0 > 0 || throw(ArgumentError("W0 must be finite and positive"))
+    0 <= cost_rate < 0.05 || throw(ArgumentError("cost_rate must lie in [0, 0.05)"))
+    turnover_cap > 0 || throw(ArgumentError("turnover_cap must be positive"))
+    0 < drawdown_limit <= 1 || throw(ArgumentError("drawdown_limit must lie in (0, 1]"))
+    reentry_days >= 0 || throw(ArgumentError("reentry_days must be nonnegative"))
+    isfinite(g_f) || throw(ArgumentError("g_f must be finite"))
+    isfinite(Δt) && Δt > 0 || throw(ArgumentError("Δt must be finite and positive"))
+    rset = Set(Int.(rebalance_days))
+    growth = exp(g_f * Δt)
+    rebase_peak = false                               # set after a circuit-breaker exit; peak is rebased on the next trade
+
+    wealth = zeros(T + 1); cash = zeros(T + 1)
+    shares = zeros(T + 1, K); weights = zeros(T + 1, K)
+    turnover = zeros(T); cost = zeros(T); traded = zeros(T)
+    rebalanced = falses(T); locked = falses(T)
+    wealth[1] = W0; cash[1] = W0
+    n = zeros(K); c = Float64(W0); peak = Float64(W0)
+    interventions = 0; locked_until = 0
+
+    for t in 1:T
+        S = view(prices, t, :)
+        c *= growth                                   # cash accrues the risk-free growth
+        x⁻ = n .* S                                    # current exposures
+        W⁻ = c + sum(x⁻)                               # mark to market
+        peak = max(peak, W⁻)
+        w⁻ = x⁻ ./ W⁻
+        C_t = 0.0; G_t = 0.0; τ_t = 0.0
+
+        # circuit breaker, checked every day
+        if t <= locked_until
+            locked[t] = true
+        elseif 1 - W⁻ / peak > drawdown_limit && sum(x⁻) > 0
+            G_t = sum(x⁻); C_t = cost_rate * G_t       # emergency liquidation bypasses the turnover cap
+            τ_t = sum(w⁻)                              # risky legs to zero and the cash leg up: one-way
+            n .= 0.0; c = W⁻ - C_t
+            interventions += 1; locked_until = t + reentry_days; locked[t] = true; rebase_peak = true
+        elseif t in rset
+            if rebase_peak
+                peak = W⁻; rebase_peak = false          # re-entry: the breaker measures drawdown from here
+            end
+            raw = target(t, (day=t, wealth=W⁻, weights=copy(w⁻), shares=copy(n), cash=c, prices=Vector{Float64}(S)))
+            raw isa AbstractVector || throw(ArgumentError("target must return a vector of $K weights"))
+            wstar = Vector{Float64}(raw)
+            length(wstar) == K || throw(ArgumentError("target must return $K weights"))
+            all(isfinite, wstar) && all(>=(0), wstar) || throw(ArgumentError("target weights must be finite and nonnegative"))
+            swstar = sum(wstar)
+            swstar <= 1 + 1e-9 || throw(ArgumentError("target weights must sum to at most one (got $swstar)"))
+            swstar > 1 && (wstar ./= swstar)           # roundoff above one: renormalize, never create cash
+            Δw = wstar .- w⁻
+            τ_t = 0.5 * sum(abs, Δw) + 0.5 * abs(sum(Δw))       # risky legs + cash leg, one-way
+            if τ_t > turnover_cap
+                Δw .*= turnover_cap / τ_t; τ_t = turnover_cap
+            end
+            w_target = w⁻ .+ Δw
+            # size on the post-cost budget: x = w_target (W⁻ - C), C = cost_rate Σ|x - x⁻|
+            C_t = cost_rate * sum(abs, w_target .* W⁻ .- x⁻)
+            converged = cost_rate == 0
+            for _ in 1:50
+                C_new = cost_rate * sum(abs, w_target .* (W⁻ - C_t) .- x⁻)
+                converged = abs(C_new - C_t) <= 1e-13 * max(W⁻, 1.0)
+                C_t = C_new
+                converged && break
+            end
+            converged || error("engine cost sizing did not converge on day $t")
+            x = w_target .* (W⁻ - C_t)
+            G_t = sum(abs, x .- x⁻)
+            abs(C_t - cost_rate * G_t) <= 1e-9 * max(W⁻, 1.0) || error("engine cost mismatch on day $t")
+            n .= x ./ S
+            c = (W⁻ - C_t) * (1 - sum(w_target))      # exact self-financing residual, ≥ 0 by construction
+            c >= -1e-12 * W⁻ || error("engine invariant violated: negative cash on day $t")
+            c = max(c, 0.0)                            # only roundoff of order 1e-16 W is ever clamped
+            rebalanced[t] = true
+        end
+        wealth[t + 1] = c + dot(n, S); cash[t + 1] = c
+        shares[t + 1, :] .= n; weights[t + 1, :] .= (n .* S) ./ wealth[t + 1]
+        turnover[t] = τ_t; cost[t] = C_t; traded[t] = G_t
+    end
+    return (wealth=wealth, cash=cash, shares=shares, weights=weights, turnover=turnover, cost=cost,
+        traded=traded, rebalanced=rebalanced, locked=locked, interventions=interventions)
+end
+
+"""
+    realized_scorecard(wealth; g_f, Δt=1/252, turnover=nothing, cost=nothing, interventions=0)
+
+Score one realized wealth path `W_0, …, W_T` (USD) against a risk-free baseline growing at `g_f`
+(1/yr): portfolio NPV `-W_0 + W_T e^{-g_f T}` with `T = (length(wealth)-1) Δt` years, scaled NPV,
+maximum drawdown, annualized realized growth `log(W_T/W_0)/T`, annualized realized Sharpe ratio of
+the daily log growth in excess of `g_f Δt`, and the totals of the optional per-day `turnover` and
+`cost` vectors plus the intervention count.
+"""
+function realized_scorecard(wealth::AbstractVector; g_f::Real, Δt::Real=1/252,
+        turnover=nothing, cost=nothing, interventions::Integer=0)
+    length(wealth) >= 2 || throw(ArgumentError("wealth must hold at least two points"))
+    all(w -> isfinite(w) && w > 0, wealth) || throw(ArgumentError("wealth must be finite and positive"))
+    isfinite(g_f) || throw(ArgumentError("g_f must be finite"))
+    isfinite(Δt) && Δt > 0 || throw(ArgumentError("Δt must be finite and positive"))
+    turnover === nothing || (length(turnover) == length(wealth) - 1 && all(v -> isfinite(v) && v >= 0, turnover)) ||
+        throw(ArgumentError("turnover must have one finite nonnegative entry per day"))
+    cost === nothing || (length(cost) == length(wealth) - 1 && all(v -> isfinite(v) && v >= 0, cost)) ||
+        throw(ArgumentError("cost must have one finite nonnegative entry per day"))
+    W0, WT = Float64(wealth[1]), Float64(wealth[end])
+    horizon = (length(wealth) - 1) * Δt
+    npv = -W0 + WT * exp(-g_f * horizon)
+    peaks = accumulate(max, wealth)
+    max_drawdown = maximum(1 .- wealth ./ peaks)
+    daily = diff(log.(Float64.(wealth)))
+    excess = daily .- g_f * Δt
+    sharpe = length(excess) > 1 && std(excess) > 0 ? mean(excess) / std(excess) * sqrt(1 / Δt) : NaN
+    return (initial=W0, terminal=WT, horizon_years=horizon, npv=npv, scaled_npv=npv / W0,
+        max_drawdown=max_drawdown, realized_growth=log(WT / W0) / horizon, realized_sharpe=sharpe,
+        total_turnover=turnover === nothing ? 0.0 : sum(turnover),
+        total_cost=cost === nothing ? 0.0 : sum(cost), interventions=Int(interventions))
+end
+
+"""
+    ensemble_scorecard(terminal, drawdown; W0, g_f, horizon, level=0.05)
+
+Score an ensemble of simulated paths from their terminal wealths and maximum drawdowns: median
+terminal wealth and median NPV against `W0 e^{g_f horizon}`, the NPV-fail rate
+`P(W_T < W0 e^{g_f horizon})`, the lower terminal-wealth quantile at `level` taken as the order
+statistic `k = max(1, ceil(level N))` (so that `P(W_T ≤ q) ≥ level`), the mean of the `k` smallest
+terminal wealths (`tail_mean`), the median drawdown and the `k`-th largest drawdown (the upper
+order statistic at `level`, so that `P(D ≥ q) ≥ level`).
+"""
+function ensemble_scorecard(terminal::AbstractVector, drawdown::AbstractVector; W0::Real, g_f::Real,
+        horizon::Real, level::Real=0.05)
+    N = length(terminal)
+    N == length(drawdown) || throw(DimensionMismatch("terminal and drawdown must have equal length"))
+    N >= 1 || throw(ArgumentError("the ensemble is empty"))
+    0 < level < 1 || throw(ArgumentError("level must lie in (0, 1)"))
+    all(isfinite, terminal) && all(isfinite, drawdown) || throw(ArgumentError("terminal and drawdown must be finite"))
+    isfinite(W0) && W0 > 0 && isfinite(g_f) && isfinite(horizon) && horizon > 0 ||
+        throw(ArgumentError("W0 and horizon must be finite and positive, g_f finite"))
+    baseline = W0 * exp(g_f * horizon)
+    sorted = sort(Float64.(terminal))
+    k = max(1, ceil(Int, prevfloat(Float64(level * N))))   # prevfloat guards 0.07*100 = 7.000000000000001
+    sdd = sort(Float64.(drawdown))
+    return (median_terminal=median(sorted), median_npv=median(sorted .* exp(-g_f * horizon)) - W0,
+        fail_rate=mean(sorted .< baseline), lower_quantile=sorted[k], tail_mean=mean(view(sorted, 1:k)),
+        median_drawdown=median(sdd), drawdown_quantile=sdd[N - k + 1], level=Float64(level), k=k)
+end
+
+"""
+    ewls_init(α₀, β₀, σ_ε₀; half_life=63.0, prior_weight=63.0, market_mean=0.0, market_variance=1.0)
+
+Seed the EWLS sufficient statistics with a calibrated SIM prior `(α₀, β₀, σ_ε₀)` worth
+`prior_weight = N₀` pseudo-observations. The prior second-moment matrix is
+`A₀ = N₀ E[x xᵀ]` with `x = [1, g_M]`, so `market_mean = m` and `market_variance = v` must be the
+TRAINING-period sample mean and variance of the market growth rate (units 1/yr and 1/yr²);
+the defaults `(0, 1)` reproduce the legacy standardized-regressor assumption and should not be used
+with raw course growth rates. `market_variance` is read as the population variance about the mean;
+passing the corrected sample variance instead scales only the variance part of `A₀` (by `N/(N-1)`,
+not the whole prior weight), which is immaterial for the course's 2767-day training sample. Before any update the state returns `(α₀, β₀, σ_ε₀)`
+exactly, and the same values are recovered from the sufficient statistics. The prior decays like the
+data: after `t` updates its weight is `δᵗ N₀`.
+"""
+function ewls_init(α₀::Real, β₀::Real, σ_ε₀::Real; half_life::Real=63.0, prior_weight::Real=63.0,
+        market_mean::Real=0.0, market_variance::Real=1.0)
     half_life > 0 || throw(ArgumentError("half_life must be positive"))
-    prior_weight > 0 || throw(ArgumentError("prior_weight must be positive"))
+    isfinite(prior_weight) && prior_weight > 0 || throw(ArgumentError("prior_weight must be finite and positive"))
+    isfinite(market_variance) && market_variance > 0 || throw(ArgumentError("market_variance must be finite and positive"))
+    isfinite(market_mean) || throw(ArgumentError("market_mean must be finite"))
+    all(isfinite, (α₀, β₀, σ_ε₀)) && σ_ε₀ >= 0 || throw(ArgumentError("the prior (α₀, β₀, σ_ε₀) must be finite with σ_ε₀ ≥ 0"))
+    m, v, N₀ = Float64(market_mean), Float64(market_variance), Float64(prior_weight)
+    Exx = v + m^2
     state = MyEWLSState()
-    state.Sw, state.Swx = prior_weight, 0.0
-    state.Swy, state.Swxx = prior_weight * α₀, prior_weight
-    state.Swxy = prior_weight * β₀
-    state.Swyy = prior_weight * (α₀^2 + β₀^2 + σ_ε₀^2)
-    state.η = 2.0^(-1 / half_life)
-    state.α, state.β, state.σ_ε = α₀, β₀, σ_ε₀
+    state.Sw = N₀
+    state.Swx = N₀ * m
+    state.Swxx = N₀ * Exx
+    state.Swy = N₀ * (α₀ + β₀ * m)
+    state.Swxy = N₀ * (α₀ * m + β₀ * Exx)
+    state.Swyy = N₀ * (α₀^2 + 2α₀ * β₀ * m + β₀^2 * Exx + σ_ε₀^2)
+    state.δ = 2.0^(-1 / half_life)
+    state.α, state.β, state.σ_ε = Float64(α₀), Float64(β₀), Float64(σ_ε₀)
     return state
 end
 
 """Update an EWLS state with one asset/market growth-rate observation."""
 function ewls_update!(state::MyEWLSState, g_i::Real, g_m::Real)
-    η = state.η
-    state.Sw = η * state.Sw + 1
-    state.Swx = η * state.Swx + g_m
-    state.Swy = η * state.Swy + g_i
-    state.Swxx = η * state.Swxx + g_m^2
-    state.Swxy = η * state.Swxy + g_i * g_m
-    state.Swyy = η * state.Swyy + g_i^2
-    denom = state.Sw * state.Swxx - state.Swx^2
-    if abs(denom) > 1e-12
+    δ = state.δ
+    state.Sw = δ * state.Sw + 1
+    state.Swx = δ * state.Swx + g_m
+    state.Swy = δ * state.Swy + g_i
+    state.Swxx = δ * state.Swxx + g_m^2
+    state.Swxy = δ * state.Swxy + g_i * g_m
+    state.Swyy = δ * state.Swyy + g_i^2
+    denom = state.Sw * state.Swxx - state.Swx^2      # ≥ 0 by Cauchy-Schwarz; cancellation can make it tiny or negative
+    if denom > 1e-10 * state.Sw * state.Swxx           # relative guard: skip the solve while the regressor is unidentified
         state.β = (state.Sw * state.Swxy - state.Swx * state.Swy) / denom
         state.α = (state.Swy - state.β * state.Swx) / state.Sw
         mse = (state.Swyy - 2state.β * state.Swxy - 2state.α * state.Swy +
@@ -486,19 +681,42 @@ function ewls_update!(state::MyEWLSState, g_i::Real, g_m::Real)
     return state.α, state.β, state.σ_ε
 end
 
-"""Return the recursive ridge-EWLS intercept and slope path used in lecture replay."""
-function ewls_path(x::AbstractVector, y::AbstractVector; half_life::Real=60.0, ridge::Real=1e-6)
+"""
+    ewls_path(x, y; half_life=60.0, prior=nothing, prior_weight=nothing, warmup=63)
+
+Run the EWLS recursion (`ewls_init` + `ewls_update!`) over paired observations `x` (market growth
+rate) and `y` (asset growth rate) and return an `n × 3` matrix whose row `t` holds `(α, β, σ_ε)`
+after observation `t`. `prior` is a NamedTuple `(α, β, σ_ε, market_mean, market_variance)` and
+`prior_weight` its weight in pseudo-observations `N₀` (defaults to `warmup`). When `prior === nothing`
+the prior is a batch OLS on the first `k = min(warmup, n)` observations, the recursion starts at
+observation `k+1`, and rows `1:k` are `NaN` (no estimate is reported for a day whose value would use
+later data; the lecture examples always pass an explicit prior estimated on the training period).
+Units follow the inputs (annualized growth rates in the course notebooks).
+"""
+function ewls_path(x::AbstractVector, y::AbstractVector; half_life::Real=60.0,
+        prior::Union{Nothing,NamedTuple}=nothing, prior_weight::Union{Nothing,Real}=nothing,
+        warmup::Integer=63)
     length(x) == length(y) || throw(DimensionMismatch("x and y must have equal length"))
     half_life > 0 || throw(ArgumentError("half_life must be positive"))
-    λ = 2.0^(-1 / half_life)
-    A = ridge * Matrix{Float64}(I, 2, 2)
-    b = zeros(2)
-    estimates = Matrix{Float64}(undef, length(y), 2)
-    for t in eachindex(y)
-        row = [1.0, x[t]]
-        A .= λ .* A .+ row * row'
-        b .= λ .* b .+ row .* y[t]
-        estimates[t, :] .= A \ b
+    n = length(y)
+    n >= 3 || throw(ArgumentError("at least three observations are required"))
+    first = 1
+    if prior === nothing
+        k = min(Int(warmup), n)
+        3 <= k < n || throw(ArgumentError("warmup must cover at least three observations and leave data to update on"))
+        fit = estimate_sim(view(x, 1:k), view(y, 1:k), "warmup")
+        prior = (α=fit.α, β=fit.β, σ_ε=fit.σ_ε, market_mean=mean(view(x, 1:k)),
+            market_variance=var(view(x, 1:k); corrected=false))
+        prior_weight === nothing && (prior_weight = k)
+        first = k + 1
+    end
+    prior_weight === nothing && (prior_weight = warmup)
+    state = ewls_init(prior.α, prior.β, prior.σ_ε; half_life=half_life, prior_weight=prior_weight,
+        market_mean=prior.market_mean, market_variance=prior.market_variance)
+    estimates = fill(NaN, n, 3)
+    for t in first:n
+        α, β, σ = ewls_update!(state, y[t], x[t])
+        estimates[t, 1], estimates[t, 2], estimates[t, 3] = α, β, σ
     end
     return estimates
 end

@@ -86,10 +86,10 @@ ideas, not treated as current source.
 
 | Source material | CHEME 5660 disposition |
 |---|---|
-| Cobb--Douglas allocator | Integrated in L13a and the local package API. |
-| Rebalancing engine scorecard | Integrated in L13a with trigger-based rebalancing and a course-native scorecard. |
-| Monte Carlo engine evaluation | Distributional evaluation, common scenarios, costs, and passive comparisons are split across L7b and L13a. Large pretrained surrogate paths and source-specific 2025 deployment claims were not copied. |
-| CES derivation and limits | Integrated under week-13/L13a/advanced/adaptive_utility. |
+| Cobb--Douglas allocator | Integrated in L7a (Fall 2026 restructure of 2026-08-17; formerly L13a) with the course package `allocate_cobb_douglas`/`allocate_ces`; the L7a example allocates the thirteen-firm course universe on real 2025 data. |
+| Rebalancing engine scorecard | Integrated in L7a with the package `run_utility_engine` (self-financing account, next-bar execution, schedule, turnover cap, drawdown circuit breaker) and `realized_scorecard`; adaptive and buy-and-hold policies run through the same engine on 2025 data. L13a's engine material becomes a concept review pending its re-scope. |
+| Monte Carlo engine evaluation | Distributional evaluation is scheduled for L7b (SIM-simulated scenario ensemble with `ensemble_scorecard`), replacing the previous L7b description of the excluded JumpHMM generator; common scenarios and passive comparisons remain in L13a. Large pretrained surrogate paths and source-specific 2025 deployment claims were not copied. |
+| CES derivation and limits | Integrated under week-7/L7a/advanced/adaptive_utility (moved from L13a; extended with the elasticity rule, log-linear utility, and the share-denomination caveat). |
 | Turnover attribution diagnostics | The core turnover and cost diagnostics are present in L7b/L13a. The detailed source attribution notebook remains a candidate for an isolated advanced operations lab. |
 | Regime-aware sentiment | Conceptually useful, but tied to the excluded pretrained regime model. The current course uses observable, credential-free signals and labels regime-aware inference as an extension. |
 
@@ -119,7 +119,8 @@ ideas, not treated as current source.
 
 | Course location | Integration |
 |---|---|
-| week-7/L7b | Stress testing and dynamic rebalancing with a course-native stress example. |
+| week-7/L7a | Utility-based allocation and the adaptive rebalancing engine (2026-08-17 restructure): utility allocator, engine scorecard, and drift examples on course data. |
+| week-7/L7b | Rebuild in progress: online SIM estimation (EWLS) and a SIM-simulated scenario ensemble replace the previous stress-testing and rebalancing lecture (see `private/specs/2026-08-17-week7-utility-online-restructure.md`). |
 | week-13/L13a | Maximum-utility allocation and adaptive rebalancing; former Bandit/MWA lecture preserved under advanced/bandits. |
 | week-15/L15a | Autotrader diagnostics, EWLS replay, validation gates, and online-learning derivations. |
 | week-15/L15b | Final trading challenge and credential-free captured decision queue. |

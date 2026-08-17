@@ -1,0 +1,77 @@
+% L7a plate: the rebalancing engine as one pass per trading day.
+% Four stages (observe, orient, decide, act) and the feedback to the next bar.
+% Notation follows the L7a lecture: signal xi_t from closes through t-1,
+% preference weights gamma_i(t), Cobb-Douglas targets, three trigger rules,
+% self-financing update at today's execution price S_i(t).
+\documentclass[tikz,border=0pt]{standalone}
+\usepackage{vnfigure}
+
+\newcommand{\fLabel}{\sffamily\fontsize{7.4}{9}\selectfont}
+\newcommand{\fMeta}{\sffamily\fontsize{8}{10.2}\selectfont}
+\newcommand{\fData}{\sffamily\fontsize{9}{11}\selectfont}
+\newcommand{\fHead}{\sffamily\fontsize{12}{14}\selectfont}
+\newcommand{\fTitle}{\sffamily\fontsize{18}{21}\selectfont}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily]
+  \path[use as bounding box] (0,0) rectangle (16,8.6);
+  \fill[white] (0,0) rectangle (16,8.6);
+
+  % Title ------------------------------------------------------------------
+  \node[anchor=west,font=\fTitle\bfseries,text=vnink] at (0.70,8.02) {The rebalancing engine: one pass per trading day};
+  \draw[vncarnelian,line width=1.5pt] (0.70,7.56) -- (1.87,7.56);
+  \node[anchor=west,font=\fData,text=vnmuted] at (0.81,7.24) {Signal from yesterday, trade at today's price, pay the cost, record, repeat};
+
+  % Cards: 0.70 + 4*3.45 + 3*0.25 = 15.25
+  \foreach \i/\x/\head/\eyebrow/\col in {
+      1/0.70/1. Observe/BAR $t$ ARRIVES/vnlink,
+      2/4.40/2. Orient/PREFERENCES/vncarnelian,
+      3/8.10/3. Decide/TARGETS AND RULES/vnlink,
+      4/11.80/4. Act/TRADE AND RECORD/vncarnelian} {
+    \draw[\col!60,fill=\col!4,rounded corners=4pt,line width=0.8pt] (\x,1.15) rectangle ({\x+3.45},6.75);
+    \node[anchor=west,font=\fHead\bfseries,text=\col] at ({\x+0.22},6.36) {\head};
+    \node[anchor=west,font=\fLabel,text=vnmuted] at ({\x+0.24},6.00) {\eyebrow};
+    \draw[\col!60,line width=0.5pt] ({\x+0.22},5.80) -- ({\x+3.23},5.80);
+  }
+
+  % 1. Observe --------------------------------------------------------------
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=3.05cm,align=left] at (0.90,5.62) {%
+    \textbullet\; Execution prices $S_{i}(t)$, known at the close\\[5pt]
+    \textbullet\; Signal from closes through $t-1$: EMAs $\bar S^{\text{short}}_{t-1},\,\bar S^{\text{long}}_{t-1}$ give $\xi_{t}$\\[5pt]
+    \textbullet\; SIM parameters $\alpha_{i},\,\beta_{i}$ and $g'_{M}$, frozen today (L7b updates them)};
+
+  % 2. Orient ---------------------------------------------------------------
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=3.05cm,align=left] at (4.60,5.62) {%
+    Preference weight of firm $i$:\\[3pt]
+    $\displaystyle \gamma_{i}(t) = \tanh\!\left(\frac{\alpha_{i}}{\beta_{i}^{\xi_{t}}} + \beta_{i}^{1-\xi_{t}} g'_{M}\right)$\\[8pt]
+    \textbullet\; sign: $\gamma_{i}>0$ is preferred ($\mathcal A^{+}$), otherwise non-preferred ($\mathcal A^{-}$)\\[5pt]
+    \textbullet\; magnitude: share of the budget};
+
+  % 3. Decide ---------------------------------------------------------------
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=3.05cm,align=left] at (8.30,5.62) {%
+    Cobb--Douglas targets on $\mathcal A^{+}$:\\[3pt]
+    $\displaystyle n_{i}^{\star} = \frac{\gamma_{i}}{\sum_{j\in\mathcal A^{+}}\gamma_{j}}\,\frac{W_{\text{adj}}}{S_{i}(t)}$\\[8pt]
+    \textbullet\; schedule: trade only if $t\in\mathcal R$\\[4pt]
+    \textbullet\; turnover cap $\tau_{\max}$ scales the move\\[4pt]
+    \textbullet\; drawdown limit $d_{\max}$: go to cash};
+
+  % 4. Act ------------------------------------------------------------------
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=3.05cm,align=left] at (12.00,5.62) {%
+    \textbullet\; Trade $\Delta n_{i}$ at $S_{i}(t)$\\[5pt]
+    \textbullet\; Pay $C_{t} = c\sum_{i}|\Delta n_{i}|\,S_{i}(t)$ before the targets are sized\\[5pt]
+    \textbullet\; $W^{+}_{\mathcal P}(t) = W^{-}_{\mathcal P}(t) - C_{t}$; update the cash\\[5pt]
+    \textbullet\; Record positions, weights, cost};
+
+  % Arrows between cards -----------------------------------------------------
+  \foreach \xa/\xb in {4.15/4.40, 7.85/8.10, 11.55/11.80} {
+    \draw[vnink,line width=0.9pt,-{Latex[length=2.6mm]}] (\xa,4.10) -- (\xb,4.10);
+  }
+  % Feedback: from Act back to Observe along the bottom
+  \draw[vnink,line width=0.9pt,-{Latex[length=2.6mm]},rounded corners=3pt]
+    (13.525,1.15) -- (13.525,0.72) -- (2.425,0.72) -- (2.425,1.15);
+  \node[font=\fLabel,text=vnmuted,fill=white,inner sep=2.5pt] at (7.975,0.72) {next bar $t+1$: cash accrues $e^{g_{f}\Delta t}$, mark to market at $S_{i}(t+1)$, check the drawdown breaker};
+
+  % Static allocation footnote ------------------------------------------------
+  \node[anchor=east,font=\fLabel,text=vnmuted] at (15.25,0.26) {A static allocation (L5b, L6b) is one pass on the decision date, then hold.};
+\end{tikzpicture}
+\end{document}

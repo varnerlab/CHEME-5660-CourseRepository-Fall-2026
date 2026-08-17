@@ -33,6 +33,9 @@ VLQuantitativeFinancePackage.allocate_ces
 VLQuantitativeFinancePackage.compute_ema
 VLQuantitativeFinancePackage.adaptive_target_weights
 VLQuantitativeFinancePackage.run_rebalancing_engine
+VLQuantitativeFinancePackage.run_utility_engine
+VLQuantitativeFinancePackage.realized_scorecard
+VLQuantitativeFinancePackage.ensemble_scorecard
 ```
 
 ## Recursive estimation and controls

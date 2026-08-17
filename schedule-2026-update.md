@@ -65,7 +65,8 @@ All changes below apply to `Sheet1`.
 | `F23` | 5b | Sep 24 | Minimum-variance allocation, efficient frontier, capital allocation line, and market portfolio |
 | `F26` | 6a | Sep 29 | Introduction to single-index models |
 | `F27` | 6b | Oct 1 | SIM-based risky/risk-free minimum-variance allocation |
-| `F32` | 7b | Oct 8 | Dynamic rebalancing of minimum-variance portfolios |
+| 7a row (Oct 6) | 7a | Oct 6 | Utility-based allocation and the adaptive rebalancing engine (was: Goldman Sachs recorded Q/A; changed 2026-08-17, guest unconfirmed) |
+| `F32` | 7b | Oct 8 | Online SIM estimation: updating the engine as data arrive |
 | `F36` | 8b | Oct 15 | Option contracts: call and put payoff and profit |
 | `F40` | 9a | Oct 20 | European BSM and American CRR option pricing |
 | `F41` | 9b | Oct 22 | Intrinsic and extrinsic value of American options |
@@ -85,10 +86,13 @@ All changes below apply to `Sheet1`.
 
 Keep these events and dates unchanged:
 
-- `7a`, Oct 6: Catherine Peng / Goldman Sachs Asset Management recorded Q/A.
 - `8a`, Oct 13: Fall Break; no lecture.
 - `14b`, Nov 26: Thanksgiving Break.
 - All Sunday problem-set, practicum, and office-hour rows unless separately revised.
+
+The `7a`, Oct 6 row is no longer a guest event (2026-08-17): its topic cell takes the
+lecture topic above and its unit is Unit 2; if the Goldman Sachs Asset Management Q/A is
+confirmed it is delivered asynchronously and noted in the notes column, not in the topic.
 
 ## Problem-set rows requiring a separate review
 
@@ -109,7 +113,7 @@ In particular, confirm whether PS1 should still reference lattice interest-rate 
 - [ ] Dates in `E4:E70` remain unchanged and retain their date formatting.
 - [ ] Lecture identifiers in column `C` remain unchanged.
 - [ ] Unit 1 contains `1a` through `2b`.
-- [ ] Unit 2 contains `3a` through `7b`, excluding the guest event distinction for `7a`.
+- [ ] Unit 2 contains `3a` through `7b`, with `7a` a production lecture (no guest-event distinction).
 - [ ] Unit 3 begins with `8b` and ends with `11b`.
 - [ ] Unit 4 begins with `12a` and ends with `15b`.
 - [ ] Fall Break and Thanksgiving Break remain in their original calendar slots.

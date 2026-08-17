@@ -118,12 +118,12 @@
   (inverse years), $g_{M,t}$ the growth rate of a market index $M$ (SPY here;
   the letter names the index), $f_{k,t}$ further factors, $\alpha_i$ an intercept
   (inverse years), $\beta_i$ the sensitivity to the market (dimensionless),
-  $\gamma_{ik}$ the sensitivity to factor $k$, and $\varepsilon_{i,t}$ the
+  $b_{ik}$ the sensitivity to factor $k$, and $\varepsilon_{i,t}$ the
   residual (inverse years):
   \[
     g_{i,t}=\underbrace{\alpha_i}_{\text{intercept}}
       +\underbrace{\beta_i\,g_{M,t}}_{\text{market}}
-      +\overbrace{\textstyle\sum_{k=1}^{K}\gamma_{ik}f_{k,t}}^{\text{other factors}}
+      +\overbrace{\textstyle\sum_{k=1}^{K}b_{ik}f_{k,t}}^{\text{other factors}}
       +\varepsilon_{i,t}.
   \]
 

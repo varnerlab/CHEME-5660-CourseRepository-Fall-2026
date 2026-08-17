@@ -65,7 +65,8 @@ module VLQuantitativeFinancePackage
     export hill_tail_index, sample_autocorrelation, stylized_facts_report
     export simulate_rebalanced_path, evaluate_rebalancing_scenario
     export adaptive_preference_weights, allocate_cobb_douglas, allocate_ces
-    export compute_ema, adaptive_target_weights, run_rebalancing_engine
+    export compute_ema, adaptive_target_weights, run_rebalancing_engine, run_utility_engine
+    export realized_scorecard, ensemble_scorecard
     export ewls_init, ewls_update!, ewls_path
     export evaluate_validation_gates, route_portfolio_event
 
