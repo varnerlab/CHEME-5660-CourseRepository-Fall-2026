@@ -13,4 +13,5 @@ optional and is not a prerequisite for L6b.
   maximum-Sharpe allocation as a second-order cone program.
 
 The notebook is theory only (no code); the executable counterparts are the two
-L6a examples and the L6b forward-validation example.
+L6a examples and the L6b optional advanced propagation notebook
+(`../../L6b/advanced/uncertainty/`).

@@ -77,7 +77,7 @@ ideas, not treated as current source.
 | Core risky/risk-free allocation and CAL | Existing L6b risky/risk-free and tangent-portfolio examples retained; SOCP theory remains in the advanced SIM module. |
 | Optional SIM parameter estimation | Newly integrated into the L6a core uncertainty example and course package API. Batch persistence was intentionally omitted so the notebook cannot silently overwrite shared calibration data. |
 | Deeper-dive SIM | Fully reworked in week-6/L6a/advanced/sim, including the ridge sandwich and unit reconciliation. |
-| SIM covariance derivation | Existing L6b derivation retained as the course convention; the advanced module links it to estimation and propagation. |
+| SIM covariance derivation | Folded into the L6a lecture (vector form) and a derivation blockquote in the L6b concept review; the standalone L6b derivation notebook was retired in the Fall 2026 L6b sweep. |
 | Optional and deeper stylized facts | Promoted into the L3a core example and retained in expanded theory form under advanced/stylized_facts. |
 | Out-of-sample generator validation | Its diagnostic principle is integrated: distributional fit, tail behavior, and ACF checks precede stress use. The pretrained JumpHMM artifact and large caches remain excluded. |
 | Core stress-test scorecard | Adapted in L7b with reproducible course-native scenarios, costs, drawdown, and scorecard comparisons. |
