@@ -28,8 +28,8 @@ asynchronously and does not displace 7a.
 | 7a | Oct 6 | 2 | Utility-based allocation and the adaptive rebalancing engine | `week-7/L7a`; utility allocator, engine, and drift examples on course data | Built (2026-08-17 restructure); notes, deck, and three examples; Codex-reviewed |
 | 7b | Oct 8 | 2 | Online SIM estimation: updating the engine as data arrive | `week-7/L7b`; EWLS replay and scenario-ensemble examples on course data | Built (2026-08-17 restructure); notes, deck, two examples, and the EWLS derivation in `advanced/`; Codex-reviewed |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b`; static-replication derivation in `advanced/` | Built (2026-08-18 review and rebuild); notes, deck, two examples, TikZ contract figure, and the static-replication theorem in `advanced/`; Codex-reviewed |
-| 9a | Oct 20 | 3 | European BSM and American CRR option pricing | `week-9/L9a` | Built; visual QA passed after reorg |
-| 9b | Oct 22 | 3 | Intrinsic and extrinsic value of American options | `week-9/L9b` | Built; visual QA passed after reorg |
+| 9a | Oct 20 | 3 | European option pricing with Black–Scholes–Merton | `week-9/L9a`; BSM and risk-neutral Monte Carlo example; SPXW skew notebook in `advanced/` | Built (2026-08-18 realignment); lecture, notes, deck, and example cover European BSM end to end, with an optional parity/implied-volatility chain analysis; Codex-reviewed |
+| 9b | Oct 22 | 3 | American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value | `week-9/L9b`; CRR factor derivation in `advanced/` | Built (2026-08-18 realignment); American-versus-European comparison made explicit; Codex-reviewed |
 | 10a | Oct 27 | 3 | Option sensitivities: delta, gamma, theta, vega, and rho | `week-10/L10a` | Built; visual QA passed after reorg |
 | 10b | Oct 29 | 3 | Probability of profit, composite contracts, and delta hedging | `week-10/L10b` | Built; visual QA passed after reorg |
 | 11a | Nov 3 | 3 | Covered calls and cash-secured puts | `week-11/L11a` | Built; visual QA passed after reorg |
@@ -54,8 +54,10 @@ asynchronously and does not displace 7a.
   and STRIPS material; L11b contains the Wheel lecture and supporting examples;
   L12a contains the Markov/HMM enrichment module; L7a contains the CES
   derivation; L7b contains the EWLS recursion derivation; L8b contains the
-  static-replication theorem; L13a contains the former Bandit/MWA lecture; L15a
-  contains the policy-gradient derivation.
+  static-replication theorem; L9a contains the SPXW parity and volatility-skew
+  notebook; L9b contains the CRR factor derivation; L13a
+  contains the former Bandit/MWA lecture; L15a contains the policy-gradient
+  derivation.
 - Fall Break remains L8a and Thanksgiving Break remains L14b; production topics
   do not move into those calendar slots. L7a is a production lecture from Fall
   2026; a Goldman Sachs guest Q/A, if confirmed, is delivered asynchronously.

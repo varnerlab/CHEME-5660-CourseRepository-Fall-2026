@@ -57,6 +57,15 @@ const EURO = (current, future) -> future   # European choice function for tree p
         @test isapprox(premium(c, m; choice = EURO), C_bsm; atol = 5e-2)
     end
 
+    @testset "Black-Scholes put is evaluated directly" begin
+        # A parity subtraction after rounding the call can turn a tiny, valid put
+        # premium negative. The direct put formula remains nonnegative here.
+        put = build(MyEuropeanPutContractModel, (K = 40.0, sense = 1, DTE = 1.0, IV = 0.10))
+        bsm = build(MyBlackScholesContractPricingModel, (Sₒ = 60.0, r = 0.05))
+        P = premium(put, bsm)
+        @test 0.0 ≤ P < 0.01
+    end
+
     @testset "AMD American put (from test_AMD_CRR_put.jl)" begin
         DTE = 31.0 / 365.0
         put = build(MyAmericanPutContractModel, (K = 110.0, IV = 0.5175, DTE = DTE, sense = 1))

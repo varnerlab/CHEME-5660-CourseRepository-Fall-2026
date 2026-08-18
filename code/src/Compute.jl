@@ -1083,23 +1083,18 @@ function premium(contract::MyEuropeanPutContractModel,
     Sₒ = model.Sₒ
     r = model.r
 
-    # compute the premium -
-    # d₊ = (1/(σ*sqrt(T)))*(log(Sₒ/K)+(r+(σ^2)/2)*T);
-    # d₋ = d₊ - σ*sqrt(T);
-    # premium = cdf(Normal(0,1), -d₋)*K*(1/𝒟(r,T)) - cdf(Normal(0,1), -d₊)*Sₒ |> x-> round(x,sigdigits=sigdigits)
-
-    # crate a call model -
-    call_model = build(MyEuropeanCallContractModel, (
-        K=K, 
-        DTE=T, 
-        IV=σ
-    ));
-
-    C = premium(call_model, model, sigdigits = sigdigits);
-    P = C + K*(1/𝒟(r,T)) - Sₒ;
+    # compute the premium directly -
+    #
+    # This is deliberately NOT computed from the call premium by put-call parity. Doing so
+    # rounds the call to `sigdigits` first, and for a deep out-of-the-money put that rounding
+    # error is larger than the put itself, which returns NEGATIVE premiums. Evaluate the put
+    # formula on its own and round once, at the end.
+    d₊ = (1/(σ*sqrt(T)))*(log(Sₒ/K)+(r+(σ^2)/2)*T);
+    d₋ = d₊ - σ*sqrt(T);
+    premium = (cdf(Normal(0,1), -d₋)*K*(1/𝒟(r,T)) - cdf(Normal(0,1), -d₊)*Sₒ) |> x-> round(x, sigdigits = sigdigits)
 
     # return -
-    return P
+    return premium
 end
 
 # --- lattice model methods ------------------------------------------------------------- #

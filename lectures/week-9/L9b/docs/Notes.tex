@@ -5,15 +5,15 @@
 
 \begin{document}
 
-\lecturenotes{9b}{Intrinsic and Extrinsic Value of American Options}{Fall 2026}{October 22, 2026}{Jeffrey D. Varner}
+\lecturenotes{9b}{American CRR Pricing versus the European Benchmark}{Fall 2026}{October 22, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Separate value components}
-  {Distinguish intrinsic value, continuation value, extrinsic value, and the early-exercise premium without conflating their economic meanings.}
+  {Contrast exercise styles}
+  {Price European and American contracts on the same lattice and explain why the American value is never smaller under identical inputs.}
   {Locate exercise decisions}
-  {Use American backward induction to identify exercise and continuation regions in an option lattice.}
-  {Interpret market premiums}
-  {Relate moneyness, time to expiration, volatility, rates, and dividends to observed option-value decompositions.}
+  {Use backward induction to identify the nodes where early exercise makes the American premium strictly larger.}
+  {Separate value components}
+  {Distinguish intrinsic value, continuation value, extrinsic value, and the early-exercise premium without conflating their meanings.}
 
 \section{An American Option Contains a Timing Choice}
 
@@ -29,10 +29,26 @@ Let $S_{n,j}>0$ be the underlying price at node $(n,j)$ of a recombining lattice
 \end{equation}
 Intrinsic value is the cash flow from immediate exercise; it is not the option's full economic value before expiration.
 
-For a step length $\Delta t>0$, continuously compounded risk-free rate $r\in\R$, and risk-neutral up probability $p\in(0,1)$, define the discounted continuation value
+For $N$ steps of length $\Delta t:=T/N$, the Cox--Ross--Rubinstein (CRR) factors and risk-neutral up probability for a non-dividend-paying underlying are
+\begin{equation}
+  \label{eq:crr-parameters}
+  u=e^{\sigma\sqrt{\Delta t}},
+  \qquad
+  d=e^{-\sigma\sqrt{\Delta t}},
+  \qquad
+  p=\frac{e^{g_y\Delta t}-d}{u-d}.
+\end{equation}
+The step must satisfy $d<e^{g_y\Delta t}<u$, equivalently $0<p<1$. The probability $p$ is a pricing weight rather than a forecast of the real-world frequency of up moves.
+
+\notebooklink
+  {L9b Advanced: Where the CRR Factors Come From}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}
+  {Derive the reciprocal CRR factors, identify the order of the diffusion approximation, and state the no-arbitrage domain for the step size.}
+
+For a step length $\Delta t>0$, continuously compounded risk-free rate $g_y\in\R$, and risk-neutral up probability $p\in(0,1)$, define the discounted continuation value
 \begin{equation}
   \label{eq:continuation}
-  C_{n,j}:=e^{-r\Delta t}
+  C_{n,j}:=e^{-g_y\Delta t}
   \left[pV_{n+1,j+1}+(1-p)V_{n+1,j}\right].
 \end{equation}
 Here $V_{n+1,j+1}$ and $V_{n+1,j}$ are the optimally managed American-option values at the two child nodes. The Bellman recursion is
@@ -43,6 +59,19 @@ Here $V_{n+1,j+1}$ and $V_{n+1,j}$ are the optimally managed American-option val
   V_{N,j}=H(S_{N,j}),
 \end{equation}
 where $H$ is the appropriate function from \eqnref{intrinsic}. Exercise is strictly optimal when $H>C$; continuation is strictly optimal when $C>H$. Equality is an indifference node, so code should state its tie-breaking convention.
+
+For an otherwise identical European contract, terminal values are the same but every earlier node must continue:
+\begin{equation}
+  \label{eq:european-recursion}
+  V_{n,j}^{\mathrm{EU}}=e^{-g_y\Delta t}
+  \left[pV_{n+1,j+1}^{\mathrm{EU}}+(1-p)V_{n+1,j}^{\mathrm{EU}}\right].
+\end{equation}
+The American strategy set contains the European strategy of waiting until expiration. Therefore
+\begin{equation}
+  \label{eq:american-dominates-european}
+  V_0^{\mathrm{AM}}\geq V_0^{\mathrm{EU}}.
+\end{equation}
+The inequality is strict only when an early-exercise opportunity changes the root value; American style alone does not guarantee a higher premium.
 
 \begin{theorem}{Value decomposition at an American-option node}{american-decomposition}
 Define extrinsic value at node $(n,j)$ by
@@ -64,7 +93,7 @@ Continuation value $C$ is the value of waiting. Extrinsic value $X=V-H$ is the a
 
 \section{A Two-Step American Put}
 
-Consider the textbook put example with $S_0=50$ USD/share, $K=52$ USD/share, two one-year steps, $u=1.2$, $d=0.8$, $p=0.6282$, and $r=0.05\ \mathrm{yr}^{-1}$. At the one-year down node, $S=40$ and immediate exercise pays $H_p(40)=12$. Waiting is worth
+Consider the textbook put example with $S_0=50$ USD/share, $K=52$ USD/share, two one-year steps, $u=1.2$, $d=0.8$, $p=0.6282$, and $g_y=0.05\ \mathrm{yr}^{-1}$. At the one-year down node, $S=40$ and immediate exercise pays $H_p(40)=12$. Waiting is worth
 \begin{equation}
   \label{eq:hull-down-continuation}
   C_{1,0}=e^{-0.05}\left[0.6282(4)+0.3718(20)\right]\approx 9.46,
@@ -84,9 +113,9 @@ so the holder waits. Backward induction gives an American root value of approxim
 \end{figure}
 
 \notebooklink
-  {L9b: Hull American Put Example}
+  {L9b: American versus European Put Example}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}
-  {Build the two-step price lattice, reproduce the American put premium, and inspect the hold-versus-exercise decision node by node.}
+  {Price both exercise styles on the same two-step lattice, measure the early-exercise premium, and inspect the node where exercise dominates continuation.}
 
 \section{Moneyness Is Not the Same as Value}
 
@@ -125,9 +154,9 @@ For fixed model inputs, extrinsic value is often largest near the exercise bound
 
 Extrinsic value reflects the option's remaining opportunity set under the pricing model. Holding other inputs fixed, more time and higher volatility often increase a vanilla option's opportunity to finish favorably. Interest rates affect the value of deferring the strike payment or receipt, while dividends change the economics of owning the stock rather than the option. These effects interact with contract type and the endogenous exercise boundary.
 
-The phrase \emph{time decay} must be used carefully. Along a fixed hypothetical state with all other inputs held constant, less remaining time generally removes optionality. Along an observed market path, however, $S$, implied volatility, rates, dividends, liquidity, and the exercise boundary all move. Consequently, a sequence of quoted extrinsic values need not decline smoothly. Theta, introduced in L9a, is a local model derivative; it is not a promise that tomorrow's market premium will be lower.
+The phrase \emph{time decay} must be used carefully. Along a fixed hypothetical state with all other inputs held constant, less remaining time generally removes optionality. Along an observed market path, however, $S$, implied volatility, rates, dividends, liquidity, and the exercise boundary all move. Consequently, a sequence of quoted extrinsic values need not decline smoothly. Theta, introduced in L10a, is a local model derivative; it is not a promise that tomorrow's market premium will be lower.
 
-For a non-dividend-paying stock and $r\geq 0$, early exercise of an American call is suboptimal in the classical frictionless model, so $V_c^{\mathrm{AM}}=V_c^{\mathrm{EU}}$. American puts can optimally exercise early because receiving $K$ sooner has financing value. Dividends can create early-exercise incentives for calls, and negative rates or trading constraints can change the standard conclusions.
+For a non-dividend-paying stock and $g_y\geq 0$, early exercise of an American call is suboptimal in the classical frictionless model, so $V_c^{\mathrm{AM}}=V_c^{\mathrm{EU}}$. American puts can optimally exercise early because receiving $K$ sooner has financing value. Dividends can create early-exercise incentives for calls, and negative rates or trading constraints can change the standard conclusions.
 
 \section{From Model Values to an Option Chain}
 
@@ -147,11 +176,11 @@ Likewise, a CRR price outside a quoted bid--ask spread does not by itself prove 
 
 \Needspace{0.38\textheight}
 \keytakeaways
-  {In this lecture, we separated the value of exercising, waiting, and owning American exercise flexibility, then connected those quantities to lattice decisions and market quotes.}
+  {In this lecture, we priced European and American exercise styles on the same lattice, measured the early-exercise premium, and connected the difference to node-level decisions.}
   {Extrinsic value is a residual}
   {$X=V-H=(C-H)^+$ in the American lattice; continuation value, extrinsic value, and the early-exercise premium are not synonyms.}
-  {Exercise is an endogenous boundary}
-  {Backward induction chooses $H$ or $C$ at every node, producing exercise and continuation regions that depend on contract and market inputs.}
+  {American value weakly dominates European value}
+  {The American holder can always wait until expiration, so $V^{\mathrm{AM}}\geq V^{\mathrm{EU}}$; strict inequality requires a valuable early-exercise opportunity.}
   {Quoted decompositions require care}
   {Bid, ask, timestamp, dividends, volatility, and liquidity must be aligned before treating model--market differences as economic opportunities.}
   {Next, measure how an option premium responds locally to spot, volatility, time, and interest rates through the Greeks.}

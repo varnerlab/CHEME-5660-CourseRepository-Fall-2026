@@ -5,183 +5,114 @@
 
 \begin{document}
 
-\lecturenotes{9a}{European BSM and American CRR Option Pricing}{Fall 2026}{October 20, 2026}{Jeffrey D. Varner}
+\lecturenotes{9a}{European Option Pricing with Black--Scholes--Merton}{Fall 2026}{October 20, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Price European claims}
-  {Derive risk-neutral valuation and apply the Black--Scholes--Merton call and put formulas with a continuous dividend yield.}
-  {Build a CRR lattice}
-  {Choose up/down factors and risk-neutral probabilities that match volatility and exclude one-step arbitrage.}
-  {Price early exercise}
-  {Use backward induction to compare continuation and intrinsic value at every American-option node.}
+  {Explain risk-neutral valuation}
+  {Distinguish a no-arbitrage pricing measure from a forecast of the underlying's real-world return.}
+  {Price European options}
+  {Evaluate the Black--Scholes--Merton call and put formulas using consistent rate, volatility, strike, spot, dividend, and maturity conventions.}
+  {Validate model premiums}
+  {Use put--call parity, nonnegativity, strike monotonicity, and Monte Carlo standard errors as implementation checks.}
 
-\section{Price Is the Cost of Replication, Not a Forecasted Payoff}
+\section{European Exercise Reduces Valuation to a Terminal Payoff}
 
-An option's expiration payoff is known as a function of the future underlying price, but that future price is uncertain. Arbitrage pricing does not insert the asset's estimated real-world expected return into a discounted-payoff calculation. Instead, it constructs a self-financing hedge or, equivalently under the model, evaluates the payoff under a risk-neutral probability measure. The resulting premium is conditional on assumptions about tradability, volatility, interest rates, dividends, and exercise rights.
+A European option can be exercised only at expiration $T$. Let $S_T\geq0$ be the underlying price in USD/share at expiration and let $K>0$ be the strike in USD/share. The per-share payoffs are
+\begin{equation}
+  \label{eq:payoffs}
+  h_c(S_T;K):=(S_T-K)^+,
+  \qquad
+  h_p(S_T;K):=(K-S_T)^+,
+  \qquad x^+:=\max\{x,0\}.
+\end{equation}
+The time-$0$ call and put premiums are denoted $C_0$ and $P_0$, respectively, and are measured in USD/share. The contract deliverable converts a per-share premium to account dollars; it does not change the per-share pricing formulas.
 
-Let $S_t>0$ be the underlying price in USD/share at time $t\in[0,T]$, let $r\in\R$ be a continuously compounded risk-free rate, let $\delta\in\R$ be a continuous proportional dividend yield, and let $\sigma>0$ be annualized volatility. Under the Black--Scholes--Merton (BSM) risk-neutral model,
+The exercise convention is load-bearing. The formulas in this lecture value the terminal payoffs in \eqnref{payoffs}; they do not optimize an early-exercise decision. L9b adds that decision and uses the European price as the comparison benchmark.
+
+\section{Risk-Neutral Valuation Is Not a Return Forecast}
+
+Let $S_t>0$ be the underlying price at time $t\in[0,T]$, let $g_y\in\R$ be the continuously compounded risk-free rate in the notation of L2a, let $\delta\in\R$ be a continuous proportional dividend yield, and let $\sigma>0$ be annualized volatility. Under the Black--Scholes--Merton (BSM) risk-neutral model,
 \begin{equation}
   \label{eq:risk-neutral-gbm}
-  \frac{dS_t}{S_t}=(r-\delta)\,dt+\sigma\,dW_t^{\mathbb Q},
+  \frac{dS_t}{S_t}=(g_y-\delta)\,dt+\sigma\,dW_t^{\mathbb Q},
 \end{equation}
-where $W^{\mathbb Q}$ is a Wiener process under the risk-neutral measure $\mathbb Q$. The drift is $r-\delta$, not a historical return forecast. For a European payoff $g(S_T)$ with suitable integrability, no-arbitrage value at time $0$ is
+where $W^{\mathbb Q}$ is a Wiener process under the pricing measure $\mathbb Q$. The drift $g_y-\delta$ enforces the model's no-arbitrage pricing relation; it is not an estimate of the asset's historical or expected real-world return.
+
+For a European payoff $h(S_T)$ with suitable integrability, the time-$0$ model value is
 \begin{equation}
   \label{eq:risk-neutral-price}
-  V_0=e^{-rT}\mathbb E^{\mathbb Q}[g(S_T)].
+  V_0=e^{-g_yT}\mathbb E^{\mathbb Q}[h(S_T)].
 \end{equation}
 
 \begin{remark}{What the model assumes}{bsm-assumptions}
-The classical BSM derivation assumes frictionless continuous trading, no arbitrage, constant $r$, $\delta$, and $\sigma$, continuous lognormal price paths, and the ability to trade the underlying and financing asset as required by the hedge. Real markets have jumps, discrete trading, volatility smiles, funding spreads, transaction costs, and position constraints. A formula can be evaluated exactly while its model remains approximate.
+The classical BSM derivation assumes frictionless continuous trading, no arbitrage, constant $g_y$, $\delta$, and $\sigma$, continuous lognormal price paths, and the ability to trade the underlying and financing asset as required by the hedge. Real markets have jumps, discrete trading, volatility smiles, funding spreads, transaction costs, and position constraints. A formula can be evaluated exactly while its model remains approximate.
 \end{remark}
 
 \section{Black--Scholes--Merton Closed Forms}
 
-Let $S_0>0$, strike $K>0$, and maturity $T>0$. Let $\Phi$ denote the standard-normal cumulative distribution function and define the dimensionless quantities
+Let $S_0>0$, $K>0$, and $T>0$. Let $\Phi$ denote the standard-normal cumulative distribution function and define
 \begin{equation}
   \label{eq:d1-d2}
-  d_1=\frac{\ln(S_0/K)+(r-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
+  d_1=\frac{\ln(S_0/K)+(g_y-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
   \qquad
   d_2=d_1-\sigma\sqrt T.
 \end{equation}
-The European call and put premiums in \thmref{bsm} are measured in USD/share.
 
 \begin{theorem}{BSM European call and put prices}{bsm}
-Under \eqnref{risk-neutral-gbm} and the assumptions in \remref{bsm-assumptions}, a European call with payoff $(S_T-K)^+$ and a European put with payoff $(K-S_T)^+$ have time-$0$ values
+Under \eqnref{risk-neutral-gbm} and the assumptions in \remref{bsm-assumptions}, the time-$0$ European premiums are
 \begin{equation}
   \label{eq:bsm-prices}
-  C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2),
+  C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-g_yT}\Phi(d_2),
   \qquad
-  P_0=Ke^{-rT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1),
+  P_0=Ke^{-g_yT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1).
 \end{equation}
-where $d_1$ and $d_2$ are defined in \eqnref{d1-d2}.
 \end{theorem}
 
-The two prices satisfy European put--call parity:
+Every convention must agree across the inputs: $T$ is in years, $g_y$ is continuously compounded, $\sigma$ is annualized, and $S_0$ and $K$ use the same currency-per-share units. When the underlying pays no dividends, set $\delta=0$.
+
+\subsection{Put--Call Parity}
+
+The two European prices satisfy the replication identity
 \begin{equation}
   \label{eq:put-call-parity}
-  C_0-P_0=S_0e^{-\delta T}-Ke^{-rT}.
+  C_0-P_0=S_0e^{-\delta T}-Ke^{-g_yT}.
 \end{equation}
-Equation~\eqref{eq:put-call-parity} is a replication identity and a valuable implementation check. A code path that violates it beyond numerical tolerance has inconsistent inputs or a bug.
+Equation~\eqref{eq:put-call-parity} is an inexpensive implementation check. Compute the call and put directly and then test parity. Using a rounded call premium to obtain a tiny put by subtraction can suffer catastrophic cancellation and can even produce a negative numerical result.
 
-Monte Carlo simulation evaluates \eqnref{risk-neutral-price} by drawing $M$ independent risk-neutral endpoints, computing discounted payoffs $Y_k:=e^{-rT}g(S_T^{(k)})$, and using
+\section{Monte Carlo Provides a Second Numerical Route}
+
+Monte Carlo evaluates \eqnref{risk-neutral-price} by drawing $M$ independent risk-neutral endpoints, computing discounted payoffs $Y_k:=e^{-g_yT}h(S_T^{(k)})$, and using
 \begin{equation}
   \label{eq:mc-estimator}
   \widehat V_M=\frac1M\sum_{k=1}^{M}Y_k,
   \qquad
-  \widehat{\operatorname{SE}}(\widehat V_M)
-  =\frac{s_Y}{\sqrt M},
+  \widehat{\operatorname{SE}}(\widehat V_M)=\frac{s_Y}{\sqrt M},
 \end{equation}
-where $s_Y$ is the sample standard deviation of the $Y_k$. The $M^{-1/2}$ convergence rate is slow; report the standard error, random seed policy, and number of paths rather than only the point estimate.
+where $s_Y$ is the sample standard deviation. The closed form and simulation are different numerical routes to the same model value. Their difference should be interpreted in standard-error units; a nominal 95\% interval is not guaranteed to cover the closed form on every random run.
 
 \notebooklink
-  {L9a: European BSM and Monte Carlo Premiums}
+  {L9a: European BSM and Risk-Neutral Monte Carlo}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}
-  {Price European calls and puts with both risk-neutral Monte Carlo and the BSM formulas, quantify simulation error, and study premiums across strikes.}
+  {Price European calls and puts with both methods, quantify simulation error, verify put--call parity, and study premiums across strikes.}
 
-\section{From Continuous Diffusion to a CRR Lattice}
+\section{Checks Before Trusting a Premium}
 
-American exercise is naturally handled on a discrete state tree. Divide $T$ into $N\in\mathbb N$ steps of length $\Delta t:=T/N$. In the Cox--Ross--Rubinstein (CRR) model, one step multiplies the stock by
-\begin{equation}
-  \label{eq:crr-factors}
-  u=e^{\sigma\sqrt{\Delta t}},
-  \qquad
-  d=e^{-\sigma\sqrt{\Delta t}}=u^{-1}.
-\end{equation}
-The symmetry $ud=1$ makes the lattice recombine, while the log-return variance matches $\sigma^2\Delta t$ to leading order. The risk-neutral up probability is
-\begin{equation}
-  \label{eq:crr-probability}
-  p=\frac{e^{(r-\delta)\Delta t}-d}{u-d},
-  \qquad 1-p=\frac{u-e^{(r-\delta)\Delta t}}{u-d}.
-\end{equation}
-The one-step no-arbitrage condition is $d<e^{(r-\delta)\Delta t}<u$, which is equivalent to $0<p<1$. If it fails, increasing $N$ may restore a valid step size, but the invalid probability must not be clipped silently.
+Require nonnegative premiums. Under fixed remaining inputs, call premiums are nonincreasing in strike and put premiums are nondecreasing in strike. Verify put--call parity within the rounding tolerance of the implementation. For simulation, report the seed policy, path count, standard error, and standardized discrepancy from the closed form rather than only a point estimate.
 
-At time index $n\in\{0,\ldots,N\}$ after $j\in\{0,\ldots,n\}$ up moves, the recombining stock price is
-\begin{equation}
-  \label{eq:lattice-stock}
-  S_{n,j}=S_0u^jd^{\,n-j}.
-\end{equation}
-
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[x=2.0cm,y=0.85cm,>=Latex,font=\sffamily\small]
-    \foreach \n in {0,...,3}{
-      \foreach \j in {0,...,\n}{
-        \coordinate (n\n j\j) at (\n,{2*\j-\n});
-        \fill[vnink] (n\n j\j) circle (1.9pt);
-      }
-    }
-    \foreach \n in {0,...,2}{
-      \pgfmathtruncatemacro{\next}{\n+1}
-      \foreach \j in {0,...,\n}{
-        \pgfmathtruncatemacro{\up}{\j+1}
-        \draw[vnlink,->] (n\n j\j)--(n\next j\up);
-        \draw[vnmuted,->] (n\n j\j)--(n\next j\j);
-      }
-    }
-    \node[left] at (n0j0) {$S_0$};
-    \node[right] at (n3j3) {$S_0u^3$};
-    \node[right] at (n3j2) {$S_0u^2d$};
-    \node[right] at (n3j1) {$S_0ud^2$};
-    \node[right] at (n3j0) {$S_0d^3$};
-    \node[below] at (0,-3.7) {$n=0$};
-    \node[below] at (1,-3.7) {$n=1$};
-    \node[below] at (2,-3.7) {$n=2$};
-    \node[below] at (3,-3.7) {$n=3$};
-  \end{tikzpicture}
-  \caption{A recombining CRR stock lattice. Different up/down orderings reach the same node because $ud=du$. This reduces the node count from exponential in paths to quadratic in time steps.}
-  \label{fig:crr-lattice}
-\end{figure}
-
-\notebooklink
-  {L9a: Origin of the CRR Up and Down Factors}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-OriginStory-CRR-Factors-Fall-2026.ipynb}
-  {Derive the reciprocal CRR factors by matching the binomial log-return variance to the diffusion variance over one time step.}
-
-\section{Backward Induction and Early Exercise}
-
-Let $h(S)$ be the intrinsic payoff: $h_c(S):=(S-K)^+$ for a call or $h_p(S):=(K-S)^+$ for a put. At maturity, set $V_{N,j}:=h(S_{N,j})$. For a European option, every earlier node uses only discounted continuation value:
-\begin{equation}
-  \label{eq:european-backward}
-  V_{n,j}^{\mathrm{EU}}
-  =e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{EU}}+(1-p)V_{n+1,j}^{\mathrm{EU}}\bigr].
-\end{equation}
-For an American option, the holder chooses between immediate exercise and continuation:
-\begin{equation}
-  \label{eq:american-backward}
-  V_{n,j}^{\mathrm{AM}}
-  =\max\left\{
-    h(S_{n,j}),
-    e^{-r\Delta t}\bigl[pV_{n+1,j+1}^{\mathrm{AM}}+(1-p)V_{n+1,j}^{\mathrm{AM}}\bigr]
-  \right\}.
-\end{equation}
-The first term in \eqnref{american-backward} is intrinsic value; the second is continuation value. Nodes where the first strictly exceeds the second form the model's early-exercise region. Because the American holder can always imitate the European policy of waiting, $V_0^{\mathrm{AM}}\geq V_0^{\mathrm{EU}}$ under identical inputs.
-
-For a non-dividend-paying stock with nonnegative interest rates, early exercise of an American call is not optimal in the classical frictionless model, so its value equals the European call value. American puts can have an early-exercise region. Dividends, negative rates, borrow constraints, and market frictions change these conclusions.
-
-\notebooklink
-  {L9a: American Options with the CRR Model}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-American-Derivatives-CRR-Model-Fall-2026.ipynb}
-  {Construct the stock and option lattices, run European and American backward induction, and identify nodes where early exercise dominates continuation.}
-
-\section{Numerical Checks Before Trusting a Premium}
-
-Increase $N$ and verify convergence rather than reporting one lattice resolution. CRR prices can oscillate with step parity, especially near the strike; compare sequences of even and odd $N$ or use averaging/extrapolation. Confirm $0<p<1$, nonnegative option values, American value no smaller than European value, and terminal nodes equal their payoffs.
-
-For European options, compare the CRR root value with BSM under matching $r$, $\delta$, $\sigma$, $T$, $S_0$, and $K$. Also check put--call parity and monotonicity: calls decrease with strike, puts increase with strike, and both are nondecreasing in volatility under standard BSM conditions. Disagreement is useful diagnostic evidence only after all conventions and inputs have been reconciled.
+These checks establish internal consistency under the selected model; they do not prove that the assumptions describe a particular market well. A disagreement becomes diagnostic evidence only after rate, dividend, volatility, time, exercise style, units, and timestamps have been reconciled.
 
 \keytakeaways
-  {In this lecture, we priced European claims by risk-neutral expectation and BSM closed forms, then introduced American exercise through CRR backward induction.}
-  {Risk-neutral is a pricing measure}
-  {The discounted payoff expectation uses $\mathbb Q$ and drift $r-\delta$; it is not a claim about the asset's real-world expected return.}
-  {CRR must exclude one-step arbitrage}
-  {The factors and probability must satisfy $d<e^{(r-\delta)\Delta t}<u$ so that $0<p<1$ before backward induction begins.}
-  {American value includes a decision}
-  {Every pre-expiration node compares intrinsic value with discounted continuation, creating an endogenous exercise boundary.}
-  {Next, decompose an American option premium into intrinsic value and nonnegative continuation value across the lattice.}
+  {In this lecture, we priced European calls and puts by risk-neutral valuation and the BSM closed forms, then checked the results with parity and simulation.}
+  {Risk neutral is a pricing measure}
+  {The drift under $\mathbb Q$ enforces no-arbitrage valuation; it is not a forecast of the asset's real-world return.}
+  {BSM prices European exercise}
+  {The call and put formulas value terminal payoffs under explicit assumptions and consistent input conventions.}
+  {A model premium needs checks}
+  {Direct formulas, put--call parity, strike monotonicity, and Monte Carlo standard errors reveal many implementation and convention errors.}
+  {Next, add the American exercise right and measure when that flexibility makes the American premium exceed the European benchmark.}
 
 \begin{readinglist}
   \item Fischer Black and Myron Scholes, \href{https://doi.org/10.1086/260062}{``The Pricing of Options and Corporate Liabilities,''} \emph{Journal of Political Economy} 81(3), 637--654 (1973).
-  \item John C. Cox, Stephen A. Ross, and Mark Rubinstein, \href{https://doi.org/10.1016/0304-405X(79)90015-1}{``Option Pricing: A Simplified Approach,''} \emph{Journal of Financial Economics} 7(3), 229--263 (1979).
   \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
 \end{readinglist}
 
