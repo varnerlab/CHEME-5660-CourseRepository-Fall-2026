@@ -45,18 +45,18 @@ The premium is paid when the position opens. Let $C_0\geq0$ and $P_0\geq0$ be ca
 For any real $x$, write $x^+:=\max(x,0)$. The per-share terminal payoff to a long European call and long European put is
 \begin{equation}
   \label{eq:long-payoffs}
-  c_T(S_T):=(S_T-K)^+,
+  h_c(S_T;K):=(S_T-K)^+,
   \qquad
-  p_T(S_T):=(K-S_T)^+.
+  h_p(S_T;K):=(K-S_T)^+.
 \end{equation}
 The call is exercised at expiration when buying at $K$ is better than buying at $S_T$; the put is exercised when selling at $K$ is better than selling at $S_T$. The holder may decline exercise, so both payoffs are nonnegative.
 
 Let $\theta\in\{-1,+1\}$ denote position direction, with $+1$ long and $-1$ short. Ignoring counterparty default, the writer's terminal payoff is the negative of the holder's payoff:
 \begin{equation}
   \label{eq:signed-payoff}
-  V_T^{c,\theta}=\theta c_T(S_T),
+  V_T^{c,\theta}=\theta h_c(S_T;K),
   \qquad
-  V_T^{p,\theta}=\theta p_T(S_T).
+  V_T^{p,\theta}=\theta h_p(S_T;K).
 \end{equation}
 This payoff symmetry does not imply symmetric risk after the premium: call and put terminal functions have different bounds because $S_T\geq0$ but has no finite contractual upper bound.
 
@@ -69,9 +69,9 @@ A call is in the money when $S_T>K$, at the money when $S_T=K$, and out of the m
 The common classroom expiration diagram subtracts the opening premium without growing it through time. Under this undiscounted cash-flow convention, per-share profit is
 \begin{equation}
   \label{eq:profit-convention}
-  \Pi_T^{c,\theta}(S_T)=\theta\bigl(c_T(S_T)-C_0\bigr),
+  \Pi_T^{c,\theta}(S_T)=\theta\bigl(h_c(S_T;K)-C_0\bigr),
   \qquad
-  \Pi_T^{p,\theta}(S_T)=\theta\bigl(p_T(S_T)-P_0\bigr).
+  \Pi_T^{p,\theta}(S_T)=\theta\bigl(h_p(S_T;K)-P_0\bigr).
 \end{equation}
 For a long position, the premium is an initial outflow; for a short position, it is an initial inflow. Equation~\eqref{eq:profit-convention} is useful for shape and breakeven calculations, but it mixes time-$0$ and time-$T$ dollars. A time-$T$ economic P\&L would subtract the premium's financed future value, while a time-$0$ net present value would discount the terminal payoff. Fees and bid--ask effects must also be added consistently.
 
@@ -132,23 +132,46 @@ The short put's terminal loss is large but finite when the underlying price is b
 \notebooklink
   {L8b: Single-Contract Payoff and Profit}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-8/L8b/CHEME-5660-L8b-Example-SingleContractPayoffProfit-Fall-2026.ipynb}
-  {Build long and short call and put contracts from an option chain, compute expiration payoff and premium-adjusted profit, and verify the analytical breakevens.}
+  {Build all four positions from an option chain, sweep the full domain $S_T\geq0$, convert per-share quantities to per-contract dollars, and verify the breakevens and both loss bounds numerically.}
 
 \section{Composite Positions Add Leg by Leg}
 
-Let a strategy contain legs $j\in\{1,\ldots,d\}$. For leg $j$, let $\theta_j\in\{-1,+1\}$ be direction, $n_j\in\mathbb N$ the number of contracts, $q_j\in\mathbb N$ the deliverable multiplier, $V_{j,T}(S_T)$ the long per-unit payoff, and $\mathcal P_{j,0}\geq0$ the per-unit premium. Under the same undiscounted convention, total terminal profit is
+Let a composite position $\mathcal C$ contain legs $i\in\{1,\ldots,d\}$ on a common underlying and expiration. For leg $i$, let $\tau_i\in\{c,p\}$ be the type, $K_i>0$ the strike, $\theta_i\in\{-1,+1\}$ the direction, $n_i\in\mathbb N$ the number of contracts, and $P_i\geq0$ the per-share opening premium. Write the long per-share payoff of leg $i$ as
 \begin{equation}
-  \label{eq:composite-profit}
-  \Pi_{\mathrm{strategy},T}(S_T)
-  =\sum_{j=1}^{d}\theta_jn_jq_j
-  \bigl[V_{j,T}(S_T)-\mathcal P_{j,0}\bigr].
+  \label{eq:leg-payoff}
+  h_i(S_T):=
+  \begin{cases}
+    (S_T-K_i)^+, & \tau_i=c,\\
+    (K_i-S_T)^+, & \tau_i=p.
+  \end{cases}
 \end{equation}
-Linearity makes vertical spreads, straddles, strangles, covered calls, and protective puts transparent: their kinks occur at the component strikes, while their vertical offsets depend on the net opening debit or credit. Exercise style, expiration, underlying, deliverable, and settlement must be compatible before legs are casually combined into one diagram.
+Under the same undiscounted convention, the terminal payoff and profit of the position, \emph{per share}, are
+\begin{align}
+  \label{eq:composite-payoff}
+  H_{\mathcal C}(S_T)&=\sum_{i=1}^{d}\theta_in_i\,h_i(S_T),\\
+  \label{eq:composite-profit}
+  \Pi_{\mathcal C}(S_T)&=\sum_{i=1}^{d}\theta_in_i
+  \bigl[h_i(S_T)-P_i\bigr].
+\end{align}
+Both are in USD/share, which is what the example notebooks compute and plot. To convert to position-level dollars, multiply leg $i$ by its deliverable $q_i\in\mathbb N$ in shares/contract: the position payoff is $\sum_i\theta_in_iq_ih_i(S_T)$, and standard U.S. equity options carry $q_i=100$. Keeping $q_i$ outside the per-share sum matters because a corporate-action adjustment can change one leg's deliverable while leaving the others standard.
+
+Linearity makes vertical spreads, straddles, and strangles transparent: corners can occur only at component strikes, and the vertical offset depends on the net opening debit or credit. A strike is an actual corner only when the aggregate slope jump there, $\sum_{i:K_i=K}\theta_in_i$, is nonzero; opposing legs at one strike cancel. Covered calls and protective puts need one further building block, a position in the underlying shares, because \eqnref{leg-payoff} admits only $\tau_i\in\{c,p\}$. Exercise style, expiration, underlying, deliverable, and settlement must be compatible before legs are casually combined into one diagram.
+
+The domain constrains composite bounds exactly as it does single contracts. Writing $D$ for the net per-share debit of a long straddle at strike $K$, its profit $\lvert S_T-K\rvert-D$ is unbounded above only as $S_T\to\infty$; on the lower branch it terminates at $S_T=0$ with the finite value $K-D$. The familiar description ``unlimited profit in either direction'' is therefore wrong on the downside, and the corresponding short position's downside loss is likewise finite.
+
+\begin{remark}{Which payoffs are reachable}{static-replication}
+Equation~\eqref{eq:composite-payoff} shows that summing legs \emph{produces} piecewise-linear payoffs. The converse also holds: for a fixed strike grid $0<K_1<\cdots<K_d$, every continuous piecewise-linear payoff whose corners lie on that grid has exactly one representation as cash, shares of the underlying, and calls struck at those strikes, with each call weight equal to the slope jump at its strike. The minimal representation uses exactly the strikes whose slope jump is nonzero. The optional advanced notebook proves it and reads the standard structures off the decomposition.
+\end{remark}
 
 \notebooklink
   {L8b: Composite-Contract Payoff and Profit}
   {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-8/L8b/CHEME-5660-L8b-Example-CompositeContractsPL-Fall-2026.ipynb}
-  {Combine signed option legs to study vertical spreads, straddles, and strangles, and identify their piecewise profit regions and breakevens.}
+  {Combine signed option legs to study vertical spreads, straddles, and strangles, and identify their piecewise profit regions, breakevens, and finite downside extremes at $S_T=0$.}
+
+\notebooklink
+  {L8b optional advanced: Static Replication of Piecewise-Linear Payoffs}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-8/L8b/advanced}
+  {Proves \remref{static-replication}: existence and uniqueness of the cash, share, and call decomposition, the put payoff identity, the decomposition of every strategy above, and the boundary of the reachable set. Optional; not a prerequisite for L9a.}
 
 \keytakeaways
   {In this lecture, we translated option contract terms into expiration cash flows and kept contractual payoff distinct from the investor's premium-dependent profit.}

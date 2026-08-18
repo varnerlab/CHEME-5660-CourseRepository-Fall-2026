@@ -1,0 +1,88 @@
+% L8b plate: what an option contract actually obliges each side to do.
+% Replaces the Fall-2024 raster export. Two panels, call and put, each showing
+% the one unconditional flow (the premium, paid when the position opens) and the
+% two conditional flows at exercise (shares one way, strike cash the other).
+% Notation follows the L8b notes: strike K, expiration T, deliverable q
+% shares/contract, premiums C_0 (call) and P_0 (put) in USD/share, terminal price S_T.
+\documentclass[tikz,border=0pt]{standalone}
+\usepackage{vnfigure}
+
+\newcommand{\fLabel}{\sffamily\fontsize{7.4}{9}\selectfont}
+\newcommand{\fMeta}{\sffamily\fontsize{8}{10.2}\selectfont}
+\newcommand{\fData}{\sffamily\fontsize{9}{11}\selectfont}
+\newcommand{\fHead}{\sffamily\fontsize{12}{14}\selectfont}
+\newcommand{\fTitle}{\sffamily\fontsize{18}{21}\selectfont}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily]
+  \path[use as bounding box] (0,0) rectangle (16,9.2);
+  \fill[white] (0,0) rectangle (16,9.2);
+
+  % Title ------------------------------------------------------------------
+  \node[anchor=west,font=\fTitle\bfseries,text=vnink] at (0.70,8.65) {An option contract: a right and an obligation};
+  \draw[vncarnelian,line width=1.5pt] (0.70,8.20) -- (1.87,8.20);
+  \node[anchor=west,font=\fData,text=vnmuted] at (0.81,7.88) {The premium is paid once, at the open, whether or not the right is ever used};
+
+  % ===================== CALL CARD ========================================
+  \draw[vnlink!60,fill=vnlink!4,rounded corners=4pt,line width=0.8pt] (0.70,4.15) rectangle (15.30,7.55);
+  \node[anchor=west,font=\fHead\bfseries,text=vnlink] at (0.92,7.22) {Call contract};
+  \node[anchor=west,font=\fLabel,text=vnmuted] at (0.94,6.90) {THE RIGHT TO BUY AT $K$};
+  \draw[vnlink!60,line width=0.5pt] (0.92,6.72) -- (15.08,6.72);
+
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=7.60cm,align=left] at (0.92,6.54) {%
+    \textbullet\; \textbf{Long (holder)} pays $C_{0}$/share for the right to buy at $K$.\\[3pt]
+    \textbullet\; \textbf{Short (writer)} collects $C_{0}$, must deliver at $K$ if assigned.\\[3pt]
+    \textbullet\; At $T$, exercised when $S_{T}>K$: payoff $(S_{T}-K)^{+}$.};
+
+  % actors
+  \draw[vnlink,fill=vnsoft,rounded corners=3pt,line width=0.9pt] (8.75,4.78) rectangle (10.35,6.16);
+  \node[font=\fMeta\bfseries,text=vnlink] at (9.55,5.66) {Long};
+  \node[font=\fLabel,text=vnmuted] at (9.55,5.28) {holder};
+
+  \draw[vncarnelian,fill=vnsoft,rounded corners=3pt,line width=0.9pt] (13.45,4.78) rectangle (15.05,6.16);
+  \node[font=\fMeta\bfseries,text=vncarnelian] at (14.25,5.66) {Short};
+  \node[font=\fLabel,text=vnmuted] at (14.25,5.28) {writer};
+
+  % flows
+  \draw[vnink,line width=1.0pt,-{Latex[length=2.4mm]}] (10.45,6.00) -- (13.35,6.00)
+    node[midway,above=1.5pt,font=\fLabel,text=vnink] {premium $q\,C_{0}$};
+  \draw[vnmuted,line width=0.9pt,densely dotted,-{Latex[length=2.4mm]}] (13.35,5.48) -- (10.45,5.48)
+    node[midway,above=1.5pt,font=\fLabel,text=vnmuted] {$q$ shares at exercise};
+  \draw[vnmuted,line width=0.9pt,densely dotted,-{Latex[length=2.4mm]}] (10.45,4.96) -- (13.35,4.96)
+    node[midway,above=1.5pt,font=\fLabel,text=vnmuted] {$q\,K$ cash at exercise};
+  \node[anchor=north,font=\fLabel,text=vnmuted] at (11.90,4.66) {solid: always. dotted: only if $S_{T}>K$.};
+
+  % ===================== PUT CARD =========================================
+  \draw[vncarnelian!60,fill=vncarnelian!4,rounded corners=4pt,line width=0.8pt] (0.70,0.62) rectangle (15.30,4.02);
+  \node[anchor=west,font=\fHead\bfseries,text=vncarnelian] at (0.92,3.69) {Put contract};
+  \node[anchor=west,font=\fLabel,text=vnmuted] at (0.94,3.37) {THE RIGHT TO SELL AT $K$};
+  \draw[vncarnelian!60,line width=0.5pt] (0.92,3.19) -- (15.08,3.19);
+
+  \node[anchor=north west,font=\fMeta,text=vnink,text width=7.60cm,align=left] at (0.92,3.01) {%
+    \textbullet\; \textbf{Long (holder)} pays $P_{0}$/share for the right to sell at $K$.\\[3pt]
+    \textbullet\; \textbf{Short (writer)} collects $P_{0}$, must buy at $K$ if assigned.\\[3pt]
+    \textbullet\; At $T$, exercised when $S_{T}<K$: payoff $(K-S_{T})^{+}$.};
+
+  % actors
+  \draw[vnlink,fill=vnsoft,rounded corners=3pt,line width=0.9pt] (8.75,1.25) rectangle (10.35,2.63);
+  \node[font=\fMeta\bfseries,text=vnlink] at (9.55,2.13) {Long};
+  \node[font=\fLabel,text=vnmuted] at (9.55,1.75) {holder};
+
+  \draw[vncarnelian,fill=vnsoft,rounded corners=3pt,line width=0.9pt] (13.45,1.25) rectangle (15.05,2.63);
+  \node[font=\fMeta\bfseries,text=vncarnelian] at (14.25,2.13) {Short};
+  \node[font=\fLabel,text=vnmuted] at (14.25,1.75) {writer};
+
+  % flows
+  \draw[vnink,line width=1.0pt,-{Latex[length=2.4mm]}] (10.45,2.47) -- (13.35,2.47)
+    node[midway,above=1.5pt,font=\fLabel,text=vnink] {premium $q\,P_{0}$};
+  \draw[vnmuted,line width=0.9pt,densely dotted,-{Latex[length=2.4mm]}] (10.45,1.95) -- (13.35,1.95)
+    node[midway,above=1.5pt,font=\fLabel,text=vnmuted] {$q$ shares at exercise};
+  \draw[vnmuted,line width=0.9pt,densely dotted,-{Latex[length=2.4mm]}] (13.35,1.43) -- (10.45,1.43)
+    node[midway,above=1.5pt,font=\fLabel,text=vnmuted] {$q\,K$ cash at exercise};
+  \node[anchor=north,font=\fLabel,text=vnmuted] at (11.90,1.13) {solid: always. dotted: only if $S_{T}<K$.};
+
+  % Footnote ---------------------------------------------------------------
+  \node[anchor=west,font=\fLabel,text=vnmuted] at (0.70,0.24) {%
+    European style exercises only at $T$; American style on or before $T$. Commonly $q=100$ shares/contract.};
+\end{tikzpicture}
+\end{document}
