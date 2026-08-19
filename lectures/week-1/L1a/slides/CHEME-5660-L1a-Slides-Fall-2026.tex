@@ -1,0 +1,161 @@
+% L1a course-orientation deck.
+%
+% THIS DECK IS THE SOLE ARTIFACT FOR L1a AND IS AUTHORITATIVE ON ITS OWN.
+%
+% Every other lecture in the course mirrors a notebook or a notes packet, and
+% every other deck header says so. L1a has neither, and that is deliberate:
+%
+%   - No notebook. The manifest records that none is required; L1a is
+%     orientation, not computation.
+%   - No notes packet. lectures/week-1/L1a/docs was deleted on 2026-08-19.
+%     The notes were stale and substantially duplicative of the L1b deck, which
+%     already teaches the policy-rate versus valuation-rate distinction two days
+%     later. Recoverable from git history if anyone wants it back.
+%
+% DO NOT "fix" this asymmetry by regenerating notes from these slides. The
+% asymmetry is the design. Because the deck is the only record, every slide has
+% to be legible after the room empties: the promise table, the validation
+% ladder, and the four reading links all carry their own statement of the point
+% rather than leaning on a lecturer.
+%
+% Design spec: private/specs/2026-08-19-l1a-course-intro-redesign.md
+%
+% Frame order and the minute budget it serves (75 min total):
+%
+%   title                                     -> \vntitlepage
+%   Disclaimer and Risks                      -> always second, house convention
+%   Objectives for Today                      -> three objectives, house format
+%   How This Course Runs                      -> logistics      20 min
+%   What the Semester Feels Like              -> logistics
+%   You Already Hold a Portfolio              -> why you care    7 min
+%   Twelve People, Eight Meetings a Year      -> Fed teaser, 60 seconds only
+%   Why an Engineer                           -> market scale    6 min
+%   Three Kinds of Asset                      -> named, not toured, ONE slide
+%   The Decision Problem                      -> decision       10 min
+%   Four Units                                -> decision
+%   The Validation Ladder                     -> decision
+%   Five Promises                             -> table + vote    5 min
+%   The Names                                 -> reveal          3 min
+%   Three Questions We Cannot Answer Yet      -> reveal
+%   A Forecast by Subtraction                 -> reveal
+%   Which One Killed a Bank?                  -> SVB clip        7 min
+%   Thursday                                  -> handoff         3 min
+%   Summary                                   -> three takeaways
+%   Further Reading                           -> offered, not assigned
+%
+% No \transitionframe: that belongs to a concept-review opening, and this deck
+% has none.
+%
+% NO PRODUCT NOUNS BEFORE THE "reveal" SECTION. The five promises are read as
+% cash-flow schedules; "bill", "note", "bond", "corporate", and "TIPS" first
+% appear on the frame titled "The Names". This is the whole point of the hook.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+% The full policy document. Defaulted to the course repository, which is what
+% every other deck links. Point it at Canvas with a one-line change here.
+\newcommand{\policyurl}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}
+
+\title{{\vnheavy L1a}: Course Orientation, Markets, Assets, and the Decision Problem}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+% ---- title ---------------------------------------------------
+\vntitlepage
+
+% ---- disclaimer ----------------------------------------------
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+% ---- objectives ----------------------------------------------
+\begin{frame}{Objectives for Today}
+  \vspace{0.4em}
+  Today we locate the course, argue that you are \hilite{already a participant}
+  in the markets it studies, and end on a question this lecture will not answer.
+
+  \vspace{0.9em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Locate the course}: how four units connect cash-flow models,
+      uncertainty, contingent claims, and algorithmic decisions.
+    \item \hilite{Why you are already in this}: retirement accounts make nearly
+      every working professional a portfolio holder, and the markets involved
+      are roughly a thousand times the daily scale of the industries this
+      college trains you to enter.
+    \item \hilite{The decision problem}: an instrument is a schedule of dated
+      payments, and two schedules cannot be ranked without a rule for moving
+      dollars across time.
+  \end{itemize}
+  \vspace{-0.4em}
+
+  \slidenote{Note:}{this lecture has no notebook and no notes packet. These slides are the record.}
+\end{frame}
+
+% ==== logistics ====
+
+% ==== already-care ====
+
+% ==== engineer ====
+
+% ==== assets ====
+
+% ==== decision ====
+
+% ==== units ====
+
+% ==== ladder ====
+
+% ==== promises ====
+
+% ==== reveal ====
+
+% ==== svb ====
+
+% ==== summary ====
+% Summary frames carry all three parts: one summary sentence, exactly three
+% key takeaways, one concluding sentence. See vnslides.sty rule 7.
+\begin{frame}{Summary}
+  This lecture located the course, argued that market participation is already
+  the default for a working professional, and read five financial promises as
+  schedules of dated payments.
+
+  \vspace{0.05em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \vspace{0.1em}
+  \begin{itemize}\setlength{\itemsep}{0.1em}
+    \item \textbf{\ink{You are already a portfolio holder.}} Retirement accounts
+      make market participation the default, so the allocation question is one
+      nearly everyone answers, most of them by inaction.
+    \item \textbf{\ink{An instrument is a schedule.}} A bill, a note, a bond, a
+      corporate bond, and an inflation-indexed security differ in their dated
+      cash flows, not in kind: the product names are labels for those schedules.
+    \item \textbf{\ink{A claim is only as good as the rung it survived.}} Theory,
+      backtest, forward test, and real money each see different data, and each
+      is the only stage able to falsify its own claim.
+  \end{itemize}
+
+  \vspace{0.05em}
+  On Thursday we build the rule that lets us rank those five schedules.
+\end{frame}
+
+% ==== reading ====
+
+\end{document}
