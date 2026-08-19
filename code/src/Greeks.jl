@@ -182,12 +182,12 @@ function gamma(contract::Y; h::Int64=2, T::Float64=(1 / 365), σ::Float64=0.15,
     down_up_index, down_down_index = model.connectivity[down_index]
 
     up_delta = (
-        model.data[up_up_index].extrinsic - model.data[up_down_index].extrinsic
+        model.data[up_up_index].value - model.data[up_down_index].value
     ) / (
         model.data[up_up_index].price - model.data[up_down_index].price
     )
     down_delta = (
-        model.data[down_up_index].extrinsic - model.data[down_down_index].extrinsic
+        model.data[down_up_index].value - model.data[down_down_index].value
     ) / (
         model.data[down_up_index].price - model.data[down_down_index].price
     )

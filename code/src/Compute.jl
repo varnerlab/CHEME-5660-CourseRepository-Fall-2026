@@ -948,7 +948,7 @@ function premium(contract::T, model::MyAdjacencyBasedCRREquityPriceTree;
         # grab the price -
         price = node.price
         node.intrinsic = _intrinsic(contract,price)
-        node.extrinsic = _intrinsic(contract,price)
+        node.value = _intrinsic(contract,price)
     end
 
     # get the levels that are going to process -
@@ -965,14 +965,14 @@ function premium(contract::T, model::MyAdjacencyBasedCRREquityPriceTree;
 
             # compute the future_payback, and current payback
             current_payback = data[i].intrinsic
-            future_payback = dfactor*((p*data[up_node_index].extrinsic)+(1-p)*(data[down_node_index].extrinsic))
+            future_payback = dfactor*((p*data[up_node_index].value)+(1-p)*(data[down_node_index].value))
             node_price = choice(current_payback, future_payback) # encode the choice
-            data[i].extrinsic = node_price;
+            data[i].value = node_price;
         end
     end
 
     # # return -
-    return (data[0].extrinsic) |> x-> round(x, sigdigits = sigdigits)
+    return (data[0].value) |> x-> round(x, sigdigits = sigdigits)
 end
 
 function premium(contract::T, model::MyBinomialEquityPriceTree; 
@@ -995,7 +995,7 @@ function premium(contract::T, model::MyBinomialEquityPriceTree;
         # grab the price -
         price = node.price
         node.intrinsic = _intrinsic(contract, price)
-        node.extrinsic = _intrinsic(contract, price)
+        node.value = _intrinsic(contract, price)
     end
 
     # get the levels that are going to process -
@@ -1012,14 +1012,14 @@ function premium(contract::T, model::MyBinomialEquityPriceTree;
 
             # compute the future_payback, and current payback
             current_payback = data[i].intrinsic;
-            future_payback = dfactor*((p*data[up_node_index].extrinsic)+(1-p)*(data[down_node_index].extrinsic))
+            future_payback = dfactor*((p*data[up_node_index].value)+(1-p)*(data[down_node_index].value))
             node_price = choice(current_payback, future_payback) # encode the choice
-            data[i].extrinsic = node_price;
+            data[i].value = node_price;
         end
     end
 
     # # return -
-    return data[0].extrinsic
+    return data[0].value
 end
 
 """
@@ -1443,7 +1443,7 @@ end
                 Sₒ::Float64 = 100.0, h::Int64 = 1)
 
 The `populate` function initializes the `MyAdjacencyBasedCRREquityPriceTree` model with share prices and probabilities for each node in the lattice.
-In addition, this methods sets the intrinsic and extrinsic values of each node to `0.0` and computes the connectivity and levels of the lattice.
+In addition, this methods sets the intrinsic value and the option value of each node to `0.0` and computes the connectivity and levels of the lattice.
 
 ### Arguments
 - `model::MyAdjacencyBasedCRREquityPriceTree`: An instance of the `MyAdjacencyBasedCRREquityPriceTree` type.
@@ -1488,7 +1488,7 @@ function populate(model::MyAdjacencyBasedCRREquityPriceTree;
             node.price = price
             node.probability = P;
             node.intrinsic = 0.0; # intrinsic value gets updated later, for now -> 0.0
-            node.extrinsic = 0.0; # extrinsic value gets updated later, for now -> 0.0
+            node.value = 0.0; # option value gets updated later, for now -> 0.0
             
             # push this into the array -
             nodes_dictionary[counter] = node;

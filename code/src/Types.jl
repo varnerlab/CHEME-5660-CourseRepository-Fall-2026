@@ -50,12 +50,12 @@ The `MyCRRLatticeNodeModel` mutable struct represents a node in a [Cox-Ross-Rubi
 American style option contracts.
 
 ### Required fields
-- `price::Float64`: The price of the price at the node
+- `price::Float64`: The share price at the node
 - `probability::Float64`: The probability of reaching the node
 
 ### Optional or computed fields
 - `intrinsic::Union{Nothing,Float64}`: The intrinsic value of the option contract at the node
-- `extrinsic::Union{Nothing,Float64}`: The extrinsic value of the option contract at the node
+- `value::Union{Nothing,Float64}`: The option value at the node, i.e. the premium of the contract evaluated at this node. Extrinsic value is `value - intrinsic`.
 """
 mutable struct MyCRRLatticeNodeModel
 
@@ -63,7 +63,7 @@ mutable struct MyCRRLatticeNodeModel
     price::Float64
     probability::Float64
     intrinsic::Union{Nothing,Float64}
-    extrinsic::Union{Nothing,Float64}
+    value::Union{Nothing,Float64}
 
     # constructor -
     MyCRRLatticeNodeModel() = new();
@@ -318,7 +318,7 @@ within a specified time period. For European options, the contract can only be e
 
 ### Optional fields
 - `sense::Union{Nothing, Int64}`: The sense of the option. A value of `1` indicates a long position, and a value of `-1` indicates a short position.
-- `DTE::Union{Nothing,Float64}`: The days to expiration of the option (measured in units of years).
+- `DTE::Union{Nothing,Float64}`: The time to expiration of the option, in years.
 - `IV::Union{Nothing, Float64}`: The implied volatility of the option contract.
 - `premium::Union{Nothing, Float64}`: The premium of the option contract. This is the price paid to the seller by the buyer for the option contract.
 - `ticker::Union{Nothing,String}`: The ticker symbol of the underlying asset.
@@ -351,7 +351,7 @@ within a specified time period. For European options, the contract can only be e
 
 ### Optional fields
 - `sense::Union{Nothing, Int64}`: The sense of the option. A value of `1` indicates a long position, and a value of `-1` indicates a short position.
-- `DTE::Union{Nothing,Float64}`: The days to expiration of the option (measured in units of years).
+- `DTE::Union{Nothing,Float64}`: The time to expiration of the option, in years.
 - `IV::Union{Nothing, Float64}`: The implied volatility of the option contract.
 - `premium::Union{Nothing, Float64}`: The premium of the option contract. This is the price paid to the seller by the buyer for the option contract.
 - `ticker::Union{Nothing,String}`: The ticker symbol of the underlying asset.
@@ -384,7 +384,7 @@ American option contracts can be exercised at any time on or before the expirati
 
 ### Optional fields
 - `sense::Union{Nothing, Int64}`: The sense of the option. A value of `1` indicates a long position, and a value of `-1` indicates a short position.
-- `DTE::Union{Nothing,Float64}`: The days to expiration of the option (measured in units of years).
+- `DTE::Union{Nothing,Float64}`: The time to expiration of the option, in years.
 - `IV::Union{Nothing, Float64}`: The implied volatility of the option contract.
 - `premium::Union{Nothing, Float64}`: The premium of the option contract. This is the price paid to the seller by the buyer for the option contract.
 - `ticker::Union{Nothing,String}`: The ticker symbol of the underlying asset.
@@ -417,7 +417,7 @@ For American options, the contract can be exercised at any time on or before the
 
 ### Optional fields
 - `sense::Union{Nothing, Int64}`: The sense of the option. A value of `1` indicates a long position, and a value of `-1` indicates a short position.
-- `DTE::Union{Nothing,Float64}`: The days to expiration of the option (measured in units of years).
+- `DTE::Union{Nothing,Float64}`: The time to expiration of the option, in years.
 - `IV::Union{Nothing, Float64}`: The implied volatility of the option contract.
 - `premium::Union{Nothing, Float64}`: The premium of the option contract. This is the price paid to the seller by the buyer for the option contract.
 - `ticker::Union{Nothing,String}`: The ticker symbol of the underlying asset.
@@ -758,13 +758,13 @@ end
     mutable struct MyBiomialLatticeEquityNodeModel
 
 The `MyBiomialLatticeEquityNodeModel` mutable struct represents a node in a binomial lattice model for simulating equity prices.
-This node type is created during the initialization of a lattice model and is used to store the price, probability, intrinsic, and extrinsic values for each node.
+This node type is created during the initialization of a lattice model and is used to store the price, probability, intrinsic value, and option value for each node.
 
 ### Fields
 - `price::Float64`: The price of the asset at the node
 - `probability::Float64`: The probability of reaching the node in the binomial lattice
 - `intrinsic::Union{Nothing,Float64}`: The intrinsic value of the option contract at the node
-- `extrinsic::Union{Nothing,Float64}`: The extrinsic value of the option contract at the node
+- `value::Union{Nothing,Float64}`: The option value at the node, i.e. the premium of the contract evaluated at this node. Extrinsic value is `value - intrinsic`.
 """
 mutable struct MyBiomialLatticeEquityNodeModel
 
@@ -772,7 +772,7 @@ mutable struct MyBiomialLatticeEquityNodeModel
     price::Float64
     probability::Float64
     intrinsic::Union{Nothing,Float64} # these are needed *only* for option pricing
-    extrinsic::Union{Nothing,Float64} # these are needed *only* for option pricing
+    value::Union{Nothing,Float64} # these are needed *only* for option pricing
 
     # constructor -
     MyBiomialLatticeEquityNodeModel() = new();

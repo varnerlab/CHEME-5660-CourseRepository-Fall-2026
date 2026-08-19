@@ -157,7 +157,7 @@ function build(modeltype::Type{MyAdjacencyBasedCRREquityPriceTree};
             node.price = price
             node.probability = P;
             node.intrinsic = 0.0; # intrinsic value gets updated later, for now -> 0.0
-            node.extrinsic = 0.0; # extrinsic value gets updated later, for now -> 0.0
+            node.value = 0.0; # option value gets updated later, for now -> 0.0
             
             # push this into the array -
             nodes_dictionary[counter] = node;
