@@ -5,39 +5,73 @@
 %   Fig-L1a-CourseMap.tex                           (standalone -> PDF -> SVG)
 % Editing this file updates both. Rebuild with `make` in this directory.
 %
-% Palette from templates/vnflow.sty. Unit 1, 3, and 4 titles are the workbook
-% strings in schedule-2026-update.md; Unit 2's official header lives only in the
-% .xlsx and is pending confirmation from JDV.
+% DESIGN, following templates/vnflow.sty and the L1b abstract-asset timeline:
+%
+%   SPINE.   A real week axis carries the figure, exactly as the L1b timeline
+%            hangs its cash flows off a time axis. The units are not floating
+%            boxes joined by arrows; they sit ON the semester.
+%   COLOUR.  Semantic, not decorative. vnlink is reserved for the CAPABILITY
+%            each unit adds -- the payload of the figure. Structure (axis,
+%            boxes, ticks) is vnink/vnmuted, and nothing else is coloured.
+%   GEOMETRY. Every box is the same width and height regardless of how long
+%            its title is, and every capability line uses the same text width,
+%            so the four columns align on a shared grid. No label alternates
+%            above and below; each sits at a fixed offset from its own box.
+%   PAYLOAD. The brace states the question the whole course answers, so the
+%            figure teaches "these four together answer one thing" rather than
+%            "first this, then that."
+%
+% Unit 3 and 4 titles are the workbook strings in schedule-2026-update.md.
+% Unit 2's official header lives only in the .xlsx and is pending confirmation.
+%
+% UNIT 1 DELIBERATELY DIVERGES from its workbook string, which is "Foundations
+% and marketable Treasury securities". This figure appears on frame 11 and the
+% product names are not revealed until frame 14, so the workbook wording would
+% put "Treasury" on screen three frames early and spoil the whole hook. The
+% substitute says what Unit 1 actually teaches in the vocabulary the deck has
+% built by that point. Restore the workbook string ONLY if this figure is ever
+% reused after the reveal, or in another lecture.
+\begingroup
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=10000
 \begin{tikzpicture}[
     font=\sffamily\small,
     >=Latex,
-    unitbox/.style = {draw=vnink,line width=0.9pt,rounded corners=2pt,
-                      fill=vnsoft,minimum width=3.5cm,minimum height=1.5cm,
-                      align=center,inner sep=5pt},
-    adds/.style    = {text=vnmuted,font=\sffamily\footnotesize,align=center,
-                      text width=3.4cm},
-    flowstep/.style = {vnlink,line width=1.1pt,->}]
+    unit/.style     = {draw=vnink,line width=0.9pt,rounded corners=2pt,
+                       fill=vnsoft,minimum width=3.45cm,minimum height=1.5cm,
+                       align=center,text width=3.15cm,inner sep=3pt},
+    adds/.style     = {text=vnlink,font=\sffamily\small,align=center,
+                       text width=3.45cm},
+    weeks/.style    = {text=vnmuted,font=\sffamily\footnotesize},
+    tick/.style     = {vnmuted,line width=0.7pt}]
 
-  \node[unitbox] (u1) at (0,0)
-    {\textbf{Unit 1}\\[1pt]\footnotesize Foundations and\\marketable Treasury\\securities};
-  \node[unitbox] (u2) at (4.1,0)
-    {\textbf{Unit 2}\\[1pt]\footnotesize Equity markets,\\uncertainty, and\\portfolio allocation};
-  \node[unitbox] (u3) at (8.2,0)
-    {\textbf{Unit 3}\\[1pt]\footnotesize Modeling and analysis\\of equity derivatives};
-  \node[unitbox] (u4) at (12.3,0)
-    {\textbf{Unit 4}\\[1pt]\footnotesize Modeling and analysis\\of financial\\decision-making};
+  % ---- the four units, on one grid ---------------------------------
+  \foreach \i/\x/\utitle in {%
+      1/0/{Foundations and schedules of dated payments},
+      2/4.35/{Equity markets, uncertainty, and portfolio allocation},
+      3/8.70/{Modeling and analysis of equity derivatives},
+      4/13.05/{Modeling and analysis of financial decision-making}}{%
+    \node[unit] (u\i) at (\x,0)
+      {\textcolor{vnink}{\bfseries Unit \i}\\[2pt]{\footnotesize \utitle}};}
 
-  \draw[flowstep] (u1) -- (u2);
-  \draw[flowstep] (u2) -- (u3);
-  \draw[flowstep] (u3) -- (u4);
+  % ---- the spine: the semester ------------------------------------
+  \draw[vn timeline] (-1.95,-1.35) -- (15.6,-1.35) node[right,text=vnink] {weeks};
+  \foreach \i/\x/\wk in {1/0/{1--2}, 2/4.35/{3--7}, 3/8.70/{8--11}, 4/13.05/{12--15}}{%
+    \draw[tick] (\x,-1.25) -- (\x,-1.45);
+    \node[weeks,below=1pt] at (\x,-1.45) {weeks \wk};}
 
-  \node[adds,below=0.55cm of u1] {move dollars\\across dates};
-  \node[adds,below=0.55cm of u2] {describe what\\you do not know};
-  \node[adds,below=0.55cm of u3] {price a claim that\\depends on something else};
-  \node[adds,below=0.55cm of u4] {choose, and check\\whether you were right};
+  % ---- what each unit adds: one aligned band, one shared baseline --
+  \foreach \i/\x/\cap in {%
+      1/0/{move dollars across dates},
+      2/4.35/{describe what you do not know},
+      3/8.70/{price a claim that depends on another},
+      4/13.05/{choose, then check whether you were right}}{%
+    \node[adds,anchor=north] at (\x,-2.15) {\cap};}
+  \node[text=vnlink,font=\sffamily\footnotesize\itshape,anchor=east]
+    at (-0.9,-2.45) {each unit adds:};
 
-  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u1] {weeks 1--2};
-  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u2] {weeks 3--7};
-  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u3] {weeks 8--11};
-  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u4] {weeks 12--15};
+  % ---- the payload: one question, four units ----------------------
+  \draw[vn brace] (-1.78,1.05) -- (14.83,1.05)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries given assets, uncertainty, and preferences: what do you do?};
 \end{tikzpicture}
+\endgroup

@@ -18,7 +18,10 @@ SVGS := $(addsuffix .svg,$(FIGURES))
 XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
-STYLE := vnfigure.sty
+# vnfigure.sty here is the three-line wrapper; the canonical styles it pulls in
+# live in lectures/templates and are real inputs, so they are prerequisites too.
+# Omitting them let a template edit leave every figure PDF and SVG stale.
+STYLE := vnfigure.sty ../../../templates/vnfigure.sty ../../../templates/vnflow.sty
 SHARED := course-map.tex validation-ladder.tex
 
 .PHONY: all pdf svg clean distclean

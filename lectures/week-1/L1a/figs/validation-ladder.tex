@@ -1,2 +1,88 @@
-% placeholder, replaced in Task 9
-\begin{tikzpicture}\node{};\end{tikzpicture}
+% Validation ladder -- SHARED SOURCE.
+%
+% \input by two places; do not duplicate the picture:
+%   ../slides/CHEME-5660-L1a-Slides-Fall-2026.tex   (typeset into the deck)
+%   Fig-L1a-ValidationLadder.tex                    (standalone -> PDF -> SVG)
+% Editing this file updates both. Rebuild with `make` in this directory.
+%
+% TERMINOLOGY IS FIXED COURSE-WIDE AND MUST NOT DRIFT:
+%   a BACKTEST runs on past data; a FORWARD TEST runs on actual current data.
+%   Paper trading is a forward test. Do not relabel either rung.
+%
+% DESIGN, following templates/vnflow.sty and the L1b abstract-asset timeline:
+%
+%   SPINE.   A four-column evidence grid. The figure's whole claim is that each
+%            rung sees STRICTLY MORE than the one below it, so that claim is
+%            drawn as geometry -- a filled staircase -- rather than asserted in
+%            a caption. Rungs climb, so the filled region widens upward.
+%   COLOUR.  Semantic. vnlink fills a cell the rung CAN see; an unfilled cell
+%            outlined in vnrule is evidence that rung is blind to. vncarnelian
+%            marks the one column that costs real money. Nothing else coloured.
+%   GEOMETRY. Every cell is identical. The rung name and its claim share one
+%            right-aligned block of fixed text width, so both ragged edges land
+%            on the same line against the grid. No label alternates above and
+%            below, and nothing floats: each element belongs to a row or column.
+%   PAYLOAD. The "kills:" line on each rung is what makes the figure worth
+%            showing: each rung is the ONLY stage able to falsify its own claim.
+%            The conclusion drawn from that -- skipping a rung relocates the
+%            discovery to where it costs money -- is stated on the DECK FRAME,
+%            not inside the picture. Repeating it here made it read as a
+%            caption, which the house style forbids.
+\begingroup
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=10000
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    seen/.style     = {draw=vnlink,line width=0.7pt,fill=vnlink!16},
+    unseen/.style   = {draw=vnrule,line width=0.7pt,fill=white},
+    money/.style    = {draw=vncarnelian,line width=0.7pt,fill=vncarnelian!14},
+    % 9.2cm, not 7.7: at the enlarged claim size the longest claim ("the math
+    % works on data that already happened") wrapped to a second line and broke
+    % the one-row-per-rung alignment the figure is built on. The deck frame
+    % widens its \resizebox to match, so the effective font size is unchanged.
+    rung/.style     = {align=right,anchor=east,text width=9.2cm},
+    colhead/.style  = {text=vnmuted,font=\sffamily\footnotesize,align=center,
+                       text width=2.3cm,anchor=south}]
+
+  % Column width and row height. One grid, no exceptions. Cell x-origins are
+  % computed inline where they are used; a \global \colx<n> lookup table used
+  % to live here, was never read by anything, and leaked its definitions past
+  % the surrounding group.
+  \def\cw{2.3}\def\ch{0.62}
+
+  % ---- column headings: the four kinds of evidence -----------------
+  \foreach \c/\lab in {1/{assumptions}, 2/{past data}, 3/{current data},
+                       4/{money at risk}}{%
+    \pgfmathsetmacro{\cx}{8.0+(\c-0.5)*\cw}
+    \node[colhead] at (\cx,3.86) {\lab};}
+  \draw[vnrule,line width=0.5pt] (8.0,3.78) -- (17.2,3.78);
+
+  % ---- the four rungs, climbing --------------------------------------
+  % row: y-centre / rung name / how many evidence cells it can see
+  \foreach \y/\name/\n/\claim in {%
+      0/{Theory}/1/{``my reasoning is coherent''},
+      1.02/{Backtest}/2/{``the math works on data that already happened''},
+      2.04/{Forward test}/3/{``the market cooperates in real time''},
+      3.06/{Real money}/4/{``I would actually do this''}}{%
+    \node[rung] at (7.75,\y)
+      {\textcolor{vnink}{\bfseries \name}\\[1pt]
+       {\textcolor{vnmuted}{kills: \claim}}};
+    \foreach \c in {1,...,4}{%
+      \pgfmathsetmacro{\cx}{8.0+(\c-1)*\cw}
+      \ifnum\c>\n
+        \draw[unseen] (\cx,\y-\ch/2) rectangle (\cx+\cw,\y+\ch/2);
+      \else
+        \ifnum\c=4
+          \draw[money] (\cx,\y-\ch/2) rectangle (\cx+\cw,\y+\ch/2);
+        \else
+          \draw[seen] (\cx,\y-\ch/2) rectangle (\cx+\cw,\y+\ch/2);
+        \fi
+      \fi}}
+
+  % ---- no payload sentence, and no vertical axis ---------------------
+  % The filled staircase already IS the ascent, so an arrow beside it only
+  % collided with the rung labels. The "skipping a rung relocates the
+  % discovery" sentence lives on the FRAME, not here: repeating it inside the
+  % picture made it read as a caption, which the house style forbids, and the
+  % extra line pushed the ladder frame off the bottom of the slide.
+\end{tikzpicture}
+\endgroup

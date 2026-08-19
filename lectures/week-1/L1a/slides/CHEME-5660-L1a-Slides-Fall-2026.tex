@@ -56,6 +56,13 @@
 % every other deck links. Point it at Canvas with a one-line change here.
 \newcommand{\policyurl}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}
 
+% PBS NewsHour, 28 March 2023, Paul Solman: "The factors behind Silicon Valley
+% Bank's collapse." Runtime 6m04s, verified 2026-08-19, PBS-owned URL, no login.
+% The segment explains that the bank bought government securities, rates rose,
+% and it had to sell at a loss -- which is the answer to this deck's closing
+% question. Play it in full and do NOT paraphrase it afterwards.
+\newcommand{\svburl}{https://www.pbs.org/newshour/show/the-factors-behind-silicon-valley-banks-collapse}
+
 \title{{\vnheavy L1a}: Course Orientation, Markets, Assets, and the Decision Problem}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
@@ -88,7 +95,8 @@
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
   Today we locate the course, argue that you are \hilite{already a participant}
-  in the markets it studies, and end on a question this lecture will not answer.
+  in the markets it studies, and end on a question we cannot yet answer
+  \emph{rigorously}.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
@@ -96,10 +104,10 @@
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Locate the course}: how four units connect cash-flow models,
       uncertainty, contingent claims, and algorithmic decisions.
-    \item \hilite{Why you are already in this}: retirement accounts make nearly
-      every working professional a portfolio holder, and the markets involved
-      are roughly a thousand times the daily scale of the industries this
-      college trains you to enter.
+    \item \hilite{Why you are already in this}: most U.S. adults hold a
+      retirement account, and the markets those accounts invest in turn over
+      several hundred times the daily scale of the industries this college
+      trains you to enter.
     \item \hilite{The decision problem}: an instrument is a schedule of dated
       payments, and two schedules cannot be ranked without a rule for moving
       dollars across time.
@@ -199,8 +207,102 @@
 \end{frame}
 
 % ==== engineer ====
+% TWO frames, split on JDV's 2026-08-19 directive. The original single frame
+% summed US debt turnover + equity turnover + options NOTIONAL and got ~1300x.
+% That sum is incommensurable: notional is the value of the underlying a
+% contract controls, not dollars changing hands, and it dominated the numerator.
+% So the artifact WAS the headline.
+%
+% Frame 1 compares like with like -- three rows that are all cash -- and gets
+% 551x. Frame 2 then teaches the thing frame 1 had to drop, using JDV's device:
+% assume every contract is exercised the day it is sold, so the notional becomes
+% a real flow. The device fails for cash-settled index options, and the SPX
+% arithmetic on the frame shows that failure is 75% of the number, not a corner
+% case.
+%
+% All figures and sources: private/specs/data-l1a/MARKET-SCALE.md (addendum).
+% NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
+% categories and are allowed, same as Debt/Equity/Derivative on the next frame.
+\begin{frame}{Why an Engineer}
+  \vspace{0.05em}
+  Two industries this college trains people to enter, against the markets next
+  door. Industry figures are annual, divided by 252 trading days.
+
+  \vspace{0.25em}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lrr@{}}
+    & \textbf{\ink{Per year}} & \textbf{\ink{Cash per trading day}}\\[2pt]
+    \hline\\[-7pt]
+    \textbf{\ink{Global biopharma}}  & USD 666B & USD 2.64B\\
+    \textbf{\ink{Global batteries}}  & USD 181B & USD 0.72B\\[1pt]
+    \textbf{\ink{Together}}          &          & USD 3.36B\\[5pt]
+    US debt                          &          & USD 1{,}209B\\
+    US equity                        &          & USD 608B\\
+    Options premium                  &          & USD 37B\\[1pt]
+    \textbf{\hilite{US markets together}} &     & USD 1{,}854B\\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1em}
+  A factor of roughly \hilite{five hundred}, and the work at that scale is
+  estimation, uncertainty propagation, optimization, and control.
+
+  \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
+\end{frame}
+
+\begin{frame}{What That Last Row Controls}
+  \vspace{0.2em}
+  One row behaves unlike the others. That \hilite{USD 37B} of premium is the
+  cash paid, but it is not the size of the position it opens.
+
+  \vspace{0.5em}
+  Each contract is an option on \textbf{100 shares}. At 60.4 million contracts a
+  day, the shares underneath are worth about \hilite{USD 4 trillion}:
+  \[
+    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium paid}}
+    \;\Big/\;
+    \underbrace{\text{USD } 4{,}000\text{B}}_{\text{\footnotesize value controlled}}
+    \;=\;
+    \underbrace{0.92\%}_{\text{\footnotesize about 92 cents per \$100}}
+  \]
+
+  \vspace{0.2em}
+  Assume every contract were exercised the day it traded, and that USD 4 trillion
+  of stock changes hands: more than \hilite{twice} the debt and equity rows
+  combined. \dimmed{Which is why it is not in the table above.}
+
+  \slidenote{Careful:}{$3.9\text{M} \times 100 \times 7{,}692 = \$3.0$T of that is one index, settled in cash. It never delivers a share.}
+\end{frame}
 
 % ==== assets ====
+% Three CATEGORIES, not five products. The 2024 deck's asset-class tour
+% compressed ~8:1, because L2a, L3a, and L8b each take one apart properly at
+% the point the student needs it. The words "bill", "note", "bond",
+% "corporate", and "TIPS" must not appear on this frame.
+\begin{frame}{Three Kinds of Asset}
+  \vspace{0.3em}
+  Everything in this course is one of three things. We name them today and take
+  each apart later, at the point you need it.
+
+  \vspace{0.7em}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \textbf{\ink{Kind}} & \textbf{\ink{What you own}} & \textbf{\ink{Where the course takes it apart}}\\[2pt]
+    \hline\\[-7pt]
+    \hilite{Debt}        & a promise of dated payments          & Unit 1, weeks 2 and 3\\
+    \hilite{Equity}      & a residual claim on a firm           & Unit 2, weeks 3 to 7\\
+    \hilite{Derivative}  & a claim contingent on another asset  & Units 3 and 4, weeks 8 onward\\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.8em}
+  Risk and reward scale down the list. Debt promises a schedule and can break
+  it. Equity promises nothing and is worth what is left. A derivative is worth
+  whatever the thing underneath it does, which is the widest range of the three.
+
+  \slidenote{Today:}{we only need the first one, and we will not even use its name.}
+\end{frame}
+
 
 % ==== decision ====
 \begin{frame}{The Decision Problem}
@@ -246,12 +348,184 @@
 \end{frame}
 
 % ==== ladder ====
+\begin{frame}{The Validation Ladder}
+  \vspace{0.05em}
+  Four ways to check a claim. Each rung sees data the one below it did not, and
+  each is the \hilite{only} rung able to kill its own claim.
+
+  \vspace{0.45em}
+  \begin{center}
+    \resizebox{0.97\textwidth}{!}{\input{../figs/validation-ladder.tex}}
+  \end{center}
+
+  \vspace{0.45em}
+  A \hilite{backtest} runs on past data. A \hilite{forward test} runs on actual
+  current data with no money at stake, which a brokerage API such as Alpaca
+  makes possible.
+
+  \vspace{0.5em}
+  \ink{Skipping a rung relocates the discovery to where it costs money.}
+\end{frame}
 
 % ==== promises ====
+% NO PRODUCT NOUNS ON THIS FRAME. Five cash-flow schedules, nothing else. The
+% names arrive on the next frame and that ordering is the entire design: the PBS
+% segment later uses the words, so the reveal has to precede the clip.
+%
+% These five rows RECUR. L1b, L2a, and L2b re-show them verbatim with the same
+% numbers, each time answering one more of the open questions. Changing a number
+% here means changing it in three later decks.
+%
+% Amounts are from private/specs/data-l1a/PROMISE-TABLE.md, FRED pull of
+% 2026-08-18. Do not edit a number here without re-running that pull.
+\begin{frame}{Five Promises}
+  \vspace{0.1em}
+  Each costs \hilite{\$10{,}000} today, and each is built from a rate the market
+  quoted yesterday. No names yet, just what you are promised.
+
+  \vspace{0.5em}
+  \begin{center}\small
+  \begin{tabular}{@{}l@{\hspace{1.2em}}l@{}}
+    \textbf{\ink{A}} & \$10{,}028 back, four weeks from today\\[3pt]
+    \textbf{\ink{B}} & \$236 every six months for 10 years, then \$10{,}000\\[3pt]
+    \textbf{\ink{C}} & \$264 every six months for \textbf{30} years, then \$10{,}000\\[3pt]
+    \textbf{\ink{D}} & \$271 every six months for 10 years, then \$10{,}000\\[3pt]
+    \textbf{\ink{E}} & \$121 every six months for 10 years, plus an inflation\\
+                     & adjustment on every payment and on the \$10{,}000\\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  {\large\ink{\textbf{Which one do you take? Hands up.}}}
+
+  \slidenote{As of:}{published rates for 2026-08-18, each scaled to a \$10{,}000 outlay}
+\end{frame}
+
 
 % ==== reveal ====
+% Product nouns are allowed from here down, and only from here down.
+\begin{frame}{The Names}
+  \vspace{0.1em}
+  \begin{center}\small
+  \begin{tabular}{@{}llr@{}}
+    & \textbf{\ink{What it is called}} & \textbf{\ink{Annual rate}}\\[2pt]
+    \hline\\[-7pt]
+    \textbf{\ink{A}} & 4-week Treasury bill                      & 3.63\%\\
+    \textbf{\ink{B}} & 10-year Treasury note                     & 4.71\%\\
+    \textbf{\ink{C}} & 30-year Treasury bond                     & 5.28\%\\
+    \textbf{\ink{D}} & investment-grade corporate bonds          & 5.42\%\\
+    \textbf{\ink{E}} & 10-year inflation-indexed Treasury (TIPS) & 2.41\% \hilite{real}\\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  You just reasoned about all five \hilite{without knowing any of those words},
+  because the words are labels for cash-flow schedules. That is all they have
+  ever been, and it is the definition Thursday starts from.
+
+  \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is \emph{real}, not nominal.}
+\end{frame}
+
+% The credit spread here is D minus B -- the corporate index against the
+% MATURITY-MATCHED ten-year government row, 5.42 - 4.71 = 71 bp. The design
+% spec compared D to C (the 30-year row) and got 11 bp, but D and B are both
+% described as ten-year schedules on the previous frame, so a student who
+% maturity-matches gets 71 and finds the slide wrong by a factor of five.
+% See private/specs/data-l1a/PROMISE-TABLE.md for the full reasoning.
+\begin{frame}{Three Questions We Cannot Answer Yet}
+  \vspace{0.15em}
+  Most hands went to \textbf{C} or \textbf{D}, and that is the right instinct
+  with the information on the previous slide. Here is what it left out.
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Why not C?} It pays the most of the three government rows. But
+      you may need the money before year thirty, and then you sell at whatever
+      price rates allow. \dimmed{Week 2.}
+    \item \hilite{Why not D?} It pays the most, full stop. Those borrowers pay
+      \hilite{82 basis points} (0.82 percentage points) more than the government
+      for the same timing of money \dimmed{(FRED \texttt{BAMLC0A0CM}, 2026-08-18)}: the price of not being paid, and of owning
+      something harder to sell. \dimmed{Units 2 and 3.}
+    \item \hilite{Why not E?} It pays the least of any row, and that comparison
+      is not even legal: its number is in different units. \dimmed{Next slide.}
+  \end{itemize}
+
+  \vspace{0.35em}
+  \ink{Every row is written as a certain schedule. Only three of them are.}
+\end{frame}
+
+\begin{frame}{A Forecast by Subtraction}
+  \vspace{0.3em}
+  B and E are the same issuer at the same horizon. B promises \hilite{nominal}
+  dollars; E promises \hilite{real} ones, adjusted for whatever inflation turns
+  out to be. Subtracting one from the other leaves exactly the difference
+  between those two units:
+  \[
+    \underbrace{4.71\%}_{\text{\footnotesize nominal}}
+    \;-\;
+    \underbrace{2.41\%}_{\text{\footnotesize real}}
+    \;=\;
+    \underbrace{2.30\%}_{\text{\footnotesize breakeven inflation}}
+  \]
+
+  \vspace{0.2em}
+  That is the ten-year \hilite{breakeven inflation rate}: the inflation rate at
+  which B and E pay you the same. The Federal Reserve publishes it directly, and
+  it prints \hilite{2.30\%} for the same day. It is not a clean forecast, since
+  it also carries what investors charge for bearing inflation risk, but nothing
+  else gets you this close in one subtraction.
+
+  \vspace{0.4em}
+  \ink{Prices contain forecasts. Extracting them is most of what this course does.}
+
+  \slidenote{Source:}{FRED series \texttt{DGS10}, \texttt{DFII10}, \texttt{T10YIE}, as of 2026-08-18}
+\end{frame}
+
 
 % ==== svb ====
+% The clip plays IN FULL and the question is NOT answered. The answer is C:
+% long-dated holdings that never defaulted and still destroyed the balance
+% sheet when rates rose. L2b resolves it, where that is the subject matter.
+% Do not answer it here and do not hint. The unresolved ending is the design.
+\begin{frame}{Which One Killed a Bank?}
+  \vspace{0.6em}
+  In March 2023 a bank with about \hilite{\$200 billion} in assets failed in two
+  days. It held one of the five promises on your list.
+
+  \vspace{1.0em}
+  {\large\ink{\textbf{Which one, and why?}}}
+
+  \vspace{1.0em}
+  None of them defaulted. Every payment that had come due arrived exactly as
+  promised, and the bank failed anyway.
+
+  \vspace{0.9em}
+  The clip will tell you \hilite{which one}. It will not tell you \hilite{why} in
+  any way you could check, and that gap is week 2.
+
+  \slidenote{Clip:}{\href{\svburl}{PBS NewsHour, 28 March 2023, 6 minutes}}
+\end{frame}
+
+\begin{frame}{Thursday}
+  \vspace{0.4em}
+  Nobody in this room voted badly. You were not careless and you did not buy
+  something exotic: every promise on that list is issued by the United States
+  government or by large companies that have been paying their bills for decades.
+
+  \vspace{0.9em}
+  You cannot rank those five yet, and the reason is precise:
+
+  \vspace{0.5em}
+  \begin{center}
+    {\large\ink{You have no rule for comparing dollars that arrive on different dates.}}
+  \end{center}
+
+  \vspace{0.9em}
+  \$264 in thirty years and \$10{,}028 in four weeks are not comparable numbers
+  until we say what a dollar on one date is worth on another. That rule is
+  Thursday, and it is the first thing this course builds.
+\end{frame}
+
 
 % ==== summary ====
 % Summary frames carry all three parts: one summary sentence, exactly three
@@ -268,8 +542,8 @@
       make market participation the default, so the allocation question is one
       nearly everyone answers, most of them by inaction.
     \item \textbf{\ink{An instrument is a schedule.}} A bill, a note, a bond, a
-      corporate bond, and an inflation-indexed security differ in their dated
-      cash flows, not in kind: the product names are labels for those schedules.
+      corporate bond, and an inflation-indexed security are labels for schedules
+      of dated payments, though not every schedule is equally certain.
     \item \textbf{\ink{A claim is only as good as the rung it survived.}} Theory,
       backtest, forward test, and real money each see different data, and each
       is the only stage able to falsify its own claim.
@@ -280,5 +554,22 @@
 \end{frame}
 
 % ==== reading ====
+% The four links from the deleted L1a reading list. Offered, not assigned: there
+% is no notes packet to hold anyone to, and L1b teaches this material properly.
+% All four verified HTTP 200 on 2026-08-19.
+\begin{frame}{Further Reading}
+  \vspace{0.4em}
+  Not assigned, and not on any problem set. If the sixty seconds on the
+  committee left you curious, start here.
+
+  \vspace{0.9em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \href{https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm}{\emph{The Structure and Functions of the Federal Reserve System}}, Federal Reserve Board: the roles of the Board of Governors, the Reserve Banks, and the FOMC.
+    \item \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, Federal Reserve Board: the target range, the effective rate, and the current implementation tools.
+    \item \href{https://www.newyorkfed.org/aboutthefed/fedpoint/fed01.html}{\emph{Fedpoints: Federal Reserve System}}, Federal Reserve Bank of New York: an institutional overview.
+    \item \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, U.S. Department of the Treasury: fiscal, financial, and debt-management responsibilities. \dimmed{A different institution from the one above, which is week 2's problem.}
+  \end{itemize}
+\end{frame}
+
 
 \end{document}
