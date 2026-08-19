@@ -203,6 +203,32 @@
 % ==== assets ====
 
 % ==== decision ====
+\begin{frame}{The Decision Problem}
+  \vspace{0.2em}
+  Three kinds of asset, one question. You observe something, you do something,
+  and something comes back. The three words for those are \hilite{state},
+  \hilite{action}, and \hilite{reward}.
+
+  \vspace{0.6em}
+  \begin{center}
+  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=3.0cm]
+    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,
+          minimum width=3.0cm,minimum height=1.05cm,align=center] (you) {you\\preferences};
+    \node[draw=vnink,very thick,rounded corners,fill=white,
+          minimum width=3.6cm,minimum height=1.05cm,align=center,right=of you] (mkt) {the market\\uncertain};
+    \draw[vnlink,very thick,->] (you) -- node[above] {action} (mkt);
+    \draw[vncarnelian,very thick,->,bend left=26] (mkt) to node[below,align=center] {state, reward} (you);
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.4em}
+  The loop is easy to draw and hard to close. Closing it needs a way to compare
+  payments that arrive on different dates, a way to describe what you do not
+  know, a way to price a claim that depends on something else, and a rule for
+  choosing. Those are the four units.
+
+  \slidenote{Careful:}{the picture is not the problem. Every arrow in it is a modeling choice.}
+\end{frame}
 
 % ==== units ====
 
