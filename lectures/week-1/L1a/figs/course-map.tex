@@ -1,2 +1,43 @@
-% placeholder, replaced in Task 8
-\begin{tikzpicture}\node{};\end{tikzpicture}
+% Four-unit course map -- SHARED SOURCE.
+%
+% \input by two places; do not duplicate the picture:
+%   ../slides/CHEME-5660-L1a-Slides-Fall-2026.tex   (typeset into the deck)
+%   Fig-L1a-CourseMap.tex                           (standalone -> PDF -> SVG)
+% Editing this file updates both. Rebuild with `make` in this directory.
+%
+% Palette from templates/vnflow.sty. Unit 1, 3, and 4 titles are the workbook
+% strings in schedule-2026-update.md; Unit 2's official header lives only in the
+% .xlsx and is pending confirmation from JDV.
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    >=Latex,
+    unitbox/.style = {draw=vnink,line width=0.9pt,rounded corners=2pt,
+                      fill=vnsoft,minimum width=3.5cm,minimum height=1.5cm,
+                      align=center,inner sep=5pt},
+    adds/.style    = {text=vnmuted,font=\sffamily\footnotesize,align=center,
+                      text width=3.4cm},
+    flowstep/.style = {vnlink,line width=1.1pt,->}]
+
+  \node[unitbox] (u1) at (0,0)
+    {\textbf{Unit 1}\\[1pt]\footnotesize Foundations and\\marketable Treasury\\securities};
+  \node[unitbox] (u2) at (4.1,0)
+    {\textbf{Unit 2}\\[1pt]\footnotesize Equity markets,\\uncertainty, and\\portfolio allocation};
+  \node[unitbox] (u3) at (8.2,0)
+    {\textbf{Unit 3}\\[1pt]\footnotesize Modeling and analysis\\of equity derivatives};
+  \node[unitbox] (u4) at (12.3,0)
+    {\textbf{Unit 4}\\[1pt]\footnotesize Modeling and analysis\\of financial\\decision-making};
+
+  \draw[flowstep] (u1) -- (u2);
+  \draw[flowstep] (u2) -- (u3);
+  \draw[flowstep] (u3) -- (u4);
+
+  \node[adds,below=0.55cm of u1] {move dollars\\across dates};
+  \node[adds,below=0.55cm of u2] {describe what\\you do not know};
+  \node[adds,below=0.55cm of u3] {price a claim that\\depends on something else};
+  \node[adds,below=0.55cm of u4] {choose, and check\\whether you were right};
+
+  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u1] {weeks 1--2};
+  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u2] {weeks 3--7};
+  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u3] {weeks 8--11};
+  \node[text=vnmuted,font=\sffamily\footnotesize,above=0.35cm of u4] {weeks 12--15};
+\end{tikzpicture}
