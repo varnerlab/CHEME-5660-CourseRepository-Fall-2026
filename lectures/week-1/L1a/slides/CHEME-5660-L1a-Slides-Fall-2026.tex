@@ -30,7 +30,7 @@
 %   Most of You Already Hold a Portfolio      -> why you care    7 min
 %   The Federal Open Market Committee         -> Fed teaser, 60 seconds only
 %   Market Scale Compared to Two Industries   -> market scale    6 min
-%   Premium Paid Versus Value Controlled      -> market scale
+%   Price Paid Versus Value Controlled        -> market scale
 %   The Three Kinds of Asset                  -> named, not toured, ONE slide
 %   The Decision Problem                      -> decision       10 min
 %   The Four Units of the Course              -> decision
@@ -97,23 +97,20 @@
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
   Today we place the course in context, show that you are \hilite{already a
-  participant} in the markets it studies, and close with a question we cannot
-  yet answer rigorously.
+  participant} in the markets it studies, and close with a question.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{The structure of the course}: how four units connect
-      cash-flow models, uncertainty, contingent claims, and algorithmic
-      decisions.
+    \item \hilite{Course structure}: how our four units connect payments over
+      time, uncertainty, investments whose value depends on something else,
+      and rules for choosing.
     \item \hilite{Why this concerns you}: most U.S. adults hold a retirement
       account, and the markets those accounts invest in move several hundred
-      times more cash per day than the industries this college trains you to
-      enter.
-    \item \hilite{The decision problem}: an instrument is a schedule of dated
-      payments, and two schedules cannot be ranked without a rule for moving
-      dollars across time.
+      times more cash per day than industries that employ many engineers.
+    \item \hilite{The decision problem}: investment choices pay at different
+      times, so we need a rule for comparing them.
   \end{itemize}
   \vspace{-0.4em}
 
@@ -177,17 +174,17 @@
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item That account holds a \hilite{portfolio}: a set of positions, held in
-      some proportion, chosen by someone.
-    \item Choosing those proportions is an \hilite{allocation decision}. It is
+    \item That account holds a \hilite{portfolio}: a mix of investments, with
+      some percentage in each, chosen by someone.
+    \item Choosing that mix is an \hilite{investment decision}. It is
       the decision this course spends four units learning how to make.
     \item Most account holders have \hilite{never made that decision
-      explicitly}. A default allocation was selected for them and they left it
+      explicitly}. A default mix was selected for them and they left it
       in place.
   \end{itemize}
 
   \vspace{0.7em}
-  \ink{Leaving the default in place is still an allocation decision.}
+  \ink{Leaving the default mix in place is still an investment decision.}
 \end{frame}
 
 \begin{frame}{The Federal Open Market Committee}
@@ -198,7 +195,8 @@
   \vspace{1.0em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Thursday}: what the committee controls, what it does not, and
-      why that distinction determines which rate you use to value an asset.
+      why that distinction determines which rate you use to find what an
+      investment is worth.
     \item \hilite{September 15 and 16}: the committee meets. We will be three
       weeks into the course, and we return to the decision in week four with
       the tools to describe its effect.
@@ -242,8 +240,8 @@
     \textbf{\ink{Global batteries}}  & USD 181B & USD 0.72B\\[1pt]
     \textbf{\ink{Together}}          &          & USD 3.36B\\[5pt]
     US debt                          &          & USD 1{,}209B\\
-    US equity                        &          & USD 608B\\
-    Options premium                  &          & USD 37B\\[1pt]
+    US stocks                        &          & USD 608B\\
+    Prices paid for options          &          & USD 37B\\[1pt]
     \textbf{\hilite{US markets together}} &     & USD 1{,}854B\\
   \end{tabular}
   \end{center}
@@ -256,16 +254,17 @@
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
 
-\begin{frame}{Premium Paid Versus Value Controlled}
+\begin{frame}{Price Paid Versus Value Controlled}
   \vspace{0.2em}
-  The options row is not like the other two. The \hilite{USD 37B} of premium is
-  the cash paid, not the size of the position that cash opens.
+  The options row is not like the other two. The \hilite{USD 37B} is the price
+  paid for the options. That price, called the \hilite{premium}, is not the
+  total value of the shares those options control.
 
   \vspace{0.5em}
   Each contract is an option on \textbf{100 shares}. At 60.4 million contracts a
   day, the shares underneath are worth about \hilite{USD 4 trillion}:
   \[
-    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium paid}}
+    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize price paid (premium)}}
     \;\Big/\;
     \underbrace{\text{USD } 4{,}000\text{B}}_{\text{\footnotesize value controlled}}
     \;=\;
@@ -275,8 +274,8 @@
   \vspace{0.2em}
   If every contract were exercised on the day it traded, that USD 4 trillion of
   stock would change hands, which is more than \hilite{twice} the debt and
-  equity rows combined. \dimmed{The previous table reports premium instead,
-  because premium is cash that actually moves.}
+  stock rows combined. \dimmed{The previous table reports the price paid
+  instead, because that is the cash that actually moves.}
 
   \slidenote{Careful:}{$3.9\text{M} \times 100 \times 7{,}692 = \$3.0$T of that is one index, settled in cash. It never delivers a share.}
 \end{frame}
@@ -288,25 +287,25 @@
 % "corporate", and "TIPS" must not appear on this frame.
 \begin{frame}{The Three Kinds of Asset}
   \vspace{0.3em}
-  Every instrument in this course is one of three kinds. We name them today and
-  examine each one later, at the point in the course where it is needed.
+  The investment choices in this course fall into three broad groups. We name
+  them today and examine each one later, when the course needs it.
 
   \vspace{0.7em}
   \begin{center}\small
   \begin{tabular}{@{}lll@{}}
     \textbf{\ink{Kind}} & \textbf{\ink{What you own}} & \textbf{\ink{Where the course takes it apart}}\\[2pt]
     \hline\\[-7pt]
-    \hilite{Debt}        & a promise of dated payments          & Unit 1, weeks 2 and 3\\
-    \hilite{Equity}      & a residual claim on a firm           & Unit 2, weeks 3 to 7\\
-    \hilite{Derivative}  & a claim contingent on another asset  & Units 3 and 4, weeks 8 onward\\
+    \hilite{Debt}        & a promise of payments on stated dates       & Unit 1, weeks 2 and 3\\
+    \hilite{Equity}      & ownership of what remains after debts       & Unit 2, weeks 3 to 7\\
+    \hilite{Derivative}  & a contract tied to another asset's value    & Units 3 and 4, weeks 8 onward\\
   \end{tabular}
   \end{center}
 
   \vspace{0.8em}
   Risk and potential reward both increase down the list. Debt promises a fixed
-  schedule and can fail to pay it. Equity promises nothing and is worth whatever
-  remains after the other claims are paid. A derivative's value depends on the
-  asset underneath it, which gives it the widest range of the three.
+  schedule but the borrower can fail to pay. Equity promises no fixed payments
+  and is worth whatever remains after the company pays what it owes. A
+  derivative depends on another asset, so its possible outcomes vary most widely.
 
   \slidenote{Today:}{we use only the first kind, and we do not use its name until later.}
 \end{frame}
@@ -315,27 +314,26 @@
 % ==== decision ====
 \begin{frame}{The Decision Problem}
   \vspace{0.2em}
-  All three kinds of asset pose one question. What you observe is the
-  \hilite{state}, what you do is the \hilite{action}, and what comes back is the
-  \hilite{reward}.
+  Every investment decision follows the same pattern: you observe the market,
+  choose what to do, and see what happens. In a decision model, these are called
+  the \hilite{state}, \hilite{action}, and \hilite{reward}.
 
-  \vspace{0.6em}
+  \vspace{0.3em}
   \begin{center}
   \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=3.0cm]
     \node[draw=vnink,very thick,rounded corners,fill=vnsoft,
-          minimum width=3.0cm,minimum height=1.05cm,align=center] (you) {you\\preferences};
+          minimum width=3.0cm,minimum height=1.05cm,align=center] (you) {you\\priorities};
     \node[draw=vnink,very thick,rounded corners,fill=white,
           minimum width=3.6cm,minimum height=1.05cm,align=center,right=of you] (mkt) {the market\\uncertain};
-    \draw[vnlink,very thick,->] (you) -- node[above] {action} (mkt);
-    \draw[vncarnelian,very thick,->,bend left=26] (mkt) to node[below,align=center] {state, reward} (you);
+    \draw[vnlink,very thick,->] (you) -- node[above] {choice (action)} (mkt);
+    \draw[vncarnelian,very thick,->,bend left=26] (mkt) to
+      node[below,align=center] {conditions and result\\(state, reward)} (you);
   \end{tikzpicture}
   \end{center}
 
   \vspace{0.4em}
-  Making this loop operational requires four things: a way to compare payments
-  that arrive on different dates, a way to describe what you do not know, a way
-  to price a claim that depends on another asset, and a rule for choosing.
-  Those are the four units.
+  To use this model, we must compare payments over time, describe uncertainty,
+  find values that depend on others, and choose. These are the four units.
 
   \slidenote{Careful:}{each arrow in the diagram is a modeling choice.}
 \end{frame}
@@ -358,8 +356,8 @@
 % ==== ladder ====
 \begin{frame}{The Validation Ladder}
   \vspace{0.05em}
-  Four ways to check a claim. Each rung uses data the rung below did not see,
-  and each is the \hilite{only} rung that can falsify the claim it tests.
+  Four ways to test an idea. Each stage uses evidence the one below did not see,
+  and each can reveal a failure that the earlier stages cannot.
 
   \vspace{0.45em}
   \begin{center}
@@ -368,10 +366,11 @@
 
   \vspace{0.45em}
   A \hilite{backtest} runs on past data. A \hilite{forward test} runs on actual
-  current data with no money at stake, using a brokerage API such as Alpaca.
+  current data with no money at stake, using current market data from a service
+  such as Alpaca.
 
-  \vspace{0.5em}
-  \ink{Skipping a rung moves the discovery to a stage where money is at stake.}
+  \vspace{0.3em}
+  \ink{Skipping a stage means discovering a failure later, perhaps with real money at stake.}
 \end{frame}
 
 % ==== promises ====
@@ -387,8 +386,9 @@
 % 2026-08-18. Do not edit a number here without re-running that pull.
 \begin{frame}{Five Promises for \$10{,}000}
   \vspace{0.1em}
-  Each of these costs \hilite{\$10{,}000} today, and each is built from a rate
-  the market quoted yesterday. The names come later; for now, only the payments.
+  Each of these costs \hilite{\$10{,}000} today, and each is calculated using
+  an interest rate observed in the market yesterday. The names come later; for
+  now, only the payments.
 
   \vspace{0.5em}
   \begin{center}\small
@@ -427,8 +427,8 @@
 
   \vspace{0.5em}
   You compared all five \hilite{without knowing any of these names}, because
-  each name is a label for a schedule of dated payments. Thursday's lecture
-  starts from that definition.
+  each name labels a schedule: a list of payments and their dates. Thursday's
+  lecture starts from that definition.
 
   \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is \emph{real}, not nominal.}
 \end{frame}
@@ -454,10 +454,10 @@
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Why not C?} It pays the most of the three government rows, but
       you may need the money before year thirty. If you sell early, you sell at
-      whatever price prevailing rates allow. \dimmed{Week 2.}
+      whatever price interest rates at the time allow. \dimmed{Week 2.}
     \item \hilite{Why not D?} It pays more than any other row. Those borrowers
-      pay \hilite{71 basis points} (0.71 percentage points) more than the
-      government at the same ten-year horizon \dimmed{($5.42\% - 4.71\%$)},
+      pay \hilite{0.71 percentage points} more than the government over the
+      same ten years \dimmed{($5.42\% - 4.71\%$)},
       which is what the market charges for the risk of not being paid and for
       holding something harder to sell. \dimmed{Units 2 and 3.}
     \item \hilite{Why not E?} It pays the least of any row, but that comparison
@@ -470,10 +470,10 @@
 
 \begin{frame}{Breakeven Inflation}
   \vspace{0.3em}
-  B and E are the same issuer at the same horizon. B promises \hilite{nominal}
-  dollars; E promises \hilite{real} ones, adjusted for whatever inflation turns
-  out to be. Subtracting one rate from the other leaves the difference between
-  those two units:
+  B and E both come from the U.S. government and span ten years. B promises a
+  fixed number of dollars, called \hilite{nominal} dollars. E's payments rise
+  with inflation, so they are measured in \hilite{real} dollars. The difference
+  between their rates is:
   \[
     \underbrace{4.71\%}_{\text{\footnotesize nominal}}
     \;-\;
@@ -486,11 +486,11 @@
   That is the ten-year \hilite{breakeven inflation rate}: the inflation rate at
   which B and E pay you the same amount. The Federal Reserve publishes this rate
   directly, and its value for the same day is \hilite{2.30\%}. It is not a pure
-  forecast, because it also includes what investors charge for bearing inflation
-  risk.
+  forecast, because it also reflects how much investors must be paid to accept
+  uncertainty about inflation.
 
-  \vspace{0.4em}
-  \ink{Market prices contain forecasts, and extracting them is much of what this course does.}
+  \vspace{0.2em}
+  \ink{Market prices contain forecasts. Learning to extract them is a major goal of this course.}
 
   \slidenote{Source:}{FRED series \texttt{DGS10}, \texttt{DFII10}, \texttt{T10YIE}, as of 2026-08-18}
 \end{frame}
@@ -522,8 +522,8 @@
 
 \begin{frame}{Why You Cannot Rank the Five Yet}
   \vspace{0.4em}
-  Every promise on that list is issued by the United States government or by
-  large companies that have paid their obligations for decades. No vote in this
+  Every promise on that list comes from the United States government or from
+  large companies with long records of paying what they owe. No vote in this
   room was careless.
 
   \vspace{0.9em}
@@ -546,26 +546,26 @@
 % key takeaways, one concluding sentence. See vnslides.sty rule 7.
 \begin{frame}{Summary}
   This lecture placed the course in context, showed that you are already a
-  market participant, and read five financial promises as schedules of dated
-  payments.
+  market participant, and read five financial promises as lists of payments and
+  dates.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{You are already a portfolio holder.}} Retirement accounts
-      make market participation the default, so nearly everyone answers the
-      allocation question, most of them by leaving a default in place.
-    \item \textbf{\ink{An instrument is a schedule.}} A bill, a note, a bond, a
-      corporate bond, and an inflation-indexed security are labels for schedules
-      of dated payments, though not every schedule is equally certain.
-    \item \textbf{\ink{Validation happens in stages.}} Theory, backtest,
-      forward test, and real money each use different data, and each is the only
-      stage that can falsify the claim it tests.
+    \item \textbf{\ink{You already have an investment mix.}} A retirement account
+      requires someone to decide how the money is invested, even if you leave its
+      default mix unchanged.
+    \item \textbf{\ink{Each choice is a payment schedule.}} A bill, a note, a
+      bond, a corporate bond, and an inflation-indexed security are labels for
+      lists of payments and dates, though not every list is equally certain.
+    \item \textbf{\ink{Testing happens in stages.}} Theory, backtest, forward
+      test, and real money use different evidence, and each can reveal a
+      different kind of failure.
   \end{itemize}
 
   \vspace{0.3em}
-  On Thursday we build the rule that lets us rank those five schedules.
+  On Thursday we build the rule that lets us compare those five payment schedules.
 \end{frame}
 
 % ==== reading ====

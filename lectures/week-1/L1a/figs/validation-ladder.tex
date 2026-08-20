@@ -22,8 +22,8 @@
 %            right-aligned block of fixed text width, so both ragged edges land
 %            on the same line against the grid. No label alternates above and
 %            below, and nothing floats: each element belongs to a row or column.
-%   PAYLOAD. The "kills:" line on each rung is what makes the figure worth
-%            showing: each rung is the ONLY stage able to falsify its own claim.
+%   PAYLOAD. The "tests:" line on each rung is what makes the figure worth
+%            showing: each rung tests a claim the earlier stages cannot.
 %            The conclusion drawn from that -- skipping a rung relocates the
 %            discovery to where it costs money -- is stated on the DECK FRAME,
 %            not inside the picture. Repeating it here made it read as a
@@ -65,7 +65,7 @@
       3.06/{Real money}/4/{``I would actually do this''}}{%
     \node[rung] at (7.75,\y)
       {\textcolor{vnink}{\bfseries \name}\\[1pt]
-       {\textcolor{vnmuted}{kills: \claim}}};
+       {\textcolor{vnmuted}{tests: \claim}}};
     \foreach \c in {1,...,4}{%
       \pgfmathsetmacro{\cx}{8.0+(\c-1)*\cw}
       \ifnum\c>\n

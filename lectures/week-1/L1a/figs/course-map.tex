@@ -46,10 +46,10 @@
 
   % ---- the four units, on one grid ---------------------------------
   \foreach \i/\x/\utitle in {%
-      1/0/{Foundations and schedules of dated payments},
-      2/4.35/{Equity markets, uncertainty, and portfolio allocation},
-      3/8.70/{Modeling and analysis of equity derivatives},
-      4/13.05/{Modeling and analysis of financial decision-making}}{%
+      1/0/{Foundations and payments over time},
+      2/4.35/{Stocks, uncertainty, and choosing a mix},
+      3/8.70/{Investments whose value depends on stocks},
+      4/13.05/{Models for financial decisions}}{%
     \node[unit] (u\i) at (\x,0)
       {\textcolor{vnink}{\bfseries Unit \i}\\[2pt]{\footnotesize \utitle}};}
 
@@ -61,9 +61,9 @@
 
   % ---- what each unit adds: one aligned band, one shared baseline --
   \foreach \i/\x/\cap in {%
-      1/0/{move dollars across dates},
-      2/4.35/{describe what you do not know},
-      3/8.70/{price a claim that depends on another},
+      1/0/{compare dollars on different dates},
+      2/4.35/{describe uncertainty},
+      3/8.70/{find the value of one investment from another},
       4/13.05/{choose, then check whether you were right}}{%
     \node[adds,anchor=north] at (\x,-2.15) {\cap};}
   \node[text=vnlink,font=\sffamily\footnotesize\itshape,anchor=east]
@@ -72,6 +72,6 @@
   % ---- the payload: one question, four units ----------------------
   \draw[vn brace] (-1.78,1.05) -- (14.83,1.05)
     node[midway,above=7pt,text=vnink]
-    {\bfseries given assets, uncertainty, and preferences: what do you do?};
+    {\bfseries given investment choices, uncertainty, and your priorities: what do you do?};
 \end{tikzpicture}
 \endgroup
