@@ -13,24 +13,21 @@
 %   COLOUR.  Semantic, not decorative. vnlink is reserved for the CAPABILITY
 %            each unit adds -- the payload of the figure. Structure (axis,
 %            boxes, ticks) is vnink/vnmuted, and nothing else is coloured.
-%   GEOMETRY. Every box is the same width and height regardless of how long
-%            its title is, and every capability line uses the same text width,
-%            so the four columns align on a shared grid. No label alternates
-%            above and below; each sits at a fixed offset from its own box.
+%   GEOMETRY. Every box uses the same fixed-height title area, and every
+%            capability line uses the same text width, so the four columns
+%            align on a shared grid. No label alternates above and below; each
+%            sits at a fixed offset from its own box.
 %   PAYLOAD. The brace states the question the whole course answers, so the
 %            figure teaches "these four together answer one thing" rather than
 %            "first this, then that."
 %
-% Unit 3 and 4 titles are the workbook strings in schedule-2026-update.md.
-% Unit 2's official header lives only in the .xlsx and is pending confirmation.
+% The card titles below are deliberately shorter than the workbook unit names:
+% this first-day map names the subject of each unit in plain language. The
+% capability line underneath says what students will be able to do with it.
 %
-% UNIT 1 DELIBERATELY DIVERGES from its workbook string, which is "Foundations
-% and marketable Treasury securities". This figure appears on frame 11 and the
-% product names are not revealed until frame 14, so the workbook wording would
-% put "Treasury" on screen three frames early and spoil the whole hook. The
-% substitute says what Unit 1 actually teaches in the vocabulary the deck has
-% built by that point. Restore the workbook string ONLY if this figure is ever
-% reused after the reveal, or in another lecture.
+% Unit 1 uses "Treasury securities" rather than the broader "payments over
+% time" because Treasury securities are the only asset class studied in that
+% unit. This deliberately introduces the name before the five-promises reveal.
 \begingroup
 \hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=10000
 \begin{tikzpicture}[
@@ -46,12 +43,13 @@
 
   % ---- the four units, on one grid ---------------------------------
   \foreach \i/\x/\utitle in {%
-      1/0/{Foundations and payments over time},
-      2/4.35/{Stocks, uncertainty, and choosing a mix},
-      3/8.70/{Investments whose value depends on stocks},
-      4/13.05/{Models for financial decisions}}{%
+      1/0/{Treasury securities},
+      2/4.35/{Stocks and portfolios},
+      3/8.70/{Options and other derivatives},
+      4/13.05/{Financial decision-making}}{%
     \node[unit] (u\i) at (\x,0)
-      {\textcolor{vnink}{\bfseries Unit \i}\\[2pt]{\footnotesize \utitle}};}
+      {\textcolor{vnink}{\bfseries Unit \i}\\[5pt]
+       \parbox[c][0.62cm][c]{3.05cm}{\centering\footnotesize \utitle}};}
 
   % ---- the spine: the semester ------------------------------------
   \draw[vn timeline] (-1.95,-1.35) -- (15.6,-1.35) node[right,text=vnink] {weeks};
@@ -61,17 +59,15 @@
 
   % ---- what each unit adds: one aligned band, one shared baseline --
   \foreach \i/\x/\cap in {%
-      1/0/{compare dollars on different dates},
-      2/4.35/{describe uncertainty},
-      3/8.70/{find the value of one investment from another},
-      4/13.05/{choose, then check whether you were right}}{%
+      1/0/{compare payments\\across dates},
+      2/4.35/{build portfolios\\under uncertainty},
+      3/8.70/{value investments\\tied to other values},
+      4/13.05/{build and test\\financial strategies}}{%
     \node[adds,anchor=north] at (\x,-2.15) {\cap};}
-  \node[text=vnlink,font=\sffamily\footnotesize\itshape,anchor=east]
-    at (-0.9,-2.45) {each unit adds:};
 
   % ---- the payload: one question, four units ----------------------
   \draw[vn brace] (-1.78,1.05) -- (14.83,1.05)
     node[midway,above=7pt,text=vnink]
-    {\bfseries given investment choices, uncertainty, and your priorities: what do you do?};
+    {\bfseries Given investment choices, uncertainty, and your priorities: what should you do?};
 \end{tikzpicture}
 \endgroup

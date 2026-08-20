@@ -10,7 +10,7 @@
 # (course-map.tex, validation-ladder.tex) directly, so the deck and the SVG are
 # produced from one source and cannot drift apart.
 
-FIGURES := Fig-L1a-CourseMap Fig-L1a-ValidationLadder
+FIGURES := Fig-L1a-CourseMap Fig-L1a-ValidationLadder Fig-L1a-DecisionLoop
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
@@ -22,7 +22,7 @@ LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 # live in lectures/templates and are real inputs, so they are prerequisites too.
 # Omitting them let a template edit leave every figure PDF and SVG stale.
 STYLE := vnfigure.sty ../../../templates/vnfigure.sty ../../../templates/vnflow.sty
-SHARED := course-map.tex validation-ladder.tex
+SHARED := course-map.tex validation-ladder.tex decision-loop.tex
 
 .PHONY: all pdf svg clean distclean
 .DEFAULT_GOAL := all

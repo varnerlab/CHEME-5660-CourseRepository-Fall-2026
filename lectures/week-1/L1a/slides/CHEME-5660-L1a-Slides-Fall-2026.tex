@@ -28,7 +28,7 @@
 %   How This Course Runs                      -> logistics      20 min
 %   What to Expect Each Week                  -> logistics
 %   Most of You Will Eventually Own a Portfolio -> why you care  7 min
-%   The Federal Open Market Committee         -> Fed teaser, 60 seconds only
+%   Some Decisions Affect Every Portfolio     -> Fed teaser, 60 seconds only
 %   Market Scale Compared to Two Industries   -> market scale    6 min
 %   Price Paid Versus Value Controlled        -> market scale
 %   The Three Kinds of Asset                  -> named, not toured, ONE slide
@@ -38,7 +38,6 @@
 %   Five Promises for $10,000                 -> table + vote    5 min
 %   What the Five Promises Are Called         -> reveal          3 min
 %   Three Questions We Cannot Answer Yet      -> reveal
-%   Breakeven Inflation                       -> reveal
 %   A Bank Failure in March 2023              -> SVB clip        7 min
 %   Why You Cannot Rank the Five Yet          -> handoff         3 min
 %   Summary                                   -> three takeaways
@@ -47,10 +46,9 @@
 % No \transitionframe: that belongs to a concept-review opening, and this deck
 % has none.
 %
-% NO PRODUCT NOUNS BEFORE THE "reveal" SECTION. The five promises are read as
-% cash-flow schedules; "bill", "note", "bond", "corporate", and "TIPS" first
-% appear on the frame titled "What the Five Promises Are Called". This is the
-% whole point of the hook.
+% The course map names "Treasury securities" early because that is the precise
+% scope of Unit 1. The five specific promise names -- bill, note, bond,
+% corporate bond, and TIPS -- still wait for "What the Five Promises Are Called".
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -142,16 +140,16 @@
   \slidenote{Policies:}{\href{\policyurl}{grading, attendance, academic integrity, and accommodations are posted in full}}
 \end{frame}
 
-\begin{frame}{How You Will Work}
+\begin{frame}{How We Will Work}
   \vspace{0.3em}
-  Throughout the course, you will repeat the same cycle: ask a question, use a
+  Throughout the course, we will repeat the same cycle: ask a question, use a
   model to explore it, and test the answer against evidence.
 
-  \vspace{0.8em}
+  \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Each idea answers a question.} New concepts are introduced
+    \item \hilite{Each idea answers a question.} New concepts will be introduced
       through the financial problems they help us solve.
-    \item \hilite{Code is our laboratory.} Most of the code is provided; you will
+    \item \hilite{Code is our laboratory.} Most of the code will be provided; you will
       change assumptions, inspect the results, and explain what the model is doing.
     \item \hilite{Evidence decides.} A model can be mathematically correct and
       still fail. You will compare its claims with data and revise it when the
@@ -183,23 +181,27 @@
   \slidenote{Source:}{\href{https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-savings-investments.htm}{Federal Reserve SHED, 2025, table 28}}
 \end{frame}
 
-\begin{frame}{The Federal Open Market Committee}
+\begin{frame}{Some Decisions Affect Every Portfolio}
   \vspace{0.4em}
-  A committee of twelve people meets eight times a year, and its decisions
-  change the value of everything in that account.
+  Choosing the investment mix is your decision. What happens to its value is
+  not entirely under your control.
 
-  \vspace{1.0em}
+  \vspace{0.6em}
+  The Federal Open Market Committee has twelve voting members and meets eight
+  times a year. It sets a target range for a key short-term interest rate, which
+  influences borrowing costs and how investors value future payments.
+
+  \vspace{0.8em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Thursday}: what the committee controls, what it does not, and
-      why that distinction determines which rate you use to find what an
-      investment is worth.
-    \item \hilite{September 15 and 16}: the committee meets. We will be three
-      weeks into the course, and we return to the decision in week four with
-      the tools to describe its effect.
+      how interest rates enter the value of an investment.
+    \item \hilite{September 15 and 16}: the committee meets. In week four, we
+      will use the tools we have built to examine how markets respond.
   \end{itemize}
 
-  \vspace{0.9em}
-  \dimmed{Sixty seconds on this today. The details are Thursday's lecture.}
+  \vspace{0.35em}
+  \ink{Your investment choices sit inside markets shaped by decisions you do
+  not control.}
 
   \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
 \end{frame}
@@ -314,22 +316,13 @@
   choose what to do, and see what happens. In a decision model, these are called
   the \hilite{state}, \hilite{action}, and \hilite{reward}.
 
-  \vspace{0.3em}
+  \vspace{0.15em}
   \begin{center}
-  \begin{tikzpicture}[>=Latex,font=\sffamily\small,node distance=3.0cm]
-    \node[draw=vnink,very thick,rounded corners,fill=vnsoft,
-          minimum width=3.0cm,minimum height=1.05cm,align=center] (you) {you\\priorities};
-    \node[draw=vnink,very thick,rounded corners,fill=white,
-          minimum width=3.6cm,minimum height=1.05cm,align=center,right=of you] (mkt) {the market\\uncertain};
-    \draw[vnlink,very thick,->] (you) -- node[above] {choice (action)} (mkt);
-    \draw[vncarnelian,very thick,->,bend left=26] (mkt) to
-      node[below,align=center] {conditions and result\\(state, reward)} (you);
-  \end{tikzpicture}
+    \input{../figs/decision-loop.tex}
   \end{center}
 
-  \vspace{0.4em}
-  To use this model, we must compare payments over time, describe uncertainty,
-  find values that depend on others, and choose. These are the four units.
+  \vspace{0.15em}
+  The four units give us the tools to describe and test each part of this loop.
 
   \slidenote{Careful:}{each arrow in the diagram is a modeling choice.}
 \end{frame}
@@ -337,8 +330,8 @@
 % ==== units ====
 \begin{frame}{The Four Units of the Course}
   \vspace{0.2em}
-  Each unit adds exactly one capability, and the unit that follows it cannot be
-  built without that capability.
+  Each unit adds a tool for financial decisions. Later units build on the tools
+  introduced earlier.
 
   \vspace{0.4em}
   \begin{center}
@@ -346,7 +339,7 @@
   \end{center}
 
   \vspace{0.3em}
-  \ink{Today we start with the leftmost unit, and we stay there through Thursday.}
+  \ink{Today we start with Treasury securities, and we stay there through next Thursday.}
 \end{frame}
 
 % ==== ladder ====
@@ -457,40 +450,12 @@
       which is what the market charges for the risk of not being paid and for
       holding something harder to sell. \dimmed{Units 2 and 3.}
     \item \hilite{Why not E?} It pays the least of any row, but that comparison
-      is not valid: its rate is quoted in different units. \dimmed{Next slide.}
+      is not valid: its rate is quoted in different units. \dimmed{Later in the course.}
   \end{itemize}
 
   \vspace{0.35em}
   \ink{Only A, B, and C promise a schedule that is actually certain.}
 \end{frame}
-
-\begin{frame}{Breakeven Inflation}
-  \vspace{0.3em}
-  B and E both come from the U.S. government and span ten years. B promises a
-  fixed number of dollars, called \hilite{nominal} dollars. E's payments rise
-  with inflation, so they are measured in \hilite{real} dollars. The difference
-  between their rates is:
-  \[
-    \underbrace{4.71\%}_{\text{\footnotesize nominal}}
-    \;-\;
-    \underbrace{2.41\%}_{\text{\footnotesize real}}
-    \;=\;
-    \underbrace{2.30\%}_{\text{\footnotesize breakeven inflation}}
-  \]
-
-  \vspace{0.2em}
-  That is the ten-year \hilite{breakeven inflation rate}: the inflation rate at
-  which B and E pay you the same amount. The Federal Reserve publishes this rate
-  directly, and its value for the same day is \hilite{2.30\%}. It is not a pure
-  forecast, because it also reflects how much investors must be paid to accept
-  uncertainty about inflation.
-
-  \vspace{0.2em}
-  \ink{Market prices contain forecasts. Learning to extract them is a major goal of this course.}
-
-  \slidenote{Source:}{FRED series \texttt{DGS10}, \texttt{DFII10}, \texttt{T10YIE}, as of 2026-08-18}
-\end{frame}
-
 
 % ==== svb ====
 % The clip plays IN FULL and the question is NOT answered. The answer is C:

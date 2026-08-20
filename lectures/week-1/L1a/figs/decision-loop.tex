@@ -1,0 +1,37 @@
+% Investment decision loop -- SHARED SOURCE.
+%
+% \input by two places; do not duplicate the picture:
+%   ../slides/CHEME-5660-L1a-Slides-Fall-2026.tex
+%   Fig-L1a-DecisionLoop.tex (standalone -> PDF -> SVG)
+%
+% The layout deliberately follows the visual grammar of the course's RL
+% schematic: the decision maker and market occupy distinct filled blocks, the
+% action travels outward on one side, and state and reward return separately.
+% Keeping the return paths separate is part of the lesson, not decoration.
+\begingroup
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    flow/.style  = {draw=vnmuted,line width=1.15pt,
+                    -{Latex[length=3.1mm,width=2.2mm]},line join=round},
+    label/.style = {text=vnmuted,font=\sffamily\small,inner sep=2pt},
+    block/.style = {minimum width=4.0cm,minimum height=1.15cm,
+                    rounded corners=1.5pt,align=center,text=white,
+                    inner xsep=8pt,inner ysep=5pt}]
+
+  % Connectors first so they remain visually behind the two blocks.
+  \draw[flow] (2.0,2.35) -- (5.15,2.35) -- (5.15,0.00) -- (2.0,0.00);
+  \draw[flow] (-2.0,-0.16) -- (-5.15,-0.16) -- (-5.15,2.55) -- (-2.0,2.55);
+  \draw[flow] (-2.0,0.16) -- (-3.65,0.16) -- (-3.65,2.15) -- (-2.0,2.15);
+
+  % Flow labels: the vocabulary introduced by the slide.
+  \node[label,rotate=90] at (5.48,1.18) {action};
+  \node[label,rotate=90] at (-5.48,1.18) {state};
+  \node[label,rotate=90] at (-3.98,1.18) {reward};
+
+  % The two actors in the loop.
+  \node[block,fill=vnlink] at (0,2.35)
+    {{\bfseries Decision maker}\\[-1pt]{\footnotesize goals and rules}};
+  \node[block,fill=vncarnelian] at (0,0)
+    {{\bfseries Market}\\[-1pt]{\footnotesize uncertain}};
+\end{tikzpicture}
+\endgroup
