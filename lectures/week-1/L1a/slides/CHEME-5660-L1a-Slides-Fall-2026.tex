@@ -26,20 +26,21 @@
 %   Disclaimer and Risks                      -> always second, house convention
 %   Objectives for Today                      -> three objectives, house format
 %   How This Course Runs                      -> logistics      20 min
-%   What the Semester Feels Like              -> logistics
-%   You Already Hold a Portfolio              -> why you care    7 min
-%   Twelve People, Eight Meetings a Year      -> Fed teaser, 60 seconds only
-%   Why an Engineer                           -> market scale    6 min
-%   Three Kinds of Asset                      -> named, not toured, ONE slide
+%   What to Expect Each Week                  -> logistics
+%   Most of You Already Hold a Portfolio      -> why you care    7 min
+%   The Federal Open Market Committee         -> Fed teaser, 60 seconds only
+%   Market Scale Compared to Two Industries   -> market scale    6 min
+%   Premium Paid Versus Value Controlled      -> market scale
+%   The Three Kinds of Asset                  -> named, not toured, ONE slide
 %   The Decision Problem                      -> decision       10 min
-%   Four Units                                -> decision
+%   The Four Units of the Course              -> decision
 %   The Validation Ladder                     -> decision
-%   Five Promises                             -> table + vote    5 min
-%   The Names                                 -> reveal          3 min
+%   Five Promises for $10,000                 -> table + vote    5 min
+%   What the Five Promises Are Called         -> reveal          3 min
 %   Three Questions We Cannot Answer Yet      -> reveal
-%   A Forecast by Subtraction                 -> reveal
-%   Which One Killed a Bank?                  -> SVB clip        7 min
-%   Thursday                                  -> handoff         3 min
+%   Breakeven Inflation                       -> reveal
+%   A Bank Failure in March 2023              -> SVB clip        7 min
+%   Why You Cannot Rank the Five Yet          -> handoff         3 min
 %   Summary                                   -> three takeaways
 %   Further Reading                           -> offered, not assigned
 %
@@ -48,7 +49,8 @@
 %
 % NO PRODUCT NOUNS BEFORE THE "reveal" SECTION. The five promises are read as
 % cash-flow schedules; "bill", "note", "bond", "corporate", and "TIPS" first
-% appear on the frame titled "The Names". This is the whole point of the hook.
+% appear on the frame titled "What the Five Promises Are Called". This is the
+% whole point of the hook.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -94,20 +96,21 @@
 % ---- objectives ----------------------------------------------
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
-  Today we locate the course, argue that you are \hilite{already a participant}
-  in the markets it studies, and end on a question we cannot yet answer
-  \emph{rigorously}.
+  Today we place the course in context, show that you are \hilite{already a
+  participant} in the markets it studies, and close with a question we cannot
+  yet answer rigorously.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Locate the course}: how four units connect cash-flow models,
-      uncertainty, contingent claims, and algorithmic decisions.
-    \item \hilite{Why you are already in this}: most U.S. adults hold a
-      retirement account, and the markets those accounts invest in turn over
-      several hundred times the daily scale of the industries this college
-      trains you to enter.
+    \item \hilite{The structure of the course}: how four units connect
+      cash-flow models, uncertainty, contingent claims, and algorithmic
+      decisions.
+    \item \hilite{Why this concerns you}: most U.S. adults hold a retirement
+      account, and the markets those accounts invest in move several hundred
+      times more cash per day than the industries this college trains you to
+      enter.
     \item \hilite{The decision problem}: an instrument is a schedule of dated
       payments, and two schedules cannot be ranked without a rule for moving
       dollars across time.
@@ -120,19 +123,20 @@
 % ==== logistics ====
 \begin{frame}{How This Course Runs}
   \vspace{0.2em}
-  Twenty eight lectures in \hilite{four units}, each unit adding one piece of
-  machinery to the same underlying question. Six problem sets, spread across the
-  four units, are where the machinery gets used.
+  Twenty-eight lectures in \hilite{four units}. Each unit adds one set of tools
+  for the same underlying question, and the six problem sets, spread across the
+  four units, are where you apply them.
 
   \vspace{0.5em}
   {\large\textbf{\ink{What you need}}}
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Materials}: each week ships as a zip file on the repository
-      releases page. Cloning works too. Released weeks are frozen: fixes are
-      announced, never silently rewritten.
+    \item \hilite{Materials}: each week is posted as a zip file on the
+      repository releases page, or you can clone the repository. Released weeks
+      are frozen: corrections are announced, never made silently.
     \item \hilite{Tools}: Julia 1.12 through juliaup, Anaconda for Jupyter, and
-      VS Code with the Julia extension. One setup step, then the notebooks run.
+      VS Code with the Julia extension. Set these up once, at the start of the
+      semester.
     \item \hilite{Questions}: ask on the course discussion board rather than by
       email, so an answer reaches everyone who had the same question.
   \end{itemize}
@@ -140,68 +144,68 @@
   \slidenote{Policies:}{\href{\policyurl}{grading, attendance, academic integrity, and accommodations are posted in full}}
 \end{frame}
 
-\begin{frame}{What the Semester Feels Like}
+\begin{frame}{What to Expect Each Week}
   \vspace{0.3em}
-  The policies are posted and you can read them. What a document cannot tell you
-  is the \hilite{rhythm}, so here it is.
+  The policies are posted and you can read them. Three things about the weekly
+  work are not in that document.
 
   \vspace{0.8em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Every lecture builds one thing and uses it immediately.} Miss a
-      week and the next one is harder, not just longer. This is a course with a
-      spine.
+    \item \hilite{Each lecture builds one result and uses it immediately.} The
+      material is cumulative, so a missed week makes the next one harder, not
+      just longer.
     \item \hilite{You will write code.} Not a lot of it, and not from scratch:
-      the course package does the heavy lifting. But a model you have not run is
-      a model you do not believe.
-    \item \hilite{The math is the easy part.} Deciding what to model, and
-      admitting when the model is wrong, is the part that takes the semester.
+      the course package supplies most of it. But you have to run a model to
+      understand what it does.
+    \item \hilite{The modeling is harder than the mathematics.} Deciding what to
+      model, and admitting when a model is wrong, is what takes the semester.
   \end{itemize}
 
   \vspace{0.7em}
-  \ink{Questions about any of this: now is the time.}
+  \ink{If you have questions about how the course runs, ask them now.}
 \end{frame}
 
 % ==== already-care ====
-\begin{frame}{You Already Hold a Portfolio}
+\begin{frame}{Most of You Already Hold a Portfolio}
   \vspace{0.3em}
-  Roughly \hilite{61\%} of U.S. adults hold a retirement account: a
-  401(k), a 403(b), or an IRA. In household wealth generation, markets are
-  second only to real estate. \dimmed{(2025)}
+  Roughly \hilite{61\%} of U.S. adults hold a retirement account: a 401(k), a
+  403(b), or an IRA. For U.S. households, financial markets are the second
+  largest component of wealth, after real estate. \dimmed{(2025)}
 
   \vspace{0.9em}
-  So the question is not whether to participate. You already do.
+  If you hold one of those accounts, you are already a market participant.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item That account holds a \hilite{portfolio}: a set of positions, in some
-      proportion, chosen by someone.
-    \item Choosing those proportions is an \hilite{allocation decision}, and it
-      is the same decision this course spends four units learning to make.
-    \item Most people holding one have \hilite{never consciously made it}. A
-      default was selected for them and they left it alone.
+    \item That account holds a \hilite{portfolio}: a set of positions, held in
+      some proportion, chosen by someone.
+    \item Choosing those proportions is an \hilite{allocation decision}. It is
+      the decision this course spends four units learning how to make.
+    \item Most account holders have \hilite{never made that decision
+      explicitly}. A default allocation was selected for them and they left it
+      in place.
   \end{itemize}
 
   \vspace{0.7em}
-  \ink{Inaction is an allocation. It is just not an argued one.}
+  \ink{Leaving the default in place is still an allocation decision.}
 \end{frame}
 
-\begin{frame}{Twelve People, Eight Meetings a Year}
+\begin{frame}{The Federal Open Market Committee}
   \vspace{0.4em}
-  One committee of twelve meets eight times a year and moves the value of
-  everything in that account.
+  A committee of twelve people meets eight times a year, and its decisions
+  change the value of everything in that account.
 
   \vspace{1.0em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Thursday}: you meet them. What they actually control, what
-      they do not, and why that distinction decides which number you use to
-      value anything.
-    \item \hilite{September 15 and 16}: they meet. We are three weeks into the
-      course by then, and we come back to it in week four, with the tools to
-      say what the decision did.
+    \item \hilite{Thursday}: what the committee controls, what it does not, and
+      why that distinction determines which rate you use to value an asset.
+    \item \hilite{September 15 and 16}: the committee meets. We will be three
+      weeks into the course, and we return to the decision in week four with
+      the tools to describe its effect.
   \end{itemize}
 
   \vspace{0.9em}
-  \dimmed{That is the whole teaser. Sixty seconds, and we move on.}
+  \dimmed{Sixty seconds on this today. The details are Thursday's lecture.}
 
   \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
 \end{frame}
@@ -223,10 +227,11 @@
 % All figures and sources: private/specs/data-l1a/MARKET-SCALE.md (addendum).
 % NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
 % categories and are allowed, same as Debt/Equity/Derivative on the next frame.
-\begin{frame}{Why an Engineer}
+\begin{frame}{Market Scale Compared to Two Industries}
   \vspace{0.05em}
-  Two industries this college trains people to enter, against the markets next
-  door. Industry figures are annual, divided by 252 trading days.
+  Two industries this college trains people to enter, compared with the U.S.
+  financial markets. The annual industry figures are divided by 252 trading
+  days.
 
   \vspace{0.25em}
   \begin{center}\footnotesize
@@ -244,16 +249,17 @@
   \end{center}
 
   \vspace{0.1em}
-  A factor of roughly \hilite{five hundred}, and the work at that scale is
-  estimation, uncertainty propagation, optimization, and control.
+  These markets move about \hilite{five hundred times} more cash per day. The
+  work is engineering: estimation, uncertainty propagation, optimization, and
+  control.
 
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
 
-\begin{frame}{What That Last Row Controls}
+\begin{frame}{Premium Paid Versus Value Controlled}
   \vspace{0.2em}
-  One row behaves unlike the others. That \hilite{USD 37B} of premium is the
-  cash paid, but it is not the size of the position it opens.
+  The options row is not like the other two. The \hilite{USD 37B} of premium is
+  the cash paid, not the size of the position that cash opens.
 
   \vspace{0.5em}
   Each contract is an option on \textbf{100 shares}. At 60.4 million contracts a
@@ -267,9 +273,10 @@
   \]
 
   \vspace{0.2em}
-  Assume every contract were exercised the day it traded, and that USD 4 trillion
-  of stock changes hands: more than \hilite{twice} the debt and equity rows
-  combined. \dimmed{Which is why it is not in the table above.}
+  If every contract were exercised on the day it traded, that USD 4 trillion of
+  stock would change hands, which is more than \hilite{twice} the debt and
+  equity rows combined. \dimmed{The previous table reports premium instead,
+  because premium is cash that actually moves.}
 
   \slidenote{Careful:}{$3.9\text{M} \times 100 \times 7{,}692 = \$3.0$T of that is one index, settled in cash. It never delivers a share.}
 \end{frame}
@@ -279,10 +286,10 @@
 % compressed ~8:1, because L2a, L3a, and L8b each take one apart properly at
 % the point the student needs it. The words "bill", "note", "bond",
 % "corporate", and "TIPS" must not appear on this frame.
-\begin{frame}{Three Kinds of Asset}
+\begin{frame}{The Three Kinds of Asset}
   \vspace{0.3em}
-  Everything in this course is one of three things. We name them today and take
-  each apart later, at the point you need it.
+  Every instrument in this course is one of three kinds. We name them today and
+  examine each one later, at the point in the course where it is needed.
 
   \vspace{0.7em}
   \begin{center}\small
@@ -296,20 +303,21 @@
   \end{center}
 
   \vspace{0.8em}
-  Risk and reward scale down the list. Debt promises a schedule and can break
-  it. Equity promises nothing and is worth what is left. A derivative is worth
-  whatever the thing underneath it does, which is the widest range of the three.
+  Risk and potential reward both increase down the list. Debt promises a fixed
+  schedule and can fail to pay it. Equity promises nothing and is worth whatever
+  remains after the other claims are paid. A derivative's value depends on the
+  asset underneath it, which gives it the widest range of the three.
 
-  \slidenote{Today:}{we only need the first one, and we will not even use its name.}
+  \slidenote{Today:}{we use only the first kind, and we do not use its name until later.}
 \end{frame}
 
 
 % ==== decision ====
 \begin{frame}{The Decision Problem}
   \vspace{0.2em}
-  Three kinds of asset, one question. You observe something, you do something,
-  and something comes back. The three words for those are \hilite{state},
-  \hilite{action}, and \hilite{reward}.
+  All three kinds of asset pose one question. What you observe is the
+  \hilite{state}, what you do is the \hilite{action}, and what comes back is the
+  \hilite{reward}.
 
   \vspace{0.6em}
   \begin{center}
@@ -324,19 +332,19 @@
   \end{center}
 
   \vspace{0.4em}
-  The loop is easy to draw and hard to close. Closing it needs a way to compare
-  payments that arrive on different dates, a way to describe what you do not
-  know, a way to price a claim that depends on something else, and a rule for
-  choosing. Those are the four units.
+  Making this loop operational requires four things: a way to compare payments
+  that arrive on different dates, a way to describe what you do not know, a way
+  to price a claim that depends on another asset, and a rule for choosing.
+  Those are the four units.
 
-  \slidenote{Careful:}{the picture is not the problem. Every arrow in it is a modeling choice.}
+  \slidenote{Careful:}{each arrow in the diagram is a modeling choice.}
 \end{frame}
 
 % ==== units ====
-\begin{frame}{Four Units}
+\begin{frame}{The Four Units of the Course}
   \vspace{0.2em}
-  Each unit adds exactly one capability, and the next one cannot be built
-  without it.
+  Each unit adds exactly one capability, and the unit that follows it cannot be
+  built without that capability.
 
   \vspace{0.4em}
   \begin{center}
@@ -344,14 +352,14 @@
   \end{center}
 
   \vspace{0.3em}
-  \ink{We start at the left today, and we do not get past it until Thursday.}
+  \ink{Today we start with the leftmost unit, and we stay there through Thursday.}
 \end{frame}
 
 % ==== ladder ====
 \begin{frame}{The Validation Ladder}
   \vspace{0.05em}
-  Four ways to check a claim. Each rung sees data the one below it did not, and
-  each is the \hilite{only} rung able to kill its own claim.
+  Four ways to check a claim. Each rung uses data the rung below did not see,
+  and each is the \hilite{only} rung that can falsify the claim it tests.
 
   \vspace{0.45em}
   \begin{center}
@@ -360,11 +368,10 @@
 
   \vspace{0.45em}
   A \hilite{backtest} runs on past data. A \hilite{forward test} runs on actual
-  current data with no money at stake, which a brokerage API such as Alpaca
-  makes possible.
+  current data with no money at stake, using a brokerage API such as Alpaca.
 
   \vspace{0.5em}
-  \ink{Skipping a rung relocates the discovery to where it costs money.}
+  \ink{Skipping a rung moves the discovery to a stage where money is at stake.}
 \end{frame}
 
 % ==== promises ====
@@ -378,10 +385,10 @@
 %
 % Amounts are from private/specs/data-l1a/PROMISE-TABLE.md, FRED pull of
 % 2026-08-18. Do not edit a number here without re-running that pull.
-\begin{frame}{Five Promises}
+\begin{frame}{Five Promises for \$10{,}000}
   \vspace{0.1em}
-  Each costs \hilite{\$10{,}000} today, and each is built from a rate the market
-  quoted yesterday. No names yet, just what you are promised.
+  Each of these costs \hilite{\$10{,}000} today, and each is built from a rate
+  the market quoted yesterday. The names come later; for now, only the payments.
 
   \vspace{0.5em}
   \begin{center}\small
@@ -404,7 +411,7 @@
 
 % ==== reveal ====
 % Product nouns are allowed from here down, and only from here down.
-\begin{frame}{The Names}
+\begin{frame}{What the Five Promises Are Called}
   \vspace{0.1em}
   \begin{center}\small
   \begin{tabular}{@{}llr@{}}
@@ -419,9 +426,9 @@
   \end{center}
 
   \vspace{0.5em}
-  You just reasoned about all five \hilite{without knowing any of those words},
-  because the words are labels for cash-flow schedules. That is all they have
-  ever been, and it is the definition Thursday starts from.
+  You compared all five \hilite{without knowing any of these names}, because
+  each name is a label for a schedule of dated payments. Thursday's lecture
+  starts from that definition.
 
   \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is \emph{real}, not nominal.}
 \end{frame}
@@ -432,34 +439,41 @@
 % described as ten-year schedules on the previous frame, so a student who
 % maturity-matches gets 71 and finds the slide wrong by a factor of five.
 % See private/specs/data-l1a/PROMISE-TABLE.md for the full reasoning.
+%
+% DO NOT swap in the option-adjusted spread series (FRED BAMLC0A0CM, 82 bp).
+% It was on this frame briefly and was reverted on 2026-08-20: it is a
+% different measure, it was never pulled into data-l1a, and it cannot be
+% reproduced from the two rates the previous frame shows. The number on this
+% frame must stay the subtraction a student can do from that table.
 \begin{frame}{Three Questions We Cannot Answer Yet}
   \vspace{0.15em}
-  Most hands went to \textbf{C} or \textbf{D}, and that is the right instinct
-  with the information on the previous slide. Here is what it left out.
+  Most hands went to \textbf{C} or \textbf{D}, which is reasonable given the
+  information on the previous slide. That slide left out three things.
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Why not C?} It pays the most of the three government rows. But
-      you may need the money before year thirty, and then you sell at whatever
-      price rates allow. \dimmed{Week 2.}
-    \item \hilite{Why not D?} It pays the most, full stop. Those borrowers pay
-      \hilite{82 basis points} (0.82 percentage points) more than the government
-      for the same timing of money \dimmed{(FRED \texttt{BAMLC0A0CM}, 2026-08-18)}: the price of not being paid, and of owning
-      something harder to sell. \dimmed{Units 2 and 3.}
-    \item \hilite{Why not E?} It pays the least of any row, and that comparison
-      is not even legal: its number is in different units. \dimmed{Next slide.}
+    \item \hilite{Why not C?} It pays the most of the three government rows, but
+      you may need the money before year thirty. If you sell early, you sell at
+      whatever price prevailing rates allow. \dimmed{Week 2.}
+    \item \hilite{Why not D?} It pays more than any other row. Those borrowers
+      pay \hilite{71 basis points} (0.71 percentage points) more than the
+      government at the same ten-year horizon \dimmed{($5.42\% - 4.71\%$)},
+      which is what the market charges for the risk of not being paid and for
+      holding something harder to sell. \dimmed{Units 2 and 3.}
+    \item \hilite{Why not E?} It pays the least of any row, but that comparison
+      is not valid: its rate is quoted in different units. \dimmed{Next slide.}
   \end{itemize}
 
   \vspace{0.35em}
-  \ink{Every row is written as a certain schedule. Only three of them are.}
+  \ink{Only A, B, and C promise a schedule that is actually certain.}
 \end{frame}
 
-\begin{frame}{A Forecast by Subtraction}
+\begin{frame}{Breakeven Inflation}
   \vspace{0.3em}
   B and E are the same issuer at the same horizon. B promises \hilite{nominal}
   dollars; E promises \hilite{real} ones, adjusted for whatever inflation turns
-  out to be. Subtracting one from the other leaves exactly the difference
-  between those two units:
+  out to be. Subtracting one rate from the other leaves the difference between
+  those two units:
   \[
     \underbrace{4.71\%}_{\text{\footnotesize nominal}}
     \;-\;
@@ -470,13 +484,13 @@
 
   \vspace{0.2em}
   That is the ten-year \hilite{breakeven inflation rate}: the inflation rate at
-  which B and E pay you the same. The Federal Reserve publishes it directly, and
-  it prints \hilite{2.30\%} for the same day. It is not a clean forecast, since
-  it also carries what investors charge for bearing inflation risk, but nothing
-  else gets you this close in one subtraction.
+  which B and E pay you the same amount. The Federal Reserve publishes this rate
+  directly, and its value for the same day is \hilite{2.30\%}. It is not a pure
+  forecast, because it also includes what investors charge for bearing inflation
+  risk.
 
   \vspace{0.4em}
-  \ink{Prices contain forecasts. Extracting them is most of what this course does.}
+  \ink{Market prices contain forecasts, and extracting them is much of what this course does.}
 
   \slidenote{Source:}{FRED series \texttt{DGS10}, \texttt{DFII10}, \texttt{T10YIE}, as of 2026-08-18}
 \end{frame}
@@ -487,7 +501,7 @@
 % long-dated holdings that never defaulted and still destroyed the balance
 % sheet when rates rose. L2b resolves it, where that is the subject matter.
 % Do not answer it here and do not hint. The unresolved ending is the design.
-\begin{frame}{Which One Killed a Bank?}
+\begin{frame}{A Bank Failure in March 2023}
   \vspace{0.6em}
   In March 2023 a bank with about \hilite{\$200 billion} in assets failed in two
   days. It held one of the five promises on your list.
@@ -496,21 +510,21 @@
   {\large\ink{\textbf{Which one, and why?}}}
 
   \vspace{1.0em}
-  None of them defaulted. Every payment that had come due arrived exactly as
-  promised, and the bank failed anyway.
+  None of the five defaulted. Every payment that came due was made as promised,
+  and the bank failed anyway.
 
   \vspace{0.9em}
-  The clip will tell you \hilite{which one}. It will not tell you \hilite{why} in
-  any way you could check, and that gap is week 2.
+  The clip identifies \hilite{which one}. It does not explain \hilite{why} in a
+  way you can check; week 2 supplies that explanation.
 
   \slidenote{Clip:}{\href{\svburl}{PBS NewsHour, 28 March 2023, 6 minutes}}
 \end{frame}
 
-\begin{frame}{Thursday}
+\begin{frame}{Why You Cannot Rank the Five Yet}
   \vspace{0.4em}
-  Nobody in this room voted badly. You were not careless and you did not buy
-  something exotic: every promise on that list is issued by the United States
-  government or by large companies that have been paying their bills for decades.
+  Every promise on that list is issued by the United States government or by
+  large companies that have paid their obligations for decades. No vote in this
+  room was careless.
 
   \vspace{0.9em}
   You cannot rank those five yet, and the reason is precise:
@@ -521,9 +535,9 @@
   \end{center}
 
   \vspace{0.9em}
-  \$264 in thirty years and \$10{,}028 in four weeks are not comparable numbers
-  until we say what a dollar on one date is worth on another. That rule is
-  Thursday, and it is the first thing this course builds.
+  \$264 in thirty years and \$10{,}028 in four weeks cannot be compared until we
+  state what a dollar on one date is worth on another. We build that rule on
+  Thursday, and it is the first thing this course does.
 \end{frame}
 
 
@@ -531,22 +545,23 @@
 % Summary frames carry all three parts: one summary sentence, exactly three
 % key takeaways, one concluding sentence. See vnslides.sty rule 7.
 \begin{frame}{Summary}
-  This lecture located the course, argued that you are already a market
-  participant, and read five financial promises as schedules of dated payments.
+  This lecture placed the course in context, showed that you are already a
+  market participant, and read five financial promises as schedules of dated
+  payments.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \textbf{\ink{You are already a portfolio holder.}} Retirement accounts
-      make market participation the default, so the allocation question is one
-      nearly everyone answers, most of them by inaction.
+      make market participation the default, so nearly everyone answers the
+      allocation question, most of them by leaving a default in place.
     \item \textbf{\ink{An instrument is a schedule.}} A bill, a note, a bond, a
       corporate bond, and an inflation-indexed security are labels for schedules
       of dated payments, though not every schedule is equally certain.
-    \item \textbf{\ink{A claim is only as good as the rung it survived.}} Theory,
-      backtest, forward test, and real money each see different data, and each
-      is the only stage able to falsify its own claim.
+    \item \textbf{\ink{Validation happens in stages.}} Theory, backtest,
+      forward test, and real money each use different data, and each is the only
+      stage that can falsify the claim it tests.
   \end{itemize}
 
   \vspace{0.3em}
@@ -559,15 +574,15 @@
 % All four verified HTTP 200 on 2026-08-19.
 \begin{frame}{Further Reading}
   \vspace{0.4em}
-  Not assigned, and not on any problem set. If the sixty seconds on the
-  committee left you curious, start here.
+  Not assigned, and not on any problem set. These four sources describe the
+  Federal Reserve System, the committee mentioned earlier, and the Treasury.
 
   \vspace{0.9em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
     \item \href{https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm}{\emph{The Structure and Functions of the Federal Reserve System}}, Federal Reserve Board: the roles of the Board of Governors, the Reserve Banks, and the FOMC.
     \item \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, Federal Reserve Board: the target range, the effective rate, and the current implementation tools.
     \item \href{https://www.newyorkfed.org/aboutthefed/fedpoint/fed01.html}{\emph{Fedpoints: Federal Reserve System}}, Federal Reserve Bank of New York: an institutional overview.
-    \item \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, U.S. Department of the Treasury: fiscal, financial, and debt-management responsibilities. \dimmed{A different institution from the one above, which is week 2's problem.}
+    \item \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, U.S. Department of the Treasury: fiscal, financial, and debt-management responsibilities. \dimmed{The Treasury is a different institution from the Federal Reserve; week 2 distinguishes them.}
   \end{itemize}
 \end{frame}
 
