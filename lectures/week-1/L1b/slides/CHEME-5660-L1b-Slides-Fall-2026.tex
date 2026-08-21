@@ -13,7 +13,7 @@
 %   Learning Objectives        [cell 0]  -> Objectives for Today
 %   Setup, Data, Prerequisites           -> not slided; notebook housekeeping
 %   Time Value of Money        [cell 4]  -> Time Value of Money
-%   Discrete Compounding       [cell 5]  -> Discrete Compounding and Accumulation Factors
+%   Discrete Compounding       [cell 5]  -> Discrete Compounding
 %   Continuous Compounding     [cell 6]  -> Continuous Compounding
 %   Who Sets the Valuation Rate[cell 11] -> Who Sets the Valuation Rate? + What Rate Should I Use?
 %   Abstract Assets and Net Cash Flows   -> An Abstract Asset (figure) + Net Cash Flows
@@ -80,17 +80,25 @@
 
 % ---- examples ------------------------------------------------
 \begin{frame}{Lectures and Examples}
-  \vspace{0.9em}
+  \vspace{0.45em}
   \eyebrow{Lecture notebook}
 
   \vspace{0.25em}
   {\small\dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
 
-  \vspace{1.2em}
+  \vspace{0.55em}
+  Derive accumulation and discount factors, represent an asset as dated signed
+  cash flows, and compute NPV at a declared valuation rate.
+
+  \vspace{0.9em}
   \eyebrow{Worked example}
 
   \vspace{0.25em}
   {\small\dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
+
+  \vspace{0.55em}
+  Represent ten years of Tesla Model S ownership as dated cash flows, discount
+  them to time $0$, and compute their NPV.
 
   \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
 \end{frame}
@@ -102,25 +110,25 @@
   valuation date using a stated conversion rule.
 
   \vspace{0.5em}
-  Let $P$ be an amount held at time $0$, and let $y$ be a quoted \hilite{nominal
-  annual yield} used for valuation. With one compounding interval per year, the
-  amount after one year is given by:
+  Let $P$ be an amount held at time $0$, and let $y$ be a quoted
+  \textbf{\ink{nominal annual yield}} used for valuation. With one compounding
+  interval per year, the amount after one year is given by:
   \[
     F_1=\underbrace{(1+y)}_{\mathcal D_{1,0}(y;1)}P .
   \]
 
   For $y>0$ the factor $\mathcal D_{1,0}(y;1)>1$ moves time-0 dollars forward and
-  is the \hilite{forward accumulation factor}; its inverse
+  is the \textbf{\ink{forward accumulation factor}}; its inverse
   $\mathcal D_{1,0}^{-1}(y;1)<1$ moves future dollars back and is the
-  \hilite{discount factor}.
+  \textbf{\ink{discount factor}}.
 
   \slidenote{Careful:}{a later dollar is not \emph{automatically} worth less. That depends on the rate $y$ you declare.}
 \end{frame}
 
 % ---- math: accumulation --------------------------------------
-\begin{frame}{Discrete Compounding and Accumulation Factors}
-  Let $j=0,1,2,\ldots$ index the \hilite{compounding periods}, and let
-  $i_\ell>-1$ be the \hilite{effective rate} over the interval
+\begin{frame}{Discrete Compounding}
+  Let $j=0,1,2,\ldots$ index the \textbf{\ink{compounding periods}}, and let
+  $i_\ell>-1$ be the \mbox{\hilite{effective rate}} over the interval
   $\ell\rightarrow\ell+1$. An amount $P$ held at time $0$ becomes:
   \[
     F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P .
@@ -155,8 +163,9 @@
 
   A nominal annual yield $y$ compounded $n$ times per year has the continuously
   compounded equivalent $g_y:=n\log\left(1+y/n\right)$, so
-  $\left(1+y/n\right)^{nT}=e^{g_yT}$: these are \hilite{two representations of one
-  accumulation rule}, not two different rules.
+  $\left(1+y/n\right)^{nT}=e^{g_yT}$: these are
+  \textbf{\ink{two representations of one accumulation rule}}, not two different
+  rules.
 
   \slidenote{Log return:}{the dimensionless product $r=(\Delta t)\,g$. L2a and L3a build on it.}
 \end{frame}
@@ -171,14 +180,14 @@
   \eyebrow{The Federal Reserve}
   \vspace{0.25em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item Steers short-term rates through \hilite{interest on reserve balances}
+    \item Steers short-term rates through \textbf{\ink{interest on reserve balances}}
       (IORB), supported by the overnight reverse repo facility; open market
       operations manage the supply of reserves.
-    \item The \hilite{FOMC} sets a target range for the federal funds rate, the
+    \item The \textbf{\ink{FOMC}} sets a target range for the federal funds rate, the
       overnight rate on unsecured reserve balances traded between eligible
       institutions.
     \item Other market rates respond to policy and market conditions, but are
-      \hilite{not mechanically pegged} to the federal funds rate.
+      \textbf{\ink{not mechanically pegged}} to the federal funds rate.
   \end{itemize}
 
   \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
@@ -195,16 +204,16 @@
     \begin{column}{0.47\textwidth}
       \eyebrow{Rate type}
       \vspace{0.25em}
-      {\small A quoted \hilite{bond yield} is the rate that matches price to
-      promised cash flows. An \hilite{equity required return} estimates future
-      compensation for risk. They are different quantities.}
+      {\small A quoted \textbf{\ink{bond yield}} is the rate that matches price
+      to promised cash flows. An \textbf{\ink{equity required return}} estimates
+      future compensation for risk. They are different quantities.}
     \end{column}
     \begin{column}{0.47\textwidth}
       \eyebrow{Risk type}
       \vspace{0.25em}
-      {\small Only \hilite{systematic risk}, which diversification cannot remove,
-      is expected to earn compensation. More diversifiable risk does not by
-      itself increase expected return. Expected return is not realized return.}
+      {\small Only \textbf{\ink{systematic risk}}, which diversification cannot
+      remove, is expected to earn compensation. More diversifiable risk does not
+      by itself increase expected return. Expected return is not realized return.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -219,7 +228,7 @@
 
 % ---- net cash flows ------------------------------------------
 \begin{frame}{Net Cash Flows}
-  An abstract asset is a \hilite{sequence of dated cash flows} denominated in a
+  An abstract asset is a \textbf{\ink{sequence of dated cash flows}} denominated in a
   currency. At cash-flow index $j$, let $\mathbf c_j\in\mathbb R_{\geq0}^{m}$
   collect $m$ nonnegative magnitudes and let
   $\symbf{\nu}_j\in\{-1,+1\}^{m}$ give their directions, where $+1$ denotes an
@@ -231,7 +240,7 @@
   \]
 
   Over the dates $j=0,1,\ldots,N$, the undiscounted total $\sum_{j=0}^{N}\bar c_j$
-  is \hilite{not} a time-0 value: its terms are dollars from different dates.
+  is \textbf{\ink{not}} a time-0 value: its terms are dollars from different dates.
 
   \slidenote{Next:}{discount every term to a common date, and the result is net present value.}
 \end{frame}
@@ -239,10 +248,10 @@
 % ---- math: NPV -----------------------------------------------
 \begin{frame}{Net Present Value}
   \vspace{0.2em}
-  Let $\bar c_j$ be the \hilite{signed net cash flow} on date $j$, positive for
+  Let $\bar c_j$ be the \textbf{\ink{signed net cash flow}} on date $j$, positive for
   an inflow and negative for an outflow, over the dates $j=0,1,\ldots,N$. Discount
-  each one to the valuation date with $\mathcal D_{j,0}^{-1}(y;n)$, \hilite{then}
-  add. The net present value at time $0$ is given by:
+  each one to the valuation date with $\mathcal D_{j,0}^{-1}(y;n)$,
+  \hilite{then add}. The net present value at time $0$ is given by:
   \[
     \operatorname{NPV}_0(y)=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}(y;n)\,\bar c_j
     =\underbrace{\left\langle \mathcal D_{\star,0}^{-1}(y;n),\ \bar{\mathbf c}\right\rangle}_{\text{\footnotesize time-0 dollars}} .
