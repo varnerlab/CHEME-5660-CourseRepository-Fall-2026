@@ -292,12 +292,12 @@
   \]
 
   \vspace{0.05em}
-  This ratio compares gross notional value with cash paid for the options.
-  It does not measure market exposure or leverage. The \hilite{USD 4 trillion}
-  is not cash turnover; many contracts are cash-settled, expire unused, or
-  close before exercise.
+  This ratio approximates exposure-based leverage when $|\delta| \approx 1$, as
+  for a deep in-the-money call. Otherwise, market exposure---and therefore
+  leverage---depends on delta. The \hilite{USD 4 trillion} is gross notional,
+  not cash turnover.
 
-  \slidenote{Careful:}{108 times is gross notional value divided by premium paid, not exposure or leverage. About USD 3.0T comes from cash-settled S\&P 500 index options, so no shares are transferred.}
+  \slidenote{Careful:}{108 times is gross notional divided by premium; it approximates leverage only when $|\delta| \approx 1$. About USD 3.0T comes from cash-settled S\&P 500 index options; no shares are transferred.}
 \end{frame}
 
 % ==== units ====
