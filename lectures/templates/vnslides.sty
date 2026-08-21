@@ -200,7 +200,9 @@
 % \dim{...}      recede a clause to the body grey
 \newcommand{\hilite}[1]{\textcolor{vnaccent}{#1}}
 \newcommand{\dimmed}[1]{\textcolor{vnslidebody}{#1}}
-\newcommand{\ink}[1]{\textcolor{vnslideink}{#1}}
+% Body-level emphasis keeps the same neutral gray as running text. Weight and
+% size carry hierarchy; vnslideink remains reserved for slide and deck titles.
+\newcommand{\ink}[1]{\textcolor{vnslidebody}{#1}}
 
 % A full-bleed centred statement, no frame title. Used for the rapid-review and
 % section-transition slides.
