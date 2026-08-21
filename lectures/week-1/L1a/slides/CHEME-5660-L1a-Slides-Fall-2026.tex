@@ -77,18 +77,20 @@
 % ---- disclaimer ----------------------------------------------
 \begin{frame}{Disclaimer and Risks}
   \vspace{0.6em}
-  \textbf{\ink{Training only.}} This course is for education and information.
-  The teaching team does not offer or endorse any security, derivative,
-  investment, trade, or strategy.
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
 
   \vspace{1.1em}
-  \textbf{\ink{Risk.}} Investing and trading can lose money and may not suit
-  people with limited resources, experience, or tolerance for risk. Past
-  performance does not guarantee future results.
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
 
   \vspace{1.1em}
-  \textbf{\ink{Responsibility.}} You are responsible for decisions based on your
-  finances, goals, tolerance for risk, and need for access to cash.
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
 \end{frame}
 
 % ---- objectives ----------------------------------------------
@@ -117,9 +119,8 @@
 % ==== logistics ====
 \begin{frame}{How This Course Runs}
   \vspace{0.2em}
-  Across twenty-eight lectures, we move from understanding financial assets to
-  valuing them, combining them in portfolios, and making decisions. Six problem
-  sets use real data.
+  Across twenty-eight lectures, we'll move from understanding financial assets to
+  valuing them, combining them into portfolios, and making investment decisions.
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
@@ -134,30 +135,33 @@
   \end{itemize}
 
   \vspace{0.4em}
-  The course ends with an automated trading project using live data from
-  \href{https://alpaca.markets/}{Alpaca Markets}.
+  The course ends with an automated trading project using live data and live market access through the
+  \href{https://alpaca.markets/}{Alpaca Markets application programming interface}.
 
   \slidenote{Policies:}{\href{\policyurl}{grading, attendance, academic integrity, and accommodations are posted in full}}
 \end{frame}
 
-\begin{frame}{Ask a Question, Build a Model, Test It}
-  \vspace{0.3em}
-  The same cycle appears in every unit.
+% JDV doesn't want this frame in the deck, what is the point of it?
+% It is a generic statement about the scientific method, not a course-specific point.
+% The course map and the decision loop already show the same idea in a more specific way.
+% \begin{frame}{Ask a Question, Build a Model, Test It}
+%   \vspace{0.3em}
+%   The same cycle appears in every unit.
 
-  \vspace{0.6em}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Start with a question.} New concepts appear when they help us
-      solve a financial problem.
-    \item \hilite{Use code to explore.} Most code is provided; you will change
-      assumptions, inspect the results, and explain what the model does.
-    \item \hilite{Test against evidence.} A mathematically correct model can
-      still fail when its assumptions do not match reality.
-  \end{itemize}
+%   \vspace{0.6em}
+%   \begin{itemize}\setlength{\itemsep}{0.55em}
+%     \item \hilite{Start with a question.} New concepts appear when they help us
+%       solve a financial problem.
+%     \item \hilite{Use code to explore.} Most code is provided; you will change
+%       assumptions, inspect the results, and explain what the model does.
+%     \item \hilite{Test against evidence.} A mathematically correct model can
+%       still fail when its assumptions do not match reality.
+%   \end{itemize}
 
-  \vspace{0.7em}
-  The goal is not just to get an answer. It is to know when that answer deserves
-  trust.
-\end{frame}
+%   \vspace{0.7em}
+%   The goal is not just to get an answer. It is to know when that answer deserves
+%   trust.
+% \end{frame}
 
 % ==== two-sided relevance ====
 \begin{frame}{Markets Connect You, Cornell, and Companies}
@@ -249,15 +253,15 @@
   \vspace{0.1em}
   \begin{center}\footnotesize
   \begin{tabular}{@{}lrr@{}}
-    & \textbf{\ink{Annual total}} & \textbf{\ink{Per trading day}}\\[2pt]
+    & \textbf{\ink{Annual total (USD)}} & \textbf{\ink{Per trading day (USD)}}\\[2pt]
     \hline\\[-7pt]
-    \textbf{\ink{Global biopharma}}  & USD 666B & USD 2.64B\\
-    \textbf{\ink{Global batteries}}  & USD 181B & USD 0.72B\\[1pt]
-    \textbf{\ink{Together}}          & USD 847B & USD 3.36B\\[5pt]
-    US debt                          & USD 304.7T & USD 1{,}209B\\
-    US stocks                        & USD 153.2T & USD 608B\\
-    Prices paid for options          & USD 9.3T & USD 37B\\[1pt]
-    \textbf{\hilite{US markets together}} & USD 467.2T & USD 1{,}854B\\[2pt]
+    \textbf{\ink{Global biopharma}}  & 666B & 2.64B\\
+    \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
+    \textbf{\ink{Together}}          & 847B & 3.36B\\[5pt]
+    US debt                          & 304.7T & 1.21T\\
+    US stocks                        & 153.2T & 608B\\
+    Prices paid for options          & 9.3T & 37B\\[1pt]
+    \textbf{\hilite{US markets together}} & 467.2T & 1.85T\\[2pt]
     \hline
   \end{tabular}
   \end{center}
@@ -270,33 +274,34 @@
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
 
-\begin{frame}{An Option's Price Is Not the Value It Controls}
-  \vspace{0.2em}
-  The options row on the previous slide counts \hilite{USD 37B} in premiums:
-  the cash paid to buy options. It does not count the much larger value of the
-  assets tied to those contracts.
+\begin{frame}{Gross Notional Value Is About 108 Times Premium Paid}
+  \vspace{0.05em}
+  In 2025, buyers paid an average of \hilite{USD 37B} in option premiums each
+  trading day. Those contracts had a much larger \hilite{gross notional value}.
 
-  \vspace{0.5em}
-  Most equity options cover \textbf{100 shares}. Across 60.4 million contracts
-  per day, options reference about \hilite{USD 4 trillion} of underlying value:
+  \vspace{0.25em}
+  Most equity-option contracts use a \textbf{100-share multiplier}. The 60.4
+  million contracts traded per day had about \hilite{USD 4 trillion} of gross
+  notional value:
   \[
-    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize price paid (premium)}}
+    \underbrace{\text{USD } 4\text{T}}_{\text{\footnotesize gross notional value}}
     \;\Big/\;
-    \underbrace{\text{USD } 4{,}000\text{B}}_{\text{\footnotesize value controlled}}
+    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium paid}}
     \;=\;
-    \underbrace{0.92\%}_{\text{\footnotesize about 92 cents per \$100}}
+    \underbrace{108\times}_{\text{\footnotesize about \$108 gross notional per \$1 paid}}
   \]
 
-  \vspace{0.2em}
-  The \hilite{USD 4 trillion} is not cash turnover. It is a reference value:
-  many contracts are cash-settled, expire unused, or close before exercise.
-  That is why the table uses the \hilite{USD 37 billion} actually paid.
+  \vspace{0.05em}
+  This ratio compares gross notional value with cash paid for the options.
+  It does not measure market exposure or leverage. The \hilite{USD 4 trillion}
+  is not cash turnover; many contracts are cash-settled, expire unused, or
+  close before exercise.
 
-  \slidenote{Careful:}{about USD 3.0T is one cash-settled index; no shares change hands.}
+  \slidenote{Careful:}{108 times is gross notional value divided by premium paid, not exposure or leverage. About USD 3.0T comes from cash-settled S\&P 500 index options, so no shares are transferred.}
 \end{frame}
 
 % ==== units ====
-\begin{frame}{Four Units Build One Decision Toolkit}
+\begin{frame}{The Course Moves from Valuing Assets to Making Decisions}
   \vspace{0.2em}
   The first three units teach us to value debt, equity, and derivatives. The
   fourth uses those tools to build and test financial strategies.
@@ -346,8 +351,6 @@
   {\large A \hilite{backtest} uses past data. A \hilite{forward test} uses
   current market data, with no money at stake.}
 
-  \vspace{0.05em}
-  \ink{Skipping a stage can postpone a problem until real money is at stake.}
 \end{frame}
 
 % ==== promises ====
@@ -361,7 +364,7 @@
 %
 % Amounts are from private/specs/data-l1a/PROMISE-TABLE.md, FRED pull of
 % 2026-08-18. Do not edit a number here without re-running that pull.
-\begin{frame}{Five Promises for \$10{,}000}
+\begin{frame}{Five Investments Have Different Payment Schedules}
   \vspace{0.1em}
   You can buy each promise for \hilite{\$10{,}000} today. The payments below use
   market rates from yesterday. Ignore the names for now; compare only what gets
@@ -388,7 +391,7 @@
 
 % ==== reveal ====
 % Product nouns are allowed from here down, and only from here down.
-\begin{frame}{What the Five Promises Are Called}
+\begin{frame}{Each Payment Schedule Represents a Different Security}
   \vspace{0.1em}
   \begin{center}\small
   \begin{tabular}{@{}llr@{}}
@@ -450,7 +453,7 @@
 % long-dated holdings that never defaulted and still destroyed the balance
 % sheet when rates rose. L2b resolves it, where that is the subject matter.
 % Do not answer it here and do not hint. The unresolved ending is the design.
-\begin{frame}{A Bank Failure in March 2023}
+\begin{frame}{A Bank Can Fail Even When Its Securities Do Not Default}
   \vspace{0.6em}
   In March 2023 a bank with about \hilite{\$200 billion} in assets failed in two
   days. Its portfolio included one of the five kinds of promises on your list.
