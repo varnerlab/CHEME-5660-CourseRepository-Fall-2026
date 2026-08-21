@@ -58,13 +58,13 @@
   % ---- the four rungs, climbing --------------------------------------
   % row: y-centre / rung name / how many evidence cells it can see
   \foreach \y/\name/\n/\claim in {%
-      0/{Theory}/1/{``my reasoning is coherent''},
-      1.16/{Backtest}/2/{``the math works on past data''},
-      2.32/{Forward test}/3/{``the market cooperates in real time''},
-      3.48/{Real money}/4/{``I would actually do this''}}{%
+      0/{Theory}/1/{assumptions and equations},
+      1.16/{Backtest}/2/{past performance},
+      2.32/{Forward test}/3/{new market data},
+      3.48/{Real money}/4/{costs, liquidity, and behavior}}{%
     \node[rung] at (7.75,\y)
       {\textcolor{vnmuted}{\bfseries \name}\\[1pt]
-       {\textcolor{vnmuted}{tests: \claim}}};
+       {\textcolor{vnmuted}{tests \claim}}};
     \foreach \c in {1,...,4}{%
       \pgfmathsetmacro{\cx}{8.0+(\c-1)*\cw}
       \ifnum\c>\n

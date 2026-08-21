@@ -274,18 +274,18 @@
 
 \begin{frame}{Gross Notional Value Is About 108 Times Premium Paid}
   \vspace{0.05em}
-  In 2025, \hilite{60.4 million} option contracts traded each day. Buyers paid
+  In 2025, \hilite{60.4 million} option contracts were traded each day. Buyers paid
   \hilite{USD 37B} in premiums for about \hilite{USD 4T} in gross notional value:
   \[
     \underbrace{\text{USD } 4\text{T}}_{\text{\footnotesize gross notional value}}
     \;\Big/\;
-    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium paid}}
+    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium}}
     \;=\;
-    \underbrace{108\times}_{\text{\footnotesize about \$108 gross notional per \$1 paid}}
+    \underbrace{108\times}_{\text{\footnotesize \$108 gross notional per \$1 paid}}
   \]
 
-  \vspace{0.15em}
-  About \hilite{USD 3T} came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
+  \vspace{0.25em}
+  Interestingly, about \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
   leverage when $|\delta| \approx 1$.
 
   \slidenote{Contract size:}{equity options usually cover 100 shares. For index options, the multiplier converts index points into dollars (SPX: \$100 per point).}
@@ -294,42 +294,62 @@
 % ==== units ====
 \begin{frame}{The Course Moves from Valuing Assets to Making Decisions}
   \vspace{0.2em}
-  The first three units teach us to value debt, equity, and derivatives. The
-  fourth uses those tools to build and test financial strategies.
+  The first three units explore how to value debt, equity, and derivatives. The
+  fourth unit uses these assets to build and test financial strategies.
 
-  \vspace{0.4em}
+  \vspace{0.1em}
   \begin{center}
     \resizebox{\textwidth}{!}{\input{../figs/course-map.tex}}
   \end{center}
 
   \vspace{0.3em}
-  \ink{This week starts with Treasury securities.}
+  \ink{This week starts with debt in the form of United States Treasury securities.}
 \end{frame}
 
-% ==== decision ====
-\begin{frame}{Every Unit Uses the Same Decision Loop}
+% ==== shared decision pattern ====
+\begin{frame}{Each Unit Connects Information, Choice, and Outcome}
   \vspace{0.1em}
-  Every unit asks three questions: What do we know now? What can we choose? What
-  happens next? Decision models call these the \hilite{state}, \hilite{action},
-  and \hilite{reward}.
+  Each unit turns market information into a choice, then evaluates what that
+  choice produces.
 
-  \vspace{0.05em}
-  \begin{center}
-    \input{../figs/decision-loop.tex}
+  \vspace{0.35em}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}llll@{}}
+    \hline\\[-7pt]
+    \parbox[t]{0.14\textwidth}{\raggedright\textbf{\ink{Unit}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright\textbf{\ink{What we observe}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright\textbf{\ink{What we choose}}} &
+    \parbox[t]{0.25\textwidth}{\raggedright\textbf{\ink{What we evaluate}}}\\[3pt]
+    \hline\\[-7pt]
+    \parbox[t]{0.14\textwidth}{\raggedright\textbf{\hilite{Debt}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright rates and promised cash flows} &
+    \parbox[t]{0.24\textwidth}{\raggedright security and maturity} &
+    \parbox[t]{0.25\textwidth}{\raggedright price, yield, and rate risk}\\[5pt]
+    \parbox[t]{0.14\textwidth}{\raggedright\textbf{\hilite{Equity}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright cash flows and growth} &
+    \parbox[t]{0.24\textwidth}{\raggedright stock or portfolio} &
+    \parbox[t]{0.25\textwidth}{\raggedright value, return, and risk}\\[5pt]
+    \parbox[t]{0.14\textwidth}{\raggedright\textbf{\hilite{Derivatives}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright price and volatility} &
+    \parbox[t]{0.24\textwidth}{\raggedright contract or hedge} &
+    \parbox[t]{0.25\textwidth}{\raggedright payoff, exposure, and risk}\\[5pt]
+    \parbox[t]{0.14\textwidth}{\raggedright\textbf{\hilite{Strategies}}} &
+    \parbox[t]{0.24\textwidth}{\raggedright signals and constraints} &
+    \parbox[t]{0.24\textwidth}{\raggedright allocation and trading rule} &
+    \parbox[t]{0.25\textwidth}{\raggedright performance and robustness}\\[2pt]
+    \hline
+  \end{tabular}
   \end{center}
 
-  \vspace{0.05em}
-  The course gives us tools to describe each part of the loop and test the links
-  between them.
-
-  \slidenote{Careful:}{every arrow represents an assumption we need to test.}
+  \vspace{0.25em}
+  \ink{Unit 4 combines the asset-level choices from Units 1 to 3 into a strategy.}
 \end{frame}
 
 % ==== ladder ====
-\begin{frame}{Each Test Exposes a New Way an Idea Can Fail}
+\begin{frame}{Valuation Is the First Test, Not the Last}
   \vspace{0.05em}
-  {\large A model earns trust in stages. Each stage adds evidence and reveals
-  a new way the idea can fail.}
+  {\large Units 1 to 3 build models of prices and payoffs. Unit 4 asks
+  whether a strategy survives data, time, and execution.}
 
   \vspace{0.3em}
   \begin{center}
@@ -339,8 +359,7 @@
   \end{center}
 
   \vspace{0.25em}
-  {\large A \hilite{backtest} uses past data. A \hilite{forward test} uses
-  current market data, with no money at stake.}
+  {\large\ink{The goal is to find failures before real money is at risk.}}
 
 \end{frame}
 
