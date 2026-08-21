@@ -221,6 +221,52 @@
   \slidenote{Sources:}{\href{https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-savings-investments.htm}{Fed SHED, 2025}; \href{https://finance.cornell.edu/sites/default/files/cornell-financial-report-FY2025.pdf}{Cornell FY2025 report}; \href{https://finance.cornell.edu/financial-guide/statement-activities}{Cornell activities}; \href{https://www.sec.gov/data-research/statistics-data-visualizations/initial-public-offerings-ipos}{SEC IPO data}}
 \end{frame}
 
+% ==== engineer ====
+% TWO frames, split on JDV's 2026-08-19 directive. The original single frame
+% summed US debt turnover + equity turnover + options NOTIONAL and got ~1300x.
+% That sum is incommensurable: notional is the value of the underlying a
+% contract controls, not dollars changing hands, and it dominated the numerator.
+% So the artifact WAS the headline.
+%
+% Frame 1 compares like with like -- three rows that are all cash -- and gets
+% 551x. Frame 2 then teaches the thing frame 1 had to drop, using JDV's device:
+% assume every contract is exercised the day it is sold, so the notional becomes
+% a real flow. The device fails for cash-settled index options, and the SPX
+% arithmetic on the frame shows that failure is 75% of the number, not a corner
+% case.
+%
+% All figures and sources: private/specs/data-l1a/MARKET-SCALE.md (addendum).
+% NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
+% categories and are allowed. Debt/Equity/Derivative appear on the course map.
+\begin{frame}{U.S. Markets Move About \$1.85 Trillion a Day}
+  \vspace{0.05em}
+  To compare annual and daily figures, the daily column divides by 252 trading
+  days. Industry rows show revenue; market rows show cash paid when securities
+  trade.
+
+  \vspace{0.1em}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lrr@{}}
+    & \textbf{\ink{Annual total (USD)}} & \textbf{\ink{Per trading day (USD)}}\\[2pt]
+    \hline\\[-7pt]
+    \textbf{\ink{Global biopharma}}  & 666B & 2.64B\\
+    \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
+    \textbf{\ink{Together}}          & 847B & 3.36B\\[5pt]
+    US debt                          & 304.7T & 1.21T\\
+    US stocks                        & 153.2T & 608B\\
+    Prices paid for options          & 9.3T & 37B\\[1pt]
+    \textbf{\hilite{US markets together}} & 467.2T & 1.85T\\[2pt]
+    \hline
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1em}
+  Whether measured per year or per trading day, the market total is about
+  \hilite{550 times} the two-industry total.
+
+  \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
+\end{frame}
+
 % ==== federal borrowing and Treasury-market liquidity ====
 % Debt to the Penny values are for 2026-08-20. The buyback operation occurred
 % on 2026-08-20 and settled on 2026-08-21. Do not update one side without the
@@ -270,52 +316,6 @@
   repeated borrowing from investors at market interest rates.
 
   \slidenote{Note:}{Scale comparison, not a bill. Sources: \href{https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/}{Treasury debt}; \href{https://www.treasurydirect.gov/instit/annceresult/press/preanre/2026/BBR_20260820174000.pdf}{buyback}; \href{https://www.census.gov/popclock/}{Census population}.}
-\end{frame}
-
-% ==== engineer ====
-% TWO frames, split on JDV's 2026-08-19 directive. The original single frame
-% summed US debt turnover + equity turnover + options NOTIONAL and got ~1300x.
-% That sum is incommensurable: notional is the value of the underlying a
-% contract controls, not dollars changing hands, and it dominated the numerator.
-% So the artifact WAS the headline.
-%
-% Frame 1 compares like with like -- three rows that are all cash -- and gets
-% 551x. Frame 2 then teaches the thing frame 1 had to drop, using JDV's device:
-% assume every contract is exercised the day it is sold, so the notional becomes
-% a real flow. The device fails for cash-settled index options, and the SPX
-% arithmetic on the frame shows that failure is 75% of the number, not a corner
-% case.
-%
-% All figures and sources: private/specs/data-l1a/MARKET-SCALE.md (addendum).
-% NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
-% categories and are allowed. Debt/Equity/Derivative appear on the course map.
-\begin{frame}{U.S. Markets Move About \$1.85 Trillion a Day}
-  \vspace{0.05em}
-  To compare annual and daily figures, the daily column divides by 252 trading
-  days. Industry rows show revenue; market rows show cash paid when securities
-  trade.
-
-  \vspace{0.1em}
-  \begin{center}\footnotesize
-  \begin{tabular}{@{}lrr@{}}
-    & \textbf{\ink{Annual total (USD)}} & \textbf{\ink{Per trading day (USD)}}\\[2pt]
-    \hline\\[-7pt]
-    \textbf{\ink{Global biopharma}}  & 666B & 2.64B\\
-    \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
-    \textbf{\ink{Together}}          & 847B & 3.36B\\[5pt]
-    US debt                          & 304.7T & 1.21T\\
-    US stocks                        & 153.2T & 608B\\
-    Prices paid for options          & 9.3T & 37B\\[1pt]
-    \textbf{\hilite{US markets together}} & 467.2T & 1.85T\\[2pt]
-    \hline
-  \end{tabular}
-  \end{center}
-
-  \vspace{0.1em}
-  Whether measured per year or per trading day, the market total is about
-  \hilite{550 times} the two-industry total.
-
-  \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
 
 \begin{frame}{Gross Notional Value Is About 108 Times Premium Paid}
