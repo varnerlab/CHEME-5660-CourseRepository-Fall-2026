@@ -62,7 +62,7 @@
   and discount factors, and use them to value an \hilite{abstract asset}.
 
   \vspace{0.9em}
-  {\large\textbf{\ink{Today's concepts}}}
+  \decklabel{Today's concepts}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{The time value of money}: cash flows at different dates cannot
@@ -80,14 +80,17 @@
 
 % ---- examples ------------------------------------------------
 \begin{frame}{Lectures and Examples}
-  \vspace{0.8em}
-  % Notebook names run to ~60 characters; \large wraps the longest one onto a
-  % second line and the block stops looking like a list.
-  % Lead-in matches the notebook's kind: the lecture notebook is not an example.
-  {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
+  \vspace{0.9em}
+  \eyebrow{Lecture notebook}
+
+  \vspace{0.25em}
+  {\small\dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
 
   \vspace{1.2em}
-  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
+  \eyebrow{Worked example}
+
+  \vspace{0.25em}
+  {\small\dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
 
   \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
 \end{frame}
@@ -116,17 +119,15 @@
 
 % ---- math: accumulation --------------------------------------
 \begin{frame}{Discrete Compounding and Accumulation Factors}
-  Let $P$ be an amount held at time $0$, let $j=0,1,2,\ldots$ index the
-  \hilite{compounding periods}, and let $i_\ell>-1$ be the \hilite{effective rate}
-  earned over the interval $\ell\rightarrow\ell+1$. Then the amount $F_j$ after
-  $j$ periods is given by:
+  Let $j=0,1,2,\ldots$ index the \hilite{compounding periods}, and let
+  $i_\ell>-1$ be the \hilite{effective rate} over the interval
+  $\ell\rightarrow\ell+1$. An amount $P$ held at time $0$ becomes:
   \[
     F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P .
   \]
 
-  If the same nominal annual yield $y$ applies in every interval, with $n$
-  intervals per year, then $i_\ell=y/n$ for every $\ell$ and the product
-  collapses to:
+  For nominal annual yield $y$ compounded $n$ times per year, $i_\ell=y/n$ and
+  the product becomes:
   \[
     \underbrace{\mathcal D_{j,0}(y;n)=\left(1+\frac{y}{n}\right)^{j}}_{\text{\footnotesize accumulation}},
     \qquad
@@ -167,7 +168,7 @@
   every asset.
 
   \vspace{0.5em}
-  {\large\textbf{\ink{The Federal Reserve}}}
+  \eyebrow{The Federal Reserve}
   \vspace{0.25em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item Steers short-term rates through \hilite{interest on reserve balances}
@@ -190,18 +191,22 @@
   statement of any adjustment made for credit, liquidity, or risk.
 
   \vspace{0.8em}
-  {\large\textbf{\ink{Two cautions we rely on later}}}
-  \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item A quoted \hilite{bond yield} and an estimated \hilite{equity required
-      return} are different kinds of number. A bond yield is the discount rate
-      that matches price to promised cash flows; an equity required return is an
-      estimate of future compensation for risk.
-    \item Investors expect compensation for \hilite{systematic} risk: the risk
-      that diversification cannot remove. Taking more diversifiable risk does
-      not by itself raise expected return, and an expected return is not a
-      realized return.
-  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \eyebrow{Rate type}
+      \vspace{0.25em}
+      {\small A quoted \hilite{bond yield} is the rate that matches price to
+      promised cash flows. An \hilite{equity required return} estimates future
+      compensation for risk. They are different quantities.}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \eyebrow{Risk type}
+      \vspace{0.25em}
+      {\small Only \hilite{systematic risk}, which diversification cannot remove,
+      is expected to earn compensation. More diversifiable risk does not by
+      itself increase expected return. Expected return is not realized return.}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 % ---- figure --------------------------------------------------
@@ -259,7 +264,7 @@
   representation of investments as dated cash flows.
 
   \vspace{0.6em}
-  {\large\textbf{\ink{Key takeaways}}}
+  \decklabel{Key takeaways}
   \vspace{0.25em}
   \begin{itemize}\setlength{\itemsep}{0.45em}
     \item \textbf{\ink{Dated dollars must be compared at a common valuation date.}}
