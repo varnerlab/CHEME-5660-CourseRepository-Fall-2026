@@ -1,0 +1,28 @@
+L1a DECK — FOLLOW-UP LANGUAGE AUDIT
+
+Do a second, line-by-line audit of every piece of audience-visible language in
+the deck. The previous audit was not complete: it focused on jargon, factual
+clarity, and slide-to-slide flow, but did not challenge short taglines and
+supporting copy rigorously enough. “Snapshot, not a forecast” was the clearest
+miss.
+
+Audit every:
+- slide title
+- heading and label
+- sentence and tagline
+- figure annotation
+- table heading and note
+- source/methodology footer that students may read
+
+For each line, ask:
+1. Would a student understand exactly what this means without narration?
+2. Is it concrete, direct, and natural to say aloud?
+3. Does it explain why the fact matters on this slide?
+4. Is any jargon, abstraction, slogan, or compressed phrase hiding the point?
+5. Does it repeat something already stated, or compete with the main claim?
+6. Does it fit the surrounding story and prepare the next idea?
+
+Preserve the current visual theme, factual claims, citations, and strong large
+numbers. Flag uncertainty rather than inventing meaning. After editing, rebuild
+the PDF and inspect every slide individually for wording, wrapping, hierarchy,
+and visual fit before returning the deck.

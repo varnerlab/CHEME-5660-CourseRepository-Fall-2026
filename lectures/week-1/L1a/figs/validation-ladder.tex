@@ -31,40 +31,39 @@
 \begingroup
 \hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=10000
 \begin{tikzpicture}[
-    font=\sffamily\small,
+    font=\sffamily\normalsize,
     seen/.style     = {draw=vnlink,line width=0.7pt,fill=vnlink!16},
     unseen/.style   = {draw=vnrule,line width=0.7pt,fill=white},
     money/.style    = {draw=vncarnelian,line width=0.7pt,fill=vncarnelian!14},
-    % 9.2cm, not 7.7: at the enlarged claim size the longest claim ("the math
-    % works on data that already happened") wrapped to a second line and broke
-    % the one-row-per-rung alignment the figure is built on. The deck frame
-    % widens its \resizebox to match, so the effective font size is unchanged.
+    % 9.2cm preserves one line per claim at the enlarged label size. Wrapping a
+    % claim would break the one-row-per-rung alignment the figure is built on.
     rung/.style     = {align=right,anchor=east,text width=9.2cm},
-    colhead/.style  = {text=vnmuted,font=\sffamily\footnotesize,align=center,
-                       text width=2.3cm,anchor=south}]
+    colhead/.style  = {text=vnmuted,font=\sffamily\small,align=center,
+                       text width=2.3cm,anchor=base,
+                       text height=1.6ex,text depth=0.35ex}]
 
   % Column width and row height. One grid, no exceptions. Cell x-origins are
   % computed inline where they are used; a \global \colx<n> lookup table used
   % to live here, was never read by anything, and leaked its definitions past
   % the surrounding group.
-  \def\cw{2.3}\def\ch{0.62}
+  \def\cw{2.3}\def\ch{0.72}
 
   % ---- column headings: the four kinds of evidence -----------------
   \foreach \c/\lab in {1/{assumptions}, 2/{past data}, 3/{current data},
                        4/{money at risk}}{%
     \pgfmathsetmacro{\cx}{8.0+(\c-0.5)*\cw}
-    \node[colhead] at (\cx,3.86) {\lab};}
-  \draw[vnrule,line width=0.5pt] (8.0,3.78) -- (17.2,3.78);
+    \node[colhead] at (\cx,4.37) {\lab};}
+  \draw[vnrule,line width=0.5pt] (8.0,4.18) -- (17.2,4.18);
 
   % ---- the four rungs, climbing --------------------------------------
   % row: y-centre / rung name / how many evidence cells it can see
   \foreach \y/\name/\n/\claim in {%
       0/{Theory}/1/{``my reasoning is coherent''},
-      1.02/{Backtest}/2/{``the math works on data that already happened''},
-      2.04/{Forward test}/3/{``the market cooperates in real time''},
-      3.06/{Real money}/4/{``I would actually do this''}}{%
+      1.16/{Backtest}/2/{``the math works on past data''},
+      2.32/{Forward test}/3/{``the market cooperates in real time''},
+      3.48/{Real money}/4/{``I would actually do this''}}{%
     \node[rung] at (7.75,\y)
-      {\textcolor{vnink}{\bfseries \name}\\[1pt]
+      {\textcolor{vnmuted}{\bfseries \name}\\[1pt]
        {\textcolor{vnmuted}{tests: \claim}}};
     \foreach \c in {1,...,4}{%
       \pgfmathsetmacro{\cx}{8.0+(\c-1)*\cw}

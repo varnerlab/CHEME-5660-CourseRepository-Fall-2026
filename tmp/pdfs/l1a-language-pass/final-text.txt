@@ -1,0 +1,316 @@
+                              L1a: Course Orientation, Markets,
+                              Assets, and the Decision Problem
+                              CHEME 5660 Cornell University
+                              Copyright Jeffrey Varner 2026. All Rights Reserved
+
+
+
+
+Cornell Dufﬁeld Engineering
+Disclaimer and Risks
+
+
+Training only. This content is for training and informational purposes only. The
+teaching team does not make, give, or endorse any offer or solicitation to buy or sell
+securities or derivative products, or provide investment or trading advice or strategy.
+
+Risk. Trading involves risk and is generally not recommended for those with limited
+resources, experience, or a low risk tolerance. Past performance does not
+guarantee future success.
+
+Responsibility. You are responsible for your investment decisions based on your
+ﬁnancial circumstances, objectives, risk tolerance, and liquidity needs.
+
+
+
+Cornell Dufﬁeld Engineering
+Objectives for Today
+Today we place the course in context, show why ﬁnancial markets are likely to
+matter to most of you, and close with a question for Thursday.
+
+Today’s concepts
+     • Course roadmap: from comparing payments over time to making and testing
+       ﬁnancial decisions under uncertainty.
+     • Why this will matter: most U.S. adults hold a tax-preferred retirement account,
+       and the markets behind those accounts move about ﬁve hundred times more
+       cash per day than two industries that employ many engineers.
+     • The decision problem: investment choices produce payments at different times,
+       so we need a rule for comparing them.
+
+Note: this lecture has no notebook and no notes packet. These slides are the record.
+Cornell Dufﬁeld Engineering
+How This Course Runs
+Across twenty-eight lectures, we move from the ﬁnancial assets themselves to how
+we value, combine, and trade them. Six problem sets ask you to apply these ideas
+to real data and practical decisions.
+     • Materials: each week is posted as a zip ﬁle on the repository releases page, or
+       you can clone the repository. Released weeks are frozen: corrections are
+       announced, never made silently.
+     • Tools: Julia 1.12 through juliaup, Anaconda for Jupyter, and VS Code with the
+       Julia extension. Set these up once, at the start of the semester.
+     • Questions: ask on the course discussion board rather than by email, so an
+       answer reaches everyone who had the same question.
+The course ends with your automated trader using live data from Alpaca Markets.
+
+Policies: grading, attendance, academic integrity, and accommodations are posted in full
+Cornell Dufﬁeld Engineering
+How We Will Work
+
+Throughout the course, we will repeat the same cycle: ask a question, use a model
+to explore it, and test the answer against evidence.
+
+     • Each idea answers a question. New concepts will be introduced through the
+       ﬁnancial problems they help us solve.
+     • Code is our laboratory. Most of the code will be provided; you will change
+       assumptions, inspect the results, and explain what the model is doing.
+     • Evidence decides. A model can be mathematically correct and still fail. You will
+       compare its claims with data and revise it when the evidence disagrees.
+
+You will learn to explain what a model predicts, test that prediction against data, and
+recognize when the model fails.
+
+Cornell Dufﬁeld Engineering
+Most of You Will Eventually Own a Portfolio
+
+Many of you may not have a retirement account today. But roughly 61% of U.S.
+adults have a tax-preferred account, such as a 401(k) or IRA. That makes portfolio
+ownership widespread, not something limited to wealthy people. (2025)
+     • A retirement account holds a portfolio: a mix of investments.
+     • Many account holders keep the default mix selected for them.
+Keeping the default mix is still an investment decision. When that decision becomes
+yours, it will take place inside ﬁnancial markets far larger than the industries many of
+you will enter.
+
+
+Source: Federal Reserve SHED, 2025, table 28
+
+
+Cornell Dufﬁeld Engineering
+Market Scale Compared to Two Industries
+This table compares U.S. ﬁnancial markets with two global industries that employ
+many engineers. Annual industry ﬁgures are divided by 252 trading days.
+                                                         Per year   Cash per trading day
+                              Global biopharma          USD 666B             USD 2.64B
+                              Global batteries          USD 181B             USD 0.72B
+                              Together                                       USD 3.36B
+                              US debt                                       USD 1,209B
+                              US stocks                                      USD 608B
+                              Prices paid for options                         USD 37B
+                              US markets together                           USD 1,854B
+U.S. markets move about ﬁve hundred times more cash per day. The work is
+engineering: estimation, uncertainty propagation, optimization, and control.
+
+Sources: market sizes 2025 (Fortune Business Insights); turnover 2024–2026 (SIFMA, Cboe)
+Cornell Dufﬁeld Engineering
+Price Paid Versus Value Controlled
+The options row is not like the other two. The USD 37B is the price paid for the
+options. That price, called the premium, is not the total value of the shares those
+options control.
+Option contracts generally use a multiplier of 100. Across 60.4 million contracts a
+day, the underlying value referenced is about USD 4 trillion:
+
+                                  USD
+                                  ⏟   37B            / USD 4,000B =
+                                                       ⏟⏟⏟⏟⏟                      0.92%
+                                                                                  ⏟
+                              price paid (premium)     value controlled   about 92 cents per $100
+
+If every contract transferred that underlying value on the day it traded, the
+hypothetical USD 4 trillion ﬂow would be more than twice the debt and stock rows
+combined. The previous table reports actual prices paid instead.
+
+
+Careful: 3.9M × 100 × 7,692 = $3.0T of that is one index, settled in cash. It never delivers a share.
+
+Cornell Dufﬁeld Engineering
+The Three Kinds of Assets
+The investment choices in this course fall into three broad groups. We name them
+today and examine each one later, when the course needs it.
+
+    Kind                      What you own                               Where the course takes it apart
+    Debt                      a promise of payments on stated dates      Unit 1, weeks 2 and 3
+    Equity                    ownership of what remains after debts      Unit 2, weeks 3 to 7
+    Derivative                a contract tied to another asset’s value   Units 3 and 4, weeks 8 onward
+
+These categories differ in what they promise and where uncertainty enters. Debt
+speciﬁes payments, but the borrower can fail to pay. Equity promises no ﬁxed
+payments and is worth whatever remains after the company pays its debts. A
+derivative’s value depends on another asset and on the terms of the contract.
+
+Today: we use only the ﬁrst kind, and we do not use its name until later.
+Cornell Dufﬁeld Engineering
+The Decision Problem
+Every investment decision follows the same pattern: you observe the market,
+choose what to do, and see what happens. In a decision model, these are called the
+state, action, and reward.
+                                        Decision maker
+                                          goals and rules
+
+
+                 state        reward                                            action
+
+                                             Market
+                                             uncertain
+
+The four units give us the tools to describe and test each part of this loop.
+
+Careful: each arrow in the diagram is a modeling choice.
+Cornell Dufﬁeld Engineering
+The Four Units of the Course
+Each unit adds a tool for ﬁnancial decisions. Later units build on the tools introduced
+earlier.
+
+
+                     Given investment choices, uncertainty, and your priorities: what should you do?
+
+
+               Unit 1                        Unit 2                    Unit 3                    Unit 4
+                                                                  Options and other             Financial
+       Treasury securities            Stocks and portfolios
+                                                                      derivatives            decision-making
+
+
+                                                                                                                 weeks
+            weeks 1–2                      weeks 3–7                weeks 8–11                weeks 12–15
+
+     compare payments                   build portfolios         value investments           build and test
+       across dates                    under uncertainty        tied to other values       ﬁnancial strategies
+
+
+
+Today and Thursday focus on Treasury securities.
+
+Cornell Dufﬁeld Engineering
+The Validation Ladder
+Four ways to test an idea. Each stage uses evidence the one below did not see, and
+each can reveal a failure that the earlier stages cannot.
+
+                                                                             assumptions   past data   current data   money at risk
+
+                                                            Real money
+                                         tests: “I would actually do this”
+                                                          Forward test
+                              tests: “the market cooperates in real time”
+                                                        Backtest
+           tests: “the math works on data that already happened”
+                                                                 Theory
+                                       tests: “my reasoning is coherent”
+
+
+
+A backtest runs on past data. A forward test runs on actual current data with no
+money at stake, using current market data from a service such as Alpaca.
+Skipping a stage means discovering a failure later, perhaps with real money at stake.
+Cornell Dufﬁeld Engineering
+Five Promises for $10,000
+Each of these costs $10,000 today, and each is calculated using an interest rate
+observed in the market yesterday. The names come later; for now, only the
+payments.
+
+                              A   $10,028 back, four weeks from today
+                              B   $236 every six months for 10 years, then $10,000
+                              C   $264 every six months for 30 years, then $10,000
+                              D   $271 every six months for 10 years, then $10,000
+                              E   $121 every six months for 10 years, plus an inﬂation
+                                  adjustment on every payment and on the $10,000
+
+Which promise would you choose? Hands up.
+
+As of: published rates for 2026-08-18, each scaled to a $10,000 outlay
+Cornell Dufﬁeld Engineering
+What the Five Promises Are Called
+                                  What it is called                          Annual rate
+                              A   4-week Treasury bill                            3.63%
+                              B   10-year Treasury note                           4.71%
+                              C   30-year Treasury bond                           5.28%
+                              D   investment-grade corporate bonds                5.42%
+                              E   10-year inﬂation-indexed Treasury (TIPS)    2.41% real
+
+You compared all ﬁve without knowing any of these names. Those names are labels
+for payment schedules: lists of payments and their dates. Thursday’s lecture starts
+from that deﬁnition.
+
+
+Careful: D is an index of many investment-grade corporate bonds, not one bond. E’s rate is real, not
+nominal.
+
+Cornell Dufﬁeld Engineering
+Three Questions We Cannot Answer Yet
+
+Most hands went to C or D, which is reasonable given the information on the
+previous slide. That slide left out three things.
+     • Why not C? It pays the most of the three government rows, but you may need
+       the money before year thirty. If you sell early, you must accept the market price
+       at that time, which depends on interest rates. Week 2.
+     • Why not D? It pays more than any other row. Its rate is 0.71 percentage point
+       above the ten-year government rate (5.42% − 4.71%). That difference reﬂects
+       default risk and lower liquidity. Units 2 and 3.
+     • Why not E? It pays the least of any row, but that comparison is not valid: its rate
+       is quoted in different units. Later in the course.
+Only A, B, and C state ﬁxed nominal payments.
+
+Cornell Dufﬁeld Engineering
+A Bank Failure in March 2023
+
+In March 2023 a bank with about $200 billion in assets failed in two days. It held one
+of the ﬁve promises on your list.
+
+Which one, and why?
+
+The promise it held did not default. Every payment that came due was made as
+promised, and the bank failed anyway.
+
+The clip identiﬁes which one. It does not explain why in a way you can check; week
+2 supplies that explanation.
+
+
+Clip: PBS NewsHour, 28 March 2023, 6 minutes
+
+
+Cornell Dufﬁeld Engineering
+Why You Cannot Rank the Five Yet
+
+Every promise on that list comes from the United States government or from large
+companies with long records of paying what they owe. No vote in this room was
+careless.
+
+You cannot rank those ﬁve yet, and the reason is precise:
+
+           You have no rule for comparing dollars that arrive on different dates.
+
+$264 in thirty years and $10,028 in four weeks cannot be compared until we state
+what a dollar on one date is worth on another. We build that rule on Thursday; it is
+the ﬁrst valuation tool in the course.
+
+
+Cornell Dufﬁeld Engineering
+Summary
+This lecture placed the course in context, showed why portfolio decisions will matter
+to many of you, and read ﬁve ﬁnancial promises as lists of payments and dates.
+Key takeaways
+     • Retirement accounts require portfolio decisions. Someone must decide
+       how the money is invested, even if the default mix remains unchanged.
+     • Each promise is a payment schedule. A bill, a note, a bond, a corporate
+       bond, and an inﬂation-indexed security are labels for lists of payments and
+       dates, though not every payment is known in advance.
+     • Testing happens in stages. Theory, backtest, forward test, and real money
+       use different evidence, and each can reveal a different kind of failure.
+On Thursday we build the rule that lets us compare those ﬁve payment schedules.
+
+Cornell Dufﬁeld Engineering
+Further Reading
+These readings are optional and will not appear on a problem set. They provide
+background on the Federal Reserve System, monetary policy, and the Treasury.
+
+     • The Structure and Functions of the Federal Reserve System, Federal Reserve
+       Board: the roles of the Board of Governors, the Reserve Banks, and the FOMC.
+     • Economy at a Glance: Policy Rate, Federal Reserve Board: the target range,
+       the effective rate, and the current implementation tools.
+     • Fedpoints: Federal Reserve System, Federal Reserve Bank of New York: an
+       institutional overview.
+     • Role of the Treasury, U.S. Department of the Treasury: ﬁscal, ﬁnancial, and
+       debt-management responsibilities. The Treasury is a different institution from
+       the Federal Reserve; week 2 distinguishes them.
+
+Cornell Dufﬁeld Engineering
+

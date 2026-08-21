@@ -26,20 +26,17 @@
 %   Disclaimer and Risks                      -> always second, house convention
 %   Objectives for Today                      -> three objectives, house format
 %   How This Course Runs                      -> logistics      20 min
-%   What to Expect Each Week                  -> logistics
-%   Most of You Will Eventually Own a Portfolio -> why you care  7 min
-%   Some Decisions Affect Every Portfolio     -> Fed teaser, 60 seconds only
+%   How We Will Work                          -> logistics
+%   Markets Connect Investors and Companies    -> future relevance  8 min
 %   Market Scale Compared to Two Industries   -> market scale    6 min
 %   Price Paid Versus Value Controlled        -> market scale
-%   The Three Kinds of Asset                  -> named, not toured, ONE slide
-%   The Decision Problem                      -> decision       10 min
-%   The Four Units of the Course              -> decision
-%   The Validation Ladder                     -> decision
+%   The Four Units of the Course              -> roadmap
+%   Every Unit Builds Toward the Same Decision -> decision      10 min
+%   Each Test Exposes a New Way an Idea Can Fail -> decision
 %   Five Promises for $10,000                 -> table + vote    5 min
 %   What the Five Promises Are Called         -> reveal          3 min
 %   Three Questions We Cannot Answer Yet      -> reveal
 %   A Bank Failure in March 2023              -> SVB clip        7 min
-%   Why You Cannot Rank the Five Yet          -> handoff         3 min
 %   Summary                                   -> three takeaways
 %   Further Reading                           -> offered, not assigned
 %
@@ -52,6 +49,11 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
+% Use one neutral tone for all body-level text in this deck. Font weight,
+% size, coral, and blue carry hierarchy; near-black is reserved for titles.
+\colorlet{vnmuted}{vnslidebody}
+\renewcommand{\ink}[1]{\textcolor{vnslidebody}{#1}}
+
 % The full policy document. Defaulted to the course repository, which is what
 % every other deck links. Point it at Canvas with a one-line change here.
 \newcommand{\policyurl}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}
@@ -63,7 +65,7 @@
 % question. Play it in full and do NOT paraphrase it afterwards.
 \newcommand{\svburl}{https://www.pbs.org/newshour/show/the-factors-behind-silicon-valley-banks-collapse}
 
-\title{{\vnheavy L1a}: Course Orientation, Markets, Assets, and the Decision Problem}
+\title{{\vnheavy L1a}: Course Orientation, Markets, and Financial Decisions}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -75,39 +77,37 @@
 % ---- disclaimer ----------------------------------------------
 \begin{frame}{Disclaimer and Risks}
   \vspace{0.6em}
-  \textbf{\ink{Training only.}} This content is for training and informational
-  purposes only. The teaching team does not make, give, or endorse any offer or
-  solicitation to buy or sell securities or derivative products, or provide
-  investment or trading advice or strategy.
+  \textbf{\ink{Training only.}} This course is for education and information.
+  The teaching team does not offer or endorse any security, derivative,
+  investment, trade, or strategy.
 
   \vspace{1.1em}
-  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
-  those with limited resources, experience, or a low risk tolerance. Past
-  performance does not guarantee future success.
+  \textbf{\ink{Risk.}} Investing and trading can lose money and may not suit
+  people with limited resources, experience, or tolerance for risk. Past
+  performance does not guarantee future results.
 
   \vspace{1.1em}
-  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
-  based on your financial circumstances, objectives, risk tolerance, and
-  liquidity needs.
+  \textbf{\ink{Responsibility.}} You are responsible for decisions based on your
+  finances, goals, tolerance for risk, and need for access to cash.
 \end{frame}
 
 % ---- objectives ----------------------------------------------
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
-  Today we place the course in context, show that you are \hilite{already a
-  participant} in the markets we'll study, and we'll close with a question for next time.
+  Today we answer three questions: How does the course work? Why do financial
+  markets matter even if you never become a trader? What makes one investment
+  preferable to another?
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Course roadmap}: from comparing payments over time to making
-      and testing financial decisions under uncertainty.
-    \item \hilite{Why this concerns you}: most U.S. adults hold a retirement
-      account, and the markets those accounts invest in move several hundred
-      times more cash per day than industries that employ many engineers.
-    \item \hilite{The decision problem}: investment choices pay at different
-      times, so we need a rule for comparing them.
+    \item \hilite{Course roadmap}: four units move from reading payments to
+      making and testing financial decisions.
+    \item \hilite{Why markets matter}: most adults and Cornell itself are
+      investors, while companies use public markets to raise money.
+    \item \hilite{Our first decision problem}: two investments pay different
+      amounts at different times. How can we compare them?
   \end{itemize}
   \vspace{-0.4em}
 
@@ -117,15 +117,15 @@
 % ==== logistics ====
 \begin{frame}{How This Course Runs}
   \vspace{0.2em}
-  Across twenty-eight lectures, we move from the financial assets themselves to
-  how we value, combine, and trade them. Six problem sets ask you to apply these
-  ideas to real data and practical decisions.
+  Across twenty-eight lectures, we move from understanding financial assets to
+  valuing them, combining them in portfolios, and making decisions. Six problem
+  sets use real data.
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Materials}: each week is posted as a zip file on the
-      repository releases page, or you can clone the repository. Released weeks
-      are frozen: corrections are announced, never made silently.
+    \item \hilite{Materials}: download each week from the repository releases
+      page, or clone the repository. After release, files are frozen;
+      corrections are announced.
     \item \hilite{Tools}: Julia 1.12 through juliaup, Anaconda for Jupyter, and
       VS Code with the Julia extension. Set these up once, at the start of the
       semester.
@@ -134,76 +134,93 @@
   \end{itemize}
 
   \vspace{0.4em}
-  The course ends with your automated trader using live data from
+  The course ends with an automated trading project using live data from
   \href{https://alpaca.markets/}{Alpaca Markets}.
 
   \slidenote{Policies:}{\href{\policyurl}{grading, attendance, academic integrity, and accommodations are posted in full}}
 \end{frame}
 
-\begin{frame}{How We Will Work}
+\begin{frame}{Ask a Question, Build a Model, Test It}
   \vspace{0.3em}
-  Throughout the course, we will repeat the same cycle: ask a question, use a
-  model to explore it, and test the answer against evidence.
+  The same cycle appears in every unit.
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Each idea answers a question.} New concepts will be introduced
-      through the financial problems they help us solve.
-    \item \hilite{Code is our laboratory.} Most of the code will be provided; you will
-      change assumptions, inspect the results, and explain what the model is doing.
-    \item \hilite{Evidence decides.} A model can be mathematically correct and
-      still fail. You will compare its claims with data and revise it when the
-      evidence disagrees.
+    \item \hilite{Start with a question.} New concepts appear when they help us
+      solve a financial problem.
+    \item \hilite{Use code to explore.} Most code is provided; you will change
+      assumptions, inspect the results, and explain what the model does.
+    \item \hilite{Test against evidence.} A mathematically correct model can
+      still fail when its assumptions do not match reality.
   \end{itemize}
 
   \vspace{0.7em}
-  You will learn to explain what a model predicts, test that prediction against
-  data, and recognize when the model fails.
+  The goal is not just to get an answer. It is to know when that answer deserves
+  trust.
 \end{frame}
 
-% ==== already-care ====
-\begin{frame}{Most of You Will Eventually Own a Portfolio}
-  \vspace{0.3em}
-  Most of you may not have a retirement account today. But roughly
-  \hilite{61\%} of U.S. adults have a tax-preferred account, such as a 401(k)
-  or IRA. That makes investing widespread, not an activity limited to wealthy
-  people. \dimmed{(2025)}
+% ==== two-sided relevance ====
+\begin{frame}{Markets Connect You, Cornell, and Companies}
+  \vspace{0.1em}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.285\textwidth}
+      {\small\textbf{\textcolor{vnlink}{YOUR SIDE}}}
 
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item A retirement account holds a \hilite{portfolio}: a mix of investments.
-    \item Many account holders keep the \hilite{default mix} selected for them.
-  \end{itemize}
+      \vspace{0.05em}
+      {\fontsize{36}{38}\selectfont\bfseries\hilite{61\%}\par}
+      \vspace{0.05em}
+      {\small of U.S. adults had a retirement account in 2025.}
 
-  \vspace{0.35em}
-  \ink{Keeping the default mix is still an investment decision.}
+      \vspace{0.3em}
+      {\small Keeping the default mix is still a choice.}
 
-  \slidenote{Source:}{\href{https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-savings-investments.htm}{Federal Reserve SHED, 2025, table 28}}
-\end{frame}
+      \vspace{0.25em}
+      {\small\dimmed{That describes today's adults---not your future.}}
+    \end{column}
+    \begin{column}{0.025\textwidth}
+      \centering
+      \vspace{0.05em}
+      {\color{vnrule}\rule{0.5pt}{3.6cm}}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      {\small\textbf{\textcolor{vnlink}{CORNELL'S SIDE}}}
 
-\begin{frame}{Some Decisions Affect Every Portfolio}
-  \vspace{0.4em}
-  Choosing the investment mix is your decision. What happens to its value is
-  not entirely under your control.
+      \vspace{0.05em}
+      {\fontsize{30}{32}\selectfont\bfseries\hilite{\$10.9B}\par}
+      {\small FY2025 endowment}
 
-  \vspace{0.6em}
-  The Federal Open Market Committee has twelve voting members and meets eight
-  times a year. It sets a target range for a key short-term interest rate, which
-  influences borrowing costs and how investors value future payments.
+      \vspace{0.3em}
+      {\large\textbf{\hilite{\$498M}}}{\small\ went into FY2025 operations,
+      mainly from endowment payout.}
 
-  \vspace{0.8em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Thursday}: what the committee controls, what it does not, and
-      how interest rates enter the value of an investment.
-    \item \hilite{September 15 and 16}: the committee meets. In week four, we
-      will use the tools we have built to examine how markets respond.
-  \end{itemize}
+      \vspace{0.3em}
+      {\small\hilite{\$3.16B} of the endowment was designated for financial aid.}
+    \end{column}
+    \begin{column}{0.025\textwidth}
+      \centering
+      \vspace{0.05em}
+      {\color{vnrule}\rule{0.5pt}{3.6cm}}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      {\small\textbf{\textcolor{vnlink}{COMPANY SIDE}}}
 
-  \vspace{0.35em}
-  \ink{Your investment choices sit inside markets shaped by decisions you do
-  not control.}
+      \vspace{0.05em}
+      {\normalsize\textbf{\ink{Why go public?}}}
 
-  \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
+      \vspace{0.1em}
+      {\small A private company lists shares on a public stock market.}
+
+      \vspace{0.3em}
+      {\small\textbf{\hilite{Raise capital:}} sell new shares; the company
+      receives the money.}
+
+      \vspace{0.3em}
+      {\small\textbf{\hilite{Create liquidity:}} shareholders can trade
+      existing shares.}
+    \end{column}
+  \end{columns}
+
+  \slidenote{Sources:}{\href{https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-savings-investments.htm}{Federal Reserve SHED, 2025}; \href{https://finance.cornell.edu/sites/default/files/cornell-financial-report-FY2025.pdf}{Cornell FY2025 Financial Report}; \href{https://finance.cornell.edu/financial-guide/statement-activities}{Cornell FY2025 Statement of Activities}; \href{https://www.sec.gov/resources-small-businesses/going-public/should-my-company-go-public}{U.S. SEC}}
 \end{frame}
 
 % ==== engineer ====
@@ -222,45 +239,46 @@
 %
 % All figures and sources: private/specs/data-l1a/MARKET-SCALE.md (addendum).
 % NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
-% categories and are allowed, same as Debt/Equity/Derivative on the next frame.
-\begin{frame}{Market Scale Compared to Two Industries}
+% categories and are allowed. Debt/Equity/Derivative appear on the course map.
+\begin{frame}{U.S. Markets Move About \$1.85 Trillion a Day}
   \vspace{0.05em}
-  Two industries this college trains people to enter, compared with the U.S.
-  financial markets. The annual industry figures are divided by 252 trading
-  days.
+  To compare annual and daily figures, the daily column divides by 252 trading
+  days. Industry rows show revenue; market rows show cash paid when securities
+  trade.
 
-  \vspace{0.25em}
+  \vspace{0.1em}
   \begin{center}\footnotesize
   \begin{tabular}{@{}lrr@{}}
-    & \textbf{\ink{Per year}} & \textbf{\ink{Cash per trading day}}\\[2pt]
+    & \textbf{\ink{Annual total}} & \textbf{\ink{Per trading day}}\\[2pt]
     \hline\\[-7pt]
     \textbf{\ink{Global biopharma}}  & USD 666B & USD 2.64B\\
     \textbf{\ink{Global batteries}}  & USD 181B & USD 0.72B\\[1pt]
-    \textbf{\ink{Together}}          &          & USD 3.36B\\[5pt]
-    US debt                          &          & USD 1{,}209B\\
-    US stocks                        &          & USD 608B\\
-    Prices paid for options          &          & USD 37B\\[1pt]
-    \textbf{\hilite{US markets together}} &     & USD 1{,}854B\\
+    \textbf{\ink{Together}}          & USD 847B & USD 3.36B\\[5pt]
+    US debt                          & USD 304.7T & USD 1{,}209B\\
+    US stocks                        & USD 153.2T & USD 608B\\
+    Prices paid for options          & USD 9.3T & USD 37B\\[1pt]
+    \textbf{\hilite{US markets together}} & USD 467.2T & USD 1{,}854B\\[2pt]
+    \hline
   \end{tabular}
   \end{center}
 
   \vspace{0.1em}
-  These markets move about \hilite{five hundred times} more cash per day. The
-  work is engineering: estimation, uncertainty propagation, optimization, and
-  control.
+  Whether measured per year or per trading day, the market total is about
+  \hilite{550 times} the two-industry total. At that scale, small pricing or
+  risk errors can be costly.
 
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
 
-\begin{frame}{Price Paid Versus Value Controlled}
+\begin{frame}{An Option's Price Is Not the Value It Controls}
   \vspace{0.2em}
-  The options row is not like the other two. The \hilite{USD 37B} is the price
-  paid for the options. That price, called the \hilite{premium}, is not the
-  total value of the shares those options control.
+  The options row on the previous slide counts \hilite{USD 37B} in premiums:
+  the cash paid to buy options. It does not count the much larger value of the
+  assets tied to those contracts.
 
   \vspace{0.5em}
-  Each contract is an option on \textbf{100 shares}. At 60.4 million contracts a
-  day, the shares underneath are worth about \hilite{USD 4 trillion}:
+  Most equity options cover \textbf{100 shares}. Across 60.4 million contracts
+  per day, options reference about \hilite{USD 4 trillion} of underlying value:
   \[
     \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize price paid (premium)}}
     \;\Big/\;
@@ -270,68 +288,18 @@
   \]
 
   \vspace{0.2em}
-  If every contract were exercised on the day it traded, that USD 4 trillion of
-  stock would change hands, which is more than \hilite{twice} the debt and
-  stock rows combined. \dimmed{The previous table reports the price paid
-  instead, because that is the cash that actually moves.}
+  The \hilite{USD 4 trillion} is not cash turnover. It is a reference value:
+  many contracts are cash-settled, expire unused, or close before exercise.
+  That is why the table uses the \hilite{USD 37 billion} actually paid.
 
-  \slidenote{Careful:}{$3.9\text{M} \times 100 \times 7{,}692 = \$3.0$T of that is one index, settled in cash. It never delivers a share.}
-\end{frame}
-
-% ==== assets ====
-% Three CATEGORIES, not five products. The 2024 deck's asset-class tour
-% compressed ~8:1, because L2a, L3a, and L8b each take one apart properly at
-% the point the student needs it. The words "bill", "note", "bond",
-% "corporate", and "TIPS" must not appear on this frame.
-\begin{frame}{The Three Kinds of Asset}
-  \vspace{0.3em}
-  The investment choices in this course fall into three broad groups. We name
-  them today and examine each one later, when the course needs it.
-
-  \vspace{0.7em}
-  \begin{center}\small
-  \begin{tabular}{@{}lll@{}}
-    \textbf{\ink{Kind}} & \textbf{\ink{What you own}} & \textbf{\ink{Where the course takes it apart}}\\[2pt]
-    \hline\\[-7pt]
-    \hilite{Debt}        & a promise of payments on stated dates       & Unit 1, weeks 2 and 3\\
-    \hilite{Equity}      & ownership of what remains after debts       & Unit 2, weeks 3 to 7\\
-    \hilite{Derivative}  & a contract tied to another asset's value    & Units 3 and 4, weeks 8 onward\\
-  \end{tabular}
-  \end{center}
-
-  \vspace{0.8em}
-  Risk and potential reward both increase down the list. Debt promises a fixed
-  schedule but the borrower can fail to pay. Equity promises no fixed payments
-  and is worth whatever remains after the company pays what it owes. A
-  derivative depends on another asset, so its possible outcomes vary most widely.
-
-  \slidenote{Today:}{we use only the first kind, and we do not use its name until later.}
-\end{frame}
-
-
-% ==== decision ====
-\begin{frame}{The Decision Problem}
-  \vspace{0.2em}
-  Every investment decision follows the same pattern: you observe the market,
-  choose what to do, and see what happens. In a decision model, these are called
-  the \hilite{state}, \hilite{action}, and \hilite{reward}.
-
-  \vspace{0.15em}
-  \begin{center}
-    \input{../figs/decision-loop.tex}
-  \end{center}
-
-  \vspace{0.15em}
-  The four units give us the tools to describe and test each part of this loop.
-
-  \slidenote{Careful:}{each arrow in the diagram is a modeling choice.}
+  \slidenote{Careful:}{about USD 3.0T is one cash-settled index; no shares change hands.}
 \end{frame}
 
 % ==== units ====
-\begin{frame}{The Four Units of the Course}
+\begin{frame}{Four Units Build One Decision Toolkit}
   \vspace{0.2em}
-  Each unit adds a tool for financial decisions. Later units build on the tools
-  introduced earlier.
+  The first three units teach us to value debt, equity, and derivatives. The
+  fourth uses those tools to build and test financial strategies.
 
   \vspace{0.4em}
   \begin{center}
@@ -339,27 +307,47 @@
   \end{center}
 
   \vspace{0.3em}
-  \ink{Today we start with Treasury securities, and we stay there through next Thursday.}
+  \ink{This week starts with Treasury securities.}
+\end{frame}
+
+% ==== decision ====
+\begin{frame}{Every Unit Uses the Same Decision Loop}
+  \vspace{0.1em}
+  Every unit asks three questions: What do we know now? What can we choose? What
+  happens next? Decision models call these the \hilite{state}, \hilite{action},
+  and \hilite{reward}.
+
+  \vspace{0.05em}
+  \begin{center}
+    \input{../figs/decision-loop.tex}
+  \end{center}
+
+  \vspace{0.05em}
+  The course gives us tools to describe each part of the loop and test the links
+  between them.
+
+  \slidenote{Careful:}{every arrow represents an assumption we need to test.}
 \end{frame}
 
 % ==== ladder ====
-\begin{frame}{The Validation Ladder}
+\begin{frame}{Each Test Exposes a New Way an Idea Can Fail}
   \vspace{0.05em}
-  Four ways to test an idea. Each stage uses evidence the one below did not see,
-  and each can reveal a failure that the earlier stages cannot.
-
-  \vspace{0.45em}
-  \begin{center}
-    \resizebox{0.97\textwidth}{!}{\input{../figs/validation-ladder.tex}}
-  \end{center}
-
-  \vspace{0.45em}
-  A \hilite{backtest} runs on past data. A \hilite{forward test} runs on actual
-  current data with no money at stake, using current market data from a service
-  such as Alpaca.
+  {\large A model earns trust in stages. Each stage adds evidence---and a new
+  way to fail.}
 
   \vspace{0.3em}
-  \ink{Skipping a stage means discovering a failure later, perhaps with real money at stake.}
+  \begin{center}
+    \makebox[\textwidth][l]{%
+      \hspace*{-0.04\textwidth}% optical centering: rung labels contain left-side padding
+      \resizebox{\textwidth}{!}{\input{../figs/validation-ladder.tex}}}
+  \end{center}
+
+  \vspace{0.25em}
+  {\large A \hilite{backtest} uses past data. A \hilite{forward test} uses
+  current market data, with no money at stake.}
+
+  \vspace{0.05em}
+  \ink{Skipping a stage can postpone a problem until real money is at stake.}
 \end{frame}
 
 % ==== promises ====
@@ -375,9 +363,9 @@
 % 2026-08-18. Do not edit a number here without re-running that pull.
 \begin{frame}{Five Promises for \$10{,}000}
   \vspace{0.1em}
-  Each of these costs \hilite{\$10{,}000} today, and each is calculated using
-  an interest rate observed in the market yesterday. The names come later; for
-  now, only the payments.
+  You can buy each promise for \hilite{\$10{,}000} today. The payments below use
+  market rates from yesterday. Ignore the names for now; compare only what gets
+  paid and when.
 
   \vspace{0.5em}
   \begin{center}\small
@@ -392,7 +380,7 @@
   \end{center}
 
   \vspace{0.5em}
-  {\large\ink{\textbf{Which one do you take? Hands up.}}}
+  {\large\ink{\textbf{Which promise would you choose? Vote first; then explain your rule.}}}
 
   \slidenote{As of:}{published rates for 2026-08-18, each scaled to a \$10{,}000 outlay}
 \end{frame}
@@ -410,16 +398,17 @@
     \textbf{\ink{B}} & 10-year Treasury note                     & 4.71\%\\
     \textbf{\ink{C}} & 30-year Treasury bond                     & 5.28\%\\
     \textbf{\ink{D}} & investment-grade corporate bonds          & 5.42\%\\
-    \textbf{\ink{E}} & 10-year inflation-indexed Treasury (TIPS) & 2.41\% \hilite{real}\\
+    \textbf{\ink{E}} & 10-year inflation-indexed Treasury (TIPS) & 2.41\% \hilite{real}\\[2pt]
+    \hline
   \end{tabular}
   \end{center}
 
   \vspace{0.5em}
-  You compared all five \hilite{without knowing any of these names}, because
-  each name labels a schedule: a list of payments and their dates. Thursday's
-  lecture starts from that definition.
+  You compared all five \hilite{without knowing any of these names}. The name
+  identifies the kind of promise; the schedule tells you what gets paid and
+  when. Thursday starts from that distinction.
 
-  \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is \emph{real}, not nominal.}
+  \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is stated after inflation, unlike the others.}
 \end{frame}
 
 % The credit spread here is D minus B -- the corporate index against the
@@ -434,27 +423,26 @@
 % different measure, it was never pulled into data-l1a, and it cannot be
 % reproduced from the two rates the previous frame shows. The number on this
 % frame must stay the subtraction a student can do from that table.
-\begin{frame}{Three Questions We Cannot Answer Yet}
+\begin{frame}{The Payment List Leaves Three Questions Open}
   \vspace{0.15em}
-  Most hands went to \textbf{C} or \textbf{D}, which is reasonable given the
-  information on the previous slide. That slide left out three things.
+  Choosing the largest listed payment is tempting, but each row hides a
+  different issue.
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Why not C?} It pays the most of the three government rows, but
-      you may need the money before year thirty. If you sell early, you sell at
-      whatever price interest rates at the time allow. \dimmed{Week 2.}
-    \item \hilite{Why not D?} It pays more than any other row. Those borrowers
-      pay \hilite{0.71 percentage points} more than the government over the
-      same ten years \dimmed{($5.42\% - 4.71\%$)},
-      which is what the market charges for the risk of not being paid and for
-      holding something harder to sell. \dimmed{Units 2 and 3.}
-    \item \hilite{Why not E?} It pays the least of any row, but that comparison
-      is not valid: its rate is quoted in different units. \dimmed{Later in the course.}
+    \item \hilite{C: What if you need the money before year 30?} Selling early
+      means accepting the market price then, and that price changes with
+      interest rates. \dimmed{Week 2.}
+    \item \hilite{D: Why does it pay more?} Its rate is 5.42\%, versus 4.71\%
+      for the ten-year Treasury. That gap reflects the chance of missed payments
+      and the difficulty of selling quickly. \dimmed{Units 2 and 3.}
+    \item \hilite{E: What does inflation protection change?} Its payments rise
+      with inflation, so its 2.41\% rate is not directly comparable with the
+      other rates. \dimmed{Later in the course.}
   \end{itemize}
 
   \vspace{0.35em}
-  \ink{Only A, B, and C promise a schedule that is actually certain.}
+  \ink{A larger listed payment is not automatically a better investment.}
 \end{frame}
 
 % ==== svb ====
@@ -465,67 +453,47 @@
 \begin{frame}{A Bank Failure in March 2023}
   \vspace{0.6em}
   In March 2023 a bank with about \hilite{\$200 billion} in assets failed in two
-  days. It held one of the five promises on your list.
+  days. Its portfolio included one of the five kinds of promises on your list.
 
   \vspace{1.0em}
   {\large\ink{\textbf{Which one, and why?}}}
 
   \vspace{1.0em}
-  None of the five defaulted. Every payment that came due was made as promised,
-  and the bank failed anyway.
+  The security did not default; every payment that came due was made. Yet the
+  bank still failed.
 
   \vspace{0.9em}
-  The clip identifies \hilite{which one}. It does not explain \hilite{why} in a
-  way you can check; week 2 supplies that explanation.
+  As you watch, identify \hilite{which promise} the bank held and \hilite{what
+  changed} before it failed. Week 2 gives us a model for checking the
+  explanation.
 
   \slidenote{Clip:}{\href{\svburl}{PBS NewsHour, 28 March 2023, 6 minutes}}
 \end{frame}
-
-\begin{frame}{Why You Cannot Rank the Five Yet}
-  \vspace{0.4em}
-  Every promise on that list comes from the United States government or from
-  large companies with long records of paying what they owe. No vote in this
-  room was careless.
-
-  \vspace{0.9em}
-  You cannot rank those five yet, and the reason is precise:
-
-  \vspace{0.5em}
-  \begin{center}
-    {\large\ink{You have no rule for comparing dollars that arrive on different dates.}}
-  \end{center}
-
-  \vspace{0.9em}
-  \$264 in thirty years and \$10{,}028 in four weeks cannot be compared until we
-  state what a dollar on one date is worth on another. We build that rule on
-  Thursday, and it is the first thing this course does.
-\end{frame}
-
 
 % ==== summary ====
 % Summary frames carry all three parts: one summary sentence, exactly three
 % key takeaways, one concluding sentence. See vnslides.sty rule 7.
 \begin{frame}{Summary}
-  This lecture placed the course in context, showed that investment exposure is
-  widespread, and read five financial promises as lists of payments and dates.
+  Financial decisions start with payment schedules, but the largest payment is
+  not automatically the best choice.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{Investment choices are widespread.}} A retirement account
-      requires someone to decide how the money is invested, even if its default
-      mix remains unchanged.
-    \item \textbf{\ink{Each choice is a payment schedule.}} A bill, a note, a
-      bond, a corporate bond, and an inflation-indexed security are labels for
-      lists of payments and dates, though not every list is equally certain.
-    \item \textbf{\ink{Testing happens in stages.}} Theory, backtest, forward
-      test, and real money use different evidence, and each can reveal a
-      different kind of failure.
+    \item \textbf{\ink{Markets connect investors and companies.}} Cornell
+      invests its endowment; going public lets a company raise capital and its
+      shareholders trade.
+    \item \textbf{\ink{A product name is a label.}} What matters first is the
+      payment schedule: what gets paid, when, and under what conditions.
+    \item \textbf{\ink{Models earn trust one test at a time.}} Theory, backtest,
+      forward test, and real money use different evidence and can reveal
+      different failures.
   \end{itemize}
 
   \vspace{0.3em}
-  On Thursday we build the rule that lets us compare those five payment schedules.
+  On Thursday, we build our first comparison rule: how to compare money paid at
+  different times.
 \end{frame}
 
 % ==== reading ====
@@ -534,15 +502,16 @@
 % All four verified HTTP 200 on 2026-08-19.
 \begin{frame}{Further Reading}
   \vspace{0.4em}
-  Not assigned, and not on any problem set. These four sources describe the
-  Federal Reserve System, the committee mentioned earlier, and the Treasury.
+  These readings are optional and will not appear on a problem set. Use them if
+  you want more background on the Federal Reserve, monetary policy, or the
+  Treasury.
 
   \vspace{0.9em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \href{https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm}{\emph{The Structure and Functions of the Federal Reserve System}}, Federal Reserve Board: the roles of the Board of Governors, the Reserve Banks, and the FOMC.
-    \item \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, Federal Reserve Board: the target range, the effective rate, and the current implementation tools.
-    \item \href{https://www.newyorkfed.org/aboutthefed/fedpoint/fed01.html}{\emph{Fedpoints: Federal Reserve System}}, Federal Reserve Bank of New York: an institutional overview.
-    \item \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, U.S. Department of the Treasury: fiscal, financial, and debt-management responsibilities. \dimmed{The Treasury is a different institution from the Federal Reserve; week 2 distinguishes them.}
+    \item \href{https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm}{\emph{The Structure and Functions of the Federal Reserve System}}, Federal Reserve Board: who does what inside the Federal Reserve.
+    \item \href{https://www.federalreserve.gov/economy-at-a-glance-policy-rate.htm}{\emph{Economy at a Glance: Policy Rate}}, Federal Reserve Board: how the Fed reports and carries out interest-rate policy.
+    \item \href{https://www.newyorkfed.org/aboutthefed/fedpoint/fed01.html}{\emph{Fedpoints: Federal Reserve System}}, Federal Reserve Bank of New York: a short overview of how the system is organized.
+    \item \href{https://home.treasury.gov/about/general-information/role-of-the-treasury}{\emph{Role of the Treasury}}, U.S. Department of the Treasury: what the Treasury does and how it differs from the Federal Reserve.
   \end{itemize}
 \end{frame}
 
