@@ -58,11 +58,12 @@
 \renewcommand{\vntitlepage}{%
   \begin{frame}[plain]
     \vfill
-    \begin{minipage}[c]{0.145\textwidth}
-      \includegraphics[width=\linewidth]{\@vnseal}
+    \begin{minipage}[c]{0.185\textwidth}
+      \centering
+      \raisebox{1.5pt}{\includegraphics[width=\linewidth]{\@vnseal}}
     \end{minipage}%
-    \hspace{0.045\textwidth}%
-    \begin{minipage}[c]{0.79\textwidth}
+    \hspace{0.025\textwidth}%
+    \begin{minipage}[c]{0.77\textwidth}
       \raggedright
       {\fontsize{24}{28}\selectfont\vnlight
        \usebeamercolor[fg]{title}\inserttitle\par}
