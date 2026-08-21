@@ -96,7 +96,7 @@
   preferable to another?
 
   \vspace{0.9em}
-  {\large\textbf{\ink{Today's concepts}}}
+  \decklabel{Today's concepts}
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Course roadmap}: four units move from reading payments to
@@ -117,20 +117,31 @@
   Across twenty-eight lectures, we'll move from understanding financial assets to
   valuing them, combining them into portfolios, and making investment decisions.
 
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Materials}: download each week from the repository releases
-      page, or clone the repository. After release, files are frozen;
-      corrections are announced.
-    \item \hilite{Tools}: Julia 1.12 through juliaup, Anaconda for Jupyter, and
-      VS Code with the Julia extension. Set these up once, at the start of the
-      semester.
-    \item \hilite{Questions}: ask on the course discussion board rather than by
-      email, so an answer reaches everyone who had the same question.
-  \end{itemize}
+  \vspace{0.65em}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.305\textwidth}
+      \eyebrow{Materials}
+      \vspace{0.25em}
+      {\small Download each week from the repository releases page, or clone
+      the repository. Released files stay frozen; corrections are announced.}
+    \end{column}
+    \begin{column}{0.305\textwidth}
+      \eyebrow{Tools}
+      \vspace{0.25em}
+      {\small Use Julia 1.12 through juliaup, Anaconda for Jupyter, and VS Code
+      with the Julia extension. Set these up once.}
+    \end{column}
+    \begin{column}{0.305\textwidth}
+      \eyebrow{Questions}
+      \vspace{0.25em}
+      {\small Ask on the course discussion board rather than by email, so each
+      answer reaches everyone with the same question.}
+    \end{column}
+  \end{columns}
 
-  \vspace{0.4em}
-  The course ends with an automated trading project using live data and live market access through the
+  \vspace{0.8em}
+  {\large\vnmedium\ink{Final project:}} automated trading with live data and live
+  market access through the
   \href{https://alpaca.markets/}{Alpaca Markets application programming interface}.
 
   \slidenote{Policies:}{\href{\policyurl}{grading, attendance, academic integrity, and accommodations are posted in full}}
@@ -163,10 +174,10 @@
   \vspace{0.1em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.285\textwidth}
-      {\small\textbf{\textcolor{vnlink}{YOUR SIDE (2025)}}}
+      \eyebrow{Your side (2025)}
 
       \vspace{0.05em}
-      {\fontsize{36}{38}\selectfont\bfseries\hilite{61\%}\par}
+      {\fontsize{32}{34}\selectfont\vnmedium\hilite{61\%}\par}
       \vspace{0.05em}
       {\small of U.S. adults had a retirement account.}
 
@@ -182,10 +193,10 @@
       {\color{vnrule}\rule{0.5pt}{3.6cm}}
     \end{column}
     \begin{column}{0.32\textwidth}
-      {\small\textbf{\textcolor{vnlink}{CORNELL'S SIDE (2025)}}}
+      \eyebrow{Cornell's side (2025)}
 
       \vspace{0.05em}
-      {\fontsize{30}{32}\selectfont\bfseries\hilite{\$10.9B}\par}
+      {\fontsize{32}{34}\selectfont\vnmedium\hilite{\$10.9B}\par}
       {\small FY2025 endowment}
 
       \vspace{0.3em}
@@ -202,10 +213,10 @@
       {\color{vnrule}\rule{0.5pt}{3.6cm}}
     \end{column}
     \begin{column}{0.31\textwidth}
-      {\small\textbf{\textcolor{vnlink}{COMPANY SIDE}}}
+      \eyebrow{Company side}
 
       \vspace{0.05em}
-      {\fontsize{28}{30}\selectfont\bfseries\hilite{315}\par}
+      {\fontsize{32}{34}\selectfont\vnmedium\hilite{315}\par}
       {\footnotesize corporate IPOs in U.S. markets}\par
       {\footnotesize January 2025 through June 2026}
 
@@ -239,28 +250,30 @@
 % NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
 % categories and are allowed. Debt/Equity/Derivative appear on the course map.
 \begin{frame}{U.S. Markets Move About \$1.85 Trillion a Day}
-  \vspace{0.05em}
+  \vspace{0em}
   To compare annual and daily figures, the daily column divides by 252 trading
   days. Industry rows show revenue; market rows show cash paid when securities
   trade.
 
-  \vspace{0.1em}
+  \vspace{-0.05em}
   \begin{center}\footnotesize
   \begin{tabular}{@{}lrr@{}}
-    & \textbf{\ink{Annual total (USD)}} & \textbf{\ink{Per trading day (USD)}}\\[2pt]
-    \hline\\[-7pt]
+    \toprule
+    & \textbf{\ink{Annual total (USD)}} & \textbf{\ink{Per trading day (USD)}}\\[1pt]
+    \midrule
     \textbf{\ink{Global biopharma}}  & 666B & 2.64B\\
     \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
-    \textbf{\ink{Together}}          & 847B & 3.36B\\[5pt]
+    \textbf{\ink{Together}}          & 847B & 3.36B\\
+    \addlinespace[1pt]
     US debt                          & 304.7T & 1.21T\\
     US stocks                        & 153.2T & 608B\\
     Prices paid for options          & 9.3T & 37B\\[1pt]
     \textbf{\hilite{US markets together}} & 467.2T & 1.85T\\[2pt]
-    \hline
+    \bottomrule
   \end{tabular}
   \end{center}
 
-  \vspace{0.1em}
+  \vspace{-0.05em}
   Whether measured per year or per trading day, the market total is about
   \hilite{550 times} the two-industry total.
 
@@ -279,7 +292,7 @@
   \vspace{0.2em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.43\textwidth}
-      {\small\textbf{FEDERAL DEBT, AUGUST 20, 2026}}
+      \eyebrow{Federal debt | Aug. 20, 2026}
 
       \vspace{0.15em}
       {\fontsize{34}{36}\selectfont\bfseries\hilite{\$40.03T}\par}
@@ -287,22 +300,22 @@
 
       \vspace{0.15em}
       \begin{tabular}{@{}lr@{}}
-        \hline\\[-7pt]
+        \toprule
         {\small Held by the public} & {\small\textbf{\$32.28T}}\\[2pt]
         {\small Intragovernmental}  & {\small\textbf{\$7.75T}}\\[2pt]
-        \hline
+        \bottomrule
       \end{tabular}
     \end{column}
     \begin{column}{0.53\textwidth}
-      {\small\textbf{AUGUST 20 LIQUIDITY-SUPPORT BUYBACK}}
+      \eyebrow{Liquidity-support buyback | Aug. 20}
 
       \vspace{0.2em}
       \begin{tabular}{@{}lr@{}}
-        \hline\\[-7pt]
+        \toprule
         {\small Securities offered} & {\small\textbf{\$10.16B}}\\[2pt]
         {\small Announced maximum}  & {\small\textbf{\$4.00B}}\\[2pt]
         {\small Treasury accepted}  & {\small\textbf{\hilite{\$1.86B}}}\\[2pt]
-        \hline
+        \bottomrule
       \end{tabular}
 
       \vspace{0.25em}
@@ -322,15 +335,22 @@
   \vspace{0.05em}
   In 2025, \hilite{60.4 million} option contracts were traded each day. Buyers paid
   \hilite{USD 37B} in premiums for about \hilite{USD 4T} in gross notional value:
-  \[
-    \underbrace{\text{USD } 4\text{T}}_{\text{\footnotesize gross notional value}}
-    \;\Big/\;
-    \underbrace{\text{USD } 37\text{B}}_{\text{\footnotesize premium}}
-    \;=\;
-    \underbrace{108\times}_{\text{\footnotesize \$108 gross notional per \$1 paid}}
-  \]
 
-  \vspace{0.25em}
+  \vspace{0.45em}
+  \begin{center}
+    \begin{tabular}{@{}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{}}
+      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 4T}} &
+      {\Large\dimmed{/}} &
+      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 37B}} &
+      {\Large\dimmed{=}} &
+      {\fontsize{22}{24}\selectfont\vnmedium\hilite{108$\times$}}\\[-1pt]
+      {\footnotesize gross notional value} &&
+      {\footnotesize premium} &&
+      {\footnotesize \$108 gross notional per \$1 paid}
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.45em}
   Interestingly, about \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
   leverage when $|\delta| \approx 1$.
 
@@ -343,12 +363,12 @@
   The first three units explore how to value debt, equity, and derivatives. The
   fourth unit uses these assets to build and test financial strategies.
 
-  \vspace{0.1em}
+  \vspace{0.05em}
   \begin{center}
-    \resizebox{\textwidth}{!}{\input{../figs/course-map.tex}}
+    \resizebox{0.95\textwidth}{!}{\input{../figs/course-map.tex}}
   \end{center}
 
-  \vspace{0.3em}
+  \vspace{0.1em}
   \ink{This week starts with debt in the form of United States Treasury securities.}
 \end{frame}
 
@@ -359,11 +379,12 @@
 
   \vspace{0.5em}
   \begin{center}\footnotesize
+  {\renewcommand{\arraystretch}{1.08}%
   \begin{tabular}{@{}l@{\hspace{2.0em}}l@{\hspace{2.0em}}l@{\hspace{2.0em}}l@{}}
-    \hline\\[-7pt]
+    \toprule
     \textbf{\ink{Unit}} & \textbf{\ink{Observe}} &
     \textbf{\ink{Choose}} & \textbf{\ink{Evaluate}}\\[4pt]
-    \hline\\[-7pt]
+    \midrule
     \textbf{\hilite{Debt}} & rates and payments & bond and maturity &
     price and rate risk\\[8pt]
     \textbf{\hilite{Equity}} & cash flows and growth & stock or portfolio &
@@ -372,8 +393,9 @@
     payoff and risk\\[8pt]
     \textbf{\hilite{Strategies}} & signals and limits & allocation rule &
     performance over time\\[3pt]
-    \hline
+    \bottomrule
   \end{tabular}
+  }
   \end{center}
 
   \vspace{0.45em}
@@ -383,19 +405,18 @@
 % ==== ladder ====
 \begin{frame}{Strategy Validation Uses Four Levels of Evidence}
   \vspace{0.05em}
-  {\large Units 1 to 3 build models of prices and payoffs. Unit 4 evaluates
-  strategies using past data, current data, and actual trades.}
+  Units 1 to 3 build models of prices and payoffs. Unit 4 evaluates strategies
+  using past data, current data, and actual trades.
 
-  \vspace{0.3em}
+  \vspace{0.15em}
   \begin{center}
     \makebox[\textwidth][l]{%
       \hspace*{-0.04\textwidth}% optical centering: rung labels contain left-side padding
-      \resizebox{\textwidth}{!}{\input{../figs/validation-ladder.tex}}}
+      \resizebox{0.96\textwidth}{!}{\input{../figs/validation-ladder.tex}}}
   \end{center}
 
-  \vspace{0.25em}
-  {\large Each row includes the evidence in the rows below it and adds one
-  new source.}
+  \vspace{0.1em}
+  \textbf{Each row includes the evidence below it and adds one new source.}
 
 \end{frame}
 
@@ -416,19 +437,23 @@
   today. Start with the information shown: compare the amount and timing of the
   payments.
 
-  \vspace{0.5em}
+  \vspace{0.35em}
   \begin{center}\small
+  {\renewcommand{\arraystretch}{1.0}%
   \begin{tabular}{@{}l@{\hspace{1.2em}}l@{}}
-    \textbf{\ink{A}} & \$10{,}028 back, four weeks from today\\[3pt]
-    \textbf{\ink{B}} & \$236 every six months for 10 years, then \$10{,}000\\[3pt]
-    \textbf{\ink{C}} & \$264 every six months for \textbf{30} years, then \$10{,}000\\[3pt]
-    \textbf{\ink{D}} & \$271 every six months for 10 years, then \$10{,}000\\[3pt]
-    \textbf{\ink{E}} & \$121 every six months for 10 years, plus an inflation\\
+    \toprule
+    \textbf{\hilite{A}} & \$10{,}028 back, four weeks from today\\[2pt]
+    \textbf{\hilite{B}} & \$236 every six months for 10 years, then \$10{,}000\\[2pt]
+    \textbf{\hilite{C}} & \$264 every six months for \textbf{30} years, then \$10{,}000\\[2pt]
+    \textbf{\hilite{D}} & \$271 every six months for 10 years, then \$10{,}000\\[2pt]
+    \textbf{\hilite{E}} & \$121 every six months for 10 years, plus an inflation\\
                      & adjustment on every payment and on the \$10{,}000\\
+    \bottomrule
   \end{tabular}
+  }
   \end{center}
 
-  \vspace{0.5em}
+  \vspace{0.35em}
   {\large\ink{\textbf{Which promise would you choose?}} Let's brainstorm and vote.}
 
   \slidenote{Rates:}{published rates for 2026-08-18, each scaled to a \$10{,}000 outlay}
@@ -441,14 +466,15 @@
   \vspace{0.1em}
   \begin{center}\small
   \begin{tabular}{@{}llr@{}}
+    \toprule
     & \textbf{\ink{What it is called}} & \textbf{\ink{Annual rate}}\\[2pt]
-    \hline\\[-7pt]
+    \midrule
     \textbf{\ink{A}} & 4-week Treasury bill                      & 3.63\%\\
     \textbf{\ink{B}} & 10-year Treasury note                     & 4.71\%\\
     \textbf{\ink{C}} & 30-year Treasury bond                     & 5.28\%\\
     \textbf{\ink{D}} & investment-grade corporate bonds          & 5.42\%\\
     \textbf{\ink{E}} & 10-year inflation-indexed Treasury (TIPS) & 2.41\% \hilite{real}\\[2pt]
-    \hline
+    \bottomrule
   \end{tabular}
   \end{center}
 
@@ -479,13 +505,13 @@
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{C: What if you need the money before year 30?} Selling early
+    \item \hilite{\textbf{C}}\quad\textbf{\ink{What if you need the money before year 30?}} Selling early
       means accepting the market price then, and that price changes with
       interest rates. \dimmed{Week 2.}
-    \item \hilite{D: Why does it pay more?} Its rate is 5.42\%, versus 4.71\%
+    \item \hilite{\textbf{D}}\quad\textbf{\ink{Why does it pay more?}} Its rate is 5.42\%, versus 4.71\%
       for the ten-year Treasury. That gap reflects the chance of missed payments
       and the difficulty of selling quickly. \dimmed{Units 2 and 3.}
-    \item \hilite{E: What does inflation protection change?} Its payments rise
+    \item \hilite{\textbf{E}}\quad\textbf{\ink{What does inflation protection change?}} Its payments rise
       with inflation, so its 2.41\% rate is not directly comparable with the
       other rates. \dimmed{Later in the course.}
   \end{itemize}
@@ -501,18 +527,26 @@
 % sheet when rates rose. L2b resolves it, where that is the subject matter.
 % Do not answer it here and do not hint. The unresolved ending is the design.
 \begin{frame}{A Bank Can Fail Even When Its Securities Do Not Default}
-  \vspace{0.6em}
-  In March 2023 a bank with about \hilite{\$200 billion} in assets failed in two
-  days. Its portfolio included one of the five kinds of promises on your list.
+  \vspace{0.35em}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.27\textwidth}
+      {\fontsize{30}{32}\selectfont\vnmedium\hilite{\$200B}\par}
+      {\small assets in March 2023}
+    \end{column}
+    \begin{column}{0.69\textwidth}
+      A bank with roughly this much in assets failed in two days. Its portfolio
+      included one of the five kinds of promises on your list.
 
-  \vspace{1.0em}
-  {\large\ink{\textbf{Which one, and why?}}}
+      \vspace{0.5em}
+      {\large\vnmedium\ink{Which one, and why?}}
+    \end{column}
+  \end{columns}
 
-  \vspace{1.0em}
+  \vspace{0.8em}
   The security did not default; every payment that came due was made. Yet the
   bank still failed.
 
-  \vspace{0.9em}
+  \vspace{0.75em}
   As you watch, identify \hilite{which promise} the bank held and \hilite{what
   changed} before it failed. Week 2 gives us a model for checking the
   explanation.
@@ -528,7 +562,7 @@
   not automatically the best choice.
 
   \vspace{0.45em}
-  {\large\textbf{\ink{Key takeaways}}}
+  \decklabel{Key takeaways}
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \textbf{\ink{Markets connect investors, companies, and governments.}}

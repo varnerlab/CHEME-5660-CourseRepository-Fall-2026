@@ -1,3 +1,77 @@
 % Thin development wrapper around the canonical deck style.
 % Edit lectures/templates/vnslides.sty to change the shared design.
 \input{../../../templates/vnslides.sty}
+
+% L1a executive-polish layer. Keep these refinements local until the complete
+% course has been reviewed against them. The underlying palette, typeface, and
+% figure grammar remain the shared CHEME 5660 system.
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{colortbl}
+
+% Equal optical margins make titles, body copy, tables, and footers share one
+% vertical grid. The canonical style intentionally exposes \vnmargin so local
+% decks can preserve that alignment.
+\setbeamersize{text margin left=\vnmargin,text margin right=\vnmargin}
+
+% Helvetica Neue Medium carries titles without the visual weight of a heavy
+% face. Absolute sizing keeps one-line titles stable across the deck.
+\setbeamertemplate{frametitle}{%
+  \vskip0.78em%
+  {\fontsize{17.4}{20.6}\selectfont\vnmedium
+   \usebeamercolor[fg]{frametitle}\insertframetitle\par}%
+  \vspace{0.06em}}
+
+% Fine table rules create a quieter, more exact data texture. Numeric columns
+% remain right-aligned by the tabular environment itself.
+\arrayrulecolor{vnrule}
+\setlength{\arrayrulewidth}{0.45pt}
+
+% Small, tracked labels establish hierarchy without adding boxes or chrome.
+\newcommand{\eyebrow}[1]{%
+  {\fontsize{8.2}{10}\selectfont\vnmedium
+   \addfontfeatures{LetterSpace=3.5}\textcolor{vnslidelink}{\MakeUppercase{#1}}\par}}
+\newcommand{\decklabel}[1]{%
+  {\fontsize{9.2}{11}\selectfont\vnmedium\textcolor{vnslidebody}{#1}\par}}
+
+% Source notes should be legible but visually subordinate. A shorter hairline
+% and an absolute text size keep them consistent even inside small-type frames.
+\renewcommand{\slidenote}[2]{%
+  \vfill
+  {\color{vnrule}\rule{0.16\paperwidth}{0.35pt}}\par\vspace{0.42em}
+  {\fontsize{7.8}{9.4}\selectfont{\vnmedium #1}\hspace{0.65em}{\vnlight #2}}}
+
+% Footer: institutional lockup on the left, quiet lecture and page marker on
+% the right. The title slide is plain and therefore carries neither.
+\setbeamertemplate{footline}{%
+  \vskip0.62em%
+  \leavevmode\hbox to \paperwidth{%
+    \hspace*{\vnmargin}\vnlockup\hfill
+    {\fontsize{4.5}{5.4}\selectfont\color{vnslidebody}%
+     {\vnmedium L1a}\hspace{0.7em}{\vnlight\insertframenumber}}%
+    \hspace*{\vnmargin}}%
+  \vskip0.72em}
+
+% Title page: preserve the Cornell seal and white field, but give the title the
+% scale and breathing room expected in a senior technical presentation.
+\makeatletter
+\renewcommand{\vntitlepage}{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{minipage}[c]{0.145\textwidth}
+      \includegraphics[width=\linewidth]{\@vnseal}
+    \end{minipage}%
+    \hspace{0.045\textwidth}%
+    \begin{minipage}[c]{0.79\textwidth}
+      \raggedright
+      {\fontsize{24}{28}\selectfont\vnlight
+       \usebeamercolor[fg]{title}\inserttitle\par}
+      \vspace{8pt}
+      {\color{vnaccent}\rule{0.11\linewidth}{1.1pt}}\par
+      \vspace{7pt}
+      {\fontsize{9}{11}\selectfont\vnmedium\dimmed{\insertsubtitle}\par}
+    \end{minipage}
+    \vfill
+    {\fontsize{4.8}{5.8}\selectfont\dimmed{\insertauthor}\par}
+  \end{frame}}
+\makeatother
