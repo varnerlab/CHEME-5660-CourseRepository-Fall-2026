@@ -3,7 +3,7 @@ using VLQuantitativeFinancePackage
 
 @testset "fixed income" begin
 
-    @testset "discount factors" begin
+    @testset "accumulation factors" begin
         dd = discount(DiscreteCompoundingModel(), 0.06, 4; λ = 2)
         @test length(dd) == 5                     # keys 0:4
         @test isapprox(dd[0], 1.0; atol = 1e-12)

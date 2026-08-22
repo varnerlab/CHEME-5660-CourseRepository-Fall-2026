@@ -193,7 +193,6 @@ function _discount(model::DiscreteCompoundingModel, rate::Float64, periods::Int,
 
     # initialize -
     discount = Dict{Int,Float64}()
-    Δ = 1/λ; # internal timescale
 
     for i ∈ 0:periods
         discount[i] = (1+rate/λ)^(i);
@@ -227,16 +226,18 @@ end
 """
     function discount(model::AbstractCompoundingModel, rate::Float64, periods::Int; λ::Int64 = 2)::Dict{Int,Float64}
 
-The `discount` function computes the discount factors for a given compounding model. We assume that the discount rate is constant over all periods.
+The `discount` function computes the forward accumulation factors for a given compounding model. We assume that the rate is constant over all periods.
+
+Despite its name, this function returns forward accumulation factors ``\\mathcal{D}_{j,0}``, not discount factors: for a positive rate they satisfy ``\\mathcal{D}_{j,0}\\geq{1}``, with equality at ``j=0``. The time-0 discount factors are their reciprocals, ``\\mathcal{D}^{-1}_{j,0}=1/\\mathcal{D}_{j,0}``.
 
 ### Arguments
-- `model::AbstractCompoundingModel`: The compounding model to use to compute the discount factors. The model can be an instance of either a `DiscreteCompoundingModel` or a `ContinuousCompoundingModel`.
-- `rate::Float64`: The annual discount rate used to compute the discount factors.
-- `periods::Int`: The number of periods for which to compute the discount factors.
+- `model::AbstractCompoundingModel`: The compounding model to use to compute the accumulation factors. The model can be an instance of either a `DiscreteCompoundingModel` or a `ContinuousCompoundingModel`.
+- `rate::Float64`: The annual rate used to compute the accumulation factors.
+- `periods::Int`: The number of periods for which to compute the accumulation factors.
 - `λ::Int64`: The number of compounding events per year. The default value is `2`.
 
 ### Returns
-- `Dict{Int,Float64}`: A dictionary of the discount factors for the given compounding model. The keys are the period indexes and the values are the discount factors for 0 to `periods`.
+- `Dict{Int,Float64}`: A dictionary of the forward accumulation factors for the given compounding model. The keys are the period indexes `0` to `periods`. The values are ``(1+\\text{rate}/\\lambda)^{j}`` for a `DiscreteCompoundingModel`, and ``\\exp(\\text{rate}\\cdot{j}/\\lambda)`` for a `ContinuousCompoundingModel`.
 
 """
 function discount(model::AbstractCompoundingModel, rate::Float64, periods::Int; 

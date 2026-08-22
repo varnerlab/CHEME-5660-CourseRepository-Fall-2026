@@ -9,7 +9,7 @@ VLQuantitativeFinancePackage.DiscreteCompoundingModel
 VLQuantitativeFinancePackage.ContinuousCompoundingModel
 ```
 
-Using the [`DiscreteCompoundingModel`](@ref) and [`ContinuousCompoundingModel`](@ref) types, we can compute the discount factors using the `discount` function. The `discount` function takes a discounting model, a discount rate, and the number of periods as input arguments and returns the discount factors for each period as a [Dictionary](https://docs.julialang.org/en/v1/base/collections/#Base.Dict) object.
+Using the [`DiscreteCompoundingModel`](@ref) and [`ContinuousCompoundingModel`](@ref) types, we can compute the forward accumulation factors using the `discount` function. The `discount` function takes a compounding model, an annual rate, and the number of periods as input arguments and returns the accumulation factor for each period as a [Dictionary](https://docs.julialang.org/en/v1/base/collections/#Base.Dict) object. Despite the function name, these values are accumulation factors; the time-0 discount factors are their reciprocals.
 
 ```@docs
 VLQuantitativeFinancePackage.discount(model::AbstractCompoundingModel, rate::Float64, periods::Int; 
