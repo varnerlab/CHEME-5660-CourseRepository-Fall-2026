@@ -6,9 +6,7 @@
 #   make clean    remove LaTeX intermediates
 #   make distclean  also remove the generated PDF/SVG
 #
-# Note: the notes do NOT include the generated PDF. ../docs/Style-Specimen.tex
-# \inputs abstract-asset-timeline.tex directly, so the notes and the notebook
-# SVG are produced from one source and cannot drift apart.
+# The standalone wrapper produces the PDF/SVG used by the notebook and slides.
 
 FIGURES := Fig-L1b-AbstractAsset-Timeline
 

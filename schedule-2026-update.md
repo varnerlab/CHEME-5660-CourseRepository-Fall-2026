@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Update `CHEME-5660-CourseSchedule-Fall-2026.xlsx` so that its lecture topics and unit boundaries match the current Fall 2026 production sequence in [`lectures/LECTURE-NOTES-SCHEDULE.md`](lectures/LECTURE-NOTES-SCHEDULE.md).
+Update `CHEME-5660-CourseSchedule-Fall-2026.xlsx` so that its lecture topics and unit boundaries match the current Fall 2026 production sequence in [`lectures/LECTURE-ARTIFACT-SCHEDULE.md`](lectures/LECTURE-ARTIFACT-SCHEDULE.md).
 
-The lecture-notes manifest is the source of truth. It explicitly supersedes the earlier workbook ordering and any ordering inferred from Fall 2025 materials.
+The lecture artifact manifest is the source of truth. It explicitly supersedes the earlier workbook ordering and any ordering inferred from Fall 2025 materials.
 
 ## Source workbook
 
@@ -117,8 +117,7 @@ In particular, confirm whether PS1 should still reference lattice interest-rate 
 - [ ] Unit 3 begins with `8b` and ends with `11b`.
 - [ ] Unit 4 begins with `12a` and ends with `15b`.
 - [ ] Fall Break and Thanksgiving Break remain in their original calendar slots.
-- [ ] The revised topics agree exactly with `lectures/LECTURE-NOTES-SCHEDULE.md`.
+- [ ] The revised topics agree exactly with `lectures/LECTURE-ARTIFACT-SCHEDULE.md`.
 - [ ] Problem-set descriptions were either intentionally approved or left unchanged.
 - [ ] No `#REF!`, `#VALUE!`, `#NAME?`, `#N/A`, or other formula errors are present.
 - [ ] Text is readable without clipping, and the existing visual style is preserved.
-

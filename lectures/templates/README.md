@@ -1,17 +1,24 @@
-# CHEME 5660 lecture-note house style
+# CHEME 5660 lecture artifact policy
 
-The shared `varnernotes.sty` package defines the visual and structural language
-for all CHEME 5660 lecture notes. The following authoring rules are mandatory.
+Each substantive lecture has two maintained teaching artifacts:
 
-`week-1/L1b/docs/Style-Specimen.tex` is the canonical production example for
-all lecture notes. Each substantive lecture owns a `docs/Notes.tex`, a
-`docs/Notes.pdf`, a thin local `varnernotes.sty` wrapper, and a `Makefile` that
-includes `lectures/templates/lecture.mk`. From `lectures/`, run `make notes` to
-build the complete note set or `make -C week-N/Lxx/docs notes` to build one.
+1. The lecture notebook is the canonical, detailed source. Definitions,
+   derivations, references, examples, and links belong there.
+2. The slide deck is the concise classroom narrative. It may summarize the
+   notebook, but it should not become a second long-form set of notes.
+
+Do not create new `docs/Notes.tex` or `docs/Notes.pdf` files. A small legacy
+LaTeX-note set remains only where a replacement notebook or slide deck is not
+yet complete. The root `lectures/Makefile` builds that temporary set. Retire a
+legacy note after checking that its unique material and references have moved
+to the notebook and that the lecture has a slide deck.
+
+Optional print references preserved from retired notes are collected once in
+`lectures/READING-LIST.md`; do not maintain a separate copy in a third artifact.
 
 ## Projector-friendly notebook view
 
-Long-form lecture notebooks remain the canonical source for the annotated
+Long-form lecture notebooks are the canonical source for the annotated
 in-class presentation. A lecture directory can define `NOTEBOOK` in a local
 `Makefile` and include `../../templates/notebook.mk` to generate a standalone
 HTML lecture view next to the notebook. For example:
@@ -32,7 +39,13 @@ The generated HTML is a presentation artifact, not a second source document:
 edit the notebook, then rebuild the HTML. Relative links to figures and worked
 examples continue to resolve because the two files live in the same directory.
 
-## Semantic cross-references
+## Legacy LaTeX-note review rules
+
+The remaining sections apply only while editing one of the temporary legacy
+notes. They are retained to keep those files consistent until replacement and
+retirement.
+
+### Semantic cross-references
 
 Every numbered figure, table, equation, definition, theorem, proposition, and
 remark must be introduced or interpreted in the surrounding prose. The lead-in
@@ -63,7 +76,7 @@ Use the house macros with label suffixes:
 The preferred inline forms are `Fig.`, `Table`, `Eq.`, `Defn.`, `Thm.`,
 `Prop.`, and `Remark`. References remain clickable in the generated PDF.
 
-## Prose-to-equation transitions
+### Prose-to-equation transitions
 
 Every displayed equation must be introduced by helper text that makes the
 prose and mathematics one grammatical unit. End the lead-in with a colon when
@@ -83,7 +96,7 @@ Avoid dropping directly from a complete prose paragraph into a display with no
 transition. Also avoid fragments such as “where:” and vague directives such as
 “we have:” when a more informative mathematical verb is available.
 
-## Defined terms and local completeness
+### Defined terms and local completeness
 
 Define every symbol and notation when it first appears, including its
 mathematical role, domain or admissible values, and physical or financial units
@@ -122,7 +135,7 @@ Avoid:
 
 > For fixed $y$ and $T$, as $n\to\infty$, ...
 
-## Required review check
+### Required review check
 
 Before a note is complete, enumerate every numbered object and confirm that it
 has a substantive inline reference in the prose. The reference must communicate
