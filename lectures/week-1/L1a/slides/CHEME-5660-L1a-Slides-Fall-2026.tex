@@ -182,10 +182,10 @@
       {\small of U.S. adults had a retirement account.}
 
       \vspace{0.3em}
-      {\small Keeping the default mix is still a choice.}
+      {\small How the account is invested determines the risk and reward trade-off.}
 
       \vspace{0.25em}
-      {\small\dimmed{That describes today's adults, not your future.}}
+      {\small\dimmed{I'm a student, I don't have a retirement account yet.}}
     \end{column}
     \begin{column}{0.025\textwidth}
       \centering
@@ -200,12 +200,12 @@
       {\small FY2025 endowment}
 
       \vspace{0.3em}
-      {\large\textbf{\hilite{\$498M}}}{\small\ went into operations,
-      mainly from endowment payout.}
+      {\large\textbf{\hilite{\$498M}}}{\small\ 
+      mainly from the endowment payout went to operations.}
 
       \vspace{0.3em}
       {\small About \hilite{29\% (\$3.16B)} of Cornell's endowment supported
-      financial aid through its annual payout.}
+      financial aid.}
     \end{column}
     \begin{column}{0.025\textwidth}
       \centering
@@ -218,7 +218,7 @@
       \vspace{0.05em}
       {\fontsize{32}{34}\selectfont\vnmedium\hilite{315}\par}
       {\footnotesize corporate IPOs in U.S. markets}\par
-      {\footnotesize January 2025 through June 2026}
+      {\footnotesize 01/2025 - 06/2026}
 
       \vspace{0.2em}
       {\footnotesize An IPO lists a private company's shares on a public market.}
@@ -250,12 +250,11 @@
 % NO PRODUCT NOUNS: "US debt", never "Treasury"; "options"/"index options" are
 % categories and are allowed. Debt/Equity/Derivative appear on the course map.
 \begin{frame}{U.S. Markets Move About \$1.85 Trillion a Day}
-  \vspace{0em}
-  To compare annual and daily figures, the daily column divides by 252 trading
-  days. Industry rows show revenue; market rows show cash paid when securities
-  trade.
+  \vspace{-0.2em}
+  One U.S. trading day (\hilite{\$1.85T}) moves about \hilite{2.2 times} the
+  combined full-year revenue of global biopharma and batteries (\$847B).
 
-  \vspace{-0.05em}
+  \vspace{-0.25em}
   \begin{center}\footnotesize
   \begin{tabular}{@{}lrr@{}}
     \toprule
@@ -264,7 +263,7 @@
     \textbf{\ink{Global biopharma}}  & 666B & 2.64B\\
     \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
     \textbf{\ink{Together}}          & 847B & 3.36B\\
-    \addlinespace[1pt]
+    \addlinespace[5pt]
     US debt                          & 304.7T & 1.21T\\
     US stocks                        & 153.2T & 608B\\
     Prices paid for options          & 9.3T & 37B\\[1pt]
@@ -273,11 +272,52 @@
   \end{tabular}
   \end{center}
 
-  \vspace{-0.05em}
-  Whether measured per year or per trading day, the market total is about
-  \hilite{550 times} the two-industry total.
+  \vspace{-0.15em}
+  On the same daily basis: US Markets move \hilite{\$1.85T} versus \hilite{\$3.36B} in global Biopharma and Batteries, about
+  \hilite{550 times larger}. Massive financial flows every day.
 
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
+\end{frame}
+
+\begin{frame}{Each \$1 of Option Premium Corresponds to About \$108 of Gross Notional}
+  \vspace{0.05em}
+  In 2025, \hilite{60.4 million} option contracts were traded each day. Buyers paid
+  \hilite{USD 37B} in premiums for about \hilite{USD 4T} in gross notional value:
+
+  \vspace{0.45em}
+  \begin{center}
+    \begin{tabular}{@{}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{}}
+      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 4T}} &
+      {\Large\dimmed{/}} &
+      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 37B}} &
+      {\Large\dimmed{=}} &
+      {\fontsize{22}{24}\selectfont\vnmedium\hilite{108$\times$}}\\[-1pt]
+      {\footnotesize gross notional value} &&
+      {\footnotesize premium} &&
+      {\footnotesize \$108 gross notional per \$1 paid}
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.45em}
+  Interestingly, about \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
+  leverage when $|\delta| \approx 1$.
+
+  \slidenote{Contract size:}{equity options usually cover 100 shares. For index options, the multiplier converts index points into dollars (SPX: \$100 per point).}
+\end{frame}
+
+% ==== units ====
+\begin{frame}{The Course Moves from Valuing Assets to Making Decisions}
+  \vspace{0.2em}
+  The first three units explore how to value debt, equity, and derivatives. The
+  fourth unit uses these assets to build and test financial strategies.
+
+  \vspace{0.05em}
+  \begin{center}
+    \resizebox{0.95\textwidth}{!}{\input{../figs/course-map.tex}}
+  \end{center}
+
+  \vspace{0.1em}
+  \ink{This week starts with debt in the form of United States Treasury securities.}
 \end{frame}
 
 % ==== federal borrowing and Treasury-market liquidity ====
@@ -319,105 +359,16 @@
       \end{tabular}
 
       \vspace{0.25em}
-      {\small The buyback retired portions of three older issues. It equaled
-      \hilite{0.006\%} of publicly held debt and supported market liquidity.}
+      {\small Treasury retired portions of three older issues,
+      \hilite{0.006\%} of publicly held debt, to support liquidity.}
     \end{column}
   \end{columns}
 
-  \vspace{0.1em}
+  \vspace{0.5em}
   {\large\textbf{Why elected officials care:}} continuing deficits require
   repeated borrowing from investors at market interest rates.
 
   \slidenote{Note:}{Scale comparison, not a bill. Sources: \href{https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/}{Treasury debt}; \href{https://www.treasurydirect.gov/instit/annceresult/press/preanre/2026/BBR_20260820174000.pdf}{buyback}; \href{https://www.census.gov/popclock/}{Census population}.}
-\end{frame}
-
-\begin{frame}{Gross Notional Value Is About 108 Times Premium Paid}
-  \vspace{0.05em}
-  In 2025, \hilite{60.4 million} option contracts were traded each day. Buyers paid
-  \hilite{USD 37B} in premiums for about \hilite{USD 4T} in gross notional value:
-
-  \vspace{0.45em}
-  \begin{center}
-    \begin{tabular}{@{}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{\hspace{1.0em}}c@{}}
-      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 4T}} &
-      {\Large\dimmed{/}} &
-      {\fontsize{22}{24}\selectfont\vnmedium\ink{USD 37B}} &
-      {\Large\dimmed{=}} &
-      {\fontsize{22}{24}\selectfont\vnmedium\hilite{108$\times$}}\\[-1pt]
-      {\footnotesize gross notional value} &&
-      {\footnotesize premium} &&
-      {\footnotesize \$108 gross notional per \$1 paid}
-    \end{tabular}
-  \end{center}
-
-  \vspace{0.45em}
-  Interestingly, about \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
-  leverage when $|\delta| \approx 1$.
-
-  \slidenote{Contract size:}{equity options usually cover 100 shares. For index options, the multiplier converts index points into dollars (SPX: \$100 per point).}
-\end{frame}
-
-% ==== units ====
-\begin{frame}{The Course Moves from Valuing Assets to Making Decisions}
-  \vspace{0.2em}
-  The first three units explore how to value debt, equity, and derivatives. The
-  fourth unit uses these assets to build and test financial strategies.
-
-  \vspace{0.05em}
-  \begin{center}
-    \resizebox{0.95\textwidth}{!}{\input{../figs/course-map.tex}}
-  \end{center}
-
-  \vspace{0.1em}
-  \ink{This week starts with debt in the form of United States Treasury securities.}
-\end{frame}
-
-% ==== shared decision pattern ====
-\begin{frame}{Every Unit Turns Information into a Choice}
-  \vspace{0.1em}
-  The asset changes, but the questions stay the same.
-
-  \vspace{0.5em}
-  \begin{center}\footnotesize
-  {\renewcommand{\arraystretch}{1.08}%
-  \begin{tabular}{@{}l@{\hspace{2.0em}}l@{\hspace{2.0em}}l@{\hspace{2.0em}}l@{}}
-    \toprule
-    \textbf{\ink{Unit}} & \textbf{\ink{Observe}} &
-    \textbf{\ink{Choose}} & \textbf{\ink{Evaluate}}\\[4pt]
-    \midrule
-    \textbf{\hilite{Debt}} & rates and payments & bond and maturity &
-    price and rate risk\\[8pt]
-    \textbf{\hilite{Equity}} & cash flows and growth & stock or portfolio &
-    value and risk\\[8pt]
-    \textbf{\hilite{Derivatives}} & price and volatility & contract and position &
-    payoff and risk\\[8pt]
-    \textbf{\hilite{Strategies}} & signals and limits & allocation rule &
-    performance over time\\[3pt]
-    \bottomrule
-  \end{tabular}
-  }
-  \end{center}
-
-  \vspace{0.45em}
-  \ink{Unit 4 combines the first three units into a strategy.}
-\end{frame}
-
-% ==== ladder ====
-\begin{frame}{Strategy Validation Uses Four Levels of Evidence}
-  \vspace{0.05em}
-  Units 1 to 3 build models of prices and payoffs. Unit 4 evaluates strategies
-  using past data, current data, and actual trades.
-
-  \vspace{0.15em}
-  \begin{center}
-    \makebox[\textwidth][l]{%
-      \hspace*{-0.04\textwidth}% optical centering: rung labels contain left-side padding
-      \resizebox{0.96\textwidth}{!}{\input{../figs/validation-ladder.tex}}}
-  \end{center}
-
-  \vspace{0.1em}
-  \textbf{Each row includes the evidence below it and adds one new source.}
-
 \end{frame}
 
 % ==== promises ====
@@ -434,8 +385,7 @@
 \begin{frame}{Five Investments Have Different Payment Schedules}
   \vspace{0.1em}
   Suppose you could buy each set of future payments for \hilite{\$10{,}000}
-  today. Start with the information shown: compare the amount and timing of the
-  payments.
+  today. The are five different schedules of payments, each with a different amount, timing and uncertainty.
 
   \vspace{0.35em}
   \begin{center}\small
@@ -570,9 +520,9 @@
       when federal spending exceeds revenue.
     \item \textbf{\ink{A product name is a label.}} What matters first is the
       payment schedule: what gets paid, when, and under what conditions.
-    \item \textbf{\ink{Models earn trust one test at a time.}} Theory, backtest,
-      forward test, and real money use different evidence and can reveal
-      different failures.
+    \item \textbf{\ink{Amount and timing are not enough.}} Interest-rate,
+      credit, liquidity, and inflation risk can change which payment schedule
+      is preferable.
   \end{itemize}
 
   \vspace{0.5em}

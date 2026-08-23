@@ -10,9 +10,10 @@
 %   SPINE.   A real week axis carries the figure, exactly as the L1b timeline
 %            hangs its cash flows off a time axis. The units are not floating
 %            boxes joined by arrows; they sit ON the semester.
-%   COLOUR.  Semantic, not decorative. vnlink is reserved for the CAPABILITY
-%            each unit adds -- the payload of the figure. Structure (axis,
-%            boxes, ticks) is vnink/vnmuted, and nothing else is coloured.
+%   COLOUR.  Semantic, not decorative. Coral marks the current unit; blue
+%            carries the course-wide progression and the CAPABILITY each unit
+%            adds. Future-unit boxes stay neutral so the palette preserves a
+%            clear "now versus later" hierarchy.
 %   GEOMETRY. Every box uses the same fixed-height title area, and every
 %            capability line uses the same text width, so the four columns
 %            align on a shared grid. No label alternates above and below; each
@@ -38,24 +39,27 @@
                        fill=vnsoft,minimum width=3.70cm,minimum height=1.80cm,
                        align=center,text width=3.35cm,
                        inner xsep=5pt,inner ysep=5pt},
+    unit current/.style = {unit,draw=vncarnelian,line width=1.2pt,
+                           fill=vncarnelian!10},
     adds/.style     = {text=vnlink,font=\sffamily\small,align=center,
                        text width=3.70cm},
     weeks/.style    = {text=vnmuted,font=\sffamily\footnotesize},
-    tick/.style     = {vnmuted,line width=0.7pt}]
+    tick/.style     = {vnlink,line width=0.7pt}]
 
   % ---- the four units, on one grid ---------------------------------
-  \foreach \i/\x/\kind/\utitle in {%
-      1/0/{Debt}/{Treasury securities},
-      2/4.35/{Equity}/{Stocks and portfolios},
-      3/8.70/{Derivatives}/{Options},
-      4/13.05/{Decisions}/{Financial strategies}}{%
-    \node[unit] (u\i) at (\x,0)
+  \foreach \i/\x/\kind/\utitle/\ustyle in {%
+      1/0/{Debt}/{Treasury securities}/{unit current},
+      2/4.35/{Equity}/{Stocks and portfolios}/{unit},
+      3/8.70/{Derivatives}/{Options}/{unit},
+      4/13.05/{Decisions}/{Financial strategies}/{unit}}{%
+    \node[\ustyle] (u\i) at (\x,0)
       {\textcolor{vnmuted}{\bfseries Unit \i}\\[2pt]
        \textcolor{vncarnelian}{\bfseries\footnotesize \kind}\\[3pt]
        \parbox[c][0.48cm][c]{3.25cm}{\centering\footnotesize \utitle}};}
 
   % ---- the spine: the semester ------------------------------------
-  \draw[vn timeline] (-1.95,-1.35) -- (15.6,-1.35) node[right,text=vnmuted] {weeks};
+  \draw[vn timeline,draw=vnlink] (-1.95,-1.35) -- (15.6,-1.35)
+    node[right,text=vnmuted] {weeks};
   \foreach \i/\x/\wk in {1/0/{1--2}, 2/4.35/{3--7}, 3/8.70/{8--11}, 4/13.05/{12--15}}{%
     \draw[tick] (\x,-1.25) -- (\x,-1.45);
     \node[weeks,below=1pt] at (\x,-1.45) {weeks \wk};}
@@ -69,8 +73,8 @@
     \node[adds,anchor=north] at (\x,-2.15) {\cap};}
 
   % ---- the payload: one question, four units ----------------------
-  \draw[vn brace] (-1.90,1.15) -- (14.95,1.15)
-    node[midway,above=7pt,text=vnmuted]
+  \draw[vn brace,draw=vnlink] (-1.90,1.15) -- (14.95,1.15)
+    node[midway,above=7pt,text=vnlink]
     {\bfseries One question connects all four units: what should you do?};
 \end{tikzpicture}
 \endgroup
