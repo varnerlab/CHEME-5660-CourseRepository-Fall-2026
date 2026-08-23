@@ -9,26 +9,26 @@ Unit 1: Quantitative Finance Foundations and Marketable Treasury Securities,,,,,
 ,1,OH,Su,9/6/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
 Unit 2: Modeling and Analysis of Equity Portfolios,,,,,,
-3,2,3a,T,9/8/26,Equity markets and stylized facts of growth rates,
-,2,3b,Th,9/10/26,Equity-price lattices under real-world and risk-neutral measures,
+3,2,3a,T,9/8/26,Equity markets and stylized facts of growth rates,Attendance
+,2,3b,Th,9/10/26,Equity-price lattices under real-world and risk-neutral measures,Async video + short Canvas quiz (JV travel on 9/10 for Cornell Financial Engineering Manhattan conference on 9/11)
 ,2,OH,Su,9/13/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
 4,2,4a,T,9/15/26,Lattice trade rules and probability of profit,
-,2,4b,Th,9/17/26,Single-asset geometric Brownian motion,
+,2,4b,Th,9/17/26,Single-asset geometric Brownian motion,Attendance
 ,2,PS,Su,9/20/26,Problem Set 2 (PS2): TBD,
 ,2,OH,Su,9/20/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-5,2,5a,T,9/22/26,Multivariate GBM and Dirichlet portfolio weights,
+5,2,5a,T,9/22/26,Multivariate GBM and Dirichlet portfolio weights,Attendance
 ,2,5b,Th,9/24/26,"Minimum-variance allocation, efficient frontier, capital allocation line, and market portfolio",
 ,2,OH,Su,9/27/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-6,2,6a,T,9/29/26,Introduction to single-index models,Attendance
-,2,6b,Th,10/1/26,SIM-based risky/risk-free minimum-variance allocation,
+6,2,6a,T,9/29/26,Introduction to single-index models,
+,2,6b,Th,10/1/26,SIM-based risky/risk-free minimum-variance allocation,Attendance
 ,2,PS,Su,10/4/26,Problem Set 3 (PS3): TBD,
 ,2,OH,Su,10/4/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-7,2,7a,T,10/6/26,Catherine Peng: Goldman Sachs Asset Management (recorded Q/A),Attendance
-,2,7b,Th,10/8/26,Dynamic rebalancing of minimum-variance portfolios,
+7,2,7a,T,10/6/26,Utility-based allocation and the adaptive rebalancing engine,Attendance
+,2,7b,Th,10/8/26,Online SIM estimation: updating the engine as data arrive,
 ,2,7c,Su,10/11/26,No office hours Fall Break,
 ,,,,,,
 Unit 3: Modeling and Analysis of Equity Derivatives,,,,,,
@@ -36,8 +36,8 @@ Unit 3: Modeling and Analysis of Equity Derivatives,,,,,,
 ,3,8b,Th,10/15/26,Option contracts: call and put payoff and profit,Attendance
 ,3,OH,Su,10/18/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-9,3,9a,T,10/20/26,European BSM and American CRR option pricing,
-,3,9b,Th,10/22/26,Intrinsic and extrinsic value of American options,Attendance
+9,3,9a,T,10/20/26,European option pricing with Black-Scholes-Merton,Attendance
+,3,9b,Th,10/22/26,"American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value",
 ,3,PS,Su,10/25/26,Problem Set 4 (PS4): TBD,
 ,3,OH,Su,10/25/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
@@ -45,7 +45,7 @@ Unit 3: Modeling and Analysis of Equity Derivatives,,,,,,
 ,3,10b,Th,10/29/26,"Probability of profit, composite contracts, and delta hedging",Attendance
 ,3,OH,Su,11/1/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-11,3,11a,T,11/3/26,Covered calls and cash-secured puts,Async video (JV at INFORMS 2026 — San Francisco)
+11,3,11a,T,11/3/26,Covered calls and cash-secured puts,Async video + short Canvas quiz (JV at INFORMS 2026 — San Francisco)
 ,3,11b,Th,11/5/26,Standard-listed protective collars and defined-outcome ETFs: TJUL comparison,Attendance
 ,3,PS,Su,11/8/26,Problem Set 5 (PS5): TBD,
 ,3,OH,Su,11/8/26,Office hours 3 - 5 PM in GSH G20,
@@ -55,15 +55,15 @@ Unit 4: Modeling and Analysis of Financial Decision-Making,,,,,,
 ,4,12b,Th,11/12/26,Binary Bernoulli bandit ticker picker,
 ,4,OH,Su,11/15/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-13,4,13a,T,11/17/26,Maximum-utility allocation and adaptive portfolio rebalancing,Attendance
-,4,13b,Th,11/19/26,Market crashes and agent-based Wolfram Markets,
+13,4,13a,T,11/17/26,Maximum-utility allocation and adaptive portfolio rebalancing,
+,4,13b,Th,11/19/26,Market crashes and agent-based Wolfram Markets,Attendance
 ,4,PS,Su,11/22/26,Problem Set 6 (PS6): TBD,
 ,4,OH,Su,11/22/26,Office hours 3 - 5 PM in GSH G20,
 ,,,,,,
-14,4,14a,T,11/24/26,Building and testing the course Autotrader,Async video (Thanksgiving Break)
+14,4,14a,T,11/24/26,Building and testing the course Autotrader,Async video + short Canvas quiz (pre-Thanksgiving)
 ,4,14b,Th,11/26/26,Thanksgiving Break,
 ,4,Practicum,Su,11/29/26,Practicum Problem,
 ,,,,,,
 15,4,15a,T,12/1/26,"Autotrader laboratory: diagnostics, risk controls, and strategy iteration",Attendance
-,4,15b,Th,12/3/26,"Final trading challenge, model review, and course synthesis",Attendance
+,4,15b,Th,12/3/26,"Final trading challenge, model review, and course synthesis",
 ,4,OH,Su,12/6/26,Office hours and final practicum help session 3 - 5 PM in GSH G20,

@@ -15,11 +15,11 @@ All changes below apply to `Sheet1`.
 ## Editing rules
 
 1. Preserve the existing dates in column `E`; they already match the Fall 2026 calendar.
-2. Preserve the event identifiers in column `C`, including the guest lecture, Fall Break, and Thanksgiving Break.
+2. Preserve the event identifiers in column `C`, including Fall Break and Thanksgiving Break.
 3. Preserve the workbook's existing formatting, row heights, column widths, date formats, and borders.
 4. Update the lecture-topic cells in column `F` using the table below.
 5. Update the unit assignments and section-header locations described below.
-6. Do not automatically rewrite problem-set, practicum, office-hour, attendance, or asynchronous-delivery rows. Review those separately after the lecture sequence is updated.
+6. Do not automatically rewrite problem-set, practicum, or office-hour rows. Attendance and asynchronous-delivery rows follow the confirmed policies below.
 7. After editing, verify that no formulas or links contain errors and visually inspect the complete schedule.
 
 ## Unit headers and assignments
@@ -68,8 +68,8 @@ All changes below apply to `Sheet1`.
 | 7a row (Oct 6) | 7a | Oct 6 | Utility-based allocation and the adaptive rebalancing engine (was: Goldman Sachs recorded Q/A; changed 2026-08-17, guest unconfirmed) |
 | `F32` | 7b | Oct 8 | Online SIM estimation: updating the engine as data arrive |
 | `F36` | 8b | Oct 15 | Option contracts: call and put payoff and profit |
-| `F40` | 9a | Oct 20 | European BSM and American CRR option pricing |
-| `F41` | 9b | Oct 22 | Intrinsic and extrinsic value of American options |
+| `F40` | 9a | Oct 20 | European option pricing with Black–Scholes–Merton |
+| `F41` | 9b | Oct 22 | American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value |
 | `F45` | 10a | Oct 27 | Option sensitivities: delta, gamma, theta, vega, and rho |
 | `F46` | 10b | Oct 29 | Probability of profit, composite contracts, and delta hedging |
 | `F49` | 11a | Nov 3 | Covered calls and cash-secured puts |
@@ -93,6 +93,31 @@ Keep these events and dates unchanged:
 The `7a`, Oct 6 row is no longer a guest event (2026-08-17): its topic cell takes the
 lecture topic above and its unit is Unit 2; if the Goldman Sachs Asset Management Q/A is
 confirmed it is delivered asynchronously and noted in the notes column, not in the topic.
+
+## Confirmed attendance schedule
+
+Attendance begins in week 3, after the early-semester enrollment churn. Use one
+in-person attendance check per instructional week, balanced across Tuesdays and
+Thursdays. Do not mark asynchronous or break meetings for attendance.
+
+- Tuesday: `3a`, `5a`, `7a`, `9a`, `12a`, and `15a`.
+- Thursday: `4b`, `6b`, `8b`, `10b`, `11b`, and `13b`.
+- No attendance check in weeks 1–2 or week 14. Asynchronous rows `3b`, `11a`,
+  and `14a` use the short Canvas quiz instead.
+
+## Confirmed asynchronous-delivery notes
+
+Every asynchronous lecture includes a short Canvas quiz associated with the
+assigned video and supporting work.
+
+- `3b`, Sep 10: asynchronous video and short Canvas quiz because JV travels on
+  Sep 10 for the Cornell Financial Engineering Manhattan AI & Future of Finance
+  Conference on Sep 11.
+- `11a`, Nov 3: asynchronous video and short Canvas quiz while JV attends the
+  2026 INFORMS Annual Meeting in San Francisco.
+- `14a`, Nov 24: asynchronous video and short Canvas quiz before Thanksgiving
+  Break, which begins on Nov 25; describe this as pre-Thanksgiving rather than
+  as occurring during the break.
 
 ## Problem-set rows requiring a separate review
 
