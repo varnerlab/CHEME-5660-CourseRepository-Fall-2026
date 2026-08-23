@@ -1,0 +1,69 @@
+﻿Week,Unit,Event,Day,Date,Topic/Event,"Notes, slides and other links"
+Unit 1: Quantitative Finance Foundations and Marketable Treasury Securities,,,,,,
+1,1,1a,T,8/25/26,"Course orientation, money flows, and the Federal Reserve",
+,1,1b,Th,8/27/26,"Time value of money, abstract assets, and net present value",
+,,,,,,
+2,1,2a,T,9/1/26,"Pricing Treasury bills, notes, and bonds by net present value",
+,1,2b,Th,9/3/26,"Yield, price sensitivity, duration, convexity, and the yield curve",
+,1,PS,Su,9/6/26,Problem Set 1 (PS1): TBD,
+,1,OH,Su,9/6/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+Unit 2: Modeling and Analysis of Equity Portfolios,,,,,,
+3,2,3a,T,9/8/26,Equity markets and stylized facts of growth rates,
+,2,3b,Th,9/10/26,Equity-price lattices under real-world and risk-neutral measures,
+,2,OH,Su,9/13/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+4,2,4a,T,9/15/26,Lattice trade rules and probability of profit,
+,2,4b,Th,9/17/26,Single-asset geometric Brownian motion,
+,2,PS,Su,9/20/26,Problem Set 2 (PS2): TBD,
+,2,OH,Su,9/20/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+5,2,5a,T,9/22/26,Multivariate GBM and Dirichlet portfolio weights,
+,2,5b,Th,9/24/26,"Minimum-variance allocation, efficient frontier, capital allocation line, and market portfolio",
+,2,OH,Su,9/27/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+6,2,6a,T,9/29/26,Introduction to single-index models,Attendance
+,2,6b,Th,10/1/26,SIM-based risky/risk-free minimum-variance allocation,
+,2,PS,Su,10/4/26,Problem Set 3 (PS3): TBD,
+,2,OH,Su,10/4/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+7,2,7a,T,10/6/26,Catherine Peng: Goldman Sachs Asset Management (recorded Q/A),Attendance
+,2,7b,Th,10/8/26,Dynamic rebalancing of minimum-variance portfolios,
+,2,7c,Su,10/11/26,No office hours Fall Break,
+,,,,,,
+Unit 3: Modeling and Analysis of Equity Derivatives,,,,,,
+8,2,8a,T,10/13/26,No Lecture Fall Break,
+,3,8b,Th,10/15/26,Option contracts: call and put payoff and profit,Attendance
+,3,OH,Su,10/18/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+9,3,9a,T,10/20/26,European BSM and American CRR option pricing,
+,3,9b,Th,10/22/26,Intrinsic and extrinsic value of American options,Attendance
+,3,PS,Su,10/25/26,Problem Set 4 (PS4): TBD,
+,3,OH,Su,10/25/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+10,3,10a,T,10/27/26,"Option sensitivities: delta, gamma, theta, vega, and rho",
+,3,10b,Th,10/29/26,"Probability of profit, composite contracts, and delta hedging",Attendance
+,3,OH,Su,11/1/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+11,3,11a,T,11/3/26,Covered calls and cash-secured puts,Async video (JV at INFORMS 2026 — San Francisco)
+,3,11b,Th,11/5/26,Standard-listed protective collars and defined-outcome ETFs: TJUL comparison,Attendance
+,3,PS,Su,11/8/26,Problem Set 5 (PS5): TBD,
+,3,OH,Su,11/8/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+Unit 4: Modeling and Analysis of Financial Decision-Making,,,,,,
+12,4,12a,T,11/10/26,Stochastic multi-armed bandits and exploration versus exploitation,Attendance
+,4,12b,Th,11/12/26,Binary Bernoulli bandit ticker picker,
+,4,OH,Su,11/15/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+13,4,13a,T,11/17/26,Maximum-utility allocation and adaptive portfolio rebalancing,Attendance
+,4,13b,Th,11/19/26,Market crashes and agent-based Wolfram Markets,
+,4,PS,Su,11/22/26,Problem Set 6 (PS6): TBD,
+,4,OH,Su,11/22/26,Office hours 3 - 5 PM in GSH G20,
+,,,,,,
+14,4,14a,T,11/24/26,Building and testing the course Autotrader,Async video (Thanksgiving Break)
+,4,14b,Th,11/26/26,Thanksgiving Break,
+,4,Practicum,Su,11/29/26,Practicum Problem,
+,,,,,,
+15,4,15a,T,12/1/26,"Autotrader laboratory: diagnostics, risk controls, and strategy iteration",Attendance
+,4,15b,Th,12/3/26,"Final trading challenge, model review, and course synthesis",Attendance
+,4,OH,Su,12/6/26,Office hours and final practicum help session 3 - 5 PM in GSH G20,
