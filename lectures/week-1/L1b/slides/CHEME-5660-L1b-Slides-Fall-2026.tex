@@ -9,16 +9,25 @@
 % Notebook outline as of this writing, and where each part lands:
 %
 %   (deck only)                          -> title
-%   Disclaimer and Risks       [last]    -> slide 2   (always near the front)
+%   Disclaimer and Risks       [cell 8]  -> slide 2   (always near the front)
 %   Learning Objectives        [cell 0]  -> Objectives for Today
-%   Setup, Data, Prerequisites           -> not slided; notebook housekeeping
-%   Time Value of Money        [cell 4]  -> Time Value of Money
-%   Discrete Compounding       [cell 5]  -> Discrete Compounding
-%   Continuous Compounding     [cell 6]  -> Continuous Compounding
-%   Who Sets the Valuation Rate[cell 11] -> Who Sets the Valuation Rate? + What Rate Should I Use?
-%   Abstract Assets and Net Cash Flows   -> An Abstract Asset (figure) + Net Cash Flows
-%   Net Present Value          [cell 14] -> Net Present Value
-%   Summary                    [cell 16] -> Summary
+%   Time Value of Money        [cell 1]  -> Time Value of Money
+%   Discrete Compounding       [cell 2]  -> Discrete Compounding
+%   Continuous Compounding     [cell 3]  -> Continuous Compounding
+%   Who Sets the Valuation Rate[cell 4]  -> Who Sets the Valuation Rate? + What Rate Should I Use?
+%   Abstract Assets            [cell 5]  -> An Abstract Asset (figure) + Net Cash Flows
+%   Net Present Value (NPV)    [cell 6]  -> Net Present Value
+%   (deck only)                          -> Optional Advanced Material
+%   Summary                    [cell 7]  -> Summary
+%
+% The lecture notebook carries no "Setup, Data, and Prerequisites" section and no
+% code cells: L1b's code lives in the companion worked example and the optional
+% derivation. There is nothing to skip, so the deck covers cells 0-8 in order,
+% with cell 8 (the disclaimer) pulled to the front.
+%
+% The optional derivation, CHEME-5660-L1b-Derivation-Discrete-Continuous-
+% Compounding-Fall-2026.ipynb, is linked from cell 3 and carried by the
+% "Optional Advanced Material" frame before Summary, matching L3a/L3b/L4a.
 %
 % The 2024 decks opened with a "2-minute rapid review" transition frame. That is
 % a holdover: it belongs to a concept-review notebook section, and L1b has none,
@@ -80,25 +89,25 @@
 
 % ---- examples ------------------------------------------------
 \begin{frame}{Lectures and Examples}
-  \vspace{0.45em}
-  \eyebrow{Lecture notebook}
-
   \vspace{0.25em}
-  {\small\dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \dimmed{CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb}}
 
-  \vspace{0.55em}
-  Derive accumulation and discount factors, represent an asset as dated signed
-  cash flows, and compute NPV at a declared valuation rate.
+  \vspace{0.8em}
+  {\normalsize\textbf{\ink{Example:}}\par
+  \dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
 
-  \vspace{0.9em}
-  \eyebrow{Worked example}
-
-  \vspace{0.25em}
-  {\small\dimmed{CHEME-5660-L1b-NetPresentValue-Fall-2026-WorkedExample.ipynb}}
-
-  \vspace{0.55em}
+  \vspace{0.5em}
   Represent ten years of Tesla Model S ownership as dated cash flows, discount
   them to time $0$, and compute their NPV.
+
+  \vspace{0.8em}
+  {\normalsize\textbf{\ink{Optional:}}\par
+  \dimmed{CHEME-5660-L1b-Derivation-Discrete-Continuous-Compounding-Fall-2026.ipynb}}
+
+  \vspace{0.5em}
+  Measure how far discrete compounding falls short of the fixed-rate continuous
+  limit, and when the estimate of that gap can be trusted.
 
   \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
 \end{frame}
@@ -127,34 +136,33 @@
 
 % ---- math: accumulation --------------------------------------
 \begin{frame}{Discrete Compounding}
-  Let $j=0,1,2,\ldots$ index the \textbf{\ink{compounding periods}}, and let
-  $i_\ell>-1$ be the \mbox{\hilite{effective rate}} over the interval
-  $\ell\rightarrow\ell+1$. An amount $P$ held at time $0$ becomes:
+  Let $j=0,1,2,\ldots$ index the \textbf{\ink{compounding periods}} and let
+  $i_\ell>-1$ be the \mbox{\hilite{effective periodic rate}} over
+  $\ell\rightarrow\ell+1$, collected as $\mathbf i=(i_0,\ldots,i_{j-1})$. An
+  amount $P$ held at time $0$ becomes:
   \[
     F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P .
   \]
 
-  For nominal annual yield $y$ compounded $n$ times per year, $i_\ell=y/n$ and
-  the product becomes:
+  For nominal annual yield $y$ compounded $n$ times per year, $i_\ell=y/n$:
   \[
     \underbrace{\mathcal D_{j,0}(y;n)=\left(1+\frac{y}{n}\right)^{j}}_{\text{\footnotesize accumulation}},
     \qquad
     \underbrace{\mathcal D_{j,0}^{-1}(y;n)=\left(1+\frac{y}{n}\right)^{-j}}_{\text{\footnotesize discount}}.
   \]
 
-  \slidenote{Careful:}{a flat $y$ is an \emph{assumption}. In L2b, $y$ varies with the date.}
+  \vspace{0.05em}
+  {\small \hilite{Assumes}: constant $y/n$, end-of-period compounding,
+  reinvested interest, $1+y/n>0$.}
+
+  \slidenote{Careful:}{a flat $y$ is an \emph{assumption}. In L2b, one security's yield gives way to a curve of spot rates.}
 \end{frame}
 
 % ---- math: continuous ----------------------------------------
 \begin{frame}{Continuous Compounding}
-  Let $g(t)$ be a \hilite{continuously compounded growth rate}, carrying units of
-  inverse time, and let $T$ be the horizon. The forward accumulation factor over
-  $0\rightarrow T$ is given by:
-  \[
-    \mathcal D_{T,0}(g)=\exp\left(\int_0^T g(u)\,du\right),
-  \]
-
-  which for constant $g$ collapses to:
+  Let $g$ be a constant \hilite{continuously compounded growth rate}, carrying
+  units of inverse time, and let $T$ be the horizon in years. The forward
+  accumulation and discount factors over $0\rightarrow T$ are given by:
   \[
     \underbrace{\mathcal D_{T,0}(g)=e^{gT}}_{\text{\footnotesize accumulation}},
     \qquad
@@ -166,6 +174,13 @@
   $\left(1+y/n\right)^{nT}=e^{g_yT}$: these are
   \textbf{\ink{two representations of one accumulation rule}}, not two different
   rules.
+
+  \vspace{0.3em}
+  Convert before you exponentiate: at finite $n$ the quote $y$ differs from
+  $g_y$, so $y$ \textbf{\ink{does not}} belong in $e^{yT}$.
+
+  \vspace{0.3em}
+  {\small\dimmed{Optional: for a time-varying rate $g(t)$, $\mathcal D_{T,0}(g)=\exp\bigl(\int_0^{T}g(u)\,du\bigr)$.}}
 
   \slidenote{Log return:}{the dimensionless product $r=(\Delta t)\,g$. L2a and L3a build on it.}
 \end{frame}
@@ -202,18 +217,23 @@
   \vspace{0.8em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.47\textwidth}
-      \eyebrow{Rate type}
+      \eyebrow{Three labels for a rate}
       \vspace{0.25em}
-      {\small A quoted \textbf{\ink{bond yield}} is the rate that matches price
-      to promised cash flows. An \textbf{\ink{equity required return}} estimates
-      future compensation for risk. They are different quantities.}
+      {\small An \textbf{\ink{interest rate}} is paid or received for borrowing
+      or lending. A \textbf{\ink{yield}} is tied to an investment's price and its
+      cash flows. A \textbf{\ink{discount rate}} is whichever rate a model uses
+      to convert future cash flows to present value. One number can carry more
+      than one label: pick a bond yield as your valuation rate and that yield is
+      now the discount rate.}
     \end{column}
     \begin{column}{0.47\textwidth}
-      \eyebrow{Risk type}
+      \eyebrow{Keep $g_y$ apart from $g$}
       \vspace{0.25em}
-      {\small Only \textbf{\ink{systematic risk}}, which diversification cannot
-      remove, is expected to earn compensation. More diversifiable risk does not
-      by itself increase expected return. Expected return is not realized return.}
+      {\small You \textbf{\ink{declare}} $y$ and a frequency $n$; its
+      continuously compounded equivalent $g_y=n\log\left(1+y/n\right)$ follows,
+      so $y$ and $g_y$ are two conventions for one rate rather than competing
+      rates. From L2a onward, $g$ denotes an \textbf{\ink{asset's own}} growth
+      rate, which is measured from prices rather than declared.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -262,7 +282,31 @@
   and $\bar{\mathbf c}$ are ordered $(N+1)$-vectors and NPV is a single scalar
   product, which is exactly how we compute it in code.
 
-  \slidenote{Worked example:}{ten years of Model S ownership, $\operatorname{NPV}_0=-\$121{,}484$}
+  \slidenote{Worked example:}{ten years of Model S ownership, $\operatorname{NPV}_0\approx-\$121{,}484$}
+\end{frame}
+
+% ==== optional advanced material =============================
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.2em}
+  {\normalsize\textbf{\ink{Derivation:}}\par
+  \dimmed{CHEME-5660-L1b-Derivation-Discrete-Continuous-Compounding-Fall-2026.ipynb}}
+
+  \vspace{0.3em}
+  Optional, not a prerequisite for L2a. Over a horizon $T$, holding $y$ fixed
+  while $n$ grows gives a limit discrete compounding only approaches. That is a
+  different statement from the exact identity
+  $\left(1+y/n\right)^{nT}=e^{g_yT}$, and the shortfall from it is:
+  \[
+    \delta_n:=1-\frac{\left(1+y/n\right)^{nT}}{e^{yT}}
+    \;\approx\;\underbrace{\frac{y^{2}T}{2n}}_{\text{\footnotesize leading estimate}} .
+  \]
+
+  \vspace{-0.35em}
+  The estimate is \hilite{asymptotic}: it needs both $y/n$ and $y^{2}T/(2n)$
+  small, so a low frequency, a long horizon, or a large rate each degrade it.
+  A high $n$ alone is not the test.
+
+  \slidenote{Careful:}{at $y=15\%$ and $T=30$ yr the estimate overstates $\delta_n$ by about $27.6\%$ at $n=1$. Use the exact ratio there.}
 \end{frame}
 
 % ---- summary -------------------------------------------------

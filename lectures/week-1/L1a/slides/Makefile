@@ -6,7 +6,8 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/course-map.tex ../figs/validation-ladder.tex
+NUMERICAL_FIGURES := ../figs/Fig-L1a-PortfolioPreview.pdf ../figs/Fig-L1a-PayoffPreview.pdf
+FIGURES := ../figs/course-map.tex ../figs/validation-ladder.tex $(NUMERICAL_FIGURES)
 
 .DEFAULT_GOAL := slides
 

@@ -5,6 +5,16 @@ It covers financial systems and markets; modeling and simulation of fixed-income
 securities, equities, and derivatives; portfolio optimization and hedging; and
 the application of artificial intelligence to financial decision-making.
 
+## Course essentials
+
+Start here for the course expectations and semester plan. Then continue below
+for materials, installation, and weekly notebooks.
+
+| Document | What you will find |
+|---|---|
+| **[Course syllabus](https://cornell.box.com/s/boxou8voal3ctaecouzwue8f4dfqq39b)** | Policies, grading, expectations, and course logistics |
+| **[Fall 2026 schedule](https://cornell.box.com/s/oztxiu2cc7oh4gos9snt2wbqdt7kk885)** | Lecture sequence, weekly topics, and important dates |
+
 ## Getting the course material
 
 There are two ways to use the course materials:

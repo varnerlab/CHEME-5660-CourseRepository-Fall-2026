@@ -5,8 +5,9 @@
 % Every other lecture in the course mirrors a notebook or a notes packet, and
 % every other deck header says so. L1a has neither, and that is deliberate:
 %
-%   - No notebook. The manifest records that none is required; L1a is
-%     orientation, not computation.
+%   - No notebook. The manifest records that none is required. The two
+%     numerical preview figures are generated reproducibly by the figure build,
+%     but students are not asked to compute in L1a.
 %   - No notes packet. lectures/week-1/L1a/docs was deleted on 2026-08-19.
 %     The notes were stale and substantially duplicative of the L1b deck, which
 %     already teaches the policy-rate versus valuation-rate distinction two days
@@ -31,6 +32,8 @@
 %   Market Scale Compared to Two Industries   -> market scale    6 min
 %   Price Paid Versus Value Controlled        -> market scale
 %   The Four Units of the Course              -> roadmap
+%   Optimization Finds the Best...            -> numerical preview  3 min
+%   Options Can Reshape...                    -> numerical preview  3 min
 %   Every Unit Builds Toward the Same Decision -> decision      10 min
 %   Each Test Exposes a New Way an Idea Can Fail -> decision
 %   Five Promises for $10,000                 -> table + vote    5 min
@@ -49,8 +52,7 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
-% The full policy document. Defaulted to the course repository, which is what
-% every other deck links. Point it at Canvas with a one-line change here.
+% Course hub: syllabus, schedule, released materials, and setup instructions.
 \newcommand{\policyurl}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}
 
 % PBS NewsHour, 28 March 2023, Paul Solman: "The factors behind Silicon Valley
@@ -122,7 +124,7 @@
     \begin{column}{0.305\textwidth}
       \eyebrow{Materials}
       \vspace{0.25em}
-      {\small Download each weeks materials from the repository releases page, or clone
+      {\small Download each week's materials from the repository Releases page, or clone
       the repository. Released files stay frozen; corrections are announced.}
     \end{column}
     \begin{column}{0.305\textwidth}
@@ -134,8 +136,8 @@
     \begin{column}{0.305\textwidth}
       \eyebrow{Questions}
       \vspace{0.25em}
-      {\small Ask on the course discussion board (EdDiscussion) rather than by email, so each
-      answer reaches everyone with the same question.}
+      {\small Ask questions on Ed Discussion rather than by email, so each answer
+      reaches everyone with the same question.}
     \end{column}
   \end{columns}
 
@@ -182,7 +184,7 @@
       {\small of U.S. adults had a retirement account.}
 
       \vspace{0.3em}
-      {\small How the account is invested determines the risk and reward trade-off.}
+      {\small How the account is invested determines the risk-reward trade-off.}
 
       \vspace{0.25em}
       {\small\dimmed{I'm a student, I don't have a retirement account yet.}}
@@ -264,17 +266,18 @@
     \textbf{\ink{Global batteries}}  & 181B & 0.72B\\[1pt]
     \textbf{\ink{Together}}          & 847B & 3.36B\\
     \addlinespace[5pt]
-    US debt                          & 304.7T & 1.21T\\
-    US stocks                        & 153.2T & 608B\\
+    U.S. debt                        & 304.7T & 1.21T\\
+    U.S. stocks                      & 153.2T & 608B\\
     Prices paid for options          & 9.3T & 37B\\[1pt]
-    \textbf{\hilite{US markets together}} & 467.2T & 1.85T\\[2pt]
+    \textbf{\hilite{U.S. markets together}} & 467.2T & 1.85T\\[2pt]
     \bottomrule
   \end{tabular}
   \end{center}
 
   \vspace{-0.15em}
-  On the same daily basis: US Markets move \hilite{\$1.85T} versus \hilite{\$3.36B} in global Biopharma and Batteries, about
-  \hilite{550 times larger}. Massive financial flows every day.
+  On the same daily basis, U.S. markets move \hilite{\$1.85T} versus
+  \hilite{\$3.36B} in global biopharma and battery revenue, about
+  \hilite{550 times as much}.
 
   \slidenote{Sources:}{market sizes 2025 (Fortune Business Insights); turnover 2024--2026 (SIFMA, Cboe)}
 \end{frame}
@@ -299,7 +302,7 @@
   \end{center}
 
   \vspace{0.45em}
-  Interestingly, about \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
+  About \hilite{USD 3T} of that value came from cash-settled S\&P 500 index options. For an option, gross notional divided by premium approximates exposure-based
   leverage when $|\delta| \approx 1$.
 
   \slidenote{Contract size:}{equity options usually cover 100 shares. For index options, the multiplier converts index points into dollars (SPX: \$100 per point).}
@@ -320,16 +323,38 @@
   \ink{This week starts with debt in the form of United States Treasury securities.}
 \end{frame}
 
+% ==== numerical previews: destinations, not prerequisites ====
+\begin{frame}{Optimization Identifies the Risk-Reward Frontier}
+  Five stocks---AAPL, JNJ, JPM, NVDA, and XOM---create thousands of portfolios.
+  The red frontier gives the highest expected growth rate at each level of risk.
+
+  \begin{center}
+    \includegraphics[width=0.98\textwidth,height=0.73\textheight,keepaspectratio]{../figs/Fig-L1a-PortfolioPreview.pdf}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}{Options Provide Upside with Limited Downside}
+  At the same \$210/\$240 thresholds, the spread requires \$1,508 upfront instead of
+  \$22,578. Its loss limit is contractual; a stock stop is not.
+
+  \begin{center}
+    \includegraphics[width=0.98\textwidth,height=0.72\textheight,keepaspectratio]{../figs/Fig-L1a-PayoffPreview.pdf}
+  \end{center}
+
+\end{frame}
+
 % ==== federal borrowing and Treasury-market liquidity ====
 % Debt to the Penny values are for 2026-08-20. The buyback operation occurred
 % on 2026-08-20 and settled on 2026-08-21. Do not update one side without the
 % other: the point is the scale comparison on one date. The per-resident figure
 % uses the Census projection of 342,620,143 residents on 2026-07-01.
 \begin{frame}[t]{Federal Deficits Require Treasury Borrowing}
-  \vspace{0.05em}
-  A federal deficit is financed by issuing Treasury debt.
+  \vspace{-0.35em}
+  Treasury securities do two jobs: they finance federal deficits and serve as
+  the benchmark ``risk-free'' asset in U.S. dollar markets.
 
-  \vspace{0.2em}
+  \vspace{0.10em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.43\textwidth}
       \eyebrow{Federal debt | Aug. 20, 2026}
@@ -364,10 +389,13 @@
     \end{column}
   \end{columns}
 
-  \vspace{0.5em}
-  {\large\textbf{Why elected officials care:}} continuing deficits require
-  repeated borrowing from investors at market interest rates.
+  \vspace{0.48em}
+  {\large\textbf{Why this matters:}} Treasury yields help set borrowing costs and
+  provide the baseline against which other investments are priced.
 
+  % Teaching caveat: ``risk-free'' is the pricing benchmark for promised dollar
+  % cash flows, not a claim that Treasury prices cannot fall or that inflation
+  % is irrelevant.
   \slidenote{Note:}{Scale comparison, not a bill. Sources: \href{https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/}{Treasury debt}; \href{https://www.treasurydirect.gov/instit/annceresult/press/preanre/2026/BBR_20260820174000.pdf}{buyback}; \href{https://www.census.gov/popclock/}{Census population}.}
 \end{frame}
 
@@ -382,10 +410,11 @@
 %
 % Amounts are from private/specs/data-l1a/PROMISE-TABLE.md, FRED pull of
 % 2026-08-18. Do not edit a number here without re-running that pull.
-\begin{frame}{Five Investments Have Different Payment Schedules}
+\begin{frame}{How Should We Compare Future Payments?}
   \vspace{0.1em}
-  Suppose you could buy each set of future payments for \hilite{\$10{,}000}
-  today. The are five different schedules of payments, each with a different amount, timing and uncertainty.
+  Suppose five debt instruments each cost \hilite{\$10{,}000} today. Their
+  payment schedules differ in \hilite{amount}, \hilite{timing}, and
+  \hilite{uncertainty}.
 
   \vspace{0.35em}
   \begin{center}\small
@@ -394,17 +423,18 @@
     \toprule
     \textbf{\hilite{A}} & \$10{,}028 back, four weeks from today\\[2pt]
     \textbf{\hilite{B}} & \$236 every six months for 10 years, then \$10{,}000\\[2pt]
-    \textbf{\hilite{C}} & \$264 every six months for \textbf{30} years, then \$10{,}000\\[2pt]
+    \textbf{\hilite{C}} & \$264 every six months for 30 years, then \$10{,}000\\[2pt]
     \textbf{\hilite{D}} & \$271 every six months for 10 years, then \$10{,}000\\[2pt]
-    \textbf{\hilite{E}} & \$121 every six months for 10 years, plus an inflation\\
-                     & adjustment on every payment and on the \$10{,}000\\
+    \textbf{\hilite{E}} & Fixed-rate coupons on inflation-adjusted principal\\
+                     & for 10 years, then the adjusted principal\\
     \bottomrule
   \end{tabular}
   }
   \end{center}
 
   \vspace{0.35em}
-  {\large\ink{\textbf{Which promise would you choose?}} Let's brainstorm and vote.}
+  {\centering\large
+  \ink{\textbf{Which promise should we choose?}} Let's brainstorm and discuss.\par}
 
   \slidenote{Rates:}{published rates for 2026-08-18, each scaled to a \$10{,}000 outlay}
 \end{frame}
@@ -417,7 +447,7 @@
   \begin{center}\small
   \begin{tabular}{@{}llr@{}}
     \toprule
-    & \textbf{\ink{What it is called}} & \textbf{\ink{Annual rate}}\\[2pt]
+    & \textbf{\ink{What it is called}} & \textbf{\ink{Market yield}}\\[2pt]
     \midrule
     \textbf{\ink{A}} & 4-week Treasury bill                      & 3.63\%\\
     \textbf{\ink{B}} & 10-year Treasury note                     & 4.71\%\\
@@ -433,7 +463,7 @@
   payments. The schedule gives the amount and timing. The security type
   identifies which sources of uncertainty matter.
 
-  \slidenote{Careful:}{D is an index of many investment-grade corporate bonds, not one bond. E's rate is stated after inflation, unlike the others.}
+  \slidenote{Careful:}{D is a bond index. E's 2.41\% is a real market yield, not its coupon; TIPS principal adjusts with CPI.}
 \end{frame}
 
 % The credit spread here is D minus B -- the corporate index against the
@@ -448,35 +478,34 @@
 % different measure, it was never pulled into data-l1a, and it cannot be
 % reproduced from the two rates the previous frame shows. The number on this
 % frame must stay the subtraction a student can do from that table.
-\begin{frame}{Compare the Amount, Timing, and Uncertainty of Payments}
+\begin{frame}{Risk Shapes the Value of Promised Payments}
   \vspace{0.15em}
-  The schedules show amount and timing. The following questions identify three
-  sources of uncertainty.
+  Promised cash flows are only the starting point. Their value also depends
+  on when we may need the money and which risks we bear.
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{\textbf{C}}\quad\textbf{\ink{What if you need the money before year 30?}} Selling early
-      means accepting the market price then, and that price changes with
-      interest rates. \dimmed{Week 2.}
-    \item \hilite{\textbf{D}}\quad\textbf{\ink{Why does it pay more?}} Its rate is 5.42\%, versus 4.71\%
-      for the ten-year Treasury. That gap reflects the chance of missed payments
-      and the difficulty of selling quickly. \dimmed{Units 2 and 3.}
-    \item \hilite{\textbf{E}}\quad\textbf{\ink{What does inflation protection change?}} Its payments rise
-      with inflation, so its 2.41\% rate is not directly comparable with the
-      other rates. \dimmed{Later in the course.}
+    \item \hilite{\textbf{C}}\quad\textbf{\ink{Interest-rate risk.}}
+      Selling before maturity exposes the investor to market-price changes; when
+      yields rise, the bond's price falls.
+    \item \hilite{\textbf{D}}\quad\textbf{\ink{Credit and liquidity risk.}}
+      The 0.71-percentage-point premium over the ten-year Treasury compensates
+      investors for these additional risks.
+    \item \hilite{\textbf{E}}\quad\textbf{\ink{Inflation protection.}}
+      Because TIPS principal adjusts with CPI, its 2.41\% real yield measures
+      purchasing-power growth rather than nominal dollars.
   \end{itemize}
 
   \vspace{0.35em}
-  \ink{Amount and timing are not sufficient without these sources of
-  uncertainty.}
+  \ink{A sound comparison considers both the payments and the risks that
+  determine their value.}
 \end{frame}
 
 % ==== svb ====
-% The clip plays IN FULL and the question is NOT answered. The answer is C:
-% long-dated holdings that never defaulted and still destroyed the balance
-% sheet when rates rose. L2b resolves it, where that is the subject matter.
-% Do not answer it here and do not hint. The unresolved ending is the design.
-\begin{frame}{A Bank Can Fail Even When Its Securities Do Not Default}
+% The clip plays IN FULL. This frame states the causal chain that students
+% should watch for: withdrawals created a cash need, forcing SVB to sell
+% long-term securities after higher rates had reduced their market value.
+\begin{frame}{Silicon Valley Bank (SVB) Needed Cash to Cover Withdrawals}
   \vspace{0.35em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.27\textwidth}
@@ -484,22 +513,19 @@
       {\small assets in March 2023}
     \end{column}
     \begin{column}{0.69\textwidth}
-      A bank with roughly this much in assets failed in two days. Its portfolio
-      included one of the five kinds of promises on your list.
+      Depositors became concerned and began withdrawing money.
 
-      \vspace{0.5em}
-      {\large\vnmedium\ink{Which one, and why?}}
+      \vspace{0.55em}
+      SVB needed cash, so it sold long-term securities before maturity.
     \end{column}
   \end{columns}
 
-  \vspace{0.8em}
-  The security did not default; every payment that came due was made. Yet the
-  bank still failed.
+  \vspace{0.9em}
+  Interest rates had risen, so those securities were worth less than SVB had
+  paid.
 
   \vspace{0.75em}
-  As you watch, identify \hilite{which promise} the bank held and \hilite{what
-  changed} before it failed. Week 2 gives us a model for checking the
-  explanation.
+  {\large\vnmedium\ink{Interest-rate risk became a liquidity problem.}}
 
   \slidenote{Clip:}{\href{\svburl}{PBS NewsHour, 28 March 2023, 6 minutes}}
 \end{frame}
@@ -508,26 +534,27 @@
 % Summary frames carry all three parts: one summary sentence, exactly three
 % key takeaways, one concluding sentence. See vnslides.sty rule 7.
 \begin{frame}[t]{Summary}
-  Financial decisions start with payment schedules, but the largest payment is
-  not automatically the best choice.
+  Today we established why the course matters and introduced our first
+  investment decision.
 
   \vspace{0.45em}
   \decklabel{Key takeaways}
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{Markets connect investors, companies, and governments.}}
-      Cornell invests its endowment; companies issue shares; Treasury borrows
-      when federal spending exceeds revenue.
-    \item \textbf{\ink{A product name is a label.}} What matters first is the
-      payment schedule: what gets paid, when, and under what conditions.
-    \item \textbf{\ink{Amount and timing are not enough.}} Interest-rate,
-      credit, liquidity, and inflation risk can change which payment schedule
-      is preferable.
+    \item \textbf{\ink{The course moves from assets to decisions.}}
+      We value debt, equity, and derivatives, then combine and test them in
+      financial strategies.
+    \item \textbf{\ink{Markets connect savings to investment.}}
+      Households, Cornell, companies, and the Treasury use markets to save,
+      invest, raise funds, or finance deficits.
+    \item \textbf{\ink{A payment schedule is only the starting point.}}
+      Amount, timing, interest-rate, credit, liquidity, and inflation risk all
+      affect an investment's value.
   \end{itemize}
 
-  \vspace{0.5em}
-  On Thursday, we build our first comparison rule: how to compare money paid at
-  different times.
+  \vspace{0.45em}
+  Next, we build our first comparison rule: use the time value of money to
+  compare payments made on different dates.
 \end{frame}
 
 % ==== reading ====
