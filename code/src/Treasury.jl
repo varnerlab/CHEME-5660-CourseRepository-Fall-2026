@@ -1,3 +1,18 @@
+# Shared U.S. Treasury quotation helpers, used by the week-2 fixed-income material.
+
+"""
+    function securityterm(duration::String)::Float64
+
+Convert a security term string (e.g., "6-Month", "1-Year") into a fractional year value.
+This assumes 365 days per year and 7 days per week.
+
+### Arguments
+- `duration::String`: The security term as a string in the format "X-Unit", where X is a number and Unit is "Week", or "Year".
+
+### Returns
+- `Float64`: The equivalent duration in years.
+
+"""
 function securityterm(duration::String)::Float64
 
     # initialize -
@@ -22,11 +37,11 @@ function securityterm(duration::String)::Float64
     # get the duration -
     unit_of_time = security_term_components[2];
     if (unit_of_time == "Week")
-        numerator *= number_of_days_per_week;    
+        numerator *= number_of_days_per_week;
     elseif (unit_of_time == "Year")
         numerator *= number_of_days_per_year;
-    end   
-    
+    end
+
     # calculate -
     value = numerator / denominator;
 

@@ -87,4 +87,7 @@ module VLQuantitativeFinancePackage
     export MyTestingMarketDataSet;
     export MyOptionsChainDataSet;
     export MySIMCalibration, MyCurrentPrices, MyAdaptivePortfolioCourseData
+    export MyTreasuryBillDataSet, MyTreasuryNotesAndBondsDataSet
+    export MyTreasurySTRIPSDataSet, MyTreasuryParYieldCurveDataSet, MyTreasuryBillRatesDataSet
+    export securityterm, treasury_bill_price_from_investment_rate
 end
