@@ -21,10 +21,11 @@ There are two ways to use the course materials:
 
 1. **Download the weekly bundle (recommended; no Git required).** On the
    [Releases page](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/releases),
-   open the release for the week, expand **Assets**, and download `week-N.zip`,
-   where `N` is the week number. Do not download either automatically generated
-   **Source code** archive. Published bundles are versioned snapshots;
-   corrections are issued as new releases rather than silently replacing files.
+   open the release for the week, expand **Assets**, and download the versioned
+   `CHEME-5660-Fall-2026-Week-NN.R.zip` asset (`NN` is the zero-padded week and
+   `R` is the revision). Do not download either automatically generated **Source
+   code** archive. Published bundles are versioned snapshots; corrections are
+   issued as new revisions rather than silently replacing files.
 2. **Clone the repository (for Git users).** The complete authoring repository is
    available at
    [varnerlab/CHEME-5660-CourseRepository-Fall-2026](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026).

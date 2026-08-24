@@ -1,22 +1,95 @@
-name: release-week
+name: Release weekly student bundle
+
+# Pushing a tag of the form week-NN.R (week-01.0, week-01.1, week-12.0) builds
+# the student bundle and opens a DRAFT release. Review the draft, then publish it
+# by hand. Corrections to an already-published week ship as a new revision
+# (week-01.1) rather than by replacing an existing asset.
+
 on:
   push:
-    tags: ['week-*']
+    tags:
+      - 'week-[0-9][0-9].[0-9]*'
+
 permissions:
   contents: write
+
 jobs:
-  build:
+  build-and-draft:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build weekly bundle
+        with:
+          fetch-depth: 0
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.12'
+
+      - uses: julia-actions/cache@v2
+
+      - name: Read release identity
+        id: release
+        shell: bash
         run: |
-          N="${GITHUB_REF_NAME#week-}"
-          ./scripts/release-week.sh "$N"
-      - name: Create release with asset
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^week-([0-9]{2})\.([0-9]+)$ ]]; then
+            echo "Invalid weekly release tag: ${GITHUB_REF_NAME}" >&2
+            exit 1
+          fi
+          week="${BASH_REMATCH[1]}"
+          week_number="$((10#${week}))"
+          printf 'week=%s\n' "${week}" >> "${GITHUB_OUTPUT}"
+          printf 'week_number=%s\n' "${week_number}" >> "${GITHUB_OUTPUT}"
+          printf 'title=CHEME 5660 - Week %02d\n' "${week_number}" >> "${GITHUB_OUTPUT}"
+
+      - name: Build student bundle
+        run: ./scripts/release-week.sh "${GITHUB_REF_NAME}"
+
+      - name: Verify bundle contents
+        shell: bash
+        run: |
+          archive="$(find artifacts -maxdepth 1 -name '*.zip' -print -quit)"
+          test -n "${archive}" || { echo "no archive built" >&2; exit 1; }
+          tmp="$(mktemp -d)"
+          python3 -m zipfile -e "${archive}" "${tmp}"
+          bundle="$(find "${tmp}" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+          test -n "${bundle}" || { echo "archive has no top-level bundle dir" >&2; exit 1; }
+          for f in Project.toml Manifest.toml README.md LICENSE scripts/setup.jl; do
+            test -f "${bundle}/${f}" || { echo "bundle is missing ${f}" >&2; exit 1; }
+          done
+          test -d "${bundle}/code" || { echo "bundle is missing code/" >&2; exit 1; }
+          week_dir="${bundle}/lectures/week-${{ steps.release.outputs.week_number }}"
+          test -d "${week_dir}" || { echo "bundle is missing ${week_dir}" >&2; exit 1; }
+          find "${week_dir}" -name '*.ipynb' | grep -q . \
+            || { echo "no notebooks in ${week_dir}" >&2; exit 1; }
+          if grep -R -a -E '(/Users/|\\Users\\|Desktop/julia_work)' "${bundle}"; then
+            echo "bundle contains an author-machine path" >&2
+            exit 1
+          fi
+          echo "bundle contents OK"
+
+      - name: Test extracted bundle
+        shell: bash
+        run: |
+          archive="$(find artifacts -maxdepth 1 -name '*.zip' -print -quit)"
+          release_test="$(mktemp -d)"
+          python3 -m zipfile -e "${archive}" "${release_test}"
+          bundle="$(find "${release_test}" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+          julia --startup-file=no --project="${bundle}" -e \
+            'using Pkg; Pkg.instantiate(); using VLQuantitativeFinancePackage; println("SETUP-OK")'
+          while IFS= read -r include_file; do
+            julia --startup-file=no --project="${bundle}" -e 'include(ARGS[1])' "${include_file}"
+          done < <(find "${bundle}/lectures/week-${{ steps.release.outputs.week_number }}" \
+            -name 'Include*.jl' | sort)
+
+      - name: Create draft GitHub release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "artifacts/$GITHUB_REF_NAME.zip" \
-            --title "$GITHUB_REF_NAME" --notes "Weekly bundle: unzip, then follow README setup." \
-            || gh release upload "$GITHUB_REF_NAME" "artifacts/$GITHUB_REF_NAME.zip" --clobber
+          archive="$(find artifacts -maxdepth 1 -name '*.zip' -print -quit)"
+          gh release create "${GITHUB_REF_NAME}" \
+            "${archive}" "${archive}.sha256" \
+            --draft \
+            --verify-tag \
+            --title "${{ steps.release.outputs.title }}" \
+            --notes-file "artifacts/RELEASE-NOTES-${GITHUB_REF_NAME}.md"
