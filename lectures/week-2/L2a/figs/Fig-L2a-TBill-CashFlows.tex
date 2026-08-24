@@ -1,4 +1,6 @@
 % Treasury bill cash-flow timeline (L2a).
+% Keep this figure structural: the valuation and return derivations belong in
+% the surrounding notebook and slides.
 % Flow convention: an arrow leaving a time-point unit is money paid;
 % an arrow entering one is money received.
 \documentclass[tikz,border=6pt]{standalone}
@@ -28,16 +30,6 @@
   \draw[vn received] (3.40,1.05) -- (bT.north);
   \node[right,text=vnlink] at (3.40,0.62) {$+V_{P}$};
   \node[above,vn annotation] at (3.40,1.05) {cash received};
-
-  % Transport to the valuation date ----------------------------
-  % A single future flow means the transport step is itself the price.
-  \draw[vn transport] (3.40,-0.94) -- (0.60,-0.94)
-    node[midway,fill=white,inner sep=3pt,text=vnlink]
-    {$V_{B}=\mathcal{D}_{T,0}^{-1}(y;n)\,V_{P}=e^{-g_yT}V_P$};
-  \node[vn annotation,anchor=north west] at (0.47,-1.35)
-    {dollar gain: $V_{P}-V_{B}$; there are no coupons};
-  \node[vn annotation,anchor=north west] at (0.47,-1.95)
-    {$g_B=T^{-1}\log(V_P/V_B)$,\quad $r_B=Tg_B$};
 
 \end{tikzpicture}
 \end{document}

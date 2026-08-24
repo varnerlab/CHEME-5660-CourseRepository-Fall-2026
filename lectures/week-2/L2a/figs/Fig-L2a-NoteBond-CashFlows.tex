@@ -1,4 +1,6 @@
 % Treasury note/bond cash-flow timeline (L2a).
+% Keep this figure structural: the valuation derivation and the formal net
+% cash-flow definitions belong in the surrounding notebook and slides.
 % Flow convention: an arrow leaving a time-point unit is money paid;
 % an arrow entering one is money received.
 \documentclass[tikz,border=6pt]{standalone}
@@ -35,15 +37,6 @@
   \draw[vn received] (5.85,1.05) -- (nN.north);
   \node[right,text=vnlink] at (5.85,0.62) {$+C+V_{P}$};
   \node[above,vn annotation] at (5.85,1.05) {cash received};
-
-  % Transport to the valuation date ----------------------------
-  \draw[vn transport] (5.85,-0.94) -- (0.60,-0.94)
-    node[midway,fill=white,inner sep=3pt,text=vnlink]
-    {$\mathrm{PV}_{0}(\bar{c}_{j})=\mathcal{D}_{j,0}^{-1}(y;n)\,\bar{c}_{j}$};
-  % Tie the abstract net cash flow to the concrete coupon and par amounts.
-  \node[vn annotation,anchor=north west] at (0.47,-1.30)
-    {net cash flow: $\bar{c}_{0}=-V_{B}$,\;\; $\bar{c}_{j}=C$ for $0<j<N$,%
-     \;\; $\bar{c}_{N}=C+V_{P}$};
 
 \end{tikzpicture}
 \end{document}
