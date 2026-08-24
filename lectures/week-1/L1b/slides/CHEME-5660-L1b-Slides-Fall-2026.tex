@@ -16,8 +16,7 @@
 %   Continuous Compounding     [cell 3]  -> Continuous Compounding
 %   Who Sets the Valuation Rate[cell 4]  -> Who Sets the Valuation Rate? + What Rate Should I Use?
 %   Abstract Assets            [cell 5]  -> An Abstract Asset (figure) + Net Cash Flows
-%   Net Present Value (NPV)    [cell 6]  -> Net Present Value
-%   (deck only)                          -> Optional Advanced Material
+%   Net Present Value (NPV)    [cell 6]  -> Net Present Value + Reading the Sign of NPV
 %   Summary                    [cell 7]  -> Summary
 %
 % The lecture notebook carries no "Setup, Data, and Prerequisites" section and no
@@ -25,9 +24,11 @@
 % derivation. There is nothing to skip, so the deck covers cells 0-8 in order,
 % with cell 8 (the disclaimer) pulled to the front.
 %
-% The optional derivation, CHEME-5660-L1b-Derivation-Discrete-Continuous-
-% Compounding-Fall-2026.ipynb, is linked from cell 3 and carried by the
-% "Optional Advanced Material" frame before Summary, matching L3a/L3b/L4a.
+% Optional notebooks get NO frame of their own in this deck: the optional
+% derivation, CHEME-5660-L1b-Derivation-Discrete-Continuous-Compounding-Fall-
+% 2026.ipynb, is listed under "Optional:" on the Lectures and Examples frame and
+% nowhere else. L3a/L3b/L4a carry an "Optional Advanced Material" frame instead;
+% L1b deliberately does not.
 %
 % The 2024 decks opened with a "2-minute rapid review" transition frame. That is
 % a holdover: it belongs to a concept-review notebook section, and L1b has none,
@@ -75,16 +76,14 @@
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{The time value of money}: cash flows at different dates cannot
-      be added until they are expressed at the same valuation date.
+      be combined until they are expressed at the same valuation date.
     \item \hilite{An abstract asset}: a sequence of dated signed cash flows. The
       same representation covers a bond, a stock, a factory, or a car.
-    \item \hilite{Net present value}: discount each signed cash flow to the
-      valuation date, then add. Its sign is a statement about the rate you
-      declared, not a guarantee of profit.
+    \item \hilite{Net present value}: discount each signed cash flow to a common
+      valuation date, then add. The sign of the NPV is a measure of the attractiveness of an abstract asset relative to a declared discount rate.
   \end{itemize}
   \vspace{-0.4em}
 
-  \slidenote{Companion notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}{L1b lecture notebook}}
 \end{frame}
 
 % ---- examples ------------------------------------------------
@@ -114,37 +113,39 @@
 
 % ---- TVM -----------------------------------------------------
 \begin{frame}{Time Value of Money}
-  A dollar today and a dollar at a future date are \hilite{not directly
-  comparable}. Before we compare or add them, we must express both at the same
-  valuation date using a stated conversion rule.
+  A dollar today and a dollar at a future date are \hilite{not comparable}. We must express both on a common
+  valuation date using a conversion rule.
 
   \vspace{0.5em}
   Let $P$ be an amount held at time $0$, and let $y$ be a quoted
-  \textbf{\ink{nominal annual yield}} used for valuation. With one compounding
-  interval per year, the amount after one year is given by:
+  \textbf{\ink{nominal annual yield}} used for valuation. With one (discrete) compounding
+  period per year, the amount after one year is given by:
   \[
     F_1=\underbrace{(1+y)}_{\mathcal D_{1,0}(y;1)}P .
   \]
 
-  For $y>0$ the factor $\mathcal D_{1,0}(y;1)>1$ moves time-0 dollars forward and
-  is the \textbf{\ink{forward accumulation factor}}; its inverse
-  $\mathcal D_{1,0}^{-1}(y;1)<1$ moves future dollars back and is the
-  \textbf{\ink{discount factor}}.
+  For $y>0$ the factor $\mathcal D_{1,0}(y;1)>1$ (called the \textbf{\ink{accumulation factor}}) moves time-0 dollars forward in time.
+  It's inverse, $\mathcal D_{1,0}^{-1}(y;1)<1$ (called the \textbf{\ink{discount factor}}) moves future dollars back in time.
 
   \slidenote{Careful:}{a later dollar is not \emph{automatically} worth less. That depends on the rate $y$ you declare.}
 \end{frame}
 
 % ---- math: accumulation --------------------------------------
 \begin{frame}{Discrete Compounding}
-  Let $j=0,1,2,\ldots$ index the \textbf{\ink{compounding periods}} and let
-  $i_\ell>-1$ be the \mbox{\hilite{effective periodic rate}} over
-  $\ell\rightarrow\ell+1$, collected as $\mathbf i=(i_0,\ldots,i_{j-1})$. An
-  amount $P$ held at time $0$ becomes:
+  Let $j=0,1,2,\ldots$ index the \textbf{\ink{compounding periods}}, let
+  $i_\ell>-1$ be the \mbox{\hilite{effective periodic interest rate}} over
+  $\ell\rightarrow\ell+1$, and collect these as $\mathbf i=(i_0,\ldots,i_{j-1})$,
+  empty at $j=0$. An amount $P$ at time $0$ becomes $F_j$ at period $j$:
+  \vspace{-0.3em}
   \[
-    F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P .
+    F_j=\underbrace{\left[\prod_{\ell=0}^{j-1}(1+i_\ell)\right]}_{\mathcal D_{j,0}(\mathbf i)}P ,
+    \qquad \text{\footnotesize empty product} = 1 .
   \]
+  \vspace{-0.55em}
 
-  For nominal annual yield $y$ compounded $n$ times per year, $i_\ell=y/n$:
+  For a nominal annual yield $y$ compounded $n$ times per year, every
+  $i_\ell=y/n$:
+  \vspace{-0.3em}
   \[
     \underbrace{\mathcal D_{j,0}(y;n)=\left(1+\frac{y}{n}\right)^{j}}_{\text{\footnotesize accumulation}},
     \qquad
@@ -160,34 +161,36 @@
 
 % ---- math: continuous ----------------------------------------
 \begin{frame}{Continuous Compounding}
-  Let $g$ be a constant \hilite{continuously compounded growth rate}, carrying
-  units of inverse time, and let $T$ be the horizon in years. The forward
-  accumulation and discount factors over $0\rightarrow T$ are given by:
+  Let $g(t)$ be a \hilite{continuously compounded growth rate}, carrying units of
+  inverse time, and let $T$ be the horizon in years. Over $0\rightarrow T$:
+  \vspace{-0.2em}
+  \[
+    \mathcal D_{T,0}(g)=\exp\left(\int_0^T g(u)\,du\right),
+    \qquad
+    \mathcal D_{T,0}^{-1}(g)=\exp\left(-\int_0^T g(u)\,du\right),
+  \]
+  \vspace{-0.6em}
+
+  which for \hilite{constant} $g$ collapses to:
+  \vspace{-0.2em}
   \[
     \underbrace{\mathcal D_{T,0}(g)=e^{gT}}_{\text{\footnotesize accumulation}},
     \qquad
     \underbrace{\mathcal D_{T,0}^{-1}(g)=e^{-gT}}_{\text{\footnotesize discount}}.
   \]
 
-  A nominal annual yield $y$ compounded $n$ times per year has the continuously
-  compounded equivalent $g_y:=n\log\left(1+y/n\right)$, so
-  $\left(1+y/n\right)^{nT}=e^{g_yT}$: these are
-  \textbf{\ink{two representations of one accumulation rule}}, not two different
-  rules.
+  A nominal annual yield $y$ compounded $n$ times per year fits this form.
+  Setting $g=g_y$ with $g_y:=n\log\left(1+y/n\right)$ makes
+  $\left(1+y/n\right)^{nT}=e^{g_yT}$ hold exactly at every finite $n$: $y$ and
+  its continuous equivalent $g_y$ are
+  \textbf{\ink{two representations of one accumulation rule}}.
 
-  \vspace{0.3em}
-  Convert before you exponentiate: at finite $n$ the quote $y$ differs from
-  $g_y$, so $y$ \textbf{\ink{does not}} belong in $e^{yT}$.
-
-  \vspace{0.3em}
-  {\small\dimmed{Optional: for a time-varying rate $g(t)$, $\mathcal D_{T,0}(g)=\exp\bigl(\int_0^{T}g(u)\,du\bigr)$.}}
-
-  \slidenote{Log return:}{the dimensionless product $r=(\Delta t)\,g$. L2a and L3a build on it.}
+  \slidenote{Careful:}{at finite $n$, $y\neq g_y$, so $y$ does not belong in $e^{yT}$. Only as $n\rightarrow\infty$ does $g_y\rightarrow y$.}
 \end{frame}
 
 % ---- who sets the rate ---------------------------------------
 \begin{frame}{Who Sets the Valuation Rate?}
-  A valuation rate is \hilite{not universal}. It depends on the cash flow, market
+  The valuation rate is \hilite{not universal}. It depends on the cash flow, market
   convention, horizon, and the risks being modeled: no single policy rate prices
   every asset.
 
@@ -195,47 +198,48 @@
   \eyebrow{The Federal Reserve}
   \vspace{0.25em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item Steers short-term rates through \textbf{\ink{interest on reserve balances}}
-      (IORB), supported by the overnight reverse repo facility; open market
-      operations manage the supply of reserves.
-    \item The \textbf{\ink{FOMC}} sets a target range for the federal funds rate, the
+    \item The Fed conducts \textbf{\ink{monetary policy}} for maximum employment,
+      stable prices, and moderate long-term rates, \textbf{\ink{supervises
+      banks}}, and is the \textbf{\ink{lender of last resort}}.
+    \item The Federal Open Market Committee (\textbf{\ink{FOMC}}) sets a target range for the federal funds rate, the
       overnight rate on unsecured reserve balances traded between eligible
-      institutions.
-    \item Other market rates respond to policy and market conditions, but are
-      \textbf{\ink{not mechanically pegged}} to the federal funds rate.
+      institutions. 
+    \item Other market rates, e.g., Treasury yields and mortgage rates, respond to
+      policy and market conditions, but are \textbf{\ink{not mechanically pegged}}
+      to the federal funds rate.
   \end{itemize}
 
   \slidenote{Link:}{\href{https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm}{FOMC calendar and meeting materials}}
 \end{frame}
 
 \begin{frame}{What Valuation Rate Should I Use?}
-  There is no universal answer, and this lecture does not need one: here the
-  yield $y$ is a \hilite{declared model input}. Choosing it well means matching
-  the rate to the cash flow: same currency, same horizon, and an explicit
-  statement of any adjustment made for credit, liquidity, or risk.
+  There is no universal answer: $y$ is a \hilite{declared model input}, matched
+  to the cash flow by currency, horizon, and any stated adjustment for credit,
+  liquidity, or risk.
 
-  \vspace{0.8em}
-  \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.47\textwidth}
-      \eyebrow{Three labels for a rate}
-      \vspace{0.25em}
-      {\small An \textbf{\ink{interest rate}} is paid or received for borrowing
-      or lending. A \textbf{\ink{yield}} is tied to an investment's price and its
-      cash flows. A \textbf{\ink{discount rate}} is whichever rate a model uses
-      to convert future cash flows to present value. One number can carry more
-      than one label: pick a bond yield as your valuation rate and that yield is
-      now the discount rate.}
-    \end{column}
-    \begin{column}{0.47\textwidth}
-      \eyebrow{Keep $g_y$ apart from $g$}
-      \vspace{0.25em}
-      {\small You \textbf{\ink{declare}} $y$ and a frequency $n$; its
-      continuously compounded equivalent $g_y=n\log\left(1+y/n\right)$ follows,
-      so $y$ and $g_y$ are two conventions for one rate rather than competing
-      rates. From L2a onward, $g$ denotes an \textbf{\ink{asset's own}} growth
-      rate, which is measured from prices rather than declared.}
-    \end{column}
-  \end{columns}
+  \vspace{0.45em}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}c>{\raggedright\arraybackslash}p{0.53\textwidth}@{}}
+    \toprule
+    \textbf{\ink{Term}} & \textbf{\ink{Symbol}} & \textbf{\ink{Meaning here}}\\[1pt]
+    \midrule
+    \textbf{\ink{Interest rate}} & $i_\ell$ & A rate paid or received for
+      borrowing or lending, such as the federal funds rate or a mortgage rate.
+      Those are annual quotes; the model uses $i_\ell=y/n$ per period.\\
+    \addlinespace[4pt]
+    \textbf{\ink{Yield}} & $y$ & A rate tied to the price and cash flows of an
+      investment, such as a bond yield.\\
+    \addlinespace[4pt]
+    \textbf{\ink{Discount rate}} or \textbf{\ink{valuation rate}} & $y$ & The rate
+      a model uses to convert future cash flows to present value.\\
+    \addlinespace[4pt]
+    \textbf{\ink{Continuous equivalent}} & $g_y$ & The same rate written in
+      continuous form, $g_y=n\log\left(1+y/n\right)$.\\[1pt]
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \slidenote{Careful:}{the same $y$ fills rows 2 and 3: one number, two roles. From L2a, $g$ is an asset's own measured growth rate.}
 \end{frame}
 
 % ---- figure --------------------------------------------------
@@ -248,19 +252,20 @@
 
 % ---- net cash flows ------------------------------------------
 \begin{frame}{Net Cash Flows}
-  An abstract asset is a \textbf{\ink{sequence of dated cash flows}} denominated in a
-  currency. At cash-flow index $j$, let $\mathbf c_j\in\mathbb R_{\geq0}^{m}$
-  collect $m$ nonnegative magnitudes and let
-  $\symbf{\nu}_j\in\{-1,+1\}^{m}$ give their directions, where $+1$ denotes an
-  inflow and $-1$ an outflow. The \hilite{signed net cash flow} at index $j$ is
-  the usual inner product of the magnitude and direction vectors:
+  An abstract asset is a \textbf{\ink{sequence of dated cash flows}} in one
+  currency, one at each compounding date $j=0,1,\ldots,N$, so $N$ is the final
+  index and there are $N+1$ dates. At date $j$, let
+  $\mathbf c_j\in\mathbb R_{\geq0}^{m_j}$ hold the $m_j$
+  nonnegative cash flow magnitudes and $\symbf{\nu}_j\in\{-1,+1\}^{m_j}$ their directions,
+  $+1$ an inflow and $-1$ an outflow. The \hilite{signed net cash flow} is their
+  inner product:
   \[
     \bar c_j=\left\langle\mathbf c_j,\symbf{\nu}_j\right\rangle
-    =\sum_{i=1}^{m}c_{j,i}\,\nu_{j,i}.
+    =\sum_{k=1}^{m_j}c_{j,k}\,\nu_{j,k}.
   \]
 
-  Over the dates $j=0,1,\ldots,N$, the undiscounted total $\sum_{j=0}^{N}\bar c_j$
-  is \textbf{\ink{not}} a time-0 value: its terms are dollars from different dates.
+  The undiscounted total $\sum_{j=0}^{N}\bar c_j$ is \textbf{\ink{not}} a time-0
+  value: its terms are dollars from different dates.
 
   \slidenote{Next:}{discount every term to a common date, and the result is net present value.}
 \end{frame}
@@ -268,10 +273,10 @@
 % ---- math: NPV -----------------------------------------------
 \begin{frame}{Net Present Value}
   \vspace{0.2em}
-  Let $\bar c_j$ be the \textbf{\ink{signed net cash flow}} on date $j$, positive for
-  an inflow and negative for an outflow, over the dates $j=0,1,\ldots,N$. Discount
-  each one to the valuation date with $\mathcal D_{j,0}^{-1}(y;n)$,
-  \hilite{then add}. The net present value at time $0$ is given by:
+  Take a nominal annual yield $y$ compounded $n$ times per year as the declared
+  valuation rate. Discount every signed net cash flow $\bar c_j$ to the valuation
+  date with $\mathcal D_{j,0}^{-1}(y;n)$, \hilite{then add}. The net present value
+  at time $0$ is given by:
   \[
     \operatorname{NPV}_0(y)=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}(y;n)\,\bar c_j
     =\underbrace{\left\langle \mathcal D_{\star,0}^{-1}(y;n),\ \bar{\mathbf c}\right\rangle}_{\text{\footnotesize time-0 dollars}} .
@@ -285,28 +290,28 @@
   \slidenote{Worked example:}{ten years of Model S ownership, $\operatorname{NPV}_0\approx-\$121{,}484$}
 \end{frame}
 
-% ==== optional advanced material =============================
-\begin{frame}{Optional Advanced Material}
+% ---- NPV meaning ---------------------------------------------
+\begin{frame}{Reading the Sign of NPV}
   \vspace{0.2em}
-  {\normalsize\textbf{\ink{Derivation:}}\par
-  \dimmed{CHEME-5660-L1b-Derivation-Discrete-Continuous-Compounding-Fall-2026.ipynb}}
+  The sign of $\operatorname{NPV}_0(y)$ compares the modeled cash flows against
+  the \hilite{rate you declared}. It is a valuation statement, not a promise of
+  accounting profit or realized return.
 
-  \vspace{0.3em}
-  Optional, not a prerequisite for L2a. Over a horizon $T$, holding $y$ fixed
-  while $n$ grows gives a limit discrete compounding only approaches. That is a
-  different statement from the exact identity
-  $\left(1+y/n\right)^{nT}=e^{g_yT}$, and the shortfall from it is:
-  \[
-    \delta_n:=1-\frac{\left(1+y/n\right)^{nT}}{e^{yT}}
-    \;\approx\;\underbrace{\frac{y^{2}T}{2n}}_{\text{\footnotesize leading estimate}} .
-  \]
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \textbf{\ink{Positive}}: in time-0 dollars, receipts exceed payments,
+      so at the declared $y$ the asset is worth more than its price.
+    \item \textbf{\ink{Negative}}: receipts fall short of payments, so at the
+      declared $y$ the asset is worth less than its price.
+    \item \textbf{\ink{Zero}}: receipts and payments agree, so the asset is worth
+      exactly its price. This is how L2a prices Treasury bills, notes, and bonds.
+  \end{itemize}
 
-  \vspace{-0.35em}
-  The estimate is \hilite{asymptotic}: it needs both $y/n$ and $y^{2}T/(2n)$
-  small, so a low frequency, a long horizon, or a large rate each degrade it.
-  A high $n$ alone is not the test.
+  \vspace{0.6em}
+  Change $y$ and the sign can change: it describes this cash-flow model at this
+  rate, not the asset in general.
 
-  \slidenote{Careful:}{at $y=15\%$ and $T=30$ yr the estimate overstates $\delta_n$ by about $27.6\%$ at $n=1$. Use the exact ratio there.}
+  \slidenote{Careful:}{a positive NPV is not a claim that an asset is risk-free or universally attractive.}
 \end{frame}
 
 % ---- summary -------------------------------------------------
