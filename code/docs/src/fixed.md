@@ -85,3 +85,16 @@ and maturity of $T$= 1,2,3,4 and 5 years, and a six security with face  (par) va
 VLQuantitativeFinancePackage.strip
 VLQuantitativeFinancePackage.YTM
 ```
+
+## Treasury quotation conventions
+
+A security term such as `"52-Week"` is a string in the auction records, and the
+price Treasury reports for a bill follows the day-count and settlement rules of
+31 CFR Part 356 rather than a generic equivalent-yield calculation. These two
+functions convert between those conventions and the quantities the pricing models
+use.
+
+```@docs
+VLQuantitativeFinancePackage.securityterm
+VLQuantitativeFinancePackage.treasury_bill_price_from_investment_rate
+```

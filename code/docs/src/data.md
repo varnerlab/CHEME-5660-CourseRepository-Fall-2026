@@ -25,3 +25,26 @@ VLQuantitativeFinancePackage.MySIMCalibration
 VLQuantitativeFinancePackage.MyCurrentPrices
 VLQuantitativeFinancePackage.MyAdaptivePortfolioCourseData
 ```
+
+## U.S. Treasury data
+
+The package vendors the Treasury auction records and rate series used by the
+fixed-income material, so the notebooks do not depend on the source repository's
+directory layout. The auction data was downloaded from
+[TreasuryDirect](https://www.treasurydirect.gov/) and covers October 2022 to the
+present; the daily rate series come from the
+[U.S. Treasury](https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics).
+
+Two of the loaders filter by default. `MyTreasuryBillDataSet` drops
+cash-management bills, which are irregular one-off issues quoted in days rather
+than weeks, and `MyTreasuryNotesAndBondsDataSet` drops reopenings, which carry an
+existing security's coupon and therefore clear well away from par. Pass
+`cmb = true` or `reopenings = true` to recover them.
+
+```@docs
+VLQuantitativeFinancePackage.MyTreasuryBillDataSet
+VLQuantitativeFinancePackage.MyTreasuryNotesAndBondsDataSet
+VLQuantitativeFinancePackage.MyTreasurySTRIPSDataSet
+VLQuantitativeFinancePackage.MyTreasuryParYieldCurveDataSet
+VLQuantitativeFinancePackage.MyTreasuryBillRatesDataSet
+```
