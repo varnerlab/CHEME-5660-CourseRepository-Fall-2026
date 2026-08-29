@@ -132,9 +132,10 @@ downloaded from [TreasuryDirect](https://www.treasurydirect.gov/) and covers
 auctions from October 2022 to the present.
 
 Columns are `CUSIP`, `Security Type`, `Security Term`, `Auction Date`,
-`Issue Date`, `Maturity Date`, `Price` (per 100 USD of face value) and
-`Investment Rate` (a decimal, so 0.04318 is 4.318%). The three date columns are
-strings in `mm/dd/yyyy` form.
+`Issue Date`, `Maturity Date`, `Price` (per 100 USD of face value), `High Rate`
+(the auction's bank discount rate), and `Investment Rate` (the
+coupon-equivalent yield). Both rates are decimals, so 0.04318 is 4.318%. The
+three date columns are strings in `mm/dd/yyyy` form.
 
 ### Arguments
 - `from::Union{Nothing,Date}`: keep auctions on or after this date. Defaults to `nothing`, i.e. no lower bound.
