@@ -162,18 +162,19 @@ function MyTreasuryBillDataSet(; from::Union{Nothing,Date} = nothing, to::Union{
 end
 
 """
-    MyTreasuryNotesAndBondsDataSet(; from, to, terms, types) -> DataFrame
+    MyTreasuryNotesAndBondsDataSet(; from, to, terms, types, reopenings) -> DataFrame
 
 Load U.S. Treasury note and bond auction results, newest auction first. The data
 was downloaded from [TreasuryDirect](https://www.treasurydirect.gov/) and covers
 auctions from October 2022 to the present. Inflation-protected securities are
-included; TreasuryDirect reports them with a `Security Type` of `Note`, and their
-`High Yield` is a real yield rather than a nominal one.
+included; TreasuryDirect identifies them in the `TIPS` column, and their `High
+Yield` is a real yield rather than a nominal one.
 
 Columns are `CUSIP`, `Security Type`, `Security Term`, `Auction Date`,
 `Issue Date`, `Maturity Date`, `Price` (per 100 USD of face value), `High Yield`
-and `Interest Rate` (the annual coupon rate). The two rate columns are decimals,
-so 0.041250 is 4.125%. The three date columns are strings in `mm/dd/yyyy` form.
+and `Interest Rate` (the annual coupon rate), and `TIPS` (`Yes` or `No`). The two
+rate columns are decimals, so 0.041250 is 4.125%. The three date columns are
+strings in `mm/dd/yyyy` form.
 
 ### Arguments
 - `from::Union{Nothing,Date}`: keep auctions on or after this date. Defaults to `nothing`, i.e. no lower bound.

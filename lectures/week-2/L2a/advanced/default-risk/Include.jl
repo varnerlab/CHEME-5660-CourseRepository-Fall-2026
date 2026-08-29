@@ -29,5 +29,6 @@ end
 using DataFrames     # labeled result and comparison tables
 using Distributions  # Bernoulli default and survival events
 using Plots          # price and yield-spread figures
+using PrettyTables   # formatted display of result tables
 using Random         # reproducible pseudo-random number generation
 using Statistics     # sample means and standard deviations
