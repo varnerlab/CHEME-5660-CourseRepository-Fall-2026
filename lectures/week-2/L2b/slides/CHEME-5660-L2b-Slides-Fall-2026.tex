@@ -11,28 +11,31 @@
 %
 %   (deck only)                                  -> title
 %   Disclaimer and Risks              [last]     -> slide 2  (always near the front)
-%   Scenario blockquote               [cell 0]   -> Scenario
+%   Motivation: $500M scenario                   -> Scenario
 %   Learning objectives               [cell 0]   -> Objectives for Today
 %   Examples                                     -> Lectures and Examples
-%   Concept Review: risk-free?                   -> transition frame + review slide
-%     Case Study: SVB                            -> Case Study: ... Silicon Valley Bank
+%   Review: default and interest-rate risk       -> transition frame + review slide
+%     SVB discussion                             -> Case Study: ... Silicon Valley Bank
+%   Motivation: Malkiel's theorems stated        -> Malkiel's Bond-Pricing Theorems
 %   Zero-Coupon Treasury Bill                    -> Zero-Coupon Treasury Bill
-%     Deriving the Price Sensitivity             -> Deriving the Price Sensitivity
-%     Is the Maturity Channel Legitimate?        -> What Does a Change in Maturity Mean?
-%     The Two Sensitivity Magnitudes             -> The Two Sensitivity Magnitudes
-%     What This Says to Us                       -> What This Says to Us: the Bill
+%     Price Sensitivity of a Treasury Bill       -> Deriving the Price Sensitivity
+%     Interpreting the Bill Sensitivities        -> What Does a Change in Maturity Mean?
+%                                                   + Yield and Maturity Sensitivities
+%                                                   + How Yield and Maturity Change ...
 %     Optional zero-coupon extension             -> Optional: Bill Maturity Sensitivity
 %   Coupon-Bearing Treasury Notes and Bonds      -> Coupon-Bearing Treasury Notes and Bonds
-%     What This Says to Us                       -> What This Says to Us: Notes and Bonds
+%     Interpreting the Coupon-Bond Sensitivities -> How Bond Features Change Its Price
 %   Duration and Convexity                       -> Duration and Convexity
-%     Two Derivatives, One Shape                 -> Two Derivatives, One Shape (+ figure)
-%     The Two Risk Measures                      -> The Two Risk Measures
-%     Using Them: Second-Order Approximation     -> approximation + worked estimate
-%   Connection to Malkiel's Theorems             -> Connection to ... (+ 3 theorem slides)
+%     Price-Yield Geometry                       -> Two Derivatives, One Shape (+ figure)
+%     Duration and Convexity as Risk Measures    -> The Two Risk Measures
+%     Estimating a Price Change                  -> approximation + worked estimate
+%                                                   + What Duration Is Used For
+%   Revisiting Malkiel's Theorems                -> Revisiting ... (+ 3 theorem slides)
 %   From One Yield to the Yield Curve            -> From One Yield to the Yield Curve
-%   Optional Advanced Material                   -> Optional Advanced Material
+%     recession-predictor blockquote             -> A Recession Predictor?
+%   Optional Advanced Material                   -> Optional Advanced Material (4 items)
 %   Summary                                      -> Summary
-%   Today?                                       -> closing transition frame
+%   (deck only)                                  -> closing transition frame
 %
 % Like L2a and unlike L1b, this notebook DOES open with a concept-review section,
 % so \transitionframe is used as intended rather than as a 2024 holdover.
@@ -200,6 +203,29 @@ have a risky price.}}
   risk was important, but it was not the only cause of the failure.
 
   \slidenote{Overview:}{\href{https://www.youtube.com/watch?v=7tNt7WaP4iA}{the collapse of Silicon Valley Bank, from PBS}}
+\end{frame}
+
+% ---- Malkiel theorems stated up front ------------------------
+\begin{frame}{Malkiel's Bond-Pricing Theorems}
+  \vspace{0.2em}
+  The lecture's destination is a set of classical results, stated now and proved
+  as the tools become available. Each concerns an \hilite{option-free} security
+  with fixed positive cash flows, holds the remaining contract terms fixed, and
+  makes its maturity comparisons between bonds priced \hilite{at par} ($c=y$).
+
+  \vspace{0.4em}
+  \begin{enumerate}\setlength{\itemsep}{0.35em}
+    \item Bond prices move \hilite{inversely} to bond yields.
+    \item \hilite{Longer maturity} means more sensitivity to a yield change.
+    \item The sensitivity gain from added maturity \hilite{diminishes} as
+      maturity lengthens.
+    \item Equal yield moves produce \hilite{asymmetric} price changes: a
+      decrease raises the price by more than an equal increase lowers it.
+    \item \hilite{Higher coupon rates} mean less sensitivity, in percentage
+      terms.
+  \end{enumerate}
+
+  \slidenote{Reference:}{Malkiel (1962), \emph{Expectations, Bond Prices, and the Term Structure of Interest Rates}, QJE 76(2), 197\textendash218.}
 \end{frame}
 
 % ---- zero-coupon bill ----------------------------------------
@@ -511,13 +537,36 @@ have a risky price.}}
   whole schedule at the new yield, not to extrapolate from duration.
 \end{frame}
 
+\begin{frame}{What Duration Is Used For}
+  \vspace{0.3em}
+  Beyond the single-security estimate, duration is useful for two reasons:
+
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{A common scale}: securities with different coupons, maturities,
+      and prices land on one scale, so the interest-rate risk of a 2-year note
+      and a 10-year note can be compared directly.
+    \item \hilite{A portfolio measure}: the duration of a portfolio is the
+      market-value-weighted average of the durations of the securities it holds,
+      so the \$500 million portfolio from the scenario reprices in one step
+      rather than security by security.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The same properties support risk management: offsetting positions can bring a
+  portfolio's net duration near zero, while a bank that funds long-duration
+  securities with short-duration deposits, as SVB did, carries a duration
+  mismatch.
+\end{frame}
+
 % ---- Malkiel -------------------------------------------------
-\begin{frame}{Connection to Malkiel's Bond Pricing Theorems}
+\begin{frame}{Revisiting Malkiel's Theorems}
   \vspace{0.2em}
-  Two ground rules. Every theorem assumes an option-free security with fixed
-  positive cash flows and holds the other contract terms fixed. And the maturity
-  theorems compare bonds \hilite{selling at par}, $c=y$, measuring changes
-  from that starting point. That restriction is not a technicality.
+  The machinery is in place, so return to the five theorems stated at the start
+  of the lecture. Recall the ground rules: option-free securities with fixed
+  positive cash flows, other contract terms held fixed, and maturity comparisons
+  between bonds \hilite{selling at par}, $c=y$. That restriction is not a
+  technicality.
 
   \vspace{0.4em}
   Substituting $C=(c/n)V_P$ and summing the geometric series puts the coupon
@@ -607,7 +656,8 @@ have a risky price.}}
   \vspace{0.5em}
   A \hilite{spot rate} applies to one payment date, so a spot curve supplies one
   discount factor per date. A \hilite{par yield} is the coupon rate that makes a
-  hypothetical security trade at par under that curve. Writing $D(0,t_j)$ for the
+  hypothetical security trade at par under that curve; the published Treasury
+  yield curve is a \hilite{par yield curve}. Writing $D(0,t_j)$ for the
   time-0 discount factor for maturity $t_j$, the curve-based price is:
   \[
     V_B=\sum_{j=1}^{N}X_j\,D(0,t_j).
@@ -618,25 +668,46 @@ have a risky price.}}
   They do not, by themselves, identify a unique forecast of future short rates.
 \end{frame}
 
+\begin{frame}{A Recession Predictor?}
+  \vspace{0.4em}
+  In most periods long-maturity yields exceed short-maturity yields, so the par
+  yield curve slopes upward. When that ordering flips, the curve is
+  \hilite{inverted}.
+
+  \vspace{0.7em}
+  Inversions have a famous track record: an inverted long-minus-short spread,
+  such as the \hilite{10-year minus 3-month} yield, has preceded every U.S.
+  recession of the past half century.
+
+  \vspace{0.7em}
+  The record comes with qualifiers: false positives occur, lead times run from
+  months to years, and the reading depends on the maturity pair chosen. The
+  optional par-yield example computes the spread from published Treasury data
+  and asks what it is saying now.
+
+  \slidenote{Notebook:}{\dimmed{advanced/yield\_curve/CHEME-5660-L3a-ParYieldCurves-Example-Fall-2026.ipynb}}
+\end{frame}
+
 \begin{frame}{Optional Advanced Material}
   \vspace{0.2em}
-  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/malkiel/}\par
-  \dimmed{CHEME-5660-L2b-Advanced-Malkiel-TBill-Example-Fall-2026.ipynb}}
+  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/malkiel/}, the Treasury
+  bill maturity example and the par-bond duration note}
 
   \vspace{0.5em}
-  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/yield\_curve/}\par
-  \dimmed{CHEME-5660-L3a-Lecture-YieldCurve-Data-Fall-2026.ipynb}}
+  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/yield\_curve/}, a
+  lecture-style notebook with three examples}
 
   \vspace{0.5em}
-  {\normalsize\textbf{\ink{Advanced 3:}} \dimmed{advanced/strips/}\par
-  \dimmed{CHEME-5660-L3b-Lecture-STRIPS-Bonds-Fall-2026.ipynb}}
+  {\normalsize\textbf{\ink{Advanced 3:}} \dimmed{advanced/strips/}, a
+  lecture-style notebook and an issuer example}
 
   \vspace{0.5em}
   Optional; these preserve the deeper fixed-income material and are not
-  prerequisites for L3a. The first compares Treasury bill yield sensitivity across
-  maturities; the second (a lecture with three examples) covers yield to maturity,
-  par and spot curves, and short-rate models; the third (a lecture and an issuer
-  example) builds and prices Treasury STRIPS.
+  prerequisites for L3a. The malkiel pair takes Theorem 2 to auction data and
+  proves Theorems 2 and 3 in closed form. The yield-curve sequence covers the
+  investment yield of zeros, yield to maturity by the secant method, and par
+  yield curves from Treasury data, including the recession-indicator spread. The
+  STRIPS sequence infers spot, par, and implied forward rates from STRIPS prices.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-2/L2b/advanced}{lectures/week-2/L2b/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
@@ -648,21 +719,19 @@ have a risky price.}}
   \vspace{0.45em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \textbf{\ink{Bond prices decrease as yields increase.}} For a fixed
-      stream of positive cash flows, the price-yield relationship is decreasing
-      and convex.
+      stream of positive cash flows, the price-yield curve is decreasing and
+      convex.
     \item \textbf{\ink{Duration and convexity measure local price sensitivity.}}
-      Duration gives the first-order response to a yield change, and convexity
-      corrects that straight line for curvature.
-    \item \textbf{\ink{One yield is not a yield curve.}} Yield to maturity
-      summarizes one security with a single rate, while spot rates and discount
-      factors value cash flows at specific maturities and par yields are implied
-      by that term structure.
+      Duration is the first-order response to a yield change; convexity corrects
+      the straight line for curvature.
+    \item \textbf{\ink{Malkiel's theorems hold under stated assumptions.}} The
+      par restriction is what aligns the percentage and dollar sensitivity
+      rankings.
+    \item \textbf{\ink{One yield is not a yield curve.}} Spot rates value each
+      payment date, and par yields restate that curve as coupon rates.
   \end{itemize}
-
-  \vspace{0.5em}
-  Together these form a practical fixed-income risk toolkit.
 \end{frame}
 
 % ---- closing -------------------------------------------------
