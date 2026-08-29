@@ -4,8 +4,8 @@ These folders preserve the deeper fixed-income material from the former Week 3
 sequence. They are optional extensions, not required preparation for Week 3.
 
 - `malkiel/`: zero-coupon maturity-sensitivity exercise and theorem extension.
-- `yield_curve/`: yield-to-maturity, par/spot curves, forward rates, and
-  stochastic short-rate models.
+- `yield_curve/`: investment yield of zeros, yield-to-maturity, and par yield
+  curves.
 - `strips/`: Treasury STRIPS construction, pricing, and term-structure examples.
 
 The required L2b path remains in the parent folder: price-yield sensitivity,
