@@ -109,9 +109,9 @@
   portfolio move?}
 
   \vspace{0.9em}
-  That question has a conditional answer: it depends on the portfolio cash
-  flows and on which yields move. Today we use the slope and curvature of the
-  price-yield relationship to estimate the change.
+  The answer is conditional: it depends on the portfolio's cash flows and on
+  which yields move. Today we estimate it from the slope and curvature of the
+  price-yield relationship.
 
   \slidenote{Careful:}{a half-point move in the \emph{policy rate} is not a half-point move in \emph{your security's yield}. We return to that.}
 \end{frame}
@@ -119,8 +119,8 @@
 % ---- objectives ----------------------------------------------
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
-  Today we take the fixed-income price model from L2a and ask how its price
-  responds to a change in the rate used to discount it.
+  We take the fixed-income price model from L2a and ask how its price responds
+  when the discount rate changes.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
@@ -144,15 +144,15 @@
   {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb}}
 
   \vspace{1.0em}
-  The required example prices a coupon Treasury security and studies how its
-  price responds to a change in yield and to a change in the coupon rate.
+  The required example prices a coupon Treasury security and studies its
+  response to changes in the yield and in the coupon rate.
 
   \vspace{0.8em}
   {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L2b-Example-Treasury-Duration-Convexity-Fall-2026.ipynb}}
 
   \vspace{0.7em}
-  The longer theorem exercise and the term-structure notebooks stay available as
-  optional extensions under \dimmed{advanced/}.
+  The theorem exercises and term-structure notebooks remain optional extensions
+  under \dimmed{advanced/}.
 
   \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
 \end{frame}
@@ -163,20 +163,19 @@ have a risky price.}}
 
 \begin{frame}{Concept Review: Are Treasury Securities Really Risk-Free?}
   \vspace{0.3em}
-  \hilite{No.} Treasuries carry low default risk because they are obligations of
-  the U.S. government, which is why the rate you declare is so often taken from
-  them. That label is conditional. Two risks that remain matter today.
+  \hilite{No.} Treasuries carry low default risk as obligations of the U.S.
+  government, which is why declared rates are so often taken from them. The
+  label is conditional; two remaining risks matter today.
 
   \vspace{0.45em}
   \begin{itemize}\setlength{\itemsep}{0.45em}
     \item \hilite{Default risk}: the issuer fails to pay. The United States has
-      never repudiated its debt, though a 1979 operational failure did delay
-      payment on some maturing bills. Other sovereigns have defaulted outright:
-      Greece restructured its privately held debt in 2012, Russia defaulted in
-      1998.
-    \item \hilite{Interest-rate risk}: if required yields change, the
-      secondary-market value of a fixed promised cash flow changes. An
-      institution that marks positions to market is affected even without a sale.
+      never repudiated its debt (a 1979 operational failure did delay some bill
+      payments); other sovereigns have: Greece restructured in 2012, Russia
+      defaulted in 1998.
+    \item \hilite{Interest-rate risk}: a change in required yields changes the
+      secondary-market value of fixed promised cash flows, hitting an
+      institution that marks to market even without a sale.
   \end{itemize}
 
   \slidenote{Today:}{interest-rate risk is the one we can compute. Its size depends on maturity, coupon, yield, and the shock.}
@@ -199,8 +198,8 @@ have a risky price.}}
   \end{itemize}
 
   \vspace{0.15em}
-  Falling bond values and deposit withdrawals reinforced each other. Interest-rate
-  risk was important, but it was not the only cause of the failure.
+  Falling bond values and deposit withdrawals reinforced each other;
+  interest-rate risk mattered, but was not the only cause.
 
   \slidenote{Overview:}{\href{https://www.youtube.com/watch?v=7tNt7WaP4iA}{the collapse of Silicon Valley Bank, from PBS}}
 \end{frame}
@@ -208,10 +207,10 @@ have a risky price.}}
 % ---- Malkiel theorems stated up front ------------------------
 \begin{frame}{Malkiel's Bond-Pricing Theorems}
   \vspace{0.2em}
-  The lecture's destination is a set of classical results, stated now and proved
-  as the tools become available. Each concerns an \hilite{option-free} security
-  with fixed positive cash flows, holds the remaining contract terms fixed, and
-  makes its maturity comparisons between bonds priced \hilite{at par} ($c=y$).
+  Our destination: five classical results, stated now and proved as the tools
+  arrive. Each assumes an \hilite{option-free} security with fixed positive cash
+  flows, holds the other contract terms fixed, and compares maturities between
+  bonds priced \hilite{at par} ($c=y$).
 
   \vspace{0.4em}
   \begin{enumerate}\setlength{\itemsep}{0.35em}
@@ -231,32 +230,28 @@ have a risky price.}}
 % ---- zero-coupon bill ----------------------------------------
 \begin{frame}{Zero-Coupon Treasury Bill}
   \vspace{0.3em}
-  Start with the simplest security: a bill that pays nothing until maturity and
-  then returns its face value. This simple cash-flow pattern makes a bill a useful
-  starting point.
+  Start with the simplest security: a bill pays nothing until maturity, then
+  returns its face value.
 
   \vspace{0.5em}
   Let $V_P>0$ be the face value, $T>0$ the remaining maturity in years, $n$ the
-  number of compounding intervals per year, and $y$ the nominal annual yield used
-  to discount the single promised payment. The per-period factor $1+y/n$ is the
-  growth factor over one interval, so the L2a discount factor is
-  $\mathcal D_{T,0}^{-1}(y;n)=\left(1+y/n\right)^{-nT}$. The price is given by:
+  compounding intervals per year, and $y$ the nominal annual yield. With
+  per-period growth factor $1+y/n$, the L2a discount factor is
+  $\mathcal D_{T,0}^{-1}(y;n)=\left(1+y/n\right)^{-nT}$ and the price is:
   \[
     V_B=\underbrace{\left(1+y/n\right)^{-nT}}_{\text{\footnotesize discount}}V_P .
   \]
 
   \vspace{0.2em}
-  \hilite{Standing assumption:} $y>0$ throughout this lecture, as it has been for
-  the Treasury data we use. We will identify every result that depends on this
-  assumption.
+  \hilite{Standing assumption:} $y>0$ throughout, as in the Treasury data we
+  use; we flag every result that depends on it.
 \end{frame}
 
 \begin{frame}{Deriving the Price Sensitivity}
   \vspace{0.2em}
-  Three quantities could move the price: the yield $y$, the annual coupon rate
-  $c$, and the maturity $T$. A bill's contract fixes $c=0$, so $dc=0$.
-  Holding $V_P$ and $n$ fixed, only changes in $y$ and $T$ remain in the total
-  differential:
+  Three inputs could move the price: the yield $y$, the coupon rate $c$, and the
+  maturity $T$. A bill's contract fixes $c=0$, so with $V_P$ and $n$ held fixed
+  only $y$ and $T$ remain in the total differential:
   \[
     dV_B
     =-\underbrace{V_P\left(1+y/n\right)^{-nT}\left(\frac{T}{1+y/n}\right)}_{V_{B,y}}dy
@@ -264,30 +259,26 @@ have a risky price.}}
   \]
 
   \vspace{0.2em}
-  \hilite{Why there is no $dc$ term:} the bill's coupon rate is fixed and cannot
-  change. In the coupon-bearing family of the next section,
-  $\partial V_B/\partial c=(V_P/n)\sum_{j}\mathcal D_{j,0}^{-1}(y;n)>0$, which stays strictly
-  positive at $c=0$. The derivative is not zero; the contract simply requires
-  $dc=0$.
+  \hilite{Why no $dc$ term:} in the coupon-bearing family of the next section,
+  $\partial V_B/\partial c=(V_P/n)\sum_{j}\mathcal D_{j,0}^{-1}(y;n)>0$, strictly positive even
+  at $c=0$. The derivative is not zero; the contract requires $dc=0$.
 \end{frame}
 
 \begin{frame}{What Does a Change in Maturity Mean?}
   \vspace{0.3em}
-  A bill promises one payment, so its price depends on $T$ only through the
-  exponent $nT$. No intermediate payment can be added or removed, so
-  $\partial V_B/\partial T$ is well defined here. But $dT$ can describe two
-  different comparisons:
+  A bill promises one payment, so $T$ enters only through the exponent $nT$ and
+  $\partial V_B/\partial T$ is well defined. But $dT$ can describe two different
+  comparisons:
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Changing the contractual maturity}: comparing a 6-month bill
-      with a 12-month bill compares two securities issued on different terms.
-      Smooth for a bill, because only the exponent changes. Not smooth for a
-      coupon security, where it adds or removes scheduled payments.
-    \item \hilite{The passage of time}: holding one bill, calendar time $t$
-      advances while remaining maturity falls, so $dT=-dt$ along the position.
-      Smooth for a bill over the whole holding period. For a coupon security,
-      smooth only between coupon dates.
+    \item \hilite{Changing the contractual maturity}: a 6-month versus a 12-month
+      bill compares securities issued on different terms. Smooth for a bill,
+      where only the exponent changes; not for a coupon security, where it adds
+      or removes scheduled payments.
+    \item \hilite{The passage of time}: holding one bill, calendar time advances
+      and remaining maturity falls, so $dT=-dt$. Smooth for a bill over the
+      whole holding period; for a coupon security, only between coupon dates.
   \end{itemize}
 
   \slidenote{Later:}{both distinctions return when we price coupon-bearing notes and bonds.}
@@ -295,9 +286,8 @@ have a risky price.}}
 
 \begin{frame}{Yield and Maturity Sensitivities}
   \vspace{-0.3em}
-  Read $V_{B,y}$ and $V_{B,T}$ as \hilite{magnitudes}, not the derivatives
-  themselves: the derivatives are their negatives, which is why the minus signs
-  appear above. Under the standing assumption $y>0$, both are positive:
+  Read $V_{B,y}$ and $V_{B,T}$ as \hilite{magnitudes}: the derivatives are their
+  negatives, hence the minus signs above. For $y>0$ both are positive:
   \[
     V_{B,y}=\underbrace{V_P(1+y/n)^{-nT}}_{=\,V_B}\underbrace{\left(\frac{T}{1+y/n}\right)}_{>\,0},
     \qquad
@@ -306,10 +296,9 @@ have a risky price.}}
   where $g_y:=n\log(1+y/n)$ is the continuously compounded equivalent of $y$ from L2a.
 
   \vspace{0.1em}
-  Given a well-posed price, $1+y/n>0$, the first magnitude is positive for any
-  $T>0$. The second needs $y>0$: $g_y$ carries the sign of $y$, so at $y=0$
-  maturity stops mattering, and for $-n<y<0$ a longer bill would be worth
-  \emph{more} and trade above par.
+  With $1+y/n>0$, the first magnitude is positive for any $T>0$. The second
+  needs $y>0$: $g_y$ carries the sign of $y$, so at $y=0$ maturity stops
+  mattering, and for $-n<y<0$ a longer bill would be worth \emph{more}.
 
   \slidenote{Careful:}{negative nominal yields have occurred in other sovereign markets. State the condition.}
 \end{frame}
@@ -319,27 +308,27 @@ have a risky price.}}
   {\large\textbf{\ink{Decreasing in the yield}}}
   \vspace{0.2em}
 
-  Holding maturity fixed, a higher yield discounts the face value more heavily,
-  so $V_B\downarrow$ as $y\uparrow$. Buy a 52-week bill at auction; if the yield
-  moves from 2\% to 3\%, the secondary-market price falls below what you paid.
+  A higher yield discounts the face value more heavily, so $V_B\downarrow$ as
+  $y\uparrow$. Buy a 52-week bill at auction; if the yield moves from 2\% to
+  3\%, the secondary-market price falls below what you paid.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Decreasing in the time to maturity}}}
   \vspace{0.2em}
 
-  Holding the yield fixed at a positive value, $V_B\downarrow$ as $T\uparrow$. But
-  while you \emph{hold} the bill, calendar time advances and the remaining
-  maturity falls, so $dT<0$: six months in, with the yield unchanged, the price is
-  \emph{higher} than you paid, because fewer periods remain to discount. At $y=0$
-  exactly, every discount factor is one and the price does not move at all.
+  At a fixed positive yield, $V_B\downarrow$ as $T\uparrow$. But while you
+  \emph{hold} the bill, remaining maturity falls, $dT<0$: six months in, at an
+  unchanged yield, the price is \emph{higher} than you paid, because fewer
+  periods remain to discount. At $y=0$, every discount factor is one and the
+  price does not move.
 
 \end{frame}
 
 \begin{frame}{Optional: Bill Maturity Sensitivity}
   \vspace{0.6em}
-  The required lecture now moves to coupon-bearing notes and bonds. The advanced
-  bill notebook stays here in the sequence because it extends the maturity
-  discussion we just completed.
+  The required lecture moves on to coupon-bearing notes and bonds; the advanced
+  bill notebook sits here because it extends the maturity discussion just
+  completed.
 
   \vspace{1.0em}
   {\normalsize\textbf{Question:} How does a zero-coupon bill's price sensitivity
@@ -398,8 +387,8 @@ have a risky price.}}
 % ---- duration and convexity ----------------------------------
 \begin{frame}{Duration and Convexity}
   \vspace{0.2em}
-  Derivatives tell us the direction of a price change. Risk management also
-  needs its size in units that can be compared across positions.
+  Derivatives give the direction of a price change; risk management also needs
+  its size, in units comparable across positions.
 
   \vspace{0.5em}
   We assume an \hilite{option-free} security: its promised cash flows do not
@@ -407,9 +396,8 @@ have a risky price.}}
   callable, inflation-indexed, and mortgage-backed securities do not.
 
   \vspace{0.5em}
-  Let $N$ be the number of remaining periods and $X_j\ge0$ the dollar cash flow at
-  period $j$, with at least one $X_j>0$. The same price formula covers both
-  bills and coupon-bearing securities:
+  Let $X_j\ge0$ be the dollar cash flow at period $j=1,\ldots,N$, with at least
+  one $X_j>0$. One price formula covers bills and coupon securities alike:
   \[
     V_B(y)=\sum_{j=1}^{N}X_j\,\mathcal D_{j,0}^{-1}(y;n).
   \]
@@ -429,56 +417,68 @@ have a risky price.}}
   \]
 
   \vspace{0.2em}
-  The strict signs follow from $1+y/n>0$ and from at least one $X_j$ being strictly
-  positive: no term of either sum is negative, and at least one term of each is
-  positive.
+  The strict signs follow from $1+y/n>0$ and at least one $X_j>0$: no term of
+  either sum is negative, and at least one term of each is positive.
 
   \vspace{0.5em}
   So the price-yield curve is \hilite{decreasing} and \hilite{strictly convex}.
-  That second fact is called \hilite{positive convexity}, and it is what makes the
-  price response asymmetric.
+  The second fact, \hilite{positive convexity}, is what makes the price response
+  asymmetric.
 \end{frame}
 
 \begin{frame}{The Price-Yield Curve}
-  \vspace{-0.2em}
+  \vspace{-0.4em}
   \begin{center}
-    \begin{tikzpicture}[x=1.36cm,y=0.94cm,>=Latex,font=\sffamily\small]
+    \begin{tikzpicture}[x=1.28cm,y=0.84cm,>=Latex,font=\sffamily\small]
+      % axes
       \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(7.2,0) node[right]{yield $y$};
       \draw[vnink,line width=0.8pt,-{Latex[length=3mm]}] (0,0)--(0,4.7) node[above]{price $V_B(y)$};
-      \draw[vnlink,line width=1.4pt,domain=0.45:6.7,samples=80,smooth]
+      % tangent at y0: the duration (straight-line) estimate
+      \draw[vnmuted,line width=0.9pt,domain=1.2:6.05]
+        plot (\x,{2.388-0.456*(\x-3.45)});
+      \node[anchor=west,text=vnmuted,align=left] at (6.1,1.0)
+        {\footnotesize tangent at $y_0$:\\[-2pt]\footnotesize the duration line};
+      % price curve (domain chosen so the curve stays inside the axes)
+      \draw[vnlink,line width=1.4pt,domain=0.96:6.7,samples=80,smooth]
         plot (\x,{5.25/(0.75+0.42*\x)});
-      \coordinate (mid) at (3.45,{5.25/(0.75+0.42*3.45)});
-      \coordinate (low) at (2.15,{5.25/(0.75+0.42*2.15)});
-      \coordinate (high) at (4.75,{5.25/(0.75+0.42*4.75)});
+      % the three priced points
+      \coordinate (mid)  at (3.45,2.388);
+      \coordinate (low)  at (1.55,3.748);
+      \coordinate (high) at (5.35,1.752);
+      % droplines to the yield axis and guides to the price axis
+      \draw[vnrule,dashed] (1.55,0)--(low) (3.45,0)--(mid) (5.35,0)--(high);
+      \draw[vnrule,dashed] (0,3.748)--(low) (0,2.388)--(mid) (0,1.752)--(high);
       \fill[vnink] (mid) circle (1.8pt);
       \fill[vnlink] (low) circle (1.8pt);
       \fill[vncarnelian] (high) circle (1.8pt);
-      \draw[vnrule,dashed] (2.15,0)--(low) (3.45,0)--(mid) (4.75,0)--(high);
-      \node[below] at (2.15,0) {$y_-$};
+      \node[below] at (1.55,0) {$y_-$};
       \node[below] at (3.45,0) {$y_0$};
-      \node[below] at (4.75,0) {$y_+$};
-      \draw[vnrule,dashed] (1.82,3.18)--(low) (1.82,2.39)--(mid);
-      \draw[vnlink,<->,line width=0.9pt] (1.82,2.39)--(1.82,3.18)
+      \node[below] at (5.35,0) {$y_+$};
+      % equal shocks marked below the axis
+      \draw[vnmuted,<->,line width=0.8pt] (1.55,-0.62)--(3.45,-0.62)
+        node[midway,below,text=vnmuted]{\footnotesize $\Delta y$};
+      \draw[vnmuted,<->,line width=0.8pt] (3.45,-0.62)--(5.35,-0.62)
+        node[midway,below,text=vnmuted]{\footnotesize $\Delta y$};
+      % gain and loss stacked on the price axis, sharing the V(y0) endpoint
+      \draw[vnlink,<->,line width=1.0pt] (-0.22,2.388)--(-0.22,3.748)
         node[midway,left,text=vnlink]{gain};
-      \draw[vnrule,dashed] (high)--(5.08,1.91) (mid)--(5.08,2.39);
-      \draw[vncarnelian,<->,line width=0.9pt] (5.08,1.91)--(5.08,2.39)
-        node[midway,right,text=vncarnelian]{loss};
-      \node[anchor=west,text=vnmuted] at (5.05,3.35) {decreasing};
-      \node[anchor=west,text=vnmuted] at (5.05,2.95) {and convex};
+      \draw[vncarnelian,<->,line width=1.0pt] (-0.22,1.752)--(-0.22,2.388)
+        node[midway,left,text=vncarnelian]{loss};
     \end{tikzpicture}
   \end{center}
 
-  \vspace{-0.3em}
-  {\footnotesize Equal yield moves $y_\pm:=y_0\pm\Delta y$, for $\Delta y>0$, from
-  the same starting yield $y_0$. Convexity makes the \hilite{gain} exceed the
-  \hilite{loss}.}
+  \vspace{-0.5em}
+  {\footnotesize Equal shocks $y_\pm:=y_0\pm\Delta y$: read on the price axis, the
+  \hilite{gain} from the down-move exceeds the \hilite{loss} from the up-move.
+  The curve lies above its tangent at $y_0$, so the duration line understates
+  the gain and overstates the loss: convexity is the correction.}
 \end{frame}
 
 \begin{frame}{The Two Risk Measures}
   \vspace{0.2em}
-  Dividing each derivative by the price removes the size of the position and
-  leaves two local risk measures. With $V_B(y)>0$ the price at yield $y$, the
-  \hilite{modified duration} and the \hilite{convexity} are given by:
+  Dividing each derivative by the price $V_B(y)>0$ removes position size and
+  leaves two local risk measures, the \hilite{modified duration} and the
+  \hilite{convexity}:
   \[
     D_{\mathrm{mod}}(y):=-\frac{1}{V_B(y)}\frac{dV_B}{dy},
     \qquad
@@ -491,16 +491,15 @@ have a risky price.}}
   \hilite{Modified is not Macaulay.} The \hilite{Macaulay duration}
   $D_{\mathrm{mac}}$ is the present-value-weighted average time to payment, and
   $D_{\mathrm{mod}}=D_{\mathrm{mac}}/(1+y/n)$. For a bill, every dollar arrives at
-  maturity, so $D_{\mathrm{mac}}=T$ and $D_{\mathrm{mod}}=T/(1+y/n)$, which is exactly
-  the ratio $V_{B,y}/V_B$ we derived earlier.
+  maturity, so $D_{\mathrm{mac}}=T$ and $D_{\mathrm{mod}}=T/(1+y/n)$: exactly the
+  ratio $V_{B,y}/V_B$ derived earlier.
 \end{frame}
 
 \begin{frame}{Duration Gives the Slope; Convexity Adds Curvature}
   \vspace{0.2em}
-  A second-order Taylor expansion of $V_B(y)$ about the current yield, divided by
-  the price, turns the two measures into a repricing estimate. For a yield change
-  $\Delta y$, with $\Delta V_B:=V_B(y+\Delta y)-V_B(y)$, the approximate
-  fractional price change is given by:
+  A second-order Taylor expansion about the current yield, divided by the price,
+  turns the two measures into a repricing estimate. For a shock $\Delta y$, with
+  $\Delta V_B:=V_B(y+\Delta y)-V_B(y)$:
   \[
     \frac{\Delta V_B}{V_B}\approx
     \underbrace{-D_{\mathrm{mod}}\,\Delta y}_{\text{\footnotesize slope}}
@@ -531,10 +530,10 @@ have a risky price.}}
   \end{itemize}
 
   \vspace{0.6em}
-  Both measures are \hilite{local}: they are derivatives at the current yield, so
-  the estimate degrades as $\Delta y$ grows. For the multiple-percentage-point
-  moves of 2022 and 2023 that hurt SVB, the honest calculation is to reprice the
-  whole schedule at the new yield, not to extrapolate from duration.
+  Both measures are \hilite{local}: derivatives at the current yield, so the
+  estimate degrades as $\Delta y$ grows. For moves the size of those that hurt
+  SVB, reprice the whole schedule at the new yield rather than extrapolating
+  from duration.
 \end{frame}
 
 \begin{frame}{What Duration Is Used For}
@@ -562,11 +561,10 @@ have a risky price.}}
 % ---- Malkiel -------------------------------------------------
 \begin{frame}{Revisiting Malkiel's Theorems}
   \vspace{0.2em}
-  The machinery is in place, so return to the five theorems stated at the start
-  of the lecture. Recall the ground rules: option-free securities with fixed
-  positive cash flows, other contract terms held fixed, and maturity comparisons
-  between bonds \hilite{selling at par}, $c=y$. That restriction is not a
-  technicality.
+  The machinery is in place: return to the five theorems from the start of the
+  lecture. Ground rules: option-free, fixed positive cash flows, other terms
+  held fixed, and maturity comparisons between bonds \hilite{selling at par},
+  $c=y$. The par restriction is not a technicality.
 
   \vspace{0.4em}
   Substituting $C=(c/n)V_P$ and summing the geometric series puts the coupon
@@ -579,9 +577,9 @@ have a risky price.}}
   \]
 
   \vspace{0.2em}
-  \hilite{Order matters.} Differentiate at fixed $c$, and only \emph{then}
-  set $c=y$. Setting $c=y$ first differentiates along the par locus,
-  where the price is pinned at $V_P$, and returns zero. Assume $y>0$ throughout.
+  \hilite{Order matters.} Differentiate at fixed $c$, \emph{then} set $c=y$:
+  the reverse differentiates along the par locus, where the price is pinned at
+  $V_P$, and returns zero. Assume $y>0$ throughout.
 \end{frame}
 
 \begin{frame}{Malkiel's Theorems 1, 2, and 3}
@@ -650,8 +648,8 @@ have a risky price.}}
 \begin{frame}{From One Yield to the Yield Curve}
   \vspace{0.3em}
   \hilite{Yield to maturity} is the single internal rate that reproduces one
-  security's price from its promised cash flows. It is useful for quoting and
-  comparison, but it is not the full term structure.
+  security's price from its promised cash flows: useful for quoting and
+  comparison, but not the full term structure.
 
   \vspace{0.5em}
   A \hilite{spot rate} applies to one payment date, so a spot curve supplies one
@@ -664,8 +662,8 @@ have a risky price.}}
   \]
 
   \vspace{0.2em}
-  Curve level, slope, and curvature describe how discounting varies by maturity.
-  They do not, by themselves, identify a unique forecast of future short rates.
+  Level, slope, and curvature describe how discounting varies by maturity; by
+  themselves they do not identify a forecast of future short rates.
 \end{frame}
 
 \begin{frame}{A Recession Predictor?}
@@ -681,9 +679,9 @@ have a risky price.}}
 
   \vspace{0.7em}
   The record comes with qualifiers: false positives occur, lead times run from
-  months to years, and the reading depends on the maturity pair chosen. The
-  optional par-yield example computes the spread from published Treasury data
-  and asks what it is saying now.
+  months to years, and the reading depends on the maturity pair. The optional
+  par-yield example computes the spread from Treasury data and asks what it
+  says now.
 
   \slidenote{Notebook:}{\dimmed{advanced/yield\_curve/CHEME-5660-L3a-ParYieldCurves-Example-Fall-2026.ipynb}}
 \end{frame}
@@ -702,18 +700,18 @@ have a risky price.}}
   lecture-style notebook and an issuer example}
 
   \vspace{0.5em}
-  Optional; these preserve the deeper fixed-income material and are not
-  prerequisites for L3a. The malkiel pair takes Theorem 2 to auction data and
-  proves Theorems 2 and 3 in closed form. The yield-curve sequence covers the
-  investment yield of zeros, yield to maturity by the secant method, and par
-  yield curves from Treasury data, including the recession-indicator spread. The
-  STRIPS sequence infers spot, par, and implied forward rates from STRIPS prices.
+  Optional, and not prerequisites for L3a. The malkiel pair takes Theorem 2 to
+  auction data and proves Theorems 2 and 3 in closed form; the yield-curve
+  sequence covers the investment yield of zeros, yield to maturity by the secant
+  method, and par yield curves, including the recession-indicator spread; the
+  STRIPS sequence infers spot, par, and implied forward rates from STRIPS
+  prices.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-2/L2b/advanced}{lectures/week-2/L2b/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
 % ---- summary -------------------------------------------------
 \begin{frame}{Summary}
-  This lecture developed the core tools used to describe and manage the
+  This lecture developed the core tools for describing and managing the
   interest-rate risk of fixed-income securities.
 
   \vspace{0.45em}

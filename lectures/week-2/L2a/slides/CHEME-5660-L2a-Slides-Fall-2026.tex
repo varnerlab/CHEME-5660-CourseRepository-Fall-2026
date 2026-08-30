@@ -121,9 +121,9 @@ abstract assets, and net present value.}}
   valuation date.
 
   \vspace{0.4em}
-  Let $P$ be an amount held today, let $y$ be a quoted \hilite{nominal annual
-  yield}, and let $n$ be the number of compounding intervals per year. At period
-  index $j$, the equivalent future amount is given by:
+  Let $P$ be an amount held today, $y$ a quoted \hilite{nominal annual yield},
+  and $n$ the compounding intervals per year. At period index $j$, the
+  equivalent future amount is:
   \[
     F_j=\underbrace{\left(1+y/n\right)^{j}}_{\mathcal D_{j,0}(y;n)}\,P .
   \]
@@ -138,14 +138,13 @@ abstract assets, and net present value.}}
 
 \begin{frame}{Review: Abstract Assets and Net Present Value}
   \vspace{0.3em}
-  \hilite{Abstract assets} describe financial value as dated signed cash flows.
-  Because dated dollars have different units, each cash flow must be converted to
-  a common valuation date before the values are added.
+  \hilite{Abstract assets} describe financial value as dated signed cash flows;
+  each must be converted to a common valuation date before the values are added.
 
   \vspace{0.5em}
-  Let $N$ be the final cash-flow index and let $\bar c_j$ be the \hilite{signed
-  net cash flow} at index $j$. Under a constant nominal yield $y$, the time-0 net
-  present value is given by:
+  Let $N$ be the final cash-flow index and $\bar c_j$ the \hilite{signed net cash
+  flow} at index $j$. Under a constant nominal yield $y$, the time-0 net present
+  value is:
   \[
     \operatorname{NPV}_{0}(y)=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}(y;n)\,\bar c_j .
   \]
@@ -157,8 +156,8 @@ abstract assets, and net present value.}}
 \end{frame}
 
 \begin{frame}{The NPV Sign Is a Valuation Test}
-  Once every cash flow is expressed in today's dollars, NPV asks whether the
-  present value received is greater than, less than, or equal to the amount paid.
+  With every cash flow in today's dollars, NPV compares the present value
+  received with the amount paid.
 
   \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
@@ -171,8 +170,8 @@ abstract assets, and net present value.}}
   \end{itemize}
 
   \vspace{0.3em}
-  \hilite{The sign is conditional on the discount model and assumed cash flows; it
-  is not a promise about what will happen.}
+  \hilite{The sign is conditional on the discount model and assumed cash flows,
+  not a promise about what will happen.}
 \end{frame}
 
 % ---- T-bills -------------------------------------------------
@@ -183,11 +182,11 @@ abstract assets, and net present value.}}
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
     \item \textbf{\ink{Regular Treasury bills}} have standardized 4-, 6-, 8-,
-      13-, 17-, 26-, or 52-week terms and follow a recurring auction schedule.
-      Investors may use TreasuryDirect or a bank, broker, or dealer.
+      13-, 17-, 26-, or 52-week terms on a recurring auction schedule, bought
+      through TreasuryDirect or a bank, broker, or dealer.
     \item \textbf{\ink{Cash Management Bills (CMBs)}} have variable terms from a
-      few days to one year and are auctioned only when Treasury needs them. They
-      must be purchased through a bank, broker, or dealer.
+      few days to one year, are auctioned only when Treasury needs them, and
+      must be bought through a bank, broker, or dealer.
   \end{itemize}
 
   \vspace{0.2em}
@@ -231,13 +230,12 @@ abstract assets, and net present value.}}
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.7em}
     \item \textbf{\ink{Noncompetitive bid:}} Most individual investors request a
-      par amount and accept the auction-determined rate. Within the auction
-      limit, the requested par amount is guaranteed; TreasuryDirect offers only
-      this bid type.
+      par amount and accept the auction-determined rate; within the auction
+      limit, the award is guaranteed. TreasuryDirect offers only this bid type.
     \item \textbf{\ink{Competitive bid:}} Institutional and other experienced
       investors request a par amount and state the minimum bank discount rate
-      they will accept. They gain control over the minimum return but risk a
-      partial award or no award. These bids go through a bank, broker, or dealer.
+      they will accept: control over the minimum return, at the risk of a
+      partial or no award. These bids go through a bank, broker, or dealer.
   \end{itemize}
 
   \slidenote{Source:}{\href{https://www.treasurydirect.gov/auctions/how-auctions-work/}{TreasuryDirect: How Auctions Work}.}
@@ -255,8 +253,8 @@ abstract assets, and net present value.}}
   \]
 
   If a bidder requests $10{,}000~\mathrm{USD}$ of par, a full award is
-  $10{,}000~\mathrm{USD}$ of par; a $60\%$ proration is $6{,}000~\mathrm{USD}$ of
-  par. These are \hilite{award amounts, not cash prices}.
+  $10{,}000~\mathrm{USD}$ and a $60\%$ proration is $6{,}000~\mathrm{USD}$:
+  \hilite{award amounts, not cash prices}.
 
   \vspace{0.4em}
   Treasury computes one price from $d^*$, and every awarded bidder pays that
@@ -289,8 +287,8 @@ abstract assets, and net present value.}}
 \end{frame}
 
 \begin{frame}{Valuing a T-Bill}
-  Let $y$ be a nominal annual yield used for valuation, let $n$ be its compounding
-  frequency, and define $g_y=n\log(1+y/n)$. Setting NPV to zero gives:
+  Let $y$ be a nominal annual valuation yield, $n$ its compounding frequency,
+  and $g_y=n\log(1+y/n)$. Setting NPV to zero gives:
   \[
     V_B=\mathcal D_{T,0}^{-1}(y;n)\,V_P=\left(1+\frac{y}{n}\right)^{-nT}V_P=e^{-g_yT}V_P .
   \]
@@ -301,8 +299,8 @@ abstract assets, and net present value.}}
     \qquad r_B=T\,g_B .
   \]
 
-  When $V_B$ is the model price, $g_B=g_y$. When $V_B$ is an observed market
-  price, $g_B$ is implied by that price and may differ from the model input.
+  For the model price, $g_B=g_y$; for an observed market price, $g_B$ is implied
+  by that price and may differ from the model input.
 
   \vspace{0.4em}
   \hilite{Zero NPV does not mean zero return or zero risk.} It means the price
@@ -341,9 +339,9 @@ abstract assets, and net present value.}}
   \end{itemize}
 
   \vspace{0.5em}
-  At original issue, semiannual payments imply $n=2$ and $N=nT$ coupon dates. In
-  a reopening or secondary-market trade, $N$ means the number of remaining
-  coupons. If $c$ is the annual coupon rate, each coupon is $C=(c/n)V_P$:
+  At original issue, semiannual payments give $n=2$ and $N=nT$ coupon dates; in
+  a reopening or secondary-market trade, $N$ counts the remaining coupons. With
+  annual coupon rate $c$, each coupon is $C=(c/n)V_P$:
   \[
     \bar c_0=-V_B,
     \qquad
@@ -383,10 +381,10 @@ abstract assets, and net present value.}}
 \end{frame}
 
 \begin{frame}{The Auction Yield Sets the Coupon and Price}
-  The highest competitive yield to receive an award is the \hilite{high yield}
-  $y^*$. It determines the common auction price; bids below $y^*$ receive the
-  full requested par amount, bids at $y^*$ may be prorated, and bids above it
-  receive nothing.
+  The highest competitive yield to receive an award, the \hilite{high yield}
+  $y^*$, determines the common auction price: bids below $y^*$ receive the full
+  requested par, bids at $y^*$ may be prorated, and bids above it receive
+  nothing.
 
   \vspace{0.6em}
   After the auction, Treasury chooses a coupon rate in $0.125$-percentage-point
@@ -404,9 +402,9 @@ abstract assets, and net present value.}}
 \end{frame}
 
 \begin{frame}{Valuing Notes and Bonds}
-  Assume valuation occurs on a coupon date, with $N$ complete coupon periods
-  remaining. Let $y$ be the nominal annual YTM compounded semiannually. Setting
-  NPV to zero and solving for price gives:
+  Value on a coupon date with $N$ complete coupon periods remaining, and let $y$
+  be the nominal annual YTM compounded semiannually. Setting NPV to zero and
+  solving for the price gives:
   \begin{align*}
     0 &= \underbrace{-V_B}_{\text{\footnotesize cost}}
        + \underbrace{\mathcal D_{N,0}^{-1}(y;n)V_P}_{\text{\footnotesize par payment}}
@@ -424,8 +422,8 @@ abstract assets, and net present value.}}
 \begin{frame}{Are Treasury Securities Risk-Free?}
   \vspace{0.3em}
   U.S. Treasury securities are commonly treated as \hilite{low-default-risk
-  nominal-dollar benchmarks}. That does not make every government security---or
-  every debt instrument issued in the United States---risk-free.
+  nominal-dollar benchmarks}. That does not make every government security, or
+  every debt instrument issued in the United States, risk-free.
 
   \vspace{0.65em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
@@ -443,23 +441,22 @@ abstract assets, and net present value.}}
 \end{frame}
 
 \begin{frame}{Sovereign Debt Can Default or Be Restructured}
-  Government debt is not inherently free of default risk. Two recent sovereign
-  examples changed the timing or amount of promised payments:
+  Government debt is not inherently default-free. Two sovereign examples changed
+  the timing or amount of promised payments:
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.65em}
     \item \textbf{\ink{Russia, 1998:}} On August 17, Russia announced a de facto
-      default and restructuring of ruble-denominated government bills and bonds.
-      Creditors suffered losses, and the event amplified an international
-      financial and liquidity crisis.
+      default and restructuring of ruble-denominated government bills and bonds;
+      creditor losses amplified an international financial and liquidity crisis.
     \item \textbf{\ink{Greece, 2012:}} About $97\%$ of the privately held bonds
       covered by the exchange participated; investors accepted a $53.5\%$
       reduction in face value.
   \end{itemize}
 
   \vspace{0.35em}
-  Both the probability of default and the amount recovered after default affect
-  a security's value.
+  Both the probability of default and the recovery after default affect a
+  security's value.
 
   \slidenote{Sources:}{\href{https://www.imf.org/en/news/articles/2015/09/14/01/49/pr9935}{IMF: Russia}; \href{https://www.esm.europa.eu/content/what-was-private-sector-debt-restructuring-march-2012}{ESM: Greece}.}
 \end{frame}
@@ -494,7 +491,7 @@ abstract assets, and net present value.}}
 
   \vspace{0.5em}
   Optional; not a prerequisite for L2b. The example represents principal and
-  coupon payments with Bernoulli survival indicators, adds recovery following
+  coupon payments with Bernoulli survival indicators, adds recovery after
   default, and verifies the analytical expected-value price with a Monte Carlo
   simulation.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-2/L2a/advanced}{lectures/week-2/L2a/advanced}, also linked from the lecture notebook.}
