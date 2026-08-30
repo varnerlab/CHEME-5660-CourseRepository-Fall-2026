@@ -33,7 +33,7 @@
         xlabels at=edge bottom,
         xticklabels at=edge bottom,
       },
-      width=13.5cm, height=2.55cm,
+      width=14.2cm, height=2.9cm,
       axis lines=left,
       axis line style={vnink, line width=0.6pt},
       tick style={vnink, line width=0.4pt},
@@ -49,12 +49,12 @@
         ytick={-20,0,20},
         ylabel={\fAxis SPY $g$},
     ]
-      \fill[vnpanel] (axis cs:1540,-33) rectangle (axis cs:1600,26);
-      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1540,-33) -- (axis cs:1540,26);
-      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1600,-33) -- (axis cs:1600,26);
+      \fill[vncarnelian!10] (axis cs:1540,-33) rectangle (axis cs:1600,26);
+      \draw[vncarnelian!60, dashed, line width=0.6pt] (axis cs:1540,-33) -- (axis cs:1540,26);
+      \draw[vncarnelian!60, dashed, line width=0.6pt] (axis cs:1600,-33) -- (axis cs:1600,26);
       \node[anchor=west, text=vnmuted, font=\fAxis] at (axis cs:1640,19)
         {a high-volatility cluster};
-      \addplot [vnlink, line width=0.35pt] table [x=t, y=g, col sep=comma]
+      \addplot [vnlink, line width=0.5pt] table [x=t, y=g, col sep=comma]
         {Data-L3a-SPY-DailyGrowthRate.csv};
 
     % ---- AMD: same turbulent weeks, plus a single-jump counterexample ----
@@ -64,12 +64,12 @@
         ylabel={\fAxis AMD $g$},
         xlabel={\fAxis trading-day index (2014--2024, daily closes; $g$ in 1/yr)},
     ]
-      \fill[vnpanel] (axis cs:1540,-80) rectangle (axis cs:1600,112);
-      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1540,-80) -- (axis cs:1540,112);
-      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1600,-80) -- (axis cs:1600,112);
+      \fill[vncarnelian!10] (axis cs:1540,-80) rectangle (axis cs:1600,112);
+      \draw[vncarnelian!60, dashed, line width=0.6pt] (axis cs:1540,-80) -- (axis cs:1540,112);
+      \draw[vncarnelian!60, dashed, line width=0.6pt] (axis cs:1600,-80) -- (axis cs:1600,112);
       \node[anchor=west, text=vnmuted, font=\fAxis] at (axis cs:660,92)
         {a single large jump};
-      \addplot [vnlink, line width=0.35pt] table [x=t, y=g, col sep=comma]
+      \addplot [vnlink, line width=0.5pt] table [x=t, y=g, col sep=comma]
         {Data-L3a-AMD-DailyGrowthRate.csv};
   \end{groupplot}
 \end{tikzpicture}
