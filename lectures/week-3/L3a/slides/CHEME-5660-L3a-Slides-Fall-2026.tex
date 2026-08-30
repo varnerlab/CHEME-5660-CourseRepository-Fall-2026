@@ -487,15 +487,16 @@
 
 \begin{frame}{Diagnosing Volatility Clustering}
   Let $g_2^{(i)},\ldots,g_T^{(i)}$ be the growth-rate series for firm $i$, and let
-  $\overline{(g^2)_i}$ be the mean squared growth rate. The empirical
-  autocorrelation of squared growth rates is:
+  $\overline{|g|_i}$ be the mean growth-rate magnitude. Magnitudes weight extreme
+  days less heavily than squares and give a cleaner estimate. The empirical
+  autocorrelation of growth-rate magnitudes is:
   \[
     \widehat\rho_i(k)=
     \frac{\displaystyle\sum_{t=2}^{T-k}
-      \left[(g_t^{(i)})^2-\overline{(g^2)_i}\right]
-      \left[(g_{t+k}^{(i)})^2-\overline{(g^2)_i}\right]}
+      \left[|g_t^{(i)}|-\overline{|g|_i}\right]
+      \left[|g_{t+k}^{(i)}|-\overline{|g|_i}\right]}
     {\displaystyle\sum_{t=2}^{T}
-      \left[(g_t^{(i)})^2-\overline{(g^2)_i}\right]^2}.
+      \left[|g_t^{(i)}|-\overline{|g|_i}\right]^2}.
   \]
 
   Volatility clustering appears when $\widehat\rho_i(k)>0$ across many lags and
@@ -516,7 +517,7 @@
     \item Compare empirical growth rates with fitted Normal, Laplace, and
       Student-$t$ densities.
     \item Inspect a Hill stability plot instead of reporting one cutoff.
-    \item Compare the ACF of signed growth with the ACF of squared growth.
+    \item Compare the ACF of signed growth with the ACF of growth magnitude.
     \item Translate the diagnostics into requirements for the next model.
   \end{itemize}
 
