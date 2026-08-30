@@ -474,22 +474,15 @@
 
 \begin{frame}{Volatility Clustering}
   \begin{center}
-    \begin{tikzpicture}[x=0.58cm,y=0.58cm,>=Latex,font=\sffamily\footnotesize]
-      \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,0)--(18.2,0) node[right]{time};
-      \draw[vnink,line width=0.7pt,-{Latex[length=2.5mm]}] (0,-2.25)--(0,2.25) node[above]{growth};
-      \draw[vnlink,line width=0.9pt]
-        plot coordinates {(0.2,.1)(.6,-.2)(1,.15)(1.4,-.25)(1.8,.2)(2.2,-.1)(2.6,.18)(3,-.12)(3.4,.22)(3.8,-.18)(4.2,.1)(4.6,-.2)(5,.15)(5.4,-.12)(5.8,.25)(6.2,-.2)(6.6,.1)(7,-.15)(7.4,.2)(7.8,-.1)(8.2,.15)(8.6,-.25)(9,.2)(9.4,-.15)(9.8,.3)(10.2,-.55)(10.6,1.1)(11,-1.65)(11.4,.85)(11.8,-1.2)(12.2,1.8)(12.6,-.9)(13,1.25)(13.4,-1.55)(13.8,.7)(14.2,-.45)(14.6,.35)(15,-.25)(15.4,.2)(15.8,-.3)(16.2,.15)(16.6,-.2)(17,.1)(17.4,-.15)};
-      \draw[vnrule,dashed] (9.6,-2)--(9.6,2);
-      \draw[vnrule,dashed] (14.5,-2)--(14.5,2);
-      \node[text=vnmuted,fill=white] at (12.05,2.0) {high-volatility cluster};
-    \end{tikzpicture}
+    \includegraphics{../figs/Fig-L3a-AMD-Volatility-Clustering.pdf}
   \end{center}
 
-  \vspace{0.1em}
   \hilite{Volatility clustering} means large movements tend to occur near other
-  large movements, and small movements near other small movements. The cluster
-  contains both signs, so the dependence concerns magnitude rather than a
-  persistent direction.
+  large movements, and small movements near other small movements. The marked
+  weeks are turbulent in both series, both signs occur inside the cluster, and
+  one large jump is not a cluster.
+
+  \slidenote{Data:}{daily SPY and AMD growth rates, 2014–2024, from the stylized-facts example dataset.}
 \end{frame}
 
 \begin{frame}{Diagnosing Volatility Clustering}

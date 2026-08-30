@@ -1,0 +1,76 @@
+% L3a data plate: daily continuously compounded growth rates of SPY (top) and
+% AMD (bottom), 2014--2024, computed from daily closes with Delta t = 1/252 yr.
+% These are the series the stylized-facts example notebook works with (tickers
+% from MyTrainingMarketDataSet in VLQuantitativeFinancePackage).
+%
+% The stacked layout carries the lesson. SPY makes clustering unmistakable:
+% its rolling 21-day std is ~15/yr inside the marked March-2020 band against
+% ~0.6/yr in the calmest 2017 window. The same band is turbulent in AMD, so
+% volatility clusters are market-wide weeks, not one ticker's quirk. The
+% April-2016 AMD spike is the counterexample: ONE large jump, not a cluster.
+%
+% SIZED FOR THE DECK: the slide includes this PDF at natural size, so the
+% total height must stay near 5cm and every label is placed INSIDE its panel
+% (a node above the axis would grow the bounding box). Keep it that way.
+%
+% Data files: Data-L3a-{SPY,AMD}-DailyGrowthRate.csv (t index, date, g in
+% 1/yr), regenerated from the course dataset; `date` is unused by the plot.
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{vnfigure}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+% Type roles, matching the equity-market plate's convention.
+\newcommand{\fAxis}{\sffamily\fontsize{8.2}{10}\selectfont}   % ticks, axis labels, annotations
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+      group style={
+        group size=1 by 2,
+        vertical sep=0.28cm,
+        xlabels at=edge bottom,
+        xticklabels at=edge bottom,
+      },
+      width=13.5cm, height=2.55cm,
+      axis lines=left,
+      axis line style={vnink, line width=0.6pt},
+      tick style={vnink, line width=0.4pt},
+      ticklabel style={font=\fAxis, color=vnink},
+      xlabel style={color=vnink},
+      ylabel style={color=vnink},
+      xmin=-20, xmax=2800,
+      xtick={0,500,1000,1500,2000,2500},
+  ]
+    % ---- SPY: the index shows clean calm/turbulent regimes ----
+    \nextgroupplot[
+        ymin=-33, ymax=26,
+        ytick={-20,0,20},
+        ylabel={\fAxis SPY $g$},
+    ]
+      \fill[vnpanel] (axis cs:1540,-33) rectangle (axis cs:1600,26);
+      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1540,-33) -- (axis cs:1540,26);
+      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1600,-33) -- (axis cs:1600,26);
+      \node[anchor=west, text=vnmuted, font=\fAxis] at (axis cs:1640,19)
+        {a high-volatility cluster};
+      \addplot [vnlink, line width=0.35pt] table [x=t, y=g, col sep=comma]
+        {Data-L3a-SPY-DailyGrowthRate.csv};
+
+    % ---- AMD: same turbulent weeks, plus a single-jump counterexample ----
+    \nextgroupplot[
+        ymin=-80, ymax=112,
+        ytick={-50,0,50,100},
+        ylabel={\fAxis AMD $g$},
+        xlabel={\fAxis trading-day index (2014--2024, daily closes; $g$ in 1/yr)},
+    ]
+      \fill[vnpanel] (axis cs:1540,-80) rectangle (axis cs:1600,112);
+      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1540,-80) -- (axis cs:1540,112);
+      \draw[vnrule, dashed, line width=0.5pt] (axis cs:1600,-80) -- (axis cs:1600,112);
+      \node[anchor=west, text=vnmuted, font=\fAxis] at (axis cs:660,92)
+        {a single large jump};
+      \addplot [vnlink, line width=0.35pt] table [x=t, y=g, col sep=comma]
+        {Data-L3a-AMD-DailyGrowthRate.csv};
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

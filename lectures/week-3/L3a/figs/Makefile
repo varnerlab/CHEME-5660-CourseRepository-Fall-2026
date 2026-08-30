@@ -1,6 +1,6 @@
 # Build standalone L3a figures to PDF (for notes) and SVG (for notebooks).
 
-FIGURES := Fig-L3a-Equity-Market-Schematic
+FIGURES := Fig-L3a-Equity-Market-Schematic Fig-L3a-AMD-Volatility-Clustering
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))

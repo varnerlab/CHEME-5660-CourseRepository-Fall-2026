@@ -7,7 +7,8 @@ LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
 FIGURES := \
-	../figs/Fig-L3a-Equity-Market-Schematic.pdf
+	../figs/Fig-L3a-Equity-Market-Schematic.pdf \
+	../figs/Fig-L3a-AMD-Volatility-Clustering.pdf
 
 .DEFAULT_GOAL := slides
 
