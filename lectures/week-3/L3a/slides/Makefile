@@ -7,8 +7,7 @@ LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
 FIGURES := \
-	../figs/Fig-L3a-Equity-Market-Schematic.pdf \
-	../figs/Fig-RiskReward-Asset-Schematic.pdf
+	../figs/Fig-L3a-Equity-Market-Schematic.pdf
 
 .DEFAULT_GOAL := slides
 

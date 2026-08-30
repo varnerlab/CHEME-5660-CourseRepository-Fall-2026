@@ -19,7 +19,7 @@
 %                                          ETFs Are Claims on Portfolios
 %   Reward                              => reward, returns, excess growth, algorithm
 %   SVD example                         => common-patterns frame
-%   Risk                                => volatility, risk-reward figure, other measures
+%   Risk                                => volatility, other measures
 %   Stylized Facts                      => overview plus four diagnostic frames
 %   Example                             => empirical notebook frame
 %   Optional Advanced Material          => Optional Advanced Material
@@ -325,13 +325,14 @@
 \end{frame}
 
 \begin{frame}{Common Patterns Across Many Assets}
-  Let $G\in\mathbb R^{m\times n}$ collect centered growth rates for $m$ dates and
-  $n$ assets. Its singular value decomposition factors $G$ into date patterns
-  $\mathbf u_j$ (the columns of $U$), asset patterns $\mathbf v_j$ (the columns
-  of $V$), and nonnegative weights $\sigma_j$ (the diagonal of $\Sigma$):
+  Let $\mathbf G\in\mathbb R^{m\times n}$ collect centered growth rates for $m$
+  dates and $n$ assets. Its singular value decomposition factors $\mathbf G$
+  into date patterns $\mathbf u_j$ (the columns of $\mathbf U$), asset patterns
+  $\mathbf v_j$ (the columns of $\mathbf V$), and nonnegative weights $\sigma_j$
+  (the diagonal of $\boldsymbol\Sigma$):
   \[
-    G=U\Sigma V^{\mathsf T}
-    =\sum_{j=1}^{\operatorname{rank}(G)}
+    \mathbf G=\mathbf U\boldsymbol\Sigma\mathbf V^{\mathsf T}
+    =\sum_{j=1}^{\operatorname{rank}(\mathbf G)}
       \underbrace{\sigma_j\mathbf u_j\mathbf v_j^{\mathsf T}}_{\text{\footnotesize rank-one pattern}},
     \qquad \sigma_1\geq\sigma_2\geq\cdots\geq0.
   \]
@@ -366,17 +367,6 @@
   The statistic has the same inverse-year units as $g$. It measures dispersion
   around the sample mean, not tail probability, drawdown, liquidity, or the
   magnitude of a specific loss.
-\end{frame}
-
-\begin{frame}{\large Return and Risk Measure Different Things}
-  \vspace{0.1em}
-  \begin{center}
-    \includegraphics[width=0.78\textwidth,height=0.68\textheight,keepaspectratio]{../figs/Fig-RiskReward-Asset-Schematic.pdf}
-  \end{center}
-
-  \vspace{-0.2em}
-  Assets with similar sample means and standard deviations can still have very
-  different tails, drawdowns, dependence, and liquidity.
 \end{frame}
 
 \begin{frame}{Other Risk Measures}
