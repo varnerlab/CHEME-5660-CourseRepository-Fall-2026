@@ -374,16 +374,16 @@
   Choose a risk measure that matches the type of loss relevant to the decision.
 
   \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Value at Risk}: a loss threshold exceeded with a stated small
-      probability over a stated horizon.
-    \item \hilite{Expected Shortfall}: the average loss beyond that threshold.
-    \item \hilite{Maximum drawdown}: the largest peak-to-trough decline in value.
-    \item \hilite{Downside deviation}: dispersion measured only below a declared
-      target.
-    \item \hilite{Beta}: sensitivity to a selected market benchmark.
-    \item \hilite{Tracking error}: volatility of the return difference from a
-      benchmark.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{How large the loss can get}: a Value at Risk level is passed
+      only with a stated small probability; Expected Shortfall is the average
+      loss on the days that pass it.
+    \item \hilite{Downside and drawdown}: downside deviation counts only returns
+      below a target; maximum drawdown is the largest drop from a past peak to a
+      later low.
+    \item \hilite{Risk against a benchmark}: beta is how much the asset moves
+      when the market moves; tracking error is the spread of the gap between the
+      return and its benchmark.
   \end{itemize}
 
   \slidenote{Ask:}{what type of loss matters, over what horizon, and will this statistic detect it?}
@@ -550,17 +550,19 @@
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{Market infrastructure and securities are different.}}
-      Exchanges discover prices; stocks and ETFs are claims traded there.
-    \item \textbf{\ink{Return statistics require conventions.}} The growth rate
-      annualizes and the log return aggregates across intervals; both are
-      computed here from closing prices, without cash distributions.
-    \item \textbf{\ink{Stylized facts are model requirements.}} Heavy tails and
-      clustered volatility expose failures of a fixed-variance independent model.
+    \item \textbf{\ink{The price depends on how and where you trade.}} Each
+      venue keeps its own book, so the fill depends on the order type and the
+      venue; the NBBO is the benchmark for comparing quotes across venues.
+    \item \textbf{\ink{One series gives both reward and risk.}} The growth rate
+      says how fast the price grew per year, the log return says how much it
+      moved over one interval, and volatility is the spread of those numbers.
+    \item \textbf{\ink{Real returns are not independent or Normal.}} Large moves
+      are far too common for a Normal distribution, and while direction is close
+      to unpredictable, size is persistent.
   \end{itemize}
 
   \vspace{0.45em}
-  These diagnostics become tests for the models that follow.
+  The next lecture builds a lattice model and tests it against these diagnostics.
 \end{frame}
 
 % ==== closing ================================================
