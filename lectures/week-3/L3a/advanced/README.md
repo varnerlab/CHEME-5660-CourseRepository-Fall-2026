@@ -10,10 +10,5 @@ L3b.
 - [`market_impact/CHEME-5660-L3a-Advanced-Market-Impact-Models-Fall-2026.ipynb`](market_impact/CHEME-5660-L3a-Advanced-Market-Impact-Models-Fall-2026.ipynb)
   distinguishes mechanical execution cost from linear, order-flow-imbalance,
   and transient-impact models.
-- [`stylized_facts/CHEME-5660-L3a-Advanced-StylizedFacts-Fall-2026.ipynb`](stylized_facts/CHEME-5660-L3a-Advanced-StylizedFacts-Fall-2026.ipynb)
-  deepens the empirical analysis of equity growth rates (Hill tail-index
-  estimation, volatility clustering) and connects the L3 diagnostics to the
-  L6 single-index-model uncertainty.
-
 Work through the order-book notebook first. The market-impact notebook assumes
 its vocabulary and uses the same `VLQuantitativeFinancePackage` implementation.
