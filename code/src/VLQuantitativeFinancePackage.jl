@@ -85,6 +85,7 @@ module VLQuantitativeFinancePackage
     # data functions -
     export MyTrainingMarketDataSet;
     export MyTestingMarketDataSet;
+    export MySP500SectorDataSet;
     export MyOptionsChainDataSet;
     export MySIMCalibration, MyCurrentPrices, MyAdaptivePortfolioCourseData
     export MyTreasuryBillDataSet, MyTreasuryNotesAndBondsDataSet

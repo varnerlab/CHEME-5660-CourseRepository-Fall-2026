@@ -158,6 +158,14 @@ using Distributions
         test_dataset = test["dataset"]
         @test haskey(test_dataset, "AAPL")
 
+        sectors = MySP500SectorDataSet()
+        @test sectors isa DataFrame
+        @test nrow(sectors) == 503
+        @test allunique(sectors[!, :Symbol])
+        @test all(in(names(sectors)), ["Symbol", "Security", "GICS Sector", "GICS Sub-Industry"])
+        amd_sector = sectors[sectors[!, :Symbol] .== "AMD", Symbol("GICS Sector")]
+        @test only(amd_sector) == "Information Technology"
+
         chain = MyOptionsChainDataSet(ticker = "amd")
         @test chain isa NamedTuple
         @test haskey(chain.metadata, "DTE")

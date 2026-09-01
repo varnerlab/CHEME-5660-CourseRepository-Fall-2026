@@ -30,6 +30,18 @@ This data was provided by [Polygon.io](https://polygon.io/) and covers the perio
 MyTestingMarketDataSet() = _jld2(joinpath(_PATH_TO_DATA, "SP500-Daily-OHLC-1-2-2025-to-12-31-2025.jld2"));
 
 """
+    MySP500SectorDataSet() -> DataFrame
+
+Load the bundled S&P 500 constituent and GICS classification snapshot. The
+returned table includes each firm's ticker, name, GICS sector and sub-industry,
+headquarters, index-addition date, CIK, and founding year.
+
+S&P 500 membership changes through time, so joins against historical market
+data can contain unmatched symbols; callers should report that coverage.
+"""
+MySP500SectorDataSet() = CSV.read(joinpath(_PATH_TO_DATA, "sp500-sectors.csv"), DataFrame);
+
+"""
     MyOptionsChainDataSet(ticker::String) -> NamedTuple
 
 Load the options chain dataset for the specified ticker symbol as a NamedTuple.
