@@ -8,22 +8,35 @@
 % Notebook outline, and where each part lands in the deck:
 %
 %   (deck only)                             => title
-%   Disclaimer and Risks          [cell 8]  => slide 2 by instructor preference
+%   Disclaimer and Risks          [last]    => slide 2 by instructor preference
 %   Learning Objectives           [cell 0]  => Objectives for Today
 %   Examples                                => Lectures and Examples
 %   Binomial Lattice Model                  => figure, definition
 %     Price Distribution                    => terminal prices, paths, nodes
-%     Real World Parameter Estimation       => algorithm, caveats, recombination, example
-%   Two Measures, Two Questions            => P versus Q
-%     Risk-Neutral Parameter Estimation     => no-arbitrage q, replication value
-%     Probability of Profit                 => POP under P
-%   Stylized Facts                          => overview and diagnostic frames
-%     Heavy Tails                           => Heavy Tails
-%     Vanishing Autocorrelation             => one-step and nested-window frames
-%     Volatility Clustering                 => Volatility Clustering
-%   What the Fixed Lattice Cannot Reproduce => model-purpose synthesis
+%     Data-Driven Real World Parameter      => algorithm, caveats, recombination,
+%       Estimation                             worked example
+%     Model-Driven Risk-Neutral Probability => P versus Q, then no-arbitrage q
+%                                              and replication value
+%   Stylized Facts for Binomial Lattice     => overview frame
+%     Return Distribution                   => Bernoulli transform, one-step
+%                                              moments, binomial transform,
+%                                              Heavy Tails
+%     Temporal Dependence                   => Vanishing Autocorrelation, Nested
+%                                              Windows, Volatility Clustering
+%     (closing scorecard paragraph)         => What the Fixed Lattice Cannot Reproduce
+%   Optional Advanced Material              => Optional Advanced Material
 %   Summary                                 => Summary
 %   Today?                                  => closing transition frame
+%
+% Two notes on the mapping. The lecture folds the P-versus-Q contrast into its
+% risk-neutral subsection, so the deck's "Two Measures, Two Questions" frame
+% opens that subsection rather than mirroring a separate heading. Probability of
+% profit was dropped from the lecture and from this deck; POP is developed in
+% week-10 (L10a POE/POP example, L10b composite-contract lecture).
+%
+% The lecture states the return-distribution and temporal-dependence results as
+% theorems and moves their algebra to advanced/stylized-facts/. The deck keeps
+% the result frames and does not derive them either.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -172,7 +185,7 @@
 \end{frame}
 
 % ==== real-world estimation ==================================
-\begin{frame}{Real-World Parameter Estimation}
+\begin{frame}{\large Data-Driven Real-World Parameter Estimation}
   Let $g_2,\ldots,g_T$ be historical growth rates sampled at interval
   $\Delta t>0$ years. Initialize an up-factor set $U$ and a down-factor set $D$.
 
@@ -270,7 +283,7 @@
       \vspace{0.3em}
       \begin{itemize}\setlength{\itemsep}{0.45em}
         \item Up probability $p$ is estimated or modeled from data.
-        \item Used for forecasts, scenarios, risk, and probability of profit.
+        \item Used for forecasts, scenarios, and risk measurement.
         \item Tested against out-of-sample distributions and paths.
       \end{itemize}
     \end{column}
@@ -289,7 +302,7 @@
   A pricing probability is generally \hilite{not} an empirical frequency.
 \end{frame}
 
-\begin{frame}{\large Risk-Neutral Probability Enforces No Arbitrage}
+\begin{frame}{\large Model-Driven Risk-Neutral Probability}
   Let $R_f>0$ be the one-step risk-free gross return. For current equity price
   $S_0$ and next-step prices $S_0u$ and $S_0d$, absence of arbitrage requires:
   \[
@@ -311,27 +324,6 @@
   \]
 
   This is an expectation under $\Qmeasure$, not a forecast of the realized payoff.
-\end{frame}
-
-\begin{frame}{\large Probability of Profit Belongs to the Real-World Measure}
-  Let $C_0>0$ be a strategy's initial cost, $W_{N,k}$ its terminal wealth at node
-  $(N,k)$, and $R_b>0$ a benchmark gross return per step. Under
-  $K_N\sim\operatorname{Binomial}(N,p)$, define profit by
-  $W_{N,K_N}>C_0R_b^N$. Its probability is:
-  \[
-    \operatorname{POP}_{\Pmeasure}
-    =\sum_{k=0}^{N}
-      \mathbf 1_{\{W_{N,k}>C_0R_b^N\}}
-      \binom Nk p^k(1-p)^{N-k}.
-  \]
-
-  \vspace{0.3em}
-  POP depends on the forecast law, horizon, benchmark, costs, and profit
-  definition. It is not expected profit and does not report loss severity.
-
-  \vspace{0.5em}
-  Substituting risk-neutral $q$ would answer a pricing-measure question, not the
-  empirical probability that the strategy succeeds.
 \end{frame}
 
 % ==== stylized facts =========================================
@@ -514,19 +506,23 @@
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.4em}
+  \vspace{0.3em}
   {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/recombination/}\par
   \dimmed{CHEME-5660-L3b-Advanced-Recombination-ComputationalCost-Fall-2026.ipynb}}
 
-  \vspace{0.7em}
+  \vspace{0.5em}
   {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/calibration/}\par
   \dimmed{CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb}}
 
-  \vspace{0.7em}
+  \vspace{0.5em}
+  {\normalsize\textbf{\ink{Advanced 3:}} \dimmed{advanced/stylized-facts/}\par
+  \dimmed{CHEME-5660-L3b-Advanced-BinomialReturns-Derivations-Fall-2026.ipynb}}
+
+  \vspace{0.5em}
   Optional, not prerequisites for L4a. The first compares the full path tree with
-  its recombined lattice and shows when time-dependent moves stop recombining.
-  The second bootstraps historical growth rates to measure the uncertainty in
-  $(u,d,p)$ and in the forecasts computed from them.
+  its recombined lattice. The second bootstraps historical growth rates to measure
+  the uncertainty in $(u,d,p)$. The third carries the algebra behind today's two
+  theorems.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-3/L3b/advanced}{lectures/week-3/L3b/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
@@ -542,7 +538,7 @@
     \item \textbf{\ink{Recombination is algebraic.}} A node depends on move
       counts because multiplication commutes. The constraint $ud=1$ is optional.
     \item \textbf{\ink{The measure follows the question.}} Real-world $p$
-      supports forecasts and POP, while risk-neutral $q$ enforces no-arbitrage value.
+      supports forecasts and risk, while risk-neutral $q$ enforces no-arbitrage value.
     \item \textbf{\ink{The fixed lattice fails two of three tests.}} It
       matches weak one-step autocorrelation but misses heavy tails and volatility clustering.
   \end{itemize}
