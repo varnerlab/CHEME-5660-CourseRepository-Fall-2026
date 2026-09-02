@@ -1,3 +1,70 @@
 % Thin development wrapper around the canonical deck style.
-% Edit lectures/templates/vnslides.sty to change the shared design.
+% Mirrors docs/varnernotes.sty and figs/vnfigure.sty. Edit templates/vnslides.sty.
 \input{../../../templates/vnslides.sty}
+
+% L4b hybrid-polish layer, carried over from L1a/L1b: typography, spacing, and
+% page furniture on top of the shared CHEME 5660 system. Keep the rules local
+% while the course-wide system is evaluated.
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{colortbl}
+
+% Use one alignment grid for titles, body copy, figures, notes, and footers.
+\setbeamersize{text margin left=\vnmargin,text margin right=\vnmargin}
+
+% Strong but restrained technical titles. Absolute sizing prevents visual drift
+% when a frame contains smaller mathematical or source-note text.
+\setbeamertemplate{frametitle}{%
+  \vskip0.78em%
+  {\fontsize{17.4}{20.6}\selectfont\vnmedium
+   \usebeamercolor[fg]{frametitle}\insertframetitle\par}%
+  \vspace{0.06em}}
+
+% Quiet rules and reusable hierarchy labels match the L1a visual grammar.
+\arrayrulecolor{vnrule}
+\setlength{\arrayrulewidth}{0.45pt}
+\newcommand{\eyebrow}[1]{%
+  {\fontsize{8.2}{10}\selectfont\vnmedium
+   \addfontfeatures{LetterSpace=3.5}\textcolor{vnslidelink}{\MakeUppercase{#1}}\par}}
+\newcommand{\decklabel}[1]{%
+  {\fontsize{11.5}{13.5}\selectfont\vnmedium\textcolor{vnslidebody}{#1}\par}}
+
+% Keep caveats and references legible but subordinate to the teaching content.
+\renewcommand{\slidenote}[2]{%
+  \vfill
+  {\color{vnrule}\rule{0.16\paperwidth}{0.35pt}}\par\vspace{0.42em}
+  {\fontsize{7.8}{9.4}\selectfont{\vnmedium #1}\hspace{0.65em}{\vnlight #2}}}
+
+% Footer system shared with L1a, with the lecture identifier changed locally.
+\setbeamertemplate{footline}{%
+  \vskip0.62em%
+  \leavevmode\hbox to \paperwidth{%
+    \hspace*{\vnmargin}\vnlockup\hfill
+    {\fontsize{4.5}{5.4}\selectfont\color{vnslidebody}%
+     {\vnmedium L4b}\hspace{0.7em}{\vnlight\insertframenumber}}%
+    \hspace*{\vnmargin}}%
+  \vskip0.72em}
+
+% The title page uses the same Cornell composition as the polished L1a opener.
+\makeatletter
+\renewcommand{\vntitlepage}{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{minipage}[c]{0.185\textwidth}
+      \centering
+      \raisebox{1.5pt}{\includegraphics[width=\linewidth]{\@vnseal}}
+    \end{minipage}%
+    \hspace{0.025\textwidth}%
+    \begin{minipage}[c]{0.77\textwidth}
+      \raggedright
+      {\fontsize{24}{28}\selectfont\vnlight
+       \usebeamercolor[fg]{title}\inserttitle\par}
+      \vspace{8pt}
+      {\color{vnaccent}\rule{0.11\linewidth}{1.1pt}}\par
+      \vspace{7pt}
+      {\fontsize{9}{11}\selectfont\vnmedium\dimmed{\insertsubtitle}\par}
+    \end{minipage}
+    \vfill
+    {\fontsize{4.8}{5.8}\selectfont\dimmed{\insertauthor}\par}
+  \end{frame}}
+\makeatother

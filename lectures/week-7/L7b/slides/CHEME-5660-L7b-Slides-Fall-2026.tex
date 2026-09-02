@@ -93,9 +93,8 @@
 % ==== concept review =========================================
 \begin{frame}{Concept Review: The Batch SIM Fit and the Engine}
   L6a estimated the SIM of asset $i$, $g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}$
-  ($g$: annualized daily growth rates, $\varepsilon$: the residual, $t=1,\ldots,N$
-  training days), by least squares: with response vector $\by$, design matrix
-  $\bX$ (row $t$: $\bx_t^{\top}=(1,g_{M,t})$), and $\bth_i=(\alpha_i,\beta_i)^{\top}$:
+  by least squares: with response $\by$, design matrix $\bX$
+  (row $t$: $\bx_t^{\top}=(1,g_{M,t})$), and $\bth_i=(\alpha_i,\beta_i)^{\top}$:
   \[
     \bigl(\bX^{\top}\bX\bigr)\hat{\bth}_i=\bX^{\top}\by
     \qquad\Longleftrightarrow\qquad
@@ -103,7 +102,7 @@
       =\underbrace{\sum_{t=1}^{N}\bx_t\,g_{i,t}}_{\text{cross moments}}
   \]
   Every day of 2014 counts as much as every day of 2024: one pooled slope.
-  \begin{itemize}\setlength{\itemsep}{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.05em}
     \item \hilite{L7a engine}: each day, from closes through $t-1$ (recent market
       growth $\gt$, market-state signal $\xi_t$),
       $\gamma_i(t)=\tanh\bigl(\alpha_i/\beta_i^{\xi_t}+\beta_i^{1-\xi_t}\gt\bigr)$: sign
@@ -135,13 +134,12 @@
     \item \hilite{The threshold} $-\alpha_i/\beta_i$: the frozen thresholds sit
       within a few tenths per year of zero, so the basket hangs on whether $\gt$
       is above or below a narrow band; an intercept that moves by a few tenths per
-      year (its sampling error at any short memory) moves the threshold by more.
+      year moves the threshold by more.
     \item \hilite{The basket and the weights}: the magnitude of $\gamma_i(t)$
       moves through the lens $\beta_i^{\xi_t}$; a non-positive beta breaks the
       lens, so L7a's rule (assign to the non-preferred set) becomes necessary.
     \item \hilite{The covariance matrix} $\SigSIM=s^2_{g,M}\hat{\bbe}\hat{\bbe}^{\top}+\hat{\mathbf D}_g$
-      ($\hat{\bbe}$ the betas, $\hat{\mathbf D}_g$ the diagonal of residual
-      variances): with $s^2_{g,M}$ held fixed, the online betas and residual scales
+      ($\hat{\mathbf D}_g$: residual variances): with $s^2_{g,M}$ held fixed, the online betas and residual scales
       move it by 39\% to 63\% (Frobenius) after the identical first day.
   \end{itemize}
   None of this says updating helps: freezing is a choice with consequences.
@@ -159,11 +157,11 @@
     \boxed{L_t(\bth)=\sum_{s=1}^{t}\underbrace{\delta^{\,t-s}}_{\text{weight of day }s}
       \bigl(y_s-\bx_s^{\top}\bth\bigr)^2}
   \]
-  \begin{itemize}\setlength{\itemsep}{0.35em}
+  \begin{itemize}\setlength{\itemsep}{0.2em}
     \item An observation $\thalf$ days old carries half today's weight; the total
       weight of the past is $\sum_{s\le t}\delta^{t-s}\to1/(1-\delta)\approx\thalf/\ln2$,
       about 91 current-observation equivalents for a one-quarter half-life (a
-      count of weight, not the variance-based effective sample size).
+      count of weight, not an effective sample size).
     \item For this data-only loss, ordinary least squares is the case $\delta=1$.
   \end{itemize}
 \end{frame}
@@ -335,7 +333,7 @@
   With $n$ futures of $N$ days ($T=N\Delta t$; $\WP$ the account's wealth, $g_f$
   the risk-free rate), terminal wealths sorted $W_{(1)}\le\cdots\le W_{(n)}$,
   drawdowns $D^{(p)}$, tail level $5\%$, $k=\lceil0.05\,n\rceil$:
-  \begin{itemize}\setlength{\itemsep}{0.25em}
+  \begin{itemize}\setlength{\itemsep}{0.12em}
     \item \hilite{Median terminal wealth, median NPV}: the typical outcome; did it
       beat cash at $g_f$.
     \item \hilite{Fail rate}: fraction of futures with $W^{(p)}_{\mathcal P}(T)<\WP(0)e^{g_fT}$
@@ -350,7 +348,7 @@
   \end{itemize}
   \hilite{Paired}: both arms run on the same futures, so compare online minus
   frozen terminal wealth per future (median, spread, fraction positive); pairing
-  holds the market and residual draws fixed and leaves the policy contrast.
+  holds the draws fixed and leaves the policy contrast.
 \end{frame}
 
 \begin{frame}{The Scenario Ensemble: Two Thousand Futures}

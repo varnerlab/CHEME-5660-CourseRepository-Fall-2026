@@ -283,10 +283,10 @@
       \qquad
       \PiC(\ST)=\sum_{i=1}^{d}\theta_in_i\bigl[h_i(\ST)-P_i\bigr]}
   \]
-  \vspace{-0.9em}
+  \vspace{-1.25em}
 
-  Both are in USD/share, which is what the example notebooks plot. For account
-  dollars, multiply leg $i$ by its deliverable $q_i\in\N$ shares/contract.
+  Both are in USD/share. For account dollars, multiply leg $i$ by its
+  deliverable $q_i\in\N$ shares/contract.
   \begin{itemize}\setlength{\itemsep}{0.2em}
     \item \hilite{The kinks are the strikes}: each $h_i$ bends only at $K_i$, so
       the profit is piecewise linear, with a corner at strike $K$ exactly when
@@ -295,27 +295,24 @@
     \item \hilite{The offset is the net premium}: $\sum_i\theta_in_iP_i$, the
       net debit or credit, shifts the diagram without changing its shape.
   \end{itemize}
-  Legs must share an underlying and an expiration for one diagram in $\ST$;
-  deliverables may differ, so each $q_i$ is applied to its own leg.
+  Legs must share an underlying and an expiration for one diagram in $\ST$.
 \end{frame}
 
 \begin{frame}{Composite Positions: Three Structures, One Sum}
   Three structures, $D$ the total premium per share:
-  \begin{itemize}\setlength{\itemsep}{0.15em}
+  \begin{itemize}\setlength{\itemsep}{0.02em}
     \item \hilite{Vertical spread}: two legs of one type, different strikes,
       opposite directions. Both extremes finite.
     \item \hilite{Straddle}: a call and a put at one strike $K$, same direction.
-      Profit $\theta\bigl(\lvert\ST-K\rvert-D\bigr)$, breakevens $K+D$ and,
-      when $D\leq K$, $K-D$.
+      Profit $\theta\bigl(\lvert\ST-K\rvert-D\bigr)$; breakevens $K+D$, and $K-D$ when $D\leq K$.
     \item \hilite{Strangle}: a call and a put at strikes $K_1<K_2$, same
-      direction. A flat plateau replaces the straddle's single kink: a trough
-      when long, a peak when short.
+      direction. A flat plateau replaces the straddle's single kink.
   \end{itemize}
-  \textbf{\ink{State the bounds correctly.}} A long straddle is routinely said to
-  have ``unlimited profit in either direction.'' \hilite{That is wrong on the
-  downside.} Since $\ST\geq0$ the put leg cannot pay more than its strike, so the
-  lower branch terminates: the AMD $K=230$ straddle with $D=42.88$ caps its
-  downside at $187.12$ USD/share, while the upside has no bound.
+  \vspace{-0.35em}
+  \textbf{\ink{State the bounds correctly.}} A long straddle is often said to have
+  ``unlimited profit in either direction.'' \hilite{That is wrong on the downside.}
+  Since $\ST\geq0$ the put leg cannot pay more than its strike: the AMD $K=230$
+  straddle with $D=42.88$ caps its downside at $187.12$ USD/share.
   \slidenote{Example 2:}{\dimmed{CHEME-5660-L8b-Example-CompositeContractsPL-Fall-2026.ipynb}}
 \end{frame}
 

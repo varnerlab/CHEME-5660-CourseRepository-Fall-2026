@@ -96,11 +96,10 @@
 % ==== concept review =========================================
 \begin{frame}{Concept Review: Allocation as a Time-Stamped Decision}
   L5b and L6b chose weights $\bw$ over $\np$ risky assets from an expected
-  growth-rate vector and a growth-rate covariance; with the SIM of L6a those inputs
-  are $\gSIM=\hat{\bal}+\hat{\bbe}\,g'_M$ and
-  $\SigSIM=s^2_{g,M}\hat{\bbe}\hat{\bbe}^{\top}+\hat{\mathbf D}_g$ ($g'_M$,
-  $s^2_{g,M}$ the training-period market mean and variance; $\hat{\mathbf D}_g$ the
-  diagonal matrix of residual variances).
+  growth-rate vector and covariance; with the SIM of L6a those inputs are
+  $\gSIM=\hat{\bal}+\hat{\bbe}\,g'_M$ and
+  $\SigSIM=s^2_{g,M}\hat{\bbe}\hat{\bbe}^{\top}+\hat{\mathbf D}_g$
+  ($\hat{\mathbf D}_g$: residual variances).
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item Target $g_\star$: $\bw(g_\star)$ minimizes $\bw^{\top}\hat{\Sigma}_g\bw$
       subject to $\bw^{\top}\hat{\bg}=g_\star$, $\mathbf 1^{\top}\bw=1$, $w_i\ge0$;
@@ -112,9 +111,9 @@
     n_i=\frac{w_i\,\WP(0)}{S_i(0)},\qquad
     \WP(t)=\sum_{i\in\mathcal P}n_i\,S_i(t)
   \]
-  \hilite{Two things to say out loud}: the weights are optimal on the decision
-  date, for the inputs estimated on that date; and the only decision the investor
-  ever made was the one at $t=0$. Today is about the other days.
+  \hilite{Two things to say out loud}: the weights are optimal only for the
+  inputs estimated on the decision date, and the investor's one decision was at
+  $t=0$. Today is about the other days.
 \end{frame}
 
 % ==== why static fails =======================================
@@ -188,10 +187,9 @@
       \cdot\underbrace{\frac{\Wadj}{S_i(t)}}_{\text{budget in shares}}\quad(i\in\Ap),
       \qquad n_i^\star=n_{\min}\quad(i\in\Am)}
   \]
-  The \hilite{dollar weight} of a preferred asset within the preferred budget is
+  The \hilite{dollar weight} of a preferred asset is
   its normalized preference weight $\gamma_i/\sum_{j\in\Ap}\gamma_j$, independent
-  of prices (times $\Wadj/\WP(t)$ as a fraction of total wealth). An empty basket
-  means floors plus cash.
+  of prices. An empty basket means floors plus cash.
 \end{frame}
 
 \begin{frame}{Cobb--Douglas Utility: Derivation}
@@ -264,14 +262,13 @@
     \item If every $\gamma_i(t)\le0$, the model is saying \hilite{this basket does
       not belong in this market}: the allocator holds the floors plus cash, and an
       investor not content with cash should rethink which assets are in the
-      basket (the ticker-picking methods of L12b and L13a; L7b's parameter
-      updates move the thresholds too).
+      basket (the ticker-picking methods of L12b and L13a).
     \item \hilite{Assumptions}: (i) $\beta_i>0$ (the course firms: $0.54$ to
       $1.75$, asserted; a non-positive beta needs a rule, e.g., assign to $\Am$);
       (ii) the argument is an annualized growth rate read as a pure number at the
       one-year horizon; (iii) $\tilde g_{M,t}$ swings by about a unit per year, an
       order of magnitude more than the intercepts: that is what makes the basket
-      respond, and why the schedule and rules decide how often it is acted on.
+      respond.
   \end{itemize}
 \end{frame}
 
@@ -298,7 +295,7 @@
   \begin{center}
     \includegraphics[height=0.72\textheight,keepaspectratio]{../figs/Fig-L7a-Rebalancing-Engine-Loop.png}
   \end{center}
-  \vspace{-0.5em}
+  \vspace{-0.7em}
   Every trading day is one pass: observe, orient, decide, act. A static
   allocation is one pass on the decision date, then nothing.
 \end{frame}
@@ -319,9 +316,8 @@
   \]
   so $\mathrm{cash}_t+\sum_in_{i,t}S_i(t)=W^+_{\mathcal P}(t)$ exactly and cash
   never goes negative. \hilite{Next-bar execution}: inputs and preferences for
-  day $t$ use prices through $t-1$; the trade executes at day $t$'s close (market
-  on close). A close-based signal traded at that close is look-ahead; Example 2
-  asserts the lag in code.
+  day $t$ use prices through $t-1$; the trade executes at day $t$'s close. A
+  close-based signal traded at that close is look-ahead.
 \end{frame}
 
 \begin{frame}{The Rebalancing Engine: Three Trigger Rules}
@@ -373,12 +369,11 @@
     \item Breaker: if the drawdown exceeds $d_{\max}$ with risky positions held,
       liquidate at $S_i(t)$, pay $c$ on the notional sold, lock $n_{\mathrm{lock}}$
       more days, go to 5.
-    \item If $t\in\Rset$ and not locked: ask for $\bw^\star$ (rebase the peak after
-      a lock); form the proposed change of weights, scale to $\tau_{\max}$.
+    \item If $t\in\Rset$ and not locked: ask for $\bw^\star$; form the proposed
+      change of weights, scale to $\tau_{\max}$.
     \item Solve cost and positions together on the post-cost budget; execute
       $\Delta n_i$ at $S_i(t)$; pay $C_t=c\,Q_t$; update the cash.
-    \item Record wealth, cash, positions, weights, turnover, cost, flags: the
-      histories every scorecard consumes.
+    \item Record wealth, cash, positions, weights, turnover, cost, and flags.
   \end{enumerate}
   \slidenote{Example 2:}{\dimmed{CHEME-5660-L7a-Example-Adaptive-Rebalancing-Scorecard-Fall-2026.ipynb}}
 \end{frame}
