@@ -9,6 +9,10 @@ lattices. They are optional and are not prerequisites for L4a.
 - [`calibration/CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb`](calibration/CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb)
   bootstraps historical returns to measure uncertainty in the estimated
   lattice parameters and in forecasts computed from them.
+- [`stylized-facts/CHEME-5660-L3b-Advanced-BinomialReturns-Derivations-Fall-2026.ipynb`](stylized-facts/CHEME-5660-L3b-Advanced-BinomialReturns-Derivations-Fall-2026.ipynb)
+  derives the return distributions, moments, and autocorrelation results used
+  to assess the binomial lattice against the three stylized facts.
 
 The recombination notebook explains the model structure. The calibration
-notebook is the larger applied exercise and can be completed independently.
+notebook is the larger applied exercise, and the derivation notebook supplies
+the algebra omitted from the main lecture. Each can be completed independently.
