@@ -14,8 +14,9 @@
 %   Binomial Lattice Model                  => figure, definition
 %     Price Distribution                    => terminal prices, paths, nodes
 %     Real World Parameter Estimation       => algorithm, caveats, recombination, example
-%   Two Measures, Two Questions   [notes]   => P versus Q and no-arbitrage q
-%   Probability of Profit          [notes]   => POP under P
+%   Two Measures, Two Questions            => P versus Q
+%     Risk-Neutral Parameter Estimation     => no-arbitrage q, replication value
+%     Probability of Profit                 => POP under P
 %   Stylized Facts                          => overview and diagnostic frames
 %     Heavy Tails                           => Heavy Tails
 %     Vanishing Autocorrelation             => one-step and nested-window frames
@@ -61,7 +62,8 @@
 \begin{frame}{Objectives for Today}
   \vspace{0.4em}
   Today we replace continuous price uncertainty with a finite lattice, derive
-  its node distribution, and ask which probability law answers which question.
+  its node distribution, and separate the probability used for forecasting from
+  the one used for pricing.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
@@ -148,7 +150,7 @@
   The expected one-step gross return under this law is $pu+(1-p)d$.
 \end{frame}
 
-\begin{frame}{Paths Grow Exponentially, Nodes Grow Linearly}
+\begin{frame}{Paths Grow Exponentially, Terminal Nodes Linearly}
   \vspace{0.3em}
   After $N$ binary moves, the unmerged path tree contains $2^N$ paths to the
   terminal level. The recombining lattice contains only $N+1$ terminal price nodes.
@@ -166,7 +168,7 @@
   \end{itemize}
 
   \vspace{0.5em}
-  This state compression is what makes backward lattice calculations tractable.
+  Backward valuation therefore walks nodes rather than paths.
 \end{frame}
 
 % ==== real-world estimation ==================================
@@ -258,7 +260,8 @@
 % ==== probability measures ===================================
 \begin{frame}{Two Measures, Two Questions}
   \vspace{0.2em}
-  The symbol attached to ``probability of up'' must identify its purpose.
+  Two different probabilities are both called the probability of an up move.
+  They answer different questions.
 
   \vspace{0.6em}
   \begin{columns}[T,onlytextwidth]
@@ -335,7 +338,7 @@
 \begin{frame}{Stylized Facts for Binomial Lattice Models}
   \vspace{0.3em}
   The lattice is our first model of equity-price dynamics. L3a gives three
-  empirical requirements against which to test it.
+  empirical patterns to test it against.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
@@ -490,7 +493,8 @@
 
 \begin{frame}{What the Fixed Lattice Cannot Reproduce}
   \vspace{0.3em}
-  The lattice is valuable because its simplifications are explicit.
+  Because the lattice fixes its assumptions up front, we can say exactly what it
+  captures and what it leaves out.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
@@ -503,9 +507,9 @@
   \end{itemize}
 
   \vspace{0.6em}
-  Use a lattice to expose states, trading rules, and replication. Use richer
-  innovations or state-dependent parameters when the question depends on rare
-  moves or dynamic volatility.
+  Use a lattice when the question is about states, trading rules, or replication.
+  When the answer depends on rare moves or changing volatility, the move sizes or
+  the parameters have to become state dependent.
 \end{frame}
 
 % ==== optional advanced material =============================
@@ -520,8 +524,8 @@
 
   \vspace{0.7em}
   Optional, not prerequisites for L4a. The first compares the full path tree with
-  its recombined lattice and shows when time-dependent moves stop recombining;
-  the second bootstraps historical growth rates to measure the uncertainty in
+  its recombined lattice and shows when time-dependent moves stop recombining.
+  The second bootstraps historical growth rates to measure the uncertainty in
   $(u,d,p)$ and in the forecasts computed from them.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-3/L3b/advanced}{lectures/week-3/L3b/advanced}, also linked from the lecture notebook.}
 \end{frame}
@@ -539,7 +543,7 @@
       counts because multiplication commutes. The constraint $ud=1$ is optional.
     \item \textbf{\ink{The measure follows the question.}} Real-world $p$
       supports forecasts and POP, while risk-neutral $q$ enforces no-arbitrage value.
-    \item \textbf{\ink{Simple models have visible limits.}} The fixed lattice
+    \item \textbf{\ink{The fixed lattice fails two of three tests.}} It
       matches weak one-step autocorrelation but misses heavy tails and volatility clustering.
   \end{itemize}
 

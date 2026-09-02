@@ -108,15 +108,14 @@
 \begin{frame}{Exchanges, Stocks, and ETFs}
   \vspace{0.3em}
   Before measuring an equity return, separate the \hilite{marketplace} from the
-  \hilite{securities} traded there. These objects interact, but they are not
-  interchangeable.
+  \hilite{securities} traded there.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item An \hilite{exchange} is an organized venue that matches orders to buy
       and sell securities.
     \item An \hilite{order} is the instruction a broker submits on an investor's
-      behalf; order types differ in how they set the price.
+      behalf. Order types differ in how they set the price.
     \item A \hilite{stock} is a residual ownership claim on a corporation.
     \item An \hilite{exchange-traded fund}, or ETF, is a security whose shares
       represent an interest in a portfolio and trade during the day.
@@ -133,16 +132,16 @@
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item Exchanges impose listing standards and trading rules; after execution,
+    \item Exchanges impose listing standards and trading rules. After execution,
       separate clearing and settlement infrastructure completes the transfer of
       securities and funds.
-    \item U.S. equities trade across more than a dozen competing exchanges; the
+    \item U.S. equities trade across more than a dozen competing exchanges. The
       three largest are NYSE, NASDAQ, and Cboe BZX.
     \item A broker may route one order to a venue or divide it among venues,
       subject to available prices, liquidity, and the order's instructions.
   \end{itemize}
 
-  \slidenote{Source:}{\href{https://www.sec.gov/about/divisions-offices/division-trading-markets/national-securities-exchanges}{SEC list of registered national securities exchanges}; the list also includes options-only venues.}
+  \slidenote{Source:}{\href{https://www.sec.gov/about/divisions-offices/division-trading-markets/national-securities-exchanges}{SEC list of registered national securities exchanges}. The list also includes options-only venues.}
 \end{frame}
 
 \begin{frame}{Orders Are Instructions to Trade}
@@ -154,10 +153,10 @@
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \textbf{\ink{Market order:}} executes as soon as possible at the best
-      price currently available. Execution is nearly certain; the price is not.
+      price currently available. Execution is nearly certain, but the price is not.
     \item \textbf{\ink{Limit order:}} executes only at a stated limit price or
       better: at or below it for a buy, at or above it for a sell. The price is
-      controlled; execution is not guaranteed.
+      controlled, but execution is not guaranteed.
     \item \textbf{\ink{Stop and stop-limit orders:}} wait until the price reaches
       a trigger level, then become a market order or a limit order.
   \end{itemize}
@@ -176,7 +175,7 @@
     \item The highest resting buy price is the venue's displayed \hilite{bid},
       the lowest resting sell price is its displayed \hilite{ask}, and the
       difference is the bid-ask spread.
-    \item An arriving market order to buy trades at the ask; one to sell trades
+    \item An arriving market order to buy trades at the ask, and one to sell trades
       at the bid.
     \item Each venue keeps its own book, so each venue displays its own bid and
       ask. The \hilite{National Best Bid and Offer}, or NBBO, reports the
@@ -228,7 +227,7 @@
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
     \item A broad-market fund such as SPY, which tracks the Standard \& Poor's
-      500 index, can provide diversified exposure; sector, leveraged, inverse,
+      500 index, can provide diversified exposure, whereas sector, leveraged, inverse,
       and single-stock ETFs may be highly concentrated.
     \item The \hilite{net asset value}, or NAV, is the fund's assets minus its
       liabilities, divided by shares outstanding.
@@ -341,7 +340,7 @@
   variation across assets.
 
   \vspace{0.5em}
-  SVD finds patterns in the data; it does not explain their economic causes.
+  SVD finds patterns in the data, but it does not explain their economic causes.
   Results depend on centering, scaling, missing-data treatment, and the selected
   assets.
 
@@ -376,13 +375,13 @@
   \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{How large the loss can get}: a Value at Risk level is passed
-      only with a stated small probability; Expected Shortfall is the average
+      only with a stated small probability, and Expected Shortfall is the average
       loss on the days that pass it.
     \item \hilite{Downside and drawdown}: downside deviation counts only returns
-      below a target; maximum drawdown is the largest drop from a past peak to a
+      below a target, and maximum drawdown is the largest drop from a past peak to a
       later low.
     \item \hilite{Risk against a benchmark}: beta is how much the asset moves
-      when the market moves; tracking error is the spread of the gap between the
+      when the market moves, and tracking error is the spread of the gap between the
       return and its benchmark.
   \end{itemize}
 
@@ -393,8 +392,8 @@
 \begin{frame}{Stylized Facts of Equity Growth Rates}
   \vspace{0.3em}
   A \hilite{stylized fact} is a recurring empirical pattern observed across many
-  assets or markets. It is not an exact law for every ticker and sample. It is a
-  pattern that a useful model should be able to reproduce.
+  assets or markets. It is not an exact law for every ticker and sample, but a
+  model that cannot reproduce it is missing something the data shows.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
@@ -406,7 +405,7 @@
       other large movements, and calm observations near other calm observations.
   \end{itemize}
 
-  \slidenote{Sources:}{\href{https://doi.org/10.1080/713665670}{Cont (2001)}; \href{https://www.jstor.org/stable/2350970}{Mandelbrot (1963)}}
+  \slidenote{Sources:}{\href{https://doi.org/10.1080/713665670}{Cont (2001)} and \href{https://www.jstor.org/stable/2350970}{Mandelbrot (1963)}}
 \end{frame}
 
 \begin{frame}{Heavy Tailed Return Distributions}
@@ -479,7 +478,7 @@
 
   \vspace{-0.3em}
   \hilite{Volatility clustering}: large-magnitude days arrive in bursts of
-  both signs, and the marked weeks are turbulent in both series; one large
+  both signs, and the marked weeks are turbulent in both series. One large
   jump is not a cluster.
 
   \slidenote{Data:}{daily SPY and AMD growth rates, 2014–2024, from the stylized-facts example dataset.}
@@ -536,7 +535,7 @@
 
   \vspace{0.5em}
   Optional, not prerequisites for L3b. The first develops the mechanics of a
-  price-time-priority limit-order book; the second distinguishes mechanical
+  price-time-priority limit-order book, and the second distinguishes mechanical
   execution cost from linear, order-flow-imbalance, and transient-impact models.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-3/L3a/advanced}{lectures/week-3/L3a/advanced}, also linked from the lecture notebook.}
 \end{frame}
@@ -552,7 +551,7 @@
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \textbf{\ink{The price depends on how and where you trade.}} Each
       venue keeps its own book, so the fill depends on the order type and the
-      venue; the NBBO is the benchmark for comparing quotes across venues.
+      venue. The NBBO is the benchmark for comparing quotes across venues.
     \item \textbf{\ink{One series gives both reward and risk.}} The growth rate
       says how fast the price grew per year, the log return says how much it
       moved over one interval, and volatility is the spread of those numbers.
