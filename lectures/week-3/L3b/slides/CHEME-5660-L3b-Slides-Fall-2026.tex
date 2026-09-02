@@ -2,8 +2,8 @@
 %
 % THE DECK MIRRORS THE NOTEBOOK. Students use these slides as a note-taking
 % companion while CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb
-% is shown live. The deck follows the notebook order, including its real-world
-% versus risk-neutral measure distinction and probability-of-profit material.
+% is shown live. The deck follows the notebook order and its real-world versus
+% risk-neutral measure distinction.
 %
 % Notebook outline, and where each part lands in the deck:
 %
@@ -86,8 +86,8 @@
       probabilities from the up factor, down factor, horizon, and transition probability.
     \item \hilite{Separate probability measures}: explain why real-world
       probabilities support forecasting while risk-neutral probabilities support valuation.
-    \item \hilite{Test model purpose}: evaluate probability of profit under the
-      real-world measure and identify stylized facts excluded by fixed parameters.
+    \item \hilite{Test model purpose}: identify which stylized facts the
+      constant-parameter lattice reproduces and which its fixed parameters exclude.
   \end{itemize}
   \vspace{-0.4em}
 
@@ -185,7 +185,7 @@
 \end{frame}
 
 % ==== real-world estimation ==================================
-\begin{frame}{\large Data-Driven Real-World Parameter Estimation}
+\begin{frame}{\large Data-Driven Real World Parameter Estimation}
   Let $g_2,\ldots,g_T$ be historical growth rates sampled at interval
   $\Delta t>0$ years. Initialize an up-factor set $U$ and a down-factor set $D$.
 
@@ -468,11 +468,14 @@
   \hilite{The fixed binomial lattice does not generate volatility clustering.}
 
   \vspace{0.8em}
-  The one-step conditional variance is the same at every node and time:
+  Independence applies to the magnitudes, and the one-step variance is the same
+  at every step:
   \[
-    \operatorname{Var}(g_j\mid\mathcal F_{j-1})
+    \operatorname{Cov}_{\Pmeasure}\!\left(|g_j|,|g_{j+\tau}|\right)=0,
+    \qquad
+    \operatorname{Var}_{\Pmeasure}(g_j)
     =\frac{p(1-p)}{(\Delta t)^2}
-      \left[\log\left(\frac ud\right)\right]^2.
+      \left[\log\!\left(\frac ud\right)\right]^2.
   \]
 
   \vspace{0.5em}
