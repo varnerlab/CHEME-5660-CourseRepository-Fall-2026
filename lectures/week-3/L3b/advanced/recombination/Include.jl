@@ -10,4 +10,5 @@ end
 
 using DataFrames
 using Plots
+using PrettyTables
 using Statistics

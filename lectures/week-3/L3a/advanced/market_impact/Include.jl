@@ -13,4 +13,5 @@ using VLQuantitativeFinancePackage
 using DataFrames
 using LinearAlgebra
 using Plots
+using PrettyTables
 using Random
