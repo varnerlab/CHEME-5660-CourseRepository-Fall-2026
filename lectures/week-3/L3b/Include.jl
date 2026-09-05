@@ -1,9 +1,3 @@
-# Setup paths -
-const _ROOT = pwd();                           # working directory from which the notebook was launched
-const _PATH_TO_SRC = joinpath(_ROOT, "src");  # local helper-code directory
-const _PATH_TO_DATA = joinpath(_ROOT, "data"); # local data directory
-const _PATH_TO_FIGS = joinpath(_ROOT, "figs"); # local figure directory
-
 # setup the course environment: walk up to the nearest Project.toml
 # (repo root in a clone; bundle root in an unzipped weekly download) -
 import Pkg # activate and instantiate the shared Julia environment
@@ -29,6 +23,3 @@ using JLD2                         # Julia-native data serialization
 using FileIO                       # common file-loading interface
 using Distributions                # probability distributions
 using PrettyTables                 # formatted tabular display
-
-# Include local helpers -
-include(joinpath(_PATH_TO_SRC, "Compute.jl")); # expectation and variance utilities for equity lattices

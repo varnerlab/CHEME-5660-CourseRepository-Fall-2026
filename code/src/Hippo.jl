@@ -23,7 +23,7 @@ The `prediction` function predicts the output of the single input single output 
 The function returns the time array, the hidden state array and the output array. 
 
 ### Arguments
-- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [MySisoLegSHippoModel](@ref) for details on the model struct.
+- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [`MySisoLegSHippoModel`](@ref) for details on the model struct.
 - `tspan::NamedTuple`: A named tuple that defines the time span for the simulation. The named tuple should have the fields `start`, `stop` and `step`.
 - `signal::Array{Float64}`: An array of input signals to the model.
 - `S::Int64`: Circular buffer size used by the prediction function. The default
@@ -94,7 +94,7 @@ The `solve` function solves the single input single output (SISO) HiPPO model us
 bilinear discretization. The function returns the time array, the hidden state array and the output array.
 
 ### Arguments
-- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [MySisoLegSHippoModel](@ref) for details on the model struct.
+- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [`MySisoLegSHippoModel`](@ref) for details on the model struct.
 - `tspan::NamedTuple`: A named tuple that defines the time span for the simulation. The named tuple should have the fields `start`, `stop` and `step`.
 - `signal::Array{Float64}`: An array of input signals to the model.
 
@@ -145,7 +145,7 @@ Leg-S bilinear discretized HiPPO model. The [Optim.jl package](https://github.co
 The function returns the estimated parameters.
 
 ### Arguments
-- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [MySisoLegSHippoModel](@ref) for details on the model struct.
+- `model::MySisoLegSHippoModel`: A model struct that defines the HiPPO model, see [`MySisoLegSHippoModel`](@ref) for details on the model struct.
 - `tspan::NamedTuple`: A named tuple that defines the time span for the simulation. The named tuple should have the fields `start`, `stop` and `step`.
 - `signal::Array{Float64}`: An array of input signals to the model.
 - `method::AbstractOptimizer`: An optimizer to use for the optimization problem. The default optimizer is the [LBFGS routine of the Optim.jl](https://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/).

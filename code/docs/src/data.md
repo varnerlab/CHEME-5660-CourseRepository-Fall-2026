@@ -5,6 +5,7 @@ We have included a market dataset that we use for examples and activities in the
 ```@docs
 VLQuantitativeFinancePackage.MyTrainingMarketDataSet
 VLQuantitativeFinancePackage.MyTestingMarketDataSet
+VLQuantitativeFinancePackage.MySP500SectorDataSet
 ```
 
 ## Options Data

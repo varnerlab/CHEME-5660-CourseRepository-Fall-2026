@@ -5,6 +5,51 @@ const EURO = (current, future) -> future   # European choice function for tree p
 
 @testset "lattice" begin
 
+    @testset "Binomial share-price moments" begin
+        S₀ = 20.0; u = 1.1; d = 0.9; p = 0.65;
+        model = build(MyBinomialEquityPriceTree, (u = u, d = d, p = p)) |>
+            (tree -> populate(tree; Sₒ = S₀, h = 4));
+
+        # Compare node-weighted moments with the independent-multiplier formulas -
+        for level ∈ 0:4
+            expected_price = S₀ * (p*u + (1-p)*d)^level;
+            expected_variance = S₀^2 * (p*u^2 + (1-p)*d^2)^level - expected_price^2;
+            @test expectation(model; level = level) ≈ expected_price
+            @test isapprox(variance(model; level = level), expected_variance; atol = 1e-10)
+            @test variance(model; level = level) ≥ 0.0
+        end
+        @test expectation(model) == S₀
+        @test variance(model) == 0.0
+
+        # Preserve requested order, repeated levels, and plotting-axis offsets -
+        levels = [4, 0, 2, 2];
+        means = expectation(model, levels; startindex = 10);
+        variances = variance(model, levels; startindex = 10);
+        @test size(means) == size(variances) == (4, 2)
+        @test means[:, 1] == variances[:, 1] == levels .+ 10
+        @test means[:, 2] ≈ [expectation(model; level = level) for level ∈ levels]
+        @test variances[:, 2] ≈ [variance(model; level = level) for level ∈ levels]
+        @test expectation(model, 0:4) == expectation(model, collect(0:4))
+        @test variance(model, 0:4) == variance(model, collect(0:4))
+        @test size(expectation(model, Int[])) == (0, 2)
+        @test size(variance(model, Int[])) == (0, 2)
+        @test_throws KeyError expectation(model; level = -1)
+        @test_throws KeyError variance(model; level = 5)
+        @test_throws KeyError expectation(model, [0, 5])
+        @test_throws KeyError variance(model, [-1, 0])
+
+        # Deterministic branches and nearly equal prices must not create negative variance -
+        for probability ∈ (0.0, 1.0)
+            tree = build(MyBinomialEquityPriceTree, (u = u, d = d, p = probability)) |>
+                (tree -> populate(tree; Sₒ = S₀, h = 4));
+            @test expectation(tree; level = 4) ≈ S₀ * (probability == 1.0 ? u : d)^4
+            @test variance(tree; level = 4) ≈ 0.0 atol = 1e-20
+        end
+        close_prices = build(MyBinomialEquityPriceTree, (u = 1.0 + 1e-8, d = 1.0 - 1e-8, p = 0.5)) |>
+            (tree -> populate(tree; Sₒ = 1e8, h = 1));
+        @test variance(close_prices; level = 1) ≈ 1.0 atol = 1e-7
+    end
+
     @testset "Hull price lattice (from test_hull_example.jl)" begin
         m = build(MyBinomialEquityPriceTree, (u = 1.1, d = 0.9, p = 0.6523)) |> (x -> populate(x, Sₒ = 20.0, h = 2))
         hull = Dict(0 => 20.0, 1 => 22.0, 2 => 18.0, 3 => 24.2, 4 => 19.8, 5 => 16.2)

@@ -582,7 +582,7 @@ end
 The `sample_endpoint` function simulates the geometric Brownian motion model for a single equity using the analytical solution at time `T`.
 
 ### Arguments
-- `model::MyGeometricBrownianMotionEquityModel`: An instance of the [MyGeometricBrownianMotionEquityModel](@ref) type which models the geometric Brownian motion for the equity.
+- `model::MyGeometricBrownianMotionEquityModel`: An instance of the [`MyGeometricBrownianMotionEquityModel`](@ref) type which models the geometric Brownian motion for the equity.
 - `data::NamedTuple`: A named tuple that contains the data for the simulation.
 
 The `data::NamedTuple` must contain the following keys:
@@ -632,7 +632,7 @@ The simulation is performed over a time interval `T` and the initial price of th
 The function returns a matrix of size `(number_of_time_steps, number_of_paths + 1)` where each row represents a single path of the equity price over time.
 
 ### Arguments
-- `model::MyGeometricBrownianMotionEquityModel`: An instance of the [MyGeometricBrownianMotionEquityModel](@ref) type which models the geometric Brownian motion for the equity.
+- `model::MyGeometricBrownianMotionEquityModel`: An instance of the [`MyGeometricBrownianMotionEquityModel`](@ref) type which models the geometric Brownian motion for the equity.
 - `data::NamedTuple`: A named tuple that contains the data for the simulation. 
 
 The `data::NamedTuple` must contain the following keys:
@@ -698,7 +698,7 @@ end
 The `sample` function simulates the geometric Brownian motion model for multiple equities using the analytical solution.
 
 ### Arguments
-- `model::MyMultipleAssetGeometricBrownianMotionEquityModel`: An instance of the [MyMultipleAssetGeometricBrownianMotionEquityModel](@ref) type which models the geometric Brownian motion for multiple equities.
+- `model::MyMultipleAssetGeometricBrownianMotionEquityModel`: An instance of the [`MyMultipleAssetGeometricBrownianMotionEquityModel`](@ref) type which models the geometric Brownian motion for multiple equities.
 - `data::NamedTuple`: A named tuple that contains the data for the simulation.
 
 The `data::NamedTuple` must contain the following keys:
@@ -920,7 +920,7 @@ Computes the premium for an American style option contract using the [Cox-Ross-R
 
 ### Arguments
 - `contract::T`: An instance of the `AbstractContractModel` type which models the option contract. 
-- `model::MyAdjacencyBasedCRREquityPriceTree`: An instance of the [MyAdjacencyBasedCRREquityPriceTree](@ref) type which models the Cox-Ross-Rubinstein model.
+- `model::MyAdjacencyBasedCRREquityPriceTree`: An instance of the [`MyAdjacencyBasedCRREquityPriceTree`](@ref) type which models the Cox-Ross-Rubinstein model.
 - `choice::Function=_rational`: A function that determines the choice of the option contract. Default value is `_rational`.
 - `sigdigits::Int64 = 4`: The number of significant digits to round the premium to. Default value is `4`.
 
@@ -1030,8 +1030,8 @@ The `premium` function computes the premium for a European call option contract 
 This function requires the contract to have the `K`, `DTE`, and `IV` fields set on the contract model, and the `Sₒ` and `r` fields set on the pricing `model::MyBlackScholesContractPricingModel` instance.
 
 ### Arguments
-- `contract::MyEuropeanCallContractModel`: An instance of the [MyEuropeanCallContractModel](@ref) type which models the European call option contract.
-- `model::MyBlackScholesContractPricingModel`: An instance of the [MyBlackScholesContractPricingModel](@ref) type which models the [Black-Scholes-Merton model calculation](https://en.wikipedia.org/wiki/Black–Scholes_model).
+- `contract::MyEuropeanCallContractModel`: An instance of the [`MyEuropeanCallContractModel`](@ref) type which models the European call option contract.
+- `model::MyBlackScholesContractPricingModel`: An instance of the [`MyBlackScholesContractPricingModel`](@ref) type which models the [Black-Scholes-Merton model calculation](https://en.wikipedia.org/wiki/Black–Scholes_model).
 
 ### Returns
 - `Float64`: The premium for the European call option contract.
@@ -1272,6 +1272,72 @@ function populate(model::MySymmetricBinaryInterestRateLatticeModel)::MySymmetric
 
     # return -
     return model;
+end
+
+"""
+    expectation(model::MyBinomialEquityPriceTree; level::Integer = 0) -> Float64
+
+Compute the probability-weighted expected share price at a zero-based tree level.
+The tree must be populated. The result has the same units as the node prices.
+An unavailable level raises a `KeyError`.
+"""
+function expectation(model::MyBinomialEquityPriceTree; level::Integer = 0)::Float64
+    # Sum over node identifiers at the requested financial level -
+    return sum(model.data[i].price * model.data[i].probability for i ∈ model.levels[level]);
+end
+
+"""
+    expectation(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer};
+        startindex::Integer = 0) -> Matrix{Float64}
+
+Compute expected share prices at the requested zero-based tree levels. Each row
+stores the level plus `startindex` in column 1 and the expected price in column 2.
+Input order is preserved; an empty input returns a zero-row, two-column matrix.
+"""
+function expectation(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer};
+    startindex::Integer = 0)::Matrix{Float64}
+
+    # Populate the plotting coordinate and expected price for each level -
+    result = Matrix{Float64}(undef, length(levels), 2);
+    for (row, level) ∈ enumerate(levels)
+        result[row, 1] = level + startindex; # shift the plotting coordinate, not the tree level
+        result[row, 2] = expectation(model; level = level); # USD/share when node prices use USD/share
+    end
+    return result;
+end
+
+"""
+    variance(model::MyBinomialEquityPriceTree; level::Integer = 0) -> Float64
+
+Compute the probability-weighted share-price variance at a zero-based tree level.
+The tree must be populated. The result has squared price units. An unavailable
+level raises a `KeyError`.
+"""
+function variance(model::MyBinomialEquityPriceTree; level::Integer = 0)::Float64
+    # Center prices before squaring to avoid subtracting two large second moments -
+    expected_price = expectation(model; level = level);
+    return sum(model.data[i].probability * (model.data[i].price - expected_price)^2
+        for i ∈ model.levels[level]);
+end
+
+"""
+    variance(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer};
+        startindex::Integer = 0) -> Matrix{Float64}
+
+Compute share-price variances at the requested zero-based tree levels. Each row
+stores the level plus `startindex` in column 1 and the variance in column 2.
+Input order is preserved; an empty input returns a zero-row, two-column matrix.
+"""
+function variance(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer};
+    startindex::Integer = 0)::Matrix{Float64}
+
+    # Populate the plotting coordinate and price variance for each level -
+    result = Matrix{Float64}(undef, length(levels), 2);
+    for (row, level) ∈ enumerate(levels)
+        result[row, 1] = level + startindex; # shift the plotting coordinate, not the tree level
+        result[row, 2] = variance(model; level = level); # squared USD/share units
+    end
+    return result;
 end
 
 """

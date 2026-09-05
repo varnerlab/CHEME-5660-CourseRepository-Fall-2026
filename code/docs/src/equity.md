@@ -20,6 +20,10 @@ VLQuantitativeFinancePackage.RealWorldBinomialProbabilityMeasure
 VLQuantitativeFinancePackage.RiskNeutralBinomialProbabilityMeasure
 VLQuantitativeFinancePackage.MyBinomialEquityPriceTree
 VLQuantitativeFinancePackage.MyBiomialLatticeEquityNodeModel
+VLQuantitativeFinancePackage.expectation(model::MyBinomialEquityPriceTree)
+VLQuantitativeFinancePackage.expectation(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer})
+VLQuantitativeFinancePackage.variance(model::MyBinomialEquityPriceTree)
+VLQuantitativeFinancePackage.variance(model::MyBinomialEquityPriceTree, levels::AbstractVector{<:Integer})
 VLQuantitativeFinancePackage.build(model::Type{MyBinomialEquityPriceTree}, data::NamedTuple)
 VLQuantitativeFinancePackage.populate(model::MyBinomialEquityPriceTree; Sₒ::Float64 = 100.0, h::Int64 = 1)
 VLQuantitativeFinancePackage.sample(model::MyBinomialEquityPriceTree, L::Int64; 
