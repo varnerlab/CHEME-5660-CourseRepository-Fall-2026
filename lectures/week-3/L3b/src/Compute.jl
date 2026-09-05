@@ -1,36 +1,39 @@
-_𝔼(X::Array{Float64,1}, p::Array{Float64,1}) = sum(X.*p)
+_𝔼(X::Array{Float64,1}, p::Array{Float64,1}) = sum(X.*p) # probability-weighted sum over aligned outcomes and weights
 
 """
     𝔼(model::MyBinomialEquityPriceTree; level::Int = 0) -> Float64
+
+Compute the probability-weighted expected share price at one zero-based financial
+tree level. The returned value has units of USD/share when node prices do.
 """
 function 𝔼(model::MyBinomialEquityPriceTree; level::Int = 0)::Float64
 
-    # initialize -
+    # Initialize node-level outcomes and probabilities -
     expected_value = 0.0;
-    X = Array{Float64,1}();
-    p = Array{Float64,1}();
+    X = Array{Float64,1}(); # share-price outcomes on the requested level, USD/share
+    p = Array{Float64,1}(); # probability mass aligned elementwise with X
 
-    # get the levels dictionary -
-    levels = model.levels;
-    nodes_on_this_level = levels[level]
-    for i ∈ nodes_on_this_level
+    # Collect values from the model's level-to-node-index mapping -
+    levels = model.levels; # dictionary keyed by financial level 0,1,...
+    nodes_on_this_level = levels[level] # internal node identifiers at the requested level
+    for i ∈ nodes_on_this_level # i is a node identifier, not a Julia array position
 
-        # grab the node -
-        node = model.data[i];
+        # Get the node record -
+        node = model.data[i]; # price and probability stored under node identifier i
 
-        # get the data -
-        x_value = node.price;
-        p_value = node.probability;
+        # Extract the aligned outcome and probability -
+        x_value = node.price; # USD/share
+        p_value = node.probability; # dimensionless probability mass
 
-        # store the data -
-        push!(X,x_value);
-        push!(p,p_value);
+        # Store the aligned pair -
+        push!(X,x_value); # append the node's share price
+        push!(p,p_value); # append the same node's probability
     end
 
-    # compute -
-    expected_value = _𝔼(X,p) # inner product
+    # Compute the probability-weighted mean -
+    expected_value = _𝔼(X,p) # USD/share
 
-    # return -
+    # Return -
     return expected_value
 end
 
@@ -38,92 +41,95 @@ end
     𝔼(model::MyBinomialEquityPriceTree, levels::Array{Int64,1};
         startindex::Int64 = 0) -> Array{Float64,2}
 
-Computes the expectation of the model simulation. Takes a model::MyBinomialEquityPriceTree instance and a vector of
-tree levels, i.e., time steps and returns a variance array where the first column is the time and the second column is the expectation.
-Each row is a time step.
+Compute expected share prices at several zero-based financial tree levels. The
+first output column stores the optionally shifted level index and the second stores
+the expected share price. Each row corresponds to one requested level.
 """
 function 𝔼(model::MyBinomialEquityPriceTree, levels::Array{Int64,1};
     startindex::Int64 = 0)::Array{Float64,2}
 
-    # initialize -
-    number_of_levels = length(levels);
-    expected_value_array = Array{Float64,2}(undef, number_of_levels, 2);
+    # Initialize -
+    number_of_levels = length(levels); # number of requested time slices
+    expected_value_array = Array{Float64,2}(undef, number_of_levels, 2); # columns: level index, expected price
 
-    # loop -
-    for i ∈ 0:(number_of_levels-1)
+    # Populate one output row per requested financial level -
+    for i ∈ 0:(number_of_levels-1) # financial offset i maps to Julia row i + 1
 
-        # get the level -
+        # Get the financial level stored at Julia position i + 1 -
         level = levels[i+1];
 
-        # get the expected value -
-        expected_value = 𝔼(model, level=level);
+        # Compute the expected share price at this level -
+        expected_value = 𝔼(model, level=level); # USD/share
 
-        # store -
-        expected_value_array[i+1,1] = level + startindex;
-        expected_value_array[i+1,2] = expected_value;
+        # Store the plotting coordinate and expected price -
+        expected_value_array[i+1,1] = level + startindex; # optional level-axis offset
+        expected_value_array[i+1,2] = expected_value; # USD/share
     end
 
-    # return -
+    # Return -
     return expected_value_array;
 end
 
-Var(model::MyBinomialEquityPriceTree, levels::Array{Int64,1}; startindex::Int64 = 0) = 𝕍(model, levels, startindex = startindex)
+Var(model::MyBinomialEquityPriceTree, levels::Array{Int64,1}; startindex::Int64 = 0) = 𝕍(model, levels, startindex = startindex) # familiar alias for the Unicode variance method
 
 """
     𝕍(model::MyBinomialEquityPriceTree; level::Int = 0) -> Float64
+
+Compute the probability-weighted share-price variance at one zero-based financial
+tree level. The returned value has squared price units.
 """
 function 𝕍(model::MyBinomialEquityPriceTree; level::Int = 0)::Float64
 
-    # initialize -
+    # Initialize node-level outcomes and probabilities -
     variance_value = 0.0;
-    X = Array{Float64,1}();
-    p = Array{Float64,1}();
+    X = Array{Float64,1}(); # share-price outcomes on the requested level, USD/share
+    p = Array{Float64,1}(); # probability mass aligned elementwise with X
 
-    # get the levels dictionary -
-    levels = model.levels;
-    nodes_on_this_level = levels[level]
-    for i ∈ nodes_on_this_level
+    # Collect values from the model's level-to-node-index mapping -
+    levels = model.levels; # dictionary keyed by financial level 0,1,...
+    nodes_on_this_level = levels[level] # internal node identifiers at the requested level
+    for i ∈ nodes_on_this_level # i is a node identifier, not a Julia array position
 
-        # grab the node -
-        node = model.data[i];
+        # Get the node record -
+        node = model.data[i]; # price and probability stored under node identifier i
 
-        # get the data -
-        x_value = node.price;
-        p_value = node.probability;
+        # Extract the aligned outcome and probability -
+        x_value = node.price; # USD/share
+        p_value = node.probability; # dimensionless probability mass
 
-        # store the data -
-        push!(X,x_value);
-        push!(p,p_value);
+        # Store the aligned pair -
+        push!(X,x_value); # append the node's share price
+        push!(p,p_value); # append the same node's probability
     end
 
-    # update -
-    variance_value = (_𝔼(X.^2,p) - (_𝔼(X,p))^2)
+    # Compute Var(X) = E[X²] - E[X]² -
+    variance_value = (_𝔼(X.^2,p) - (_𝔼(X,p))^2) # squared USD/share units
 
-    # return -
+    # Return -
     return variance_value;
 end
 
 """
     𝕍(model::MyBinomialEquityPriceTree, levels::Array{Int64,1}; startindex::Int64 = 0) -> Array{Float64,2}
 
-Computes the variance of the model simulation. Takes a model::MyBinomialEquityPriceTree instance and a vector of
-tree levels, i.e., time steps and returns a variance array where the first column is the time and the second column is the variance.
-Each row is a time step.
+Compute share-price variances at several zero-based financial tree levels. The
+first output column stores the optionally shifted level index and the second stores
+the price variance. Each row corresponds to one requested level.
 """
 function 𝕍(model::MyBinomialEquityPriceTree, levels::Array{Int64,1}; startindex::Int64 = 0)::Array{Float64,2}
 
-    # initialize -
-    number_of_levels = length(levels);
-    variance_value_array = Array{Float64,2}(undef, number_of_levels, 2);
+    # Initialize -
+    number_of_levels = length(levels); # number of requested time slices
+    variance_value_array = Array{Float64,2}(undef, number_of_levels, 2); # columns: level index, price variance
 
-    # loop -
-    for i ∈ 0:(number_of_levels - 1)
-        level = levels[i+1];
-        variance_value = 𝕍(model, level=level);
-        variance_value_array[i+1,1] = level + startindex
-        variance_value_array[i+1,2] = variance_value;
+    # Populate one output row per requested financial level -
+    for i ∈ 0:(number_of_levels - 1) # financial offset i maps to Julia row i + 1
+        level = levels[i+1]; # financial level stored at Julia position i + 1
+        variance_value = 𝕍(model, level=level); # price variance at this level
+        variance_value_array[i+1,1] = level + startindex # optional level-axis offset
+        variance_value_array[i+1,2] = variance_value; # squared USD/share units
     end
 
-    # return -
+    # Return -
     return variance_value_array;
 end
