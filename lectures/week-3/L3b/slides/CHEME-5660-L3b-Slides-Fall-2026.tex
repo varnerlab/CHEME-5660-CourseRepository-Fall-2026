@@ -1,49 +1,17 @@
-% L3b takeaway deck.
-%
-% THE DECK MIRRORS THE NOTEBOOK. Students use these slides as a note-taking
-% companion while CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb
-% is shown live. The deck follows the notebook order and its real-world versus
-% risk-neutral measure distinction.
-%
-% Notebook outline, and where each part lands in the deck:
-%
-%   (deck only)                             => title
-%   Disclaimer and Risks          [last]    => slide 2 by instructor preference
-%   Learning Objectives           [cell 0]  => Objectives for Today
-%   Examples                                => Lectures and Examples
-%   Binomial Lattice Model                  => figure, definition
-%     Price Distribution                    => terminal prices, paths, nodes
-%     Data-Driven Real World Parameter      => algorithm, caveats, recombination,
-%       Estimation                             worked example
-%     Model-Driven Risk-Neutral Probability => P versus Q, then no-arbitrage q
-%                                              and replication value
-%   Stylized Facts for Binomial Lattice     => overview frame
-%     Return Distribution                   => Bernoulli transform, one-step
-%                                              moments, binomial transform,
-%                                              Heavy Tails
-%     Temporal Dependence                   => Vanishing Autocorrelation, Nested
-%                                              Windows, Volatility Clustering
-%     (closing scorecard paragraph)         => What the Fixed Lattice Cannot Reproduce
-%   Optional Advanced Material              => Optional Advanced Material
-%   Summary                                 => Summary
-%   Today?                                  => closing transition frame
-%
-% Two notes on the mapping. The lecture folds the P-versus-Q contrast into its
-% risk-neutral subsection, so the deck's "Two Measures, Two Questions" frame
-% opens that subsection rather than mirroring a separate heading. Probability of
-% profit was dropped from the lecture and from this deck; POP is developed in
-% week-10 (L10a POE/POP example, L10b composite-contract lecture).
-%
-% The lecture states the return-distribution and temporal-dependence results as
-% theorems and moves their algebra to advanced/stylized-facts/. The deck keeps
-% the result frames and does not derive them either.
+% L3b lecture companion deck.
+% Follows the lecture: binomial prices; historical estimation; risk-neutral
+% pricing; one-step growth-rate distribution and temporal dependence.
+% Cumulative returns, Normal limits, window overlap, and path-count details
+% are linked through the optional notebooks instead of taught in the core deck.
+% Title and disclaimer remain near the front by course convention.
+% See lectures/templates/vnslides.sty for the shared content and style rules.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
 \newcommand{\Pmeasure}{\mathbb{P}}
 \newcommand{\Qmeasure}{\mathbb{Q}}
 
-\title{\texorpdfstring{{\vnheavy L3b}}{L3b}: Equity-Price Lattices Under Real-World and Risk-Neutral Measures}
+\title{\texorpdfstring{{\vnheavy L3b}}{L3b}: Lattice Models for Equity Pricing}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -73,45 +41,39 @@
 
 % ==== objectives =============================================
 \begin{frame}{Objectives for Today}
-  \vspace{0.4em}
-  Today we replace continuous price uncertainty with a finite lattice, derive
-  its node distribution, and separate the probability used for forecasting from
-  the one used for pricing.
+  Today we build a binomial price model, estimate its parameters, and
+  test it against the market patterns from L3a.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Build a binomial lattice}: derive node prices and node
-      probabilities from the up factor, down factor, horizon, and transition probability.
-    \item \hilite{Separate probability measures}: explain why real-world
-      probabilities support forecasting while risk-neutral probabilities support valuation.
-    \item \hilite{Test model purpose}: identify which stylized facts the
-      constant-parameter lattice reproduces and which its fixed parameters exclude.
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{Binomial lattice}: calculate the possible prices
+      and their probabilities.
+    \item \hilite{Model parameters}: estimate $u$, $d$, and $p$ from data;
+      calculate $q$ for risk-neutral pricing.
+    \item \hilite{Stylized facts}: explain why the fixed lattice matches
+      weak autocorrelation but misses heavy tails and volatility clustering.
   \end{itemize}
-  \vspace{-0.4em}
 
-  \slidenote{Companion notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}{L3b lecture notebook}}
+  \slidenote{Lecture:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb}{Lattice Models for Equity Pricing}}
 \end{frame}
 
 % ==== examples ===============================================
 \begin{frame}{Lectures and Examples}
-  \vspace{0.5em}
-  {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb}}
+  \textbf{\ink{Lecture:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb}{Lattice Models for Equity Pricing}
 
-  \vspace{1.0em}
-  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb}}
+  \vspace{1.1em}
+  \textbf{\ink{Example:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb}{Binomial Lattice Simulation with Real-World Probability}
 
-  \vspace{0.9em}
-  The example checks a textbook tree, estimates asymmetric move factors and a
-  physical up probability from historical data, populates a recombining lattice,
-  and compares its prediction bands with observed prices.
-
-  \vspace{0.9em}
-  The factors are \hilite{not} forced to satisfy $d=1/u$. That restriction is
-  unnecessary for recombination.
-
-  \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item Check the implementation against a textbook example.
+    \item Estimate the move factors and up probability from historical prices.
+    \item Compare the model's predicted coverage with observed 2025 coverage.
+  \end{itemize}
 \end{frame}
 
 % ==== lattice schematic ======================================
@@ -123,13 +85,9 @@
 
 % ==== lattice definition =====================================
 \begin{frame}{Binomial Lattice Model}
-  \vspace{0.2em}
-  Let $S_0>0$ be today's ex-dividend share price. Over each step of length
-  $\Delta t>0$ years, the price is multiplied by a constant \hilite{up factor}
-  $u>0$ or a constant \hilite{down factor} $d>0$, with $d<u$.
-
-  \vspace{0.5em}
-  Under a real-world up probability $p\in[0,1]$, the one-step price is:
+  Let $S_0>0$ be today's share price and $\Delta t>0$ the step length
+  in years. The move factors satisfy $u>d>0$, and the up probability is
+  $0<p<1$. After one step:
   \[
     S_1=
     \begin{cases}
@@ -138,420 +96,375 @@
     \end{cases}
   \]
 
-  \vspace{0.3em}
-  The fixed-parameter model assumes the same $u$, $d$, and $p$ at every node and
-  independent move draws across steps. Level $t$ contains $t+1$ price states.
+  \vspace{0.6em}
+  The factors $u$, $d$, and probability $p$ stay fixed.
+  Successive moves are independent.
 
-  \slidenote{Purpose:}{the lattice replaces a continuum of possible prices with a finite map whose probabilities and payoffs can be computed exactly.}
+  After $t$ steps, there are $t+1$ possible prices.
+
+  \slidenote{Scope:}{we model share-price changes without dividend payments during the step.}
 \end{frame}
 
 % ==== terminal distribution ==================================
-\begin{frame}{Terminal Prices and Their Distribution}
-  Let $N$ be the number of independent steps, and let $K_N$ count the up moves.
-  Under the real-world law, $K_N\sim\operatorname{Binomial}(N,p)$. Conditional on
-  $K_N=k$, where $k\in\{0,\ldots,N\}$, the terminal price is:
+\begin{frame}{Price Distribution}
+  After $t$ independent steps, let $k$ be the number of up moves.
+  There are $t-k$ down moves, so the price is:
   \[
-    \underbrace{S_{N,k}=S_0u^kd^{N-k}}_{\text{\footnotesize terminal price}}.
+    \underbrace{S_{t,k}=S_0u^kd^{t-k}}_{\text{\footnotesize price after }t\text{\footnotesize steps}},
+    \qquad k=0,\ldots,t.
   \]
 
-  There are $\binom Nk$ paths with that count, and every such path has probability
-  $p^k(1-p)^{N-k}$. The node probability is therefore:
+  There are $\binom tk$ ways to arrange those moves.
+  Under the real-world probability rule $\Pmeasure$, the node probability is:
   \[
-    \underbrace{\Pmeasure(K_N=k)=\binom Nk p^k(1-p)^{N-k}}_{\text{\footnotesize probability of node }(N,k)}.
+    \Pmeasure(k\text{ up moves in }t\text{ steps})
+    =\underbrace{\binom tk p^k(1-p)^{t-k}}_{\text{\footnotesize binomial probability}}.
   \]
 
-  The expected one-step gross return under this law is $pu+(1-p)d$.
+  Different move orders can reach the same price.
 \end{frame}
 
-\begin{frame}{Paths Grow Exponentially, Terminal Nodes Linearly}
-  \vspace{0.3em}
-  After $N$ binary moves, the unmerged path tree contains $2^N$ paths to the
-  terminal level. The recombining lattice contains only $N+1$ terminal price nodes.
 
-  \vspace{0.8em}
-  {\large\textbf{\ink{Why the compression is exact}}}
-  \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item Every path with $k$ up moves and $N-k$ down moves reaches
-      $S_0u^kd^{N-k}$.
-    \item The binomial coefficient $\binom Nk$ records how many path orders merge
-      into that node.
-    \item Recombination preserves the terminal distribution while replacing path
-      enumeration with one state per up-move count.
-  \end{itemize}
 
-  \vspace{0.5em}
-  Backward valuation therefore walks nodes rather than paths.
-\end{frame}
-
-% ==== real-world estimation ==================================
-\begin{frame}{\large Data-Driven Real World Parameter Estimation}
-  Let $g_2,\ldots,g_T$ be historical growth rates sampled at interval
-  $\Delta t>0$ years. Initialize an up-factor set $U$ and a down-factor set $D$.
-
-  \vspace{0.4em}
-  \begin{enumerate}\setlength{\itemsep}{0.4em}
-    \item For every observation, place $e^{g_t\Delta t}$ in $U$ when $g_t>0$,
-      in $D$ when $g_t<0$, and skip the factor when $g_t=0$.
-    \item Estimate the conditional move magnitudes:
-      \[
-        \widehat u=\frac{1}{|U|}\sum_{v\in U}v,
-        \qquad
-        \widehat d=\frac{1}{|D|}\sum_{v\in D}v.
-      \]
-    \item Estimate the up probability by
-      $\widehat p=|U|/(T-1)$, so zero-change days remain in the denominator.
-  \end{enumerate}
-
-  The sample must contain at least one up move and one down move.
-\end{frame}
-
-\begin{frame}{Historical Estimates Are Model Choices}
-  \vspace{0.3em}
-  The procedure turns historical observations into a \hilite{real-world forecast
-  law}. It does not make the parameters timeless or uniquely correct.
-
-  \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item Averaging positive and negative move factors compresses a continuous
-      return distribution into two representative outcomes.
-    \item Constant $u$, $d$, and $p$ discard serial dependence, changing
-      volatility, and tail structure.
-    \item Estimates inherit sampling error, the chosen observation window, data
-      adjustments, and regime dependence.
-    \item Validation must compare the entire out-of-sample distribution and path
-      behavior with observations, not only the mean path.
-  \end{itemize}
-
-  \slidenote{Interpretation:}{$\widehat p$ is an estimated physical frequency, not a risk-neutral pricing probability.}
-\end{frame}
-
-\begin{frame}{\large Replacement, Recombination, and Reciprocal Moves}
-  \vspace{0.2em}
-  Three statements describe different features of the model.
-
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{With replacement}: every step draws again from the same move
-      set $\{u,d\}$. An up move does not remove the possibility of another up move.
-    \item \hilite{Recombining}: move order does not change the final price because
-      multiplication commutes:
-      \[
-        \underbrace{S_0ud}_{\text{up then down}}
-        =\underbrace{S_0du}_{\text{down then up}}.
-      \]
-    \item \hilite{Reciprocal moves}: $d=1/u$, or $ud=1$, makes up and down
-      increments symmetric in log space. It is an additional parameter choice.
-  \end{itemize}
-
-  \slidenote{Vocabulary:}{the unmerged path structure is a tree. After equal-price states merge, the lattice is a directed acyclic graph in the strict graph-theoretic sense.}
-\end{frame}
-
-\begin{frame}{Example: Asymmetric Moves Still Recombine}
-  The companion notebook first checks $S_0=20$, $u=1.1$, $d=0.9$, and
-  $p=0.6523$. These factors are asymmetric because:
-  \[
-    d=0.9\neq\frac{1}{1.1}\approx0.9091,
-    \qquad
-    ud=0.99\neq1.
-  \]
-
-  The two mixed paths still reach one shared node:
+\begin{frame}{Example: Recombination}
+  The textbook check uses $S_0=20$, $u=1.1$, $d=0.9$, and $p=0.6523$.
+  An up move followed by a down move reaches the same price as the reverse:
   \[
     \underbrace{20(1.1)(0.9)}_{\text{up then down}}
     =\underbrace{20(0.9)(1.1)}_{\text{down then up}}
     =19.8.
   \]
 
-  Each ordered path has probability $p(1-p)$, so the recombined middle node has
-  probability $2p(1-p)$. Reciprocal factors are unnecessary for both the shared
-  price and the binomial node probability.
+  Each path has probability $p(1-p)$, so the shared node has probability
+  $2p(1-p)$.
 
-  \slidenote{Notebook:}{\dimmed{CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb}}
+  \vspace{0.7em}
+  This is \hilite{recombination}. It holds because $ud=du$.
+  Here $ud=0.99$, so recombination does not require $ud=1$.
+
+  \slidenote{Optional extension:}{the recombination notebook compares path counts and node counts.}
 \end{frame}
 
-% ==== probability measures ===================================
-\begin{frame}{Two Measures, Two Questions}
-  \vspace{0.2em}
-  Two different probabilities are both called the probability of an up move.
-  They answer different questions.
+% ==== real-world estimation ==================================
+\begin{frame}{Estimate Parameters from Data}
+  For forecasting, estimate $(u,d,p)$ from growth rates $g_2,\ldots,g_T$
+  observed at intervals of $\Delta t$ years. Start two empty lists:
+  up factors $U$ and down factors $D$.
 
-  \vspace{0.6em}
+  \vspace{0.5em}
+  \begin{enumerate}\setlength{\itemsep}{0.55em}
+    \item Append $e^{g_t\Delta t}$ to $U$ if $g_t>0$, or to $D$ if $g_t<0$.
+      Skip zero-growth observations when building the lists.
+    \item Average each list:
+      \[
+        u=\frac{1}{|U|}\sum_{v\in U}v,
+        \qquad
+        d=\frac{1}{|D|}\sum_{v\in D}v.
+      \]
+    \item Count up moves among all observed steps:
+      \[
+        p=\frac{|U|}{T-1}.
+      \]
+  \end{enumerate}
+
+  \slidenote{Counts:}{$|U|$ and $|D|$ are list lengths. Repeated factors count separately. Zero-growth days stay in the denominator of $p$; both lists must be nonempty.}
+\end{frame}
+
+\begin{frame}{Check the Model Against New Data}
+  Historical estimates give us a model for forecasting.
+
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.9em}
+    \item The estimates depend on which observations we use.
+    \item Two move factors summarize many different observed price changes.
+    \item Test the fitted model on later data: compare its predicted price
+      range with the prices that actually occur.
+  \end{itemize}
+
+  \slidenote{Example:}{the companion notebook compares model-predicted coverage with observed 2025 coverage.}
+\end{frame}
+
+
+
+
+
+% ==== probability measures ===================================
+\begin{frame}{Forecasting and Pricing}
+  Forecasting asks which prices may occur. Pricing asks what a future
+  payoff is worth today. These tasks use different probability rules:
+
+  \vspace{0.9em}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.47\textwidth}
       {\large\textbf{\ink{Real-world $\Pmeasure$}}}
-      \vspace{0.3em}
-      \begin{itemize}\setlength{\itemsep}{0.45em}
-        \item Up probability $p$ is estimated or modeled from data.
-        \item Used for forecasts, scenarios, and risk measurement.
-        \item Tested against out-of-sample distributions and paths.
+      \vspace{0.5em}
+      \begin{itemize}\setlength{\itemsep}{0.7em}
+        \item Estimate the up probability $p$ from data.
+        \item Use it to forecast prices and measure risk.
       \end{itemize}
     \end{column}
     \begin{column}{0.47\textwidth}
       {\large\textbf{\ink{Risk-neutral $\Qmeasure$}}}
-      \vspace{0.3em}
-      \begin{itemize}\setlength{\itemsep}{0.45em}
-        \item Up probability $q$ is implied by $u$, $d$, and the risk-free return.
-        \item Used for no-arbitrage pricing and hedging.
-        \item Tested by reproducing traded prices and excluding arbitrage.
+      \vspace{0.5em}
+      \begin{itemize}\setlength{\itemsep}{0.7em}
+        \item Calculate $q$ from the move factors and risk-free growth.
+        \item Use it to value future payoffs.
       \end{itemize}
     \end{column}
   \end{columns}
 
-  \vspace{0.7em}
-  A pricing probability is generally \hilite{not} an empirical frequency.
+  \vspace{1em}
+  The pricing weight $q$ is not a forecast of the frequency of up moves.
 \end{frame}
 
-\begin{frame}{\large Model-Driven Risk-Neutral Probability}
-  Let $R_f>0$ be the one-step risk-free gross return. For current equity price
-  $S_0$ and next-step prices $S_0u$ and $S_0d$, absence of arbitrage requires:
+\begin{frame}{No-Arbitrage Condition}
+  An \hilite{arbitrage} costs nothing initially, cannot lose money,
+  and makes money in at least one future state.
+
+  Let $g_y$ be the risk-free growth rate in inverse years.
+  Over $\Delta t$ years, its accumulation factor is:
   \[
-    d<R_f<u.
+    R_f=e^{g_y\Delta t}.
+  \]
+  To avoid arbitrage, the factors must satisfy:
+  \[
+    \underbrace{d<R_f<u}_{\text{\footnotesize no-arbitrage condition}}.
   \]
 
-  The unique risk-neutral up probability that makes the discounted share price
-  a martingale is:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item If $R_f\leq d$, borrow at the risk-free rate and buy the share.
+    \item If $R_f\geq u$, sell a borrowed share and invest the proceeds.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Arbitrage: Two Examples}
+  In each example, the share costs $S_0=100$ and the trade starts with
+  no net cash investment.
+
+  \vspace{0.8em}
+  \textbf{\ink{Borrow and buy: $R_f=d=1.05$, $u=1.20$}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Borrow 100 and buy one share. The loan repayment is 105.
+    \item Sell for 105 or 120. Profit after repayment: 0 or 15.
+  \end{itemize}
+
+  \vspace{0.8em}
+  \textbf{\ink{Sell short and invest: $R_f=u=1.10$, $d=0.90$}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Sell a borrowed share for 100 and invest it. The investment becomes 110.
+    \item Buy back the share for 110 or 90. Profit: 0 or 20.
+  \end{itemize}
+
+  \slidenote{Model assumptions:}{borrowing, lending, and short selling are allowed; transaction costs are ignored.}
+\end{frame}
+
+\begin{frame}{Calculate the Risk-Neutral Probability}
+  With arbitrage ruled out, choose the risk-neutral up probability $q$
+  so the weighted average price factor equals $R_f$.
+  The down probability is $1-q$, so:
   \[
-    S_0=\frac{qS_0u+(1-q)S_0d}{R_f},
-    \qquad
-    \underbrace{q=\frac{R_f-d}{u-d}}_{\text{\footnotesize risk-neutral probability}}.
+    qu+(1-q)d=R_f.
+  \]
+  Solving for $q$ gives:
+  \[
+    \underbrace{q=\frac{R_f-d}{u-d}}_{\text{\footnotesize risk-neutral up probability}}.
   \]
 
-  For a claim paying $H_u$ in the up state and $H_d$ in the down state, the same
-  replication relation gives:
+  Since $d<R_f<u$, we have $0<q<1$.
+
+  \slidenote{Meaning:}{$q$ is a pricing weight. The historical up probability remains $p$.}
+\end{frame}
+
+\begin{frame}{Value a Future Payoff}
+  Suppose a claim pays $H_u$ dollars after an up move and $H_d$ dollars
+  after a down move. Its no-arbitrage value today, $V_0$, is:
   \[
-    V_0=\frac{qH_u+(1-q)H_d}{R_f}.
+    V_0=
+    \underbrace{\frac{1}{R_f}}_{\text{\footnotesize discount factor}}
+    \underbrace{\left[qH_u+(1-q)H_d\right]}_{\text{\footnotesize weighted payoff}}.
   \]
 
-  This is an expectation under $\Qmeasure$, not a forecast of the realized payoff.
+  \vspace{0.8em}
+  \begin{enumerate}\setlength{\itemsep}{0.7em}
+    \item Weight the two payoffs using the risk-neutral probability $q$.
+    \item Divide by $R_f$ to discount back one step.
+  \end{enumerate}
+
+  \slidenote{Later in the course:}{we derive this pricing rule when we study options.}
 \end{frame}
 
 % ==== stylized facts =========================================
-\begin{frame}{Stylized Facts for Binomial Lattice Models}
-  \vspace{0.3em}
-  The lattice is our first model of equity-price dynamics. L3a gives three
-  empirical patterns to test it against.
+\begin{frame}{Test the Lattice Against Market Data}
+  We now have a pricing rule. But how well does the underlying model
+  describe market data? Return to the three patterns from L3a:
 
-  \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Heavy tails}: large return magnitudes occur more often than a
-      Gaussian model predicts.
-    \item \hilite{Weak linear autocorrelation}: signed one-step returns usually
-      carry little serial linear dependence.
-    \item \hilite{Volatility clustering}: large movement magnitudes occur near
-      other large movements, and calm observations near calm observations.
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Heavy tails}: large growth rates occur more often than a
+      fitted Normal model predicts.
+    \item \hilite{Weak linear autocorrelation}: growth rates on different
+      days have little linear relationship beyond short lags.
+    \item \hilite{Volatility clustering}: large movements tend to occur
+      together, as do small movements.
   \end{itemize}
 
-  \vspace{0.5em}
-  The fixed lattice matches the second pattern by assumption, but fails the first
-  and third.
-
-  \slidenote{Source:}{\href{https://doi.org/10.1080/713665670}{Cont (2001)}}
+  \slidenote{Probability rule:}{use real-world $\Pmeasure$ to compare the model with market data. See \href{https://doi.org/10.1080/713665670}{Cont (2001)} for the empirical patterns.}
 \end{frame}
 
-\begin{frame}{Single-Step Growth Is a Bernoulli Transform}
-  Let $X_j$ equal one for an up move and zero for a down move, with
-  $X_j\stackrel{\mathrm{i.i.d.}}{\sim}\operatorname{Bernoulli}(p)$. The one-step
-  price ratio is:
+\begin{frame}{Growth-Rate Distribution}
+  To make that comparison, express the lattice moves as growth rates.
+  At step $j$, the price factor is $u$ or $d$. For a step of length
+  $\Delta t$ years, the growth rate is:
   \[
-    \frac{S_j}{S_{j-1}}=u^{X_j}d^{1-X_j}
-    =d\left(\frac ud\right)^{X_j}.
+    g_j=\frac{1}{\Delta t}\ln\!\left(\frac{S_j}{S_{j-1}}\right)
+    =
+    \begin{cases}
+      \ln u/\Delta t, & \text{with probability }p,\\
+      \ln d/\Delta t, & \text{with probability }1-p.
+    \end{cases}
   \]
 
-  Let $g_j$ be the continuously compounded growth rate over $\Delta t>0$ years.
-  Taking logarithms gives:
-  \[
-    \underbrace{g_j=\frac{1}{\Delta t}
-      \left[\log d+X_j\log\left(\frac ud\right)\right]}_{\text{\footnotesize two-point growth distribution}}.
-  \]
+  \vspace{0.7em}
+  The model produces only two possible growth rates, both in inverse years.
 
-  The lattice growth rate is therefore an affine transformation of a Bernoulli
-  variable and takes only two possible values.
+  Changing $p$ changes how often each value occurs, not the values themselves.
 \end{frame}
 
 \begin{frame}{One-Step Mean and Variance}
-  Let $g_j$ be the two-point growth rate, with constant $u>d>0$, probability
-  $p\in[0,1]$, and step length $\Delta t>0$. Its expected value is:
+  For fixed $u>d>0$, $0<p<1$, and $\Delta t>0$ years,
+  the mean growth rate $\mu_g$ under $\Pmeasure$ is:
   \[
-    \mathbb E[g_j]
-    =\underbrace{\frac{p\log u+(1-p)\log d}{\Delta t}}_{\text{\footnotesize mean growth rate}}.
+    \mu_g\equiv\mathbb E_{\Pmeasure}[g_j]
+    =\underbrace{\frac{p\ln u+(1-p)\ln d}{\Delta t}}_{\text{\footnotesize mean growth rate}}.
   \]
 
-  Its variance is:
+  The variance $\sigma_g^2$ is:
   \[
-    \operatorname{Var}(g_j)
+    \sigma_g^2\equiv\operatorname{Var}_{\Pmeasure}(g_j)
     =\underbrace{\frac{p(1-p)}{(\Delta t)^2}
-      \left[\log\left(\frac ud\right)\right]^2}_{\text{\footnotesize fixed one-step variance}}.
+      \left[\ln\!\left(\frac ud\right)\right]^2}_{\text{\footnotesize growth-rate variance}}.
   \]
 
-  The variance is positive when $0<p<1$ and $u\neq d$. It vanishes at a
-  degenerate probability or when the two moves coincide.
+  Both quantities stay fixed because $u$, $d$, and $p$ stay fixed.
 \end{frame}
 
-\begin{frame}{Multi-Step Growth Is a Binomial Transform}
-  Let $K_t\sim\operatorname{Binomial}(t,p)$ count the up moves in $t$ steps. The
-  cumulative growth quantity $g_t=(1/\Delta t)\log(S_t/S_0)$ is:
-  \[
-    \underbrace{g_t=\frac{K_t\log(u/d)+t\log d}{\Delta t}}_{\text{\footnotesize binomial transform}}.
-  \]
 
-  Because $\mathbb E[K_t]=tp$ and $\operatorname{Var}(K_t)=tp(1-p)$:
-  \[
-    \mathbb E[g_t]=\frac{t}{\Delta t}\left[p\log u+(1-p)\log d\right],
-  \]
-  \[
-    \operatorname{Var}(g_t)=\frac{tp(1-p)}{(\Delta t)^2}
-      \left[\log\left(\frac ud\right)\right]^2.
-  \]
-
-  The corresponding cumulative log return is $r_t=(\Delta t)g_t=\log(S_t/S_0)$.
-\end{frame}
 
 \begin{frame}{Heavy Tails}
-  \vspace{0.3em}
-  \hilite{The fixed binomial lattice does not generate heavy-tailed growth.}
-
-  \vspace{0.8em}
-  \begin{itemize}\setlength{\itemsep}{0.65em}
-    \item The one-step growth rate takes only two bounded values:
-      $\log u/\Delta t$ and $\log d/\Delta t$.
-    \item The multi-step growth quantity is an affine transformation of the
-      binomial count $K_t$.
-    \item When $0<p<1$ and $u\neq d$, the standardized binomial count converges
-      to a Gaussian distribution as $t$ grows.
-  \end{itemize}
+  The two growth rates have a maximum magnitude.
+  Define the bound $M$ by:
+  \[
+    M=\frac{\max\{|\ln d|,|\ln u|\}}{\Delta t}.
+  \]
+  Every one-step growth rate satisfies $|g_j|\leq M$, so:
+  \[
+    \underbrace{\Pmeasure(|g_j|>x)=0\quad\text{for }x>M}_{\text{\footnotesize no observations beyond the bound}}.
+  \]
 
   \vspace{0.6em}
-  The model therefore predicts extreme moves less often than the heavy-tailed
-  empirical distributions examined in L3a.
+  The fixed lattice cannot produce heavy-tailed one-step growth rates.
 \end{frame}
 
-\begin{frame}{Vanishing Autocorrelation}
-  Let $g_j=b+aX_j$, where $a=\log(u/d)/\Delta t$,
-  $b=\log d/\Delta t$, and the Bernoulli moves $X_j$ are independent. For every
-  nonzero lag $\tau$:
+\begin{frame}{Temporal Dependence}
+  Each growth rate depends on its own up or down move.
+  Since successive moves are independent, so are growth rates at
+  different steps.
+
+  Let $\tau\geq1$ be an integer lag. Their covariance is:
   \[
-    \operatorname{Cov}(g_j,g_{j+\tau})
-    =a^2\operatorname{Cov}(X_j,X_{j+\tau})=0.
+    \operatorname{Cov}_{\Pmeasure}(g_j,g_{j+\tau})=0.
+  \]
+  Since the growth-rate variance $\sigma_g^2$ is positive, the ACF is:
+  \[
+    \underbrace{\rho_g(\tau)=
+      \frac{\operatorname{Cov}_{\Pmeasure}(g_j,g_{j+\tau})}{\sigma_g^2}
+      =0}_{\text{\footnotesize zero autocorrelation}}.
   \]
 
-  Provided $0<p<1$ and $u\neq d$, the one-step variance is positive, so:
-  \[
-    \underbrace{\rho_g(\tau)=0\qquad(\tau\geq1)}_{\text{\footnotesize one-step autocorrelation}}.
-  \]
-
-  The lattice matches weak signed-return autocorrelation by construction. It does
-  not discover that pattern from data: independence is an input assumption.
+  \slidenote{Interpretation:}{the model matches weak growth-rate autocorrelation because we assumed independent moves.}
 \end{frame}
 
-\begin{frame}{Nested Windows Create Correlation}
-  Let $g_t=aK_t+bt$ be cumulative growth from step $0$ through step $t$.
-  The windows $0\rightarrow t$ and $0\rightarrow t+\tau$ share their first $t$
-  moves, so their covariance is not zero:
-  \[
-    \operatorname{Cov}(g_t,g_{t+\tau})=a^2tp(1-p).
-  \]
 
-  Using the two variances gives:
-  \[
-    \underbrace{\rho(\tau)=\sqrt{\frac{t}{t+\tau}}}_{\text{\footnotesize nested-window correlation}}.
-  \]
-
-  This correlation is mechanical overlap, not predictability in one-step moves.
-  Nonoverlapping $t$-step windows have zero correlation under the i.i.d. assumption.
-
-  \slidenote{Careful:}{always state whether a return series uses overlapping or nonoverlapping windows before interpreting its autocorrelation.}
-\end{frame}
 
 \begin{frame}{Volatility Clustering}
-  \vspace{0.3em}
-  \hilite{The fixed binomial lattice does not generate volatility clustering.}
-
-  \vspace{0.8em}
-  Independence applies to the magnitudes, and the one-step variance is the same
-  at every step:
+  Independent moves also give independent growth-rate magnitudes.
+  For any integer lag $\tau\geq1$:
   \[
-    \operatorname{Cov}_{\Pmeasure}\!\left(|g_j|,|g_{j+\tau}|\right)=0,
-    \qquad
-    \operatorname{Var}_{\Pmeasure}(g_j)
-    =\frac{p(1-p)}{(\Delta t)^2}
-      \left[\log\!\left(\frac ud\right)\right]^2.
+    \operatorname{Cov}_{\Pmeasure}(|g_j|,|g_{j+\tau}|)=0.
   \]
 
-  \vspace{0.5em}
-  Constant $u$, $d$, and $p$ create constant conditional volatility. The model
-  cannot produce persistent high- and low-volatility regimes unless those
-  parameters or the move law become state dependent.
+  Let $\mathcal F_j$ represent the information in the first $j$ moves.
+  Knowing that history does not change the future growth-rate variance:
+  \[
+    \underbrace{\operatorname{Var}_{\Pmeasure}
+      (g_{j+\tau}\mid\mathcal F_j)=\sigma_g^2}_{\text{\footnotesize constant conditional variance}}.
+  \]
 
-  \slidenote{Connection to L3a:}{near-zero signed-return autocorrelation can coexist with strong dependence in squared returns, but the fixed lattice excludes that second dependence.}
+  A large move today does not make a large move tomorrow more likely.
+  The fixed lattice has no volatility clustering.
 \end{frame}
 
-\begin{frame}{What the Fixed Lattice Cannot Reproduce}
-  \vspace{0.3em}
-  Because the lattice fixes its assumptions up front, we can say exactly what it
-  captures and what it leaves out.
+\begin{frame}{The Lattice Passes One of Three Tests}
+  Compare the fixed lattice with the market patterns from L3a:
 
-  \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item It captures positive prices, a complete finite distribution, weak
-      one-step autocorrelation, and tractable backward valuation.
-    \item It excludes continuous move sizes, heavy tails, volatility clustering,
-      regime changes, and parameter uncertainty.
-    \item A prediction band can have acceptable average coverage and still fail
-      during exactly the extreme or high-volatility periods that matter most.
+  \vspace{0.9em}
+  \begin{itemize}\setlength{\itemsep}{0.9em}
+    \item \textbf{\ink{Heavy tails: fails.}}
+      Only two one-step growth rates are possible.
+    \item \textbf{\ink{Weak growth-rate autocorrelation: passes.}}
+      Independent moves give zero autocorrelation.
+    \item \textbf{\ink{Volatility clustering: fails.}}
+      Past movements do not change future variance.
   \end{itemize}
 
-  \vspace{0.6em}
-  Use a lattice when the question is about states, trading rules, or replication.
-  When the answer depends on rare moves or changing volatility, the move sizes or
-  the parameters have to become state dependent.
+  \vspace{0.8em}
+  The lattice is a useful baseline, but these assumptions limit its
+  ability to describe market data.
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.3em}
-  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/recombination/}\par
-  \dimmed{CHEME-5660-L3b-Advanced-Recombination-ComputationalCost-Fall-2026.ipynb}}
+  These notebooks extend the main lesson:
 
-  \vspace{0.5em}
-  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/calibration/}\par
-  \dimmed{CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb}}
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/advanced/recombination/CHEME-5660-L3b-Advanced-Recombination-ComputationalCost-Fall-2026.ipynb}{Recombination and Computational Cost}\\
+      Compare path and node counts; distinguish repeated draws,
+      recombination, and reciprocal factors.
+    \item \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/advanced/calibration/CHEME-5660-L3b-Advanced-Bootstrap-LatticeCalibration-Fall-2026.ipynb}{Bootstrap Uncertainty in Lattice Calibration}\\
+      Measure how estimates of $(u,d,p)$ change across resampled data.
+    \item \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/advanced/stylized-facts/CHEME-5660-L3b-Advanced-BinomialReturns-Derivations-Fall-2026.ipynb}{Binomial Return Derivations}\\
+      Derive cumulative log returns, Normal limits, and correlations
+      caused by overlapping windows.
+  \end{itemize}
 
-  \vspace{0.5em}
-  {\normalsize\textbf{\ink{Advanced 3:}} \dimmed{advanced/stylized-facts/}\par
-  \dimmed{CHEME-5660-L3b-Advanced-BinomialReturns-Derivations-Fall-2026.ipynb}}
-
-  \vspace{0.5em}
-  Optional, not prerequisites for L4a. The first compares the full path tree with
-  its recombined lattice. The second bootstraps historical growth rates to measure
-  the uncertainty in $(u,d,p)$. The third carries the algebra behind today's two
-  theorems.
-  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-3/L3b/advanced}{lectures/week-3/L3b/advanced}, also linked from the lecture notebook.}
+  \slidenote{Optional:}{none is required for L4a.}
 \end{frame}
 
 % ==== summary ================================================
 \begin{frame}{Summary}
-  This lecture built a recombining equity lattice, separated forecasting from
-  pricing measures, and tested the fixed model against empirical return patterns.
+  This lecture built a binomial lattice, estimated its parameters, and
+  checked its limits against market data.
 
-  \vspace{0.45em}
+  \vspace{0.8em}
   {\large\textbf{\ink{Key takeaways}}}
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{Recombination is algebraic.}} A node depends on move
-      counts because multiplication commutes. The constraint $ud=1$ is optional.
-    \item \textbf{\ink{The measure follows the question.}} Real-world $p$
-      supports forecasts and risk, while risk-neutral $q$ enforces no-arbitrage value.
-    \item \textbf{\ink{The fixed lattice fails two of three tests.}} It
-      matches weak one-step autocorrelation but misses heavy tails and volatility clustering.
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \textbf{\ink{Two moves build a price distribution.}}
+      The number of up moves determines the price at each step.
+    \item \textbf{\ink{Forecast with $p$; price with $q$.}}
+      Estimate $(u,d,p)$ from data. Calculate $q$ from $u$, $d$, and $R_f$.
+    \item \textbf{\ink{The fixed lattice passes one of three tests.}}
+      It has zero growth-rate autocorrelation, but no heavy tails
+      or volatility clustering.
   \end{itemize}
 
-  \vspace{0.45em}
-  The next step is to turn lattice states into explicit trading and valuation rules.
+  \vspace{0.6em}
+  Its fixed, independent moves make the lattice simple and explain its limits.
 \end{frame}
 
 % ==== closing ================================================
-\transitionframe{That's a wrap. \hilite{Which lattice assumption would you relax
-first, and what empirical pattern should the extension recover?}}
+\transitionframe{That's a wrap. \hilite{Which lattice assumption would you change
+first, and which market pattern should the new model capture?}}
 
 \end{document}

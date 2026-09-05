@@ -1,33 +1,9 @@
-% L3a takeaway deck.
-%
-% THE DECK MIRRORS THE NOTEBOOK. The instructor shows
-% CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb
-% while students follow along and take notes on these slides. The deck covers
-% the same material in the same order and uses matching frame titles.
-% See the content conventions in templates/vnslides.sty.
-%
-% Notebook outline, and where each part lands:
-%
-%   (deck only)                         => title
-%   Disclaimer and Risks      [last]    => slide 2
-%   Learning Objectives       [cell 0]  => Objectives for Today
-%   Examples                            => Lectures and Examples
-%   Exchanges, Stocks, and ETFs         => overview frame, then:
-%     Exchanges Connect Buyers/Sellers  => Exchanges Connect Buyers and Sellers
-%     Orders Are Instructions to Trade  => orders frame, book/NBBO frame, figure
-%     Stocks and ETFs Are Claims ...    => Stocks Are Claims on Firms;
-%                                          ETFs Are Claims on Portfolios
-%   Reward                              => reward, returns, excess growth, algorithm
-%   SVD example                         => common-patterns frame
-%   Risk                                => volatility, other measures
-%   Stylized Facts                      => overview plus four diagnostic frames
-%   Example                             => empirical notebook frame
-%   Optional Advanced Material          => Optional Advanced Material
-%   Summary                             => Summary
-%   Today?                              => closing transition frame
-%
-% The notebook does not open with a concept review, so there is no opening
-% transition frame. The closing transition frame matches L2a.
+% L3a lecture companion deck.
+% Follows the lecture: exchanges and securities; growth rates; risk;
+% heavy tails, autocorrelation, and volatility clustering; examples and summary.
+% Volatility conventions and the distribution comparison match the lecture.
+% Title and disclaimer remain near the front by course convention.
+% See lectures/templates/vnslides.sty for the shared content and style rules.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -61,47 +37,42 @@
 
 % ==== objectives =============================================
 \begin{frame}{Objectives for Today}
-  \vspace{0.4em}
-  Today we connect equity-market infrastructure to price data, convert prices
-  into growth rates and returns, and use recurring empirical patterns to test a
-  model of equity behavior.
+  Today we connect equity prices, growth rates, and the patterns a useful
+  market model should reproduce.
 
   \vspace{0.9em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Describe equity claims}: distinguish the corporation, an
-      exchange, a stock index, and an exchange-traded fund.
-    \item \hilite{Compute growth rates}: calculate continuously compounded
-      growth rates and convert them to log returns using $r=(\Delta t)g$.
-    \item \hilite{Test return models}: use return distributions and
-      autocorrelation to check whether a model matches observed market data.
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{Equity securities}: explain what stocks and ETFs represent
+      and how they trade.
+    \item \hilite{Growth rates and log returns}: compute both from prices
+      and state their units.
+    \item \hilite{Stylized facts}: identify heavy tails, weak growth-rate
+      autocorrelation, and volatility clustering.
   \end{itemize}
-  \vspace{-0.4em}
 
-  \slidenote{Companion notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026}{L3a lecture notebook}}
+  \slidenote{Lecture:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb}{Equity Exchanges, Growth Rates, and Stylized Facts}}
 \end{frame}
 
 % ==== examples ===============================================
 \begin{frame}{Lectures and Examples}
-  \vspace{0.4em}
-  {\normalsize\textbf{\ink{Lecture:}} \dimmed{CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb}}
+  \textbf{\ink{Lecture:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb}{Equity Exchanges, Growth Rates, and Stylized Facts}
 
-  \vspace{0.8em}
-  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}}
+  \vspace{1.1em}
+  \textbf{\ink{Example:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}{SVD of S\&P 500 Growth Rates}
 
-  \vspace{0.7em}
-  Use SVD to identify common patterns in the growth rates of S\&P 500
-  constituents.
+  Find common patterns across firms and reconstruct the growth-rate matrix
+  using its leading modes.
 
-  \vspace{0.8em}
-  {\normalsize\textbf{\ink{Example:}} \dimmed{CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}}
+  \vspace{1.1em}
+  \textbf{\ink{Example:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}{Stylized Facts in Daily Growth Rates}
 
-  \vspace{0.7em}
-  Compare distribution fits, inspect tail-index stability, and contrast the
-  memory of signed growth with the memory of growth magnitude.
-
-  \slidenote{Link:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026.git}}
+  Compare distributions, estimate tail indices, and compare the ACF of
+  growth rates with the ACF of their magnitudes.
 \end{frame}
 
 % ==== market structure =======================================
@@ -125,68 +96,55 @@
 \end{frame}
 
 \begin{frame}{\large Exchanges Connect Buyers and Sellers}
-  \vspace{0.3em}
-  An exchange brings orders together and supports \hilite{price discovery}, the
-  process by which trading establishes a market price, and \hilite{liquidity},
-  the ability to trade without moving that price excessively.
+  Exchanges match buy and sell orders. Trading helps establish prices
+  (\hilite{price discovery}) and lets investors trade with limited price impact
+  (\hilite{liquidity}).
 
-  \vspace{0.6em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item Exchanges impose listing standards and trading rules. After execution,
-      separate clearing and settlement infrastructure completes the transfer of
-      securities and funds.
-    \item U.S. equities trade across more than a dozen competing exchanges. The
-      three largest are NYSE, NASDAQ, and Cboe BZX.
-    \item An order may be routed to one venue or divided among venues, subject
-      to available prices, liquidity, and the order's instructions.
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item Exchanges set listing standards and trading rules.
+    \item NYSE, Nasdaq, and Cboe each operate multiple venues.
+      Cboe BZX is one venue within the Cboe group.
+    \item Orders can be routed to different venues based on prices,
+      available quantities, and order instructions.
   \end{itemize}
 
-  \slidenote{Source:}{\href{https://www.sec.gov/about/divisions-offices/division-trading-markets/national-securities-exchanges}{SEC list of registered national securities exchanges}. The list also includes options-only venues.}
+  \slidenote{Source:}{\href{https://www.sec.gov/about/divisions-offices/division-trading-markets/national-securities-exchanges}{SEC registered exchanges}. Clearing and settlement transfer the securities and funds after a trade.}
 \end{frame}
 
 \begin{frame}{Orders Are Instructions to Trade}
-  \vspace{0.3em}
-  An order names the security, the direction (buy or sell), the quantity, and
-  how the price may be set. The common order types differ in how they trade off
-  \hilite{immediacy} against \hilite{price control}.
+  An order states what to trade, whether to buy or sell, how much,
+  and any price limits.
 
-  \vspace{0.6em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \textbf{\ink{Market order:}} executes as soon as possible at the best
-      price currently available. Execution is nearly certain, but the price is not.
-    \item \textbf{\ink{Limit order:}} executes only at a stated limit price or
-      better: at or below it for a buy, at or above it for a sell. The price is
-      controlled, but execution is not guaranteed.
-    \item \textbf{\ink{Stop and stop-limit orders:}} wait until the price reaches
-      a trigger level, then become a market order or a limit order.
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \textbf{\ink{Market order:}} seeks an immediate trade at available
+      prices. A large order may trade at several prices.
+    \item \textbf{\ink{Limit order:}} buys at the limit price or lower,
+      or sells at the limit price or higher. It may not execute.
+    \item \textbf{\ink{Stop and stop-limit orders:}} become market or limit
+      orders when the price reaches a trigger.
   \end{itemize}
 
-  \slidenote{More order types:}{\href{https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders}{Investor.gov, Types of Orders}.}
+  \slidenote{Source:}{\href{https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders}{Investor.gov, Types of Orders}}
 \end{frame}
 
-\begin{frame}{From Order Books to the NBBO}
-  \vspace{0.2em}
-  Limit orders that do not execute immediately rest on the venue's
-  \hilite{order book}, the collection of outstanding buy and sell limit orders
-  for a security.
+\begin{frame}{Order Books and the NBBO}
+  An \hilite{order book} holds outstanding buy and sell limit orders.
+  Each venue keeps its own book.
 
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item The highest resting buy price is the venue's displayed \hilite{bid},
-      the lowest resting sell price is its displayed \hilite{ask}, and the
-      difference is the bid-ask spread.
-    \item An arriving market order to buy trades at the ask, and one to sell trades
-      at the bid.
-    \item Each venue keeps its own book, so each venue displays its own bid and
-      ask. The \hilite{National Best Bid and Offer}, or NBBO, reports the
-      highest displayed bid and the lowest displayed ask across the national
-      market system.
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.65em}
+    \item \hilite{Bid}: the highest displayed buy price.
+      \hilite{Ask}: the lowest displayed sell price.
+      The spread is ask minus bid.
+    \item A market buy begins at the best ask; a market sell begins at the
+      best bid. Larger orders may use deeper price levels.
+    \item The \hilite{National Best Bid and Offer (NBBO)} gives the highest
+      displayed bid and lowest displayed ask across the national market system.
   \end{itemize}
 
-  \vspace{0.3em}
-  A customer order must be filled at the national best price or better: a
-  buyer pays no more than the NBBO ask, and a seller receives no less than the
-  NBBO bid.
+  \slidenote{Order protection and best execution:}{\href{https://www.sec.gov/rules-regulations/2005/06/regulation-nms}{Regulation NMS} and \href{https://www.finra.org/rules-guidance/rulebooks/finra-rules/5310}{FINRA Rule 5310}. The NBBO is a quote benchmark.}
 \end{frame}
 
 \begin{frame}{Order Books and the NBBO for Stock XYZ}
@@ -219,32 +177,28 @@
 \end{frame}
 
 \begin{frame}{ETFs Are Claims on Portfolios}
-  \vspace{0.3em}
-  An ETF pools assets into a portfolio and issues shares that trade on an
-  exchange throughout the day. Each share represents an interest in that
-  portfolio.
+  An ETF holds a portfolio and issues shares that trade throughout the day.
 
   \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item A broad-market fund such as SPY, which tracks the S\&P 500, holds
-      hundreds of stocks. The wrapper promises no such thing: sector and
-      single-stock ETFs hold one industry or one company, and leveraged or
-      inverse ETFs deliver a multiple, or the negative, of an index's daily move.
-    \item The \hilite{net asset value}, or NAV, is the fund's assets minus its
-      liabilities, divided by shares outstanding.
-    \item An ETF has both a market price and a NAV per share. They are usually
-      close, but the ETF can trade at a premium or discount to NAV.
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{Exposure}: broad-market funds such as SPY hold hundreds of
+      stocks. Sector and single-stock ETFs are more concentrated.
+    \item \hilite{Leveraged and inverse funds}: use derivatives to target
+      a multiple or the negative of a stock's or index's daily move.
+    \item \hilite{Net asset value (NAV)}: assets minus liabilities, divided
+      by shares outstanding. The market price can be above or below NAV.
   \end{itemize}
 
-  \vspace{0.4em}
-  Like a stock, an ETF produces an observable sequence of market prices.
+  \vspace{0.6em}
+  An ETF's risk depends on what it holds and how it invests.
 \end{frame}
 
 % ==== reward =================================================
 \begin{frame}{Reward}
   \vspace{0.3em}
-  We measure price reward with the \hilite{continuously compounded growth rate},
-  denoted by $g$. Let $S_{j-1}^{(i)}>0$ and $S_j^{(i)}>0$ be consecutive prices
+  We now turn from how shares trade to how their prices change. We measure
+  that change with the \hilite{continuously compounded growth rate}, $g$.
+  Let $S_{j-1}^{(i)}>0$ and $S_j^{(i)}>0$ be consecutive prices
   for firm $i$, separated by $\Delta t_j>0$ years. The price evolution is:
   \[
     S_j^{(i)}=S_{j-1}^{(i)}\exp\!\left(g_{j,j-1}^{(i)}\Delta t_j\right).
@@ -272,204 +226,243 @@
   \]
 
   Log returns add across adjacent intervals. For positive prices
-  $S_0,S_1,\ldots,S_T$, the cumulative log return is:
+  $S_1,\ldots,S_T$, the cumulative log return is:
   \[
-    \sum_{t=1}^{T}r_t
-    =\underbrace{\sum_{t=1}^{T}(\Delta t_t)g_t}_{\text{\footnotesize time-weighted growth}}
-    =\log\!\left(\frac{S_T}{S_0}\right).
+    \sum_{t=2}^{T}r_t
+    =\underbrace{\sum_{t=2}^{T}(\Delta t_t)g_t}_{\text{\footnotesize time-weighted growth}}
+    =\log\!\left(\frac{S_T}{S_1}\right).
   \]
 
   Use $g$ to compare annualized rates. Convert to $r$ before aggregating across
   time.
 \end{frame}
 
-\begin{frame}{Excess Growth Compares an Asset with a Benchmark}
-  \vspace{0.3em}
-  Let $g_t$ be the equity growth rate and let $g_{f,t}$ be a declared benchmark
-  growth rate over the same interval of length $\Delta t_t$ years. The
-  \hilite{excess growth rate} and excess log return are given by:
+\begin{frame}{Excess Growth Rate}
+  To compare performance with a benchmark, subtract its growth rate.
+
+  Let $g_t$ be the equity growth rate and $g_y$ the benchmark growth rate,
+  both in inverse years. For an interval of length $\Delta t$ years:
   \[
-    \underbrace{\bar g_t=g_t-g_{f,t}}_{\text{\footnotesize excess growth}},
+    \underbrace{\bar g_t=g_t-g_y}_{\text{\footnotesize excess growth rate}},
     \qquad
-    \underbrace{\bar r_t=(\Delta t_t)\bar g_t}_{\text{\footnotesize excess log return}}.
+    \underbrace{\bar r_t=(\Delta t)\bar g_t}_{\text{\footnotesize excess log return}}.
   \]
 
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item $\bar g_t>0$: the equity price grew faster than the benchmark.
-    \item $\bar g_t<0$: the equity price grew more slowly than the benchmark.
-    \item $\bar g_t=0$: both produced the same growth rate over the interval.
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item $\bar g_t>0$: the equity grew faster than the benchmark.
+    \item $\bar g_t<0$: the equity grew more slowly.
+    \item $\bar g_t=0$: their growth rates were equal.
   \end{itemize}
 
-  \slidenote{Careful:}{the benchmark must use the same currency, horizon, and time units. A positive excess rate is not a guarantee of positive wealth.}
+  \slidenote{Comparison:}{use the same currency, observation interval, and time units.}
 \end{frame}
 
 \begin{frame}{Algorithm}
-  Let $\mathcal D_i=\{S_1^{(i)},\ldots,S_T^{(i)}\}$ be a positive price series
-  for firm $i$, let $\Delta t>0$ be the interval in years, and let $g_f$ be the
-  benchmark growth rate.
+  Given prices $\mathcal D_i=\{S_1^{(i)},\ldots,S_T^{(i)}\}$ for firm $i$,
+  an interval $\Delta t>0$ years, and benchmark rate $g_y$ in inverse years:
 
-  \vspace{0.5em}
-  \begin{enumerate}\setlength{\itemsep}{0.45em}
-    \item For $t=2,\ldots,T$, look up $S_{t-1}^{(i)}$ and $S_t^{(i)}$.
-    \item Compute the excess growth observation:
+  \vspace{0.6em}
+  \begin{enumerate}\setlength{\itemsep}{0.6em}
+    \item For each $t=2,\ldots,T$, read consecutive prices
+      $S_{t-1}^{(i)}$ and $S_t^{(i)}$.
+    \item Compute the excess growth rate:
       \[
         \bar g_t^{(i)}\gets
-        \underbrace{\frac{1}{\Delta t}\log\!\left(\frac{S_t^{(i)}}{S_{t-1}^{(i)}}\right)}_{g_t^{(i)}}-g_f.
+        \underbrace{\frac{1}{\Delta t}\ln\!\left(\frac{S_t^{(i)}}{S_{t-1}^{(i)}}\right)}_{g_t^{(i)}}-g_y.
       \]
-    \item Store $\bar g_t^{(i)}$. The $T$ prices produce $T-1$ observations.
+    \item Store the result. The $T$ prices give $T-1$ growth rates.
   \end{enumerate}
 
-  \vspace{0.2em}
-  Set $g_f=0$ when the required output is the growth rate rather than the excess
-  growth rate.
+  Set $g_y=0$ to compute ordinary growth rates.
 \end{frame}
 
 \begin{frame}{Common Patterns Across Many Assets}
-  Let $\mathbf G\in\mathbb R^{m\times n}$ collect centered growth rates for $m$
-  dates and $n$ assets. Its singular value decomposition factors $\mathbf G$
-  into date patterns $\mathbf u_j$ (the columns of $\mathbf U$), asset patterns
-  $\mathbf v_j$ (the columns of $\mathbf V$), and nonnegative weights $\sigma_j$
-  (the diagonal of $\boldsymbol\Sigma$):
+  Computing growth rates across firms lets us look for shared patterns.
+  The matrix $\mathbf G\in\mathbb R^{m\times n}$ holds the observed growth rates
+  for $m$ trading-day intervals and $n$ firms.
+
+  In the singular value decomposition (SVD), columns $\mathbf u_j$ of
+  $\mathbf U$ describe time patterns. Columns $\mathbf v_j$ of $\mathbf V$
+  give firm weights. The diagonal entries $\sigma_j$ of $\boldsymbol\Sigma$
+  give the size of each pattern:
   \[
     \mathbf G=\mathbf U\boldsymbol\Sigma\mathbf V^{\mathsf T}
     =\sum_{j=1}^{\operatorname{rank}(\mathbf G)}
-      \underbrace{\sigma_j\mathbf u_j\mathbf v_j^{\mathsf T}}_{\text{\footnotesize rank-one pattern}},
+      \underbrace{\sigma_j\mathbf u_j\mathbf v_j^{\mathsf T}}_{\text{\footnotesize one mode}},
     \qquad \sigma_1\geq\sigma_2\geq\cdots\geq0.
   \]
 
-  Large singular values identify common patterns that account for much of the
-  variation across assets.
+  Keeping the leading modes gives a simpler approximation of the matrix.
 
-  \vspace{0.5em}
-  SVD finds patterns in the data, but it does not explain their economic causes.
-  Results depend on centering, scaling, missing-data treatment, and the selected
-  assets.
-
-  \slidenote{Notebook:}{\dimmed{CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}}
+  \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-SVD-SP500-Example-Fall-2026.ipynb}{SVD of S\&P 500 Growth Rates}. Shared patterns do not by themselves explain economic causes.}
 \end{frame}
 
 % ==== risk ===================================================
 \begin{frame}{Risk}
-  \vspace{0.2em}
-  Risk is uncertainty about loss or gain. A common dispersion measure is the
-  sample standard deviation of the growth rate, denoted by $\sigma_g$.
+  Shared patterns describe how firms move together. For each firm,
+  volatility measures how widely growth rates vary around their mean.
 
-  \vspace{0.4em}
-  Suppose $T$ prices produce the $T-1$ observations
-  $g_2,g_3,\ldots,g_T$. Let $g'$ be their sample mean. The sample volatility is:
+  Let $g_2,\ldots,g_T$ be the $T-1$ growth rates from $T$ equally spaced
+  prices. Their mean $g^{\prime}$ and sample volatility $\sigma_g$ are:
   \[
-    g'=\frac{1}{T-1}\sum_{t=2}^{T}g_t,
+    g^{\prime}=\frac{1}{T-1}\sum_{t=2}^{T}g_t,
     \qquad
     \sigma_g=
-    \underbrace{\sqrt{\frac{1}{T-2}\sum_{t=2}^{T}(g_t-g')^2}}_{\text{\footnotesize growth-rate volatility}}.
+    \underbrace{\sqrt{\frac{1}{T-2}\sum_{t=2}^{T}(g_t-g^{\prime})^2}}_{\text{\footnotesize growth-rate volatility}}.
   \]
 
-  The statistic has the same inverse-year units as $g$. It measures dispersion
-  around the sample mean, not tail probability, drawdown, liquidity, or the
-  magnitude of a specific loss.
+  \vspace{0.6em}
+  Both $g_t$ and $\sigma_g$ have units of inverse years.
+  Volatility describes spread; it does not describe every kind of risk.
+\end{frame}
+
+\begin{frame}{Log-Return and Annualized Volatility}
+  For a fixed interval $\Delta t$ years, the log return is $r_t=(\Delta t)g_t$.
+  Its standard deviation $\sigma_r(\Delta t)$ is:
+  \[
+    \underbrace{\sigma_r(\Delta t)=(\Delta t)\sigma_g}_{\text{\footnotesize interval log-return volatility}}.
+  \]
+  This is an exact change of units. The result is dimensionless.
+
+  The conventional annualized value $\sigma_{\mathrm{ann}}$ is:
+  \[
+    \underbrace{\sigma_{\mathrm{ann}}=
+      \frac{\sigma_r(\Delta t)}{\sqrt{\Delta t}}
+      =\sqrt{\Delta t}\,\sigma_g}_{\text{\footnotesize annualized log-return volatility}}
+    \qquad [\mathrm{yr}^{-1/2}].
+  \]
+
+  \slidenote{Assumption:}{interpreting this annualized value across horizons assumes uncorrelated returns with stable variance. It is not an exact one-year forecast.}
 \end{frame}
 
 \begin{frame}{Other Risk Measures}
-  \vspace{0.2em}
-  Choose a risk measure that matches the type of loss relevant to the decision.
+  Choose a measure that fits the loss you care about.
 
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{How large the loss can get}: a Value at Risk level is passed
-      only with a stated small probability, and Expected Shortfall is the average
-      loss on the days that pass it.
-    \item \hilite{Downside and drawdown}: downside deviation counts only returns
-      below a target, and maximum drawdown is the largest drop from a past peak to a
-      later low.
-    \item \hilite{Risk against a benchmark}: beta is how much the asset moves
-      when the market moves, and tracking error is the spread of the gap between the
-      return and its benchmark.
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Large losses}: Value at Risk sets a loss threshold for a
+      stated probability and horizon. Expected Shortfall averages losses
+      beyond that threshold.
+    \item \hilite{Shortfalls and drawdowns}: downside deviation measures
+      shortfalls below a target. Maximum drawdown measures the largest
+      fall from a past peak.
+    \item \hilite{Benchmark risk}: beta measures sensitivity to market returns.
+      Tracking error is the standard deviation of returns minus benchmark returns.
   \end{itemize}
-
-  \slidenote{Ask:}{what type of loss matters, over what horizon, and will this statistic detect it?}
 \end{frame}
 
 % ==== stylized facts =========================================
 \begin{frame}{Stylized Facts of Equity Growth Rates}
-  \vspace{0.3em}
-  A \hilite{stylized fact} is a recurring empirical pattern observed across many
-  assets or markets. It is not an exact law for every ticker and sample, but a
-  model that cannot reproduce it is missing something the data shows.
+  Volatility summarizes spread, but not the full shape or timing of price
+  movements. A \hilite{stylized fact} is a recurring pattern across assets
+  and time periods. We focus on three:
 
-  \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Heavy tails}: large movements occur more often than a fitted
-      Gaussian model predicts.
-    \item \hilite{Weak linear autocorrelation}: signed growth rates often have
-      little serial linear dependence at ordinary liquid-market horizons.
-    \item \hilite{Volatility clustering}: large movement magnitudes occur near
-      other large movements, and calm observations near other calm observations.
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Heavy tails}: large growth rates occur more often than a
+      fitted Normal model predicts.
+    \item \hilite{Weak linear autocorrelation}: growth rates on different
+      days usually have little linear relationship beyond short lags.
+    \item \hilite{Volatility clustering}: large movements tend to occur
+      together, as do small movements.
   \end{itemize}
 
   \slidenote{Sources:}{\href{https://doi.org/10.1080/713665670}{Cont (2001)} and \href{https://www.jstor.org/stable/2350970}{Mandelbrot (1963)}}
 \end{frame}
 
 \begin{frame}{\large Heavy-Tailed Growth-Rate Distributions}
-  \vspace{-0.2em}
-  A power-law tail decays more slowly than an exponential tail. Let $X$ be a
-  random variable, let $\alpha>0$ be its \hilite{tail index}, and let $L(x)$ be
-  slowly varying. A two-sided power-law tail satisfies:
+  Large positive and negative growth rates occur more often than a Normal
+  model predicts. Three distributions give useful comparisons:
+
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{Normal}: thin tails; our benchmark.
+    \item \hilite{Laplace}: a sharper center and heavier tails than Normal,
+      but the tails still decrease exponentially.
+    \item \hilite{Student-$t$}: power-law tails. Smaller degrees of freedom
+      $\nu$ give heavier tails; the tail index is $\alpha=\nu$.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Laplace can fit the center well. Check the far tails before choosing a
+  model for extreme events.
+\end{frame}
+
+\begin{frame}{Power-Law Tails}
+  Let $X=|g|$ be the growth-rate magnitude and $\alpha>0$ the tail index.
+  A regularly varying tail satisfies:
   \[
-    \mathbb P(|X|>x)\sim
+    \mathbb P(X>x)\sim
     \underbrace{L(x)x^{-\alpha}}_{\text{\footnotesize tail probability}}
     \qquad\text{as }x\rightarrow\infty.
   \]
+  The symbol $\sim$ means the ratio of the two sides approaches one.
+  The factor $L(x)$ is slowly varying: for every fixed $c>0$,
+  \[
+    \lim_{x\to\infty}\frac{L(cx)}{L(x)}=1.
+  \]
 
-  A smaller $\alpha$ means slower decay and a heavier tail. The classical strict
-  thresholds identify moments that fail to exist for a pure power-law tail:
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item $\alpha<1$: the mean fails to exist.
-    \item $\alpha<2$: the variance fails to exist.
-    \item $\alpha<4$: the fourth moment fails to exist.
-  \end{itemize}
-
-  \slidenote{Careful:}{at the boundary values $1$, $2$, and $4$, moment existence depends on finer tail detail. Heavy-tailed does not always mean power-law.}
+  A smaller $\alpha$ means slower tail decay.
+  Student-$t$ tails follow this form; Normal and Laplace tails do not.
 \end{frame}
 
-\begin{frame}{Hill's Estimator of the Tail Index}
-  Hill's estimator applies to positive observations. For signed growth rates,
-  analyze one tail or the magnitude series $|g|$. Let
-  $X_{(1)}\geq X_{(2)}\geq\cdots\geq X_{(n)}>0$ be descending order statistics,
-  and let $k<n$ select the upper-order observations. The estimate is:
+\begin{frame}{Why the Tail Index Matters}
+  The tail index $\alpha$ tells us how strongly extreme observations can
+  affect volatility and kurtosis.
+
+  \vspace{0.8em}
+  \begin{itemize}\setlength{\itemsep}{0.9em}
+    \item $\alpha<2$: the model has no finite variance.
+      Sample volatility is still computable, but extreme days can change it sharply.
+    \item $2<\alpha<4$: variance is finite, but the fourth moment is infinite.
+      Kurtosis, which uses fourth powers of deviations, has no finite
+      population value.
+  \end{itemize}
+
+  \vspace{0.6em}
+  For Student-$t$, $\alpha=\nu$. The example compares fitted $\nu$ with
+  tail-index estimates from the largest observed magnitudes.
+\end{frame}
+
+\begin{frame}{Hill Estimator of the Tail Index}
+  Sort the $n$ positive growth-rate magnitudes from largest to smallest:
+  $X_{(1)}\geq\cdots\geq X_{(n)}>0$.
+  Choose $k<n$ magnitudes for the tail. The next value, $X_{(k+1)}$,
+  sets the threshold:
   \[
     \widehat\alpha_k=
     \underbrace{\left[\frac{1}{k}\sum_{i=1}^{k}
-      \log\!\left(\frac{X_{(i)}}{X_{(k+1)}}\right)\right]^{-1}}_{\text{\footnotesize estimated tail index}}.
+      \ln\!\left(\frac{X_{(i)}}{X_{(k+1)}}\right)\right]^{-1}}_{\text{\footnotesize estimated tail index}}.
   \]
 
-  \vspace{0.3em}
-  The cutoff $k$ balances bias and variance. One arbitrary cutoff is not a
-  diagnostic: compute $\widehat\alpha_k$ over a range of $k$ values and look for
-  a stable region.
+  Too few observations give a noisy estimate. Too many include values
+  outside the far tail.
 
-  \slidenote{Companion example:}{the stylized-facts notebook uses a Hill stability plot and treats $k=\lfloor\sqrt n\rfloor$ as a reproducible reference, not a uniquely correct cutoff.}
+  \slidenote{Check:}{plot $\widehat\alpha_k$ across several $k$ values and look for a stable region. Hill estimation assumes a regularly varying tail.}
 \end{frame}
 
 \begin{frame}{Autocorrelation}
-  Let $g_2,\ldots,g_T$ be growth-rate observations with sample mean $g'$, and
-  let $k$ be a lag measured in sampling intervals. Define the empirical
-  autocovariance and autocorrelation by:
+  We have measured movement sizes. Next, we ask how they relate across time.
+
+  For growth rates $g_2,\ldots,g_T$ with sample mean $g^{\prime}$,
+  let $k$ be the lag in time steps. The empirical autocovariance and
+  autocorrelation function (ACF) are:
   \[
-    \widehat R(k)=\frac{1}{T-1}\sum_{t=2}^{T-k}(g_t-g')(g_{t+k}-g'),
+    \widehat R(k)=\frac{1}{T-1}\sum_{t=2}^{T-k}
+      (g_t-g^{\prime})(g_{t+k}-g^{\prime}),
     \qquad
     \underbrace{\rho(k)=\frac{\widehat R(k)}{\widehat R(0)}}_{\text{\footnotesize autocorrelation}}.
   \]
 
-  This biased normalization divides by the full sample size at every lag, so
-  $\rho(0)=1$ and $|\rho(k)|\leq 1$. For many equity samples,
-  $\rho(k)$ is near zero at nonzero lags: past signed growth provides little
-  \hilite{linear} help in predicting future signed growth.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item $\rho(0)=1$ and $|\rho(k)|\leq1$.
+    \item $\rho(k)$ near zero means little linear relationship at that lag.
+    \item Weak growth-rate autocorrelation does not establish independence.
+      Movement sizes may still be related.
+  \end{itemize}
 
-  \vspace{0.4em}
-  Near-zero autocorrelation does \hilite{not} establish independence. Dependence
-  can remain in growth magnitude, trading microstructure, or other nonlinear
-  functions of the series.
+  \slidenote{Random-walk benchmark:}{expect growth-rate autocorrelations near zero for $k>0$.}
 \end{frame}
 
 \begin{frame}{Volatility Clustering}
@@ -486,10 +479,9 @@
 \end{frame}
 
 \begin{frame}{Diagnosing Volatility Clustering}
-  Let $g_2^{(i)},\ldots,g_T^{(i)}$ be the growth-rate series for firm $i$, and let
-  $\overline{|g|_i}$ be the mean growth-rate magnitude. Magnitudes weight extreme
-  days less heavily than squares and give a cleaner estimate. The empirical
-  autocorrelation of growth-rate magnitudes is:
+  Repeat the ACF calculation using magnitudes.
+  For firm $i$, let $\overline{|g|_i}$ be the mean of
+  $|g_2^{(i)}|,\ldots,|g_T^{(i)}|$. At lag $k$:
   \[
     \widehat\rho_i(k)=
     \frac{\displaystyle\sum_{t=2}^{T-k}
@@ -499,70 +491,63 @@
       \left[|g_t^{(i)}|-\overline{|g|_i}\right]^2}.
   \]
 
-  Volatility clustering appears when $\widehat\rho_i(k)>0$ across many lags and
-  fades slowly toward zero. A model can therefore match weak signed-growth ACF
-  and still fail because it assumes fixed, independent volatility.
+  Positive magnitude autocorrelations across many lags are evidence of
+  volatility clustering.
 
-  \slidenote{Why it matters:}{conditional volatility changes risk forecasts, option values, hedge ratios, and capital allocation.}
+  \slidenote{Main comparison:}{growth-rate autocorrelations can be small while magnitude autocorrelations remain positive.}
 \end{frame}
 
-\begin{frame}{Example}
-  \vspace{0.4em}
-  {\large\textbf{\ink{Diagnosing Stylized Facts in Daily Equity Growth Rates}}}
+\begin{frame}{Example: Stylized Facts}
+  We can now check all three patterns in daily growth-rate data.
 
-  \vspace{0.8em}
-  The companion notebook turns each stylized fact into a model check:
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item Compare empirical growth rates with fitted Normal, Laplace, and
-      Student-$t$ densities.
-    \item Inspect a Hill stability plot instead of reporting one cutoff.
-    \item Compare the ACF of signed growth with the ACF of growth magnitude.
-    \item Translate the diagnostics into requirements for the next model.
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item Compare observed growth rates with Normal, Laplace, and Student-$t$
+      distributions.
+    \item Estimate the tail index across several cutoffs.
+    \item Compare the ACF of growth rates with the ACF of their magnitudes.
   \end{itemize}
 
-  \slidenote{Notebook:}{\dimmed{CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}}
+  \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-StylizedFacts-Example-Fall-2026.ipynb}{Stylized Facts in Daily Growth Rates}}
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.2em}
-  {\normalsize\textbf{\ink{Advanced 1:}} \dimmed{advanced/order\_book/}\par
-  \dimmed{CHEME-5660-L3a-Advanced-LimitOrderBook-Mechanics-Fall-2026.ipynb}}
+  These examples extend the market-structure discussion.
 
-  \vspace{0.5em}
-  {\normalsize\textbf{\ink{Advanced 2:}} \dimmed{advanced/market\_impact/}\par
-  \dimmed{CHEME-5660-L3a-Advanced-Market-Impact-Models-Fall-2026.ipynb}}
+  \vspace{0.9em}
+  \begin{itemize}\setlength{\itemsep}{1em}
+    \item \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/advanced/order_book/CHEME-5660-L3a-Advanced-LimitOrderBook-Mechanics-Fall-2026.ipynb}{Limit-Order Book Mechanics}\\
+      Match orders, process cancellations, and calculate the prices paid
+      by a market order.
+    \item \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/advanced/market_impact/CHEME-5660-L3a-Advanced-Market-Impact-Models-Fall-2026.ipynb}{Market Impact Models}\\
+      Compare the cost of using the order book with models of how trades
+      affect prices.
+  \end{itemize}
 
-  \vspace{0.5em}
-  Optional, not prerequisites for L3b. The first develops the mechanics of a
-  price-time-priority limit-order book, and the second distinguishes mechanical
-  execution cost from linear, order-flow-imbalance, and transient-impact models.
-  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-3/L3a/advanced}{lectures/week-3/L3a/advanced}, also linked from the lecture notebook.}
+  \slidenote{Suggested order:}{complete the order-book example first. Neither is required for L3b.}
 \end{frame}
 
 % ==== summary ================================================
 \begin{frame}{Summary}
-  This lecture introduced equity securities, continuously compounded growth
-  rates, and recurring empirical patterns in financial return data.
+  This lecture connected equity trading, price growth, and patterns in market data.
 
-  \vspace{0.45em}
+  \vspace{0.8em}
   {\large\textbf{\ink{Key takeaways}}}
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \textbf{\ink{The price depends on how and where you trade.}} Each
-      venue keeps its own book, so the fill depends on the order type and the
-      venue. The NBBO is the benchmark for comparing quotes across venues.
-    \item \textbf{\ink{One series gives both reward and risk.}} The growth rate
-      says how fast the price grew per year, the log return says how much it
-      moved over one interval, and volatility is the spread of those numbers.
-    \item \textbf{\ink{Real returns are not independent or Normal.}} Large moves
-      are far too common for a Normal distribution, and while direction is close
-      to unpredictable, size is persistent.
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \textbf{\ink{Trading determines the price.}}
+      Order instructions and available quotes affect where and how a trade fills.
+    \item \textbf{\ink{State the units and horizon.}}
+      Growth rates, log returns, and their volatilities describe the same
+      price changes on different scales.
+    \item \textbf{\ink{Check all three patterns.}}
+      Growth rates have heavy tails and weak linear autocorrelation;
+      their magnitudes remain correlated over time.
   \end{itemize}
 
-  \vspace{0.45em}
-  The next lecture builds a lattice model and tests it against these diagnostics.
+  \vspace{0.6em}
+  Next, we test a binomial lattice against these patterns.
 \end{frame}
 
 % ==== closing ================================================
