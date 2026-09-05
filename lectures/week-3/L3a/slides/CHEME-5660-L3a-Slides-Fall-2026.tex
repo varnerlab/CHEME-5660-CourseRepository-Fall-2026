@@ -199,12 +199,12 @@
   We now turn from how shares trade to how their prices change. We measure
   that change with the \hilite{continuously compounded growth rate}, $g$.
   Let $S_{j-1}^{(i)}>0$ and $S_j^{(i)}>0$ be consecutive prices
-  for firm $i$, separated by $\Delta t_j>0$ years. The price evolution is:
+  for firm $i$, $\Delta t_j>0$ years apart. The next price is given by:
   \[
     S_j^{(i)}=S_{j-1}^{(i)}\exp\!\left(g_{j,j-1}^{(i)}\Delta t_j\right).
   \]
 
-  Solving for the rate gives:
+  Solving for the growth rate gives the expression:
   \[
     g_{j,j-1}^{(i)}=
     \underbrace{\frac{1}{\Delta t_j}\log\!\left(\frac{S_j^{(i)}}{S_{j-1}^{(i)}}\right)}_{\text{\footnotesize growth rate}}.
@@ -226,7 +226,7 @@
   \]
 
   Log returns add across adjacent intervals. For positive prices
-  $S_1,\ldots,S_T$, the cumulative log return is:
+  $S_1,\ldots,S_T$, the cumulative log return is given by:
   \[
     \sum_{t=2}^{T}r_t
     =\underbrace{\sum_{t=2}^{T}(\Delta t_t)g_t}_{\text{\footnotesize time-weighted growth}}
@@ -241,7 +241,8 @@
   To compare performance with a benchmark, subtract its growth rate.
 
   Let $g_t$ be the equity growth rate and $g_y$ the benchmark growth rate,
-  both in inverse years. For an interval of length $\Delta t$ years:
+  both in inverse years. Over $\Delta t$ years, the excess growth rate
+  and excess log return are given by:
   \[
     \underbrace{\bar g_t=g_t-g_y}_{\text{\footnotesize excess growth rate}},
     \qquad
@@ -266,7 +267,7 @@
   \begin{enumerate}\setlength{\itemsep}{0.6em}
     \item For each $t=2,\ldots,T$, read consecutive prices
       $S_{t-1}^{(i)}$ and $S_t^{(i)}$.
-    \item Compute the excess growth rate:
+    \item Compute the excess growth rate using:
       \[
         \bar g_t^{(i)}\gets
         \underbrace{\frac{1}{\Delta t}\ln\!\left(\frac{S_t^{(i)}}{S_{t-1}^{(i)}}\right)}_{g_t^{(i)}}-g_y.
@@ -285,7 +286,7 @@
   In the singular value decomposition (SVD), columns $\mathbf u_j$ of
   $\mathbf U$ describe time patterns. Columns $\mathbf v_j$ of $\mathbf V$
   give firm weights. The diagonal entries $\sigma_j$ of $\boldsymbol\Sigma$
-  give the size of each pattern:
+  give the size of each pattern. Together, these give the decomposition:
   \[
     \mathbf G=\mathbf U\boldsymbol\Sigma\mathbf V^{\mathsf T}
     =\sum_{j=1}^{\operatorname{rank}(\mathbf G)}
@@ -304,7 +305,7 @@
   volatility measures how widely growth rates vary around their mean.
 
   Let $g_2,\ldots,g_T$ be the $T-1$ growth rates from $T$ equally spaced
-  prices. Their mean $g^{\prime}$ and sample volatility $\sigma_g$ are:
+  prices. Their mean $g^{\prime}$ and sample volatility $\sigma_g$ are given by:
   \[
     g^{\prime}=\frac{1}{T-1}\sum_{t=2}^{T}g_t,
     \qquad
@@ -319,13 +320,13 @@
 
 \begin{frame}{Log-Return and Annualized Volatility}
   For a fixed interval $\Delta t$ years, the log return is $r_t=(\Delta t)g_t$.
-  Its standard deviation $\sigma_r(\Delta t)$ is:
+  Its standard deviation $\sigma_r(\Delta t)$ is given by:
   \[
     \underbrace{\sigma_r(\Delta t)=(\Delta t)\sigma_g}_{\text{\footnotesize interval log-return volatility}}.
   \]
   This is an exact change of units. The result is dimensionless.
 
-  The conventional annualized value $\sigma_{\mathrm{ann}}$ is:
+  The conventional annualized value $\sigma_{\mathrm{ann}}$ is given by:
   \[
     \underbrace{\sigma_{\mathrm{ann}}=
       \frac{\sigma_r(\Delta t)}{\sqrt{\Delta t}}
@@ -391,14 +392,15 @@
 
 \begin{frame}{Power-Law Tails}
   Let $X=|g|$ be the growth-rate magnitude and $\alpha>0$ the tail index.
-  A regularly varying tail satisfies:
+  For a regularly varying tail, the tail probability follows the asymptotic form:
   \[
     \mathbb P(X>x)\sim
     \underbrace{L(x)x^{-\alpha}}_{\text{\footnotesize tail probability}}
     \qquad\text{as }x\rightarrow\infty.
   \]
   The symbol $\sim$ means the ratio of the two sides approaches one.
-  The factor $L(x)$ is slowly varying: for every fixed $c>0$,
+  The factor $L(x)$ is slowly varying, meaning that for every fixed $c>0$,
+  the following limit holds:
   \[
     \lim_{x\to\infty}\frac{L(cx)}{L(x)}=1.
   \]
@@ -429,7 +431,7 @@
   Sort the $n$ positive growth-rate magnitudes from largest to smallest:
   $X_{(1)}\geq\cdots\geq X_{(n)}>0$.
   Choose $k<n$ magnitudes for the tail. The next value, $X_{(k+1)}$,
-  sets the threshold:
+  sets the threshold. The Hill estimate is given by:
   \[
     \widehat\alpha_k=
     \underbrace{\left[\frac{1}{k}\sum_{i=1}^{k}
@@ -447,7 +449,7 @@
 
   For growth rates $g_2,\ldots,g_T$ with sample mean $g^{\prime}$,
   let $k$ be the lag in time steps. The empirical autocovariance and
-  autocorrelation function (ACF) are:
+  autocorrelation function (ACF) are given by:
   \[
     \widehat R(k)=\frac{1}{T-1}\sum_{t=2}^{T-k}
       (g_t-g^{\prime})(g_{t+k}-g^{\prime}),
@@ -481,7 +483,7 @@
 \begin{frame}{Diagnosing Volatility Clustering}
   Repeat the ACF calculation using magnitudes.
   For firm $i$, let $\overline{|g|_i}$ be the mean of
-  $|g_2^{(i)}|,\ldots,|g_T^{(i)}|$. At lag $k$:
+  $|g_2^{(i)}|,\ldots,|g_T^{(i)}|$. The magnitude ACF at lag $k$ is given by:
   \[
     \widehat\rho_i(k)=
     \frac{\displaystyle\sum_{t=2}^{T-k}

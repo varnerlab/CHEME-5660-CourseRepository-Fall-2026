@@ -87,7 +87,7 @@
 \begin{frame}{Binomial Lattice Model}
   Let $S_0>0$ be today's share price and $\Delta t>0$ the step length
   in years. The move factors satisfy $u>d>0$, and the up probability is
-  $0<p<1$. After one step:
+  $0<p<1$. The share price after one step is given by:
   \[
     S_1=
     \begin{cases}
@@ -108,14 +108,14 @@
 % ==== terminal distribution ==================================
 \begin{frame}{Price Distribution}
   After $t$ independent steps, let $k$ be the number of up moves.
-  There are $t-k$ down moves, so the price is:
+  There are $t-k$ down moves, so the price is given by:
   \[
     \underbrace{S_{t,k}=S_0u^kd^{t-k}}_{\text{\footnotesize price after }t\text{\footnotesize steps}},
     \qquad k=0,\ldots,t.
   \]
 
   There are $\binom tk$ ways to arrange those moves.
-  Under the real-world probability rule $\Pmeasure$, the node probability is:
+  Under the real-world probability rule $\Pmeasure$, the node probability is given by:
   \[
     \Pmeasure(k\text{ up moves in }t\text{ steps})
     =\underbrace{\binom tk p^k(1-p)^{t-k}}_{\text{\footnotesize binomial probability}}.
@@ -128,7 +128,9 @@
 
 \begin{frame}{Example: Recombination}
   The textbook check uses $S_0=20$, $u=1.1$, $d=0.9$, and $p=0.6523$.
-  An up move followed by a down move reaches the same price as the reverse:
+  An up move followed by a down move reaches the same price as the reverse.
+
+  This common price is given by:
   \[
     \underbrace{20(1.1)(0.9)}_{\text{up then down}}
     =\underbrace{20(0.9)(1.1)}_{\text{down then up}}
@@ -155,13 +157,13 @@
   \begin{enumerate}\setlength{\itemsep}{0.55em}
     \item Append $e^{g_t\Delta t}$ to $U$ if $g_t>0$, or to $D$ if $g_t<0$.
       Skip zero-growth observations when building the lists.
-    \item Average each list:
+    \item Compute the average factors using:
       \[
         u=\frac{1}{|U|}\sum_{v\in U}v,
         \qquad
         d=\frac{1}{|D|}\sum_{v\in D}v.
       \]
-    \item Count up moves among all observed steps:
+    \item Estimate the up probability as the fraction of observed steps that rise:
       \[
         p=\frac{|U|}{T-1}.
       \]
@@ -222,11 +224,11 @@
   and makes money in at least one future state.
 
   Let $g_y$ be the risk-free growth rate in inverse years.
-  Over $\Delta t$ years, its accumulation factor is:
+  Over $\Delta t$ years, its accumulation factor is given by:
   \[
     R_f=e^{g_y\Delta t}.
   \]
-  To avoid arbitrage, the factors must satisfy:
+  To avoid arbitrage, the factors must satisfy the condition:
   \[
     \underbrace{d<R_f<u}_{\text{\footnotesize no-arbitrage condition}}.
   \]
@@ -261,11 +263,11 @@
 \begin{frame}{Calculate the Risk-Neutral Probability}
   With arbitrage ruled out, choose the risk-neutral up probability $q$
   so the weighted average price factor equals $R_f$.
-  The down probability is $1-q$, so:
+  With down probability $1-q$, this condition is written as:
   \[
     qu+(1-q)d=R_f.
   \]
-  Solving for $q$ gives:
+  Solving this equation for $q$ gives the pricing weight:
   \[
     \underbrace{q=\frac{R_f-d}{u-d}}_{\text{\footnotesize risk-neutral up probability}}.
   \]
@@ -277,7 +279,7 @@
 
 \begin{frame}{Value a Future Payoff}
   Suppose a claim pays $H_u$ dollars after an up move and $H_d$ dollars
-  after a down move. Its no-arbitrage value today, $V_0$, is:
+  after a down move. Its no-arbitrage value today, $V_0$, is given by:
   \[
     V_0=
     \underbrace{\frac{1}{R_f}}_{\text{\footnotesize discount factor}}
@@ -314,7 +316,7 @@
 \begin{frame}{Growth-Rate Distribution}
   To make that comparison, express the lattice moves as growth rates.
   At step $j$, the price factor is $u$ or $d$. For a step of length
-  $\Delta t$ years, the growth rate is:
+  $\Delta t$ years, the growth rate is given by:
   \[
     g_j=\frac{1}{\Delta t}\ln\!\left(\frac{S_j}{S_{j-1}}\right)
     =
@@ -331,14 +333,15 @@
 \end{frame}
 
 \begin{frame}{One-Step Mean and Variance}
-  For fixed $u>d>0$, $0<p<1$, and $\Delta t>0$ years,
-  the mean growth rate $\mu_g$ under $\Pmeasure$ is:
+  Keep $u>d>0$, $0<p<1$, and $\Delta t>0$ years fixed.
+
+  The mean growth rate $\mu_g$ under $\Pmeasure$ is given by:
   \[
     \mu_g\equiv\mathbb E_{\Pmeasure}[g_j]
     =\underbrace{\frac{p\ln u+(1-p)\ln d}{\Delta t}}_{\text{\footnotesize mean growth rate}}.
   \]
 
-  The variance $\sigma_g^2$ is:
+  The variance $\sigma_g^2$ is given by:
   \[
     \sigma_g^2\equiv\operatorname{Var}_{\Pmeasure}(g_j)
     =\underbrace{\frac{p(1-p)}{(\Delta t)^2}
@@ -352,11 +355,12 @@
 
 \begin{frame}{Heavy Tails}
   The two growth rates have a maximum magnitude.
-  Define the bound $M$ by:
+  This bound, $M$, is given by:
   \[
     M=\frac{\max\{|\ln d|,|\ln u|\}}{\Delta t}.
   \]
-  Every one-step growth rate satisfies $|g_j|\leq M$, so:
+  Since every one-step growth rate satisfies $|g_j|\leq M$,
+  the probability of exceeding this bound is given by:
   \[
     \underbrace{\Pmeasure(|g_j|>x)=0\quad\text{for }x>M}_{\text{\footnotesize no observations beyond the bound}}.
   \]
@@ -370,11 +374,11 @@
   Since successive moves are independent, so are growth rates at
   different steps.
 
-  Let $\tau\geq1$ be an integer lag. Their covariance is:
+  Let $\tau\geq1$ be an integer lag. Their covariance is given by:
   \[
     \operatorname{Cov}_{\Pmeasure}(g_j,g_{j+\tau})=0.
   \]
-  Since the growth-rate variance $\sigma_g^2$ is positive, the ACF is:
+  Since the growth-rate variance $\sigma_g^2$ is positive, the ACF is given by:
   \[
     \underbrace{\rho_g(\tau)=
       \frac{\operatorname{Cov}_{\Pmeasure}(g_j,g_{j+\tau})}{\sigma_g^2}
@@ -388,13 +392,13 @@
 
 \begin{frame}{Volatility Clustering}
   Independent moves also give independent growth-rate magnitudes.
-  For any integer lag $\tau\geq1$:
+  For any integer lag $\tau\geq1$, their covariance is given by:
   \[
     \operatorname{Cov}_{\Pmeasure}(|g_j|,|g_{j+\tau}|)=0.
   \]
 
   Let $\mathcal F_j$ represent the information in the first $j$ moves.
-  Knowing that history does not change the future growth-rate variance:
+  Given that history, the future growth-rate variance is still given by:
   \[
     \underbrace{\operatorname{Var}_{\Pmeasure}
       (g_{j+\tau}\mid\mathcal F_j)=\sigma_g^2}_{\text{\footnotesize constant conditional variance}}.
