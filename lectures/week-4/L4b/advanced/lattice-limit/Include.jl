@@ -7,7 +7,7 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using DataFrames
-using Distributions
-using Plots
-using PrettyTables
+using DataFrames    # labeled moment and convergence tables
+using Distributions # binomial, normal, and lognormal probabilities
+using Plots         # distribution and convergence plots
+using PrettyTables  # formatted result tables

@@ -7,9 +7,9 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using DataFrames
-using Distributions
-using Plots
-using PrettyTables
-using Random
-using Statistics
+using DataFrames    # labeled exit-probability summaries
+using Distributions # normal and binomial probabilities
+using Plots         # barrier and convergence plots
+using PrettyTables  # formatted result tables
+using Random        # reproducible path simulation
+using Statistics    # Monte Carlo means

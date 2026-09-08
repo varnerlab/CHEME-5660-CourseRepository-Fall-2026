@@ -7,7 +7,7 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using DataFrames
-using Distributions
-using Plots
-using Plots.PlotMeasures
+using DataFrames         # labeled terminal-outcome tables
+using Distributions      # binomial node probabilities
+using Plots              # probability and sensitivity plots
+using Plots.PlotMeasures # explicit plot margins

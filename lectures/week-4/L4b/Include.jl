@@ -15,22 +15,23 @@ let d = @__DIR__
 end
 
 # load external packages -
-using VLQuantitativeFinancePackage
-using DataFrames
-using CSV
-using Dates
-using LinearAlgebra
-using Statistics
-using StatsBase
-using Plots
-using Colors
-using StatsPlots
-using JLD2
-using FileIO
-using Distributions
-using PrettyTables
+using VLQuantitativeFinancePackage # course models, market data, and GBM utilities
+using DataFrames                   # labeled tabular data
+using CSV                          # delimited data input and output
+using Dates                        # trading-date values and operations
+using LinearAlgebra                # matrix operations and vector norms
+using Statistics                   # sample means, variances, and standard deviations
+using StatsBase                    # descriptive statistics such as kurtosis
+using Plots                        # graphical output
+using Colors                       # plot color construction
+using StatsPlots                   # statistical plotting recipes
+using JLD2                         # Julia-native data loading
+using FileIO                       # common data-file interface
+using Distributions                # normal and lognormal probability models
+using PrettyTables                 # formatted result tables
 # using UnicodePlots
-using HypothesisTests
+using HypothesisTests              # Anderson-Darling goodness-of-fit statistics
+using Random                       # reproducible simulation and bootstrap streams
 
 # include some local codes -
 include(joinpath(_PATH_TO_SRC, "Compute.jl"));

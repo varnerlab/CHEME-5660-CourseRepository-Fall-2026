@@ -7,6 +7,6 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using DataFrames
-using Distributions
-using Plots
+using DataFrames    # labeled first-passage summaries
+using Distributions # binomial probabilities
+using Plots         # absorption and comparison plots

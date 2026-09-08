@@ -113,6 +113,10 @@ function build_nary_lattice_from_growth_rate(g::AbstractVector{<:Real};
 
     idx = assign_bins(gv, edges)
     counts, _, avg_factor, freq = aggregate_bin_stats(F, idx, n)
+    empty_bins = findall(iszero, counts)
+    isempty(empty_bins) || throw(ArgumentError(
+        "Binning produced empty branches $(empty_bins); use fewer branches or a different binning method.",
+    ))
     labels = ["S$(k)" for k in 1:n]
 
     return (edges=edges, avg_factor=avg_factor, freq=freq, counts=counts,
