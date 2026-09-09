@@ -382,7 +382,7 @@
     \item \hilite{Laplace}: a sharper center and heavier tails than Normal,
       but the tails still decrease exponentially.
     \item \hilite{Student-$t$}: power-law tails. Smaller degrees of freedom
-      $\nu$ give heavier tails; the tail index is $\alpha=\nu$.
+      $\nu$ give heavier tails. The true tail index is $\alpha=\nu$.
   \end{itemize}
 
   \vspace{0.5em}
@@ -405,26 +405,53 @@
     \lim_{x\to\infty}\frac{L(cx)}{L(x)}=1.
   \]
 
-  A smaller $\alpha$ means slower tail decay.
+  A smaller $\alpha$ means heavier tails and more extreme events.
   Student-$t$ tails follow this form; Normal and Laplace tails do not.
 \end{frame}
 
 \begin{frame}{Why the Tail Index Matters}
-  The tail index $\alpha$ tells us how strongly extreme observations can
-  affect volatility and kurtosis.
-
-  \vspace{0.8em}
-  \begin{itemize}\setlength{\itemsep}{0.9em}
-    \item $\alpha<2$: the model has no finite variance.
-      Sample volatility is still computable, but extreme days can change it sharply.
-    \item $2<\alpha<4$: variance is finite, but the fourth moment is infinite.
-      Kurtosis, which uses fourth powers of deviations, has no finite
-      population value.
-  \end{itemize}
+  Smaller estimated $\alpha$ means heavier tails and more extreme events.
 
   \vspace{0.6em}
-  For Student-$t$, $\alpha=\nu$. The example compares fitted $\nu$ with
-  tail-index estimates from the largest observed magnitudes.
+  We simulated 5,000 samples per distribution, each with 2,766 observations,
+  and used the 52 largest absolute movements to estimate $\alpha$.
+
+  \vspace{0.6em}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{@{}lcc@{}}
+      \toprule
+      Distribution & Median estimate & Range containing 90\% \\
+      \midrule
+      Normal & 7.8 & 6.5--9.7 \\
+      Laplace & 4.8 & 4.0--6.0 \\
+      Student-$t$, $\nu=4$ & 3.5 & 2.9--4.4 \\
+      Student-$t$, $\nu=3$ & 2.8 & 2.3--3.6 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \slidenote{Simulation:}{independent observations, mean zero, equal variance.
+    Ranges depend on sample size and cutoff. Overlap means an estimate alone
+    cannot identify the distribution.}
+\end{frame}
+
+\begin{frame}{True and Estimated Tail Indices}
+  For Student-$t$, the true tail index is $\alpha=\nu$.
+  The value can be fractional.
+
+  \vspace{0.9em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{True index}: a Student-$t$ model with $\nu=4$ has
+      $\alpha=4$.
+    \item \hilite{Estimated index}: our simulation gives a median Hill
+      estimate of $\widehat\alpha=3.5$ for that same model.
+    \item Estimates depend on the sample and how many extreme observations
+      we include.
+  \end{itemize}
+
+  \slidenote{Example:}{the fitted Student-$t$ parameter uses all observations.
+    Hill uses only the largest magnitudes. Their estimates can differ.}
 \end{frame}
 
 \begin{frame}{Hill Estimator of the Tail Index}
