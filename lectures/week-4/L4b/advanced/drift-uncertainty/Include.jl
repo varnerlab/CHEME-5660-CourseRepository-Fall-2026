@@ -7,9 +7,9 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using DataFrames
-using Distributions
-using Plots
-using PrettyTables
-using Random
-using Statistics
+using DataFrames    # labeled simulation summaries
+using Distributions # normal probabilities and confidence quantiles
+using Plots         # uncertainty plots
+using PrettyTables  # formatted comparison tables
+using Random        # reproducible Monte Carlo streams
+using Statistics    # sample means and standard deviations

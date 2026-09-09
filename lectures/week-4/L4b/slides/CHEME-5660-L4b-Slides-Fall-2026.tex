@@ -11,8 +11,8 @@
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\gbar}{\bar g}
-\newcommand{\Dacc}{\mathcal{D}_{T,0}(g_b)}
-\newcommand{\Ddis}{\mathcal{D}_{T,0}^{-1}(g_b)}
+\newcommand{\Dacc}{\mathcal{D}_{T,0}(g_y)}
+\newcommand{\Ddis}{\mathcal{D}_{T,0}^{-1}(g_y)}
 
 \title{\texorpdfstring{{\vnheavy L4b}}{L4b}: Single Asset Geometric Brownian Motion Models}
 \subtitle{CHEME 5660 Cornell University}
@@ -120,7 +120,7 @@
   one and the discrete steps with continuous time. Refinement alone is not
   enough; with the right scaling the lattice converges to a continuous model,
   and that model is geometric Brownian motion.
-  \slidenote{Example:}{\dimmed{CHEME-5660-L4a-Example-N-Aray-Lattice-Fall-2026.ipynb}}
+  \slidenote{Example:}{\dimmed{CHEME-5660-L4a-Example-N-Ary-Lattice-Fall-2026.ipynb}}
 \end{frame}
 
 \begin{frame}{Single Asset Geometric Brownian Motion (GBM)}
@@ -449,11 +449,12 @@
 \begin{frame}{GBM Trade Rule}
   Buy $n_0>0$ shares at $S_0$ at time $0$; sell all $n_0$ shares at $S_T$ at
   the scheduled exit $T=N\Delta t$, $N\ge1$ (frictionless: no costs, price
-  return only). With
-  annual continuously compounded benchmark growth rate $g_b$, $\Dacc=e^{g_bT}$ is the accumulation factor and
-  $\Ddis=e^{-g_bT}$ discounts the sale to time 0:
+  return only). Following L1b and L4a, let $g_y$ denote the continuously
+  compounded annual growth rate associated with the selected benchmark yield
+  $y$. Then $\Dacc=e^{g_yT}$ is the accumulation factor, and
+  $\Ddis=e^{-g_yT}$ discounts the sale to time 0:
   \[
-    \operatorname{NPV}(g_b,T)
+    \operatorname{NPV}(g_y,T)
     =\underbrace{-n_0S_0}_{\text{entry (now)}}
     +\underbrace{n_0S_T\,\Ddis}_{\text{exit (future)}}.
   \]
@@ -462,8 +463,8 @@
   dimensionless present-value return on the share cost:
   \[
     \underbrace{\rho_T}_{\text{scaled NPV}}
-    :=\frac{\operatorname{NPV}(g_b,T)}{n_0S_0}
-    =\Bigl(\frac{S_T}{S_0}\Bigr)e^{-g_bT}-1.
+    :=\frac{\operatorname{NPV}(g_y,T)}{n_0S_0}
+    =\Bigl(\frac{S_T}{S_0}\Bigr)e^{-g_yT}-1.
   \]
 
   This is the L4a rule with one change: $S_T$ now follows GBM instead of a
@@ -476,16 +477,16 @@
   \[
     \boxed{\rho_T
     =\exp\!\Bigl[\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T+\sigma\sqrt{T}\,Z\Bigr]
-      \underbrace{e^{-g_bT}}_{\text{discount}}-1,
+      \underbrace{e^{-g_yT}}_{\text{discount}}-1,
     \qquad Z\sim\mathcal N(0,1).}
   \]
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
     \item \hilite{Short holding period}: for a few days or weeks and a realistic
-      benchmark, $|g_b|T$ is small, $e^{-g_bT}\approx1$, and
+      benchmark, $|g_y|T$ is small, $e^{-g_yT}\approx1$, and
       $\rho_T\approx S_T/S_0-1$ is the fractional price change.
-    \item \hilite{Longer holding period}: whenever $|g_b|T$ is not small, keep
+    \item \hilite{Longer holding period}: whenever $|g_y|T$ is not small, keep
       the discount factor.
   \end{itemize}
 
@@ -501,7 +502,7 @@
   right:
   \[
     \Pmeasure(\rho_T>\rho_\star)
-    =\Pmeasure\!\Bigl(\ln\tfrac{S_T}{S_0}>\ln(1+\rho_\star)+g_bT\Bigr).
+    =\Pmeasure\!\Bigl(\ln\tfrac{S_T}{S_0}>\ln(1+\rho_\star)+g_yT\Bigr).
   \]
 
   Under GBM, $\ln(S_T/S_0)$ is normal with mean $(\mu-\sigma^2/2)T$ and
@@ -510,7 +511,7 @@
     \Pmeasure(\rho_T>\rho_\star)
     =\Pmeasure\!\left(
       \underbrace{\frac{\ln(S_T/S_0)-(\mu-\sigma^2/2)T}{\sigma\sqrt T}}_{Z\sim\mathcal N(0,1)}
-      >\frac{\ln(1+\rho_\star)+g_bT-(\mu-\sigma^2/2)T}{\sigma\sqrt T}\right).
+      >\frac{\ln(1+\rho_\star)+g_yT-(\mu-\sigma^2/2)T}{\sigma\sqrt T}\right).
   \]
 
   As in L4a, this is the scheduled terminal exit; a monitored take-profit or
@@ -523,7 +524,7 @@
   \[
     \boxed{\Pmeasure(\rho_T>\rho_\star)
     =1-\Phi\!\left(
-      \frac{\ln(1+\rho_\star)+g_bT-\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T}
+      \frac{\ln(1+\rho_\star)+g_yT-\bigl(\mu-\tfrac{\sigma^2}{2}\bigr)T}
            {\sigma\sqrt T}\right).}
   \]
 
@@ -533,7 +534,7 @@
       estimated from data. A risk-neutral drift, which we will use to price
       derivatives later, changes the measure and no longer answers a
       probability-of-profit question.
-    \item For a short holding period $g_bT\approx0$ and the benchmark drops out
+    \item For a short holding period $g_yT\approx0$ and the benchmark drops out
       of the numerator.
     \item A target of $-1$ or below is cleared with probability one.
   \end{itemize}

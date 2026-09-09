@@ -62,7 +62,7 @@
 
   \vspace{0.9em}
   {\normalsize\textbf{\ink{Example 2:}}\par
-  \dimmed{CHEME-5660-L4a-Example-N-Aray-Lattice-Fall-2026.ipynb}}
+  \dimmed{CHEME-5660-L4a-Example-N-Ary-Lattice-Fall-2026.ipynb}}
 
   \vspace{0.8em}
   The first example estimates a binomial lattice and evaluates a strict terminal
@@ -166,26 +166,27 @@
 
 \begin{frame}{Net Present Value of a Long Position}
   Buy $n_0>0$ shares at price $S_0$ at time 0, then sell all shares at price
-  $S_T$ at time $T=N\Delta t$. For annual continuously compounded benchmark
-  growth rate $g_b$, the frictionless time-0 NPV is:
+  $S_T$ at time $T=N\Delta t$. Following L1b, let $g_y$ denote the continuously
+  compounded annual growth rate associated with the selected benchmark yield
+  $y$. The frictionless time-0 NPV is given by:
   \[
-    \underbrace{\operatorname{NPV}(g_b,T)}_{\text{time-0 dollars}}
+    \underbrace{\operatorname{NPV}(g_y,T)}_{\text{time-0 dollars}}
     =\underbrace{-n_0S_0}_{\text{entry now}}
-    +\underbrace{n_0S_Te^{-g_bT}}_{\text{discounted exit}}.
+    +\underbrace{n_0S_Te^{-g_yT}}_{\text{discounted exit}}.
   \]
 
   Divide by the initial share cost to obtain a dimensionless present-value return:
   \[
     \underbrace{\rho_T}_{\text{scaled NPV}}
-    :=\frac{\operatorname{NPV}(g_b,T)}{n_0S_0}
-    =e^{-g_bT}\frac{S_T}{S_0}-1.
+    :=\frac{\operatorname{NPV}(g_y,T)}{n_0S_0}
+    =e^{-g_yT}\frac{S_T}{S_0}-1.
   \]
 
   A positive price change alone need not clear the benchmark, spread, and costs.
 \end{frame}
 
 \begin{frame}{Short Holding Period}
-  When $|g_b|T$ is small, $e^{-g_bT}\approx1$. The scaled NPV is then
+  When $|g_y|T$ is small, $e^{-g_yT}\approx1$. The scaled NPV is then
   approximately the fractional change in share price:
   \[
     \underbrace{\rho_T}_{\text{scaled NPV}}
@@ -202,11 +203,11 @@
 \end{frame}
 
 \begin{frame}{Longer Holding Period}
-  For a longer horizon, or whenever $|g_b|T$ is not small, retain the benchmark
+  For a longer horizon, or whenever $|g_y|T$ is not small, retain the benchmark
   discount factor. At terminal node $K_N=k$:
   \[
     \underbrace{\rho_T(k)}_{\text{present-value return}}
-    =\underbrace{e^{-g_b N\Delta t}}_{\text{discount}}
+    =\underbrace{e^{-g_y N\Delta t}}_{\text{discount}}
       \underbrace{u^kd^{N-k}}_{\text{price ratio}}-1,
     \qquad k=0,\ldots,N.
   \]
@@ -217,8 +218,9 @@
   \]
 
   The benchmark changes the return attached to each node. It does not change the
-  real-world node probabilities specified by $p$. The matching one-step gross
-  benchmark return from L3b is $R_b=e^{g_b\Delta t}$.
+  real-world node probabilities specified by $p$. When the selected benchmark
+  is risk-free, its one-step accumulation factor uses the L3b notation
+  $R_f=e^{g_y\Delta t}$.
 \end{frame}
 
 \begin{frame}{Cumulative Probability of a Terminal Target}
@@ -240,48 +242,50 @@
 \begin{frame}{Solve the Return Inequality for the Up Count}
   Begin with the strict target at a node containing $k$ up moves:
   \[
-    e^{-g_b N\Delta t}u^kd^{N-k}-1>\rho_\star.
+    e^{-g_y N\Delta t}u^kd^{N-k}-1>\rho_\star.
   \]
 
   Move positive terms, take logarithms, and use $\log(u/d)>0$:
   \[
-    k\log(u/d)>\log(1+\rho_\star)+g_b N\Delta t-N\log d.
+    k\log(u/d)>\log(1+\rho_\star)+g_y N\Delta t-N\log d.
   \]
 
   Thus the real-valued threshold is:
   \[
     \underbrace{\tau(\rho_\star)}_{\text{count threshold}}
-    =\frac{\log(1+\rho_\star)+g_b N\Delta t-N\log d}{\log(u/d)}.
+    =\frac{\log(1+\rho_\star)+g_y N\Delta t-N\log d}{\log(u/d)}.
   \]
 \end{frame}
 
 \begin{frame}{Strict Targets Need the Next Integer}
-  The event is $K_N>\tau(\rho_\star)$. Because $K_N$ is integer valued, the smallest
-  successful up count is:
+  The event is $K_N>\tau(\rho_\star)$. Because $K_N$ is integer valued, the raw
+  strict cutoff is given by:
   \[
-    \underbrace{k_{\min}}_{\text{first successful count}}
+    \underbrace{\kappa}_{\text{raw strict cutoff}}
     =\lfloor\tau(\rho_\star)\rfloor+1.
   \]
 
-  With $K_N\sim\operatorname{Binomial}(N,p)$, the target probability is:
+  Encode cutoffs below and above the feasible lattice range by:
   \[
-    \boxed{\Pmeasure(\rho_T>\rho_\star)
-    =\sum_{k=\max(0,k_{\min})}^N\binom Nk p^k(1-p)^{N-k}.}
+    \underbrace{k_{\min}}_{\text{stored cutoff}}
+    =\min\!\left\{\max\!\left\{\kappa,0\right\},N+1\right\}.
   \]
 
-  A non-strict event $\rho_T\ge \rho_\star$ uses a different integer boundary when a
-  node lies exactly on the target.
+  Then $\Pmeasure(\rho_T>\rho_\star)=\Pmeasure(K_N\ge k_{\min})$. A non-strict
+  event uses a different raw cutoff when a node lies exactly on the target.
 \end{frame}
 
 \begin{frame}{Threshold Edge Cases}
-  Keep the true integer $k_{\min}$ instead of clamping it into the feasible range.
+  The stored cutoff $k_{\min}\in\{0,\ldots,N+1\}$ makes all edge cases explicit.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.65em}
-    \item If $k_{\min}\le0$, every feasible terminal node succeeds, so the
+    \item If $k_{\min}=0$, every feasible terminal node succeeds, so the
       probability is 1.
-    \item If $k_{\min}>N$, no feasible terminal node succeeds, so the probability is 0.
-    \item At fixed $N$, increasing $g_b$ raises the threshold and cannot
+    \item If $1\le k_{\min}\le N$, sum the binomial probabilities from
+      $k_{\min}$ through $N$.
+    \item If $k_{\min}=N+1$, no feasible terminal node succeeds, so the probability is 0.
+    \item At fixed $N$, increasing $g_y$ raises the threshold and cannot
       increase the tail probability.
     \item Changing the horizon changes both the threshold and the distribution
       of $K_N$. Recompute the full probability.
