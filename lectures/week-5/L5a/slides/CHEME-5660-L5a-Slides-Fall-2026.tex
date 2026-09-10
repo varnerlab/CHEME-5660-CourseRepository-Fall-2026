@@ -404,9 +404,9 @@
 
 \begin{frame}{Sampling Is Not Optimization}
   A Dirichlet draw is a \hilite{candidate} weight vector; it becomes good or bad
-  only when an objective is evaluated for it. The simplest: to first order the
-  one-step growth rate of a portfolio held at weights $\bw$ is $g_p=\bw^{\top}\bg$
-  (a one-period, fixed-weight statistic), whose estimated variance is:
+  only when an objective is evaluated for it. We use $g_p=\bw^{\top}\bg$ as a
+  deliberate linear one-period proxy, first order in the realized asset log
+  returns rather than an exact portfolio log-growth rate. Its estimated variance is:
   \[
     \underbrace{\bw^{\top}\Sg\bw}_{\text{portfolio growth-rate variance}}\ge0.
   \]
@@ -450,8 +450,8 @@
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Correlated assets need a shared shock and a matrix square
-      root}: one shock vector per step, mixed by $\bA$ with $\bA\bA^{\top}=\bC$.
+    \item \hilite{Correlated assets need a shared shock and a covariance
+      factor}: one shock vector per step, mixed by $\bA$ with $\bA\bA^{\top}=\bC$.
     \item \hilite{Covariance is estimated from centered growth rates and scaled
       by the time step}: symmetric and positive semidefinite by construction,
       $\Ch=\Delta t\,\Sg$; singularity and sampling error must be checked.

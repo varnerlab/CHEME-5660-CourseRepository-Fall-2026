@@ -1,12 +1,11 @@
-# setup paths -
-const _ROOT = pwd();
+# Set paths relative to this file so inclusion does not depend on the process directory -
+const _ROOT = @__DIR__;
 const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
-# setup the course environment: walk up to the nearest Project.toml
-# (repo root in a clone; bundle root in an unzipped weekly download) -
-import Pkg
+# Activate the nearest course environment (repository root or weekly bundle root) -
+import Pkg # package-environment activation
 let d = @__DIR__
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
@@ -14,24 +13,24 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-# load external packages -
-using VLQuantitativeFinancePackage
-using DataFrames
-using CSV
-using Dates
-using LinearAlgebra
-using Statistics
-using Random
-using StatsBase
-using Plots
-using Colors
-using StatsPlots
-using JLD2
-using FileIO
-using Distributions
-using PrettyTables
-using HypothesisTests
-using MathOptInterface
+# Load external packages -
+using VLQuantitativeFinancePackage # course data, models, and portfolio solvers
+using DataFrames                   # labeled tabular data
+using CSV                          # comma-separated parameter tables
+using Dates                        # calendar dates
+using LinearAlgebra                # matrix factorizations and quadratic forms
+using Statistics                   # sample moments and correlations
+using Random                       # reproducible random samples
+using StatsBase                    # statistical utilities
+using Plots                        # plotting
+using Colors                       # color definitions
+using StatsPlots                   # statistical plot recipes
+using JLD2                         # Julia data files
+using FileIO                       # file-format dispatch
+using Distributions                # probability distributions
+using PrettyTables                 # formatted tables
+using HypothesisTests              # statistical tests
+using MathOptInterface             # solver termination statuses
 
-# include some local codes -
+# Include local helper code -
 include(joinpath(_PATH_TO_SRC, "Compute.jl"));

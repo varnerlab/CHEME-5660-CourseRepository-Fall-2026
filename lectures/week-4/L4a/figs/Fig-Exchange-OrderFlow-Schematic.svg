@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760">
+  <defs>
+    <marker id="arrow-coral" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L13,6.5 L0,13 Z" fill="#F04A40"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L13,6.5 L0,13 Z" fill="#0878B8"/>
+    </marker>
+  </defs>
+
+  <!-- Market participants submit orders to the exchange. -->
+  <text x="175" y="92" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#F04A40">BUYERS</text>
+  <text x="175" y="142" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" fill="#4E555D">submit buy orders</text>
+  <line x1="340" y1="112" x2="540" y2="112" stroke="#F04A40" stroke-width="7" marker-end="url(#arrow-coral)"/>
+
+  <rect x="570" y="30" width="460" height="166" rx="18" fill="#F7F8FA" stroke="#AEB6BF" stroke-width="3"/>
+  <text x="800" y="100" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="48" font-weight="700" fill="#2F343A">EXCHANGE</text>
+  <text x="800" y="151" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" fill="#4E555D">ranks and matches orders</text>
+
+  <line x1="1260" y1="112" x2="1060" y2="112" stroke="#0878B8" stroke-width="7" marker-end="url(#arrow-blue)"/>
+  <text x="1425" y="92" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#0878B8">SELLERS</text>
+  <text x="1425" y="142" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" fill="#4E555D">submit sell orders</text>
+
+  <!-- Only the top of book is needed for the execution example. -->
+  <text x="800" y="275" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#2F343A">TOP OF BOOK</text>
+  <line x1="330" y1="300" x2="1270" y2="300" stroke="#BFC5CB" stroke-width="2"/>
+
+  <text x="535" y="360" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#D93F36">BEST BID</text>
+  <text x="535" y="426" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="54" font-weight="700" fill="#2F343A">b<tspan baseline-shift="sub" font-size="32">t</tspan> = $100.95</text>
+  <text x="535" y="475" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="32" fill="#4E555D">highest current buy price</text>
+
+  <line x1="748" y1="409" x2="852" y2="409" stroke="#7B838C" stroke-width="3"/>
+  <line x1="748" y1="397" x2="748" y2="421" stroke="#7B838C" stroke-width="3"/>
+  <line x1="852" y1="397" x2="852" y2="421" stroke="#7B838C" stroke-width="3"/>
+  <text x="800" y="458" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#4E555D">spread</text>
+  <text x="800" y="493" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="29" fill="#4E555D">$0.10</text>
+
+  <text x="1065" y="360" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#086DA8">BEST ASK</text>
+  <text x="1065" y="426" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="54" font-weight="700" fill="#2F343A">a<tspan baseline-shift="sub" font-size="32">t</tspan> = $101.05</text>
+  <text x="1065" y="475" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="32" fill="#4E555D">lowest current sell price</text>
+
+  <!-- Market orders execute against the opposite side of the book. -->
+  <line x1="330" y1="548" x2="715" y2="548" stroke="#F04A40" stroke-width="4"/>
+  <text x="522" y="600" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#2F343A">Market sell executes at the bid.</text>
+
+  <line x1="885" y1="548" x2="1270" y2="548" stroke="#0878B8" stroke-width="4"/>
+  <text x="1078" y="600" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#2F343A">Market buy executes at the ask.</text>
+
+  <text x="800" y="690" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" fill="#69717A">Assume enough size is available at each displayed quote; fees and slippage are omitted.</text>
+</svg>

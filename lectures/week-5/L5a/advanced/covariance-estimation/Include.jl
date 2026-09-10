@@ -1,5 +1,5 @@
-# Activate the course project and load the packages used by this optional module.
-import Pkg
+# Activate the nearest course project and load this example's packages -
+import Pkg # package-environment activation
 let d = @__DIR__
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
@@ -7,11 +7,11 @@ let d = @__DIR__
     Pkg.activate(d); Pkg.instantiate();
 end
 
-using VLQuantitativeFinancePackage
-using DataFrames
-using Distributions
-using LinearAlgebra
-using Statistics
-using Random
-using Plots
-using PrettyTables
+using VLQuantitativeFinancePackage # course dataset and growth-rate matrix
+using DataFrames                   # labeled tabular results
+using Distributions                # multivariate-normal simulation
+using LinearAlgebra                # eigenvalues and linear solves
+using Statistics                   # sample moments
+using Random                       # reproducible simulation
+using Plots                        # plotting
+using PrettyTables                 # formatted tables

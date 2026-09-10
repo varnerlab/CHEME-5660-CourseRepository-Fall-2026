@@ -1,7 +1,7 @@
 # L6b optional advanced material
 
 This standalone notebook extends the L6b treatment of single index model
-portfolio allocation. It is optional and is not a prerequisite for L7b.
+portfolio allocation. It is optional and is not a prerequisite for Week 7.
 
 - [`uncertainty/CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb`](uncertainty/CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb)
   bootstraps the SIM parameters of a six-firm universe two ways (empirical
@@ -11,6 +11,7 @@ portfolio allocation. It is optional and is not a prerequisite for L7b.
   minimum-variance portfolio's growth-rate standard deviation, its allocation
   distance from the scenario-optimal weights, and its variance regret.
 
-It is the executable counterpart of the propagation section of the L6a advanced
-theory notebook (`../../L6a/advanced/sim/`); the L6b examples supply the
-constrained allocation problems it deliberately leaves aside.
+It is the executable counterpart of the propagation section of the
+[L6a advanced theory notebook](../../L6a/advanced/sim/CHEME-5660-L6a-Advanced-SIM-Theory-Fall-2026.ipynb).
+The L6b examples supply the constrained allocation problems it deliberately
+leaves aside.

@@ -12,6 +12,5 @@ optional and is not a prerequisite for L6b.
   uncertainty into portfolio risk and weights, and writes the long-only
   maximum-Sharpe allocation as a second-order cone program.
 
-The notebook is theory only (no code); the executable counterparts are the two
-L6a examples and the L6b optional advanced propagation notebook
-(`../../L6b/advanced/uncertainty/`).
+The notebook is theory only (no code). The executable counterparts are the two
+L6a examples and the [L6b optional advanced propagation notebook](../../L6b/advanced/uncertainty/CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb).

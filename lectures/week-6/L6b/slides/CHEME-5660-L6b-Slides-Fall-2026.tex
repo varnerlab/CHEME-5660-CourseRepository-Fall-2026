@@ -343,19 +343,18 @@
 \end{frame}
 
 \begin{frame}{Separation, and What Breaks It}
-  $\Tan$'s CAL dominates every other, so all mean-variance investors sharing
-  estimates, $g_f$, horizon, and opportunity set hold one risky fund and differ only in $w_f$
-  (Tobin, L5b): exact with one rate and no constraints; survives the long-only
-  constraint on the risky weights. What breaks it:
+  With one financing rate and no risk-free-leg or dollar constraints, investors
+  sharing the inputs hold one tangent fund and vary only $w_f$ (Tobin, L5b).
+  Long-only bounds on the risky proportions preserve this result. What breaks it:
   \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{No borrowing} ($w_f\ge0$): truncates the straight CAL segment
-      at $\Tan$; above it the efficient boundary generally returns to the risky
-      frontier, so separation holds only piecewise. Not imposed by the package.
-    \item \hilite{Position bounds} ($w_i\le1$, or a concentration limit
-      $w_i\le u$): kink the ray where they bind. Imposed in practice because
-      unconstrained maximum-Sharpe portfolios put extreme weights on a few assets
-      when the means are imprecise; a lower in-sample Sharpe, maybe more robust.
-    \item \hilite{Borrowing rate above the lending rate}: kinks the line at $\Tan$.
+    \item \hilite{No borrowing} ($w_f\ge0$): truncates the CAL at $\Tan$; above
+      it the efficient boundary generally follows the risky frontier. The package
+      does not impose this restriction.
+    \item \hilite{Position bounds} ($w_i\le u$): kink the ray where they bind and
+      curb extreme, mean-sensitive weights; robustness must be tested.
+    \item \hilite{Higher borrowing rate}: a fixed fund gets a flatter ray at
+      $\Tan$; reoptimization generally yields another borrowing tangent, with a
+      risky-frontier segment between the two.
   \end{itemize}
   \slidenote{Example 2:}{\dimmed{CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}}
 \end{frame}
@@ -430,7 +429,8 @@
     \item \hilite{One risky answer for every risk-free fraction}: a free $w_f$
       makes the constraint one on excess growth, every target scales one
       direction by $1-w_f$, and the fully invested point is the tangent portfolio;
-      bounds, no borrowing, or a higher borrowing rate kink or truncate the ray.
+      bounds or no borrowing kink or truncate the ray, while a higher borrowing
+      rate generally introduces a second tangent risky fund.
     \item \hilite{Regret in sample, frozen weights out of sample}: SIM weights
       under the data covariance can only lose, and by little here; one test year
       checks weights without ranking input sets.

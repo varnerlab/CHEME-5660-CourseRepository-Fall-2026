@@ -11,7 +11,8 @@ the covariance matrix. They are optional and are not prerequisites for L5b.
 - [`rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb`](rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb)
   estimates correlations on rolling windows and with exponential weighting
   through 2014 to 2024, for a few firm pairs and for the whole universe, and
-  shows that correlations cluster with market volatility.
+  examines whether correlations rise during high-volatility windows in this
+  sample.
 
 The estimation notebook is about how much to trust one covariance matrix; the
 correlation notebook is about how it moves in time. They can be completed

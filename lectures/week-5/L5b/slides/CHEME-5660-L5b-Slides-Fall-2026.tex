@@ -112,7 +112,8 @@
       $\rho_{ij}=\hat\Sigma_{g,ij}/\sqrt{\hat\Sigma_{g,ii}\hat\Sigma_{g,jj}}$.
     \item \hilite{Positive semidefinite by construction}:
       $\mathbf v^{\top}\Sg\mathbf v=\lVert\tilde{\mathbf G}\mathbf v\rVert_2^2/(N-1)\ge0$,
-      so today's minimization is convex; $N\gg M$ makes it positive definite.
+      so today's minimization is convex. A large $N/M$ ratio helps; positive
+      definiteness also requires no exact column dependence.
   \end{itemize}
   \slidenote{Catch-up:}{\dimmed{../L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb} (Task 2, if not reached in L5a)}
 \end{frame}
@@ -140,8 +141,8 @@
   Markowitz (1952): an asset is not judged in isolation; what matters is how its
   growth rate moves with the rest of the portfolio. Take $M$ risky assets held
   at weights $\bw$ ($\sum_iw_i=1$) over one period, with growth rates $\bg$,
-  mean $\bar{\bg}=\E[\bg]$, and covariance $\Sig=\Cov(\bg)$. The portfolio
-  growth rate over the period is the weighted growth rate, so its reward is:
+  mean $\bar{\bg}=\E[\bg]$, and covariance $\Sig=\Cov(\bg)$. The model uses
+  the weighted growth rate as a linear portfolio-growth proxy, so its reward is:
   \[
     g_p=\bw^{\top}\bg
     \quad\Longrightarrow\quad
@@ -150,30 +151,30 @@
   estimated from data by $\bw^{\top}\bg'$; units inverse years.
 
   \vspace{0.4em}
-  Reward is linear in the weights. Risk is not, and that asymmetry is the whole
-  subject.
+  Reward is linear in the weights, whereas risk is quadratic. That asymmetry
+  drives the optimization.
 \end{frame}
 
 \begin{frame}{What the Objective Is and Is Not}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item One period at weights $\bw$: exact simple return
-      $R_p=\sum_iw_i(e^{g_i\Delta t}-1)$, exact log growth rate
-      $\Delta t^{-1}\ln\bigl(\sum_iw_ie^{g_i\Delta t}\bigr)$; to first order in
-      $\Delta t$ both give $\bw^{\top}\bg$. So $g_p=\bw^{\top}\bg$ is the
-      \hilite{linearized} one-period growth rate.
-    \item Over many periods, the log growth of buy-and-hold wealth $W_t$ is
-      \hilite{not} the weighted sum of the assets' log growth rates: the weights
-      drift, and the logarithm of a sum is not the sum of logarithms (L5a).
-    \item MPT is a statement about this one-period statistic. The frontier, the
-      tangent portfolio, and the capital allocation line all inherit that scope.
-    \item Example 1 therefore evaluates the optimized weights afterwards with the
-      buy-and-hold wealth rule: an exact, and different, calculation.
+  \small
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item At initial weights $\bw$, the exact simple return is
+      $R_p=\sum_iw_i(e^{g_i\Delta t}-1)$ and the exact log growth rate is
+      $\Delta t^{-1}\ln\bigl(\sum_iw_ie^{g_i\Delta t}\bigr)$.
+    \item The model instead uses $g_p=\bw^{\top}\bg$ as a deliberate
+      \hilite{linear proxy}. It is first order in the realized log returns
+      $r_i=g_i\Delta t$, not in $\Delta t$. Under GBM, annualizing leaves the
+      finite expected correction
+      $\tfrac12\bigl(\sum_iw_iC_{ii}-\bw^{\top}\mathbf C\bw\bigr)$.
+    \item Over many periods, buy-and-hold weights drift. The frontier, tangent
+      portfolio, and capital allocation line optimize the proxy; Example 1
+      evaluates their weights separately with the exact buy-and-hold wealth rule.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Modern Portfolio Theory: Portfolio Risk}
-  The risk of the portfolio is the variance of its growth rate, which collects
-  every asset variance and every pairwise covariance:
+  The model's risk is the variance of the linear growth-rate proxy, which
+  collects every asset variance and every pairwise covariance:
   \[
     \boxed{\Var(g_p)=\sum_{i\in\mathcal P}\sum_{j\in\mathcal P}w_iw_j
       \underbrace{\Cov(g_i,g_j)}_{=\,\rho_{ij}\sqrt{\Sigma_{g,ii}\Sigma_{g,jj}}}
@@ -308,9 +309,9 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{The Frontier from Data: What the Floor Returns}
+\begin{frame}{How the Target Floor Traces the Frontier}
   \begin{center}
-    \includegraphics[height=0.46\textheight,keepaspectratio]{../figs/Fig-MinVar-Portfolio-RA-Schematic.png}
+    \includegraphics[height=0.44\textheight,keepaspectratio]{../figs/Fig-MinVar-Portfolio-RA-Schematic.png}
   \end{center}
   \vspace{-0.4em}
   With the target as a floor, every $g_\star$ below the GMV growth rate returns

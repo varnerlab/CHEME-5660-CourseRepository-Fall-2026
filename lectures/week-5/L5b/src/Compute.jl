@@ -1,30 +1,31 @@
 
 """
-    ⊗(a::Array{Float64,1},b::Array{Float64,1}) -> Array{Float64,2}
+    ⊗(a::AbstractVector{<:Real}, b::AbstractVector{<:Real}) -> Matrix
 
-Compute the outer product of two vectors `a` and `b` and returns a matrix.
+Return the outer product of the real-valued vectors `a` and `b`.
 
 ### Arguments
-- `a::Array{Float64,1}`: a vector of length `m`.
-- `b::Array{Float64,1}`: a vector of length `n`.
+- `a::AbstractVector{<:Real}`: a vector of length `m`.
+- `b::AbstractVector{<:Real}`: a vector of length `n`.
 
 ### Returns
-- `Y::Array{Float64,2}`: a matrix of size `m x n` such that `Y[i,j] = a[i]*b[j]`.
+- `Y::Matrix`: an `m × n` matrix with `Y[i,j] = a[i]*b[j]`.
 """
-function ⊗(a::Array{Float64,1},b::Array{Float64,1})::Array{Float64,2}
+function ⊗(a::AbstractVector{<:Real}, b::AbstractVector{<:Real})::Matrix
 
-    # initialize -
-    m = length(a)
-    n = length(b)
-    Y = zeros(m,n)
+    # Initialize -
+    m = length(a); # number of rows
+    n = length(b); # number of columns
+    T = promote_type(eltype(a), eltype(b)); # element type that can hold both inputs
+    Y = Matrix{T}(undef, m, n);
 
-    # main loop
+    # Populate the outer product -
     for i ∈ 1:m
         for j ∈ 1:n
-            Y[i,j] = a[i]*b[j]
+            Y[i,j] = a[i]*b[j];
         end
     end
 
-    # return
+    # Return the matrix -
     return Y
 end

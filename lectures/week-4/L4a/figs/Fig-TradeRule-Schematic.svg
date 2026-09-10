@@ -2276,7 +2276,7 @@
            style="font-variant:normal;font-weight:normal;font-size:32px;font-family:'Helvetica Neue';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            x="0"
            dx="0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.57599998"
-           y="0">What is the probability that we </tspan></text>
+           y="0">Model probability of moving </tspan></text>
       <text
          id="text314"
          xml:space="preserve"
@@ -2285,7 +2285,7 @@
            id="tspan314"
            style="font-variant:normal;font-weight:normal;font-size:32px;font-family:'Helvetica Neue';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            x="0"
-           y="0">get to </tspan></text>
+           y="0">to </tspan></text>
       <text
          id="text315"
          xml:space="preserve"
@@ -2303,7 +2303,7 @@
            id="tspan316"
            style="font-variant:normal;font-weight:normal;font-size:32px;font-family:'Helvetica Neue';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            x="0"
-           y="0">at time t + dt?</tspan></text>
+           y="0">after 45 days</tspan></text>
     </g>
     <g
        id="g316">
@@ -2327,7 +2327,7 @@
            style="font-variant:normal;font-weight:normal;font-size:32px;font-family:'Helvetica Neue';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            x="0"
            dx="0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.57599998"
-           y="0">What is the probability that we get </tspan></text>
+           y="0">Model probability of moving </tspan></text>
       <text
          id="text320"
          xml:space="preserve"
@@ -2354,7 +2354,7 @@
            id="tspan322"
            style="font-variant:normal;font-weight:normal;font-size:32px;font-family:'Helvetica Neue';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            x="0"
-           y="0">at time t + dt?</tspan></text>
+           y="0">after 45 days</tspan></text>
     </g>
     <g
        id="g322">

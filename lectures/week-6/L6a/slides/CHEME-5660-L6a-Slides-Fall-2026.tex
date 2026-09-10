@@ -140,9 +140,9 @@
       $g_{i,t}-g_f\approx\beta_i(g_{M,t}-g_f)+\varepsilon_{i,t}$: an
       approximation, and a time-series regression keeps an intercept whose CAPM
       value would be zero. We borrow the one-factor structure, not the test.
-    \item \hilite{Fama--French}: market plus a size factor (SMB) and a value
-      factor (HML), written in returns; explains more of diversified portfolios
-      at the cost of more parameters.
+    \item \hilite{Fama--French}: excess market simple return $R_M-R_f$ plus a
+      size factor (SMB) and a value factor (HML); targets common variation the
+      market factor omits, at the cost of more parameters.
     \item \hilite{Single index model}: the market factor alone. Today's model.
   \end{itemize}
 \end{frame}
@@ -155,8 +155,9 @@
   \[
     \boxed{g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}}
   \]
-  $\alpha_i$: expected growth when the market's is zero; $\varepsilon_{i,t}$:
-  the \hilite{idiosyncratic} part of the day. Population assumptions:
+  $\alpha_i$: projection at $g_M=0$; $\varepsilon_{i,t}$: the
+  \hilite{idiosyncratic} remainder. A conditional-mean reading additionally
+  needs $\E[\varepsilon_{i,t}\mid g_{M,t}]=0$. Population assumptions:
   \[
     \E[\varepsilon_{i,t}]=0,\qquad
     \Cov(\varepsilon_{i,t},g_{M,t})=0,\qquad
@@ -165,14 +166,13 @@
 
   \vspace{0.2em}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item The first two define $\alpha_i,\beta_i$ as the least-squares
-      projection of $g_i$ on $g_M$: free.
+    \item If $\Var(g_M)>0$, the first two are projection identities for
+      $\alpha_i$ and $\beta_i$.
     \item The third is an \hilite{extra restriction}: the market is the only
       source of co-movement. Separate fits do not make it true; L6b's covariance
       rests on it; Example 1 checks it.
-    \item Return form $r=\Delta t\,g$: same $\beta_i$,
-      $\alpha_{r,i}=\Delta t\,\alpha_i$, $\varepsilon_{r,i,t}=\Delta t\,\varepsilon_{i,t}$.
-      We stay in growth-rate units.
+    \item Return form $r=\Delta t\,g$: same $\beta_i$; $\alpha_{r,i}$ and
+      $\varepsilon_{r,i,t}$ are each $\Delta t$ times their growth-rate forms.
   \end{itemize}
 \end{frame}
 
@@ -190,9 +190,9 @@
 
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Beta is the slope of the projection: a market move of one unit comes
-      with an \emph{expected} asset move of $\beta_i$ units; the intercept and
-      the residual are there on every day.
+    \item Beta is the slope of the projection: a one-unit market move changes
+      linearly projected asset growth by $\beta_i$ units; the intercept and the
+      residual are there on every day.
     \item \hilite{Dial}: $\beta_i=1$ one for one; $>1$ amplifies; $0<\beta_i<1$
       dampens; $<0$ moves against the market. In our dataset betas run from near
       zero to a little above two, median close to one.
@@ -214,8 +214,9 @@
       away by adding assets that share it; idiosyncratic risk is the asset's own.
     \item The two need not be comparable: a stock can have $\beta>1$ and be
       dominated by its residual; an index fund $\beta\approx1$ and almost none.
-      So \hilite{``beta above one'' means ``amplifies market moves''}, not
-      ``more volatile than the market''.
+      Thus beta is exposure, not total risk: here $\beta_i>1$ implies greater
+      total variance, but $0<\beta_i<1$ need not imply less because residual
+      variance may dominate.
     \item The fraction the market explains is
       $\beta_i^2\sigma^2_{g,M}/\Var(g_i)=\rho_{iM}^2$: what the fitted $R^2$
       estimates (for a non-constant asset growth rate).
@@ -259,7 +260,7 @@
   across our dataset:
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item most pairs close to zero (median absolute correlation below $0.1$),
-    \item related firms a few tenths (banks with banks up to about one half),
+    \item related firms a few tenths (banks in the portfolio example reach about $0.7$),
     \item near-duplicate securities almost perfectly correlated.
   \end{itemize}
 
@@ -288,7 +289,7 @@
     \item Two conditions carry it: spread-out fixed weights, and
       \hilite{uncorrelated residuals} (with a general residual covariance
       $\boldsymbol\Omega_\varepsilon$ the term is
-      $\bw^{\top}\boldsymbol\Omega_\varepsilon\bw$ and does not vanish).
+      $\bw^{\top}\boldsymbol\Omega_\varepsilon\bw$ and need not vanish).
   \end{itemize}
 \end{frame}
 
@@ -348,8 +349,8 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item Daily growth rates: heavy tails, clustered absolute values, and (from
       volume-weighted average prices) positive lag-one autocorrelation: the
-      classical intervals are optimistic; a Newey--West standard error for beta
-      is $40$ to $100\%$ larger.
+      classical beta interval is too narrow for these data; a Newey--West
+      standard error is $40$ to $100\%$ larger.
     \item \hilite{Bootstrap}: $\by^{(b)}=\bX\hat{\bth}_i+\beps^{(b)}$, refit,
       read the spread; parametric (Gaussian) or empirical-residual (keeps the
       tails); both draw days independently. When dependence matters: HAC errors

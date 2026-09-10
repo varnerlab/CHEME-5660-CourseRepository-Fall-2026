@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="704px" height="502px" viewBox="0 0 704 502" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Artboard</title>
+    <title>Minimum-variance portfolio frontier</title>
     <g id="Artboard" stroke="none" fill="none">
+        <rect width="704" height="502" fill="#FFFFFF"></rect>
         <rect id="Rectangle" fill="#FFFAF0" fill-rule="evenodd" x="108" y="0" width="596" height="445"></rect>
         <line x1="437" y1="26" x2="439.5" y2="445.5" id="Line-3" stroke="#FF0000" stroke-width="2" stroke-linecap="square" stroke-dasharray="0,5"></line>
         <path id="Line" d="M106.5,2.44040671 L107.807363,4.76460814 L116.807363,20.7646081 L117.542755,22.0719714 L114.928029,23.5427552 L114.192637,22.2353919 L108,11.226 L108,477 L105,477 L105,11.226 L98.8073633,22.2353919 L98.0719714,23.5427552 L95.4572448,22.0719714 L96.1926367,20.7646081 L105.192637,4.76460814 L106.5,2.44040671 Z" fill="#000000" fill-rule="nonzero"></path>

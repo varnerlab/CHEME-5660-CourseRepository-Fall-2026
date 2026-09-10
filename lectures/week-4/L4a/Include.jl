@@ -1,5 +1,5 @@
 # setup paths -
-const _ROOT = pwd();
+const _ROOT = @__DIR__; # keep local paths stable when the notebook is launched from another directory
 const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");

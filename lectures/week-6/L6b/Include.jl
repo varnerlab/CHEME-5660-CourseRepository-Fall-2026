@@ -1,40 +1,23 @@
-# setup paths -
-const _ROOT = pwd();
-const _PATH_TO_SRC = joinpath(_ROOT, "src");
+# Set up paths relative to this file so notebook launches do not depend on pwd() -
+const _ROOT = @__DIR__;
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 
-# setup the course environment: walk up to the nearest Project.toml
-# (repo root in a clone; bundle root in an unzipped weekly download) -
+# Activate the nearest course environment (repo root or unzipped bundle root) -
 import Pkg
 let d = @__DIR__
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
     end
-    Pkg.activate(d); Pkg.instantiate();
+    Pkg.activate(d; io = devnull);
+    Pkg.instantiate(; io = devnull);
 end
 
-# load external packages -
-using VLQuantitativeFinancePackage
-using DataFrames
-using CSV
-using Dates
-using LinearAlgebra
-using Statistics
-using Plots
-using Colors
-using StatsPlots
-using JLD2
-using FileIO
-using Distributions
-using Distances
-using MathOptInterface
-using DataStructures
-using PrettyTables
-using StatsBase
-using KernelFunctions
-using HypothesisTests
-using Random
-
-# load my codes -
-# include(joinpath(_PATH_TO_SRC, "Files.jl"));
-# include(joinpath(_PATH_TO_SRC, "Compute.jl"));
+# Load the packages used by the L6b examples -
+using VLQuantitativeFinancePackage # market data and portfolio models
+using DataFrames                   # labeled tabular results
+using LinearAlgebra                # covariance and quadratic-form operations
+using Statistics                   # sample moments
+using Plots                        # frontier and wealth plots
+using JLD2                         # SIM parameter-archive loading
+using MathOptInterface             # solver status codes
+using PrettyTables                 # compact text tables

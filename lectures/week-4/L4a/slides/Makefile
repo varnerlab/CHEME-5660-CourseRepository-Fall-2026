@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-Exchage-Schematic.pdf \
+FIGURES := ../figs/Fig-Exchange-OrderFlow-Schematic.pdf \
 	../figs/Fig-Lattice-Schematic.pdf \
 	../figs/Fig-TradeRule-Schematic.pdf
 
