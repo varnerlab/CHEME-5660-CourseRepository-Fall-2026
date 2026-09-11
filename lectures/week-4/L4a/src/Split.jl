@@ -125,20 +125,34 @@ end
 
 # --- Pretty printer (optional) -----------------------------------------------
 
+"""
+    print_lattice(summary; digits=6)
+
+Display estimated branch parameters as a DataFrame using the course's compact
+PrettyTables format. Round displayed values to `digits` decimal places without
+changing the estimates. The final growth interval includes its upper boundary.
+Returns `nothing`.
+"""
 function print_lattice(summary; digits=6)
-    edges, avgf, freq, cnts, labs = summary.edges, summary.avg_factor,
-                                    summary.freq, summary.counts, summary.labels
-    n = length(labs)
-    println("n-ary lattice (method=$(summary.method), Δt=$(summary.dt), N=$(summary.N))")
-    println(rpad("State",6), rpad("g-bin [low, high)",32), rpad("avg factor",14), rpad("freq",10), "count")
-    for k in 1:n
-        low, high = edges[k], edges[k+1]
-        hi_br = (k == n) ? "]" : ")"
-        binstr = "[$(round(low, digits=digits)) , $(round(high, digits=digits))$hi_br"
-        println(rpad(labs[k],6),
-                rpad(binstr,32),
-                rpad(string(round(avgf[k], digits=digits)),14),
-                rpad(string(round(freq[k], digits=digits)),10),
-                cnts[k])
-    end
+    # Preserve the interval convention: left-closed, with the final upper edge included.
+    m = length(summary.labels)
+    intervals = [
+        "[$(round(summary.edges[j]; digits=digits)), $(round(summary.edges[j+1]; digits=digits))" *
+        (j == m ? "]" : ")") for j in 1:m
+    ]
+
+    # Keep each branch's factor, probability, and observation count together.
+    table = DataFrame(
+        branch = summary.labels,
+        growth_interval = intervals,
+        factor = summary.avg_factor,
+        probability = summary.freq,
+        observations = summary.counts,
+    )
+
+    println("N-ary lattice (method=$(summary.method), Δt=$(summary.dt), observations=$(summary.N))")
+    pretty_table(table;
+        formatters = [fmt__printf("%.$(digits)f", [3, 4])],
+        table_format = TextTableFormat(borders=text_table_borders__compact))
+    return nothing
 end

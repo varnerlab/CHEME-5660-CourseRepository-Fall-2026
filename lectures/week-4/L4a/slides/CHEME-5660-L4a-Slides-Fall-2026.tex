@@ -8,7 +8,7 @@
 
 \newcommand{\Pmeasure}{\mathbb{P}}
 
-\title{\texorpdfstring{{\vnheavy L4a}}{L4a}: Lattice Trading Rules and Probability of Profit}
+\title{\texorpdfstring{{\vnheavy L4a}}{L4a}: Lattice Trading Rules and Terminal Probabilities}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -35,39 +35,39 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today we turn a lattice forecast into a precisely defined terminal trading
-  event, compute its probability, and extend the lattice beyond two branches.
+Today we use net present value to evaluate a long stock position, then
+  calculate the probability of exceeding a target at a scheduled sale time.
 
   \vspace{0.8em}
   {\large\textbf{\ink{Today's concepts}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Specify a terminal rule}: identify the dated cash flows,
-      holding period, benchmark growth rate, costs, and target.
-    \item \hilite{Derive a target probability}: convert a strict return target
-      into a minimum up-move count and evaluate a binomial tail.
-    \item \hilite{Generalize the state space}: distinguish terminal and
-      first-passage exits, then represent an N-ary lattice with branch counts.
+    \item \hilite{Evaluate a stock trade using NPV}: derive the scaled NPV
+      and explain the effects of sale price, holding period, and benchmark.
+    \item \hilite{Compute terminal target probabilities}: find the minimum
+      up-move count needed to exceed a target and add the binomial probabilities.
+    \item \hilite{Extend the lattice to $m$ possible outcomes per step}:
+      use branch counts to calculate node prices, probabilities, and state counts.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Lectures and Examples}
-  \textbf{\ink{Lecture:}}
+\textbf{\ink{Lecture:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Lecture-LatticeModel-TradeRule-Fall-2026.ipynb}{Lattice Trading Rules and Terminal Probabilities}
 
   \vspace{1.1em}
   \textbf{\ink{Example:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Example-CumulativeProbabilityLattice-Fall-2026.ipynb}{Binomial Lattice Terminal-Target Probabilities}
 
-  Estimate a binomial lattice from historical prices, convert a strict return
-  target into an up-move cutoff, and evaluate the binomial tail.
+  What is the probability of exceeding a target scaled NPV? We estimate the
+  lattice parameters from historical data and compare probabilities across targets.
 
   \vspace{1.1em}
   \textbf{\ink{Example:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Example-N-Ary-Lattice-Fall-2026.ipynb}{N-Ary Recombining Lattice Models}
 
-  Discretize empirical growth into three branches, construct the recombining
-  states, and plot probability mass at a selected lattice level.
+  What changes when we allow more price movements per step? We estimate branch
+  factors and probabilities, build the lattice, and examine its terminal outcomes.
 \end{frame}
 
 \begin{frame}{Concept Review: What Trades, Where, and How}
@@ -147,65 +147,65 @@
 \end{frame}
 
 \begin{frame}{The Binomial Lattice Model}
-  Let $S_0>0$ be today's share price. At each step, multiply the price by a
-  constant up factor $u>0$ with probability $p$, or a constant down factor
-  $d>0$ with probability $1-p$, where $u>d$.
+Let $S_0>0$ be today's share price. At each step, we flip a coin: the price
+  changes by a factor $u$ with probability $p$, or $d$ with probability $1-p$,
+  where $u>d>0$ and $0<p<1$.
 
   \vspace{0.5em}
-  After $t$ steps, let $K_t$ count the up moves. Then the node indexed by
-  $K_t=k$ has price and real-world probability:
+  We assume \hilite{independent flips} and hold $(u,d,p)$ fixed. If $K_t$
+  counts the up moves after $t$ steps, then $K_t\sim\operatorname{Binomial}(t,p)$:
   \[
     \underbrace{S_{t,k}=S_0u^kd^{t-k}}_{\text{node price}},
     \qquad
     \underbrace{\Pmeasure(K_t=k)=\binom tk p^k(1-p)^{t-k}}_{\text{node probability}}.
   \]
 
-  The model is transparent, but fixed $u$, $d$, and $p$ do not reproduce heavy
-  tails or volatility clustering.
+  Each level contains $t+1$ price states. Independent moves with fixed
+  parameters do not capture volatility clustering.
 \end{frame}
 
-\begin{frame}{A Forecast Is Not Yet a Trading Rule}
-  A price model describes possible states and their probabilities. A trading
-  rule must add the decisions that define the event of interest.
+\begin{frame}{The Trade We Will Evaluate}
+Suppose we buy shares now and sell them after a chosen holding period.
+  Our lattice supplies the possible sale prices and their probabilities.
 
   \vspace{0.7em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item When do we enter, and how many shares do we buy?
-    \item Is the exit scheduled at a terminal date or monitored before it?
-    \item Which entry and exit prices represent executable prices?
-    \item What benchmark return and costs must the trade clear?
-    \item Is success defined by a strict or non-strict target?
+    \item Buy $n_0>0$ shares at price $S_0$ at time zero.
+    \item Hold for $N$ steps of duration $\Delta t$ years; sell at $T=N\Delta t$.
+    \item Discount the sale proceeds using the annual risk-free benchmark $g_y$.
+    \item Compare the discounted return with a chosen target $\rho_\star$.
   \end{itemize}
 
   \vspace{0.5em}
-  Without these choices, ``probability of profit'' is not well defined.
+  We assume no dividends, transaction fees, or bid--ask spread. The optional
+  execution-aware example adds trading costs.
 \end{frame}
 
-\begin{frame}{A Scheduled Entry and Exit}
+\begin{frame}{Sale Price and Discounted NPV}
   \begin{center}
     \includegraphics[height=0.76\textheight,keepaspectratio]{../figs/Fig-TradeRule-Schematic.pdf}
   \end{center}
 \end{frame}
 
 \begin{frame}{Net Present Value of a Long Position}
-  Buy $n_0>0$ shares at price $S_0$ at time 0, then sell all shares at price
-  $S_T$ at time $T=N\Delta t$. Following L1b, let $g_y$ denote the continuously
-  compounded annual growth rate associated with the selected benchmark yield
-  $y$. The frictionless time-0 NPV is given by:
+Buying $n_0$ shares costs $n_0S_0$ today. Selling at time $T$ returns $n_0S_T$.
+  Following L1b, $g_y$ is the constant, continuously compounded annual risk-free
+  growth rate associated with benchmark yield $y$.
   \[
     \underbrace{\operatorname{NPV}(g_y,T)}_{\text{time-0 dollars}}
-    =\underbrace{-n_0S_0}_{\text{entry now}}
-    +\underbrace{n_0S_Te^{-g_yT}}_{\text{discounted exit}}.
+    =\underbrace{-n_0S_0}_{\text{purchase today}}
+    +\underbrace{n_0S_Te^{-g_yT}}_{\text{present value of sale proceeds}}.
   \]
 
-  Divide by the initial share cost to obtain a dimensionless present-value return:
+  Divide by the initial investment to obtain the dimensionless scaled NPV:
   \[
     \underbrace{\rho_T}_{\text{scaled NPV}}
     :=\frac{\operatorname{NPV}(g_y,T)}{n_0S_0}
     =e^{-g_yT}\frac{S_T}{S_0}-1.
   \]
 
-  A positive price change alone need not clear the benchmark, spread, and costs.
+  If $\rho_T>0$, the discounted sale proceeds exceed the purchase cost.
+  Scaling removes the dependence on the number of shares.
 \end{frame}
 
 \begin{frame}{Short Holding Period}
@@ -226,40 +226,41 @@
 \end{frame}
 
 \begin{frame}{Longer Holding Period}
-  For a longer horizon, or whenever $|g_y|T$ is not small, retain the benchmark
-  discount factor. At terminal node $K_N=k$:
+Retain the discount factor whenever $|g_y|T$ is not small. Which sale price
+  makes the scaled NPV zero?
   \[
-    \underbrace{\rho_T(k)}_{\text{present-value return}}
-    =\underbrace{e^{-g_y N\Delta t}}_{\text{discount}}
-      \underbrace{u^kd^{N-k}}_{\text{price ratio}}-1,
+    e^{-g_yT}\frac{S_T}{S_0}-1=0
+    \quad\Longrightarrow\quad
+    \underbrace{S_T=S_0e^{g_yT}}_{\text{break-even sale price}}.
+  \]
+
+  For $g_y>0$, the price must grow beyond the benchmark to give a positive NPV.
+  At a terminal node with $k$ up moves, the exact scaled NPV is:
+  \[
+    \rho(k)=u^kd^{N-k}e^{-g_yN\Delta t}-1,
     \qquad k=0,\ldots,N.
   \]
 
-  The node probability remains:
-  \[
-    \Pmeasure(K_N=k)=\binom Nk p^k(1-p)^{N-k}.
-  \]
-
-  The benchmark changes the return attached to each node. It does not change the
-  real-world node probabilities specified by $p$. When the selected benchmark
-  is risk-free, its one-step accumulation factor uses the L3b notation
-  $R_f=e^{g_y\Delta t}$.
+  We use this exact expression for all holding periods. The benchmark changes
+  the return attached to a node, but not its real-world probability.
 \end{frame}
 
 \begin{frame}{Cumulative Probability of a Terminal Target}
-  Let $\rho_\star>-1$ be a dimensionless target. We ask for the probability that
-  the scheduled terminal return \hilite{strictly exceeds} this target:
+Let $\rho_\star>-1$ be our target scaled NPV. At the scheduled sale time,
+  we ask for:
   \[
-    \Pmeasure\bigl(\rho_T(K_N)>\rho_\star\bigr).
+    \Pmeasure(\rho_T>\rho_\star),\qquad \rho_T=\rho(K_N).
   \]
+  For example, $\rho_\star=0.05$ requires the discounted sale proceeds to
+  exceed the initial investment by more than 5\%. Equality does not count.
 
-  Since $u>d>0$, the return $\rho_T(k)$ increases with the up-move count $k$.
-  Therefore, the target event is equivalent to:
-  \[
-    K_N>\tau(\rho_\star)
-  \]
-  for a real-valued threshold $\tau(\rho_\star)$. The probability is a binomial tail,
-  not the probability of one terminal node.
+  \vspace{0.6em}
+  Increasing the up-move count replaces one factor $d$ with $u$. The price
+  ratio increases by $u/d>1$, so the scaled NPV increases as well.
+
+  \vspace{0.5em}
+  Once one count exceeds the target, every larger count does too. We therefore
+  solve for a threshold $\tau(\rho_\star)$ such that $K_N>\tau(\rho_\star)$.
 \end{frame}
 
 \begin{frame}{Solve the Return Inequality for the Up Count}
@@ -281,165 +282,255 @@
 \end{frame}
 
 \begin{frame}{Strict Targets Need the Next Integer}
-  The event is $K_N>\tau(\rho_\star)$. Because $K_N$ is integer valued, the raw
-  strict cutoff is given by:
+The event is $K_N>\tau(\rho_\star)$. Since the up-move count is an integer,
+  the smallest integer strictly above the threshold is:
   \[
-    \underbrace{\kappa}_{\text{raw strict cutoff}}
-    =\lfloor\tau(\rho_\star)\rfloor+1.
+    \kappa=\lfloor\tau(\rho_\star)\rfloor+1.
   \]
 
-  Encode cutoffs below and above the feasible lattice range by:
+  If $\tau=2.4$, we need at least three up moves. If $\tau=2$ exactly,
+  we still need three: two would only reach the target.
+
+  \vspace{0.4em}
+  There are only $N+1$ feasible counts, from zero through $N$. We store:
   \[
-    \underbrace{k_{\min}}_{\text{stored cutoff}}
-    =\min\!\left\{\max\!\left\{\kappa,0\right\},N+1\right\}.
+    k_{\min}=\min\!\left\{\max\!\left\{\kappa,0\right\},N+1\right\}.
+  \]
+  The values $0$ and $N+1$ indicate that all or none of the terminal nodes succeed.
+\end{frame}
+
+\begin{frame}{Add the Successful Node Probabilities}
+The stored cutoff gives the terminal target probability:
+  \[
+    \Pmeasure(\rho_T>\rho_\star)=
+    \begin{cases}
+      1, & k_{\min}=0,\\[0.4em]
+      \displaystyle\sum_{k=k_{\min}}^N\binom Nk p^k(1-p)^{N-k},
+        & 1\le k_{\min}\le N,\\[0.4em]
+      0, & k_{\min}=N+1.
+    \end{cases}
   \]
 
-  Then $\Pmeasure(\rho_T>\rho_\star)=\Pmeasure(K_N\ge k_{\min})$. A non-strict
-  event uses a different raw cutoff when a node lies exactly on the target.
+  For $\rho_\star\le-1$, the probability is one because every model price is
+  positive. The logarithmic threshold is unnecessary.
+
+  \slidenote{In the code:}{we check terminal-node returns directly to identify $k_{\min}$, avoiding floating-point rounding of an equality boundary. For an interior cutoff, evaluate the complementary binomial CDF at $k_{\min}-1$.}
 \end{frame}
 
-\begin{frame}{Threshold Edge Cases}
-  The stored cutoff $k_{\min}\in\{0,\ldots,N+1\}$ makes all edge cases explicit.
+\begin{frame}{A Three-Step Target Calculation}
+Suppose $N=3$, $p=0.6$, and the chosen target requires at least two up moves.
+  The successful outcomes are $K_3=2$ and $K_3=3$.
+  \[
+    \begin{aligned}
+      \Pmeasure(K_3\ge2)
+      &=\binom32(0.6)^2(0.4)+\binom33(0.6)^3\\[0.5em]
+      &=0.432+0.216=0.648.
+    \end{aligned}
+  \]
 
-  \vspace{0.7em}
-  \begin{itemize}\setlength{\itemsep}{0.65em}
-    \item If $k_{\min}=0$, every feasible terminal node succeeds, so the
-      probability is 1.
-    \item If $1\le k_{\min}\le N$, sum the binomial probabilities from
-      $k_{\min}$ through $N$.
-    \item If $k_{\min}=N+1$, no feasible terminal node succeeds, so the probability is 0.
-    \item At fixed $N$, increasing $g_y$ raises the threshold and cannot
-      increase the tail probability.
-    \item Changing the horizon changes both the threshold and the distribution
-      of $K_N$. Recompute the full probability.
-  \end{itemize}
-
-  \slidenote{Implementation:}{for a strict tail, use the complementary binomial CDF at $k_{\min}-1$ only after handling the two edge cases.}
-\end{frame}
-
-\begin{frame}{Terminal and First-Passage Rules Differ}
-  The binomial tail concerns liquidation at the scheduled date $T$. A take-profit
-  or stop-loss rule monitored at each step depends on the \hilite{first} boundary
-  crossing and is path dependent.
+  The model assigns a \hilite{64.8\% probability} to exceeding the target.
 
   \vspace{0.6em}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item Two paths can end at the same terminal node but cross a boundary at
-      different earlier times.
-    \item Propagate only probability mass that has not already crossed a boundary,
-      then record the absorbed mass at each first crossing.
-    \item A stop order becomes a market order after its trigger and need not fill
-      at the trigger price. A limit order may not fill.
-  \end{itemize}
+  The return inequality determines which counts succeed. The up-move
+  probability $p$ determines how much probability those counts carry.
+\end{frame}
 
-  Terminal node probabilities alone cannot evaluate a monitored exit rule.
+\begin{frame}{What About Falling Short of the Target?}
+At the scheduled sale time, the scaled NPV either exceeds the target or
+  finishes at or below it. These events are complementary:
+  \[
+    \Pmeasure(\rho_T\le\rho_\star)=1-\Pmeasure(\rho_T>\rho_\star).
+  \]
+  In our three-step example, the probability of finishing at or below the
+  target is $1-0.648=0.352$.
+
+  \vspace{0.6em}
+  Increasing $g_y$ with the lattice and target fixed cannot increase the success
+  probability. Changing $N$ changes both the cutoff and the count distribution.
+
+  \slidenote{Scheduled sale:}{this calculation checks the final outcome. Selling when a boundary is first reached requires the price path; see the optional first-passage example.}
+\end{frame}
+
+\begin{frame}{A Three-Outcome Price Model}
+Suppose $S_0=100$ USD/share. At each step, the price can increase by 10\%,
+  remain unchanged, or decrease by 10\%.
+
+  \vspace{0.6em}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{lrrr}
+      \toprule
+      Movement & Factor $f_j$ & Probability $p_j$ & Price after one step\\
+      \midrule
+      Up 10\% & 1.10 & 0.25 & 110\\
+      Unchanged & 1.00 & 0.50 & 100\\
+      Down 10\% & 0.90 & 0.25 & 90\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  Up then down gives $100(1.10)(0.90)=99$ USD/share. Reversing the order gives
+  the same price. Both paths have counts $(1,0,1)$, so they share one node.
+\end{frame}
+
+\begin{frame}{Nine Paths Recombine into Six Count States}
+After two steps, there are $3^2=9$ ordered paths. We only need six count states:
+
+  \vspace{0.35em}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{crrr}
+      \toprule
+      Counts (up, unchanged, down) & Paths & Price (USD/share) & Probability\\
+      \midrule
+      $(2,0,0)$ & 1 & 121 & 0.0625\\
+      $(1,1,0)$ & 2 & 110 & 0.2500\\
+      $(1,0,1)$ & 2 & 99 & 0.1250\\
+      $(0,2,0)$ & 1 & 100 & 0.2500\\
+      $(0,1,1)$ & 2 & 90 & 0.2500\\
+      $(0,0,2)$ & 1 & 81 & 0.0625\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  For $(1,0,1)$, add the up--down and down--up probabilities:
+  $0.25(0.25)+0.25(0.25)=0.125$. All six node probabilities sum to one.
 \end{frame}
 
 \begin{frame}{N-Ary Lattice Models}
-  Replace the two branch factors with $m$ positive factors
-  $f_1,\ldots,f_m$. Let branch $j$ occur with probability $p_j\ge0$, where
-  $\sum_{j=1}^mp_j=1$.
+An N-ary lattice allows $m\ge2$ possible price movements per step. Branch
+  $j$ has a positive factor $f_j$ and probability $p_j>0$, with
+  $\sum_{j=1}^mp_j=1$. We keep $N$ for the holding-period step count.
 
   \vspace{0.6em}
-  After $t$ steps, a recombining node is indexed by a branch-count vector:
+  After $t$ steps, the branch-count vector is:
   \[
     \mathbf{x}=(x_1,\ldots,x_m),
     \qquad x_j\in\mathbb{Z}_{\ge0},
     \qquad \sum_{j=1}^mx_j=t.
   \]
 
-  Order does not matter because the branch factors are constant and multiplication
-  commutes. Paths with the same count vector share one node.
+  Each occurrence of branch $j$ multiplies the price by $f_j$. Fixed factors
+  make the final price depend on the counts, while the intermediate prices
+  can depend on the order.
 \end{frame}
 
 \begin{frame}{N-Ary Node Values}
-  For count vector $\mathbf{x}$ at level $t$, the node price is:
+For count vector $\mathbf{x}$ at level $t$, the price is:
   \[
     \underbrace{S_t(\mathbf{x})}_{\text{node price}}
     =S_0\prod_{j=1}^mf_j^{x_j}.
   \]
 
-  Independent branch draws give the multinomial node probability:
+  Assume independent branch choices with fixed probabilities. If
+  $\mathbf{X}_t$ is the random count vector after $t$ steps, then:
   \[
-    \underbrace{\Pmeasure(\mathbf{X}=\mathbf{x})}_{\text{node probability}}
-    =\frac{t!}{x_1!\cdots x_m!}\prod_{j=1}^mp_j^{x_j}.
+    \Pmeasure(\mathbf{X}_t=\mathbf{x})
+    =\underbrace{\frac{t!}{x_1!\cdots x_m!}}_{\text{number of orderings}}
+     \underbrace{\prod_{j=1}^mp_j^{x_j}}_{\text{probability of one ordering}}.
   \]
 
-  Distinct count vectors can still produce the same price if the factors have
-  additional multiplicative relationships.
+  For $m=2$, this reduces to the binomial probability
+  $\binom tk p^k(1-p)^{t-k}$.
 \end{frame}
 
-\begin{frame}{More Branches Create More States}
-  The number of nonnegative count vectors at level $t$ is the stars-and-bars count:
+\begin{frame}{How Many States Do We Need?}
+A count state satisfies $x_1+\cdots+x_m=t$. Represent the $t$ moves by stars
+  and separate the $m$ branch groups using $m-1$ bars:
   \[
-    \underbrace{L_t}_{\text{nodes at level }t}=\binom{t+m-1}{m-1}.
+    \star\;|\;|\;\star\quad\longleftrightarrow\quad(1,0,1).
   \]
 
-  The total number of nodes through height $h$ is:
+  Choose the bar positions among $t+m-1$ available positions:
   \[
-    \underbrace{\textstyle\sum_{r=0}^{h}L_r}_{\text{all stored nodes}}
-    =\binom{h+m}{m}.
+    L_t=\binom{t+m-1}{m-1},
+    \qquad L_2=\binom42=6\quad\text{when }m=3.
   \]
 
-  More branches give a finer discrete one-step distribution, but also increase
-  the state count. They do not automatically improve out-of-sample forecasts.
+  This counts branch-count states, not necessarily distinct prices. If
+  $f_1f_3=f_2^2$, for example, $(1,0,1)$ and $(0,2,0)$ share a price.
+  We add their probabilities when computing the probability of that price.
 \end{frame}
 
-\begin{frame}{N-Ary Example: Discretize, Build, Check}
-  The companion notebook uses empirical log growth rates for one firm.
+\begin{frame}{N-Ary Example: Historical Branch Estimates}
+How do we construct a lattice from historical observations? In the companion
+  example, we work through the calculation for a selected firm.
 
   \vspace{0.6em}
-  \begin{enumerate}\setlength{\itemsep}{0.6em}
-    \item Divide the one-step growth sample into three equal-width bins.
-    \item Estimate one representative factor and one frequency for each bin.
-    \item Build each recombining state from its three branch counts.
-    \item Compute its multinomial probability and verify that all node
-      probabilities at the selected level sum to one.
-    \item Plot price and annualized multistep log growth against probability mass.
+  \begin{enumerate}\setlength{\itemsep}{0.55em}
+    \item Group historical growth observations into bins.
+    \item Average the price-change factors within each bin and use observation
+      frequencies to estimate branch probabilities.
+    \item Construct node prices from the branch counts.
+    \item Calculate multinomial probabilities and check that they sum to one.
+    \item Examine the terminal share-price distribution and its probabilities.
   \end{enumerate}
 
-  \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Example-N-Ary-Lattice-Fall-2026.ipynb}{N-Ary Recombining Lattice Models}. The histogram of node locations is not a probability distribution unless each node is weighted by its probability mass.}
+  \slidenote{Calibration matters:}{averaging within bins removes within-bin variability. A valid probability sum does not show that the branches preserve the historical distribution.}
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \textbf{\ink{Advanced:}}
+\textbf{\ink{Advanced:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/advanced/first-passage/CHEME-5660-L4a-Advanced-FirstPassage-ExitRules-Fall-2026.ipynb}{First-Passage Exit Rules}
 
-  Propagate only probability mass for positions that remain open, then compute
-  take-profit-first, stop-loss-first, and still-open probabilities.
+  What changes if we check the price after every step? We track positions until
+  a take-profit or stop-loss boundary is first reached, then compare with
+  checking only the final price.
 
   \vspace{1.0em}
   \textbf{\ink{Advanced:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/advanced/execution/CHEME-5660-L4a-Advanced-ExecutionAware-ProbabilityOfProfit-Fall-2026.ipynb}{Execution-Aware Probability of Profit}
 
-  Add the bid--ask spread, fees, and slippage to the terminal rule, then compare
-  its probability with the frictionless result.
+  How do trading costs change the target probability? We include the bid--ask
+  spread, fees, and unfavorable execution prices (slippage), then compare
+  the result with the frictionless calculation.
 
   \vspace{0.8em}
   \dimmed{Optional; neither notebook is a prerequisite for L4b.}
 \end{frame}
 
+\begin{frame}{Optional: Terminal and First-Passage Rules}
+A terminal rule checks the trade at the scheduled sale date $T$. A first-passage
+  rule sells when a take-profit or stop-loss boundary is first reached.
+
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item Paths can end at the same price but cross a boundary at different
+      earlier times. Their trading outcomes can therefore differ.
+    \item At each step, track positions that remain open and record the
+      probability of reaching either boundary first.
+    \item Compare those results with the probability of crossing neither
+      boundary before the holding period ends.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Terminal node probabilities alone cannot determine when a boundary was reached.
+\end{frame}
+
 \begin{frame}{Summary}
-  Today we converted a lattice forecast into a complete terminal target event,
-  derived its exact probability, and generalized the state space.
+We used NPV to evaluate a long stock position, computed terminal target
+  probabilities, and extended the binomial model to several branches.
 
   \vspace{0.7em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Profit is a cash-flow event}: entry, exit, horizon, benchmark,
-      costs, and target strictness must be specified.
-    \item \hilite{Monotone terminal targets become count tails}: solve for the
-      integer boundary and handle thresholds outside the feasible range.
-    \item \hilite{The state depends on the rule}: monitored exits need path
-      information, while N-ary terminal states use multinomial branch counts.
+    \item \hilite{NPV-based trading framework}: We scaled the NPV by the initial
+      investment to compare discounted sale proceeds with the purchase cost.
+    \item \hilite{Terminal target probabilities}: We found the minimum up-move
+      count needed to exceed a target and added the probabilities of the
+      successful counts. The complement gives the probability of finishing at or below it.
+    \item \hilite{N-ary lattice models}: We used branch counts to calculate
+      prices, multinomial probabilities, and state counts when each step allows
+      $m$ outcomes. More branches also increase the computational cost.
   \end{itemize}
 
   \vspace{0.5em}
-  Next, we take the continuous-time limit and introduce stochastic price models.
+  Next time: continuous stochastic models of price dynamics.
 \end{frame}
 
-\transitionframe{Today: use the lattice to define the event before computing its probability.}
+\transitionframe{Next time: continuous stochastic models of price dynamics.}
 
 \end{document}

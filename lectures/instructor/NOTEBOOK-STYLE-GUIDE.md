@@ -235,6 +235,11 @@ apply to lecture, example, and advanced-example notebooks.
   setup with a newly composed package overview or rename it for each example.
   The instructor explicitly confirmed this standard on September 10, 2026
   during the execution-aware example review.
+- Begin each task section with an explicit “In this task, …” sentence stating
+  what we will calculate, construct, or examine. Follow with the motivation and
+  explanation needed to begin the work. A question can develop the introduction,
+  but does not replace this opening sentence. The instructor clarified this
+  convention during the N-ary example review.
 - Connect mathematics to code. Explain how the calculation works and identify
   the relevant variables and functions. Do not replace that explanation with
   function-call instructions or internal dispatch details unless the Julia
@@ -287,6 +292,34 @@ and objectives, then setup and data, estimation, model construction, target
 probabilities, output interpretation, and takeaways. Preserve the closed L4a
 lecture. This agreed review process does not require repeated approval for
 previously authorized edits or impose a universal notebook section template.
+
+## L4b lecture review refinements — September 10, 2026
+
+Jeffrey confirmed the following during the interactive L4b review:
+
+- Keep language/package implementation details out of CHEME 5660 Fall 2026
+  lecture notes. Function references and implementation discussion belong in
+  companion examples. This overrides the earlier function-link guidance for
+  these lecture notebooks; the approved mathematical pseudocode may remain.
+- Do not begin prose sentences with an acronym. For example, use “The model's
+  independent increments…” rather than “GBM's independent increments…”.
+- Preserve established blockquote formatting. Keep a blank line after a panel
+  label such as `Parameters:`, and keep its short bullets adjacent. Surround
+  selected labeled blockquotes with ordinary explanatory prose.
+- Keep optional examples in the bottom Optional Advanced Material section. If
+  an example is needed in the main development, do not label it optional there.
+- Follow a closing blockquote with a short connective sentence into the next
+  topic; do not end the section or subsection on the blockquote.
+- Avoid redundant explanations and mathematical side discussions that do not
+  support the lecture's calculation. The cumulative-shock correlation discussion
+  and a redundant price-path blockquote were rejected in L4b; the one-step
+  transition and Monte Carlo procedure already explain the calculation.
+
+For notation, L3a uses $\bar g$ for excess growth. L4b now uses
+$\mu_g=\mathbb E[g_j]=\mu-\sigma^2/2$ for mean growth and $\hat{\mu}_g$ for
+its estimate, while retaining $\mu$ for arithmetic GBM drift. The completed review
+and scope of this migration are recorded in
+[the L4b handoff](L4b-INTERACTIVE-REVIEW-HANDOFF.md).
 
 ## Editing and review
 

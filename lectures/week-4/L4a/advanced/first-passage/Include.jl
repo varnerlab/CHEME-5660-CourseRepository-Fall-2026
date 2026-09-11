@@ -10,3 +10,4 @@ end
 using DataFrames    # labeled first-passage summaries
 using Distributions # binomial probabilities
 using Plots         # absorption and comparison plots
+using PrettyTables  # compact probability tables

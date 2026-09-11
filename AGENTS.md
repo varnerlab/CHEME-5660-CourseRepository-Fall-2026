@@ -7,3 +7,17 @@
 - Use the three-underscore horizontal rule only at major-section boundaries immediately before a new level-two heading. Do not use it between level-three subsections or after the final section.
 - Include exactly three learning objectives in every lecture and example notebook.
 - Include exactly three key takeaways in every lecture and example notebook.
+
+## Paused L4a first-passage example review
+
+- Before resuming, read [the first-passage review handoff](lectures/instructor/L4a-FIRST-PASSAGE-REVIEW-HANDOFF.md).
+  The Task 2 opening is applied; the next-step probability-update derivation is
+  proposed but not approved. Continue one issue at a time.
+
+## Completed L4b lecture review
+
+- The L4b GBM lecture interactive review was completed September 11, 2026.
+  [The saved review record](lectures/instructor/L4b-INTERACTIVE-REVIEW-HANDOFF.md)
+  records approved edits, notation, and preferences. Read it before follow-up
+  work; do not restart completed lecture sections. Companion examples still
+  need the mean-growth notation aligned when their own review is requested.
