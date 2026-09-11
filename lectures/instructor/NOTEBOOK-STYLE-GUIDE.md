@@ -219,6 +219,22 @@ apply to lecture, example, and advanced-example notebooks.
 
 - Introduce the problem before the computation: what we want to calculate, why
   it matters, and how it connects to the lecture.
+- Organize each example notebook, including advanced examples, into exactly
+  three tasks. Group related calculations under descriptive subsections within
+  those tasks; setup, summary, and limitations need not be separate tasks.
+  The instructor confirmed this requirement during the execution-aware example
+  review on September 11, 2026.
+- Use the standard setup demonstrated in
+  [the L4a cumulative-probability example](../week-4/L4a/CHEME-5660-L4a-Example-CumulativeProbabilityLattice-Fall-2026.ipynb)
+  for computational notebooks, including advanced examples. Retain the
+  “Setup, Data, and Prerequisites” heading, brief introduction to the local
+  `Include.jl` file, labeled `Include` blockquote with its Julia documentation
+  link, “Let's set up our code environment:” line, include cell, and documentation
+  references afterward. Adapt factual descriptions to the actual setup file
+  and add data-loading subsections only when needed. Do not replace this shared
+  setup with a newly composed package overview or rename it for each example.
+  The instructor explicitly confirmed this standard on September 10, 2026
+  during the execution-aware example review.
 - Connect mathematics to code. Explain how the calculation works and identify
   the relevant variables and functions. Do not replace that explanation with
   function-call instructions or internal dispatch details unless the Julia
@@ -240,6 +256,10 @@ apply to lecture, example, and advanced-example notebooks.
 - Interpret meaningful outputs. Explain what students should notice in parameter
   tables, histograms, and calculated probabilities. Displaying a result alone
   does not complete its explanation; routine setup cells need no forced commentary.
+  When prose gives numerical results for selected parameters, briefly remind
+  readers that their results may differ if they change those parameters. The
+  instructor approved this reminder during the execution-aware example review
+  on September 11, 2026.
 - Check agreement between the narrative, equations, and implementation, including
   data selection, units, assumptions, and boundary cases. Preserve working code
   unless a change has a clear purpose. Validate behavior-changing edits with
