@@ -9,6 +9,7 @@ end
 
 using DataFrames    # labeled simulation summaries
 using Distributions # normal probabilities and confidence quantiles
+using LinearAlgebra # least-squares fits to simulated log prices
 using Plots         # uncertainty plots
 using PrettyTables  # formatted comparison tables
 using Random        # reproducible Monte Carlo streams

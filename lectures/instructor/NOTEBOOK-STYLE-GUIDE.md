@@ -29,6 +29,69 @@ their rules to this agreement. Preserve unrelated course requirements, technical
 correctness checks, lab design, and release procedures. Current explicit user
 instructions take precedence.
 
+## Slides as a note-taking companion — CHEME 5660
+
+Confirmed September 12, 2026. The instructor presents the lecture notebook while
+students take notes on the slides. The slides are a concise companion to the
+notebook, analogous to Cliff Notes: retain the key equations, definitions, and
+reasoning students need to follow the live explanation.
+
+Keep the teaching topics, recognizable headings, subsection sequence, and worked
+example stops in the same order. A topic split across several slides should follow
+the order in which the notebook develops it. Add a company profile or other
+teaching topic to the notebook before including it in the companion deck. Keep
+the established front-of-deck title and disclaimer convention. Synchronization
+should preserve the notebook's fuller teaching prose and the existing slide design.
+
+### Slide review rules agreed during interactive review
+
+Approved September 12, 2026. Add rules here as the instructor approves them
+during the slide review; proposed rules are not yet requirements.
+
+- **Learning objectives:** Preserve the notebook's three learning outcomes,
+  use concise action statements, and avoid repeating the same agenda in an
+  introductory paragraph.
+- **Key takeaways:** Retain three retrospective takeaways in the shared
+  teaching voice. Connect the method, result, and purpose using concrete
+  language, as in the approved L4b closing takeaway about calculating the
+  probability of exceeding a target scaled NPV at the scheduled sale time.
+- **Terminology:** Use the same names for quantities across slides and
+  notebooks. Shortening prose should preserve distinctions such as growth rate,
+  log return, and scaled NPV.
+  For L4b, retain the instructor's preferred growth terminology: "mean log
+  growth" describes the accumulated quantity over the holding period, while
+  "mean growth rate" refers to $\mu_g=\mu-\sigma^2/2$. Keep drift $\mu$
+  distinct from $\mu_g$. The compact "mean log growth" underbrace on the
+  analytical-solution slide is approved; do not replace it with "mean log
+  return" or the longer "mean growth rate × time."
+- **Transitions:** Explain why the next topic follows, using a concrete
+  question or relationship.
+- **Limiting processes:** State what changes and what remains fixed.
+- **Model definitions:** At a model's introduction, define its variables,
+  parameter assumptions, and units near the equation.
+  In L4b's trade rule, retain the broad term "benchmark growth rate" for
+  $g_y$, corresponding to yield $y$. The benchmark may be risk-free or an
+  alternative such as SPY. The calculation uses a constant assumed growth rate
+  for the comparison; do not narrow the benchmark to risk-free by default.
+- **Explanatory sequence:** Place explanations where the required concepts
+  have been introduced.
+- **Probability thresholds:** In the L4b target-probability derivation, refer
+  directly to the standard normal random variable $Z$ and events such as
+  $Z>z_\star$. The instructor preferred this wording to "shock" when
+  explaining the threshold and probability calculation.
+- **Optional-example descriptions on slides:** Convey the topic and purpose,
+  leaving procedural details to the example. For instance, use "introduce
+  variance reduction techniques" in the Monte Carlo overview rather than
+  explaining paired draws $Z$ and $-Z$ there.
+- **Mathematical conditions:** Explain conditions in terms of the model or
+  data when a short, concrete explanation is available.
+- **Standard errors:** Explain standard error directly as estimated uncertainty
+  in the fitted parameter, with smaller values indicating greater precision
+  and units matching the parameter. The instructor found "varies across
+  repeated datasets" unclear in the L4b slide explanation. Do not use that
+  phrase without explaining the hypothetical repetition, or describe the
+  standard error as uncertainty in the "mean of" the fitted parameter.
+
 ## Reference style
 
 CHEME 5660 Fall 2025 and CHEME 5820 Spring 2026 share the desired teaching voice.
@@ -95,6 +158,11 @@ limitation rather than asking the instructor to repeat the style discussion.
 - Introduce quantities, dimensions, indexing conventions, and assumptions where
   readers need them. Explain mathematical operations and interpret the resulting
   expressions. Precision must remain understandable in context.
+- Always transition smoothly from prose into displayed equations. Use a natural
+  lead-in that identifies what the equation expresses, with a colon when the
+  prose introduces the display. On September 12, 2026, the instructor explicitly
+  changed “the tree's density is” to “the tree's density is given by:”. Preserve
+  the mathematical conditions and logical meaning when improving these transitions.
 - Definitions, theorems, and long blockquotes are welcome when they have a clear
   teaching role. Prepare the reader and connect formal results with prose. Do not
   collect motivation, assumptions, derivation, every edge case, implementation
@@ -235,6 +303,9 @@ apply to lecture, example, and advanced-example notebooks.
   setup with a newly composed package overview or rename it for each example.
   The instructor explicitly confirmed this standard on September 10, 2026
   during the execution-aware example review.
+  On September 12, 2026, the instructor reiterated “Always standard opening”
+  and named the [L4b parameter example](../week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb)
+  as the reference for this setup opening and its documentation references.
 - Begin each task section with an explicit “In this task, …” sentence stating
   what we will calculate, construct, or examine. Follow with the motivation and
   explanation needed to begin the work. A question can develop the introduction,
