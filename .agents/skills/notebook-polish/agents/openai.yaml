@@ -1,0 +1,4 @@
+interface:
+  display_name: "Notebook Polish Round"
+  short_description: "Interactive course notebook review with before/after scores"
+  default_prompt: "Use $notebook-polish to start an interactive notebook polish round; ask me for the notebook path if needed."

@@ -21,3 +21,12 @@
   records approved edits, notation, and preferences. Read it before follow-up
   work; do not restart completed lecture sections. Companion examples still
   need the mean-growth notation aligned when their own review is requested.
+
+## Interactive notebook polishing
+
+For a "notebook polish round," use the versioned
+[notebook-polish workflow](.agents/skills/notebook-polish/SKILL.md).
+It preserves the opening assessment, section-by-section approval, and final
+rescoring. [Moving this workflow to another machine](lectures/instructor/NOTEBOOK-POLISH-WORKFLOW.md)
+describes the shared CHEME 5660/CHEME 5800 setup. Keep the workflow here as the
+single maintained copy; CHEME 5800 links to it.

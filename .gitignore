@@ -49,3 +49,6 @@ artifacts/
 *.fdb_latexmk
 *.fls
 *.xdv
+
+# Local instructor previews produced during notebook polish rounds
+/build/notebook-previews/
