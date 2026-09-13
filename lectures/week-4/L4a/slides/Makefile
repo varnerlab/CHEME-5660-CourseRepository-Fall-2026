@@ -4,10 +4,10 @@ STEM := $(basename $(TEXFILE))
 
 LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
+RSVG_CONVERT ?= rsvg-convert
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-Exchange-OrderFlow-Schematic.pdf \
-	../figs/Fig-Lattice-Schematic.pdf \
+FIGURES := ../figs/Fig-Lattice-Schematic.pdf \
 	../figs/Fig-TradeRule-Schematic.pdf
 
 .DEFAULT_GOAL := slides
@@ -18,6 +18,10 @@ slides: $(PDF)
 
 $(PDF): $(TEXFILE) vnslides.sty $(STYLE) $(FIGURES)
 	$(LATEXMK) -xelatex $(LATEX_FLAGS) $(TEXFILE)
+
+# Use the same NPV illustration as the lecture notebook.
+../figs/Fig-TradeRule-Schematic.pdf: ../figs/Fig-TradeRule-Schematic.svg
+	$(RSVG_CONVERT) --format=pdf --output=$@ $<
 
 clean:
 	$(LATEXMK) -c $(TEXFILE)

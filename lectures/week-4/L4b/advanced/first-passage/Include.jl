@@ -13,3 +13,8 @@ using Plots         # barrier and convergence plots
 using PrettyTables  # formatted result tables
 using Random        # reproducible path simulation
 using Statistics    # Monte Carlo means
+
+# Load the first-passage probability and simulation functions -
+include(joinpath(@__DIR__, "src", "Probabilities.jl"))
+include(joinpath(@__DIR__, "src", "Lattice.jl"))
+include(joinpath(@__DIR__, "src", "Simulation.jl"))

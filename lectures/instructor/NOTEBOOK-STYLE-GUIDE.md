@@ -177,6 +177,12 @@ limitation rather than asking the instructor to repeat the style discussion.
   mathematical objects to the functions and variables used, and interpret or check
   meaningful outputs. Choose transitions for the actual computation rather than
   inserting a stock sentence before every cell.
+- Keep Julia function definitions in the notebook's local `src/` directory and
+  load them through `Include.jl`. Give each function a proper Julia docstring
+  describing its arguments, units, returned values, and assumptions. Keep the
+  notebook focused on the explanation, function calls, and results. The instructor
+  explicitly requested this on September 13, 2026; separate Markdown reference
+  pages do not replace source docstrings.
 
 ## Formatting
 
@@ -287,6 +293,10 @@ apply to lecture, example, and advanced-example notebooks.
 
 - Introduce the problem before the computation: what we want to calculate, why
   it matters, and how it connects to the lecture.
+- Usually place the “In this example, …” overview below the learning objectives,
+  following the instructor's preference confirmed September 13, 2026. This is
+  flexible: he approved its placement before the objectives in the L4b
+  parameter-estimation example because it worked well in that opening.
 - Organize each example notebook, including advanced examples, into exactly
   three tasks. Group related calculations under descriptive subsections within
   those tasks; setup, summary, and limitations need not be separate tasks.
@@ -332,6 +342,11 @@ apply to lecture, example, and advanced-example notebooks.
 - Interpret meaningful outputs. Explain what students should notice in parameter
   tables, histograms, and calculated probabilities. Displaying a result alone
   does not complete its explanation; routine setup cells need no forced commentary.
+  In examples where the selected ticker is regularly changed, keep the discussion
+  independent of a particular ticker and its default numerical results. Let the
+  computed outputs supply the current values, and explain the relationships
+  students should compare. The instructor confirmed this preference during the
+  N-ary example review on September 13, 2026.
   When prose gives numerical results for selected parameters, briefly remind
   readers that their results may differ if they change those parameters. The
   instructor approved this reminder during the execution-aware example review

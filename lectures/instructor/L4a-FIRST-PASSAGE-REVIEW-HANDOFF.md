@@ -1,165 +1,129 @@
-# L4a first-passage example — paused interactive review
+# L4a first-passage example — completed notebook review
 
-Saved September 11, 2026 at Jeffrey's request. Stop here until he returns.
+Completed September 13, 2026. The instructor confirmed: “ok, mark this as reviewed”.
 
-## Active notebook and working agreement
+Notebook: [First-passage exit rules](../week-4/L4a/advanced/first-passage/CHEME-5660-L4a-Advanced-FirstPassage-ExitRules-Fall-2026.ipynb).
 
-[First-passage exit rules](../week-4/L4a/advanced/first-passage/CHEME-5660-L4a-Advanced-FirstPassage-ExitRules-Fall-2026.ipynb).
+The instructor requested polishing only if the initial score was below 9/10.
+The current notebook scored **9.0/10**, meeting that threshold. No notebook edits
+were proposed or applied in this round; the closing score remains **9.0/10**.
+No proposals remain pending. Do not restart completed sections unless the
+instructor requests another round.
 
-Jeffrey requested an **interactive review**, concerned that the theoretical details
-were omitted from the lecture. Develop enough theory here for the example to stand
-on its own. Propose one concrete issue at a time, wait for approval, apply it, and
-show the next issue. Do not implement the pending proposal below until approved.
-Do not restart completed sections or reopen the closed L4a lecture.
+This record supersedes the September 11 paused-review handoff. Its pending
+probability-update proposal and remaining-work list describe an earlier state.
+The September 13 assessment found the derivation, exit sums, conservation,
+helper documentation, and terminal comparison already present. The current
+notebook was reviewed as found; no authorship or prior approval of those later
+revisions was inferred.
 
-Follow [the shared notebook style guide](NOTEBOOK-STYLE-GUIDE.md). Preserve the
-modern 2026 notation, teaching voice, and explanatory steps. Exactly three
-learning objectives and three retrospective key takeaways. **No blank lines or
-standalone `>` lines between objective bullets**; Jeffrey corrected this twice.
+## Assessment
 
-Other notebooks have separate review records. In particular, the N-ary narrative
-review is complete and its obsolete issue file was deleted on explicit instruction.
-Do not recreate it. Preserve concurrent changes in other notebooks and AGENTS.md.
+| Dimension | Initial | Closing |
+| --- | --- | --- |
+| Technical correctness | 9.3 | 9.3 |
+| Organization | 9.2 | 9.2 |
+| Narrative and interpretation | 8.8 | 8.8 |
+| Presentation | 9.0 | 9.0 |
+| Cognitive density and pacing | 8.8 | 8.8 |
 
-## Approved edits already applied
+Task 2 is the strongest material: it develops arrival probabilities, boundary
+checks, and probability conservation before introducing code. The worked price
+paths motivate the calculation, and Task 3 correctly explains why the monitored
+versus terminal-only comparison requires disabling the stop-loss.
 
-- **Introduction:** Replaced the abstract phrase “an earlier boundary crossing can
-  determine the outcome” with a concrete missed-exit explanation: checking only
-  the final price can miss a sale that should have occurred when the price reached
-  the profit target and subsequently fell below it. After the objectives, the
-  approved “In this example…” paragraph promises to develop the probability
-  calculation before implementation, then compare with a terminal-only rule.
-- **Objectives:** Three adjacent bullets: define a monitored exit rule; compute
-  probabilities of the first exit; compare monitored and terminal-only rules.
-  The second briefly defines *first-passage time* as the first time the price
-  reaches an exit boundary. Jeffrey finds unexplained “first-passage” and
-  “propagate surviving probability” difficult; introduce ideas in plain language.
-- **Setup:** Standard heading, local Include.jl introduction, labeled Include
-  callout and Julia function link, “Let's set up our code environment:”, existing
-  include cell, then concise Julia/DataFrames/Distributions/Plots documentation
-  links. Removed repeated package narration and premature “real-world probability
-  measure” wording.
-- **Task 1:** Renamed “Task 1: Define the monitored exit rule,” with a major-section
-  rule immediately before it. Defines independent fixed binomial factors and p,
-  j steps, k up moves, and `S_{j,k}=S_0 u^k d^(j-k)`. Specifies `L<S_0<U`, checks
-  only positions still held, sells at or beyond either boundary, and records
-  neither boundary reached by N as still open. Approved opening: “In this task,
-  we specify when to sell our shares: when the price reaches our take-profit
-  boundary or falls to our stop-loss boundary.” Rejected “which outcomes we want
-  to calculate.” Replaced “Equality triggers an exit” with “We also sell when the
+The Summary remains terser and more abstract than the instructor's preferred
+retrospective takeaway voice. The helper implementation is the densest reading
+stretch, supported by the preceding derivation. These are observations for a
+possible future round, not pending changes. Scores are editorial judgments;
+classroom feedback is needed to assess student pacing.
+
+## Preferences and prior accepted work to preserve
+
+Follow the [shared notebook style guide](NOTEBOOK-STYLE-GUIDE.md), preserving the
+2026 notation, teaching voice, and explanatory steps. The earlier review was
+motivated by theory omitted from the lecture; keep enough development here for
+the example to stand on its own. Do not reopen the completed L4a lecture.
+
+- Keep exactly three objectives, tasks, and takeaways. Keep objective bullets
+  adjacent, with no blank lines or standalone `>` lines between them; the
+  instructor corrected this twice in the earlier review.
+- Keep the concrete missed-exit explanation in the introduction. The approved
+  “In this example…” overview follows the objectives and promises the probability
+  calculation before its implementation and terminal-only comparison.
+- Introduce first-passage time and open/closed positions in plain language.
+  The instructor found unexplained “first-passage” and “propagate surviving
+  probability” difficult to follow.
+- Preserve the standard setup opening, Include callout, setup cell, and
+  documentation references.
+- Preserve Task 1's opening: “In this task, we specify when to sell our shares:
+  when the price reaches our take-profit boundary or falls to our stop-loss
+  boundary.” The instructor rejected “which outcomes we want to calculate.”
+- Preserve the explicit boundary-equality explanation: “We also sell when the
   price equals either boundary exactly. Once we sell, we stop monitoring that
-  position.” Parameter code unchanged.
-- **Worked example:** Inserted after the parameter cell, under H3 “Why can a
-  terminal check miss an exit?” Uses S0=100, u=1.06, d=0.97, L=90, U=115:
+  position.” This replaced “Equality triggers an exit.”
+- Keep the two five-step paths with three up moves and two down moves. The
+  up/up/up/down/down path sells at step 3; the down/down/up/up/up path remains
+  open through step 5. Both stock prices finish at approximately 112.06.
+  Prices after a sale describe the underlying stock after the position closes.
+  This illustration does not change the default horizon of 12 steps.
+- Preserve the distinction between arrival probability before the boundary check
+  and open-position probability after that check. Already exited paths contribute
+  nothing to later open probabilities. The probability of remaining open need
+  not sum to one across the current nodes.
 
-  | Moves | Step 0 | Step 1 | Step 2 | Step 3 | Step 4 | Step 5 |
-  |---|---:|---:|---:|---:|---:|---:|
-  | Up, up, up, down, down | 100.00 | 106.00 | 112.36 | **119.10** | 115.53 | 112.06 |
-  | Down, down, up, up, up | 100.00 | 97.00 | 94.09 | 99.74 | 105.72 | 112.06 |
+## Current implementation context
 
-  Both paths have three up moves and two down moves. First sells at step 3;
-  subsequent prices describe the stock after sale. Second remains open through
-  step 5. Checking only step 5 misses the first path's earlier exit. This is a
-  five-step illustration, not a change to default N=12. Independently checked
-  arithmetic and exit histories in Python; inspected the rendered table.
-- **Task 2 opening:** Renamed “Task 2: Calculate the probabilities of the first
-  exit,” with a major-section rule. Explicitly defines **open** as still holding
-  the shares because neither boundary has been reached, and **closed** as sold.
-  Opening states the probabilities sought in concrete terms: selling at the
-  take-profit boundary first, selling at the stop-loss boundary first, or still
-  holding after N steps. Defines `a_{j,k}` as the joint probability of k up moves
-  and a position still open **after checking the boundaries at step j**. Already
-  exited paths contribute nothing. Initializes `a_{0,0}=1` and explains that
-  `sum_{k=0}^j a_{j,k}=P(position remains open after step j)` can be below one.
-  Ends by inviting the next-step update. This opening is **applied**, not pending.
-  Equations were rendered and visually checked.
+The reviewed notebook has 28 cells, including eight code cells. Defaults are
+S0=100, u=1.06, d=0.97, p=0.55, N=12, L=90, and U=115.
+Local Include.jl activates and instantiates the course project and imports
+DataFrames, Distributions, Plots, and PrettyTables.
 
-## Exact pending proposal — NOT approved or applied
+[Local helper documentation](../week-4/L4a/advanced/first-passage/docs/first-passage-functions.md)
+covers `price_at`, `first_passage_binomial`, and `terminal_upper_probability`.
 
-The assistant proposed the following addition **before the original helper
-function cell**. Jeffrey then said “save state - I have to take off.” Resume by
-reviewing this proposal, not by applying it silently:
+- The first-exit recursion carries forward only open probabilities, tests prices
+  inclusively against the boundaries, and checks probability conservation at
+  every step. Julia position k+1 represents mathematical up count k.
+- The code sends incoming contributions separately and checks their common node
+  price. This is equivalent to adding them before applying the boundary test,
+  as in the notebook's derivation.
+- Task 3 disables the lower exit with `lower=0.0`. In that upper-only case,
+  hitting-by-N probability is at least the terminal-at-or-above-U probability.
+  Do not claim that inequality when both exit boundaries are active.
+- The notebook computes exit probabilities, not discounting or realized payoffs.
+  Its fixed illustrative boundaries are not the lecture's discounted-NPV
+  thresholds without a separate derivation of that connection.
 
-### Move to the next lattice step
+## Verification completed September 13
 
-Suppose the position is open after step $j-1$. There are two ways to arrive at node $(j,k)$:
+- Read the whole notebook, setup file, and all three helper references.
+- Executed all eight code cells sequentially in Julia 1.12.7 using the course
+  project and source filenames in the notebook directory to preserve
+  `@__DIR__` behavior. This was script execution; saved notebook outputs were
+  preserved.
+- Compared per-step first-exit probabilities and terminal open-node probabilities
+  with independent full-path enumeration in six scenarios: default two barriers,
+  upper only, unreachable boundaries, all-down moves, all-up moves, and exact
+  equality with either boundary. Each default case enumerated 4096 paths.
+- Checked probability conservation and monotonicity at every step, and terminal
+  thresholds with no qualifying nodes or all nodes qualifying. All checks passed.
+- Validated notebook schema, three objectives/tasks/takeaways, local helper links
+  and anchors, and major-section separator placement.
+- Inspected all five PNG sections of the full HTML export. All 92 math elements
+  rendered without detected math errors, the figure loaded, and no page-wide
+  overflow was detected at a 1280-pixel viewport.
+- Verified that the notebook's SHA-256 was unchanged throughout the assessment.
 
-- An up move from $(j-1,k-1)$ increases the up-move count to $k$.
-- A down move from $(j-1,k)$ leaves the up-move count unchanged.
+Default probabilities: take-profit exit 0.7883596418871734; stop-loss exit
+0.06843037015019528; still open 0.1432099879626313. With no stop-loss, the monitored
+upper-exit probability is 0.7984938359844693 versus terminal-only probability
+0.7393149218989794, a difference of 0.05917891408548992.
 
-Multiplying each open-node probability by its next-move probability and adding the two contributions gives:
+Reviewed notebook SHA-256:
+`523baea586f0a1bf176256764741deea4b493a36ba4547d97521fe31435ae6a3`.
 
-$$
-b_{j,k}=p\,a_{j-1,k-1}+(1-p)a_{j-1,k}.
-$$
-
-Here, $b_{j,k}$ is the probability of arriving at this node **before checking its price against the exit boundaries**. Only positions still open at the previous step contribute. At the edges of the lattice, a missing predecessor contributes zero.
-
-Now check the price $S_{j,k}$. If it lies strictly between the boundaries, we continue holding the shares. Otherwise, we sell:
-
-$$
-a_{j,k}=\begin{cases}
-b_{j,k}, & L<S_{j,k}<U,\\
-0, & S_{j,k}\le L\ \text{or}\ S_{j,k}\ge U.
-\end{cases}
-$$
-
-When we sell, we record $b_{j,k}$ as the probability of a new stop-loss or take-profit exit at step $j$. That probability is not carried forward to another step.
-
-## Remaining review work
-
-- After the pending derivation, explain sums over nodes and steps for each exit
-  side and conservation: cumulative lower exits + cumulative upper exits + open
-  probability = 1. Not yet drafted or approved. Avoid jumping directly into code.
-- Review helper documentation, comments, summary tables, and figure interpretation.
-  Local helper function references need local docs links; none created yet here.
-- Review terminal-only comparison and later exhaustive path-history demonstration.
-  Assess any redundancy with the new worked example interactively; do not delete
-  the later section without approval.
-- Review remaining task headings/major-section rules and rewrite terse existing
-  key takeaways in the approved retrospective voice. These are not revised yet.
-- Execute/check the notebook when appropriate. **No full execution or independent
-  algorithm audit of this first-passage notebook has been performed in this review.**
-  Changes so far are Markdown only, including one inserted cell; code and outputs
-  are preserved. Notebook schema validated with nbformat.
-
-## Implementation context
-
-Current notebook has 20 cells. Zero-based indices (verify after any hand edits):
-0 intro/objectives; 1–4 setup; 5 Task 1; 6 parameters; 7 new worked example;
-8 Task 2 opening; 9 original helper code; later cells unchanged.
-
-Defaults: S0=100, u=1.06, d=0.97, p=0.55, N=12, L=90, U=115.
-Local Include.jl finds/activates the course project, instantiates, imports
-DataFrames, Distributions, and Plots. It does not currently import PrettyTables.
-
-- `price_at(S₀,u,d,j,k)` computes the binomial node price.
-- `first_passage_binomial(...; lower,upper)` propagates only open probabilities,
-  tests destination prices inclusively, and returns per-step summaries, terminal
-  open vector, cumulative lower/upper exit probabilities, and still-open probability.
-  It checks conservation each step. Julia position k+1 represents up count k.
-  Code sends each incoming contribution separately and checks the common node
-  price; this is equivalent to summing into b before testing that price.
-- `terminal_upper_probability(...)` directly checks binomial terminal node prices.
-  Comparison disables the lower barrier with `lower=0.0`. Hitting-by-N is at least
-  terminal-at-or-above-U probability in that upper-only case; do not claim this
-  inequality when both exit boundaries are active.
-- `enumerate_exit_histories(...)` enumerates 2^N paths and records first exit while
-  continuing the underlying stock price to N. Groups by up count to show differing
-  exit histories at shared terminal nodes. Post-sale stock prices are hypothetical
-  for the closed position, not prices at which it is sold again.
-
-The notebook computes exit probabilities, not discounting or realized payoffs.
-Fixed price boundaries are illustrative; do not identify them with the lecture's
-discounted-NPV thresholds without deriving that connection.
-
-## Temporary previews
-
-- `/private/tmp/first-passage-worked-example.html` and `.png`.
-- `/private/tmp/first-passage-open-probability.html` and `.png`.
-
-Anaconda Python nbformat/HTMLExporter exported selected cells. Playwright confirmed
-math/table rendering. Chromium requires execution outside the sandbox on this
-machine; the initial sandboxed screenshot failed with a macOS permission error,
-then succeeded with escalation. Temporary files may disappear; this handoff is
-the durable record. AGENTS.md links here, and CLAUDE.md instructs Claude to read it.
+Local previews and assessment use the prefix
+`build/notebook-previews/L4a-first-passage-initial`. These files are ignored by
+Git and may be cleaned up; this record retains the assessment and checks.
+No commit or push was made during this round.

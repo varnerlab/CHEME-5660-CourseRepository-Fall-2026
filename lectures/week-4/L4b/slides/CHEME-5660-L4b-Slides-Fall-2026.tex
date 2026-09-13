@@ -402,7 +402,6 @@
 \end{frame}
 
 \begin{frame}{Regression Intervals: Confidence Intervals}
-  We use the standard error to set an interval around each estimate.
   Under the independent normal-error assumptions, a confidence interval
   with level $1-\alpha$ for $\theta_j$ is given by:
   \[
@@ -416,10 +415,11 @@
   $j=2$ mean growth.
 
   \vspace{0.6em}
+  These intervals do not provide valid GBM uncertainty bounds because the
+  log-price errors are correlated and their variance increases with time.
   The \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb}{advanced drift-uncertainty example}
-  develops parameter uncertainty under GBM and examines its effect on target
-  probabilities. Let's apply our estimates and ordinary regression
-  intervals to historical share-price data.
+  accounts for Brownian errors and examines how parameter uncertainty affects
+  target probabilities.
 
   \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}{Estimating GBM Parameters}}
 \end{frame}

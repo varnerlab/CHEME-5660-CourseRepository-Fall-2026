@@ -1,8 +1,58 @@
-# L4b lattice-limit conservative review
+# L4b lattice-limit example — completed notebook review
 
-Reviewed September 11, 2026.
+## Current status — reviewed September 13, 2026
+
+The instructor confirmed: “ok - let's mark this as reviewed.” The latest
+assessment scored the notebook **9.0/10**. Polishing was conditional on an
+initial score below 9/10, so no notebook revisions were made. The initial and
+closing scores are unchanged. No proposals remain pending; do not restart
+completed sections unless the instructor requests another round.
 
 Notebook: [From the Binomial Lattice to Geometric Brownian Motion](../week-4/L4b/advanced/lattice-limit/CHEME-5660-L4b-Advanced-LatticeToGBM-Fall-2026.ipynb)
+
+| Dimension | Initial | Closing |
+| --- | --- | --- |
+| Technical correctness | 9.2 | 9.2 |
+| Organization | 9.2 | 9.2 |
+| Narrative and interpretation | 8.9 | 8.9 |
+| Presentation | 9.0 | 9.0 |
+| Cognitive density and pacing | 8.8 | 8.8 |
+
+The progression from one-step calibration to terminal distributions and target
+probabilities works well. The notebook distinguishes exact mean matching from
+limiting variance matching, explains probability mass divided by log-price
+spacing, and interprets the oscillating convergence errors while keeping the
+holding period fixed.
+
+The main wording opportunity is in Task 3: quadrupling the step count halves
+the dashed reference curve, while the actual error may increase or decrease.
+The central-limit discussion remains an explanatory argument; a formal proof
+would need conditions accounting for the changing step distribution. These
+observations require no follow-up in this round. The pacing scores are editorial
+judgments, with prior familiarity with L4a and L4b assumed.
+
+All 10 code cells executed successfully in Julia. Checks passed for one-step
+and terminal moments, mass/spacing normalization, independent binomial-tail
+cutoffs for all 11 convergence-table rows, the GBM probability using a lognormal
+tail, strict equality, target-domain cases, and rejection of an invalid coarse
+step. Notebook validity, local links, three objectives/tasks/takeaways, and
+separator placement were checked. Five rendered sections covering the whole
+notebook were inspected, including both plots. A local MathJax font issue was
+resolved in the preview by using SVG equation rendering; no notebook change
+was needed.
+
+The notebook and stored outputs remain byte-for-byte unchanged. Reviewed SHA-256:
+`0bea99806277791fc22051847ff4f5b6c9cf8b9748bcc16bf71f6a2d9405b0bc`.
+
+Local previews and the assessment record are saved under
+`build/notebook-previews/` with the prefix `L4b-lattice-limit-assessment`.
+These artifacts are ignored by Git and can be regenerated.
+
+## Historical conservative review — September 11, 2026
+
+The entries below preserve the earlier review and its discussion items. The
+September 13 assessment above records the current state and supersedes earlier
+status descriptions. Historical discussion items are not pending revisions.
 
 ## Scope and references
 

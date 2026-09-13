@@ -1,4 +1,72 @@
-# L4b review state — updated September 12, 2026
+# L4b review state — updated September 13, 2026
+
+## Slide release clarification — complete September 13, 2026
+
+The release review assessed the 28-slide companion deck at approximately 9.0/10
+and recommended making the regression-interval limitation explicit. The instructor
+approved the correction. Slide 19 now states that the ordinary intervals do not
+provide valid GBM uncertainty bounds because the log-price errors are correlated
+and their variance increases with time. Its advanced-example description now
+identifies the Brownian-error calculation and its connection to target probabilities.
+Removed one redundant opening sentence to preserve the existing font size and fit.
+
+The PDF was rebuilt and slides 18–19 were visually checked. Compared with the
+release-review rebuild, only slide 19 changed visually. The final build has 28
+pages, no overfull/underfull boxes, and no missing glyphs. Equations, link targets,
+three objectives, three takeaways, and the lecture notebook are preserved.
+No proposals remain pending; no commit or push was made.
+
+Final PDF SHA-256: `309fdf42a44a803038fe08745bb95f741c81266a1689b72b27870a2ac0dd3688`.
+
+## Notebook polish round — complete September 13, 2026
+
+The instructor requested a new polish round for the lecture. All three proposed
+revisions were approved and applied; no notebook proposals remain pending.
+This entry records the current notebook state and supersedes earlier notebook
+hashes below. The prior slide review remains complete; this round changed no slides.
+
+- **Regression intervals:** Made the change to independent normal/common-variance
+  errors explicit and explained why those intervals do not provide valid GBM
+  uncertainty bounds. Clarified standard error as estimated parameter uncertainty,
+  with matching units and smaller values indicating greater precision. The closing
+  transition points to the Brownian-error calculation in the advanced example.
+- **Terminal target probability:** Named the subtracted mean and the standard normal
+  random variable Z. After the instructor asked "Threshold for what?", the approved
+  wording explicitly connects Z > z_star to exceeding the target scaled NPV at the
+  scheduled sale time. The CDF explanation names Z <= z_star and Z > z_star.
+- **Advanced uncertainty description:** Updated the description to the current
+  example's fitted regression slope, observation period versus sampling frequency,
+  and effects of uncertainty in mean growth and volatility on target probabilities.
+
+Overall editorial rating: **9.0 initially; 9.1 finally**, using the same dimensions:
+
+| Dimension | Initial | Final |
+| --- | --- | --- |
+| Technical correctness | 9.0 | 9.5 |
+| Organization | 9.0 | 9.0 |
+| Narrative flow | 9.0 | 9.5 |
+| Presentation | 9.0 | 9.0 |
+| Cognitive density and pacing | 8.5 | 8.5 |
+
+The improvements clarify the assumptions and mathematical events, and align the
+lecture with its current supporting example. The estimation section still develops
+several substantial ideas in sequence; classroom feedback is needed to assess its
+pacing. Scores are editorial judgments, not measured learning outcomes.
+
+Final validation: valid notebook with 13 Markdown cells and no code cells; exactly
+three objectives and three takeaways; all 11 relative links resolve; all ten rules
+immediately precede level-two sections, with no trailing rule. Only cells 6, 9, and
+10 changed, exactly matching the approved replacements. All displayed equations,
+other cells, notebook metadata, and link targets are preserved. Checked the whole
+narrative and all five portions of the final rendered preview; no clipping or math
+rendering errors were observed. git diff --check passes. Companion notebook content
+was inspected for agreement; no companion code was changed or executed.
+
+Final notebook SHA-256: `c1412a9d3b412d5cefda99c6da8d0e06aef4b2f7e290ebe8ce753c957ce617da`.
+Full local preview: `build/notebook-previews/L4b-polish-final.html` and `.png`;
+readable portions: `L4b-polish-final-part-01.png` through `-05.png` in that directory.
+The previews use local VS Code Markdown/KaTeX modules with neutral browser styling;
+application themes may differ. No commit or push was made.
 
 ## Standard-error slide density follow-up — September 12, 2026
 

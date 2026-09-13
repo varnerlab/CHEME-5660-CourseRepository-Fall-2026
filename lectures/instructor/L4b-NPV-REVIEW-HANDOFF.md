@@ -1,10 +1,57 @@
 # L4b GBM NPV example — completed interactive review
 
-Completed September 11, 2026.
+Completed September 11, 2026; follow-up polish round completed September 13, 2026.
 
 Notebook: [GBM NPV trade rule](../week-4/L4b/CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb).
 
-## Status
+## September 13 polish round — complete
+
+All accepted changes are saved. No proposals remain pending.
+
+- Task 1 recalls the scaled-NPV definition, explains its discounted
+  fractional-return meaning, and connects it to the scheduled sale.
+- The probability formula explicitly requires a positive holding period and
+  positive volatility. The original sentence about using parameter estimates
+  is retained; the proposed clause about treating estimates as fixed model
+  parameters was rejected and was not applied.
+- A new paragraph after the Task 1 output interprets `p`, its complement
+  `1-p`, and the possibility of a discounted loss when exceeding a negative
+  target. Keep this prose independent of the selected ticker and numerical
+  inputs: the instructor changes tickers during lectures. The proposed
+  AAPL-specific paragraph was rejected and was not applied. The code already
+  prints the current ticker, target, horizon, and probability dynamically.
+
+The final overall editorial rating is **9.0/10**, compared with **8.8/10**
+at the start of this round:
+
+| Dimension | Initial | Final |
+| --- | --- | --- |
+| Technical correctness | 9 | 9 |
+| Organization | 9 | 9 |
+| Narrative flow | 8 | 9 |
+| Presentation | 9 | 9 |
+| Cognitive density and pacing | 9 | 9 |
+
+Task 1 now connects the financial quantity, probability formula, computation,
+and interpretation. The existing introduction, standard setup, median task,
+target sweep, and summary remain effective. Pacing is still an editorial
+judgment that can be assessed further during teaching.
+
+Validation: notebook schema, three objectives/tasks/takeaways, local links,
+separator placement, whole-notebook narrative, and rendered layout checked.
+The initial default probability and median were independently reproduced in
+Python; the target sweep was finite, bounded, and decreasing. All nine Julia
+code cells, saved outputs, and notebook metadata are preserved. Julia was not
+rerun in this prose-only round; external documentation URLs were not retested.
+
+Final notebook SHA-256:
+`b94b5536ac8a8ba6335120be1fbab1256c065db2a3efb717e2be3818209d3873`.
+Current HTML previews are in `build/notebook-previews/l4b-npv-polish-final-`
+`{opening,calculations,closing}.html`; the final calculations PNG uses the same
+prefix. Initial scores and working review artifacts are also saved in that
+ignored directory. No commit or push was made by this round.
+
+## September 11 status
 
 The interactive review is complete through the Summary. All approved passages
 are applied; no proposal remains pending. Do not restart completed sections.

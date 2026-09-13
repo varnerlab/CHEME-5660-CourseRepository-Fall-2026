@@ -1,8 +1,53 @@
-# L4a execution-aware notebook review — restart note
+# L4a execution-aware example — completed notebook review
 
-Saved September 10, 2026 at the instructor's request to pause and resume later.
+## Current status — reviewed September 13, 2026
 
-## Current status — interactive review complete
+The instructor confirmed: “Ok, mark this as reviewed.” The latest assessment
+scored the notebook **9.2/10**. The requested polish round was conditional on an
+initial score below 9/10, so no notebook revisions were made. The initial and
+closing scores are therefore unchanged. No proposals remain pending; do not
+restart completed sections unless the instructor requests another round.
+
+Notebook: [Execution-aware probability of profit](../week-4/L4a/advanced/execution/CHEME-5660-L4a-Advanced-ExecutionAware-ProbabilityOfProfit-Fall-2026.ipynb).
+
+| Dimension | Initial | Closing |
+| --- | --- | --- |
+| Technical correctness | 9.4 | 9.4 |
+| Organization | 9.4 | 9.4 |
+| Narrative and interpretation | 9.2 | 9.2 |
+| Presentation | 9.0 | 9.0 |
+| Cognitive density and pacing | 8.8 | 8.8 |
+
+The strongest passages are the cash-flow development, strict-threshold
+derivation, and explanation of the 17.34 percentage-point probability decrease
+when the node with 10 up moves ceases to meet the target. Task 3 explains why
+costs can reduce returns without changing the successful nodes. Remaining
+presentation limitations are the long helper definitions in Task 2 and some
+Task 3 code lines that require horizontal scrolling. These observations require
+no follow-up in this round; the pacing scores are editorial judgments.
+
+All 10 code cells executed successfully in Julia during this assessment.
+Independent binomial probability sums and analytic cutoff checks agreed with
+the worked comparison and horizon/benchmark sensitivity results. Additional
+checks passed for strict equality, all/no-success cases, and target-curve
+monotonicity and cost ordering. Notebook validity, local links, the three
+objectives/tasks/takeaways, and separator placement were checked. The rendered
+equations, tables, and plot were visually inspected; no math errors or page
+overflow were detected, and the plot loaded.
+
+The notebook and stored outputs remain byte-for-byte unchanged. Reviewed SHA-256:
+`fcb00c1b1b5191ff76e9a0145dcb4facef7bceeee2629ef6d081690e02d6e129`.
+
+Local previews are saved under `build/notebook-previews/` with the prefix
+`L4a-execution-assessment`; they are ignored by Git and can be regenerated.
+
+## Historical review record — September 10–11, 2026
+
+The original restart note was saved September 10, 2026 at the instructor's
+request to pause and resume later. The following entries record the completed
+earlier review; their old progress and next-step instructions are superseded.
+
+### Earlier interactive review completion
 
 All agreed revisions through the Summary have been applied. The final Summary
 has three retrospective takeaways aligned with the three tasks, with no blank
