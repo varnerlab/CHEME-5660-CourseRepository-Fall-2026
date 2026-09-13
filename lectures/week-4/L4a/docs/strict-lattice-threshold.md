@@ -3,7 +3,7 @@
 Find the smallest up-move count whose computed scaled NPV strictly exceeds a
 chosen terminal target. This helper is defined in
 [the L4a cumulative-probability example](../CHEME-5660-L4a-Example-CumulativeProbabilityLattice-Fall-2026.ipynb),
-under Task 2. Run its definition cell before calling it.
+under Task 3. Run its definition cell before calling it.
 
 ```julia
 strict_lattice_threshold(ρ_star::Real, u::Real, d::Real,
