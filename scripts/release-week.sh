@@ -66,7 +66,41 @@ rsync -a \
   --exclude '*.log' \
   --exclude '*.out' \
   --exclude '*.xdv' \
+  --exclude 'tmp/' \
   "$WEEK_DIR" "$BUILD/lectures/"
+
+# Saved setup messages describe the instructor's environment. Remove those
+# messages from the bundle copies while preserving code and computed results.
+python3 - "$BUILD/lectures/week-$WEEK_NUM" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+machine_path = re.compile(r"/Users/|\\Users\\|Desktop/julia_work")
+for path in Path(sys.argv[1]).rglob("*.ipynb"):
+    notebook = json.loads(path.read_text())
+    changed = False
+    for cell in notebook.get("cells", []):
+        if cell.get("cell_type") != "code":
+            continue
+        source = "".join(cell.get("source", []))
+        if not re.search(r"\binclude\([^\n]*Include[^\n]*\.jl", source):
+            continue
+        outputs = cell.get("outputs", [])
+        retained = [
+            output for output in outputs
+            if not (
+                output.get("output_type") == "stream"
+                and machine_path.search("".join(output.get("text", [])))
+            )
+        ]
+        if len(retained) != len(outputs):
+            cell["outputs"] = retained
+            changed = True
+    if changed:
+        path.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n")
+PY
 
 ARCHIVE="$OUT/$BUNDLE.zip"
 rm -f "$ARCHIVE"
