@@ -177,6 +177,14 @@ limitation rather than asking the instructor to repeat the style discussion.
   mathematical objects to the functions and variables used, and interpret or check
   meaningful outputs. Choose transitions for the actual computation rather than
   inserting a stock sentence before every cell.
+- Put each constant or parameter assignment on its own line, with a trailing
+  comment explaining its meaning and units where applicable. Do not combine
+  separate assignments on one line with semicolons. The instructor confirmed
+  this preference on September 14, 2026.
+- Use at most one `let` block per code cell. Give separate calculation and
+  reporting blocks their own cells, with prose introducing the next step.
+  The instructor confirmed this preference during the advanced covariance
+  example review on September 14, 2026.
 - Keep Julia function definitions in the notebook's local `src/` directory and
   load them through `Include.jl`. Give each function a proper Julia docstring
   describing its arguments, units, returned values, and assumptions. Keep the
@@ -214,6 +222,10 @@ decorative HTML-table treatment in L4a was rejected as too large and overdesigne
 avoid badges, shadows, rounded card frames, and excessive padding. Preserve readable
 type and clear alignment. Simple notation in raw HTML tables should use HTML
 italics, subscripts, and bold vectors rather than relying on LaTeX rendering there.
+
+When presenting consecutive result tables, include a short paragraph between them
+that interprets the preceding result and introduces the next comparison. The
+instructor confirmed this preference on September 14, 2026.
 
 ## Key takeaway voice — all courses
 

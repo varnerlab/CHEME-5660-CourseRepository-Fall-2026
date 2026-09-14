@@ -91,6 +91,64 @@
   before follow-up work and do not restart completed sections unless the
   instructor requests another round.
 
+## Completed L5a covariance example review
+
+- The L5a covariance example was marked reviewed and complete September 14,
+  2026, with a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5a-COVARIANCE-REVIEW-HANDOFF.md)
+  records the approved sections, figure revisions, and validation. No proposals
+  remain pending; read it before follow-up work and do not restart completed
+  sections unless the instructor requests another round.
+
+## Completed L5a lecture review
+
+- The L5a multiple-asset GBM lecture was marked reviewed and complete September 14,
+  2026, with a final score of 9.1/10. The
+  [saved review record](lectures/instructor/L5a-LECTURE-REVIEW-HANDOFF.md)
+  records the approved notation, derivations, instructor feedback, and checks.
+  No proposals remain pending; read it before follow-up work and do not restart
+  completed sections unless the instructor requests another round.
+
+## Completed L5a out-of-sample example review
+
+- The L5a out-of-sample single-asset GBM example was marked reviewed and complete
+  September 14, 2026, with instructor confirmation and a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5a-OOS-REVIEW-HANDOFF.md) records
+  the histogram correction, shared ticker selection, three-task organization,
+  documented helpers, instructor preferences, and validation. No proposals
+  remain pending; read it before follow-up work and do not restart completed
+  sections unless the instructor requests another round.
+
+## Completed L5a Dirichlet example review
+
+- The L5a Dirichlet portfolio weights example was marked reviewed and complete
+  by the instructor on September 14, 2026, with a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5a-DIRICHLET-REVIEW-HANDOFF.md)
+  records the approved terminology, table and figure revisions, annotated wealth
+  derivation, and validation. No proposals remain pending; read it before
+  follow-up work and do not restart completed sections unless the instructor
+  requests another round.
+
+## Completed L5a advanced covariance-estimation review
+
+- The L5a advanced covariance-estimation example was marked reviewed and complete
+  by the instructor September 14, 2026, with a final score of 9.1/10. The
+  [saved review record](lectures/instructor/L5a-ADVANCED-COVARIANCE-REVIEW-HANDOFF.md)
+  records the approved spectral diagnostics, sampling-error explanation, figures,
+  source functions, code-cell organization, and optimization closing. No proposals
+  remain pending; read it before follow-up work and do not restart completed
+  sections unless the instructor requests another round.
+
+## Completed L5a rolling-correlation example review
+
+- The L5a rolling-correlation example was marked reviewed and complete by the
+  instructor September 14, 2026, with a final score of 9.1/10. The
+  [saved review record](lectures/instructor/L5a-ROLLING-CORRELATION-REVIEW-HANDOFF.md)
+  preserves the earlier accepted sections, resumed assessment, source helpers,
+  figure and mathematical checks, and preferences. No proposals remain pending;
+  read it before follow-up work and do not restart completed sections unless
+  the instructor requests another round.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned
