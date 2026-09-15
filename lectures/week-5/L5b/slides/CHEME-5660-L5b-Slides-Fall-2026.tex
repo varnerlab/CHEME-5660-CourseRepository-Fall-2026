@@ -310,14 +310,17 @@
 \end{frame}
 
 \begin{frame}{How the Target Floor Traces the Frontier}
-  \begin{center}
-    \includegraphics[height=0.44\textheight,keepaspectratio]{../figs/Fig-MinVar-Portfolio-RA-Schematic.png}
-  \end{center}
-  \vspace{-0.4em}
-  With the target as a floor, every $g_\star$ below the GMV growth rate returns
-  the GMV portfolio (2) and every $g_\star$ above it the efficient portfolio at
-  that growth rate (1); the sweep never returns the lower branch (3). The
-  weights along the sweep show which assets carry the frontier.
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \includegraphics[width=\textwidth]{../figs/minimum-variance-frontier/frontier.pdf}
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      With the target as a floor, every $g_\star$ below the GMV growth rate returns
+      the GMV portfolio ($p_2$) and every $g_\star$ above it the efficient portfolio at
+      that growth rate ($p_1$); the sweep never returns the lower branch ($p_3$). The
+      weights along the sweep show which assets carry the frontier.
+    \end{column}
+  \end{columns}
   \slidenote{Example 1:}{\dimmed{CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}}
 \end{frame}
 

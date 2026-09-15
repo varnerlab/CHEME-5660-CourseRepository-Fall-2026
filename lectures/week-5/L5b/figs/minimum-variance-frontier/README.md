@@ -10,10 +10,20 @@ Python 3. The palette comes from `lectures/templates/vnflow.sty`. Typography use
 Helvetica Neue when available, with TeX Gyre Heros as the fallback.
 `make clean` removes intermediate TeX files and keeps both exports.
 
-The diagram is a schematic hyperbola with short positions allowed. Portfolio 2
-is GMV; portfolios 1 and 3 have equal standard deviation and different expected
+The canvas is 149 × 95 mm. Axis and direct labels use 10 pt type; projection
+labels and the comparison note use 9 pt type. For print, use the native width
+or larger to preserve these sizes; the notebook preview uses a width of 760 px.
+The solid and dashed branches, and filled and open comparison markers, remain
+distinct in grayscale. Both exports use the shared pale gray `vnpanel` color
+(`#F2F3F4`) inside the axes, with white margins and fixed canvas dimensions.
+
+The diagram is a schematic hyperbola with short positions allowed: weights may
+be negative. This assumption is documented here rather than displayed in the
+plot; imposing nonnegative weights can change the frontier's shape. Portfolio
+`p₂` is GMV; portfolios `p₁` and `p₃` have equal standard deviation and different expected
 growth rates. The solid red upper branch is efficient, including GMV; the dashed
-gray lower branch is dominated. Axis quantities are growth rates and growth-rate
+gray lower branch is dominated. A single upward arrow at the shared standard
+deviation connects the comparison portfolios. Axis quantities are growth rates and growth-rate
 standard deviations in inverse years, not GBM volatility.
 
 The plotted parameterization is `x = x0 + sqrt(s0^2 + k*t^2)` and

@@ -6,7 +6,9 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-MinVar-Portfolio-RA-Schematic.png ../figs/Fig-Frontier-CAL-Schematic.png
+FRONTIER_DIR := ../figs/minimum-variance-frontier
+FRONTIER_PDF := $(FRONTIER_DIR)/frontier.pdf
+FIGURES := $(FRONTIER_PDF) ../figs/Fig-Frontier-CAL-Schematic.png
 
 .DEFAULT_GOAL := slides
 
@@ -16,6 +18,9 @@ slides: $(PDF)
 
 $(PDF): $(TEXFILE) vnslides.sty $(STYLE) $(FIGURES)
 	$(LATEXMK) -xelatex $(LATEX_FLAGS) $(TEXFILE)
+
+$(FRONTIER_PDF): $(FRONTIER_DIR)/frontier.tex $(FRONTIER_DIR)/Makefile ../../../templates/vnflow.sty
+	$(MAKE) -C $(FRONTIER_DIR) all
 
 clean:
 	$(LATEXMK) -c $(TEXFILE)
