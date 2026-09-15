@@ -15,3 +15,7 @@ using Statistics                   # rolling moments and correlations
 using Random                       # reproducible sampling
 using Plots                        # plotting
 using PrettyTables                 # formatted tables
+
+# Local helpers used by the rolling-correlation example -
+include(joinpath(@__DIR__, "src", "RollingCorrelation.jl"));
+include(joinpath(@__DIR__, "src", "ExponentiallyWeightedCorrelation.jl"));

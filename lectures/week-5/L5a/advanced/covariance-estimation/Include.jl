@@ -4,7 +4,8 @@ let d = @__DIR__
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
     end
-    Pkg.activate(d); Pkg.instantiate();
+    Pkg.activate(d);
+    Pkg.instantiate();
 end
 
 using VLQuantitativeFinancePackage # course dataset and growth-rate matrix
@@ -15,3 +16,6 @@ using Statistics                   # sample moments
 using Random                       # reproducible simulation
 using Plots                        # plotting
 using PrettyTables                 # formatted tables
+
+# Load the density and portfolio helpers -
+include(joinpath(@__DIR__, "src", "CovarianceEstimation.jl"));

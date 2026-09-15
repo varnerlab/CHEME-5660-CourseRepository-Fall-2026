@@ -19,15 +19,39 @@ This data was provided by [Polygon.io](https://polygon.io/) and covers the perio
 MyTrainingMarketDataSet() = _jld2(joinpath(_PATH_TO_DATA, "SP500-Daily-OHLC-1-3-2014-to-12-31-2024.jld2"));
 
 """
-    MyTestingMarketDataSet() -> Dict{String,Any}
+    MyTestingMarketDataSet(; year::Int = 2025) -> Dict{String,Any}
 
-Load the SP500 daily OHLC testing dataset. The returned dictionary contains a
-`"dataset"` entry whose value is a ticker-keyed dictionary of `DataFrame`
-objects.
-This data was provided by [Polygon.io](https://polygon.io/) and covers the period from January 2, 2025, to the current date (it is updated periodically).
+Load a bundled calendar-year snapshot of daily stock and exchange-traded fund
+data provided by [Polygon.io](https://polygon.io/).
 
+### Arguments
+- `year::Int`: select 2025 (January 2 through December 31) or 2026 (January 2
+  through September 4). Defaults to 2025, the testing period of the existing
+  course examples. Other years raise an `ArgumentError`.
+
+### Returns
+- `Dict{String,Any}`: a dictionary with a `"dataset"` entry containing
+  ticker-keyed `DataFrame` objects. Each frame has `open`, `high`, `low`, `close`,
+  and `volume_weighted_average_price` in USD/share, `volume` in shares,
+  `number_of_transactions`, and a `DateTime` `timestamp`, sorted chronologically.
+
+These are frozen snapshots, not live downloads. Some tickers have incomplete
+histories, and the ticker sets differ across years and from the training data.
+Check the available dates and match records by ticker when comparing datasets.
 """
-MyTestingMarketDataSet() = _jld2(joinpath(_PATH_TO_DATA, "SP500-Daily-OHLC-1-2-2025-to-12-31-2025.jld2"));
+function MyTestingMarketDataSet(; year::Int = 2025)::Dict{String,Any}
+
+    # Select the frozen testing snapshot -
+    filename = if year == 2025
+        "SP500-Daily-OHLC-1-2-2025-to-12-31-2025.jld2"
+    elseif year == 2026
+        "SP500-Daily-OHLC-1-2-2026-to-09-04-2026.jld2"
+    else
+        throw(ArgumentError("no testing market data for $(year); 2025 and 2026 are available"))
+    end
+
+    return _jld2(joinpath(_PATH_TO_DATA, filename));
+end
 
 """
     MySP500SectorDataSet() -> DataFrame

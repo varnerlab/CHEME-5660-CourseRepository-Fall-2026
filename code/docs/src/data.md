@@ -1,6 +1,26 @@
 # Data
-We have included a market dataset that we use for examples and activities in the equity domain. This dataset holds the daily open, high, low, close, and volume data for a selection of stocks between 2014 and 2024. 
+The package includes daily open, high, low, close, volume, and volume-weighted
+average prices for stocks and exchange-traded funds. The training dataset covers
+2014 through 2024. Two frozen testing snapshots are available:
 
+| Testing year | Available dates | Tickers | Tickers with a complete history |
+| --- | --- | ---: | ---: |
+| 2025 | January 2–December 31, 2025 | 483 | 473 with 250 observations |
+| 2026 | January 2–September 4, 2026 | 475 | 465 with 170 observations |
+
+Select the testing year when loading the data:
+
+```julia
+training = MyTrainingMarketDataSet()["dataset"]
+testing_2025 = MyTestingMarketDataSet()["dataset"] # default testing year
+testing_2026 = MyTestingMarketDataSet(year = 2026)["dataset"]
+spy_2026 = testing_2026["SPY"] # daily observations for one ticker
+```
+
+The loaders return the bundled observations without filling missing dates or
+filtering tickers. Match parameters and prices by ticker and inspect each price
+series' dates before an out-of-sample comparison. The 2026 snapshot ends on
+September 4; loading it does not download more recent observations.
 
 ```@docs
 VLQuantitativeFinancePackage.MyTrainingMarketDataSet
