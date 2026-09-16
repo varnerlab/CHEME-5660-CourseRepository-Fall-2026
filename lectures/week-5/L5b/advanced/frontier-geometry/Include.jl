@@ -19,3 +19,6 @@ using PrettyTables                 # formatted tables
 using JuMP                         # optimization-model construction
 using MadNLP                       # nonlinear optimization
 using MathOptInterface             # solver statuses
+
+# Load the local frontier calculations -
+include(joinpath(@__DIR__, "src", "FrontierGeometry.jl"));

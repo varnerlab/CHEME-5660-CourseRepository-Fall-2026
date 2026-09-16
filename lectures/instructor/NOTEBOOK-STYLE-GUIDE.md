@@ -227,6 +227,10 @@ When presenting consecutive result tables, include a short paragraph between the
 that interprets the preceding result and introduces the next comparison. The
 instructor confirmed this preference on September 14, 2026.
 
+When a table is followed by a figure, also place connective prose between the
+outputs: interpret the table and introduce what the figure will show. The
+instructor confirmed this preference on September 15, 2026.
+
 ## Key takeaway voice — all courses
 
 On September 10, 2026, the instructor explicitly approved this preference for

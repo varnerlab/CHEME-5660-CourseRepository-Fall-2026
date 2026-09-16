@@ -109,6 +109,16 @@
   No proposals remain pending; read it before follow-up work and do not restart
   completed sections unless the instructor requests another round.
 
+## Completed L5a lecture slides review
+
+- The L5a lecture slides were reviewed and completed September 16, 2026, with
+  a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5a-SLIDES-REVIEW-HANDOFF.md) records
+  the approved 37-page deck, L4a style reference, notation, practical Dirichlet
+  explanations, portfolio-growth approximation, instructor preferences, and
+  final checks. No slide proposals remain pending; read it before follow-up
+  work and do not restart approved sections unless another round is requested.
+
 ## Completed L5a out-of-sample example review
 
 - The L5a out-of-sample single-asset GBM example was marked reviewed and complete
@@ -148,6 +158,57 @@
   figure and mathematical checks, and preferences. No proposals remain pending;
   read it before follow-up work and do not restart completed sections unless
   the instructor requests another round.
+
+## Completed L5b lecture review
+
+- The L5b minimum-variance portfolio lecture was marked reviewed and complete
+  by the instructor September 15, 2026, with a final score of 9.1/10. The
+  [saved review record](lectures/instructor/L5b-LECTURE-REVIEW-HANDOFF.md) records
+  the approved frontier and CAL sections, concise input-estimation discussion,
+  closing revisions, instructor preferences, and validation. No proposals remain
+  pending; read it before follow-up work and do not restart completed sections
+  unless the instructor requests another round.
+
+## Completed L5b minimum-variance example review
+
+- The L5b data-driven minimum-variance example was marked reviewed and complete
+  by the instructor September 16, 2026, with a final score of
+  9.1/10. The [saved review record](lectures/instructor/L5b-MINVAR-REVIEW-HANDOFF.md)
+  records the approved three-task organization, notation, optimization explanations,
+  figures and tables, wealth/NPV distinction, closing, and validation. No proposals
+  remain pending; read it before follow-up work and do not restart completed
+  sections unless the instructor requests another round.
+
+## Completed L5b multiple-asset GBM example review
+
+- The L5b multiple-asset GBM portfolio example was marked reviewed and complete
+  by the instructor September 16, 2026, with a final score of
+  9.2/10. The [saved review record](lectures/instructor/L5b-MAGBM-REVIEW-HANDOFF.md)
+  records the approved simulation and drift explanation, allocation and wealth
+  development, pointwise bands, NPV table, source helper, preferences, and checks.
+  No proposals remain pending; read it before follow-up work and do not restart
+  completed sections unless the instructor requests another round.
+
+## Completed L5b advanced frontier-geometry review
+
+- The L5b advanced frontier-geometry example was marked reviewed and complete
+  by the instructor September 16, 2026, with a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5b-ADVANCED-FRONTIER-REVIEW-HANDOFF.md)
+  records the derivations, two-fund construction, constraint comparison, figure
+  preferences, explicit 50% position-limit terminology, and final validation.
+  No proposals remain pending for this notebook; read the record before follow-up
+  work and do not restart completed sections unless the instructor requests
+  another round. The advanced estimation-risk review remains in progress.
+
+## Paused L5b advanced estimation-risk review
+
+- The instructor paused the review September 16, 2026, and specified the
+  [advanced estimation-risk notebook](lectures/week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb)
+  as the next review target. Its initial score is 8.3/10; the source is unchanged,
+  and no sections have been approved. Read the
+  [resume record](lectures/instructor/L5b-ADVANCED-ESTIMATION-REVIEW-HANDOFF.md)
+  before continuing. Resume with the pending opening proposal, then proceed
+  section by section. The frontier-geometry review is complete.
 
 ## Interactive notebook polishing
 
