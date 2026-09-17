@@ -67,6 +67,14 @@ Earlier review handoff hashes identify the snapshots at those reviews. The
 fingerprints below identify the subsequent commented versions; they do not
 replace the earlier narrative assessments or reopen their approved sections.
 
+**Subsequent September 17 scope correction:** The instructor then requested removal
+of the minimum-variance example's stale market-portfolio transition. Only its
+Summary paragraph changed; all code comments and executable code remain as checked
+here. Its current hash is
+`cdd7c2dad7a1a0c863b33406be9603d1dc19dce23d7c05ae360002cbfe1823e4`;
+the table retains the original commenting-pass hash. See the
+[scope amendment](L5b-MINVAR-REVIEW-HANDOFF.md#september-17-release-alignment).
+
 | Notebook | Code cells | SHA-256 after commenting |
 | --- | ---: | --- |
 | [L5a covariance](../week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb) | 18 | `3bdd890153976922013722ef7f72111db00bd73362b908e15950f8f6311ff8eb` |

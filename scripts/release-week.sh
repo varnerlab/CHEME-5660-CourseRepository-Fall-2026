@@ -72,7 +72,7 @@ rsync -a \
   --exclude 'tmp/' \
   "$WEEK_DIR" "$BUILD/lectures/"
 
-# Remove setup messages and make earlier-week notebook links usable in the
+# Remove setup messages and make links to other weeks usable in the
 # standalone bundle. Preserve the authoring notebooks and computed results.
 python3 - "$BUILD/lectures/week-$WEEK_NUM" "$REPO" "$TAG" <<'PY'
 import json
@@ -84,6 +84,22 @@ from urllib.parse import quote, unquote, urlsplit
 week_dir = Path(sys.argv[1])
 repo = Path(sys.argv[2])
 tag = sys.argv[3]
+
+# Keep this week's README link local; other weeks live in the tagged repository.
+# Only edit the bundled copy, since all weeks exist in the authoring repository.
+readme = week_dir.parent.parent / "README.md"
+
+def readme_week_link(match):
+    relative = match.group(1)
+    if relative.rstrip("/") == f"lectures/{week_dir.name}":
+        return match.group(0)
+    return (
+        "](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026"
+        f"/tree/{tag}/{relative})"
+    )
+
+readme.write_text(re.sub(r"\]\((lectures/week-\d+/?)\)", readme_week_link, readme.read_text()))
+
 for path in week_dir.rglob("*.ipynb"):
     notebook = json.loads(path.read_text())
     changed = False

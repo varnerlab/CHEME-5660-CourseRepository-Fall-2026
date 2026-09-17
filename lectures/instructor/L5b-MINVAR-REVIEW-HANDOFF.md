@@ -15,6 +15,26 @@ Initial SHA-256:
 Final SHA-256:
 `85578325bc41a971b4ce651d7dceab7526769c831e01ddda19c1b4d2ceaa80da`
 
+## September 17 release alignment
+
+Following the completed code-commenting pass, the instructor requested removal
+of the remaining market-portfolio identification. The last paragraph of Summary
+(Markdown cell 62) now reads:
+
+> In L6a, we introduce the single-index model to describe how asset growth rates
+> vary together using fewer parameters.
+
+This replaces the obsolete claim that L5b explains when the tangent portfolio
+represents the market portfolio. The course uses a market index as the SIM factor
+and computes tangent portfolio weights from estimated inputs. It does not invoke
+a CAPM market portfolio.
+All other cells, executable code, outputs, and metadata were preserved, and notebook
+schema validation passed. This supersedes the market-portfolio transition described
+in the historical closing review below. No broader notebook review was reopened.
+
+Current SHA-256 after the commenting pass and this scope correction:
+`cdd7c2dad7a1a0c863b33406be9603d1dc19dce23d7c05ae360002cbfe1823e4`
+
 ## Assessment
 
 The initial score was **8.4/10**; the final score is **9.1/10**.
