@@ -169,6 +169,17 @@
   pending; read it before follow-up work and do not restart completed sections
   unless the instructor requests another round.
 
+## Completed L5b lecture slides review
+
+- The L5b lecture slides were marked reviewed and complete by the instructor
+  September 17, 2026, with a final score of 9.2/10. The
+  [saved review record](lectures/instructor/L5b-SLIDES-REVIEW-HANDOFF.md) records
+  the approved 30-page deck, growth-rate notation, constraint and borrowing
+  explanations, concise closing, and final checks. The instructor specified
+  SIM rather than CAPM and authorized matching notebook scope edits. No slide
+  proposals remain pending; read the record before follow-up work and do not
+  restart approved sections unless another round is requested.
+
 ## Completed L5b minimum-variance example review
 
 - The L5b data-driven minimum-variance example was marked reviewed and complete
@@ -198,17 +209,29 @@
   preferences, explicit 50% position-limit terminology, and final validation.
   No proposals remain pending for this notebook; read the record before follow-up
   work and do not restart completed sections unless the instructor requests
-  another round. The advanced estimation-risk review remains in progress.
+  another round. The advanced estimation-risk review is also complete; see below.
 
-## Paused L5b advanced estimation-risk review
+## Completed L5b advanced estimation-risk review
 
-- The instructor paused the review September 16, 2026, and specified the
-  [advanced estimation-risk notebook](lectures/week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb)
-  as the next review target. Its initial score is 8.3/10; the source is unchanged,
-  and no sections have been approved. Read the
-  [resume record](lectures/instructor/L5b-ADVANCED-ESTIMATION-REVIEW-HANDOFF.md)
-  before continuing. Resume with the pending opening proposal, then proceed
-  section by section. The frontier-geometry review is complete.
+- The advanced estimation-risk notebook was marked reviewed and complete by the
+  instructor September 17, 2026, with a final score of 9.2/10 (initial 8.3/10).
+  The [saved review record](lectures/instructor/L5b-ADVANCED-ESTIMATION-REVIEW-HANDOFF.md)
+  records the three-task organization, resampling assumptions, normalizer and
+  sensitivity distinctions, boxed compounding derivation, terminal-wealth box
+  plots, instructor wording preferences, and validation. No proposals remain
+  pending; read the record before follow-up work and do not restart completed
+  sections unless the instructor requests another round.
+
+## Completed week-5 code-commenting pass
+
+- The instructor-requested commenting pass was completed September 17, 2026.
+  All 175 code cells across nine computational notebooks now include teaching
+  comments; the two lecture notebooks have no code cells. The
+  [saved record](lectures/instructor/WEEK-5-CODE-COMMENTS-HANDOFF.md) records
+  the scope, explanations, validation, and current notebook hashes. Executable
+  syntax, Markdown, saved outputs, and metadata were preserved. Earlier review
+  hashes refer to the pre-commenting snapshots; their approved sections and
+  review scores remain closed.
 
 ## Interactive notebook polishing
 

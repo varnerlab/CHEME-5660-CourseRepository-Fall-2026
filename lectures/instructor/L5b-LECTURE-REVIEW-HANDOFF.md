@@ -12,8 +12,30 @@ Notebook: [Minimum-variance portfolios, the frontier, and the CAL](../week-5/L5b
 Initial SHA-256:
 `845c36017a5c4993fc3e90c9f17ea9a4e2228ea1ec3dc661c6981203aec4428c`
 
-Final SHA-256:
+September 15 review SHA-256:
 `c1eb5036fe09785aad0419544439fce597c15cbe73b1e6019ea2fd838965fdab`
+
+## September 17 scope alignment
+
+During the L5b slide review, the instructor clarified that the course proceeds
+to SIM, not CAPM, and explicitly authorized matching changes to this notebook.
+This amendment supersedes the market-portfolio revision recorded below; the
+September 15 assessment and other approved material remain unchanged.
+
+- Removed “When Is the Tangent Portfolio the Market Portfolio?” and its CAPM,
+  market-clearing, and capital-market-line discussion.
+- Removed the corresponding clauses from Objective 3 and Takeaway 3.
+- Connected two-fund separation directly to “Estimating Portfolio Inputs.”
+  Preserved the closing introduction of a model separating systematic and
+  firm-specific risk.
+- Validated the notebook schema, exactly three objectives and three takeaways,
+  and nine major-section separators, each preceding a level-two heading.
+  All unrelated cells and all retained metadata are unchanged. Rendered and
+  visually checked the edited opening, transition, and summary; no math errors
+  or horizontal overflow were reported. The notebook has no executable cells.
+
+Current SHA-256:
+`d0fb3ae529194f004f9da166f2dcb05ab65b4ecafeecceb1ee2f50777f7913a5`
 
 ## Assessment
 
