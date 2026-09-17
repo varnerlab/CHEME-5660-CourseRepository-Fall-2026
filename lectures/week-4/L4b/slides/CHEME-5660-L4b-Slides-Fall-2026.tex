@@ -66,7 +66,7 @@
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}{Estimating GBM Parameters}
 
   Estimate mean growth rate and volatility from historical prices, recover the
-  arithmetic drift, and compare simulated price paths with the data.
+  drift, and compare simulated price paths with the data.
 
   \vspace{1.1em}
   \textbf{\ink{Example:}}
@@ -81,7 +81,7 @@
   \hilite{quantitative trading firm}. Like Citadel Securities in L4a, it
   uses mathematical models and software in trading.
 
-  \vspace{0.4em}
+  \vspace{0.25em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Trading business}: Jane Street trades mainly with its own
       capital and provides liquidity to institutional clients. Citadel Securities
@@ -89,38 +89,40 @@
     \item \hilite{Products}: Jane Street is known for market making in
       exchange-traded funds (ETFs), which let investors trade baskets of assets.
       Both firms operate across multiple asset classes.
-    \item \hilite{Technology}: Jane Street uses OCaml, a functional programming
+    \item \hilite{Technology}: \href{https://www.janestreet.com/technology/}{Jane Street uses OCaml}, a functional programming
       language, in its trading systems.
   \end{itemize}
 
-  \vspace{0.4em}
-  A trade's outcome depends on price changes before the sale. We will
-  model this uncertainty with GBM and calculate the probability of exceeding
-  a target scaled NPV.
+  \vspace{0.25em}
+  \textbf{Explore further:}
+  \href{https://www.youtube.com/@janestreet}{YouTube},
+  \href{https://www.janestreet.com/join-jane-street/internships/}{internships}, and
+  \href{https://www.janestreet.com/join-jane-street/open-roles/}{open positions}.
+
+  \vspace{0.25em}
+  We use models to describe uncertain future prices and calculate
+  probabilities of trade outcomes.
 \end{frame}
 
 \begin{frame}{From Lattices to Continuous Prices}
-  In L4a, lattice models used discrete time steps and a finite set of
-  price movements. What changes as we reduce the time step?
+  In L4a, we generalized the binomial lattice to an N-ary lattice with
+  $m$ possible price movements at each step. Let's extend two ideas:
 
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item Keep the holding period fixed and divide it into more steps.
-    \item Shrink the up and down price movements and adjust their probabilities
-      so the mean and variance of the holding-period log return remain
-      approximately unchanged.
-    \item For suitably scaled, independent binomial steps, the accumulated
-      log return $\ln(S_T/S_0)$ approaches a normal distribution.
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{What prices can occur?} Tomorrow's price can take one of
+      $m$ values. We can extend this to any positive price, using a continuous
+      distribution to calculate probabilities for price ranges.
+    \item \hilite{When can the price change?} The holding period is the time
+      between buying and selling. Keeping those dates fixed, shorten the steps
+      and use smaller typical price movements. Letting $\Delta t\to0$ allows
+      us to describe prices in continuous time.
   \end{itemize}
 
   \vspace{0.5em}
-  Since $S_T=S_0\exp[\ln(S_T/S_0)]$, the terminal price approaches a
-  lognormal distribution. The corresponding continuous-time price model is
-  \hilite{geometric Brownian motion}.
-
-  \vspace{0.4em}
-  We introduce this model through its stochastic differential equation,
-  then use its solution to calculate a trade's target probability.
+  \hilite{GBM} supplies a rule for continuous price paths: log returns over
+  non-overlapping intervals are independent and normally distributed.
+  Future prices are therefore lognormal and positive.
 \end{frame}
 
 \begin{frame}{Single Asset Geometric Brownian Motion (GBM)}
@@ -128,7 +130,7 @@
   used geometric Brownian motion to model stock prices. The model became
   widely known through
   \href{https://www.cs.princeton.edu/courses/archive/fall08/cos323/papers/black_scholes73.pdf}{Black--Scholes--Merton (BSM) option pricing}.
-  Random fluctuations scale with the current price, and prices remain positive.
+  Prices remain positive.
 
   \vspace{0.5em}
   Let $S(t)>0$ be the share price (USD/share), with $t$ and the holding period
@@ -143,13 +145,14 @@
   \]
 
   \vspace{0.5em}
-  The drift sets the expected proportional change per unit time. The Wiener
-  increment supplies the random shock. Let's define this noise process.
+  The drift controls expected price growth; volatility controls the size of
+  random fluctuations. Let's define the Wiener process.
 \end{frame}
 
 \begin{frame}{The Wiener Process}
-  A Wiener process $\{W(t),\,0\le t\le T\}$ is a continuous real-valued
-  stochastic process with three properties:
+  Named after \href{https://en.wikipedia.org/wiki/Norbert_Wiener}{Norbert Wiener},
+  a Wiener process $\{W(t),\,0\le t\le T\}$ is a continuous stochastic
+  process with three properties:
 
   \vspace{0.6em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
@@ -162,10 +165,12 @@
   \end{itemize}
 
   \vspace{0.5em}
-  The third property lets us write any increment as a scaled standard normal:
+  Each increment has the same distribution as a scaled standard normal:
   \[
-    W(t)-W(s)=\sqrt{t-s}\;Z,\qquad Z\sim\mathcal{N}(0,1).
+    W(t)-W(s)\overset{d}{=}\sqrt{t-s}\;Z,\qquad Z\sim\mathcal{N}(0,1).
   \]
+  We call $Z$ a \hilite{random shock}, the standard normal input to the model.
+  In simulation, each step uses a fresh independent draw.
 \end{frame}
 
 \begin{frame}{The Analytical Solution}
@@ -303,8 +308,8 @@
     \boxed{\hat\sigma=\sigma_g\sqrt{\Delta t}=\sigma_{\mathrm{ann}}.}
   \]
 
-  This matches L3a's annualized volatility $\sigma_{\mathrm{ann}}$, with units
-  year$^{-1/2}$.
+  Here, $\hat\sigma$ estimates the unknown GBM parameter $\sigma$. It matches
+  L3a's annualized volatility $\sigma_{\mathrm{ann}}$, with units year$^{-1/2}$.
 
   For daily data $\Delta t=1/252$: divide the daily growth-rate standard
   deviation by $\sqrt{252}$, or equivalently multiply the daily log-return
@@ -312,46 +317,88 @@
 \end{frame}
 
 \begin{frame}{Mean Growth and Drift}
-  With volatility estimated, we need mean growth to recover the drift.
-  Since $\mu=\mug+\sigma^2/2$, an estimate $\hat{\mu}_g$ gives:
+  The mean growth rate $\mug=\mu-\sigma^2/2$ is the growth term in the
+  one-step solution. We can use its estimate directly to simulate prices:
   \[
-    \underbrace{\hat\mu}_{\text{SDE drift}}
-    =\underbrace{\hat{\mu}_g}_{\text{mean growth}}
-    +\underbrace{\tfrac12\hat\sigma^2}_{\text{correction}}.
+    S_{t_j}=S_{t_{j-1}}\exp\!\left[
+      \hat{\mu}_g\Delta t+\hat\sigma\sqrt{\Delta t}\,Z_j\right].
   \]
+  The hats indicate estimates from data. To express the fitted model using
+  the drift $\mu$ in the original differential equation, calculate:
+  \[
+    \boxed{\hat\mu=\hat{\mu}_g+\frac{\hat\sigma^2}{2}.}
+  \]
+  Substituting this estimate into the one-step solution cancels the correction:
+  \[
+    \hat\mu-\frac{\hat\sigma^2}{2}
+    =\left(\hat{\mu}_g+\frac{\hat\sigma^2}{2}\right)
+      -\frac{\hat\sigma^2}{2}=\hat{\mu}_g.
+  \]
+  Both forms give the same prices for the same draws of $Z_j$.
+\end{frame}
 
-  Two common ways to estimate $\mug$:
-  \begin{itemize}\setlength{\itemsep}{0.55em}
+\begin{frame}{Estimating Mean Growth}
+  Random price fluctuations can make mean growth difficult to estimate from
+  a finite historical sample. We consider two methods:
+
+  \vspace{0.7em}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
     \item \hilite{Method 1, average growth rate}: $\hat{\mu}_g=g'$, the
       sample mean and maximum likelihood estimate under GBM.
     \item \hilite{Method 2, linear regression}: fit log price as a line in time.
       The slope estimates $\mug$.
   \end{itemize}
 
-  \vspace{0.4em}
-  Let's estimate mean growth by regressing log price on time.
+  \vspace{0.7em}
+  To use regression, we need an equation relating each log price to its
+  observation time. Let's build that equation from the one-step solution.
+\end{frame}
+
+\begin{frame}{Linear Regression: Steps 1 and 2}
+  Start from $S_0$ at time zero and observe prices every $\Delta t$ years.
+  Taking logarithms of the first update gives:
+  \[
+    \ln S_{t_1}=\ln S_0+\mug\Delta t+\sigma\sqrt{\Delta t}\,Z_1.
+  \]
+  At step 2, we start from the price reached at step 1:
+  \[
+    \ln S_{t_2}=\ln S_{t_1}+\mug\Delta t+\sigma\sqrt{\Delta t}\,Z_2.
+  \]
+  Substitute the first update and collect terms:
+  \[
+    \begin{aligned}
+      \ln S_{t_2}
+      &=\left[\ln S_0+\mug\Delta t+\sigma\sqrt{\Delta t}\,Z_1\right]
+        +\mug\Delta t+\sigma\sqrt{\Delta t}\,Z_2\\
+      &=\ln S_0+\mug(2\Delta t)+\sigma\sqrt{\Delta t}\,(Z_1+Z_2).
+    \end{aligned}
+  \]
+  The second log price contains the random contribution from step 1
+  as well as the new contribution from step 2.
 \end{frame}
 
 \begin{frame}{Linear Regression: The Model}
-  Suppose we observe prices $S_{t_0},\ldots,S_{t_N}$ at times
-  $t_j=j\Delta t$. Taking the logarithm of the GBM solution gives:
+  After $j$ steps, with $t_j=j\Delta t$, the log price is given by:
   \[
     \ln S_{t_j}
     =\underbrace{\ln S_0}_{\text{intercept}}
     +\underbrace{\mug\,t_j}_{\text{trend}}
-    +\underbrace{\sigma W(t_j)}_{\text{error}},
-    \qquad j=0,\ldots,N.
+    +\underbrace{\epsilon_j}_{\text{error}},
+    \qquad
+    \epsilon_j=\sigma\sqrt{\Delta t}\sum_{k=1}^{j}Z_k,\quad \epsilon_0=0.
   \]
-
-  Since the Wiener process has mean zero, the expected log price is a line
-  with intercept $\ln S_0$ and slope $\mug$. Least squares fits this line by
-  minimizing the sum of squared differences from the observed log prices.
+  Each $Z_k$ has mean zero. Thus $\E[\epsilon_j]=0$, and the expected log
+  price is a line with slope $\mug$. Fitting a line to observed log prices
+  gives us an estimate of mean growth.
 
   \vspace{0.5em}
-  The error $\sigma W(t_j)$ contains all shocks up to $t_j$, so errors at
-  different times share shocks and are correlated. Their variance is
-  $\sigma^2t_j$. These properties affect uncertainty in the fitted intercept
-  and slope.
+  The draws $Z_k$ are independent, but the regression errors share draws:
+  \[
+    \epsilon_1=\sigma\sqrt{\Delta t}\,Z_1,
+    \qquad \epsilon_2=\sigma\sqrt{\Delta t}\,(Z_1+Z_2).
+  \]
+  The shared $Z_1$ makes these errors correlated. Under GBM,
+  $\Var(\epsilon_j)=\sigma^2t_j$ also grows with time.
 \end{frame}
 
 \begin{frame}{Linear Regression: The Normal Equations}
@@ -379,8 +426,9 @@
 
 
 \begin{frame}{Regression Intervals: Standard Errors}
-  For comparison with Brownian errors, assume independent normal errors
-  with mean zero and common variance $\sigma_\epsilon^2$.
+  \hilite{Engineering assumption (a spherical cow):} Treat the regression
+  errors as independent and normal, with mean zero and common variance
+  $\sigma_\epsilon^2$, to illustrate the ordinary uncertainty calculation.
 
   \vspace{0.4em}
   For $n=N+1$ observations and $p=2$ fitted parameters, the residuals and
@@ -402,7 +450,7 @@
 \end{frame}
 
 \begin{frame}{Regression Intervals: Confidence Intervals}
-  Under the independent normal-error assumptions, a confidence interval
+  Under the spherical cow assumption, a confidence interval
   with level $1-\alpha$ for $\theta_j$ is given by:
   \[
     \boxed{\hat\theta_j\pm t_{1-\alpha/2,\nu}\,
@@ -414,12 +462,12 @@
   multiplier $t_{0.975,\nu}$. Here, $j=1$ selects the intercept and
   $j=2$ mean growth.
 
-  \vspace{0.6em}
+  \vspace{0.4em}
   These intervals do not provide valid GBM uncertainty bounds because the
   log-price errors are correlated and their variance increases with time.
   The \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb}{advanced drift-uncertainty example}
-  accounts for Brownian errors and examines how parameter uncertainty affects
-  target probabilities.
+  uses the correlated errors $\epsilon_j$, each a scaled sum of independent
+  $Z_k$ draws, to assess slope uncertainty and its effect on target probabilities.
 
   \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb}{Estimating GBM Parameters}}
 \end{frame}

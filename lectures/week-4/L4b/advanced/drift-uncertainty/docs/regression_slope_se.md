@@ -34,9 +34,23 @@ w_j=\frac{t_j-\bar t}{\sum_{i=0}^{N}(t_i-\bar t)^2},
 \qquad \bar t=\frac{T_{\mathrm{span}}}{2}.
 $$
 
-Substituting the GBM log-price model leaves a random component
-$\sigma\sum_jw_jW(t_j)$. Expressing each Wiener value as a sum of independent
-increments gives
+The GBM log-price model is $\ln(S_{t_j})=\ln(S_0)+\mu_g t_j+\epsilon_j$,
+where $\epsilon_0=0$ and
+$\epsilon_j=\sigma\sqrt{\Delta t}\sum_{k=1}^{j}Z_k$ for $j\geq1$.
+The draws $Z_k$ are independent standard normal random variables.
+Substitution leaves the random component $\sum_jw_j\epsilon_j$.
+Collecting the coefficient of each draw gives
+
+$$
+\hat\mu_g-\mu_g
+=\sum_{j=0}^{N}w_j\epsilon_j
+=\sigma\sqrt{\Delta t}\sum_{k=1}^{N}
+\left(\sum_{j=k}^{N}w_j\right)Z_k.
+$$
+
+Each $Z_k$ appears in every error from observation $k$ onward, explaining
+its coefficient $\sum_{j=k}^{N}w_j$. Independence and unit variance of the
+draws then give
 
 $$
 \operatorname{Var}(\hat\mu_g)
@@ -66,7 +80,7 @@ This is the same result as the slope entry of the full parameter covariance
 matrix $\sigma^2\mathbf B\mathbf K\mathbf B^\top$, with
 $K_{ij}=\min(t_i,t_j)$.
 
-The Brownian covariance is described in
+The equivalent covariance $K_{ij}=\min(t_i,t_j)$ is described in
 [Fabrice Baudoin's Brownian-motion notes](https://fabricebaudoin.blog/2012/04/30/lecture-12-the-brownian-motion-definition-and-basic-properties/).
 The general covariance transformation for least squares appears in
 [William & Mary's regression notes, equation (6)](https://econ.pages.code.wm.edu/407/notes/docs/ols.html).

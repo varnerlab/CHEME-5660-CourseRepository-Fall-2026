@@ -64,24 +64,57 @@ rsync -a \
   --exclude '*.fdb_latexmk' \
   --exclude '*.fls' \
   --exclude '*.log' \
+  --exclude '*.nav' \
   --exclude '*.out' \
+  --exclude '*.snm' \
+  --exclude '*.toc' \
   --exclude '*.xdv' \
   --exclude 'tmp/' \
   "$WEEK_DIR" "$BUILD/lectures/"
 
-# Saved setup messages describe the instructor's environment. Remove those
-# messages from the bundle copies while preserving code and computed results.
-python3 - "$BUILD/lectures/week-$WEEK_NUM" <<'PY'
+# Remove setup messages and make earlier-week notebook links usable in the
+# standalone bundle. Preserve the authoring notebooks and computed results.
+python3 - "$BUILD/lectures/week-$WEEK_NUM" "$REPO" "$TAG" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit
 
-machine_path = re.compile(r"/Users/|\\Users\\|Desktop/julia_work")
-for path in Path(sys.argv[1]).rglob("*.ipynb"):
+week_dir = Path(sys.argv[1])
+repo = Path(sys.argv[2])
+tag = sys.argv[3]
+for path in week_dir.rglob("*.ipynb"):
     notebook = json.loads(path.read_text())
     changed = False
     for cell in notebook.get("cells", []):
+        if cell.get("cell_type") == "markdown":
+            source = "".join(cell.get("source", []))
+            author_path = repo / "lectures" / week_dir.name / path.relative_to(week_dir)
+
+            def link_to_other_week(match):
+                url = urlsplit(match.group(1))
+                if url.scheme or url.netloc or not url.path.endswith(".ipynb"):
+                    return match.group(0)
+                target = (author_path.parent / unquote(url.path)).resolve()
+                try:
+                    relative = target.relative_to(repo / "lectures")
+                except ValueError:
+                    return match.group(0)
+                if not target.is_file() or relative.parts[0] == week_dir.name:
+                    return match.group(0)
+                href = (
+                    "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026"
+                    f"/blob/{tag}/lectures/{quote(relative.as_posix())}"
+                )
+                if url.fragment:
+                    href += "#" + url.fragment
+                return "](" + href + ")"
+
+            updated = re.sub(r"\]\(([^)]+)\)", link_to_other_week, source)
+            if updated != source:
+                cell["source"] = updated.splitlines(keepends=True)
+                changed = True
         if cell.get("cell_type") != "code":
             continue
         source = "".join(cell.get("source", []))
@@ -90,10 +123,7 @@ for path in Path(sys.argv[1]).rglob("*.ipynb"):
         outputs = cell.get("outputs", [])
         retained = [
             output for output in outputs
-            if not (
-                output.get("output_type") == "stream"
-                and machine_path.search("".join(output.get("text", [])))
-            )
+            if output.get("output_type") != "stream"
         ]
         if len(retained) != len(outputs):
             cell["outputs"] = retained
