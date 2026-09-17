@@ -1,6 +1,6 @@
-# L5b advanced estimation risk — paused notebook polish
+# L5b advanced estimation risk — notebook polish in progress
 
-**Status: paused at the instructor's request, September 16, 2026. Not complete.**
+**Status: review resumed September 16, 2026. Opening, setup/data, and input estimates approved and saved. Not complete.**
 
 Next notebook:
 [Estimation Risk in Mean-Variance Optimization](../week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb).
@@ -10,21 +10,161 @@ do not reopen its approved sections.
 
 ## Resume point
 
-The initial assessment is complete. No estimation-risk sections have been approved
-or saved. The source notebook remains unchanged: 32 cells, 12 code cells.
-An opening proposal replacing only cell 0 was presented and remains pending.
-On return, show that opening again for feedback, then continue section by section.
-Do not interpret the pause or the frontier completion as approval of this draft.
+The initial assessment is complete. The instructor approved the opening with
+"Agree. Update.Next" on September 16, 2026. The setup, data, and constants were
+then approved; growth observations and 2025 prices were approved conditional on
+agreement with the preceding notebooks. That check passed, and all these sections
+are saved. The input-estimate subsection was then approved with
+"Agree. Update. Next" and saved (42 cells, 17 code cells). The approved opening and all cells following
+the old setup/data section are preserved. Do not restart the approved sections.
+Continue with the portfolio constructions and documented source helpers.
+The input-estimate subsection is complete; no portfolio-construction proposal is approved.
 Use the [notebook-polish workflow](../../.agents/skills/notebook-polish/SKILL.md)
 and [shared notebook style guide](NOTEBOOK-STYLE-GUIDE.md).
 
-Source SHA-256 at pause:
-`8f04a79a75faa306722e738e432aa66847729c2f12bd6025319309d073e7f57f`
+Source SHA-256 after the approved input-estimate subsection:
+`41247fba07d644b3ffea1501de412c6494230a18c6313941ea5d50c219472af0`
 
-Compare the source with this hash before applying the pending draft; preserve any
-intervening instructor changes. Preview files are disposable and may be regenerated
-from the wording saved below. All cells after cell 0 in the existing draft match
-the unchanged source.
+Compare the source with this hash before applying further proposals; preserve any
+intervening instructor changes. Historical previews were deleted at the instructor's
+request. The opening preview was regenerated from the saved wording before approval.
+
+## Approved setup/data revision — saved September 16, 2026
+
+The accepted revision replaced original cells 1–6 with the standard setup and
+fourteen cells covering setup, training/testing data loading, firms and constants,
+the growth-rate equation and matrix, 2025 price arrays, and a separate reporting
+cell. The point-estimate/portfolio-function section and all later cells were
+preserved. The saved notebook matches the approved draft exactly.
+
+The revision removes the tiny inline `clean` helper in favor of explicit dataset
+filtering, using each dataset's AAPL history length exactly as before. Portfolio
+helpers will be moved to documented local source in the subsequent proposal.
+It retains the thirteen firms, ticker order, random seed, observation interval,
+risk-free benchmark, and price selection.
+
+Validation: executed the original and proposed data code in separate Julia modules
+using Julia 1.12.7 with the course project and an existing writable temporary depot.
+All arrays, ticker order, dimensions, and constants matched exactly: G is 2766 × 13;
+the 2025 matrix is 250 × 13. Checked the proposed dictionary and array types.
+The rendered section has ten mathematical expressions, no math errors, no page
+overflow, and no horizontally scrolling code cells. This was focused data-setup
+validation; the remaining optimization/bootstrap code was not rerun in this step.
+
+Notation check for conditional approval: the growth equation, firm index i,
+observation index k, N observations from N+1 prices, G dimensions N × M, and
+inverse-year growth units match the reviewed L5a covariance example and the L5b
+minimum-variance and frontier-geometry examples. The 2025 price arrays retain
+prices in USD/share and the same asset order, consistent with the L5b buy-and-hold
+price-ratio calculation. No notation changes were required.
+
+Review artifacts in `build/notebook-previews/`:
+
+- `L5b-advanced-estimation-setup-proposal.ipynb`: full draft, only the setup/data section differs.
+- `L5b-advanced-estimation-setup-proposal.md`: proposed prose and code.
+- `L5b-advanced-estimation-setup-proposal-setup-data.png`: setup, data, and constants.
+- `L5b-advanced-estimation-setup-proposal-growth-prices.png`: growth observations and 2025 prices.
+- `prepare-estimation-setup-proposal.py`: regenerates the draft and data-equality check.
+- `check-estimation-setup.jl`: focused numerical comparison.
+- `render-estimation-setup-proposal.cjs`: local MathJax/browser renderer.
+
+The notebook renderer is `/opt/anaconda3/bin/python` (nbformat/nbconvert). The
+browser script uses installed Chrome and local MathJax, blocking web requests;
+Chrome needs execution outside the sandbox. Hosted course documentation could not
+be opened by the web tool during this step; the existing function links were
+retained and checked against the local package source and documentation entries.
+
+## Approved input-estimation subsection — saved September 16, 2026
+
+The accepted revision separates the point estimates from the portfolio-function cell.
+It explains the baseline, the column sample means g_i′ and vector g′, the
+population mean vector μ_g, the centered growth matrix, and the sample covariance
+Σ̂_g with N−1 normalization. It retains the existing Julia names `ĝ₀` and `Σ̂₀`,
+explaining that subscript 0 marks the estimates fitted to all training rows.
+This follows the approved L5a/L5b sample-versus-population notation.
+
+The calculation is unchanged apart from an explicit positive-definiteness
+assertion. The full draft separates the existing point-estimate assignments
+from the portfolio definitions, and removes the now-repeated sentence and
+"Point estimates" heading fragment from the following paragraph. Portfolio
+functions and all later calculations/outputs are preserved for their own review.
+The saved source includes this accepted subsection and matches the reviewed draft.
+The approved opening and setup/data cells are preserved.
+
+Executed the proposed estimates in Julia: old/new means and covariances match
+exactly; the covariance is positive definite with smallest eigenvalue
+2.4244323181806915. An independent centered-matrix calculation agrees with the
+library covariance to relative error 1.72e-17. The draft validates and its twelve
+mathematical expressions render with no errors, page overflow, or code overflow.
+
+Artifacts in `build/notebook-previews/` use the
+`L5b-advanced-estimation-inputs-proposal` basename (`.ipynb`, `.md`, `.html`, `.png`,
+and render metrics). The preparation and rendering scripts are
+`prepare-estimation-inputs-proposal.py` and `render-estimation-inputs-proposal.cjs`;
+the focused numerical check is `check-estimation-inputs.jl`.
+
+## Pending portfolio-construction proposal — not yet approved
+
+The input-estimate subsection is saved. The next proposal replaces the short
+portfolio-functions paragraph and inline definitions with two explanatory
+subsections: short positions allowed, and long-only weights. It develops the
+closed-form GMV weights, the excess-growth direction and normalizer κ, the
+nonbinding minimum-mean growth floor for long-only GMV, and the sampled Sharpe
+selection. It preserves g′ and Σ̂_g notation. A compact baseline table replaces
+the two-growth-rate print line: long-only GMV mean 0.0818, growth std 2.1749;
+long-only tangent grid candidate mean 0.4272, growth std 4.7718 (all inverse years).
+
+The draft moves four functions to `src/EstimationRisk.jl`, adds source docstrings
+and `docs/estimation-risk.md`, and loads the helpers from `Include.jl`. The helper
+names are preserved. Asset counts are inferred from inputs; tangent functions
+receive `g_f` explicitly. Corresponding call sites in the bootstrap and separate-
+input experiments are updated. The only change to the approved setup prose is
+to state that Include.jl loads the local portfolio functions as well as packages.
+All other approved cells and later saved outputs are preserved.
+
+The closed-form tangent helper retains negative and small nonzero normalizers.
+Its new exact-zero guard raises `DomainError`, because normalization is undefined;
+no default resamples were removed. The long-only tangent helper preserves the
+original 31-target grid, GMV candidate, 1e-4 endpoint offset, and treatment of
+solver failures. It checks that at least two target points are requested.
+The prose calls this a grid approximation. Negative-normalizer cases are explicitly
+minimum-Sharpe allocations and must not be relabeled maximum-Sharpe portfolios
+when reviewing the subsequent tables and conclusions.
+
+Validation: all four extracted helpers match the original functions at the
+full-data baseline and three test resamples (closed forms tolerance 1e-13,
+solver weights tolerance 1e-10). Both closed forms also match across 100 test
+resamples drawn with a separate MersenneTwister(5660): ten have nonpositive
+normalizers, and none were discarded. This test RNG differs from the notebook's
+original default RNG; the initial 15-negative-normalizer notebook result is not
+being revised. Additional checks use a two-asset problem and a different benchmark,
+verify negative and near-zero normalizers, reject an exactly zero normalizer, and
+recover analytic two-asset GMV weights. The focused test produced the baseline
+table. The complete 100-resample long-only notebook workflow has not been rerun
+for this pending helper extraction.
+
+The full draft validates (46 cells, 18 code cells). All five local reference
+occurrences in the proposed section resolve, including helper anchors. Fifteen
+mathematical expressions render with no errors, page overflow, or code overflow.
+The two PNGs were inspected and opened in VS Code.
+
+Pending artifacts:
+
+- `build/notebook-previews/estimation-portfolio-proposal/`: staged notebook with
+  its original filename, proposed Include.jl, src/EstimationRisk.jl, and
+  docs/estimation-risk.md. None of these helper/support changes is in the target yet.
+- `L5b-advanced-estimation-portfolios-proposal-closed-form.png`: first preview.
+- `L5b-advanced-estimation-portfolios-proposal-long-only.png`: second preview.
+- `L5b-advanced-estimation-portfolios-proposal.md` and `.html`: proposed section.
+- `prepare-estimation-portfolios-proposal.py`: reproducible draft preparation.
+- `check-estimation-portfolios.jl`: original/extracted-helper comparison.
+- `render-section-previews.cjs`: reusable local renderer; pass the HTML basename
+  and ranges such as `closed-form:0:0 long-only:1:5`.
+
+If approved, save the staged notebook and three supporting files together after
+checking the current source hash above. Preserve the approval record. Next review
+Task 1 bootstrap estimation, including the row-resampling assumption and standard
+errors, before proceeding to sensitivity and realized wealth.
 
 ## Initial assessment
 
@@ -98,7 +238,7 @@ needed for this opening-only proposal.
 
 ## Remaining sequence and preferences
 
-Opening feedback; setup/data and documented helpers; Task 1 bootstrap estimation;
+Portfolio constructions and documented helpers; Task 1 bootstrap estimation;
 Task 2 frontier and weight sensitivity (including separate-input experiments);
 Task 3 wealth on the observed 2025 prices; three retrospective takeaways; final
 validation and rescoring using the same five dimensions.
@@ -110,7 +250,7 @@ date-assertion loops for this already-checked dataset. Put appropriate helper
 functions in documented local source loaded by Include.jl. Retain exactly three
 objectives, tasks, and takeaways, following the current separator rules.
 
-## Pending opening wording — not yet approved
+## Approved opening wording — saved September 16, 2026
 
 ```markdown
 # L5b Advanced: Estimation Risk in Mean-Variance Optimization
@@ -141,12 +281,9 @@ ___
 
 ## Working artifacts
 
-The ignored `build/notebook-previews/` directory contains:
-
-- `L5b-advanced-review-state.json`: detailed state and frontier approval history.
-- `L5b-advanced-initial-assessment.md`: initial assessment and numerical evidence.
-- `L5b-advanced-estimation-opening-proposal.ipynb`: cell-0 draft only.
-- `L5b-advanced-estimation-opening-proposal.png`: rendered opening shown in VS Code.
-- `L5b-advanced-estimation-opening-proposal.html`: corresponding full draft render.
+Historical review artifacts were deleted at the instructor's request. The ignored
+`build/notebook-previews/` directory now contains the regenerated opening draft,
+Markdown, HTML, and PNG. The approved opening matches this preview; the draft
+notebook preserves all remaining source cells and outputs.
 
 This persistent handoff is sufficient to resume if preview artifacts are removed.
