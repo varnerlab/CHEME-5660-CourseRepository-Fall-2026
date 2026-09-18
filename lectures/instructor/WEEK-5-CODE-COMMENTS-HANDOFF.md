@@ -1,5 +1,7 @@
 # Week 5 notebook code-commenting pass — complete
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 Completed September 17, 2026, following the instructor’s request for thorough
 comments in every code cell of every week-5 notebook, for student reading and
 future problem-set use. This was a commenting pass, not another interactive
@@ -77,17 +79,17 @@ the table retains the original commenting-pass hash. See the
 
 | Notebook | Code cells | SHA-256 after commenting |
 | --- | ---: | --- |
-| [L5a covariance](../week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb) | 18 | `3bdd890153976922013722ef7f72111db00bd73362b908e15950f8f6311ff8eb` |
-| [L5a Dirichlet weights](../week-5/L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb) | 18 | `d50e17c79a5a692d0479964e474a94365cd3c80055248696efa963fb7c157898` |
-| [L5a out-of-sample GBM](../week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb) | 18 | `639b0a8715690d8c0af40d2bdd3ffdd61f7c4196caea4bf1bb47a0f7b8c1189f` |
-| [L5a lecture](../week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb) | 0 | `2a067a14607a3184690530405d5eb080d8d0837a5c413345e553445637c0342a` |
-| [L5a advanced covariance estimation](../week-5/L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb) | 11 | `ce5de4c68cdfc8d690e6d4b1ae57204699c7aae72e42a8124acd96c136bf6d95` |
-| [L5a rolling correlation](../week-5/L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb) | 11 | `b9443a9626a6f0f1d65294ad00c88dffe6784dadf2d73dfae596124972d88cab` |
-| [L5b minimum-variance portfolios](../week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb) | 27 | `2616dd916e65c32cccb20313305607623b37daef31f1d48e481f5a9ebc640241` |
-| [L5b multiple-asset GBM](../week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb) | 20 | `f7078a41f86e2c8dbd4cf967df571b8ca667d75c2f4f71ec9793611d44911db2` |
-| [L5b lecture](../week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb) | 0 | `d0fb3ae529194f004f9da166f2dcb05ab65b4ecafeecceb1ee2f50777f7913a5` |
-| [L5b estimation risk](../week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb) | 27 | `ad6539f7d032c7f90fd859a58197defc806c7913081677bb0d9c08e0c04d7862` |
-| [L5b frontier geometry](../week-5/L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb) | 25 | `543a9a241bcb78282e48e55808c5511adbacfd2a9b4b65f495ea81c2e545dc2f` |
+| [L5a covariance](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb) | 18 | `3bdd890153976922013722ef7f72111db00bd73362b908e15950f8f6311ff8eb` |
+| [L5a Dirichlet weights](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb) | 18 | `d50e17c79a5a692d0479964e474a94365cd3c80055248696efa963fb7c157898` |
+| [L5a out-of-sample GBM](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb) | 18 | `639b0a8715690d8c0af40d2bdd3ffdd61f7c4196caea4bf1bb47a0f7b8c1189f` |
+| [L5a lecture](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb) | 0 | `2a067a14607a3184690530405d5eb080d8d0837a5c413345e553445637c0342a` |
+| [L5a advanced covariance estimation](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb) | 11 | `ce5de4c68cdfc8d690e6d4b1ae57204699c7aae72e42a8124acd96c136bf6d95` |
+| [L5a rolling correlation](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb) | 11 | `b9443a9626a6f0f1d65294ad00c88dffe6784dadf2d73dfae596124972d88cab` |
+| [L5b minimum-variance portfolios](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb) | 27 | `2616dd916e65c32cccb20313305607623b37daef31f1d48e481f5a9ebc640241` |
+| [L5b multiple-asset GBM](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb) | 20 | `f7078a41f86e2c8dbd4cf967df571b8ca667d75c2f4f71ec9793611d44911db2` |
+| [L5b lecture](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb) | 0 | `d0fb3ae529194f004f9da166f2dcb05ab65b4ecafeecceb1ee2f50777f7913a5` |
+| [L5b estimation risk](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb) | 27 | `ad6539f7d032c7f90fd859a58197defc806c7913081677bb0d9c08e0c04d7862` |
+| [L5b frontier geometry](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb) | 25 | `543a9a241bcb78282e48e55808c5511adbacfd2a9b4b65f495ea81c2e545dc2f` |
 
 ## Reproducible working evidence
 

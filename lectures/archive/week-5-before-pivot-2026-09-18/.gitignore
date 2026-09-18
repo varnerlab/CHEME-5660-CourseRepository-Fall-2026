@@ -1,0 +1,10 @@
+# Keep the complete pre-pivot snapshot, including its environment and build files.
+!**/Manifest*.toml
+!**/*.aux
+!**/*.bbl
+!**/*.blg
+!**/*.out
+!**/*.log
+!**/*.fdb_latexmk
+!**/*.fls
+!**/*.xdv

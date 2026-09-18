@@ -1,12 +1,16 @@
 # L5a out-of-sample GBM example — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
+> **September 18 restoration:** At the instructor's request, the archived notebook is restored byte-for-byte at its [original active L5a path](../week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb). EMA is now a [separate example](../week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb). The restoration includes the September 17 code comments; this review remains closed.
+
 **Status: reviewed and complete, September 14, 2026.** The instructor explicitly
 confirmed: “Ok, great! Let's mark this notebook as reviewed.” All proposals were
 approved and saved; no proposals remain pending. The final revision approval was
 “Agree! Update. Next,” following the expanded learning-objective preview.
 Do not restart completed sections unless the instructor requests another round.
 
-Notebook: [Out-of-sample single-asset GBM example](../week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb)
+Notebook: [Out-of-sample single-asset GBM example](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb)
 
 Initial SHA-256:
 `acabdb2dae9bf96e5cb434b21384961088d012c3c57986aa88964c39c3bf8e35`
@@ -70,10 +74,10 @@ this completed round.
   diagnostics alone cannot distinguish parameter uncertainty, parameter changes,
   or omitted dynamics such as jumps.
 - Extracted `gbm_prediction_band`, `band_coverage`, and `max_abs_z` into
-  [src/OutOfSample.jl](../week-5/L5a/src/OutOfSample.jl), with Julia docstrings
+  [src/OutOfSample.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/src/OutOfSample.jl), with Julia docstrings
   covering arguments, units, returns, and assumptions. Added one include line to
-  [Include.jl](../week-5/L5a/Include.jl) and function-specific notebook links to
-  [the local reference](../week-5/L5a/docs/oos-functions.md).
+  [Include.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/Include.jl) and function-specific notebook links to
+  [the local reference](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/docs/oos-functions.md).
 - Aligned the introduction, three learning objectives, summary, and three
   retrospective takeaways with the developed work. Expanded each objective to
   two sentences after instructor feedback, retaining both computation and

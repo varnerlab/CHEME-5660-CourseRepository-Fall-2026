@@ -1,5 +1,7 @@
 # L5a advanced covariance estimation — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, confirmed by the instructor September 14, 2026.**
 The instructor explicitly confirmed: “Great! Mark this notebook as reviewed.”
 All agreed revisions are saved; no proposals remain pending.
@@ -9,7 +11,7 @@ portfolio optimization. Final editorial score: **9.1/10**, from **8.4/10**.
 Do not restart completed sections unless the instructor requests another round.
 
 Notebook:
-[Sampling Error and Shrinkage in Covariance Estimation](../week-5/L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb).
+[Sampling Error and Shrinkage in Covariance Estimation](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb).
 
 This is the advanced example, distinct from the completed L5a covariance-matrix
 example recorded in [its own handoff](L5a-COVARIANCE-REVIEW-HANDOFF.md).
@@ -67,8 +69,8 @@ not pending proposals.
   80% sample/20% target example. Placed the Task 3 legend above the plot and
   corrected axis margins and ticks.
 - Saved `mp`, `minvar`, and `realized_std` with Julia docstrings in the local
-  [src/CovarianceEstimation.jl](../week-5/L5a/advanced/covariance-estimation/src/CovarianceEstimation.jl).
-  [Include.jl](../week-5/L5a/advanced/covariance-estimation/Include.jl) loads that
+  [src/CovarianceEstimation.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/covariance-estimation/src/CovarianceEstimation.jl).
+  [Include.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/covariance-estimation/Include.jl) loads that
   file. Notebook prose links directly to source beside the function uses.
   The source-documentation pattern follows the L4b first-passage example.
 - The instructor explicitly required functions and docstrings in `src/`, loaded

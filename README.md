@@ -110,7 +110,7 @@ for published student bundles.
 | 2 | Treasury securities, yield, duration, convexity, and the yield curve | [Week 2](lectures/week-2/) |
 | 3 | Equity-market growth rates and price lattices | [Week 3](lectures/week-3/) |
 | 4 | Lattice trading rules and geometric Brownian motion | [Week 4](lectures/week-4/) |
-| 5 | Multivariate GBM, portfolio weights, and mean-variance allocation | [Week 5](lectures/week-5/) |
+| 5 | Single-asset GBM, out-of-sample NPV predictions, and multiple-asset GBM with portfolio weights | [Week 5](lectures/week-5/) |
 | 6 | Single-index models and risky/risk-free allocation | [Week 6](lectures/week-6/) |
 | 7 | Utility-based allocation and adaptive portfolio rebalancing | [Week 7](lectures/week-7/) |
 | 8 | Option contracts: call and put payoff and profit | [Week 8](lectures/week-8/) |

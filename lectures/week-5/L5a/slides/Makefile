@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-Cov-Schematic.png
+FIGURES := $(wildcard ../figs/L5a-*.png)
 
 .DEFAULT_GOAL := slides
 

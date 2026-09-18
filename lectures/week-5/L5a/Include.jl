@@ -34,3 +34,5 @@ using HypothesisTests              # statistical tests
 # Include local helper code -
 include(joinpath(_PATH_TO_SRC, "Compute.jl"));
 include(joinpath(_PATH_TO_SRC, "OutOfSample.jl"));
+include(joinpath(_PATH_TO_SRC, "AdaptiveGBM.jl"));
+include(joinpath(_PATH_TO_SRC, "TradeOutcomes.jl"));

@@ -247,7 +247,7 @@ takeaways, and no code cells. All edits are saved locally; no commit or push.
 Potential follow-up notebooks (not edited by this lecture review):
 
 - `lectures/week-4/L4b/CHEME-5660-L4b-Example-Parameters-SAGBM-Fall-2026.ipynb`
-- `lectures/week-4/L4b/CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb`
+- `lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb`
 - `lectures/week-4/L4b/CHEME-5660-L4b-GBM-Solution-Derivation-Fall-2026.ipynb`
 - The four linked notebooks under `lectures/week-4/L4b/advanced/`.
 

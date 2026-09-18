@@ -1,12 +1,14 @@
 # L5a covariance example — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete.** The instructor confirmed this designation
 September 14, 2026. Final editorial rating: **9.2/10**. Every proposed section
 was approved; all accepted revisions are saved and no proposals remain pending.
 Do not restart completed sections unless the instructor requests another round.
 
 Notebook:
-[Covariance matrix example](../week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb)
+[Covariance matrix example](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb)
 
 Final SHA-256:
 `339602365c8b9da633904f6d5025f8974a91518e6f57b72495115e985d298a2e`

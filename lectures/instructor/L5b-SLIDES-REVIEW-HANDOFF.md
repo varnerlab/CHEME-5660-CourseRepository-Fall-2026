@@ -1,5 +1,7 @@
 # L5b lecture slides — completed interactive polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete September 17, 2026.** The instructor approved
 every section, ending with individual approval of “Estimating Portfolio Inputs,”
 “Optional Advanced Material,” “Summary,” and the closing transition. All approved
@@ -10,9 +12,9 @@ round is requested.
 The instructor explicitly confirmed the completed review with
 “Ok - record this as reviewed.”
 
-- [Final slide PDF](../week-5/L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.pdf)
-- [Beamer source](../week-5/L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.tex)
-- [Aligned lecture notebook](../week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb)
+- [Final slide PDF](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.pdf)
+- [Beamer source](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.tex)
+- [Aligned lecture notebook](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb)
 - [Lecture review and September 17 scope amendment](L5b-LECTURE-REVIEW-HANDOFF.md)
 
 The native Beamer/XeLaTeX workflow, course theme, and font sizes were preserved.

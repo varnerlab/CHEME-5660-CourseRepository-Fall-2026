@@ -1,12 +1,14 @@
 # L5b advanced estimation risk — notebook polish complete
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Marked reviewed and complete by the instructor September 17, 2026. All sections
 approved and saved. Final score: 9.2/10, up from 8.3/10. No proposals remain pending.**
 
 Instructor confirmation: “Great! Mark this as reviewed.”
 
 Notebook:
-[Estimation Risk in Mean-Variance Optimization](../week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb).
+[Estimation Risk in Mean-Variance Optimization](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb).
 Do not restart approved sections unless the instructor requests another round.
 The frontier-geometry companion is also reviewed and complete.
 
@@ -1072,7 +1074,7 @@ objectives, tasks, and takeaways, following the current separator rules.
 ```markdown
 # L5b Advanced: Estimation Risk in Mean-Variance Optimization
 
-In the [frontier-geometry example](../frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb),
+In the [frontier-geometry example](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb),
 we treated the estimated mean growth rates and covariance as fixed inputs. Here
 we examine __estimation risk__: how uncertainty in those estimates changes the
 optimized portfolio weights. We repeatedly resample the 2014–2024 daily growth

@@ -1,21 +1,19 @@
 # L5b optional advanced material
 
-These standalone notebooks extend the L5b discussion of minimum-variance
-portfolios, the efficient frontier, and the tangent portfolio. They are optional
-and are not prerequisites for L6a.
+These standalone notebooks extend the L5b discussion of multiple asset GBM and
+the covariance matrix. They are optional and are not prerequisites for L6a.
 
-- [`frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb`](frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb)
-  derives the closed-form frontier for every target growth rate, checks it
-  against a numerical solver, shows that every unconstrained frontier portfolio
-  is a combination of two fixed frontier portfolios (the two-fund theorem), and
-  measures what a short-sale limit and a long-only constraint cost in variance
-  for this dataset.
-- [`estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb`](estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb)
-  resamples the 2014 to 2024 growth rates to measure how far the frontier, the
-  minimum-variance weights, and the tangent weights move under sampling error,
-  attributes the tangent portfolio's instability to the mean growth rates, and
-  pushes every resampled portfolio through 2025.
+- [`covariance-estimation/CHEME-5660-L5b-Advanced-CovarianceEstimation-Fall-2026.ipynb`](covariance-estimation/CHEME-5660-L5b-Advanced-CovarianceEstimation-Fall-2026.ipynb)
+  measures how noisy a large sample covariance is (its eigenvalues against the
+  Marchenko-Pastur law and a simulated error study), then shrinks the estimate
+  toward structured targets and tests the effect on a minimum-variance
+  portfolio out of sample.
+- [`rolling-correlation/CHEME-5660-L5b-Advanced-RollingCorrelation-Fall-2026.ipynb`](rolling-correlation/CHEME-5660-L5b-Advanced-RollingCorrelation-Fall-2026.ipynb)
+  estimates correlations on rolling windows and with exponential weighting
+  through 2014 to 2024, for a few firm pairs and for the whole universe, and
+  examines whether correlations rise during high-volatility windows in this
+  sample.
 
-The geometry notebook is about what the optimizer can reach; the estimation
-notebook is about how much of that reach survives re-estimation. They can be
-completed independently; the suggested order is the order listed.
+The estimation notebook is about how much to trust one covariance matrix; the
+correlation notebook is about how it moves in time. They can be completed
+independently; the suggested order is the order listed.

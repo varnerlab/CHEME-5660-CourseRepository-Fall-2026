@@ -1,5 +1,7 @@
 # L5a rolling correlations — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, confirmed by the instructor September 14, 2026.**
 The instructor explicitly confirmed: “Ok, great! mark this as reviewed.”
 All agreed revisions are saved; no proposals remain pending.
@@ -10,7 +12,7 @@ that record and the approvals of earlier sections have been preserved.
 Do not restart completed sections unless the instructor requests another round.
 
 Notebook:
-[L5a Advanced: Rolling Correlations](../week-5/L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb).
+[L5a Advanced: Rolling Correlations](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb).
 
 Final notebook SHA-256:
 `d3a53d58b9a0d5092b53fd61bd0532342b229289a39919450630af20fd206403`.
@@ -67,9 +69,9 @@ limitation, not an outstanding proposal.
 - Retained the full standard Disclaimer and Risks section verbatim from the
   reviewed L5a lecture, as explicitly requested.
 - Helper functions and Julia docstrings are in
-  [src/RollingCorrelation.jl](../week-5/L5a/advanced/rolling-correlation/src/RollingCorrelation.jl)
+  [src/RollingCorrelation.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/rolling-correlation/src/RollingCorrelation.jl)
   and
-  [src/ExponentiallyWeightedCorrelation.jl](../week-5/L5a/advanced/rolling-correlation/src/ExponentiallyWeightedCorrelation.jl),
+  [src/ExponentiallyWeightedCorrelation.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/advanced/rolling-correlation/src/ExponentiallyWeightedCorrelation.jl),
   loaded by the example's `Include.jl`. Local Markdown references explain the
   helper interfaces and supporting calculations. Do not move function
   definitions into notebook cells or combine separate `let` blocks in one cell.

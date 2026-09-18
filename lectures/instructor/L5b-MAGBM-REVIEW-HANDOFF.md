@@ -1,5 +1,7 @@
 # L5b multiple-asset GBM portfolio example — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, September 16, 2026, confirmed by the instructor.**
 The instructor explicitly requested “Great. Mark this as reviwed”.
 The instructor approved the final three takeaways with “Agree. Update. Next.”
@@ -7,7 +9,7 @@ All approved sections are saved, and the final consistency check and rescoring
 are complete. No proposals remain pending. Do not restart completed sections
 unless the instructor requests another round.
 
-Notebook: [Simulating a portfolio with multiple asset geometric Brownian motion](../week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb)
+Notebook: [Simulating a portfolio with multiple asset geometric Brownian motion](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb)
 
 Initial SHA-256:
 `6f5a5e0d291a8f45861804b6df4b7cb89896e312e137f1828e69a15744e73262`

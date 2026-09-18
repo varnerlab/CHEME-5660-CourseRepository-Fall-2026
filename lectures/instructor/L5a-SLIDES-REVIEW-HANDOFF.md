@@ -1,13 +1,15 @@
 # L5a lecture slides — completed interactive polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete September 16, 2026.** The instructor approved
 the final revisions with “Agree. Update. Done?” All approved changes are saved;
 no slide proposals remain pending. Final editorial score: **9.2/10**, from
 **8.3/10**. Do not restart completed sections unless another round is requested.
 
-- [Final slide PDF](../week-5/L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.pdf)
-- [Beamer source](../week-5/L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.tex)
-- [Reviewed lecture notebook](../week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb)
+- [Final slide PDF](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.pdf)
+- [Beamer source](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.tex)
+- [Reviewed lecture notebook](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb)
 - [Lecture review record](L5a-LECTURE-REVIEW-HANDOFF.md)
 
 The native Beamer/XeLaTeX workflow and course theme were preserved. The deck

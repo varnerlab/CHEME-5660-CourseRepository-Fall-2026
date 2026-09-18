@@ -213,6 +213,12 @@ For lecture and example notebooks:
 - Check the rendered result when changing layout or mathematics, especially long
   equations, blockquotes, figures, and section boundaries. Source-level checks alone
   do not establish readability.
+- Keep complete units inside inline math delimiters, for example
+  `$\mathrm{year}^{-1}$`, rather than `year$^{-1}$`. The latter breaks VS Code's
+  notebook math parsing and can corrupt subsequent prose and parameter symbols.
+  Separate display equations from surrounding prose with blank lines (quoted
+  blank lines inside a blockquote). Inspect the notebook renderer's output without
+  preprocessing equations in a way that hides Markdown parsing failures.
 
 Do not turn the reference notebooks into a growing catalogue of mandatory phrases,
 punctuation rewrites, bans on ordinary teaching language, or fixed paragraph lengths.

@@ -1,12 +1,14 @@
 # L5a multiple-asset GBM lecture — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, September 14, 2026.** The instructor explicitly
 confirmed the reviewed designation. All proposals were approved and saved;
 no proposals remain pending. The final revision approval was “Excellent! Agree. Update.
 Next.” Do not restart completed sections unless the instructor requests another
 round.
 
-Notebook: [Multiple-asset GBM lecture](../week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb)
+Notebook: [Multiple-asset GBM lecture](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb)
 
 Initial SHA-256:
 `56610370e729084d2bead960554d21653c8582ae149f8b450992bbadd4699f49`

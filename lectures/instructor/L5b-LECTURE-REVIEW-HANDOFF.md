@@ -1,5 +1,7 @@
 # L5b lecture — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, September 15, 2026, confirmed by the instructor.**
 The instructor explicitly requested “Great. Mark this notebook as reviewed.”
 All proposed sections were approved and saved. The final revision approval, after defining systematic risk in the
@@ -7,7 +9,7 @@ closing sentence, was “Agree. Update. Next.” The final review and rescoring 
 complete; no proposals remain pending. Do not restart completed sections unless
 the instructor requests another round.
 
-Notebook: [Minimum-variance portfolios, the frontier, and the CAL](../week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb)
+Notebook: [Minimum-variance portfolios, the frontier, and the CAL](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb)
 
 Initial SHA-256:
 `845c36017a5c4993fc3e90c9f17ea9a4e2228ea1ec3dc661c6981203aec4428c`

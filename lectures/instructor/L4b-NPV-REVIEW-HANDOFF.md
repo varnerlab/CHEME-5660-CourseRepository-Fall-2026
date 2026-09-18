@@ -2,7 +2,9 @@
 
 Completed September 11, 2026; follow-up polish round completed September 13, 2026.
 
-Notebook: [GBM NPV trade rule](../week-4/L4b/CHEME-5660-L4b-Example-GBM-NPV-TradeRule-Fall-2026.ipynb).
+> **September 18 move:** The instructor moved this example to L5a because it was not reached in L4b. The reviewed narrative, calculations, defaults, and saved outputs are preserved. Only the parameter-file path and prerequisite link changed. Its exact L4b parameter snapshot is retained under L5a's `data/npv/` directory. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md).
+
+Notebook: [GBM NPV trade rule](../week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb).
 
 ## September 13 polish round — complete
 

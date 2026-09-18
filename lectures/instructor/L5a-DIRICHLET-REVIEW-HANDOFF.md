@@ -1,5 +1,7 @@
 # L5a Dirichlet portfolio weights example — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, September 14, 2026.** The instructor explicitly
 confirmed the reviewed designation: “Let's mark this notebook as reviewed.” All
 section proposals were approved and saved. The final Summary approval was
@@ -7,7 +9,7 @@ section proposals were approved and saved. The final Summary approval was
 No proposals remain pending; do not restart completed sections unless the
 instructor requests another round.
 
-Notebook: [Dirichlet portfolio weights example](../week-5/L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb)
+Notebook: [Dirichlet portfolio weights example](../archive/week-5-before-pivot-2026-09-18/week-5/L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb)
 
 Initial SHA-256:
 `8ff9c753cd61f828314c277d013e2a96e85054c910bb8ac7ecc4022a48829009`

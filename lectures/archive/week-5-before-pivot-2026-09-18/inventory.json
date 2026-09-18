@@ -1,0 +1,428 @@
+{
+  "date": "2026-09-18",
+  "revision": "af75badf5789f497e747173ca2daf783627bc911",
+  "working_tree_status": "?? week-5-reactor.md\n",
+  "files": [
+    {
+      "path": "L5a/CHEME-5660-L5a-Example-CovarianceMatrix-Fall-2026.ipynb",
+      "bytes": 1158483,
+      "sha256": "3bdd890153976922013722ef7f72111db00bd73362b908e15950f8f6311ff8eb"
+    },
+    {
+      "path": "L5a/CHEME-5660-L5a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb",
+      "bytes": 3203333,
+      "sha256": "d50e17c79a5a692d0479964e474a94365cd3c80055248696efa963fb7c157898"
+    },
+    {
+      "path": "L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb",
+      "bytes": 1168718,
+      "sha256": "639b0a8715690d8c0af40d2bdd3ffdd61f7c4196caea4bf1bb47a0f7b8c1189f"
+    },
+    {
+      "path": "L5a/CHEME-5660-L5a-Lecture-MultipleAsset-GBM-Fall-2026.ipynb",
+      "bytes": 37111,
+      "sha256": "2a067a14607a3184690530405d5eb080d8d0837a5c413345e553445637c0342a"
+    },
+    {
+      "path": "L5a/Include.jl",
+      "bytes": 1676,
+      "sha256": "12279180ac6a69ec3da1b02a8741d8999af90f8365f94ad5fea72acb182b20ae"
+    },
+    {
+      "path": "L5a/advanced/README.md",
+      "bytes": 1231,
+      "sha256": "1c5b375ec93327a513bca1636be71e2acc52da9757ca465c4387b7cbce67c85e"
+    },
+    {
+      "path": "L5a/advanced/covariance-estimation/CHEME-5660-L5a-Advanced-CovarianceEstimation-Fall-2026.ipynb",
+      "bytes": 566384,
+      "sha256": "ce5de4c68cdfc8d690e6d4b1ae57204699c7aae72e42a8124acd96c136bf6d95"
+    },
+    {
+      "path": "L5a/advanced/covariance-estimation/Include.jl",
+      "bytes": 871,
+      "sha256": "64bc61468e258e2ff13684b626a6a74b40072b870eb1e87283a8bf341545dd81"
+    },
+    {
+      "path": "L5a/advanced/covariance-estimation/src/CovarianceEstimation.jl",
+      "bytes": 2578,
+      "sha256": "6b5ba18d31555fbb8dedfebbdca4095b75b2b965c0232d84a7a0f72dd84e2855"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/CHEME-5660-L5a-Advanced-RollingCorrelation-Fall-2026.ipynb",
+      "bytes": 946872,
+      "sha256": "b9443a9626a6f0f1d65294ad00c88dffe6784dadf2d73dfae596124972d88cab"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/Include.jl",
+      "bytes": 943,
+      "sha256": "fd893164143e1f44ca2e98b3d05ec08399970bab91e71a9d0d1879028891bebb"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/docs/ewma-correlation.md",
+      "bytes": 3663,
+      "sha256": "eb0a1d57887e09ccf4d60e485eebddd3ba3861abba33e46b93cf7b4f5a63e4d9"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/docs/rolling-correlation.md",
+      "bytes": 2262,
+      "sha256": "74005cb00f857042768d2959075de99a67d8a523c6944559191384f6ebbaede3"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/src/ExponentiallyWeightedCorrelation.jl",
+      "bytes": 2982,
+      "sha256": "5c05a4fd85360ca18e81b0d3611551f989ec40005b53a7530c12f3dd510855bb"
+    },
+    {
+      "path": "L5a/advanced/rolling-correlation/src/RollingCorrelation.jl",
+      "bytes": 2016,
+      "sha256": "8d909d128eef20c2f07edbc0c4f31543b5d726023fc007140fcef081f632084f"
+    },
+    {
+      "path": "L5a/data/SAGBM-Parameters-Fall-2025.csv",
+      "bytes": 37913,
+      "sha256": "4132b160ce011c8ee1c83942788c0883d6e2929b17a9e93b22231eb6683baefd"
+    },
+    {
+      "path": "L5a/docs/oos-functions.md",
+      "bytes": 2666,
+      "sha256": "8e3a707718ae31bc3eafa8c39627ebff47c11121a4e9cc5e293d44102ae4e29e"
+    },
+    {
+      "path": "L5a/figs/Fig-Cov-Schematic.png",
+      "bytes": 8893484,
+      "sha256": "6815aa7fd353b69075c0ad21bbd76e486ea981516b57a129025189a79ce2a70a"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.aux",
+      "bytes": 4424,
+      "sha256": "1e78b1969d6349950c29e390633aa4efc66479246d367849b5f1892b647467c8"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.fdb_latexmk",
+      "bytes": 29651,
+      "sha256": "c259cd5cdb8bd05e5d94adbbd5e00c87a42b5ce1f24f4a2cabc306488594f6b0"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.fls",
+      "bytes": 33624,
+      "sha256": "0491c82a9953321147b69b135c30d437b1bef3f8af7f2f794ae1671fca4d8a2c"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.log",
+      "bytes": 55074,
+      "sha256": "2968ce4a4b777d8e04b55b37ef690f09a4d7b2f024c14e90f33a70360770d69f"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.nav",
+      "bytes": 2411,
+      "sha256": "7c27b9b6c022a5953e09ca5e56f920a4a670fd0101307ec26a9fcf1daa4d479d"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.out",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.pdf",
+      "bytes": 8035806,
+      "sha256": "489a6df20f815c7a3dface73e9d632477bf5274b581f093959ddbeb774db1b56"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.snm",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.tex",
+      "bytes": 31594,
+      "sha256": "1604eda6447150c7bd2b90d64220708892b1eb1d2dd55c47a64aae0813fba308"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.toc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5a/slides/CHEME-5660-L5a-Slides-Fall-2026.xdv",
+      "bytes": 209904,
+      "sha256": "5560fcea8448d7223c062ea4aef2f55b05eb4b510b796fcf57093043664646a4"
+    },
+    {
+      "path": "L5a/slides/Makefile",
+      "bytes": 546,
+      "sha256": "df9383d7a2ce99125c2fc47933f4c56254ab360741333c90c35b96ef093ce915"
+    },
+    {
+      "path": "L5a/slides/vnslides.sty",
+      "bytes": 2733,
+      "sha256": "77bab67e8723bc6a7911be047b01f627bd01e2d53f9490f9f77dfaa989057da4"
+    },
+    {
+      "path": "L5a/src/Compute.jl",
+      "bytes": 805,
+      "sha256": "3c0a7c204dd17a362ad169a224f85c36b3d7c1ccede5ef86e9b7338662179bfe"
+    },
+    {
+      "path": "L5a/src/OutOfSample.jl",
+      "bytes": 4780,
+      "sha256": "37251b69dde35e7ac69cdca889be2afa8b192b522c7ba1bfd6d3820ec24398d7"
+    },
+    {
+      "path": "L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb",
+      "bytes": 1413314,
+      "sha256": "cdd7c2dad7a1a0c863b33406be9603d1dc19dce23d7c05ae360002cbfe1823e4"
+    },
+    {
+      "path": "L5b/CHEME-5660-L5b-Example-MAGBM-Portfolio-Fall-2026.ipynb",
+      "bytes": 752951,
+      "sha256": "f7078a41f86e2c8dbd4cf967df571b8ca667d75c2f4f71ec9793611d44911db2"
+    },
+    {
+      "path": "L5b/CHEME-5660-L5b-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb",
+      "bytes": 39440,
+      "sha256": "d0fb3ae529194f004f9da166f2dcb05ab65b4ecafeecceb1ee2f50777f7913a5"
+    },
+    {
+      "path": "L5b/Include.jl",
+      "bytes": 1690,
+      "sha256": "c242c471d93babc54d98f223901df970068130bf353166d03bb026c133ab5e8b"
+    },
+    {
+      "path": "L5b/advanced/README.md",
+      "bytes": 1370,
+      "sha256": "da1bcaae907e5685d1ec1cd9ae3b466b1bc95de745cfc8f5c4c11181f83bee6f"
+    },
+    {
+      "path": "L5b/advanced/estimation-risk/CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb",
+      "bytes": 694344,
+      "sha256": "ad6539f7d032c7f90fd859a58197defc806c7913081677bb0d9c08e0c04d7862"
+    },
+    {
+      "path": "L5b/advanced/estimation-risk/Include.jl",
+      "bytes": 1123,
+      "sha256": "ecec13999fd38c083e9267edf412824aeae2cad5f59a5b17184dac17dd755d3a"
+    },
+    {
+      "path": "L5b/advanced/estimation-risk/docs/estimation-risk.md",
+      "bytes": 5617,
+      "sha256": "1486a1771a1cafbe661752f7a11ec77b56cf3c231c4056ac4c9c143823c53c77"
+    },
+    {
+      "path": "L5b/advanced/estimation-risk/src/EstimationRisk.jl",
+      "bytes": 9716,
+      "sha256": "8c235e68d37dd9985423082ce91f6ee26f3defcd18ccd28560e58dd7739a75a3"
+    },
+    {
+      "path": "L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb",
+      "bytes": 325382,
+      "sha256": "543a9a241bcb78282e48e55808c5511adbacfd2a9b4b65f495ea81c2e545dc2f"
+    },
+    {
+      "path": "L5b/advanced/frontier-geometry/Include.jl",
+      "bytes": 1102,
+      "sha256": "c707c7e9688918d669cb5b9e03de86c82acbd043312fea93d847b7fa4ecacd89"
+    },
+    {
+      "path": "L5b/advanced/frontier-geometry/docs/frontier-geometry.md",
+      "bytes": 3392,
+      "sha256": "dd38d8705c3ba83659e83b935ca4ef9f02e20a0b23c202dd46c36a32492b2dea"
+    },
+    {
+      "path": "L5b/advanced/frontier-geometry/src/FrontierGeometry.jl",
+      "bytes": 5239,
+      "sha256": "317e2732d2249f8ee552ea896a2f0efbe25cd8085edcedfdf9dbc93d3b906ab4"
+    },
+    {
+      "path": "L5b/data/SAGBM-Parameters-Fall-2025.csv",
+      "bytes": 37913,
+      "sha256": "4132b160ce011c8ee1c83942788c0883d6e2929b17a9e93b22231eb6683baefd"
+    },
+    {
+      "path": "L5b/figs/Fig-Frontier-CAL-Schematic.png",
+      "bytes": 57759,
+      "sha256": "3e2e2cfc79f7a26a2d5acc7dc0dcbc4c0c5006de176bee4e59abbf4c60041003"
+    },
+    {
+      "path": "L5b/figs/Fig-MinVar-Portfolio-RA-Schematic.png",
+      "bytes": 75495,
+      "sha256": "57001ab5db5d0e9726c318237c9783d6fd0521112c72c00473a22fab9c66399f"
+    },
+    {
+      "path": "L5b/figs/Fig-MinVar-Portfolio-RA-Schematic.svg",
+      "bytes": 6550,
+      "sha256": "c80a909bafa6cce2eb5f3d6d62193e4a248ce0fb4ddf41135880291c1ee6614a"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/.build/cal.aux",
+      "bytes": 32,
+      "sha256": "fbabe80c887f95a1ede6847f22dd91b380bda9d17ae8bfaa72e1741b16aa41e9"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/.build/cal.log",
+      "bytes": 33368,
+      "sha256": "4987fbcb1513b35c1d294a59f3790af551be352e14f13f95bb5a9ad0b0d9ce52"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/.build/cal.pdf",
+      "bytes": 20876,
+      "sha256": "e7aefbb39a1d7aa46bfa04d080d4c5222578476d786d8e9f5bb089f203858dbd"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/.gitignore",
+      "bytes": 8,
+      "sha256": "99921edb369e12a35a87d768ae481f8c944573626abd4b8f3a1fe78846f30ba7"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/Makefile",
+      "bytes": 484,
+      "sha256": "e03e66340300a6c0508336c9013b7b0ab139520bc739b342bb04d5ef5879415e"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/README.md",
+      "bytes": 1350,
+      "sha256": "f10f0cc215197e80f32a5b6640f7a2025641d60355332b7e848a425e933efa26"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/cal.pdf",
+      "bytes": 20876,
+      "sha256": "e7aefbb39a1d7aa46bfa04d080d4c5222578476d786d8e9f5bb089f203858dbd"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/cal.svg",
+      "bytes": 143800,
+      "sha256": "70de7445d08bcc1d5eb6ae9dd5c5a6dfef900da7de5e90a1f4b21317f2653dbe"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/cal.tex",
+      "bytes": 5056,
+      "sha256": "7e9d64b30928b22745ff564bfbab21681afd30519c92f420cb2cf7dfb80209ea"
+    },
+    {
+      "path": "L5b/figs/capital-allocation-line/svg-metadata.py",
+      "bytes": 1462,
+      "sha256": "8593c976931fd0909c34d2ea039a79106df661d432de4e61ff2a3a75a2587901"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/.build/frontier.aux",
+      "bytes": 32,
+      "sha256": "fbabe80c887f95a1ede6847f22dd91b380bda9d17ae8bfaa72e1741b16aa41e9"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/.build/frontier.log",
+      "bytes": 33398,
+      "sha256": "244a183e36f04202af3bc8b592a670c6011735cb82eb93faabb5e5673a9b2e4c"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/.build/frontier.pdf",
+      "bytes": 19500,
+      "sha256": "2e0928d37995ced7bc2554d5e7b991080bfd7917dd59c04090b4e48a15d63ae3"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/.gitignore",
+      "bytes": 8,
+      "sha256": "99921edb369e12a35a87d768ae481f8c944573626abd4b8f3a1fe78846f30ba7"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/Makefile",
+      "bytes": 542,
+      "sha256": "6209c61f052b38a69c3b23436a2e6595c2f5fe5bff0a05d73e916a66c3368648"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/README.md",
+      "bytes": 2358,
+      "sha256": "0eb91e120389bd390f77eb00c3bb1bda963168a862aa8d86cee4a967339b3065"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/frontier.pdf",
+      "bytes": 19500,
+      "sha256": "2e0928d37995ced7bc2554d5e7b991080bfd7917dd59c04090b4e48a15d63ae3"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/frontier.svg",
+      "bytes": 144861,
+      "sha256": "9d96088dd82f0e505432d9055cd2fc584a84a4d06dd67b73cf87f5c8932bfcc4"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/frontier.tex",
+      "bytes": 5561,
+      "sha256": "9f4ade417c3b0ba2c16048aaba5a7c4dca0f2adaf46120d4e2c33760cdf761e4"
+    },
+    {
+      "path": "L5b/figs/minimum-variance-frontier/svg-metadata.py",
+      "bytes": 1326,
+      "sha256": "b6c5cb856360307fc3d6db123ddd6e48a29c43a193bae43ff354aec568d1059c"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.aux",
+      "bytes": 5450,
+      "sha256": "ad4141cbb2d1ea41fd085f5685256a50c91e4864bd9711b5b3923363339fe30a"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.fdb_latexmk",
+      "bytes": 29527,
+      "sha256": "2bb6f513d03174b552305597e5397270d9fddfd062b9a265070c5a3cb08c7daf"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.fls",
+      "bytes": 34046,
+      "sha256": "7f01dd55cc1d02a340adffb3d7a17d6c451c316c9b4af8a25c7ba60217c1c3fa"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.log",
+      "bytes": 54379,
+      "sha256": "e43ff9a62272a0276ce2e91246a03c6d4e4721780c8c47b2506270cdaa031d26"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.nav",
+      "bytes": 2969,
+      "sha256": "8fca9a4d24e83cc7119ab92d558bc9868d99ca1417a48ab1cbc5365a90292935"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.out",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.pdf",
+      "bytes": 147341,
+      "sha256": "c96a90fea2122e1a417de9f73d7a9af8b60dc23abb4485ce5989a46ce171972f"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.snm",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.tex",
+      "bytes": 26604,
+      "sha256": "61f2686b564a1c5b76cda98a6a9e687f269ebdb789276358de43bbfcc21d8cb5"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.toc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "L5b/slides/CHEME-5660-L5b-Slides-Fall-2026.xdv",
+      "bytes": 253736,
+      "sha256": "5ea76a34d04965f85dbe0b5df48199fa83c16b770cb2ca114a22429ccc9d3f55"
+    },
+    {
+      "path": "L5b/slides/Makefile",
+      "bytes": 954,
+      "sha256": "644308007330b32a3063956b6072abd026e51913ede5994cc13edf8e8081b767"
+    },
+    {
+      "path": "L5b/slides/vnslides.sty",
+      "bytes": 2733,
+      "sha256": "abaf826609474c3db50818ed5197cb1d07ff7bf94da2e74b397e6f9360e705c9"
+    },
+    {
+      "path": "L5b/src/Compute.jl",
+      "bytes": 2650,
+      "sha256": "2451f67dce322548995e60e0985604bee9168b0ec06289aa20a4338d5b79b92e"
+    }
+  ],
+  "symlinks": []
+}

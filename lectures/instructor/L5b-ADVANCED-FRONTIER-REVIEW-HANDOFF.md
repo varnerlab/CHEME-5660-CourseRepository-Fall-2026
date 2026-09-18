@@ -1,5 +1,7 @@
 # L5b advanced frontier geometry — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, confirmed by the instructor September 16, 2026.**
 After final validation and rescoring, the instructor confirmed: “Great! Mark this
 as reviewed.”
@@ -9,7 +11,7 @@ No proposals remain pending for this notebook. Do not restart approved sections
 unless the instructor requests another round. The estimation-risk companion is
 being reviewed separately and is not covered by this completion record.
 
-Notebook: [Frontier Geometry and the Two-Fund Theorem](../week-5/L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb)
+Notebook: [Frontier Geometry and the Two-Fund Theorem](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/CHEME-5660-L5b-Advanced-FrontierGeometry-Fall-2026.ipynb)
 
 Initial SHA-256:
 `aec558f7d03a3c1892161503cabb88fa1278c6c3e7d2756c6c135580d3df9148`
@@ -151,9 +153,9 @@ claim that the position limit matters only near the GMV portfolio.
 
 Supporting files:
 
-- [Include.jl](../week-5/L5b/advanced/frontier-geometry/Include.jl)
-- [FrontierGeometry.jl](../week-5/L5b/advanced/frontier-geometry/src/FrontierGeometry.jl)
-- [Function reference](../week-5/L5b/advanced/frontier-geometry/docs/frontier-geometry.md)
+- [Include.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/Include.jl)
+- [FrontierGeometry.jl](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/src/FrontierGeometry.jl)
+- [Function reference](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/advanced/frontier-geometry/docs/frontier-geometry.md)
 
 The ignored `build/notebook-previews/` directory contains the detailed approval
 history in `L5b-advanced-review-state.json`, the initial assessment, accepted drafts,

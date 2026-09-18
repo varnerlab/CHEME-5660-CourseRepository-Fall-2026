@@ -1,5 +1,7 @@
 # L5b data-driven minimum-variance example — completed notebook polish
 
+> **September 18 relocation:** This record describes the pre-pivot Week 5. Its notebook and slide links now point to the archived material; its approved assessment remains closed. See the [refactor handoff](WEEK-5-REFACTOR-HANDOFF.md) for current teaching locations and the scope of subsequent changes.
+
 **Status: reviewed and complete, September 16, 2026, confirmed by the instructor.**
 The instructor explicitly requested “Great. Mark this notebook as reviewed.”
 The instructor approved the final closing with “Agree. Update. Next.” All
@@ -7,7 +9,7 @@ approved sections are saved, and the final consistency check and rescoring are
 complete. No proposals remain pending. Do not restart completed sections unless
 the instructor requests another round.
 
-Notebook: [Data-driven minimum-variance portfolios, the efficient frontier, and the capital allocation line](../week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb)
+Notebook: [Data-driven minimum-variance portfolios, the efficient frontier, and the capital allocation line](../archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb)
 
 Initial SHA-256:
 `038739e9470a86388fb578c45f594c020775efae7be18bde6b229289b750d2cb`
