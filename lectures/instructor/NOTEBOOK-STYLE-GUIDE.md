@@ -155,6 +155,11 @@ limitation rather than asking the instructor to repeat the style discussion.
 - Use direct, accessible sentences. “Suppose,” “Let's,” and questions such as “Why
   is this interesting?” belong when they guide the reasoning. Preserve the
   instructor's natural enthusiasm without adding stock exclamations to imitate it.
+- Keep complete, natural phrasing when tightening prose. On September 19, 2026,
+  the instructor preferred “We estimate the volatility parameter…” to “We
+  estimate volatility…” and objected to omitted words that made sentences less
+  natural. Retain articles and repeated verbs when they help the sentence read
+  smoothly, including explanations of units.
 - Introduce quantities, dimensions, indexing conventions, and assumptions where
   readers need them. Explain mathematical operations and interpret the resulting
   expressions. Precision must remain understandable in context.
@@ -272,6 +277,32 @@ The instructor's 2025 L5a takeaways supplied the structure and voice; the
 2026 revision updates the scheduled-sale interpretation and branch-count notation.
 This preference is also recorded in the user-level Codex and Claude instruction
 files so it is available when working in other course repositories on this machine.
+
+## Example callouts within lectures — CHEME 5660
+
+Confirmed September 18, 2026. Follow the L4a and L4b format for example stops
+within the lecture: a blockquote with a bold `Example:` label, a quoted blank
+line, then a linked action title beginning with `▶` and a short description of
+the application. Introduce the callout with ordinary prose and follow it with a
+connective sentence. Keep the fuller descriptions in the opening Examples
+section. Do not create a level-three heading solely for a linked example stop.
+Use this format consistently for all main worked examples, including EMA;
+the supporting EMA derivation remains a separate link.
+
+## Company profiles — CHEME 5660
+
+Clarified September 18, 2026 after the instructor found the new L5a Renaissance
+Technologies profile incomplete. Use the L4b Jane Street company profile as the
+reference: introduce the firm, explain its distinctive business in a labeled
+panel, provide resources students can explore, and connect it to the lecture.
+Include relevant founders and defining funds or products; for Renaissance this
+includes Jim Simons and the Medallion Fund. Include verified jobs, internship,
+and YouTube resources where available. If no internship is currently posted,
+state that accurately and link the official careers page. Identify the publishers
+of external interviews rather than implying they are company channels.
+Review these substantive teaching elements alongside technical correctness and
+rendering; passing mathematical and formatting checks does not establish that
+a company profile is complete.
 
 ## Optional example descriptions — all courses
 

@@ -26,8 +26,8 @@ volatility. The returned named tuple contains `dataset`, sorted `tickers`,
 
 `ema_gbm_parameters(prices, mu_g, sigma; start_index=1, dt=1/252,
 half_life=21, decay=2.0^(-1/half_life))` starts from the training mean growth
-and volatility at the selected entry row. Prices are USD/share, `dt` is years
-per observation, and `half_life` is trading observations. The returned DataFrame
+and volatility at the selected entry row. Prices are measured in USD/share, `dt` is measured in years
+per observation, and `half_life` is measured in trading observations. The returned DataFrame
 contains `index`, `mu_g` (mean growth, year⁻¹), `variance_growth` (year⁻²),
 `sigma` (GBM volatility, year⁻¹ᐟ²), and `mu` (arithmetic drift, year⁻¹).
 The observed quantity is `g_k=log(S_k/S_(k-1))/dt`. Initialize the mean at
@@ -39,10 +39,11 @@ the states; `decay=1` retains the initial estimates.
 
 `gbm_trade_forecast(current_price, entry_price, mu_g, sigma; horizon,
 total_time, benchmark=0.05, target=0.0)` calculates the probability of strictly
-exceeding a scaled-NPV target. `horizon` is years from the current observation to
-sale; `total_time` is years from the original purchase to sale. Prices are
-USD/share, mean growth and benchmark are inverse years, volatility is inverse
-square-root years, and `target > -1` is dimensionless. The returned named tuple
+exceeding a scaled-NPV target. `horizon` is the time in years from the current observation to
+the sale; `total_time` is the time in years from the original purchase to the sale.
+Prices are measured in USD/share. Mean growth and benchmark growth have units
+of inverse years, volatility has units of inverse square-root years, and
+`target > -1` is dimensionless. The returned named tuple
 contains `probability`, target sale-price `threshold`, `median_price`, and
 pointwise 95% price limits `lower` and `upper`.
 
@@ -74,8 +75,8 @@ outside the central interval. The result has the same units as the bounds.
 
 ## Timing and units
 
-Prices are USD/share. Mean growth and benchmark growth are inverse years;
-volatility is inverse square-root years. The observed growth rate is
+Prices are measured in USD/share. Mean growth and benchmark growth have units
+of inverse years; volatility has units of inverse square-root years. The observed growth rate is
 `log(S_k/S_(k-1))/dt`, in inverse years; its variance is in inverse years squared.
 Scaled NPV is dimensionless. At origin row `k`, entry row `s`, and forward window `H`, the sale
 row is `k+H`. Forecast uncertainty spans `H*dt` years, while discounting spans
@@ -104,7 +105,7 @@ computed at 0.975):
 - **Width:** `U-L`, the interval's spread in growth-rate units (year⁻¹).
 - **Interval score:** width plus a penalty for an observation outside the interval,
   calculated as `(U-L) + (2/alpha)*max(L-x,0) + (2/alpha)*max(x-U,0)` with
-  `alpha=0.05`. Lower is better; width alone does not penalize missed observations.
+  `alpha=0.05`. A lower score is better; width alone does not penalize missed observations.
 
 These growth-rate interval scores do not depend on the ticker price scale.
 Compare the methods over the same forecast window.

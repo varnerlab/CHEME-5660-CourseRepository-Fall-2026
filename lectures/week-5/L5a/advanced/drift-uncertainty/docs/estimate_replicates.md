@@ -6,7 +6,7 @@ estimate_replicates(μ_g::Real, σ::Real, T_span::Real, Δt::Real, R::Int;
 ```
 
 Simulate `R` independent GBM log-price histories and fit an intercept and slope
-to each by ordinary least squares. Estimate volatility from each history's
+to each by ordinary least squares. Estimate the volatility parameter from each history's
 one-step growth rates.
 
 | Argument | Meaning | Units and conditions |
@@ -34,7 +34,7 @@ Returns a named tuple:
 - `σ_hat`: vector of `R` volatility estimates, in yr⁻¹ᐟ².
 
 The slope is the second component of `A \ log_prices`, where `A` has a column
-of ones and a column of times. Volatility is the sample standard deviation of
+of ones and a column of times. The volatility estimate is the sample standard deviation of
 the growth rates, using the `N - 1` denominator, multiplied by `sqrt(Δt)`.
 
 Defined in [Task 1 of the notebook](../CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb#Task-1:-Quantify-Uncertainty-in-the-Regression-Slope).

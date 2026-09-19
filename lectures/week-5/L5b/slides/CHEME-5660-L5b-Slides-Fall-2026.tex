@@ -124,12 +124,12 @@ By the end of this lecture, you will be able to:
     \qquad
     \underbrace{\sqrt{\Var(g_j)}=\frac{\sigma}{\sqrt{\Delta t}}}_{\text{growth-rate standard deviation}}.
   \]
-  Drift $\mu$ and mean growth rate $\mu_g$ both have units year$^{-1}$,
+  Drift $\mu$ and mean growth rate $\mu_g$ both have units of year$^{-1}$,
   but differ by $\sigma^2/2$.
 
   \vspace{0.5em}
   From the sample growth-rate standard deviation $\sigma_g$, we estimate
-  volatility as:
+  the volatility parameter as:
   \[
     \hat\sigma=\sigma_g\sqrt{\Delta t}.
   \]
@@ -204,7 +204,7 @@ By the end of this lecture, you will be able to:
     =1-\Phi\!\left(\frac{\ln(1+\rho_\star)+g_yT-\mu_gT}{\sigma\sqrt T}\right).}
   \]
 
-  Here, $\mu_g$ is the mean growth rate, $\sigma>0$ is volatility, and
+  Here, $\mu_g$ is the mean growth rate, $\sigma>0$ is the volatility parameter, and
   $\Phi$ is the standard normal cumulative distribution function.
 
   \vspace{0.5em}
@@ -230,7 +230,7 @@ By the end of this lecture, you will be able to:
     =\Delta t\;\underbrace{\Cov(g_i,g_j)}_{\text{growth-rate covariance}}.
   \]
 
-  Growth-rate covariance has units year$^{-2}$; multiplying by $\Delta t$
+  Growth-rate covariance has units of year$^{-2}$; multiplying by $\Delta t$
   gives $C_{ij}$ units of year$^{-1}$.
 
   \vspace{0.5em}
@@ -371,7 +371,7 @@ By the end of this lecture, you will be able to:
     \end{aligned}
   \]
   Here, $\operatorname{diag}(\bC)$ collects the squared volatilities
-  $C_{ii}=\sigma_i^2$. Growth rates and their means have units year$^{-1}$.
+  $C_{ii}=\sigma_i^2$. Growth rates and their means have units of year$^{-1}$.
 \end{frame}
 
 \begin{frame}{The Scaling Rule}
@@ -423,7 +423,7 @@ By the end of this lecture, you will be able to:
       \underbrace{\bigl(g_k^{(j)}-g'_j\bigr)}_{\text{deviation for }j},
       \qquad i,j\in\mathcal P.
   \]
-  Each entry pairs observations from the same period and has units year$^{-2}$.
+  Each entry pairs observations from the same period and has units of year$^{-2}$.
 \end{frame}
 
 \begin{frame}{Interpreting the Covariance Matrix}

@@ -2,12 +2,13 @@
     ema_gbm_parameters(prices, mu_g, sigma; start_index=1, dt=1/252,
         half_life=21, decay=2.0^(-1/half_life))
 
-Return daily, causal GBM parameter states as a DataFrame. `prices` contains
+Return daily GBM parameter estimates as a DataFrame, using only observations
+available at each date. `prices` contains
 positive USD/share observations; `mu_g` (year⁻¹) and `sigma` (year⁻¹ᐟ²) are
 the training baseline. Initialize at the one-based `start_index`, then update
 using each subsequent observed growth rate `g = log(S_k/S_(k-1))/dt` (year⁻¹).
-No earlier testing growth rates are used as a warm-up. `dt` is years per
-interval; `half_life` is observations.
+No earlier testing growth rates are used as a warm-up. `dt` is measured in years per
+interval; `half_life` is measured in observations.
 
 Columns are `index`, mean growth `mu_g` (year⁻¹), `variance_growth` (year⁻²),
 GBM volatility `sigma = sqrt(variance_growth*dt)` (year⁻¹ᐟ²), and arithmetic

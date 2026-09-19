@@ -26,7 +26,7 @@ The function does not subtract a sample mean. Its second moments represent
 covariances under a zero-mean approximation, which is appropriate when mean
 growth is small relative to daily growth-rate variation. This does not assume
 zero long-run asset growth. Returned correlations do not include uncertainty
-intervals. Dates must already be aligned, and inputs finite; neither is checked
+intervals. Dates must already be aligned, and inputs must be finite; neither is checked
 or repaired here. Unequal lengths raise `DimensionMismatch`; invalid `λ` or
 `burn_in` raises `ArgumentError`.
 """

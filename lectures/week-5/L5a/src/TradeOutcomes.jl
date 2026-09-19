@@ -45,10 +45,10 @@ end
         horizon, total_time, benchmark=0.05, target=0.0)
 
 Return `(probability, threshold, median_price, lower, upper)` for a prospective
-sale. Prices are USD/share; `horizon` is years forward from the current price,
-whereas `total_time` is years from the original purchase to sale. Mean growth and
-benchmark are year⁻¹, volatility year⁻¹ᐟ², and `target > -1` is dimensionless
-scaled NPV. Parameters stay fixed over this forecast's horizon. The strict
+sale. Prices are measured in USD/share. `horizon` is the time in years from the current
+observation to the sale, while `total_time` is the time in years from the original
+purchase to the sale. Mean growth and benchmark growth have units of year⁻¹,
+volatility has units of year⁻¹ᐟ², and `target > -1` is a dimensionless scaled NPV. Parameters stay fixed over this forecast's horizon. The strict
 event is discounted sale price / entry price - 1 > target. Bounds are pointwise
 95% price quantiles. Zero horizon or volatility gives a deterministic event.
 """

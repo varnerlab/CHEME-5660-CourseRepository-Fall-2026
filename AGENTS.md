@@ -109,6 +109,28 @@
   remain pending; read it before follow-up work and do not restart completed
   sections unless the instructor requests another round.
 
+## Completed L5a single-asset GBM and NPV lecture review
+
+- The new single-asset GBM and NPV L5a lecture was marked reviewed and complete
+  by the instructor September 18, 2026, with a final editorial score of 9.2/10. The
+  [saved review record](lectures/instructor/L5a-SAGBM-NPV-REVIEW-HANDOFF.md)
+  records the approved company profile, example callouts, prediction-band
+  explanation, concise EMA wording, instructor preferences, and checks.
+  No proposals remain pending; read it before follow-up work and do not restart
+  accepted sections unless the instructor requests another round. This review
+  is separate from the earlier multiple-asset lecture review below.
+
+## Completed L5a EMA example polish review
+
+- The single-asset EMA example was marked reviewed and complete by the instructor
+  September 18, 2026, with a final editorial score of 9.1/10 (initial 8.8/10). The
+  [saved review record](lectures/instructor/L5a-EMA-REVIEW-HANDOFF.md)
+  records the approved update explanations, shortened forecast section,
+  simulation interpretation, Brier example, score interpretation, instructor
+  feedback, and validation. No proposals remain pending; read it before
+  follow-up work and do not restart accepted sections unless another round
+  is requested.
+
 ## Completed L5a lecture review
 
 - The L5a multiple-asset GBM lecture was marked reviewed and complete September 14,
@@ -241,6 +263,15 @@
   syntax, Markdown, saved outputs, and metadata were preserved. Earlier review
   hashes refer to the pre-commenting snapshots; their approved sections and
   review scores remain closed.
+
+## Completed Week 5 natural-language pass
+
+- The instructor requested small wording changes across active Week 5 materials
+  on September 19, 2026. The [saved record](lectures/instructor/WEEK-5-NATURAL-LANGUAGE-HANDOFF.md)
+  records the prose edits, preserved calculations, and notebook/slide checks.
+  Keep complete, natural sentences, including articles, verbs, and units phrasing.
+  This was a targeted wording pass; existing section reviews and scores remain
+  closed and refer to their recorded snapshots.
 
 ## Interactive notebook polishing
 

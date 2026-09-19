@@ -130,12 +130,12 @@ model, not a description of RenTec's proprietary methods.
     \qquad
     \underbrace{\sqrt{\Var(g_j)}=\frac{\sigma}{\sqrt{\Delta t}}}_{\text{growth-rate standard deviation}}.
   \]
-  Drift $\mu$ and mean growth rate $\mu_g$ both have units year$^{-1}$,
+  Drift $\mu$ and mean growth rate $\mu_g$ both have units of year$^{-1}$,
   but differ by $\sigma^2/2$.
 
   \vspace{0.5em}
   From the sample growth-rate standard deviation $\sigma_g$, we estimate
-  volatility as:
+  the volatility parameter as:
   \[
     \hat\sigma=\sigma_g\sqrt{\Delta t}.
   \]
@@ -206,7 +206,7 @@ model, not a description of RenTec's proprietary methods.
 \end{frame}
 
 \begin{frame}{Substitute the GBM Solution}
-  Using mean growth rate $\mug=\mu-\sigma^2/2$, substitute the GBM price into
+  Using the mean growth rate $\mug=\mu-\sigma^2/2$, substitute the GBM price into
   the scaled NPV:
   \[
     \boxed{\rho_T=\exp\!\left[(\mug-g_y)T+\sigma\sqrt T\,Z\right]-1,
@@ -263,7 +263,7 @@ model, not a description of RenTec's proprietary methods.
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item For a chosen target, we evaluate $z_\star$ from estimated mean growth
-      and volatility, the holding period, and benchmark growth rate.
+      and volatility, the holding period, and the benchmark growth rate.
     \item The formula applies for $T>0$, $\sigma>0$, and $\rho_\star>-1$.
     \item A target of $-1$ or below is exceeded with probability one because
       the scaled NPV always exceeds $-1$ under GBM.
@@ -282,7 +282,7 @@ With $\rho_\star=0$, the trade succeeds if it beats the benchmark.
 \begin{itemize}\setlength{\itemsep}{0.55em}
 \item $g_y=0$: did the price increase?
 \item Positive $g_y$: did it increase enough over the holding period?
-\item Increasing $g_y$ raises the sale threshold and lowers its probability.
+\item Increasing $g_y$ raises the sale threshold and lowers the probability of exceeding it.
 \end{itemize}
 \vspace{0.5em}
 The same prices can be assessed against different assumed growth benchmarks.
