@@ -1,0 +1,95 @@
+<!--
+INSTRUCTOR-FACING CANVAS COPY
+
+1. Open this file on GitHub and select Download raw file.
+2. Open the downloaded .html file in a web browser; it will render as a page.
+3. Select the rendered page (Command+A on macOS or Ctrl+A on Windows).
+4. Copy it, then paste it into a Canvas page or announcement.
+5. Preview the Canvas page and verify the Releases link before publishing.
+-->
+
+<h2>How the weekly course materials are released</h2>
+
+<p>
+  Lecture notebooks and examples are published on the course repository's GitHub
+  Releases page as ZIP bundles that you download and open in VS Code. Starting
+  with week 6, each week's materials are released <strong>one class meeting at a
+  time</strong> rather than all at once. This page explains when releases appear,
+  how they are numbered, and which one to download.
+</p>
+
+<h3>One release per class meeting</h3>
+
+<p>
+  Each week has two class meetings, labeled <code>a</code> and <code>b</code>
+  (for example <code>L6a</code> and <code>L6b</code> in week 6). The materials
+  for a meeting are released before that class, typically the evening before.
+  The revision number at the end of the release name tells you which meetings
+  the bundle contains.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Release</th>
+      <th>Contains</th>
+      <th>Available before</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>week-06.0</code></td><td><code>L6a</code></td><td>Tuesday's class</td></tr>
+    <tr><td><code>week-06.1</code></td><td>the complete week (<code>L6a</code>, <code>L6b</code>)</td><td>Thursday's class</td></tr>
+  </tbody>
+</table>
+
+<p>
+  The same pattern holds every week: <code>.0</code> is Tuesday's meeting only,
+  and <code>.1</code> is the complete week.
+</p>
+
+<h3>Releases are cumulative</h3>
+
+<p>
+  Every release contains all earlier meetings of the same week. You do not need
+  to keep several bundles for one week. <strong>Always download the most recent
+  release for the current week</strong> and work from it. The release title shows
+  what is inside, for example <em>Week 06 (L6a)</em>; a title with no list, such
+  as <em>Week 06</em>, is the complete week.
+</p>
+
+<h3>Corrections</h3>
+
+<p>
+  If we find a problem in a notebook that has already been released, the fix
+  ships with the <strong>next release of that week</strong>. Published releases
+  are never edited in place. After Thursday's meeting, any further release
+  (<code>week-06.2</code>, <code>week-06.3</code>, and so on) contains the
+  complete week with corrections, and its release notes say what changed.
+</p>
+
+<h3>How to download a release</h3>
+
+<ol>
+  <li>
+    Open the
+    <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/releases">
+      course Releases page</a>.
+  </li>
+  <li>Select the most recent release for the current week.</li>
+  <li>
+    Under <strong>Assets</strong>, download the file named
+    <code>CHEME-5660-Fall-2026-Week-NN.R.zip</code>. Do
+    <strong>not</strong> download the automatically generated
+    <strong>Source code</strong> archives.
+  </li>
+  <li>
+    Extract the ZIP completely, open the extracted folder in VS Code, and follow
+    the setup and notebook instructions in its <code>README.md</code>.
+  </li>
+</ol>
+
+<p>
+  If a bundle behaves unexpectedly, check that you have the most recent release
+  for the week before anything else. Bring the release name and the exact error
+  message to office hours if the problem continues.
+</p>

@@ -7,14 +7,20 @@
 #   scripts/release-week.sh 1           # bare week number; revision defaults to 0
 #
 # Release tags are zero-padded and carry a revision (week-01.0), while lecture
-# directories are not padded (lectures/week-1). This script maps between the two,
-# so a correction to an already-published week ships as week-01.1 without moving
-# any lecture folder.
+# directories are not padded (lectures/week-1). This script maps between the two.
+#
+# From week 6 onward, releases go out one class meeting at a time and the
+# revision names the last meeting included: week-06.0 contains L6a only,
+# week-06.1 contains L6a and L6b, and any later revision (week-06.2, ...) is a
+# fix-only release of the complete week. Every release is cumulative. Weeks
+# before 6 keep the whole-week convention they were published under, so a
+# correction to week 4 still ships as week-04.N with both meetings.
 #
 # Outputs land in artifacts/ (gitignored):
 #   CHEME-5660-Fall-2026-Week-NN.R.zip
 #   CHEME-5660-Fall-2026-Week-NN.R.zip.sha256
 #   RELEASE-NOTES-week-NN.R.md
+#   RELEASE-SCOPE-week-NN.R.env   (included=, complete=, label=, title=)
 set -euo pipefail
 
 ARG="${1:-}"
@@ -41,6 +47,38 @@ BUNDLE="CHEME-5660-Fall-2026-Week-${WEEK_PAD}.${REV}"
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WEEK_DIR="$REPO/lectures/week-$WEEK_NUM"
 [ -d "$WEEK_DIR" ] || { echo "ERROR: $WEEK_DIR does not exist" >&2; exit 1; }
+
+# Class meetings in this release (see the header comment for the rule).
+MEETING_CADENCE_FROM_WEEK=6
+MEETINGS=()
+while IFS= read -r name; do MEETINGS+=("$name"); done < <(
+  cd "$WEEK_DIR" && find . -mindepth 1 -maxdepth 1 -type d -name 'L*' \
+    | sed 's#^\./##' | grep -E '^L[0-9]+[a-z]$' | sort
+)
+[ "${#MEETINGS[@]}" -gt 0 ] || { echo "ERROR: no class-meeting folders (L${WEEK_NUM}a, ...) in $WEEK_DIR" >&2; exit 1; }
+if (( WEEK_NUM >= MEETING_CADENCE_FROM_WEEK )); then
+  COUNT=$(( REV + 1 ))
+  (( COUNT > ${#MEETINGS[@]} )) && COUNT=${#MEETINGS[@]}
+else
+  COUNT=${#MEETINGS[@]}
+fi
+INCLUDED=("${MEETINGS[@]:0:$COUNT}")
+if (( COUNT == ${#MEETINGS[@]} )); then COMPLETE=true; else COMPLETE=false; fi
+if (( COUNT == 1 )); then
+  LABEL="${INCLUDED[0]}"
+else
+  LABEL="${INCLUDED[0]}–${INCLUDED[$((COUNT - 1))]}"
+fi
+TITLE="CHEME 5660 - Week ${WEEK_PAD}"
+[ "$COMPLETE" = true ] || TITLE="$TITLE ($LABEL)"
+
+# rsync exclusions for the meetings that are not in this release.
+RSYNC_EXCLUDES=()
+LATER=()
+for (( i = COUNT; i < ${#MEETINGS[@]}; i++ )); do
+  RSYNC_EXCLUDES+=(--exclude "/week-$WEEK_NUM/${MEETINGS[$i]}/")
+  LATER+=("\`week-${WEEK_PAD}.$i\`")
+done
 
 OUT="$REPO/artifacts"
 BUILD="$OUT/$BUNDLE"
@@ -70,6 +108,7 @@ rsync -a \
   --exclude '*.toc' \
   --exclude '*.xdv' \
   --exclude 'tmp/' \
+  ${RSYNC_EXCLUDES[@]+"${RSYNC_EXCLUDES[@]}"} \
   "$WEEK_DIR" "$BUILD/lectures/"
 
 # Remove setup messages and make links to other weeks usable in the
@@ -161,9 +200,34 @@ else
   ( cd "$OUT" && shasum -a 256 "$BUNDLE.zip" > "$BUNDLE.zip.sha256" )
 fi
 
+SCOPE="$OUT/RELEASE-SCOPE-$TAG.env"
+{
+  echo "included=${INCLUDED[*]}"
+  echo "complete=$COMPLETE"
+  echo "label=$LABEL"
+  echo "title=$TITLE"
+} > "$SCOPE"
+
+CONTENTS=""
+for m in "${INCLUDED[@]}"; do CONTENTS="${CONTENTS:+$CONTENTS, }\`$m\`"; done
+if [ "$COMPLETE" = true ]; then
+  SCOPE_NOTE="**Class meetings in this release:** ${CONTENTS}."
+else
+  LATER_LIST=""
+  for l in "${LATER[@]}"; do LATER_LIST="${LATER_LIST:+$LATER_LIST, }$l"; done
+  SCOPE_NOTE="**Class meetings in this release:** ${CONTENTS} (more to come).
+
+This release contains the class meeting folder(s) ${CONTENTS}. The remaining
+meeting(s) of this week will arrive as ${LATER_LIST}. Each release contains
+everything in the earlier ones, so always download the most recent release for
+the week."
+fi
+
 NOTES="$OUT/RELEASE-NOTES-$TAG.md"
 cat > "$NOTES" <<EOF
 ## Week ${WEEK_PAD}
+
+${SCOPE_NOTE}
 
 Download **\`$BUNDLE.zip\`** under **Assets** and extract it. Do not use GitHub's
 automatically generated Source code ZIP or tarball; those contain the authoring
@@ -180,3 +244,6 @@ echo "tag=$TAG"
 echo "archive=$ARCHIVE"
 echo "checksum=$OUT/$BUNDLE.zip.sha256"
 echo "notes=$NOTES"
+echo "scope=$SCOPE"
+echo "title=$TITLE"
+echo "included=${INCLUDED[*]}"

@@ -2,8 +2,13 @@ name: Release weekly student bundle
 
 # Pushing a tag of the form week-NN.R (week-01.0, week-01.1, week-12.0) builds
 # the student bundle and opens a DRAFT release. Review the draft, then publish it
-# by hand. Corrections to an already-published week ship as a new revision
-# (week-01.1) rather than by replacing an existing asset.
+# by hand. Published assets are never replaced.
+#
+# From week 6 onward, releases go out one class meeting at a time and R names the
+# last meeting included: week-06.0 is L6a only, week-06.1 is L6a and L6b, and any
+# later revision is a fix-only release of the complete week. Every release is
+# cumulative. scripts/release-week.sh applies the rule and writes the included
+# meetings and the release title to artifacts/RELEASE-SCOPE-week-NN.R.env.
 
 on:
   push:
@@ -43,6 +48,11 @@ jobs:
 
       - name: Build student bundle
         run: ./scripts/release-week.sh "${GITHUB_REF_NAME}"
+
+      - name: Read release scope
+        id: scope
+        shell: bash
+        run: cat "artifacts/RELEASE-SCOPE-${GITHUB_REF_NAME}.env" | tee -a "${GITHUB_OUTPUT}"
 
       - name: Verify bundle contents
         shell: bash
@@ -91,5 +101,5 @@ jobs:
             "${archive}" "${archive}.sha256" \
             --draft \
             --verify-tag \
-            --title "${{ steps.release.outputs.title }}" \
+            --title "${{ steps.scope.outputs.title }}" \
             --notes-file "artifacts/RELEASE-NOTES-${GITHUB_REF_NAME}.md"
