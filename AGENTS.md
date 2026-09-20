@@ -120,6 +120,19 @@
   accepted sections unless the instructor requests another round. This review
   is separate from the earlier multiple-asset lecture review below.
 
+## L5a single-asset GBM and NPV slides synchronization
+
+- The current 22-page single-asset L5a deck was synchronized with the reviewed
+  lecture and polished September 19, 2026, at the instructor's request, with
+  a final editorial score of 9.2/10. The
+  [saved record](lectures/instructor/L5a-SAGBM-NPV-SLIDES-REVIEW-HANDOFF.md)
+  records the company resources, concise EMA theory, and rendered-slide checks.
+  The instructor subsequently requested removal of the standalone “Pointwise
+  Prediction Bands” slide; do not restore it. The 9.2/10 score describes the
+  preceding 23-page snapshot. Read it before follow-up work. The instructor has
+  not yet separately marked this slide review complete. The September 16
+  slides review below covers the former multiple-asset deck, now taught as L5b.
+
 ## Completed L5a EMA example polish review
 
 - The single-asset EMA example was marked reviewed and complete by the instructor

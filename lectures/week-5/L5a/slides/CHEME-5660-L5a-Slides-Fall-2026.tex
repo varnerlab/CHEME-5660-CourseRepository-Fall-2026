@@ -53,8 +53,9 @@ By the end of this lecture, you will be able to:
 mean growth and volatility determine the distribution of later prices.
 \item \hilite{Calculate an NPV target probability}: connect the discounted
 trade payoff to the probability of exceeding a target at the sale date.
-\item \hilite{Compare predictions with observations}: use the examples to
-assess price predictions and examine whether updating improves forecasts.
+\item \hilite{Update GBM parameter estimates}: apply exponentially weighted
+updates for mean growth and volatility, explain the half-life, and use the
+estimates in a forecast with fixed parameters.
 \end{itemize}
 \end{frame}
 
@@ -78,21 +79,45 @@ then compare the resulting forecasts with the frozen model.
 \end{frame}
 
 \begin{frame}{Company Profile: Renaissance Technologies}
-Renaissance Technologies (RenTec) is a quantitative investment management
-firm founded in 1982. Its investment work uses mathematical and statistical
-methods, with a data-driven research approach across its funds.
+Renaissance Technologies (RenTec) was founded by
+\href{https://www.simonsfoundation.org/2024/05/10/simons-foundation-co-founder-mathematician-and-investor-jim-simons-dies-at-86/}{Jim Simons (1938--2024)},
+a mathematician and former chair of mathematics at Stony Brook University.
 
 \vspace{0.7em}
-Its researchers include people trained in mathematics, physics, computer
-science, and related fields.
+The firm uses mathematical and statistical methods to guide investments.
+Its researchers come from mathematics, physics, computer science, and
+related fields.
 
 \vspace{0.7em}
-\hilite{Connection to today:} State the assumptions, record a forecast,
-and evaluate it against later observations. Our GBM example is a teaching
-model, not a description of RenTec's proprietary methods.
+Its \hilite{Medallion Fund}, launched in 1988, averaged about 66\% annually
+before fees and 39\% after fees over 1988--2018. These are arithmetic
+averages of annual returns, not compound growth rates. The fund is closed
+to outside investors; RenTec's other funds use different strategies.
 \slidenote{Sources:}{\href{https://www.rentec.com/Home.action?about=true}{RenTec overview};
-\href{https://www.rentec.com/Home.action?index=true}{firm description}.}
-\note{[Sources] https://www.rentec.com/Home.action?about=true ; https://www.rentec.com/Home.action?index=true [Sources]}
+\href{https://www.cornell-capital.com/uploads/papers/medallion-fund.pdf}{Bradford Cornell's study of Medallion}.}
+\note{[Sources] https://www.simonsfoundation.org/2024/05/10/simons-foundation-co-founder-mathematician-and-investor-jim-simons-dies-at-86/ ; https://www.rentec.com/Home.action?about=true ; https://www.cornell-capital.com/uploads/papers/medallion-fund.pdf [Sources]}
+\end{frame}
+
+\begin{frame}{Renaissance Technologies: Explore Further}
+\hilite{Jobs and internships.} Browse the
+\href{https://www.rentec.com/Careers.action?jobs=true}{RenTec careers page}
+for research, programming, and systems roles. No internships were listed
+as of September 19, 2026; check for new openings.
+
+\vspace{0.8em}
+\hilite{Watch Jim Simons discuss his work:}
+\begin{itemize}\setlength{\itemsep}{0.6em}
+\item \href{https://www.youtube.com/watch?v=QNznD9hMEh0}{Numberphile: full-length interview}
+  \quad (\href{https://www.youtube.com/@numberphile2}{YouTube channel}).
+\item \href{https://www.ted.com/talks/jim_simons_the_mathematician_who_cracked_wall_street}{TED: The mathematician who cracked Wall Street}
+  \quad (\href{https://www.youtube.com/@TED}{YouTube channel}).
+\end{itemize}
+
+\vspace{0.6em}
+\hilite{Connection to today:} Build a model, record its predictions, and
+compare them with later observations. Our GBM examples introduce this
+research process; they do not describe RenTec's proprietary strategies.
+\note{[Sources] https://www.rentec.com/Careers.action?jobs=true ; https://www.youtube.com/watch?v=QNznD9hMEh0 ; https://www.numberphile.com/about ; https://www.youtube.com/@numberphile2 ; https://www.ted.com/talks/jim_simons_the_mathematician_who_cracked_wall_street ; https://www.youtube.com/@TED [Sources]}
 \end{frame}
 
 \begin{frame}{Concept Review: Single Asset GBM Model}
@@ -178,7 +203,7 @@ model, not a description of RenTec's proprietary methods.
       first for one firm and then across the dataset.
   \end{itemize}
 
-  \slidenote{Next question:}{how can this price distribution tell us the probability of exceeding a target return at a scheduled sale?}
+  \slidenote{Next question:}{what is the probability that a scheduled sale exceeds a target scaled NPV?}
 \end{frame}
 
 \begin{frame}{GBM Trade Rule}
@@ -290,6 +315,7 @@ Choose the benchmark before examining the outcome.
 \end{frame}
 
 \begin{frame}{Example: GBM Net Present Value Trade Rule}
+\textbf{\ink{Example:}}
 \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}{Evaluate an NPV-based GBM trade rule}
 
 \vspace{0.8em}
@@ -304,21 +330,82 @@ We check the calculation at the median scaled NPV, which must be exceeded
 with probability one half, then vary the target to examine the probability curve.
 \end{frame}
 
+\begin{frame}{Updating GBM Parameters with an EMA}
+An exponential moving average (EMA) gives recent observations more weight.
+For positive prices spaced $\Delta t>0$ years apart, use the growth rate
+$g_k=\ln(S_k/S_{k-1})/\Delta t$.
+
+\vspace{0.4em}
+At entry row $s$, initialize from the training estimates:
+\[
+  m_s=\hat\mu_{g,0},\qquad v_s=\frac{\hat\sigma_0^2}{\Delta t}.
+\]
+Choose a decay factor $0<\lambda<1$. For each new observation $k>s$:
+\[
+\begin{aligned}
+  \delta_k &= g_k-m_{k-1},\\
+  m_k &= m_{k-1}+(1-\lambda)\delta_k,\\
+  v_k &= \lambda\bigl[v_{k-1}+(1-\lambda)\delta_k^2\bigr].
+\end{aligned}
+\]
+Here, $m_k$ and $v_k$ estimate the mean and variance of the growth rate.
+\end{frame}
+
+\begin{frame}{EMA: Recover the GBM Parameters}
+For the growth rate, the estimated mean $m_k$ has units of year$^{-1}$ and
+the estimated variance $v_k$ has units of year$^{-2}$. Convert these moments
+to GBM parameter estimates:
+\[
+\begin{aligned}
+  \hat\mu_{g,k} &= m_k,
+    & &\text{mean growth rate},\\[0.4em]
+  \hat\sigma_k &= \sqrt{v_k\Delta t},
+    & &\text{volatility},\\[0.4em]
+  \hat\mu_k &= \hat\mu_{g,k}+\frac{\hat\sigma_k^2}{2},
+    & &\text{arithmetic drift}.
+\end{aligned}
+\]
+We estimate the volatility parameter by multiplying the growth-rate
+standard deviation $\sqrt{v_k}$ by $\sqrt{\Delta t}$. The result has units
+of year$^{-1/2}$.
+
+\slidenote{Variance update:}{the recursion accounts for the changing mean;
+it does not include a finite-sample unbiased correction.}
+\end{frame}
+
+\begin{frame}{EMA: Interpret the Half-Life}
+The \hilite{half-life} $H_{\mathrm{half}}>0$ is the number of observations
+needed to halve the weight of an older observation:
+\[
+  \lambda=2^{-1/H_{\mathrm{half}}}.
+\]
+With a half-life of 21 observations, $\lambda\approx0.9675$. The updated
+mean combines 96.75\% of the previous mean with 3.25\% of the new growth rate.
+
+\vspace{0.7em}
+A shorter half-life makes the estimates respond faster but also makes
+them more sensitive to noise. The half-life controls the parameter updates; the holding period
+sets the forecast horizon. Each forecast holds its parameter estimates fixed.
+
+\slidenote{Derivation:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/advanced/ema-derivation/CHEME-5660-L5a-Derivation-EMA-SAGBM-Fall-2026.ipynb}{Derive the exponentially weighted moments and GBM parameter updates}}
+\end{frame}
+
 \begin{frame}{Example: Updating the Parameter Estimates}
+\textbf{\ink{Example:}}
 \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb}{Compare frozen and updated estimates}
 
 \vspace{0.8em}
 Can giving recent observations more weight improve our forecasts?
 
 \vspace{0.7em}
-We retain the original purchase and update its target probability each day
-for a sale at the end of the chosen forward window. The example compares frozen
-parameters with exponentially weighted estimates of volatility alone or
-both mean growth and volatility.
+Each day, we update the probability that the original trade will exceed
+its NPV target at the end of the chosen forward window. We compare frozen
+parameters with EMA estimates of volatility alone or of both mean growth
+and volatility.
 
 \vspace{0.7em}
-We compare the forecasts on the same observed outcomes to examine whether
-the updates improve predictions or add noise.
+We evaluate all three forecasts against the same observed outcomes to see
+whether updating improves predictions.
 \end{frame}
 
 \begin{frame}{Optional Advanced Material}
@@ -337,16 +424,18 @@ with the analytical result and introduce variance reduction techniques.
 \end{frame}
 
 \begin{frame}{Summary}
-We connected the single-asset GBM model with discounted trade payoffs and
-observed outcomes.
+We connected GBM price predictions with trade probabilities and parameter updates.
+
 \vspace{0.6em}
+\textbf{\ink{Key takeaways:}}
 \begin{itemize}\setlength{\itemsep}{0.75em}
 \item \hilite{Out-of-sample predictions}: we used historical estimates to
-describe the distribution of later prices.
+describe later prices. Prediction bands apply to individual dates.
 \item \hilite{NPV target probabilities}: we derived the chance of exceeding
-a target and connected it to the chosen benchmark growth rate.
-\item \hilite{Predictions and observations}: we checked price predictions
-and examined whether updated estimates improve target probabilities.
+a target scaled NPV at a scheduled sale for a chosen benchmark growth rate.
+\item \hilite{EMA parameter updates}: we updated mean growth and volatility
+from growth-rate moments. The half-life controls how quickly older observations
+lose weight; each forecast holds its estimates fixed.
 \end{itemize}
 \slidenote{Next:}{L5b extends the price model to correlated assets and portfolio weights.}
 \end{frame}
