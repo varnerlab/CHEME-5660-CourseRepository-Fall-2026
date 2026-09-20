@@ -4,8 +4,8 @@ name: Release weekly student bundle
 # the student bundle and opens a DRAFT release. Review the draft, then publish it
 # by hand. Published assets are never replaced.
 #
-# From week 6 onward, releases go out one class meeting at a time and R names the
-# last meeting included: week-06.0 is L6a only, week-06.1 is L6a and L6b, and any
+# From week 5 onward, releases go out one class meeting at a time and R names the
+# last meeting included: week-05.0 is L5a only, week-05.1 is L5a and L5b, and any
 # later revision is a fix-only release of the complete week. Every release is
 # cumulative. scripts/release-week.sh applies the rule and writes the included
 # meetings and the release title to artifacts/RELEASE-SCOPE-week-NN.R.env.

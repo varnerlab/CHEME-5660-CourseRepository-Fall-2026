@@ -26,7 +26,7 @@ There are two ways to use the course materials:
    `R` is the revision). Do not download either automatically generated **Source
    code** archive. Published bundles are versioned snapshots; corrections are
    issued as new revisions rather than silently replacing files.
-   Starting with week 6, a week's materials are released one class meeting at a
+   Starting with week 5, a week's materials are released one class meeting at a
    time, and the revision tells you how many meetings the bundle contains: `.0`
    is Tuesday's meeting only, and `.1` is the complete week. Every release
    contains everything in the earlier ones, so always download the most recent

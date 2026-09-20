@@ -9,11 +9,11 @@
 # Release tags are zero-padded and carry a revision (week-01.0), while lecture
 # directories are not padded (lectures/week-1). This script maps between the two.
 #
-# From week 6 onward, releases go out one class meeting at a time and the
-# revision names the last meeting included: week-06.0 contains L6a only,
-# week-06.1 contains L6a and L6b, and any later revision (week-06.2, ...) is a
+# From week 5 onward, releases go out one class meeting at a time and the
+# revision names the last meeting included: week-05.0 contains L5a only,
+# week-05.1 contains L5a and L5b, and any later revision (week-05.2, ...) is a
 # fix-only release of the complete week. Every release is cumulative. Weeks
-# before 6 keep the whole-week convention they were published under, so a
+# before 5 keep the whole-week convention they were published under, so a
 # correction to week 4 still ships as week-04.N with both meetings.
 #
 # Outputs land in artifacts/ (gitignored):
@@ -49,7 +49,7 @@ WEEK_DIR="$REPO/lectures/week-$WEEK_NUM"
 [ -d "$WEEK_DIR" ] || { echo "ERROR: $WEEK_DIR does not exist" >&2; exit 1; }
 
 # Class meetings in this release (see the header comment for the rule).
-MEETING_CADENCE_FROM_WEEK=6
+MEETING_CADENCE_FROM_WEEK=5
 MEETINGS=()
 while IFS= read -r name; do MEETINGS+=("$name"); done < <(
   cd "$WEEK_DIR" && find . -mindepth 1 -maxdepth 1 -type d -name 'L*' \
