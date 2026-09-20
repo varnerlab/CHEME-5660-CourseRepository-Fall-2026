@@ -133,6 +133,17 @@
   not yet separately marked this slide review complete. The September 16
   slides review below covers the former multiple-asset deck, now taught as L5b.
 
+## Completed L5a NPV trade-rule example polish review
+
+- The GBM NPV trade-rule example, moved from L4b to L5a, was marked reviewed
+  and complete by the instructor September 19, 2026, with a final editorial
+  score of 9.1/10 (initial 9.0/10). The
+  [saved review record](lectures/instructor/L4b-NPV-REVIEW-HANDOFF.md) records
+  the approved objectives, explicit GBM-to-price-distribution explanation,
+  equation formatting, parameter comments, figure label, and final checks.
+  No proposals remain pending; read it before follow-up work and do not restart
+  accepted sections unless the instructor requests another round.
+
 ## Completed L5a EMA example polish review
 
 - The single-asset EMA example was marked reviewed and complete by the instructor

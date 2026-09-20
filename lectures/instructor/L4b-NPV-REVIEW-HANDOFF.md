@@ -238,9 +238,12 @@ matches the approved draft exactly and passes schema validation.
 Notebook SHA-256 after saving the median-check formatting:
 `92d1619adadc6d236e5c27b5e5cefb3849476b9f56e2db2888dc46b3a541e7f4`.
 
-## Next proposal — probability-curve label
+## Probability-curve label — approved September 19
 
-The final proposed edit changes the horizontal-axis label from “Target return
+The instructor approved the final proposal with “Great. Agree. Update. Next.”
+The saved notebook now uses the horizontal-axis label “Target scaled NPV ρ*”
+and includes the regenerated PNG, SVG, and HTML figure representations.
+The edit changes the horizontal-axis label from “Target return
 ρ*” to “Target scaled NPV ρ*”, so the figure explicitly names the discounted
 quantity developed in the example. Only the label string changes in code.
 
@@ -254,6 +257,68 @@ refreshed together in the draft. No plot image was edited manually.
 The proposal and preview are in
 `build/notebook-previews/L5a-NPV-curve-proposal-2026-09-19/`, including
 `curve-draft.ipynb`, `probability-curve.png`, and `checks.txt`. The active
-notebook retains the existing axis label and saved figure pending feedback.
-After this proposal is resolved, the remaining work is the final whole-notebook
-consistency check and rescoring.
+notebook matches the approved draft exactly.
+
+## Final assessment — September 19, 2026
+
+The agreed polish edits and final consistency review are complete. No proposals
+remain pending. The instructor approved the final assessment and marked this
+notebook reviewed and complete on September 19, 2026. Do not reopen accepted
+sections unless the instructor requests another round.
+
+Final editorial score: **9.1/10**, compared with **9.0/10** at the opening
+conditional assessment. These scores are editorial judgments, not measured
+learning outcomes.
+
+| Dimension | Initial | Final |
+| --- | --- | --- |
+| Technical correctness and agreement with calculations | 9.3 | 9.3 |
+| Organization and sequencing | 9.1 | 9.1 |
+| Narrative, motivation, and interpretation | 9.0 | 9.2 |
+| Presentation and rendered layout | 8.8 | 9.1 |
+| Cognitive density and pacing | 9.0 | 9.0 |
+
+The objectives and overview now explicitly connect estimated mean growth and
+volatility to a GBM distribution of future sale prices, then to NPV target
+probabilities. The instructor's correction exposed a teaching distinction that
+the opening assessment did not emphasize sufficiently: the estimates are model
+inputs and do not alone determine the future price. The revised objectives also
+ask students to explain and apply the median check and interpret negative
+targets. Equation spacing, separate parameter assignments with units, and the
+specific figure label improve readability and consistency. The three tasks,
+three retrospective takeaways, and final invitation to vary the inputs agree
+with the opening. No additional substantive edits were introduced at closure.
+
+Final checks:
+
+- Read the complete final notebook and rendered all three display equations
+  successfully with both the installed VS Code math renderer and
+  markdown-it-texmath.
+- Inspected final PNG captures of the opening, Task 1 equations, median code
+  and output, plot code and figure, and summary. All five captures have no
+  horizontal overflow or math-rendering errors.
+- Validated notebook schema, all local links, exactly three objectives/tasks/
+  takeaways, and separator placement. All 26 cells, notebook and cell metadata,
+  nine execution counts, and non-figure outputs are preserved. No saved error
+  outputs are present.
+- Compared the final notebook with the start-of-round snapshot: only cells 0,
+  9, 17, and 21 differ. Calculation code is preserved; median-cell changes are
+  comments and whitespace, and the plot changes only its horizontal label.
+  All three saved figure MIME representations match the approved native Julia
+  exports.
+- The focused Julia execution during the figure proposal passed the median
+  assertion. All 201 curve values agree with the independent normal-tail
+  calculation to a maximum absolute error of `2.220446049250313e-16`.
+  The notebook was not rerun end to end. The previously unverified external
+  course-documentation link remains outside these local checks.
+
+Pacing remains an editorial assessment and needs classroom feedback; no new
+pacing changes were warranted in this round. Existing rejected wording and
+the ticker-independent interpretation remain preserved.
+
+Final notebook SHA-256:
+`eca6284e7d72defee168b2031d2ee1e27ff2a0a6e0f66fe639d4f3061d2f5b6b`.
+
+The final snapshot, complete HTML render, five PNG captures, renderer report,
+visual metrics, and preservation checks are saved under
+`build/notebook-previews/L5a-NPV-final-2026-09-19/`.
