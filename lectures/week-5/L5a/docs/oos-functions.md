@@ -32,7 +32,7 @@ band_coverage(S₀::Float64, ĝ::Float64, σ̂::Float64,
 
 Returns the dimensionless fraction of forecast observations inside the selected
 GBM price band, including equality with either limit. `S₀` is the positive
-initial VWAP in USD/share; `ĝ` is mean growth in year⁻¹, distinct from arithmetic
+initial VWAP in USD/share; `ĝ` is mean growth in year⁻¹, distinct from the
 GBM drift; `σ̂` is nonnegative volatility in year⁻¹ᐟ². The keyword `z` is the
 nonnegative, dimensionless normal interval multiplier.
 
