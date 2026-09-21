@@ -90,21 +90,26 @@ related fields.
 
 \vspace{0.7em}
 Its \hilite{Medallion Fund}, launched in 1988, averaged about 66\% annually
-before fees and 39\% after fees over 1988--2018. These are arithmetic
-averages of annual returns, not compound growth rates. The fund is closed
-to outside investors; RenTec's other funds use different strategies.
+before fees and 39\% after fees over 1988--2018, using the returns reported
+in Gregory Zuckerman's \emph{The Man Who Solved the Market}. These are
+arithmetic averages of annual returns, not compound growth rates. The fund
+is closed to outside investors; RenTec's other funds use different strategies.
 \slidenote{Sources:}{\href{https://www.rentec.com/Home.action?about=true}{RenTec overview};
+\href{https://www.penguinrandomhouse.com/books/557104/the-man-who-solved-the-market-by-gregory-zuckerman/}{Zuckerman's book};
 \href{https://www.cornell-capital.com/uploads/papers/medallion-fund.pdf}{Bradford Cornell's study of Medallion}.}
-\note{[Sources] https://www.simonsfoundation.org/2024/05/10/simons-foundation-co-founder-mathematician-and-investor-jim-simons-dies-at-86/ ; https://www.rentec.com/Home.action?about=true ; https://www.cornell-capital.com/uploads/papers/medallion-fund.pdf [Sources]}
+\note{[Sources] https://www.simonsfoundation.org/2024/05/10/simons-foundation-co-founder-mathematician-and-investor-jim-simons-dies-at-86/ ; https://www.rentec.com/Home.action?about=true ; https://www.penguinrandomhouse.com/books/557104/the-man-who-solved-the-market-by-gregory-zuckerman/ ; https://www.cornell-capital.com/uploads/papers/medallion-fund.pdf [Sources]}
 \end{frame}
 
 \begin{frame}{Renaissance Technologies: Explore Further}
 \hilite{Jobs and internships.} Browse the
 \href{https://www.rentec.com/Careers.action?jobs=true}{RenTec careers page}
 for research, programming, and systems roles. No internships were listed
-as of September 19, 2026; check for new openings.
+as of September 18, 2026; check for new openings. The Simons Foundation also
+offers paid summer research internships through
+\href{https://www.simonsfoundation.org/summer-at-simons/}{Summer at Simons}
+at the \href{https://www.simonsfoundation.org/flatiron/}{Flatiron Institute}.
 
-\vspace{0.8em}
+\vspace{0.6em}
 \hilite{Watch Jim Simons discuss his work:}
 \begin{itemize}\setlength{\itemsep}{0.6em}
 \item \href{https://www.youtube.com/watch?v=QNznD9hMEh0}{Numberphile: full-length interview}
@@ -113,11 +118,12 @@ as of September 19, 2026; check for new openings.
   \quad (\href{https://www.youtube.com/@TED}{YouTube channel}).
 \end{itemize}
 
-\vspace{0.6em}
-\hilite{Connection to today:} Build a model, record its predictions, and
-compare them with later observations. Our GBM examples introduce this
-research process; they do not describe RenTec's proprietary strategies.
-\note{[Sources] https://www.rentec.com/Careers.action?jobs=true ; https://www.youtube.com/watch?v=QNznD9hMEh0 ; https://www.numberphile.com/about ; https://www.youtube.com/@numberphile2 ; https://www.ted.com/talks/jim_simons_the_mathematician_who_cracked_wall_street ; https://www.youtube.com/@TED [Sources]}
+\vspace{0.5em}
+\hilite{Connection to today:} Renaissance builds statistical models of prices
+and tests them against data. Today we do the same at classroom scale with GBM:
+fit the model to 2014--2024 prices, forecast 2025, and compare the forecast
+with what happened. Our examples do not describe RenTec's proprietary strategies.
+\note{[Sources] https://www.rentec.com/Careers.action?jobs=true ; https://www.simonsfoundation.org/summer-at-simons/ ; https://www.simonsfoundation.org/flatiron/ ; https://www.youtube.com/watch?v=QNznD9hMEh0 ; https://www.numberphile.com/about ; https://www.youtube.com/@numberphile2 ; https://www.ted.com/talks/jim_simons_the_mathematician_who_cracked_wall_street ; https://www.youtube.com/@TED [Sources]}
 \end{frame}
 
 \begin{frame}{Concept Review: Single Asset GBM Model}
@@ -186,6 +192,28 @@ research process; they do not describe RenTec's proprietary strategies.
   samples the price at the selected time $T$.
 \end{frame}
 
+\begin{frame}{Concept Review: Estimated Parameters}
+  In L4b, we estimated the mean growth rate and volatility from historical
+  data, giving $\hat\mu_g$ and $\hat\sigma$, where the hats indicate estimates
+  from data. These two estimates are all we need to simulate prices with the
+  one-step transition.
+
+  \vspace{0.4em}
+  Why, then, calculate $\hat\mu$? The GBM differential equation uses the drift
+  $\mu$. To express the fitted model with that parameter, we calculate:
+  \[
+    \boxed{\hat\mu=\hat\mu_g+\frac{\hat\sigma^2}{2}.}
+  \]
+  Substituting this drift estimate into the one-step transition, the
+  half-variance terms cancel:
+  \[
+    \hat\mu-\frac{\hat\sigma^2}{2}
+    =\Bigl(\hat\mu_g+\frac{\hat\sigma^2}{2}\Bigr)-\frac{\hat\sigma^2}{2}
+    =\hat\mu_g.
+  \]
+  Both forms give the same simulated prices for the same draws of $Z_j$.
+\end{frame}
+
 \begin{frame}{Example: Out-of-Sample Price Predictions}
 \textbf{\ink{Example:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb}{Test predictions against later observations}
@@ -227,29 +255,33 @@ research process; they do not describe RenTec's proprietary strategies.
     =\Bigl(\frac{S_T}{S_0}\Bigr)e^{-g_yT}-1.
   \]
 
-  We now use GBM to describe the uncertain sale price $S_T$.
+  A positive $\rho_T$ means the present value of the sale exceeds the purchase
+  cost, and a negative $\rho_T$ means it falls short. A zero $\rho_T$ means
+  the trade earns exactly the benchmark growth rate $g_y$.
 \end{frame}
 
 \begin{frame}{Substitute the GBM Solution}
   Using the mean growth rate $\mug=\mu-\sigma^2/2$, substitute the GBM price into
   the scaled NPV:
   \[
-    \boxed{\rho_T=\exp\!\left[(\mug-g_y)T+\sigma\sqrt T\,Z\right]-1,
+    \boxed{\rho_T=\exp\!\left[\underbrace{(\mug-g_y)}_{\text{excess growth rate}}T+\sigma\sqrt T\,Z\right]-1,
       \qquad Z\sim\mathcal N(0,1).}
   \]
-  Discounting subtracts the benchmark growth rate $g_y$ from the mean growth
-  rate $\mug$, while leaving the random shock unchanged. The quantity
-  $1+\rho_T$ is lognormal, so:
+  \vspace{0.2em}
+
+  Discounting replaces $\mug$ with the \hilite{excess growth rate} $\mug-g_y$
+  relative to the benchmark, while leaving the random shock unchanged. The
+  quantity $1+\rho_T$ is lognormal, so:
   \[
     \ln(1+\rho_T)\sim\mathcal N\!\left((\mug-g_y)T,\sigma^2T\right).
   \]
-  The scaled NPV is a lognormal variable shifted down by one, with
-  $\rho_T>-1$.
+  A lognormal variable is always positive, so $\rho_T>-1$: the most we can
+  lose is the purchase price $n_0S_0$.
 
-  \vspace{0.5em}
-  The benchmark affects the return through $g_yT$. When $|g_y|T\ll1$,
-  discounting is small and $\rho_T\approx S_T/S_0-1$. We use the exact
-  discounted expression to calculate the target probability.
+  \vspace{0.3em}
+  When $|g_y|T\ll1$, discounting is small and $\rho_T\approx S_T/S_0-1$. We
+  keep the exact discounted expression so the calculation also applies to
+  longer holding periods.
 \end{frame}
 
 \begin{frame}{Terminal Target Probability}
@@ -296,12 +328,14 @@ research process; they do not describe RenTec's proprietary strategies.
   \slidenote{Example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}{Calculate and verify the NPV target probability}}
 \end{frame}
 
-\begin{frame}{Change the Benchmark}
+\begin{frame}{Target Sale Price and the Benchmark}
 The target scaled NPV corresponds to a required sale price:
 \[
 K=S_0(1+\rho_\star)e^{g_yT}.
 \]
-With $\rho_\star=0$, the trade succeeds if it beats the benchmark.
+With $\rho_\star=0$, the trade exceeds its target when the sale price beats
+$S_0e^{g_yT}$, the value the purchase price would have reached growing at the
+benchmark rate.
 
 \vspace{0.6em}
 \begin{itemize}\setlength{\itemsep}{0.55em}
@@ -311,7 +345,8 @@ With $\rho_\star=0$, the trade succeeds if it beats the benchmark.
 \end{itemize}
 \vspace{0.5em}
 The same prices can be assessed against different assumed growth benchmarks.
-Choose the benchmark before examining the outcome.
+Choose the benchmark before examining the outcome. We will meet this form
+again when $K$ is the strike price of an options contract.
 \end{frame}
 
 \begin{frame}{Example: GBM Net Present Value Trade Rule}
@@ -331,21 +366,22 @@ with probability one half, then vary the target to examine the probability curve
 \end{frame}
 
 \begin{frame}{Updating GBM Parameters with an EMA}
-An exponential moving average (EMA) gives recent observations more weight.
-For positive prices spaced $\Delta t>0$ years apart, use the growth rate
-$g_k=\ln(S_k/S_{k-1})/\Delta t$.
+Fixed parameters are a common criticism of GBM. Instead, we can update the
+estimates as new prices arrive. An \hilite{exponential moving average (EMA)}
+gives recent observations more weight. For positive prices spaced $\Delta t>0$
+years apart, use the growth rate $g_k=\ln(S_k/S_{k-1})/\Delta t$.
 
-\vspace{0.4em}
-At entry row $s$, initialize from the training estimates:
+\vspace{0.3em}
+At entry index $s$, initialize from the training estimates:
 \[
   m_s=\hat\mu_{g,0},\qquad v_s=\frac{\hat\sigma_0^2}{\Delta t}.
 \]
 Choose a decay factor $0<\lambda<1$. For each new observation $k>s$:
 \[
 \begin{aligned}
-  \delta_k &= g_k-m_{k-1},\\
-  m_k &= m_{k-1}+(1-\lambda)\delta_k,\\
-  v_k &= \lambda\bigl[v_{k-1}+(1-\lambda)\delta_k^2\bigr].
+  \delta_k &= g_k-m_{k-1}, &&\text{(innovation)}\\
+  m_k &= m_{k-1}+(1-\lambda)\delta_k, &&\text{(mean update)}\\
+  v_k &= \lambda\bigl[v_{k-1}+(1-\lambda)\delta_k^2\bigr]. &&\text{(variance update)}
 \end{aligned}
 \]
 Here, $m_k$ and $v_k$ estimate the mean and variance of the growth rate.
@@ -362,7 +398,7 @@ to GBM parameter estimates:
   \hat\sigma_k &= \sqrt{v_k\Delta t},
     & &\text{volatility},\\[0.4em]
   \hat\mu_k &= \hat\mu_{g,k}+\frac{\hat\sigma_k^2}{2},
-    & &\text{arithmetic drift}.
+    & &\text{drift}.
 \end{aligned}
 \]
 We estimate the volatility parameter by multiplying the growth-rate
