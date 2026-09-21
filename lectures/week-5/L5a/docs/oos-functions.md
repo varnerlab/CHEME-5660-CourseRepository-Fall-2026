@@ -56,5 +56,33 @@ strictly positive and there is no `z` keyword. Initial time zero is excluded.
 The result is a dimensionless diagnostic measured in modeled log-price standard
 deviations; it is not a p-value.
 
-All helpers assume finite inputs satisfying the documented conditions. They do
-not perform input validation; see their source docstrings for the full contracts.
+These three numerical helpers assume finite inputs satisfying the documented
+conditions. They do not perform input validation; see their source docstrings
+for the full contracts.
+
+## plot_gbm_oos
+
+```julia
+plot_gbm_oos(ticker::String, parameters_df::DataFrame,
+    dataset::Dict{String,DataFrame}; Δt::Float64,
+    number_of_observations::Int, number_of_paths::Int = 100)
+```
+
+Returns a `Plots.Plot` comparing simulated prices, the analytical expectation
+and median, 68%/95%/99% pointwise bands, and observed testing VWAP. The title
+reports the observed 95% coverage, excluding the initial observation.
+
+`ticker` must be in both the training parameter table and testing dictionary.
+`parameters_df.drift` stores mean growth in year⁻¹, and `volatility` is in
+year⁻¹ᐟ². Testing tables supply chronologically ordered
+`volume_weighted_average_price` values in USD/share. `Δt` is the positive
+interval in years; `number_of_observations` includes the initial testing price
+and must be between two and the selected history's length. `number_of_paths`
+is a positive simulation count.
+
+The helper constructs a fresh model using the selected asset's fixed training
+estimates and starts every path at its first testing VWAP. It uses the current
+random-number stream, so rerunning changes the sampled paths but not the
+analytical curves or coverage. It leaves the input tables and the earlier
+simulation variables unchanged. See the [source docstring](../src/OutOfSample.jl)
+for the full assumptions.
