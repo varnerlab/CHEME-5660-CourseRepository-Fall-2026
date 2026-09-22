@@ -1,0 +1,150 @@
+% L5b covariance schematic: samples from two-dimensional normal distributions
+% with negative, zero, and positive covariance (columns). The covariance
+% matrices are [[1, rho],[rho, 1]] with rho = -0.6, 0, 0.6.
+%
+% Top row: 400 seeded samples (blue) with the mean crosshair and the 1-sigma
+% (solid) and 2-sigma (dashed) covariance ellipses. Bottom row: the same
+% blue cloud overlaid with a red cloud whose covariance matrix is four times
+% larger, so both standard deviations double while the correlation is
+% unchanged; each cloud shows its 2-sigma ellipse (dashed), and the red
+% ellipse is the blue one scaled by two.
+%
+% Ellipse geometry: [[1,rho],[rho,1]] has eigenvectors (1,1)/sqrt2 and
+% (1,-1)/sqrt2 with eigenvalues 1+rho and 1-rho, so the k-sigma ellipse is
+%   p(t) = k/sqrt2 * ( sqrt(1+rho) cos t (1,1) + sqrt(1-rho) sin t (1,-1) ).
+%
+% Data files: Data-L5b-Cov-{Negative,Zero,Positive}-{Base,Scaled}.csv,
+% written by generate_samples.py (seeded, standard library only).
+%
+% The notebook SVG carries a dark palette added by theme_svg.py; keep new
+% colors in that script's mapping when changing the palette here.
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{vnfigure}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+% Text is set in fontspec's default Latin Modern Roman to match the math,
+% rather than the sans face vnfigure.sty uses for diagrams.
+\newcommand{\fAxis}{\rmfamily\fontsize{8.5}{10}\selectfont}   % ticks, axis labels
+\newcommand{\fNote}{\rmfamily\fontsize{9}{11}\selectfont}     % in-panel annotations
+\newcommand{\fTitle}{\rmfamily\fontsize{12}{14}\selectfont}  % column titles
+
+% k-sigma ellipse of scale^2*[[1,rho],[rho,1]] (scale multiplies the standard
+% deviations): \covellipse{k}{rho}{scale}{style}
+\newcommand{\covellipse}[4]{%
+  \addplot[#4, domain=0:360, samples=121, variable=\t]
+    ({#3*#1/sqrt(2)*(sqrt(1+#2)*cos(\t)+sqrt(1-#2)*sin(\t))},
+     {#3*#1/sqrt(2)*(sqrt(1+#2)*cos(\t)-sqrt(1-#2)*sin(\t))});}
+
+% pgfplots draws every plot's markers after all line paths, so the contours
+% go on the foreground layer to stay visible over the dense clouds.
+\pgfplotsset{
+  set layers,
+  contour/.style={on layer=axis foreground},
+  % translucent regions inside each contour; the 1-sigma region sits on top of
+  % the 2-sigma region, so the overlap reads darker toward the center
+  region blue/.style={draw=none, fill=vnlink, fill opacity=0.13},
+  region red/.style={draw=none, fill=vncarnelian, fill opacity=0.09},
+  base cloud/.style={only marks, mark=*, mark size=1.05pt,
+    mark options={fill=vnlink!60, draw=vnlink, line width=0.2pt,
+      fill opacity=0.75}},
+  scaled cloud/.style={only marks, mark=o, mark size=1.05pt,
+    vncarnelian, line width=0.3pt, draw opacity=0.85},
+  sigma one/.style={contour, vnlink, line width=0.9pt},
+  sigma two/.style={contour, vnlink, line width=0.8pt, dashed},
+  sigma two blue/.style={contour, vnlink, line width=0.9pt, dashed},
+  % white halo drawn under the blue cloud's contour so it reads over the points
+  sigma two halo/.style={contour, white, line width=2.2pt, dashed},
+  sigma two red/.style={contour, vncarnelian, line width=1.0pt, dashed},
+}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+      group style={
+        group size=3 by 2,
+        horizontal sep=0.85cm,
+        vertical sep=1.05cm,
+        xlabels at=edge bottom,
+        ylabels at=edge left,
+      },
+      width=5.3cm, height=5.3cm,
+      axis lines=left,
+      axis line style={vnink, line width=0.6pt},
+      tick style={vnink, line width=0.4pt},
+      ticklabel style={font=\fAxis, color=vnink},
+      xlabel style={font=\fAxis, color=vnink},
+      ylabel style={font=\fAxis, color=vnink},
+      title style={font=\fTitle, color=vnink, yshift=-2pt},
+      xlabel={Sample value, $x_1$},
+      ylabel={Sample value, $x_2$},
+      clip=false,
+  ]
+    % ---- top row: base clouds with mean crosshair and 1-, 2-sigma ellipses ----
+    \nextgroupplot[title={$\operatorname{cov}(x_1,x_2)<0$},
+        xmin=-4, xmax=4, ymin=-4, ymax=4, xtick={-4,-2,0,2,4}, ytick={-4,-2,0,2,4}]
+      \draw[vnrule, line width=0.4pt] (axis cs:-4,0) -- (axis cs:4,0);
+      \draw[vnrule, line width=0.4pt] (axis cs:0,-4) -- (axis cs:0,4);
+      \covellipse{2}{-0.6}{1}{region blue}
+      \covellipse{1}{-0.6}{1}{region blue}
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Negative-Base.csv};
+      \covellipse{1}{-0.6}{1}{sigma one}
+      \covellipse{2}{-0.6}{1}{sigma two}
+
+    \nextgroupplot[title={$\operatorname{cov}(x_1,x_2)=0$},
+        xmin=-4, xmax=4, ymin=-4, ymax=4, xtick={-4,-2,0,2,4}, ytick={-4,-2,0,2,4}]
+      \draw[vnrule, line width=0.4pt] (axis cs:-4,0) -- (axis cs:4,0);
+      \draw[vnrule, line width=0.4pt] (axis cs:0,-4) -- (axis cs:0,4);
+      \covellipse{2}{0}{1}{region blue}
+      \covellipse{1}{0}{1}{region blue}
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Zero-Base.csv};
+      \covellipse{1}{0}{1}{sigma one}
+      \covellipse{2}{0}{1}{sigma two}
+
+    \nextgroupplot[title={$\operatorname{cov}(x_1,x_2)>0$},
+        xmin=-4, xmax=4, ymin=-4, ymax=4, xtick={-4,-2,0,2,4}, ytick={-4,-2,0,2,4}]
+      \draw[vnrule, line width=0.4pt] (axis cs:-4,0) -- (axis cs:4,0);
+      \draw[vnrule, line width=0.4pt] (axis cs:0,-4) -- (axis cs:0,4);
+      \covellipse{2}{0.6}{1}{region blue}
+      \covellipse{1}{0.6}{1}{region blue}
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Positive-Base.csv};
+      \covellipse{1}{0.6}{1}{sigma one}
+      \covellipse{2}{0.6}{1}{sigma two}
+      \node[anchor=north west, text=vnmuted, font=\fNote, align=left]
+        at (axis cs:-3.9,3.95) {$1\sigma$ solid\\$2\sigma$ dashed};
+
+    % ---- bottom row: base cloud plus a cloud with 4x the covariance ----
+    \nextgroupplot[xmin=-8, xmax=8, ymin=-8, ymax=8, xtick={-8,-4,0,4,8}, ytick={-8,-4,0,4,8}]
+      \covellipse{2}{-0.6}{2}{region red}
+      \covellipse{2}{-0.6}{1}{region blue}
+      \addplot[scaled cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Negative-Scaled.csv};
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Negative-Base.csv};
+      \covellipse{2}{-0.6}{2}{sigma two red}
+      \covellipse{2}{-0.6}{1}{sigma two halo}
+      \covellipse{2}{-0.6}{1}{sigma two blue}
+      \node[anchor=north east, text=vncarnelian, font=\fNote] at (axis cs:7.9,7.9) {$4\times$};
+
+    \nextgroupplot[xmin=-8, xmax=8, ymin=-8, ymax=8, xtick={-8,-4,0,4,8}, ytick={-8,-4,0,4,8}]
+      \covellipse{2}{0}{2}{region red}
+      \covellipse{2}{0}{1}{region blue}
+      \addplot[scaled cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Zero-Scaled.csv};
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Zero-Base.csv};
+      \covellipse{2}{0}{2}{sigma two red}
+      \covellipse{2}{0}{1}{sigma two halo}
+      \covellipse{2}{0}{1}{sigma two blue}
+      \node[anchor=north east, text=vncarnelian, font=\fNote] at (axis cs:7.9,7.9) {$4\times$};
+
+    \nextgroupplot[xmin=-8, xmax=8, ymin=-8, ymax=8, xtick={-8,-4,0,4,8}, ytick={-8,-4,0,4,8}]
+      \covellipse{2}{0.6}{2}{region red}
+      \covellipse{2}{0.6}{1}{region blue}
+      \addplot[scaled cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Positive-Scaled.csv};
+      \addplot[base cloud] table [x=x1, y=x2, col sep=comma] {Data-L5b-Cov-Positive-Base.csv};
+      \covellipse{2}{0.6}{2}{sigma two red}
+      \covellipse{2}{0.6}{1}{sigma two halo}
+      \covellipse{2}{0.6}{1}{sigma two blue}
+      \node[anchor=north east, text=vncarnelian, font=\fNote] at (axis cs:7.9,7.9) {$4\times$};
+      \node[anchor=south east, text=vnmuted, font=\fNote] at (axis cs:7.9,-7.8) {$2\sigma$ dashed};
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}
