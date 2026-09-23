@@ -254,6 +254,10 @@ teaching voice: “We derived…”, “We used…”, “We generalized…”, 
 by what the result allowed us to explain, calculate, or compare. These are
 examples of the voice, not mandatory sentence starters for every item.
 
+On September 23, 2026, the instructor clarified that key takeaways should be
+conceptual and contain no equations. Explain what we learned and why it matters
+in words; keep formulas and algebraic calculation steps in the main development.
+
 Preserve enough explanation to reconnect the method, result, and purpose.
 Do not compress takeaways into abstract slogans such as “A terminal target
 determines which lattice nodes count as successes.” The instructor rejected

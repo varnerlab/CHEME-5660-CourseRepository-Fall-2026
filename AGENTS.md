@@ -277,6 +277,16 @@
   pending; read the record before follow-up work and do not restart completed
   sections unless the instructor requests another round.
 
+## Completed L5b rolling-correlation example review
+
+- The relocated L5b rolling-correlation advanced example was marked reviewed
+  and complete by the instructor September 23, 2026. It was polished from
+  8.3/10 (Codex 7.8) to 9.1/10 (Codex 8.8 before the last three small
+  fixes). Prose was cut from about 3,050 to 1,950 words, with
+  code and outputs unchanged. The [review record](lectures/instructor/L5b-ROLLING-CORRELATION-REVIEW-HANDOFF.md)
+  lists the accepted edits, rejected Codex findings, and checks. No proposals
+  remain pending. Do not restart the round unless the instructor requests another one.
+
 ## Completed week-5 code-commenting pass
 
 - The instructor-requested commenting pass was completed September 17, 2026.
