@@ -1,16 +1,12 @@
-# L4b optional advanced material
+# L5a optional advanced material
 
-These standalone notebooks extend the L4b discussion of geometric Brownian
-motion. They are optional and are not prerequisites for L5a.
+These standalone notebooks extend the L5a discussion of geometric Brownian
+motion, parameter estimates, and target probabilities. They are optional and
+are not prerequisites for L5b.
 
-- [`lattice-limit/CHEME-5660-L4b-Advanced-LatticeToGBM-Fall-2026.ipynb`](lattice-limit/CHEME-5660-L4b-Advanced-LatticeToGBM-Fall-2026.ipynb)
-  calibrates the binomial lattice of L3b and L4a to the GBM drift and volatility
-  and shows the terminal distribution, and the L4a binomial-tail target
-  probability, converging to the lognormal and to the L4b closed form.
-- [`first-passage/CHEME-5660-L4b-Advanced-FirstPassage-GBM-Fall-2026.ipynb`](first-passage/CHEME-5660-L4b-Advanced-FirstPassage-GBM-Fall-2026.ipynb)
-  computes take-profit and stop-loss first-passage probabilities under GBM
-  (closed form for one barrier, the L4a absorbing recursion and Monte Carlo for
-  two) and quantifies the effect of the monitoring frequency.
+- [`ema-derivation/CHEME-5660-L5a-Derivation-EMA-SAGBM-Fall-2026.ipynb`](ema-derivation/CHEME-5660-L5a-Derivation-EMA-SAGBM-Fall-2026.ipynb)
+  develops the exponential weights, centered variance update, and conversion
+  from growth-rate moments to GBM parameters behind the lecture proposition.
 - [`drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb`](drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb)
   shows that the drift estimate depends on the calendar span of the data and
   not on the sampling frequency, and propagates that uncertainty into the
@@ -20,7 +16,7 @@ motion. They are optional and are not prerequisites for L5a.
   the exact one-step transition with the Euler scheme, and reduces variance
   with antithetic variates.
 
-The lattice-limit notebook extends the model, the first-passage notebook
-extends the trade rule, the drift-uncertainty notebook extends the estimation,
-and the Monte Carlo notebook extends the computation. They can be completed
-independently; the suggested order is the order listed.
+The EMA derivation develops the parameter updates, the drift-uncertainty
+notebook examines estimation precision, and the Monte Carlo notebook examines
+simulation accuracy. They can be completed independently. The latter two
+retain their L4b identifiers because they also accompany that lecture.

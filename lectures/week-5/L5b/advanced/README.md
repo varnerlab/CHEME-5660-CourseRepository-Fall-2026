@@ -15,7 +15,7 @@ the covariance matrix. They are optional and are not prerequisites for L6a.
   portfolio out of sample.
 - [`rolling-correlation/CHEME-5660-L5b-Advanced-RollingCorrelation-Fall-2026.ipynb`](rolling-correlation/CHEME-5660-L5b-Advanced-RollingCorrelation-Fall-2026.ipynb)
   estimates correlations on rolling windows and with exponential weighting
-  through 2014 to 2024, for a few firm pairs and for the whole universe, and
+  through 2014 to 2024, for a few firm pairs and for a fixed 100-asset subset, and
   examines whether correlations rise during high-volatility windows in this
   sample.
 
