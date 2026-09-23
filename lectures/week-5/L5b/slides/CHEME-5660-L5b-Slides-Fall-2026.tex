@@ -51,15 +51,15 @@ By the end of this lecture, you will be able to:
 
   \vspace{0.8em}
   \begin{itemize}\setlength{\itemsep}{0.8em}
-    \item \hilite{Model assets that move together}: extend geometric
-      Brownian motion (GBM) from one asset to several and explain how
-      covariance captures their shared fluctuations.
-    \item \hilite{Interpret covariance from data}: explain what historical
-      growth rates tell us about individual asset variability and how
-      assets move together.
-    \item \hilite{Connect investment weights to portfolio wealth}: explain
-      how allocations shape portfolio outcomes and use the Dirichlet
-      distribution to explore different investment mixes.
+    \item \hilite{Update and extend GBM}: update single asset GBM parameters
+      with an exponential moving average, then model several assets whose
+      prices move together.
+    \item \hilite{Estimate and interpret covariance}: calculate the covariance
+      matrix from historical growth rates, interpret covariance and
+      correlation, and convert it to the model's covariance rate.
+    \item \hilite{Compare portfolio allocations}: relate weights to
+      buy-and-hold wealth, generate long-only allocations with the Dirichlet
+      distribution, and compare their estimated growth and risk.
   \end{itemize}
 \end{frame}
 
@@ -69,10 +69,10 @@ By the end of this lecture, you will be able to:
 
   \vspace{0.7em}
   \textbf{\ink{Example:}}
-  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb}{Out-of-Sample Price Predictions}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb}{Updating GBM Parameters with EMA}
 
-  How well does a model fitted to 2014--2024 data describe future prices?
-  We compare its prediction bands with observed prices and measure coverage in 2025.
+  Carried over from L5a. Can recent observations improve the forecasts? Update
+  mean growth and volatility, then compare the forecasts with the frozen model.
 
   \vspace{0.7em}
   \textbf{\ink{Example:}}
@@ -89,223 +89,173 @@ By the end of this lecture, you will be able to:
   weights with the Dirichlet distribution and follow buy-and-hold wealth.
 \end{frame}
 
-\begin{frame}{Concept Review: Single Asset GBM Model}
-  Recall that geometric Brownian motion (GBM) describes share price changes
-  through drift and random fluctuations, both proportional to the current price:
-  \[
-    \frac{dS(t)}{S(t)}
-    =\underbrace{\mu\,dt}_{\text{drift}}
-    +\underbrace{\sigma\,dW(t)}_{\text{random fluctuations}}.
-  \]
+\begin{frame}{Concept Review: Updating GBM Parameters}
+An \hilite{exponential moving average (EMA)} updates the GBM estimates as
+new prices arrive, giving recent growth rates $g_k=\ln(S_k/S_{k-1})/\Delta t$
+more weight.
 
-  Here, $S(t)$ is the share price (dollars per share), with initial price
-  $S(0)=S_0>0$, and $dW(t)$ is a Wiener-process increment.
-
-  \vspace{0.6em}
-  With time measured in years, the constant parameters are:
-  \begin{itemize}\setlength{\itemsep}{0.65em}
-    \item \hilite{Drift $\mu\in\mathbb R$}: the expected proportional price
-      change per unit time (year$^{-1}$).
-    \item \hilite{Volatility $\sigma>0$}: sets the size of the random
-      fluctuations (year$^{-1/2}$).
-  \end{itemize}
+\vspace{0.5em}
+Initialize at entry index $s$ from the training estimates:
+\[
+  m_s=\hat\mu_{g,0},\qquad v_s=\frac{\hat\sigma_0^2}{\Delta t}.
+\]
+With decay factor $0<\lambda<1$, update at each new observation $k>s$:
+\[
+\begin{aligned}
+  \delta_k &= g_k-m_{k-1}, &&\text{(innovation)}\\
+  m_k &= m_{k-1}+(1-\lambda)\delta_k, &&\text{(mean update)}\\
+  v_k &= \lambda\bigl[v_{k-1}+(1-\lambda)\delta_k^2\bigr]. &&\text{(variance update)}
+\end{aligned}
+\]
 \end{frame}
 
-\begin{frame}{Concept Review: Growth and Volatility}
-  Over an observation interval $\Delta t>0$ years, the growth rate is:
-  \[
-    g_j=\frac{1}{\Delta t}\ln\!\left(\frac{S_{t_j}}{S_{t_{j-1}}}\right),
-    \qquad t_j=j\Delta t.
-  \]
+\begin{frame}{EMA: Recover the GBM Parameters}
+For the growth rate, the estimated mean $m_k$ has units of year$^{-1}$ and
+the estimated variance $v_k$ has units of year$^{-2}$. Convert these moments
+to GBM parameter estimates:
+\[
+\begin{aligned}
+  \hat\mu_{g,k} &= m_k,
+    & &\text{mean growth rate},\\[0.4em]
+  \hat\sigma_k &= \sqrt{v_k\Delta t},
+    & &\text{volatility},\\[0.4em]
+  \hat\mu_k &= \hat\mu_{g,k}+\frac{\hat\sigma_k^2}{2},
+    & &\text{drift}.
+\end{aligned}
+\]
+We estimate the volatility parameter by multiplying the growth-rate
+standard deviation $\sqrt{v_k}$ by $\sqrt{\Delta t}$. The result has units
+of year$^{-1/2}$.
 
-  Under GBM, its mean and standard deviation are:
-  \[
-    \underbrace{\mu_g=\E[g_j]=\mu-\frac{\sigma^2}{2}}_{\text{mean growth rate}},
-    \qquad
-    \underbrace{\sqrt{\Var(g_j)}=\frac{\sigma}{\sqrt{\Delta t}}}_{\text{growth-rate standard deviation}}.
-  \]
-  Drift $\mu$ and mean growth rate $\mu_g$ both have units of year$^{-1}$,
-  but differ by $\sigma^2/2$.
-
-  \vspace{0.5em}
-  From the sample growth-rate standard deviation $\sigma_g$, we estimate
-  the volatility parameter as:
-  \[
-    \hat\sigma=\sigma_g\sqrt{\Delta t}.
-  \]
+\slidenote{Variance update:}{the recursion accounts for the changing mean;
+it does not include a finite-sample unbiased correction.}
 \end{frame}
 
-\begin{frame}{Concept Review: The One-Step Transition}
-  For a grid of $N$ steps, $t_j=j\Delta t$, the exact transition from L4b is:
-  \[
-    \boxed{S_{t_j}=S_{t_{j-1}}\exp\!\Bigl[\mu_g\Delta t+
-      \sigma\sqrt{\Delta t}\,Z_j\Bigr],\qquad j=1,\ldots,N.}
-  \]
-  Here, $Z_1,\ldots,Z_N$ are independent standard normal draws, one per step.
+\begin{frame}{EMA: Interpret the Half-Life}
+The \hilite{half-life} $H_{\mathrm{half}}>0$ is the number of observations
+needed to halve the weight of an older observation:
+\[
+  \lambda=2^{-1/H_{\mathrm{half}}}.
+\]
+With a half-life of 21 observations, $\lambda\approx0.9675$. The updated
+mean combines 96.75\% of the previous mean with 3.25\% of the new growth rate.
 
-  \vspace{0.7em}
-  For a single horizon $T>0$, we can sample the terminal price directly:
-  \[
-    S_T=S_0\exp\!\Bigl[\mu_gT+\sigma\sqrt{T}\,Z\Bigr],
-    \qquad Z\sim\mathcal N(0,1).
-  \]
+\vspace{0.7em}
+A shorter half-life makes the estimates respond faster but also makes
+them more sensitive to noise. The half-life controls the parameter updates; the holding period
+sets the forecast horizon. Each forecast holds its parameter estimates fixed.
 
-  \vspace{0.5em}
-  Repeated one-step draws generate a price path. The fixed-horizon form
-  samples the price at the selected time $T$.
+\slidenote{Derivation:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/advanced/ema-derivation/CHEME-5660-L5a-Derivation-EMA-SAGBM-Fall-2026.ipynb}{Derive the exponentially weighted moments and GBM parameter updates}}
 \end{frame}
 
-\begin{frame}{Example: Out-of-Sample Price Predictions}
+\begin{frame}{Example: Updating the Parameter Estimates}
 \textbf{\ink{Example:}}
-  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb}{Test predictions against later observations}
+\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb}{Compare frozen and updated estimates}
 
-  \vspace{0.7em}
-  How well does a model fitted to historical prices describe prices
-  observed afterward?
+\vspace{0.8em}
+Can giving recent observations more weight improve our forecasts?
 
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item Use the mean growth rate and volatility estimated from 2014--2024 data.
-    \item Simulate prices for 2025 and compare prediction bands with
-      observed prices.
-    \item Measure the fraction of dates with observed prices inside each band,
-      first for one firm and then across the dataset.
-  \end{itemize}
+\vspace{0.7em}
+Each day, we update the probability that the original trade will exceed
+its NPV target at the end of the chosen forward window. We compare frozen
+parameters with EMA estimates of volatility alone or of both mean growth
+and volatility.
 
-  \slidenote{Next question:}{how can this price distribution tell us the probability of exceeding a target return at a scheduled sale?}
+\vspace{0.7em}
+We evaluate the three forecasts using the coverage and width of their 95\%
+growth-rate prediction bands.
+
+\vspace{0.7em}
+Next, we turn to several firms whose prices move together.
 \end{frame}
 
-\begin{frame}{Review: The GBM Trade Rule}
-  Suppose we buy $n_0>0$ shares at $S_0>0$ and sell them at $S_T$ after
-  $T>0$ years. Assume no dividends or trading costs.
+\begin{frame}{Company Profile: Bridgewater Associates}
+\href{https://www.bridgewater.com/}{Bridgewater Associates} is a global macro
+investment firm that manages portfolios for pension funds, endowments, and
+sovereign wealth funds. \href{https://www.bridgewater.com/our-founder}{Ray Dalio}
+founded it in 1975. The firm tests cause-and-effect rules for economies and
+markets against historical data and builds portfolios around how assets move together.
 
-  \vspace{0.6em}
-  Let $g_y$ be the constant, continuously compounded benchmark growth rate
-  (year$^{-1}$).
-
-  \vspace{0.6em}
-  Dividing the net present value (NPV) by the initial investment gives
-  the \hilite{scaled NPV}, our discounted fractional return:
-  \[
-    \rho_T=\frac{\operatorname{NPV}(g_y,T)}{n_0S_0}
-    =\left(\frac{S_T}{S_0}\right)e^{-g_yT}-1.
-  \]
-
-  \vspace{0.4em}
-  A positive $\rho_T$ means that discounted sale proceeds exceed
-  the purchase cost. We use GBM to describe the uncertain sale price $S_T$.
+\vspace{0.6em}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+\item \hilite{\href{https://www.bridgewater.com/research-and-insights/the-all-weather-story}{All Weather}} (1996): stocks, nominal bonds, inflation-linked
+  bonds, and commodities respond differently to the same news, so the portfolio
+  balances risk across them rather than dollars (\href{https://bridgewater.brightspotcdn.com/fa/e3/d09e72bd401a8414c5c0bdaf88bb/bridgewater-associates-engineering-targeted-returns-and-risks-aug-2011.pdf}{\hilite{risk parity}}).
+\item \hilite{Pure Alpha} (1991): the actively traded portfolio aims for
+  returns uncorrelated with the stock and bond markets. \emph{Alpha} is the
+  return earned from skill rather than from holding the markets.
+\item \hilite{Culture}: radical truth and radical transparency, described in
+  Dalio's \href{https://www.principles.com/}{\emph{Principles: Life and Work}}.
+\end{itemize}
+\note{[Sources] https://www.bridgewater.com/ ; https://www.bridgewater.com/our-founder ; https://www.bridgewater.com/research-and-insights/the-all-weather-story ; https://bridgewater.brightspotcdn.com/fa/e3/d09e72bd401a8414c5c0bdaf88bb/bridgewater-associates-engineering-targeted-returns-and-risks-aug-2011.pdf ; https://www.bridgewater.com/culture ; https://www.principles.com/ [Sources]}
 \end{frame}
 
-\begin{frame}{Review: The Target Probability}
-  For a target scaled NPV $\rho_\star>-1$, GBM gives the probability of
-  exceeding the target at the scheduled sale time $T$:
-  \[
-    \boxed{\Pmeasure(\rho_T>\rho_\star)
-    =1-\Phi\!\left(\frac{\ln(1+\rho_\star)+g_yT-\mu_gT}{\sigma\sqrt T}\right).}
-  \]
+\begin{frame}{Bridgewater Associates: Explore Further}
+\hilite{Jobs and internships.} Browse the
+\href{https://www.bridgewater.com/working-at-bridgewater/job-openings}{job openings}
+and \href{https://www.bridgewater.com/working-at-bridgewater/students}{students}
+pages. The
+\href{https://www.bridgewater.com/2027-investment-associate-internship-program}{2027 Investment Associate Internship Program},
+an eight-week summer program in Westport, Connecticut, is posted as of
+September 21, 2026.
 
-  Here, $\mu_g$ is the mean growth rate, $\sigma>0$ is the volatility parameter, and
-  $\Phi$ is the standard normal cumulative distribution function.
+\vspace{0.6em}
+\hilite{Watch:}
+\begin{itemize}\setlength{\itemsep}{0.6em}
+\item \href{https://www.youtube.com/watch?v=PHe0bXAIuk0}{How The Economic Machine Works},
+  a thirty-minute animated explanation of credit and debt cycles narrated by Dalio
+  \quad (\href{https://www.youtube.com/@principlesbyraydalio}{Principles by Ray Dalio channel}).
+\item The firm's own \href{https://www.youtube.com/@Bridgewater}{Bridgewater Associates channel}.
+\end{itemize}
 
-  \vspace{0.5em}
-  The $\Phi$ term gives the probability of finishing at or below the target.
-  Subtracting it from one gives the probability of exceeding the target.
-
-  \vspace{0.5em}
-  Next, we extend the price model to several correlated assets.
-
-  \slidenote{L4b review:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb}{GBM trade-rule derivation}\quad\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb}{Terminal-target probability example}}
+\vspace{0.5em}
+\hilite{Connection to today:} a portfolio's risk depends on how its assets
+move together. Today we estimate that co-movement from data, build it into the
+price model, and see how the allocation changes portfolio growth and risk.
+\note{[Sources] https://www.bridgewater.com/working-at-bridgewater/job-openings ; https://www.bridgewater.com/working-at-bridgewater/students ; https://www.bridgewater.com/2027-investment-associate-internship-program ; https://www.youtube.com/watch?v=PHe0bXAIuk0 ; https://www.youtube.com/@principlesbyraydalio ; https://www.youtube.com/@Bridgewater [Sources]}
 \end{frame}
 
 \begin{frame}{Multiple Asset Geometric Brownian Motion}
-  Independent GBM models assume zero covariance between assets' growth rates.
-  Multiple asset geometric Brownian motion (MAGBM) allows correlated growth rates.
+  Independent GBM models treat assets' growth rates as unrelated.
+  Multiple asset GBM (MAGBM) lets them move together.
 
-  \vspace{0.5em}
-  For $M\ge2$ assets, let $g_i$ be asset $i$'s growth rate over the same
-  interval $\Delta t>0$ years. The model uses a matrix
-  $\bC\in\mathbb R^{M\times M}$ related to growth-rate covariance by:
-  \[
-    \underbrace{C_{ij}}_{\text{covariance rate}}
-    =\Delta t\;\underbrace{\Cov(g_i,g_j)}_{\text{growth-rate covariance}}.
-  \]
-
-  Growth-rate covariance has units of year$^{-2}$; multiplying by $\Delta t$
-  gives $C_{ij}$ units of year$^{-1}$.
-
-  \vspace{0.5em}
-  The diagonal entries $C_{ii}=\sigma_i^2$ give squared volatilities.
-  Off-diagonal entries have the same signs as the growth-rate covariances.
-\end{frame}
-
-\begin{frame}{Building Correlated Fluctuations}
-  Start with increments $dW_1,\ldots,dW_M$ from independent standard
-  Wiener processes.
-  For two assets, the random terms in their price equations are:
-  \[
-    \begin{aligned}
-      \text{Asset 1:}\qquad & A_{11}\,dW_1+A_{12}\,dW_2,\\[0.5em]
-      \text{Asset 2:}\qquad & A_{21}\,dW_1+A_{22}\,dW_2.
-    \end{aligned}
-  \]
-
-  Both assets use the same two random inputs. Their coefficients determine
-  how strongly each asset responds to each input.
-
-  \vspace{0.5em}
-  Each row of the \hilite{loading matrix} $\bA$ contains one asset's
-  coefficients. We choose $\bA$ to reproduce the covariance rate:
-  \[
-    \bA\bA^{\top}=\bC.
-  \]
-  For $M$ assets, $\bA$ is $M\times M$, with entries in year$^{-1/2}$.
-\end{frame}
-
-\begin{frame}{Multiple Asset GBM: The Price Model}
-  Let $S_i(t)$ be asset $i$'s share price, with $S_i(0)>0$.
-  For $i\in\mathcal P=\{1,\ldots,M\}$, the model is:
+  \vspace{0.4em}
+  For assets $i\in\mathcal P=\{1,\ldots,M\}$ with prices $S_i(t)>0$:
   \[
     \frac{dS_i(t)}{S_i(t)}
     =\underbrace{\mu_i\,dt}_{\text{drift}}
-    +\underbrace{\textstyle\sum_{\ell=1}^{M}A_{i\ell}\,dW_\ell(t)}_{\text{random contribution to asset }i}.
+    +\underbrace{\textstyle\sum_{\ell=1}^{M}A_{i\ell}\,dW_\ell(t)}_{\text{correlated noise}}.
   \]
-  A \hilite{Wiener increment} $dW_\ell(t)$ is a normally distributed random
-  change over $dt$, with mean zero and variance $dt$. Row $i$ of $\bA$
-  combines these shared inputs.
-
-  \vspace{0.5em}
-  Drifts $\mu_i$ (year$^{-1}$) and $\bA$ remain constant, so
-  $\bC=\bA\bA^{\top}$ is also constant.
-
-  \vspace{0.5em}
-  As in L4b, applying It\^o's lemma gives the mean growth rate:
-  \[
-    \mu_{g,i}=\mu_i-\frac{C_{ii}}{2}
-    =\mu_i-\frac{\sigma_i^2}{2}.
-  \]
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Shared inputs}: $dW_1,\ldots,dW_M$ are independent Wiener
+      increments, each with mean zero and variance $dt$.
+    \item \hilite{Loading matrix} $\bA$ (year$^{-1/2}$): row $i$ sets how
+      strongly asset $i$ responds to each input.
+    \item \hilite{Covariance rate} $\bC=\bA\bA^{\top}$ (year$^{-1}$): its
+      diagonal holds the squared volatilities $C_{ii}=\sigma_i^2$.
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Why the \texorpdfstring{$\bA\bA^{\top}$}{AAT} Factorization?}
-  Independent Wiener increments have covariance:
+\begin{frame}{Why \texorpdfstring{$\bA\bA^{\top}=\bC$}{AAT = C}?}
+  For two assets, both noise terms use the same two inputs:
   \[
-    \Cov(dW_\ell,dW_k)=
-    \begin{cases}
-      dt, & \ell=k,\\
-      0, & \ell\ne k.
-    \end{cases}
+    \text{Asset 1: }A_{11}\,dW_1+A_{12}\,dW_2,
+    \qquad
+    \text{Asset 2: }A_{21}\,dW_1+A_{22}\,dW_2.
   \]
-  Thus, only terms with matching indices contribute to the covariance
-  of the random terms for assets $i$ and $j$:
+
+  \vspace{0.3em}
+  Independent increments have $\Cov(dW_\ell,dW_k)=dt$ when $\ell=k$ and
+  zero otherwise, so only matching terms contribute:
   \[
-    \begin{aligned}
-      \Cov\!\left(\sum_{\ell=1}^{M}A_{i\ell}\,dW_\ell,\,
-                  \sum_{k=1}^{M}A_{jk}\,dW_k\right)
-      &=\sum_{\ell=1}^{M}A_{i\ell}A_{j\ell}\,dt\\[0.5em]
-      &=(\bA\bA^{\top})_{ij}\,dt.
-    \end{aligned}
+    \Cov\!\Bigl(\sum_{\ell}A_{i\ell}\,dW_\ell,\;\sum_{k}A_{jk}\,dW_k\Bigr)
+    =\sum_{\ell=1}^{M}A_{i\ell}A_{j\ell}\,dt
+    =(\bA\bA^{\top})_{ij}\,dt
+    =C_{ij}\,dt.
   \]
-  Choosing $\bA\bA^{\top}=\bC$ gives covariance $C_{ij}\,dt$ over $dt$.
-  The \hilite{covariance per unit time} is therefore $C_{ij}$.
+
+  \vspace{0.3em}
+  Thus, $C_{ij}$ is the \hilite{covariance per unit time} of assets $i$ and $j$.
 \end{frame}
 
 \begin{frame}{Choosing a Covariance Factor}
@@ -331,79 +281,28 @@ By the end of this lecture, you will be able to:
 \end{frame}
 
 \begin{frame}{The Exact One-Step Transition}
-  Draw $M$ independent standard normal values and collect them in a vector
-  $\bZ$. For constant parameters, the exact price update over $\Delta t>0$ years is:
+  As in L4b, It\^o's lemma gives each asset its own \hilite{mean growth rate}:
+  \[
+    \mu_{g,i}=\mu_i-\frac{C_{ii}}{2}.
+  \]
+  Draw $M$ independent standard normal values $\bZ$. The exact update over
+  $\Delta t>0$ years is:
   \[
     \boxed{S_i(t+\Delta t)=S_i(t)\exp\!\Bigl[
       \underbrace{\mu_{g,i}\,\Delta t}_{\text{mean log growth}}
-      +\underbrace{\sqrt{\Delta t}\,(\bA\bZ)_i}_{\text{correlated fluctuation}}\Bigr],
-    \qquad i\in\mathcal P.}
+      +\underbrace{\sqrt{\Delta t}\,(\bA\bZ)_i}_{\text{correlated fluctuation}}\Bigr].}
   \]
-  Here, $(\bA\bZ)_i=\sum_{\ell=1}^{M}A_{i\ell}Z_\ell$ combines the draws
-  using row $i$ of the loading matrix.
-
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Within a step}: use the same vector $\bZ$ for all assets
-      to preserve their covariance.
-    \item \hilite{Across steps}: draw a new independent vector $\bZ$ at every step.
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Within a step}: use the same $\bZ$ for all assets to preserve their covariance.
+    \item \hilite{Across steps}: draw a new independent $\bZ$ at every step.
   \end{itemize}
-
-  \vspace{0.5em}
-  We can sample terminal prices at $T>0$ directly by setting $t=0$ and $\Delta t=T$.
-\end{frame}
-
-\begin{frame}{From Prices to Growth Rates}
-  Divide the price transition by $S_i(t)$, take logarithms, and divide by
-  the observation interval $\Delta t$. The growth rate of asset $i$ is:
-  \[
-    g_i=\frac{1}{\Delta t}\ln\!\left(\frac{S_i(t+\Delta t)}{S_i(t)}\right)
-    =\mu_{g,i}+\frac{(\bA\bZ)_i}{\sqrt{\Delta t}}.
-  \]
-
-  Collect the growth rates in $\bg$, their means in $\boldsymbol\mu_g$,
-  and the drifts in $\boldsymbol\mu$. Because $\E[\bZ]=\mathbf 0$:
-  \[
-    \begin{aligned}
-      \bg&=\boldsymbol\mu_g+\frac{1}{\sqrt{\Delta t}}\bA\bZ,\\[0.6em]
-      \E[\bg]&=\boldsymbol\mu_g
-        =\boldsymbol\mu-\frac12\operatorname{diag}(\bC).
-    \end{aligned}
-  \]
-  Here, $\operatorname{diag}(\bC)$ collects the squared volatilities
-  $C_{ii}=\sigma_i^2$. Growth rates and their means have units of year$^{-1}$.
-\end{frame}
-
-\begin{frame}{The Scaling Rule}
-  Each entry of $\bZ$ has variance one, and the entries are independent.
-  Therefore, the growth-rate covariance is:
-  \[
-    \Cov(\bg)=\frac{1}{\Delta t}\bA\bA^{\top}
-      =\frac{\bC}{\Delta t}.
-  \]
-  Solving for the covariance rate gives the conversion from growth-rate data:
-  \[
-    \boxed{\underbrace{\bC}_{\text{year}^{-1}}
-      =\Delta t\;\underbrace{\Cov(\bg)}_{\text{year}^{-2}}.}
-  \]
-
-  For \hilite{log returns} $\mathbf r=\Delta t\,\bg$, the covariance is:
-  \[
-    \underbrace{\Cov(\mathbf r)}_{\text{dimensionless}}
-      =(\Delta t)^2\Cov(\bg)=\bC\,\Delta t.
-  \]
-
-  This extends L4b's $\hat\sigma=\sigma_g\sqrt{\Delta t}$ to multiple assets.
-  Next, we estimate growth-rate covariance from data.
+  \slidenote{Derivation:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/advanced/ito-derivation/CHEME-5660-L5b-Derivation-MAGBM-Solution-Fall-2026.ipynb}{It\^o's lemma for several noise sources and the scaling rule}}
 \end{frame}
 
 \begin{frame}{Covariance: Direction and Scale}
   \begin{center}
-    \includegraphics[height=0.68\textheight,keepaspectratio]{../figs/Fig-Cov-Schematic.png}
+    \includegraphics[height=0.81\textheight,keepaspectratio]{../figs/Fig-L5b-Covariance-Schematic.pdf}
   \end{center}
-  \vspace{-0.3em}
-  In the bottom row, each red cloud has four times the blue cloud's covariance
-  matrix. Standard deviations double; correlation is unchanged.
 \end{frame}
 
 \begin{frame}{Empirical Covariance Matrix}
@@ -435,12 +334,6 @@ By the end of this lecture, you will be able to:
     \item \hilite{Diagonal entries}: $\hat\Sigma_{g,ii}$ is firm $i$'s
       growth-rate variance. Its square root is the growth-rate standard
       deviation $\sigma_g$ for that firm (year$^{-1}$).
-
-      Multiplying by $\sqrt{\Delta t}$ gives the model's volatility estimate:
-      \[
-        \hat\sigma_i=\sqrt{\Delta t}\,\sqrt{\hat\Sigma_{g,ii}}
-        \qquad\text{(year}^{-1/2}\text{).}
-      \]
     \item \hilite{Off-diagonal entries}: positive values mean the two growth
       rates tend to deviate from their means in the same direction;
       negative values mean opposite directions.
@@ -468,9 +361,6 @@ By the end of this lecture, you will be able to:
       values closer to $-1$ or $1$ indicate a stronger linear relationship.
     \item \hilite{Zero correlation}: no linear relationship in this sample;
       this does not mean the growth rates are independent.
-    \item \hilite{Time scaling}: conversions among growth-rate covariance,
-      log-return covariance, and covariance rate leave correlation unchanged;
-      the common factor cancels.
   \end{itemize}
 \end{frame}
 
@@ -498,34 +388,6 @@ By the end of this lecture, you will be able to:
   by $N-1$. This evaluates the earlier covariance formula for every pair at once.
 \end{frame}
 
-\begin{frame}{Estimating the Covariance Rate}
-  Growth rates and log returns give equivalent estimates of the model's
-  covariance rate:
-
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.65em}
-    \item \hilite{From growth-rate data}: the covariance rate and L4b volatility estimates are:
-      \[
-        \begin{aligned}
-          \Ch&=\Delta t\,\Sg
-            &&\text{(year}^{-1}\text{)},\\[0.4em]
-          \hat\sigma_i&=\sqrt{\hat C_{ii}}
-            =\sqrt{\Delta t}\sqrt{\hat\Sigma_{g,ii}}
-            &&\text{(year}^{-1/2}\text{)}.
-        \end{aligned}
-      \]
-    \item \hilite{Comparison with log returns}: $\mathbf r=\Delta t\,\bg$ gives:
-      \[
-        \hat{\boldsymbol\Sigma}_r=(\Delta t)^2\,\Sg=\Delta t\,\Ch
-        \qquad\text{(dimensionless).}
-      \]
-      For daily data with $\Delta t=1/252$ years, both inputs give:
-      \[
-        \Ch=\frac{\Sg}{252}=252\,\hat{\boldsymbol\Sigma}_r.
-      \]
-  \end{itemize}
-\end{frame}
-
 \begin{frame}{Covariance Matrix Properties}
   The centered-data formula guarantees three properties of our estimate:
 
@@ -549,49 +411,57 @@ By the end of this lecture, you will be able to:
   \end{itemize}
 
   \vspace{0.4em}
-  For $\Delta t>0$, $\Ch=\Delta t\,\Sg$ is also symmetric and positive semidefinite.
+  Scaling by $\Delta t>0$ preserves all three properties.
 \end{frame}
 
-\begin{frame}{Singular Covariance Estimates}
-  A positive semidefinite covariance matrix can still be \hilite{singular}:
-  it has no inverse. Three points matter when using the estimate:
-
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.7em}
-    \item \hilite{Why it occurs}: centering gives
-      $\operatorname{rank}(\tilde{\bG})\le N-1$, so $\Sg$ is singular when
-      $M\ge N$. Duplicate series or other exact linear dependencies
-      also cause singularity.
-    \item \hilite{Choosing a factor}: ordinary Cholesky requires positive
-      definiteness. An eigenvalue or singular-value decomposition can still
-      provide a covariance factor for simulation when the estimate is singular.
-    \item \hilite{Changing the diagonal}: adding a positive value to every
-      diagonal entry restores invertibility and increases the modeled variances.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Uncertainty in Covariance Estimates}
-  Invertibility does not guarantee a precise or stable estimate.
-  Two limitations remain:
-
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Sampling error}: we estimate $M(M+1)/2$ distinct variance
-      and covariance terms from $N$ periods. When $M$ is large relative to $N$,
-      estimates can be noisy and sensitive to the historical window.
-    \item \hilite{Changing relationships}: differences between historical
-      windows can also reflect changes in how firms' growth rates move together.
-  \end{itemize}
+\begin{frame}{Estimating the Covariance Rate}
+  Under the model, the vector of one-step growth rates $\bg$ has covariance $\Cov(\bg)=\bC/\Delta t$,
+  so growth rates and log returns give equivalent estimates of $\bC$:
 
   \vspace{0.4em}
-  Shrinkage and factor models trade some flexibility for more stable estimates.
+  \begin{itemize}\setlength{\itemsep}{0.65em}
+    \item \hilite{From growth-rate data}: the covariance rate and L4b volatility estimates are:
+      \[
+        \begin{aligned}
+          \Ch&=\Delta t\,\Sg
+            &&\text{(year}^{-1}\text{)},\\[0.4em]
+          \hat\sigma_i&=\sqrt{\hat C_{ii}}
+            =\sqrt{\Delta t}\sqrt{\hat\Sigma_{g,ii}}
+            &&\text{(year}^{-1/2}\text{)}.
+        \end{aligned}
+      \]
+    \item \hilite{Comparison with log returns}: $\mathbf r=\Delta t\,\bg$ gives:
+      \[
+        \hat{\boldsymbol\Sigma}_r=(\Delta t)^2\,\Sg=\Delta t\,\Ch
+        \qquad\text{(dimensionless).}
+      \]
+      For daily data with $\Delta t=1/252$ years, both inputs give:
+      \[
+        \Ch=\frac{\Sg}{252}=252\,\hat{\boldsymbol\Sigma}_r.
+      \]
+  \end{itemize}
+  These conversions leave correlation unchanged: the common factor cancels.
+\end{frame}
 
-  \vspace{0.7em}
-  \textbf{\ink{Example:}}
-  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-CovarianceMatrix-Fall-2026.ipynb}{Covariance and Correlation from Data}
+\begin{frame}{Example: Covariance and Correlation from Data}
+\textbf{\ink{Example:}}
+\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-CovarianceMatrix-Fall-2026.ipynb}{Covariance and Correlation from Data}
 
-  Estimate growth-rate covariance, check the implied volatilities, and compare
-  covariance with correlation.
+\vspace{0.8em}
+How do firms' growth rates move together?
+
+\vspace{0.6em}
+\begin{itemize}\setlength{\itemsep}{0.6em}
+  \item Compute the empirical growth-rate covariance matrix and convert it
+    to the GBM covariance rate.
+  \item Check the covariance calculation and compare the implied volatilities
+    with our L4b estimates.
+  \item Interpret the covariance and correlation of a pair of firms.
+\end{itemize}
+
+\vspace{0.7em}
+The estimated covariance tells us how asset growth rates vary together.
+Next, we decide how much of our investment to assign to each asset.
 \end{frame}
 
 \begin{frame}{Portfolio Weights}
@@ -616,9 +486,10 @@ By the end of this lecture, you will be able to:
 
 \begin{frame}{Buy-and-Hold Wealth}
   We allow fractional shares and ignore dividends and trading costs.
-  Buy $n_i=w_iW_0/S_i(0)$ shares of asset $i$ and hold these share counts fixed.
-
-  \vspace{0.5em}
+  At time zero, we buy and then hold a fixed number of shares of each asset:
+  \[
+    n_i=\frac{w_iW_0}{S_i(0)}.
+  \]
   Portfolio wealth at time $t$ is:
   \[
     \boxed{W_t=\sum_{i=1}^{M}n_iS_i(t)
@@ -636,18 +507,18 @@ By the end of this lecture, you will be able to:
 \end{frame}
 
 \begin{frame}{Dirichlet Sampling of the Simplex}
-  Draw $\mathbf W\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$, with
+  Draw $\bw\sim\operatorname{Dirichlet}(\boldsymbol\alpha)$, with
   \hilite{concentration parameters} $\boldsymbol\alpha=(\alpha_1,\ldots,\alpha_M)$,
   where $\alpha_i>0$ and $\alpha_0=\sum_{i=1}^{M}\alpha_i$.
 
   \vspace{0.4em}
-  Each draw gives positive weights that sum to one, so the full budget is
+  Each draw gives weights that sum to one and are positive with probability one, so the full budget is
   invested. We use a draw as the initial allocation $\bw$. The weight moments are:
   \[
     \begin{gathered}
-      \E[W_i]=\frac{\alpha_i}{\alpha_0},\qquad
-      \Var(W_i)=\frac{\alpha_i(\alpha_0-\alpha_i)}{\alpha_0^2(\alpha_0+1)},\\[0.5em]
-      \Cov(W_i,W_j)=-\frac{\alpha_i\alpha_j}{\alpha_0^2(\alpha_0+1)},\qquad i\ne j.
+      \E[w_i]=\frac{\alpha_i}{\alpha_0},\qquad
+      \Var(w_i)=\frac{\alpha_i(\alpha_0-\alpha_i)}{\alpha_0^2(\alpha_0+1)},\\[0.5em]
+      \Cov(w_i,w_j)=-\frac{\alpha_i\alpha_j}{\alpha_0^2(\alpha_0+1)},\qquad i\ne j.
     \end{gathered}
   \]
 
@@ -678,51 +549,39 @@ By the end of this lecture, you will be able to:
   \hilite{individual portfolios} closer to that equal split.
 \end{frame}
 
-\begin{frame}{Approximating Portfolio Growth}
-  For an allocation $\bw$ held over one period $\Delta t$, the buy-and-hold
-  wealth formula gives the exact portfolio growth rate:
-  \[
-    \frac{1}{\Delta t}\ln\!\left(\frac{W_{\Delta t}}{W_0}\right)
-    =\frac{1}{\Delta t}\ln\!\left(\sum_{i=1}^{M}w_i e^{r_i}\right).
-  \]
-  Here, $r_i=\ln(S_i(\Delta t)/S_i(0))=g_i\Delta t$ is asset $i$'s log return.
+\begin{frame}{Linear Portfolio Growth-Rate Proxy}
+  How do we compare the portfolios that different allocations produce?
+  We summarize each allocation by the mean and variance of its growth rate.
 
   \vspace{0.5em}
-  For small $r_i$, use $e^{r_i}\approx1+r_i$, $\sum_iw_i=1$, and
-  $\ln(1+x)\approx x$:
+  Hold an allocation $\bw$ for one period of length $\Delta t$, and collect
+  the asset growth rates over that period in $\bg=[g_1,\ldots,g_M]^{\top}$.
+  Keeping only terms first order in the log returns $g_i\Delta t$:
   \[
-    \frac{1}{\Delta t}\ln\!\left(\sum_{i=1}^{M}w_i e^{r_i}\right)
-    \approx\frac{1}{\Delta t}\sum_{i=1}^{M}w_i r_i
-    =\bw^{\top}\bg.
+    \frac{1}{\Delta t}\ln\!\left(\frac{W_{\Delta t}}{W_0}\right)
+    =\frac{1}{\Delta t}\ln\!\left(\sum_{i=1}^{M}w_i e^{g_i\Delta t}\right)
+    \approx\bw^{\top}\bg=g_p.
   \]
+  We call $g_p$ the \hilite{linear growth-rate proxy}.
 
-  We use $g_p=\bw^{\top}\bg$ as a \hilite{linear growth-rate proxy}
-  for comparing allocations.
+  \slidenote{Where is this coming from?}{use $e^{g_i\Delta t}\approx1+g_i\Delta t$,
+  then $\sum_iw_i=1$, and then $\ln(1+x)\approx x$.}
 \end{frame}
 
 \begin{frame}{Estimating Portfolio Growth and Risk}
-  For each fixed allocation $\bw$, we estimate the mean and variance of
-  the linear growth-rate proxy $g_p=\bw^{\top}\bg$ in two steps:
-
-  \vspace{0.5em}
-  \textbf{\ink{1. Estimate the inputs from historical growth rates}}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item The sample mean vector $\bg^{\prime}$ estimates the model mean
-      $\boldsymbol\mu_g$.
-    \item The sample covariance matrix $\Sg$ estimates $\Cov(\bg)$.
-  \end{itemize}
-
-  \vspace{0.6em}
-  \textbf{\ink{2. Evaluate an allocation using its weights}}
+  Over the historical observations, the proxy's sample mean and variance are:
   \[
     \begin{aligned}
-      \text{Estimated mean growth rate}&=\bw^{\top}\bg^{\prime},\\[0.4em]
-      \text{Estimated variance}&=\bw^{\top}\Sg\bw\ge0.
+      g^{\prime}_p&=\bw^{\top}\bg^{\prime}, &&\text{(mean growth rate)}\\[0.4em]
+      \sigma_{g,p}^2&=\bw^{\top}\Sg\bw\ge0. &&\text{(variance)}
     \end{aligned}
   \]
-
-  The variance accounts for each firm's growth-rate variability and the
+  Here, $\bg^{\prime}$ (year$^{-1}$) and $\Sg$ (year$^{-2}$) come from the
+  covariance estimate. The variance includes each firm's variability and the
   covariances between firms.
+
+  \vspace{0.6em}
+  The proxy covers one period. Over time, we use the wealth formula.
 \end{frame}
 
 \begin{frame}{From Sampling to Portfolio Choice}
@@ -748,43 +607,48 @@ By the end of this lecture, you will be able to:
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
   \textbf{\ink{Advanced:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/advanced/ito-derivation/CHEME-5660-L5b-Derivation-MAGBM-Solution-Fall-2026.ipynb}{Derivation of the Multiple Asset GBM Solution}
+
+  Why does each asset's drift correction contain only its own variance rate?
+  We extend It\^o's lemma to several noise sources and derive the scaling rule.
+
+  \vspace{0.8em}
+  \textbf{\ink{Advanced:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/advanced/covariance-estimation/CHEME-5660-L5b-Advanced-CovarianceEstimation-Fall-2026.ipynb}{Sampling Error and Covariance Shrinkage}
 
   How does estimation error affect portfolio selection? We measure covariance
   error, combine the sample estimate with a simpler matrix, and compare the
   resulting minimum-variance portfolios on later data.
 
-  \vspace{1.0em}
+  \vspace{0.8em}
   \textbf{\ink{Advanced:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/advanced/rolling-correlation/CHEME-5660-L5b-Advanced-RollingCorrelation-Fall-2026.ipynb}{Rolling Correlations}
 
-  Are the relationships between firms stable over time? Using 2014--2024 data,
-  we compare rolling and exponentially weighted correlations and examine
-  changes during periods of high market volatility.
+  Are the relationships between firms stable over time? We compare rolling and
+  exponentially weighted correlations and examine changes during periods of
+  high market volatility.
 
-  \vspace{0.8em}
-  \dimmed{Optional; neither notebook is a prerequisite for L6a.}
+  \vspace{0.6em}
+  \dimmed{Optional; none of these notebooks is a prerequisite for L6a.}
 \end{frame}
 
 \begin{frame}{Summary}
   We modeled correlated asset prices and examined how the fraction invested
   in each firm affected portfolio growth and risk.
 
-  \vspace{0.7em}
+  \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Correlated asset prices}: We combined independent Wiener
-      increments with a loading matrix to model firms whose prices move together.
-    \item \hilite{Covariance from data}: We estimated growth-rate covariance
-      from historical data and scaled it by the observation interval to obtain
-      the model's covariance rate.
-    \item \hilite{Portfolio weights}: We used Dirichlet draws to compare
-      investment mixes and calculated buy-and-hold wealth from fixed share counts.
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Correlated asset prices}: We reviewed EMA parameter updates,
+      then combined independent Wiener increments with a loading matrix to model firms whose prices move together.
+    \item \hilite{Covariance from data}: We estimated growth-rate covariance,
+      scaled it by the observation interval to obtain the covariance rate,
+      and used correlation to compare co-movement across firms.
+    \item \hilite{Portfolio weights}: We used Dirichlet draws to explore
+      investment mixes, compared them with a linear growth-rate proxy, and
+      calculated buy-and-hold wealth from fixed share counts.
   \end{itemize}
-
-  \vspace{0.5em}
-  Next time: minimum-variance portfolio optimization and the efficient frontier.
 \end{frame}
 
 \transitionframe{Next time: we will use minimum-variance optimization to find

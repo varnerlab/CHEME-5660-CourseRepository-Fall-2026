@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-Cov-Schematic.png
+FIGURES := ../figs/Fig-L5b-Covariance-Schematic.pdf
 
 .DEFAULT_GOAL := slides
 

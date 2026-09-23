@@ -17,4 +17,4 @@ mapping in `theme_svg.py`; an unmapped color fails the build on purpose. The
 white halo under the blue cloud's contour maps to VS Code's default dark
 editor background, so it shows as a faint border on other dark themes.
 
-`Fig-Cov-Schematic.png` is the earlier raster version, still used by the slides.
+The slides include the PDF, the light-palette vector source of the same figure (XeLaTeX cannot include SVG directly). `Fig-Cov-Schematic.png` is the earlier raster version and is no longer used.
