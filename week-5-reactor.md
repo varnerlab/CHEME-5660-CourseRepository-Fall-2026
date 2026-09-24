@@ -6,6 +6,14 @@ the implementation plan. Implementation is complete; see the
 files, reuse, and verification. The requested
 filename is `week-5-reactor.md`.
 
+**September 23 Week 6/7 scope clarification:** The instructor confirmed a
+compressed sequence: L6a teaches data-driven minimum variance; L6b combines SIM,
+SIM portfolio allocation, and the risk-free asset. Both L7a and L7b are reserved
+for alternative utility-based approaches. This supersedes the provisional
+Week 6 pacing and downstream-placement discussion in Section 14. The current
+[reuse inventory and assembly plan](lectures/instructor/WEEK-6-REUSE-INVENTORY.md)
+records the source material and new boundary; Week 6 authoring has not yet begun.
+
 **Latest notation correction — use growth rates throughout EMA.** The observed
 quantity is `g_k=log(S_k/S_(k-1))/Delta_t`, in inverse years. Update its mean
 and variance directly: initialize `m_s=mu_g,0`, `v_s=sigma_0^2/Delta_t`, and

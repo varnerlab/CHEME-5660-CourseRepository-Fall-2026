@@ -6,22 +6,24 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
+\newcommand{\Pmeasure}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Cov}{\operatorname{Cov}}
-\newcommand{\bg}{\mathbf{g}}
+\newcommand{\SR}{\operatorname{SR}}
+\newcommand{\gbar}{\bar g}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bC}{\mathbf{C}}
+\newcommand{\bZ}{\mathbf{Z}}
 \newcommand{\bw}{\mathbf{w}}
-\newcommand{\bal}{\boldsymbol{\alpha}}
-\newcommand{\bbe}{\boldsymbol{\beta}}
-\newcommand{\beps}{\boldsymbol{\varepsilon}}
-\newcommand{\bX}{\hat{\mathbf{X}}}
-\newcommand{\by}{\mathbf{y}}
-\newcommand{\bth}{\boldsymbol{\theta}}
-\newcommand{\Dg}{\mathbf{D}_{g}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bone}{\mathbf{1}}
 \newcommand{\Sig}{\boldsymbol{\Sigma}_{g}}
-\newcommand{\np}{|\mathcal P|}
+\newcommand{\Sg}{\hat{\boldsymbol{\Sigma}}_{g}}
+\newcommand{\Ch}{\hat{\mathbf{C}}}
+\newcommand{\Tan}{\mathcal{T}}
 
-\title{\texorpdfstring{{\vnheavy L6a}}{L6a}: Introduction to Single Index Models}
+\title{\texorpdfstring{{\vnheavy L6a}}{L6a}: Data-Driven Minimum-Variance Portfolios}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -48,375 +50,481 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today we replace the full covariance matrix of L5a and L5b by a model with one
-  common factor: each asset's growth rate is a linear function of a market
-  index plus a residual of its own.
+  By the end of this lecture, you should be able to:
 
-  \vspace{0.6em}
-  {\large\textbf{\ink{Today's concepts}}}
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Decompose an asset's growth rate}: the single index model and
-      its assumptions, what $\alpha_i$, $\beta_i$, and the residual mean, and the
-      split of variance into a market part and an asset-specific part.
-    \item \hilite{Build the covariance a SIM implies}: rank one plus diagonal,
-      what it saves, portfolio beta and variance, and the residual assumption
-      that must be checked.
-    \item \hilite{Estimate and diagnose a SIM}: least squares, classical
-      uncertainty in growth-rate units, $R^2$, and what daily data do to the
-      assumptions.
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Formulate portfolio reward and risk}: derive expected growth
+      and variance from weighted asset growth rates in matrix form; explain
+      diversification through covariance.
+    \item \hilite{Construct minimum-variance portfolios}: derive global
+      minimum-variance weights by Lagrange multipliers, allowing shorts;
+      formulate equality/inequality growth targets, distinguish full and efficient
+      frontiers, and explain long-only constraints.
+    \item \hilite{Evaluate estimated allocations}: connect the weights to
+      their estimated inputs and compare buy-and-hold performance on prices
+      reserved for testing.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Lectures and Examples}
-  \vspace{0.3em}
-  {\normalsize\textbf{\ink{Lecture:}}\par
-  \dimmed{CHEME-5660-L6a-Lecture-SIM-Fall-2026.ipynb}}
+  \textbf{\ink{Lecture:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb}{Data-Driven Minimum-Variance Portfolios}
 
-  \vspace{0.7em}
-  {\normalsize\textbf{\ink{Example 1:}}\par
-  \dimmed{CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}}
+  \vspace{0.9em}
+  \textbf{\ink{Example 1:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Minimum-Variance Portfolios from Data}
 
-  \vspace{0.7em}
-  {\normalsize\textbf{\ink{Example 2:}}\par
-  \dimmed{CHEME-5660-L6a-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}}
+  How do we choose portfolio weights from historical data? We estimate
+  inputs from 2014--2024 data, solve the minimum-variance problem, trace the
+  frontier, and compare portfolios using 2025 prices.
 
-  \vspace{0.6em}
-  The first example fits the SIM for one firm three equivalent ways, computes
-  its classical uncertainty next to an index fund's, fits every security in the
-  dataset, checks the residual-correlation assumption, and saves the archive L6b
-  loads. The second bootstraps the parameters two ways and audits the residuals.
+  \vspace{0.9em}
+  \textbf{\ink{Example 2:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}
+
+  How much might a chosen portfolio's wealth vary? We simulate correlated
+  prices and buy-and-hold wealth, compare with 2025 observations, and estimate
+  the probability of exceeding a target scaled net present value.
 \end{frame}
 
 % ==== concept review =========================================
-\begin{frame}{Concept Review: Data Driven Minimum-Variance Allocation}
-  L5b: for a portfolio $\mathcal P$ of risky assets with weights $\bw$, the
-  linearized one-period growth rate $g_p=\bw^{\top}\bg$ has reward
-  $\E[g_p]=\bw^{\top}\bar{\bg}$ and risk $\Var(g_p)=\bw^{\top}\Sig\bw$; the
-  long-only weights for a target $g_\star$ solve:
+\begin{frame}{Concept Review: Multiple Asset GBM}
+  Recall the multiple asset geometric Brownian motion model from L5b.
+  With constant parameters, the price of asset $i=1,\ldots,M$ advances by:
   \[
-    \min_{\bw}\ \bw^{\top}\Sig\bw
-    \quad\text{s.t.}\quad
-    \bw^{\top}\bar{\bg}\ge g_\star,\qquad \mathbf 1^{\top}\bw=1,\qquad w_i\ge0.
-  \]
-  Sweeping the floor traces the GMV portfolio and the efficient branch.
-
-  \vspace{0.4em}
-  Every entry is an estimate: $\bar{\bg}$ and $\Sig$, one covariance per pair of
-  assets, and L5b's advanced material showed how noisy those pairwise entries
-  are and how the optimizer amplifies the noise. \hilite{Today's question}: can
-  a model with far fewer parameters supply the same inputs?
-  \slidenote{Catch-up:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/archive/week-5-before-pivot-2026-09-18/week-5/L5b/CHEME-5660-L5b-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Archived data-driven minimum-variance example}}
-\end{frame}
-
-% ==== factor models ==========================================
-\begin{frame}{Factor Models}
-  A portfolio of $\np$ assets needs $\np$ means and $\np(\np+1)/2$ covariance
-  entries; the second grows with the square of the first. Yet securities move
-  together when market-wide news arrives. A \hilite{factor model} makes the
-  shared movement explicit. Let $g_{i,t}$ be asset $i$'s growth rate on day $t$
-  (inverse years), $g_{M,t}$ the growth rate of a market index $M$ (SPY here;
-  the letter names the index), $f_{k,t}$ further factors, $\alpha_i$ an intercept
-  (inverse years), $\beta_i$ the sensitivity to the market (dimensionless),
-  $b_{ik}$ the sensitivity to factor $k$, and $\varepsilon_{i,t}$ the
-  residual (inverse years):
-  \[
-    g_{i,t}=\underbrace{\alpha_i}_{\text{intercept}}
-      +\underbrace{\beta_i\,g_{M,t}}_{\text{market}}
-      +\overbrace{\textstyle\sum_{k=1}^{K}b_{ik}f_{k,t}}^{\text{other factors}}
-      +\varepsilon_{i,t}.
+    S_i(t+\Delta t)=S_i(t)\exp\!\left[
+      \mu_{g,i}\Delta t+\sqrt{\Delta t}\,(\bA\bZ)_i\right].
   \]
 
-  \vspace{0.2em}
-  Co-movement between assets is carried by the factors; the residuals are what is
-  left over.
-\end{frame}
-
-\begin{frame}{Two Named Factor Models, and the One We Keep}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{CAPM (bridge from L5b)}: an equilibrium statement about
-      expected excess \emph{simple} returns, no intercept. In annualized growth
-      rates with a risk-free growth rate $g_f$ the CAPM-style relation is
-      $g_{i,t}-g_f\approx\beta_i(g_{M,t}-g_f)+\varepsilon_{i,t}$: an
-      approximation, and a time-series regression keeps an intercept whose CAPM
-      value would be zero. We borrow the one-factor structure, not the test.
-    \item \hilite{Fama--French}: excess market simple return $R_M-R_f$ plus a
-      size factor (SMB) and a value factor (HML); targets common variation the
-      market factor omits, at the cost of more parameters.
-    \item \hilite{Single index model}: the market factor alone. Today's model.
+  Here, $\Delta t>0$ is measured in years, and:
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item $\mu_{g,i}$ is the asset's \hilite{mean growth rate}
+      (year$^{-1}$).
+    \item The loading matrix satisfies $\bA\bA^{\top}=\bC$, where
+      $\bC$ is the \hilite{covariance rate} (year$^{-1}$).
+    \item Use the same vector $\bZ\sim\mathcal N(\mathbf 0,\mathbf I_M)$
+      for all assets in a step; draw a new independent vector at each step.
   \end{itemize}
+  \vspace{0.5em}
+  We estimate the mean growth rates and covariance rate from historical
+  growth observations.
 \end{frame}
 
-% ==== SIM ====================================================
-\begin{frame}{Single Index Models (SIMs)}
-  Sharpe (1963). For asset $i\in\mathcal P$ on days $t=1,\ldots,N$, with
-  intercept $\alpha_i$ (inverse years), market exposure $\beta_i$
-  (dimensionless), and residual $\varepsilon_{i,t}$ (inverse years):
-  \[
-    \boxed{g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}}
-  \]
-  $\alpha_i$: projection at $g_M=0$; $\varepsilon_{i,t}$: the
-  \hilite{idiosyncratic} remainder. A conditional-mean reading additionally
-  needs $\E[\varepsilon_{i,t}\mid g_{M,t}]=0$. Population assumptions:
-  \[
-    \E[\varepsilon_{i,t}]=0,\qquad
-    \Cov(\varepsilon_{i,t},g_{M,t})=0,\qquad
-    \Cov(\varepsilon_{i,t},\varepsilon_{j,t})=0\ \ (i\ne j).
-  \]
+\begin{frame}{Concept Review: Estimating Covariance}
+  From $N\ge2$ aligned growth-rate observations, $\bg'$ estimates the mean
+  vector $\boldsymbol{\mu}_g$. Subtract each asset's sample mean to form
+  $\tilde{\mathbf G}\in\mathbb R^{N\times M}$.
 
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item If $\Var(g_M)>0$, the first two are projection identities for
-      $\alpha_i$ and $\beta_i$.
-    \item The third is an \hilite{extra restriction}: the market is the only
-      source of co-movement. Separate fits do not make it true; L6b's covariance
-      rests on it; Example 1 checks it.
-    \item Return form $r=\Delta t\,g$: same $\beta_i$; $\alpha_{r,i}$ and
-      $\varepsilon_{r,i,t}$ are each $\Delta t$ times their growth-rate forms.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{What Beta Means}
-  Covariance of both sides with $g_M$ (the intercept is a constant,
-  $\Cov(\varepsilon_i,g_M)=0$). With $\sigma_{g,M}$, $\sigma_{g,i}$ the
-  market's and asset's growth-rate standard deviations (L3a's $\sigma_g$, not
-  volatilities; both positive) and $\rho_{iM}$ their correlation:
+  Recall $\Sig=\bC/\Delta t$. The corresponding estimates are:
   \[
-    \boxed{\beta_i=\frac{\Cov(g_i,g_M)}{\Var(g_M)}
-      =\rho_{iM}\,\frac{\sigma_{g,i}}{\sigma_{g,M}}}
+    \boxed{\Sg=\frac{\tilde{\mathbf G}^{\top}\tilde{\mathbf G}}{N-1}},
     \qquad
-    \alpha_i=\E[g_i]-\beta_i\,\E[g_M].
+    \boxed{\Ch=\Delta t\,\Sg}.
   \]
 
-  \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Beta is the slope of the projection: a one-unit market move changes
-      linearly projected asset growth by $\beta_i$ units; the intercept and the
-      residual are there on every day.
-    \item \hilite{Dial}: $\beta_i=1$ one for one; $>1$ amplifies; $0<\beta_i<1$
-      dampens; $<0$ moves against the market. In our dataset betas run from near
-      zero to a little above two, median close to one.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Risk Splits in Two}
-  Variance of both sides, using only zero covariance between $\varepsilon_i$ and
-  $g_M$ (independence not needed), with $\sigma^2_{g,\varepsilon,i}=\Var(\varepsilon_i)$:
-  \[
-    \boxed{\underbrace{\Var(g_i)}_{\text{total}}
-      =\underbrace{\beta_i^2\,\sigma^2_{g,M}}_{\text{systematic}}
-      +\underbrace{\sigma^2_{g,\varepsilon,i}}_{\text{idiosyncratic}}}
-  \]
-
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Systematic risk is inherited from the market and cannot be diversified
-      away by adding assets that share it; idiosyncratic risk is the asset's own.
-    \item The two need not be comparable: a stock can have $\beta>1$ and be
-      dominated by its residual; an index fund $\beta\approx1$ and almost none.
-      Thus beta is exposure, not total risk: here $\beta_i>1$ implies greater
-      total variance, but $0<\beta_i<1$ need not imply less because residual
-      variance may dominate.
-    \item The fraction the market explains is
-      $\beta_i^2\sigma^2_{g,M}/\Var(g_i)=\rho_{iM}^2$: what the fitted $R^2$
-      estimates (for a non-constant asset growth rate).
-  \end{itemize}
-\end{frame}
-
-% ==== covariance =============================================
-\begin{frame}{The Covariance Implied by a SIM}
-  Stack the assets: growth rates $\bg$, intercepts $\bal$, betas $\bbe$,
-  residuals $\beps$; let $\bar g_M=\E[g_M]$, $\sigma^2_{g,M}=\Var(g_M)$, and
-  $\Dg=\operatorname{diag}(\sigma^2_{g,\varepsilon,1},\sigma^2_{g,\varepsilon,2},\ldots)$.
-  The vector model $\bg=\bal+\bbe\,g_M+\beps$ gives, under the three
-  assumptions:
-  \[
-    \boxed{\bar{\bg}=\bal+\bbe\,\bar g_M,\qquad
-      \Sig=\sigma^2_{g,M}\,\bbe\bbe^{\top}+\Dg}
-  \]
-  so $\Cov(g_i,g_j)=\beta_i\beta_j\sigma^2_{g,M}$ off the diagonal and
-  $\Var(g_i)=\beta_i^2\sigma^2_{g,M}+\sigma^2_{g,\varepsilon,i}$ on it.
-
-  \vspace{0.3em}
+  These estimates have different roles:
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Rank at most one plus diagonal}: every off-diagonal covariance
-      is two betas times one number.
-    \item The compression: $2\np+1$ numbers (one beta and one residual variance
-      per asset, plus the market variance) instead of $\np(\np+1)/2$ covariances,
-      plus $\np+1$ for $\bar{\bg}$. For the S\&P 500, on the order of a thousand
-      parameters against more than a hundred thousand.
+    \item Use $\Sg$ to calculate portfolio growth-rate variance
+      (year$^{-2}$) and $\Ch$ to simulate prices
+      (covariance rate: year$^{-1}$).
+    \item The sample covariance is positive semidefinite, so variances are
+      nonnegative. Today's closed-form weights require a positive-definite estimate.
   \end{itemize}
+  \slidenote{L5b example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-CovarianceMatrix-Fall-2026.ipynb}{Covariance and Correlation from Data}. Continue here if unfinished.}
 \end{frame}
 
-\begin{frame}{What Is Assumed Away}
-  The zeros off the diagonal of $\Dg$ are the third assumption. If two assets'
-  residuals are correlated, their true covariance is
-  $\beta_i\beta_j\sigma^2_{g,M}$ \hilite{plus} a residual covariance the model
-  sets to zero.
+\begin{frame}{Concept Review: Wealth and Scaled NPV}
+  Initial weights $w_i\ge0$, with $\sum_iw_i=1$, divide wealth $W_0>0$
+  among the assets. Buy $n_i=w_iW_0/S_i(0)$ shares and hold them fixed:
+  \[
+    \begin{aligned}
+      W_t&=W_0\sum_{i=1}^{M}w_i\frac{S_i(t)}{S_i(0)},\\[0.3em]
+      \rho_T&=\frac{W_T}{W_0}e^{-g_yT}-1.
+    \end{aligned}
+  \]
+  Here, $g_y$ is the constant benchmark growth rate and $T$ is the holding
+  period in years. We allow fractional shares and omit dividends and trading costs.
 
   \vspace{0.4em}
-  Fitting each regression separately makes every residual orthogonal to the
-  market column, and nothing else. Example 1 measures the residual correlations
-  across our dataset:
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item most pairs close to zero (median absolute correlation below $0.1$),
-    \item related firms a few tenths (banks in the portfolio example reach about $0.7$),
-    \item near-duplicate securities almost perfectly correlated.
-  \end{itemize}
+  Simulated wealth outcomes estimate $\Pmeasure(\rho_T>\rho_\star)$ for a
+  target scaled NPV $\rho_\star$.
 
-  \vspace{0.3em}
-  Those are the covariance errors L6b's model inherits: the number to quote when
-  asked how good the SIM covariance is.
+  \vspace{0.4em}
+  L5b sampled candidate allocations. Today, we minimize variance for a
+  required expected growth rate.
 \end{frame}
 
-\begin{frame}{Portfolio Risk Under a SIM}
-  For fixed weights $\bw$, the linearized growth rate $g_p=\bw^{\top}\bg$ has
-  portfolio beta $\beta_p=\bw^{\top}\bbe$ and residual
-  $\varepsilon_p=\bw^{\top}\beps$:
+% ==== MPT ====================================================
+\begin{frame}{Modern Portfolio Theory: Portfolio Reward}
+  For $M$ risky assets, $w_i$ is the initial fraction invested in asset $i$,
+  with $\sum_iw_i=1$. Hold the weights fixed when calculating reward and risk.
+  The model uses weighted growth rates over one observation interval:
   \[
-    \boxed{g_p=\bw^{\top}\bal+\beta_p\,g_M+\varepsilon_p,\qquad
-      \Var(g_p)=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
-      +\underbrace{\bw^{\top}\Dg\bw}_{\text{residual risk}}}
+    g_p=\sum_{i=1}^{M}w_i g_i=\bw^{\top}\bg.
   \]
 
+  With fixed weights and $\E[g_i]=\mu_{g,i}$, \hilite{reward} is:
+  \[
+    \boxed{\E[g_p]=\sum_{i=1}^{M}w_i\E[g_i]
+      =\bw^{\top}\boldsymbol{\mu}_g}.
+  \]
+  From data, $\bw^{\top}\bg'$ estimates expected growth (year$^{-1}$).
+
+  \vspace{0.5em}
+  Expected growth is linear in the portfolio weights.
+\end{frame}
+
+\begin{frame}{Weighted Growth and Buy-and-Hold Wealth}
+  With fixed share counts, one-period wealth and its log growth rate are
+  given by:
+  \[
+    \begin{aligned}
+      \frac{W_{\Delta t}}{W_0}
+        &=\sum_{i=1}^{M}w_i e^{g_i\Delta t},\\[0.5em]
+      \frac{1}{\Delta t}\ln\!\left(\frac{W_{\Delta t}}{W_0}\right)
+        &=\frac{1}{\Delta t}\ln\!\left(\sum_{i=1}^{M}w_i e^{g_i\Delta t}\right),
+        \qquad W_{\Delta t}>0.
+    \end{aligned}
+  \]
+  The logarithm acts on a sum, so this generally differs from
+  $g_p=\sum_iw_i g_i$.
+
+  \vspace{0.5em}
+  Use weighted growth rates to choose weights, then use buy-and-hold wealth
+  to evaluate the investment through time.
+
+  \vspace{0.5em}
+  Next, we measure how the weighted growth rate varies across outcomes.
+\end{frame}
+
+\begin{frame}{Modern Portfolio Theory: Portfolio Risk}
+  We measure \hilite{risk} by $\Var(g_p)$. With fixed weights and
+  covariance matrix $\Sig=\Cov(\bg)$:
+  \[
+    \boxed{
+    \begin{aligned}
+      \Var(g_p)
+        &=\Cov\!\left(\sum_iw_i g_i,\sum_jw_j g_j\right)\\[0.3em]
+        &=\sum_i\sum_jw_iw_j\Cov(g_i,g_j)
+        =\bw^{\top}\Sig\bw.
+    \end{aligned}}
+  \]
+  Individual variances (diagonal entries) and pairwise covariances
+  (off-diagonal entries) both contribute to risk. From data, use $\Sg$.
+
+  \vspace{0.5em}
+  Variance has units year$^{-2}$. Its square root,
+  $\sigma_{g,p}=\sqrt{\Var(g_p)}$, is the growth-rate standard deviation
+  (year$^{-1}$).
+
+  \vspace{0.5em}
+  To see how covariance can reduce risk, consider a two-asset portfolio.
+\end{frame}
+
+\begin{frame}{Two-Asset Diversification}
+  Invest fractions $w$ and $1-w$, with $0<w<1$, in two assets with positive
+  standard deviations $\sigma_{g,1}$ and $\sigma_{g,2}$ and correlation $\rho_{12}$:
+  \[
+    \Var(g_p)=w^2\sigma_{g,1}^2+(1-w)^2\sigma_{g,2}^2
+      +2w(1-w)\rho_{12}\sigma_{g,1}\sigma_{g,2}.
+  \]
+
+  Correlation determines what mixing achieves:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item At $\rho_{12}=1$, the standard deviation is the weighted average:
+      $\sigma_{g,p}=w\sigma_{g,1}+(1-w)\sigma_{g,2}$.
+    \item For $\rho_{12}<1$, it falls below that weighted average.
+    \item If $\rho_{12}$ is below the smaller standard deviation divided
+      by the larger, some allocation has less variance than either asset.
+      For 2 and 4 per year, the cutoff is $\rho_{12}<0.5$.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Positive correlation can still permit diversification.
+\end{frame}
+
+\begin{frame}{Growth Rates and Log Returns}
+  For an observation interval $\Delta t>0$, asset log returns are
+  $\mathbf r=\Delta t\,\bg$. Their weighted average is
+  $r_p=\bw^{\top}\mathbf r=\Delta t\,g_p$:
+  \[
+    \begin{aligned}
+      \E[r_p]&=\Delta t\,\E[g_p],\\[0.3em]
+      \Var(r_p)&=\Delta t^2\,\Var(g_p).
+    \end{aligned}
+  \]
+  Log returns are dimensionless, with covariance
+  $\boldsymbol\Sigma_r=\Delta t^2\Sig$.
+
+  \vspace{0.5em}
+  Scaling preserves the optimization problem:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Every portfolio variance is multiplied by the same positive factor
+      $\Delta t^2$, preserving the minimizing weights.
+    \item Scale the target as $r_\star=\Delta t\,g_\star$ so that the same
+      portfolios meet the target.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Growth rates and log returns therefore give the same optimal weights.
+\end{frame}
+
+\begin{frame}{Standard Deviation and Volatility}
+  Growth-rate standard deviation depends on the observation interval.
+  To calculate volatility, use the covariance rate $\bC=\Delta t\,\Sig$ from L5b:
+  \[
+    \begin{aligned}
+      \sigma_{g,p}&=\sqrt{\bw^{\top}\Sig\bw}
+        &&\text{(year$^{-1}$)},\\[0.5em]
+      \text{Volatility}&=\sqrt{\bw^{\top}\bC\bw}
+        =\sqrt{\Delta t}\,\sigma_{g,p}
+        &&\text{(year$^{-1/2}$)}.
+    \end{aligned}
+  \]
+
+  For daily observations, $\Delta t=1/252$ years:
+  \[
+    \Ch=\frac{\Sg}{252}.
+  \]
+  The \hilite{risk axis} in this lecture shows $\sigma_{g,p}$, measured in
+  year$^{-1}$.
+
+  \vspace{0.5em}
+  With reward and risk defined, we can now choose the weights that minimize
+  variance.
+\end{frame}
+
+% ==== minimum-variance portfolios ============================
+\begin{frame}{The Global Minimum-Variance Portfolio}
+  We seek the fully invested portfolio with the smallest growth-rate variance.
+  \textbf{Short positions are allowed} ($w_i<0$), and there is
+  \textbf{no expected-growth constraint}.
+  Assume $\Sig$ is symmetric and positive definite.
+
+  \vspace{0.3em}
+  With $\bone\in\mathbb R^M$ the vector of ones, the problem is:
+  \[
+    \begin{aligned}
+      \underset{\bw\in\mathbb R^M}{\text{minimize}}\quad
+        &\tfrac12\bw^{\top}\Sig\bw\\
+      \text{subject to}\quad &\bone^{\top}\bw=1.
+    \end{aligned}
+  \]
+  The solution and its variance are:
+  \[
+    \boxed{\bw_{\mathrm{GMV}}
+      =\frac{\Sig^{-1}\bone}{\bone^{\top}\Sig^{-1}\bone},
+      \qquad \sigma^2_{g,\mathrm{GMV}}
+      =\frac{1}{\bone^{\top}\Sig^{-1}\bone}.}
+  \]
+
+  The weights depend only on covariance. We now derive this result.
+\end{frame}
+
+\begin{frame}{Deriving the GMV Weights}
+  Introduce a multiplier $\lambda$ for the budget constraint. The factor
+  $1/2$ simplifies the derivative without changing the minimizing weights:
+  \[
+    \mathcal L(\bw,\lambda)=\tfrac12\bw^{\top}\Sig\bw
+      -\lambda(\bone^{\top}\bw-1).
+  \]
+
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \textbf{Stationarity:}
+      $\Sig\bw-\lambda\bone=\mathbf0$, so
+      $\bw=\lambda\Sig^{-1}\bone$.
+    \item \textbf{Budget:}
+      $1=\lambda\bone^{\top}\Sig^{-1}\bone$, giving
+      $\lambda=(\bone^{\top}\Sig^{-1}\bone)^{-1}$.
+    \item \textbf{Variance:} use $\Sig\bw=\lambda\bone$ and
+      $\bw^{\top}\bone=1$:
+      \[
+        \sigma^2_{g,\mathrm{GMV}}
+          =\bw^{\top}\Sig\bw
+          =\lambda\bw^{\top}\bone
+          =\lambda
+          =\frac{1}{\bone^{\top}\Sig^{-1}\bone}.
+      \]
+  \end{itemize}
+
+  Positive definiteness makes the objective strictly convex, so these
+  weights give the unique minimum.
+\end{frame}
+
+\begin{frame}{The Long-Only Problem}
+  Long-only weights are nonnegative and sum to one. We also require
+  estimated expected growth to reach a \hilite{target floor} $g_\star$
+  (year$^{-1}$).
+
+  \vspace{0.4em}
+  Using sample means $\bg'$ and estimated covariance $\Sg$, solve:
+  \[
+    \boxed{
+    \begin{aligned}
+      \underset{\bw\in\mathbb R^M}{\text{minimize}}\quad
+        &\bw^{\top}\Sg\bw\\
+      \text{subject to}\quad
+        &(\bg')^{\top}\bw\ge g_\star,\\
+        &\bone^{\top}\bw=1,\\
+        &0\le w_i\le1,\qquad i=1,\ldots,M.
+    \end{aligned}}
+  \]
+  This is a \hilite{convex quadratic program}: the covariance matrix is
+  positive semidefinite and the constraints are linear.
+
+  \vspace{0.5em}
+  How do these constraints change the solution?
+\end{frame}
+
+\begin{frame}{Adding the Portfolio Constraints}
+  Use the same estimated inputs and add the restrictions in order:
+
+  \begin{enumerate}\setlength{\itemsep}{0.8em}
+    \item \textbf{First, exclude short positions.}
+      If the original GMV weights are all nonnegative, keep them.
+      Otherwise, solve numerically with $w_i\ge0$ and $\bone^{\top}\bw=1$.
+      The result is the \hilite{long-only GMV portfolio}.
+    \item \textbf{Then, impose the growth floor.}
+      If the long-only GMV portfolio meets $g_\star$, keep its weights.
+      For a higher feasible target, solve again; the weights change and
+      minimum variance increases.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  At either step, restricting the portfolio choices cannot lower the
+  minimum variance.
+\end{frame}
+
+\begin{frame}{The Target-Growth Frontier}
+  Allow short positions and require $\bone^{\top}\bw=1$. For each
+  \hilite{equality target} $\boldsymbol{\mu}_g^{\top}\bw=g_\star$,
+  find the weights with the smallest variance.
+
+  \vspace{0.4em}
+  Assume $\Sig$ is positive definite and the asset means are not all equal.
+  Define:
+  \[
+    \begin{aligned}
+      a&=\bone^{\top}\Sig^{-1}\bone,
+        & b&=\bone^{\top}\Sig^{-1}\boldsymbol{\mu}_g,\\[0.3em]
+      c&=\boldsymbol{\mu}_g^{\top}\Sig^{-1}\boldsymbol{\mu}_g,
+        & d&=ac-b^2>0.
+    \end{aligned}
+  \]
+  The minimum variance at the target is:
+  \[
+    \boxed{\sigma_g^2(g_\star)
+      =\frac{a g_\star^2-2b g_\star+c}{d}
+      =\frac1a+\frac{a}{d}\left(g_\star-\frac ba\right)^2.}
+  \]
+  Varying $g_\star$ traces the \hilite{minimum-variance frontier}.
+  At $g_\star=b/a$, we recover the GMV variance $1/a$; higher or lower
+  targets require more variance.
+\end{frame}
+
+\begin{frame}{The Efficient Branch}
+  A portfolio is efficient if no feasible alternative offers at least as much
+  expected growth and no more variance, with one strict improvement.
+
+  \vspace{0.3em}
+  \begin{columns}[c]
+    \begin{column}{0.59\textwidth}
+      \includegraphics[width=\textwidth]{../figs/minimum-variance-frontier/frontier.pdf}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{itemize}\setlength{\itemsep}{0.6em}
+        \item $p_2$ is the GMV portfolio.
+        \item $p_1$ and $p_3$ have the same risk; $p_1$ has higher growth.
+        \item The upper branch, including $p_2$, is efficient.
+      \end{itemize}
+    \end{column}
+  \end{columns}
   \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Market risk depends on the weights only through $\beta_p$; adding
-      assets with the same exposure does not reduce it.
-    \item Residual risk diversifies: equal weights $1/\np$ over $\np$ assets with
-      residual variances below $K$ give
-      $\bw^{\top}\Dg\bw=\frac{1}{\np^2}\sum_i\sigma^2_{g,\varepsilon,i}\le K/\np$.
-    \item Two conditions carry it: spread-out fixed weights, and
-      \hilite{uncorrelated residuals} (with a general residual covariance
-      $\boldsymbol\Omega_\varepsilon$ the term is
-      $\bw^{\top}\boldsymbol\Omega_\varepsilon\bw$ and need not vanish).
-  \end{itemize}
+  Feasible portfolios lie on or to the right of the frontier; moving right adds variance.
 \end{frame}
 
-% ==== estimation =============================================
-\begin{frame}{Estimation of SIM Parameters}
-  One asset at a time, $N$ aligned daily observations (the L5a data-matrix
-  columns). Response $\by=(g_{i,1},\ldots,g_{i,N})^{\top}$; design matrix
-  $\bX\in\mathbb R^{N\times2}$ with a column of ones and the market column
-  $g_{M,1},\ldots,g_{M,N}$; parameters $\bth_i=(\alpha_i,\beta_i)^{\top}$;
-  residuals $\beps$: $\by=\bX\bth_i+\beps$.
+\begin{frame}{Tracing the Long-Only Frontier}
+  Long-only portfolio growth is a weighted average of the sample means:
   \[
-    \boxed{\hat{\bth}_i=\arg\min_{\bth}\lVert\by-\bX\bth\rVert_2^2
-      \;\Longrightarrow\;
-      (\bX^{\top}\bX)\hat{\bth}_i=\bX^{\top}\by
-      \;\Longrightarrow\;
-      \hat{\bth}_i=(\bX^{\top}\bX)^{-1}\bX^{\top}\by}
+    \min_i g_i'\ \le\ (\bg')^{\top}\bw\ \le\ \max_i g_i'.
   \]
-  unique when $\bX$ has full column rank. Fitted values $\hat{\by}=\bX\hat{\bth}_i$,
-  residuals $\mathbf r=\by-\hat{\by}$; $\hat\beta_i$ is the sample covariance
-  over the sample market variance, $\hat\alpha_i=g_i'-\hat\beta_ig_M'$.
-
-  \vspace{0.3em}
-  In code: never form the inverse; a QR solve (\texttt{X\textbackslash y}) or the
-  SVD gives the same estimate stably (Example 1 does it three ways). Ridge
-  versions: optional advanced material.
-  \slidenote{Example 1:}{\dimmed{CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}}
-\end{frame}
-
-\begin{frame}{Uncertainty}
-  \hilite{Classical assumptions}: design held fixed, $\E[\beps\mid\bX]=\mathbf 0$,
-  errors independent across days, common variance, Gaussian,
-  $\beps\sim\mathcal N(\mathbf 0,\sigma^2_{g,\varepsilon}\mathbf I)$. Then
-  $\hat{\bth}_i=\bth_i+(\bX^{\top}\bX)^{-1}\bX^{\top}\beps$ is unbiased and
-  Gaussian with covariance $\sigma^2_{g,\varepsilon}(\bX^{\top}\bX)^{-1}$.
-  Observations are already growth rates: \hilite{no $\Delta t$}.
-  \[
-    \boxed{s^2_{g,\varepsilon}=\frac{\lVert\mathbf r\rVert_2^2}{N-2},\qquad
-      \widehat{\Cov}(\hat{\bth}_i)=s^2_{g,\varepsilon}(\bX^{\top}\bX)^{-1},\qquad
-      \mathrm{SE}(\hat\theta_j)=\sqrt{[\widehat{\Cov}(\hat{\bth}_i)]_{jj}}}
-  \]
-  $95\%$ interval: $\hat\theta_j\pm t_{0.975,N-2}\,\mathrm{SE}(\hat\theta_j)$
-  ($1.96$ for eleven years of daily data). Beta's interval is usually narrow;
-  alpha's usually wide and often covering zero. Residual diffusion volatility:
-  $\sqrt{\Delta t}\,s_{g,\varepsilon}$.
-\end{frame}
-
-\begin{frame}{Fit, and What Daily Data Do to the Assumptions}
-  \[
-    R^2=1-\frac{\lVert\mathbf r\rVert_2^2}{\sum_t(g_{i,t}-g_i')^2}=\hat\rho_{iM}^2
-    \quad\text{(least squares, intercept, non-constant response)}
-  \]
-  \vspace{-0.6em}
-  An index fund can sit near $0.85$ against SPY, a stock with a larger beta
-  near $0.25$: both consistent with the model.
-  \vspace{-0.15em}
-
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item Daily growth rates: heavy tails, clustered absolute values, and (from
-      volume-weighted average prices) positive lag-one autocorrelation: the
-      classical beta interval is too narrow for these data; a Newey--West
-      standard error is $40$ to $100\%$ larger.
-    \item \hilite{Bootstrap}: $\by^{(b)}=\bX\hat{\bth}_i+\beps^{(b)}$, refit,
-      read the spread; parametric (Gaussian) or empirical-residual (keeps the
-      tails); both draw days independently. When dependence matters: HAC errors
-      or a block bootstrap. Example 2 does all of it.
+  This gives a practical target sweep:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Start with $g_\star\le\min_i g_i'$. Every long-only portfolio meets
+      the floor, so the solution is the long-only GMV portfolio.
+    \item Increase the target to trace the efficient branch. Targets above
+      $\max_i g_i'$ are infeasible.
+    \item With the same inputs, long-only constraints cannot reduce variance.
+      The frontiers meet where the shorts-allowed weights are nonnegative.
   \end{itemize}
-  \vspace{-0.2em}
-  \slidenote{Example 2:}{\dimmed{CHEME-5660-L6a-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}}
+
+  \vspace{0.4em}
+  Let's estimate the inputs, sweep the target, and inspect how the weights change.
+  \slidenote{Example 1:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Minimum-Variance Portfolios from Data}}
 \end{frame}
 
-\begin{frame}{What R-squared, Alpha, and Beta Do Not Prove}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item $R^2$ is the sample fraction of variation the fitted market term
-      explains: not the probability the model is true, not forecast accuracy,
-      not investment quality. Low $R^2$ with a precise beta, high $R^2$ with
-      unstable parameters: both happen.
-    \item A positive $\hat\alpha_i$ is an intercept conditional on the market
-      proxy, the window, the price series (volume-weighted average prices, not
-      total returns), and the specification; its interval usually covers zero.
-    \item Beta is exposure to the chosen index at the chosen sampling interval,
-      not total risk.
-    \item Before the SIM covariance goes into L6b's optimizer: residual
-      cross-correlations, stability across windows, sensitivity to the proxy,
-      and one unit convention throughout (growth rate, log return, covariance
-      rate differ by powers of $\Delta t$).
+% ==== risk-free asset ========================================
+% ==== estimating portfolio inputs =============================
+\begin{frame}{Estimating Portfolio Inputs}
+  The GMV calculation uses the estimated covariance $\Sg$. A target-growth
+  calculation also uses the estimated mean growth rates $\bg'$.
+  The weights therefore depend on the data and estimation method.
+
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item For AMD (2014--2024), mean growth estimates are $0.3120$ per year
+      from the sample mean and $0.4397$ per year from L4b's regression:
+      a difference of \hilite{12.8 percentage points per year}.
+    \item Underestimating an asset combination's variance can make the
+      optimizer favor it.
   \end{itemize}
+
+  \vspace{0.5em}
+  Our data example evaluates the selected allocations on 2025 prices,
+  alongside equal weights and an index fund.
+
+  \vspace{0.5em}
+  \slidenote{Example 2:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}.
+    Hold the fitted inputs and allocation fixed; simulate buy-and-hold wealth
+    and estimate the probability of exceeding a target scaled NPV.}
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.4em}
-  {\normalsize\textbf{\ink{Advanced:}} \dimmed{advanced/sim/}\par
-  \dimmed{CHEME-5660-L6a-Advanced-SIM-Theory-Fall-2026.ipynb}}
+  These examples develop the frontier geometry and input sensitivity further.
 
-  \vspace{0.7em}
-  Optional, not a prerequisite for L6b. Derives the ridge (regularized)
-  estimator and its covariance, distinguishes the residual and parametric
-  bootstraps, keeps the growth-rate, log-return, and volatility conventions
-  straight, propagates parameter uncertainty into portfolio risk and weights,
-  and writes the maximum-Sharpe problem as a second-order cone program.
-  \slidenote{Notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-6/L6a/advanced}{lectures/week-6/L6a/advanced}, also linked from the lecture notebook.}
+  \vspace{0.8em}
+  \textbf{\ink{Advanced 1:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/advanced/frontier-geometry/CHEME-5660-L6a-Advanced-FrontierGeometry-Fall-2026.ipynb}{Frontier Geometry and the Two-Fund Theorem}
+
+  How can two risky frontier portfolios generate the rest of the curve?
+  Derive the weights and vary the mix of two fixed funds. Compare the
+  frontier with a 50\% limit on each position's magnitude and with long-only
+  weights.
+
+  \vspace{0.8em}
+  \textbf{\ink{Advanced 2:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/advanced/estimation-risk/CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb}{How Estimates Affect Portfolio Weights}
+
+  How much do weights change when we estimate the inputs again?
+  Resample the 2014--2024 observations, vary means and covariance separately,
+  and compare GMV and tangent allocations. Evaluate the resulting long-only
+  portfolios on the same 2025 prices.
 \end{frame}
 
 \begin{frame}{Summary}
-  Today: the single index model, the covariance and portfolio risk it implies,
-  and least-squares estimation with classical uncertainty.
-
-  \vspace{0.2em}
-  {\large\textbf{\ink{Key takeaways}}}
-  \vspace{0.1em}
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{One factor splits risk in two}: beta squared times the market
-      variance plus a residual variance; beta measures exposure, $R^2$ what the
-      market explains, and they can disagree.
-    \item \hilite{The SIM covariance is rank one plus diagonal, on an
-      assumption}: one beta and one residual variance per asset; residual risk
-      diversifies only if residuals are uncorrelated, which fits do not
-      guarantee.
-    \item \hilite{Least squares estimates, daily data qualify}: growth-rate
-      units, no $\Delta t$; heavy tails, lag-one dependence, and clustering make
-      bootstrap or robust intervals the complement.
+  \begin{itemize}\setlength{\itemsep}{1.0em}
+    \item \hilite{Portfolio reward and risk}: we expressed expected growth
+      and variance using the weights, mean growth rates, and covariance.
+    \item \hilite{Minimum-variance portfolios}: we derived the GMV weights
+      and used growth targets and weight constraints to trace the efficient frontier.
+    \item \hilite{Estimated inputs and performance}: we connected the allocation
+      to its estimates and evaluated buy-and-hold wealth on a separate year of prices.
   \end{itemize}
-
-  \vspace{0.1em}
-  Next: the SIM mean and covariance inside L5b's allocation problems.
+  \vspace{0.7em}
+  In L6b, we use a market factor to estimate portfolio inputs and add a risk-free asset.
 \end{frame}
 
-\transitionframe{Today: one index, one beta per asset, and the covariance that falls out of a single line.}
+\transitionframe{Next: model asset growth using a shared market factor and firm-specific risk.}
 
 \end{document}

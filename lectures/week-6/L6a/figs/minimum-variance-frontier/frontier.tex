@@ -1,0 +1,123 @@
+% Shared vector figure for the L6a notebook and lecture slides.
+% Build with `make` in this directory. Outputs: frontier.pdf and frontier.svg.
+% The curve is a schematic hyperbola, not a fit to the course price data.
+\documentclass[tikz,border=0pt]{standalone}
+\usepackage{fontspec}
+\IfFontExistsTF{Helvetica Neue}
+  {\setsansfont{Helvetica Neue}[BoldFont={Helvetica Neue Medium}]}
+  {\setsansfont{TeX Gyre Heros}}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing}
+\input{../../../../templates/vnflow.sty}
+
+\newcommand{\axisfont}{\sffamily\fontsize{10}{12}\selectfont}
+\newcommand{\labelfont}{\sffamily\fontsize{10}{12.5}\selectfont}
+\newcommand{\smallfont}{\sffamily\fontsize{9}{11.5}\selectfont}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily,text=vnink,
+  axis/.style={vnink!85,line width=0.65pt,
+    -{Latex[length=1.8mm,width=1.2mm]}},
+  guide/.style={vnrule,line width=0.45pt,dash pattern=on 1pt off 2.4pt},
+  point/.style={circle,minimum size=2.5mm,inner sep=0pt,line width=0.85pt},
+  point label/.style={font=\labelfont,inner sep=0pt}]
+
+  % Explicit margins keep every label inside the same PDF and SVG canvas.
+  \path[use as bounding box] (0,0) rectangle (14.9,9.5);
+  \fill[white] (0,0) rectangle (14.9,9.5);
+
+  % Geometry: x is proportional to standard deviation, y to expected growth.
+  % x(t) = x0 + sqrt(s0^2 + k t^2), y(t) = g0 + h t.
+  % Thus variance is a positive constant plus a squared growth difference.
+  \def\xzero{2.10}
+  \def\yzero{1.35}
+  \def\xmax{14.45}
+  \def\ymax{8.87}
+  \def\smin{3.25}
+  \def\gmid{5.15}
+  \def\curvature{8.0}
+  \def\growthscale{1.18}
+  \def\pairt{2.2}
+  \def\endparam{2.8}
+  \pgfmathsetmacro{\xmin}{\xzero+\smin}
+  \pgfmathsetmacro{\xpair}{\xzero+sqrt(\smin^2+\curvature*\pairt^2)}
+  \pgfmathsetmacro{\gupper}{\gmid+\growthscale*\pairt}
+  \pgfmathsetmacro{\glower}{\gmid-\growthscale*\pairt}
+
+  % Shade the full plotting rectangle, with white margins for axis labels.
+  \fill[vnpanel] (\xzero,\yzero) rectangle (\xmax,\ymax);
+
+  % Projection guides sit behind the frontier and portfolio markers.
+  \draw[guide] (\xzero,\gupper) -- (\xpair,\gupper);
+  \draw[guide] (\xzero,\gmid) -- (\xmin,\gmid);
+  \draw[guide] (\xzero,\glower) -- (\xpair,\glower);
+  \draw[guide] (\xmin,\yzero) -- (\xmin,\gmid);
+  \draw[guide] (\xpair,\yzero) -- (\xpair,\glower);
+
+  % Axes and labels use the lecture's growth-rate standard deviation units.
+  \draw[axis] (\xzero,\yzero) -- (\xmax,\yzero);
+  \draw[axis] (\xzero,\yzero) -- (\xzero,\ymax);
+  \node[rotate=90,font=\axisfont]
+    at (0.40,5.15) {Expected growth rate, $\mathbb{E}[g_p]$ (yr$^{-1}$)};
+  \node[font=\axisfont]
+    at (8.275,0.35) {Growth-rate standard deviation, $\sigma_{g,p}$ (yr$^{-1}$)};
+
+  \foreach \yy in {\gupper,\gmid,\glower}
+    \draw[vnrule,line width=0.6pt] ({\xzero-0.07},\yy) -- (\xzero,\yy);
+  \foreach \xx in {\xmin,\xpair}
+    \draw[vnrule,line width=0.6pt] (\xx,\yzero) -- (\xx,{\yzero-0.07});
+  \node[anchor=east,font=\smallfont,text=vnmuted]
+    at ({\xzero-0.18},\gupper) {$\mathbb{E}[g_{p_1}]$};
+  \node[anchor=east,font=\smallfont,text=vnlink]
+    at ({\xzero-0.18},\gmid) {$\mathbb{E}[g_{p_2}]$};
+  \node[anchor=east,font=\smallfont,text=vnmuted]
+    at ({\xzero-0.18},\glower) {$\mathbb{E}[g_{p_3}]$};
+  \node[anchor=north,font=\smallfont,text=vnlink]
+    at (\xmin,{\yzero-0.19}) {$\sigma_{g,p_2}$};
+  \node[anchor=north,font=\smallfont,text=vnmuted]
+    at (\xpair,{\yzero-0.19}) {$\sigma_{g,p_1}=\sigma_{g,p_3}$};
+
+  % Draw an actual hyperbola. The paired points use opposite values of t,
+  % so their standard deviations are exactly equal.
+  \draw[vnmuted,line width=1.05pt,dash pattern=on 3.5pt off 2.7pt]
+    plot[domain=0:-\endparam,samples=100,variable=\t]
+      ({\xzero+sqrt(\smin^2+\curvature*(\t)^2)},
+       {\gmid+\growthscale*\t});
+  \draw[vncarnelian,line width=1.55pt,line cap=round]
+    plot[domain=0:\endparam,samples=100,variable=\t]
+      ({\xzero+sqrt(\smin^2+\curvature*(\t)^2)},
+       {\gmid+\growthscale*\t});
+
+  % Branch labels and the fixed-risk comparison are direct annotations.
+  \node[anchor=west,font=\labelfont\bfseries,text=vncarnelian]
+    at (10.95,{\gmid+\growthscale*\endparam}) {Efficient frontier};
+  \node[anchor=west,font=\labelfont,text=vnmuted]
+    at (10.95,{\gmid-\growthscale*\endparam}) {Dominated branch};
+
+  % One vertical comparison, exactly at the shared standard deviation.
+  % The open and filled markers distinguish the portfolios in grayscale too.
+  \draw[vnmuted,line width=0.6pt,-{Latex[length=1.9mm,width=1.3mm]}]
+    (\xpair,{\glower+0.20}) -- (\xpair,{\gupper-0.20});
+  \node[anchor=west,font=\smallfont,text=vnmuted,align=left]
+    at ({\xpair+0.35},\gmid) {Same risk,\\higher expected growth};
+
+  \node[point,fill=vncarnelian,draw=vncarnelian]
+    at (\xpair,\gupper) {};
+  \node[point,minimum size=2.8mm,fill=vnlink,draw=vnlink]
+    at (\xmin,\gmid) {};
+  \node[point,fill=vnpanel,draw=vnmuted]
+    at (\xpair,\glower) {};
+  \node[point label,anchor=south east,text=vncarnelian]
+    at ({\xpair-0.16},{\gupper+0.20}) {$p_1$};
+  \node[point label,anchor=south east,text=vnlink]
+    at ({\xmin-0.18},{\gmid+0.20}) {$p_2$};
+  \node[point label,anchor=north east,text=vnmuted]
+    at ({\xpair-0.16},{\glower-0.20}) {$p_3$};
+  \node[anchor=west,font=\labelfont,text=vnlink,align=left]
+    at ({\xmin+0.38},\gmid) {Global minimum\\variance portfolio};
+
+\end{tikzpicture}
+\end{document}

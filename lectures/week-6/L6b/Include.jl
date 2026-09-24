@@ -21,3 +21,8 @@ using Plots                        # frontier and wealth plots
 using JLD2                         # SIM parameter-archive loading
 using MathOptInterface             # solver status codes
 using PrettyTables                 # compact text tables
+
+using Random                        # reproducible bootstrap samples
+using Distributions                 # Gaussian residuals and interval quantiles
+using CSV                           # prior growth-parameter comparisons
+using StatsPlots                    # allocation area plots in the data companion

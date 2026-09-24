@@ -1,0 +1,114 @@
+% Vector companion to the approved L5b minimum-variance frontier.
+% Build with `make`. Drawing parameters are schematic, not fitted data.
+\documentclass[tikz,border=0pt]{standalone}
+\usepackage{fontspec}
+\IfFontExistsTF{Helvetica Neue}
+  {\setsansfont{Helvetica Neue}[BoldFont={Helvetica Neue Medium}]}
+  {\setsansfont{TeX Gyre Heros}}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing}
+\input{../../../../templates/vnflow.sty}
+
+\newcommand{\axisfont}{\sffamily\fontsize{10}{12}\selectfont}
+\newcommand{\labelfont}{\sffamily\fontsize{10}{12.5}\selectfont}
+\newcommand{\smallfont}{\sffamily\fontsize{9}{11.5}\selectfont}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily,text=vnink,
+  axis/.style={vnink!85,line width=0.65pt,
+    -{Latex[length=1.8mm,width=1.2mm]}},
+  guide/.style={vnrule,line width=0.45pt,dash pattern=on 1pt off 2.4pt},
+  point/.style={circle,minimum size=2.8mm,inner sep=0pt,line width=0.85pt}]
+
+  \path[use as bounding box] (0,0) rectangle (14.9,9.5);
+  \fill[white] (0,0) rectangle (14.9,9.5);
+
+  % The frontier uses the same hyperbola as the approved minimum-variance plot.
+  \def\xzero{2.10}
+  \def\yzero{1.35}
+  \def\xmax{14.45}
+  \def\ymax{8.87}
+  \def\smin{3.25}
+  \def\gmid{5.15}
+  \def\curvature{8.0}
+  \def\growthscale{1.18}
+  \def\endparam{2.8}
+  \def\tangentparam{1.0}
+  \def\calendx{10.10}
+
+  % Enforce tangency analytically: the CAL and frontier have equal slopes at T.
+  % For sigma(t)^2 = smin^2 + curvature*t^2 and g(t) = gmid + growthscale*t,
+  % g_f = gmid - growthscale*smin^2/(curvature*tangentparam).
+  \pgfmathsetmacro{\xmin}{\xzero+\smin}
+  \pgfmathsetmacro{\stangent}{sqrt(\smin^2+\curvature*\tangentparam^2)}
+  \pgfmathsetmacro{\xtangent}{\xzero+\stangent}
+  \pgfmathsetmacro{\gtangent}{\gmid+\growthscale*\tangentparam}
+  \pgfmathsetmacro{\gfree}{\gmid-\growthscale*\smin^2/(\curvature*\tangentparam)}
+  \pgfmathsetmacro{\calslope}{(\gtangent-\gfree)/\stangent}
+  \pgfmathsetmacro{\calendy}{\gfree+\calslope*(\calendx-\xzero)}
+
+  \fill[vnpanel] (\xzero,\yzero) rectangle (\xmax,\ymax);
+  \draw[guide] (\xzero,\gtangent) -- (\xtangent,\gtangent);
+  \draw[guide] (\xtangent,\yzero) -- (\xtangent,\gtangent);
+
+  \draw[axis] (\xzero,\yzero) -- (\xmax,\yzero);
+  \draw[axis] (\xzero,\yzero) -- (\xzero,\ymax);
+  \node[rotate=90,font=\axisfont] at (0.40,5.15)
+    {Expected growth rate, $\mathbb{E}[g]$ (yr$^{-1}$)};
+  \node[font=\axisfont] at (8.275,0.35)
+    {Growth-rate standard deviation, $\sigma_g$ (yr$^{-1}$)};
+  \node[anchor=east,font=\smallfont,text=vnmuted]
+    at ({\xzero-0.18},\gtangent) {$\mathbb{E}[g_{\mathcal{T}}]$};
+  \node[anchor=east,font=\smallfont,text=vnlink]
+    at ({\xzero-0.18},\gfree) {$g_f$};
+  \node[anchor=north,font=\smallfont,text=vnmuted]
+    at (\xtangent,{\yzero-0.19}) {$\sigma_{g,\mathcal{T}}$};
+  \draw[vnrule,line width=0.6pt]
+    ({\xzero-0.07},\gtangent) -- (\xzero,\gtangent);
+  \draw[vnrule,line width=0.6pt]
+    (\xtangent,\yzero) -- (\xtangent,{\yzero-0.07});
+
+  \draw[vnmuted,line width=1.05pt,dash pattern=on 3.5pt off 2.7pt]
+    plot[domain=0:-\endparam,samples=100,variable=\t]
+      ({\xzero+sqrt(\smin^2+\curvature*(\t)^2)},
+       {\gmid+\growthscale*\t});
+  \draw[vncarnelian,line width=1.55pt,line cap=round]
+    plot[domain=0:\endparam,samples=100,variable=\t]
+      ({\xzero+sqrt(\smin^2+\curvature*(\t)^2)},
+       {\gmid+\growthscale*\t});
+
+  % One straight CAL; the weight labels identify its lending and borrowing segments.
+  \draw[vnlink,line width=1.15pt]
+    (\xzero,\gfree) -- (\xtangent,\gtangent)
+    node[pos=0.47,sloped,above=5pt,font=\smallfont,text=vnlink]
+      {Lending: $0<w_f<1$};
+  \draw[vnlink,line width=1.15pt,-{Latex[length=2mm,width=1.4mm]}]
+    (\xtangent,\gtangent) -- (\calendx,\calendy)
+    node[pos=0.50,sloped,above=5pt,font=\smallfont,text=vnlink]
+      {Borrowing: $w_f<0$};
+
+  \node[anchor=west,font=\labelfont\bfseries,text=vnlink]
+    at (3.70,8.62) {Capital allocation line};
+  \node[anchor=west,font=\labelfont\bfseries,text=vncarnelian]
+    at (10.95,{\gmid+\growthscale*\endparam}) {Efficient frontier};
+  \node[anchor=west,font=\labelfont,text=vnmuted]
+    at (10.95,{\gmid-\growthscale*\endparam}) {Dominated branch};
+
+  \node[rectangle,minimum size=2.4mm,inner sep=0pt,fill=vnlink,draw=vnlink]
+    at (\xzero,\gfree) {};
+  \node[anchor=north west,font=\labelfont,text=vnlink]
+    at ({\xzero+0.24},{\gfree-0.16}) {Risk-free asset};
+  \node[point,fill=vnlink,draw=vnlink] at (\xmin,\gmid) {};
+  \node[anchor=west,font=\labelfont,text=vnlink,align=left,fill=vnpanel]
+    at ({\xmin+0.38},\gmid) {Global minimum\\variance portfolio};
+  \draw[vnmuted,line width=0.5pt]
+    ({\xtangent+0.15},{\gtangent-0.15}) -- (6.95,5.92);
+  \node[anchor=west,font=\labelfont,text=vnink]
+    at (6.97,5.92) {Tangent portfolio, $\mathcal{T}$};
+  \node[point,fill=vnink,draw=vnink] at (\xtangent,\gtangent) {};
+
+\end{tikzpicture}
+\end{document}
