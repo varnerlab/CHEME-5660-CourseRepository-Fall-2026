@@ -91,6 +91,49 @@ corrections: return immediately on termination and distinguish convergence from 
 iteration limit. This preference concerns pseudocode formatting and does not call
 for rewriting already accepted surrounding sections.
 
+## Voice-calibration experiment — protocol for both courses
+
+Started September 25, 2026, for CHEME 5800 and CHEME 5660, for both Codex and
+Claude. The instructor still spends hours hand-editing assistant-revised lecture
+and example notebooks in both courses. Rather than guess at his voice, the
+assistant learns it from what he actually changes.
+
+**The idea.** Before the instructor hand-edits a notebook the assistant drafted or
+revised, freeze a copy. After he finishes, diff the frozen copy against his
+version cell by cell, report the patterns in his own words, and record the
+concrete lessons in this guide. Each round adds calibration; over rounds the
+first draft should need less rework. The instructor asked on September 25 that
+this be done often, for lectures and examples in both courses.
+
+**Mechanics.**
+
+1. When the instructor says he is about to edit a notebook, or asks for a backup,
+   commit the current state first so the baseline has a commit hash. Then copy the
+   notebook to the course's calibration folder as `before.ipynb` and add a short
+   `README.md` naming the source notebook path, the commit, and the date. Commit
+   the backup. If he had already made some edits before the backup, say so in the
+   README; those belong to the baseline, not the round.
+   - CHEME 5800: `instructor/voice-calibration/<notebook-slug>/`
+   - CHEME 5660: `lectures/instructor/voice-calibration/<notebook-slug>/`
+2. When he says the round is done, dump both notebooks cell by cell and produce a
+   unified diff of cell text, plus prose word counts per cell (strip style blocks,
+   tables, images, and displays before counting). Diff any `src/` changes too.
+3. Report what he cut, reworded, reordered, added, or moved, quoting his text.
+   Lead with the structural finding, not the word count. Distinguish order and
+   framing changes from length changes; the first two rounds changed structure and
+   left length alone. Note loose ends his edit left (dangling references, typos,
+   inconsistencies) as observations for him to decide, not as fixes.
+4. Execute the edited notebook from its own folder before committing it, so a
+   broken cell is caught while the edit is fresh.
+5. Record the lessons in this guide as a dated section with quoted passages,
+   then commit the notebook, the backup, and the guide. Do not infer preferences
+   the diff does not show, and do not treat one round's choice as a rule for a
+   different kind of notebook; lectures and examples have differed.
+
+**Rounds so far.** L6a flux balance analysis lecture (CHEME 5800, lecture) and
+L6a urea-cycle example (CHEME 5800, computational example), both September 25,
+2026; their lessons are the two sections that follow.
+
 ## Lecture structure lessons from the instructor's L6a edits — September 25, 2026
 
 First round of the voice-calibration experiment. The assistant draft is the CHEME
