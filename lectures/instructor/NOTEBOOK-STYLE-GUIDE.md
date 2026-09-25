@@ -239,6 +239,94 @@ voices are now on record; do not rewrite one into the other.
 panel figure and 780 for the small schematic, and the same theme `<style>` block
 as before.
 
+## Example-notebook lessons from the instructor's L6a urea-cycle edits — September 25, 2026
+
+Second round of the voice-calibration experiment, on a computational example
+rather than a lecture. The assistant draft is the CHEME 5800 L6a urea-cycle
+example at commit `1280c5a`, backed up in that repository at
+`instructor/voice-calibration/L6a-Example-UreaCycle-FluxBalance/`. Quoted text
+is the instructor's. Prose length was unchanged (about 1,440 words both ways);
+the edits changed what the example is for and how the code reads.
+
+**An example ends at the solved, checked result.** He deleted the two analytical
+subsections that followed the flux table, "Why does the lyase capacity limit urea
+production?" (a three-balance derivation with a capacity-doubling check) and "What
+would oxygen uptake imply?" (an oxygen-balance argument with a numeric what-if).
+The interpretation that remains is one added clause on the observation: "Reaction
+`v2` reaches its upper bound, which matches the maximum export rate." The example
+now runs build, bound, solve, inspect, check, summary. Analytical extensions of a
+solved example belong elsewhere or nowhere, not after the check cell.
+
+**Example objectives and takeaways follow the lecture pattern.** Each objective is
+one sentence saying what the object is, then one action sentence: "**Construct the
+reaction model:** The reaction model holds a stoichiometric matrix that describes
+the network topology and the steady-state balances. The model includes the
+urea-cycle reactions, a nitric oxide synthase branch, and exchange reactions for
+the inputs and outputs." The takeaway labels are short claims rather than abstract
+nouns: "The network file defines the model", "Two data sources set the bounds",
+"The lyase capacity sets the export rate", each followed by two "We read...",
+"We maximized..." sentences. The closing line names concrete next moves: "We can
+now change the turnover numbers, enzyme abundance, or exchange bounds and see how
+the maximum urea export rate responds." The summary opener uses parallel verbs:
+"we built a urea-cycle flux balance model, set its bounds from thermodynamic and
+kinetic records, and solved for the maximum urea export rate."
+
+**Task prose describes the process and the data structures, with types.** The
+draft's Task 1 stated the matrix dimensions and the exchange convention. His
+version walks the pipeline: "The first step is to load the reaction network from
+the `Network.net` file and build an FBA model. The network file encodes the five
+urea cycle reactions and the exchange reactions in a simple text format. From
+this, we build a stoichiometric matrix $\mathbf{S}$, a species list, a reaction
+list, and a default flux bounds array." The model box became a question,
+"__What does the model contain?__", names the concrete type
+(`MyPrimalFluxBalanceAnalysisCalculationModel`), and lists fields with an em dash
+and the matching mathematics: "`S` — the stoichiometric matrix
+$\mathbf{S}\in\mathbb{R}^{|\mathcal{M}|\times|\mathcal{R}|}$", "`objective` — the
+coefficient vector $\mathbf{c}$ for the linear objective (initially all zeros)".
+Variables named in prose carry their Julia type:
+"`reversibility_parameter_dictionary::Dict{String, Int}`",
+"`maximum_reaction_velocity_dictionary::Dict{String, Float64}`",
+"`fluxbounds::Array{Float64,2}`", "`rd::Dict{String, String}`". He links the
+factory function and the language feature the cell uses: "We'll use [the
+`build(...)` factory method](src/Factory.jl) to construct the model from a
+`NamedTuple` of data. A [let block](...) keeps intermediate variables private —
+only `model` and `rd` are returned." The code lead-in is a bold run-in label:
+"__Build the model__: Let's load the network and construct the model:". This is the
+CHEME 5800 example register; the CHEME 5660 lecture rule of no implementation
+detail is unchanged.
+
+**Code cells are staged with labeled comments and teach the idiom.** He inserted
+stage comments ending in a dash, separated by blank lines: `# initialize -`,
+`# build the dictionary -`, `# main loop -`, `# Display the flux table -`.
+Comprehensions use `∈` rather than `in`. Trailing comments explain language
+mechanics and label data: `# this means skip to the next iteration of the loop`,
+`# reaction name string labels, e.g., "v1", "v2", ..., "b1", "b2", ...`,
+`# attach the updated bounds to the model`, and a prompt to the student on the
+dictionary comprehension: `# fancy, what is going on here?`. The one-line
+attachment `model.fluxbounds = fluxbounds;` moved into the cell with the `let`
+block that builds it, so a `let` block plus its single follow-up assignment can
+share a cell.
+
+**Tables are plain `pretty_table` text, not styled HTML.** The draft's
+`pretty_table(HTML, df; style = HtmlTableStyle(...), highlighters = ...)` with
+column widths and wrapping became
+`pretty_table(df; show_first_column_label_only = true, display_size = (-1, -1),
+alignment = [...])`, with the comment `# show every row and column`.
+
+**Checks are headed "Check:" and start with the solver status.** The heading is
+`### Check: Numerical solution`. The prose opens "Let's check that the solver
+reports an optimal solution, then check the model dimensions, ..." and the first
+test is `@test solution["termination_status"] == JuMP.MOI.OPTIMAL`. To support it
+he added `results["termination_status"]` to the solver in `src/Compute.jl` and
+its docstring. Adding a small field to local source to make a check honest is in
+scope for an example edit.
+
+**Small mechanics.** Two adjacent short paragraphs on the same point were merged
+(Step 2). A lead-in sentence naming the target variable precedes a code cell
+("The flux bounds are stored in the `fluxbounds::Array{Float64,2}` array:").
+The duplicated `___` at the end of the title cell and start of the Setup cell was
+reduced to one, directly after "Let's get started!" with no blank line.
+
 ## Slides as a note-taking companion — CHEME 5660
 
 Confirmed September 12, 2026. The instructor presents the lecture notebook while
