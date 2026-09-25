@@ -29,6 +29,32 @@ their rules to this agreement. Preserve unrelated course requirements, technical
 correctness checks, lab design, and release procedures. Current explicit user
 instructions take precedence.
 
+## No denials of unproposed misreadings — both courses, September 25, 2026
+
+The instructor called this "a very important rule" for CHEME 5800 and CHEME 5660
+text. Remove any sentence or clause of the shape: a correct statement followed by
+a denial of something no student had proposed. Examples cut from the L6a FBA
+derivation the day the rule was set:
+
+- "Transport accounts for material entering or leaving the selected system; it
+  does not create or destroy the species."
+- "The quantity $\mathcal{B}$ has units gDW; it is a mass, not a physical volume."
+- "Here, ∅ denotes the unmodeled surroundings; it does not mean that matter is
+  created from nothing."
+- "We compare dilution with a metabolic turnover rate, rather than with the
+  dimensionless number one or the net flux sum that balances dilution."
+- "They do not justify dropping transport from the material balance."
+
+Keep the correct statement and drop the denial. If the denial carries a real
+point, restate it as a plain positive claim ("Membrane transport enters through
+the flux sum, so there is no separate stream term."). A denial that names a trap
+students actually fall into, such as "constant biomass concentration in a
+chemostat does not imply zero cellular growth", is a teaching point and may
+stay; the test is whether a student would have proposed the misreading. This
+rule applies to every notebook type, including derivation companions, and to
+both Codex and Claude. Apply it when drafting, and when reviewing report each
+instance found.
+
 ## Prose density and the instructor's voice — September 24, 2026
 
 This applies to authoring and polishing notebooks across the courses covered by
@@ -388,7 +414,8 @@ and side cases were acceptable to him as written. One exception he called out
 the same day: "We compare dilution with a metabolic turnover rate, rather than
 with the dimensionless number one or the net flux sum that balances dilution."
 ("what the heck?? ... come on"). A sentence that argues against a misreading no
-student would make is not a caveat; cut it in any notebook type.
+student would make is not a caveat; cut it in any notebook type. See the rule
+"No denials of unproposed misreadings" near the top of this guide.
 
 ## Slides as a note-taking companion — CHEME 5660
 
