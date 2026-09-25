@@ -53,17 +53,14 @@
   By the end of this lecture, you should be able to:
 
   \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Formulate portfolio reward and risk}: derive expected growth
-      and variance from weighted asset growth rates in matrix form; explain
-      diversification through covariance.
-    \item \hilite{Construct minimum-variance portfolios}: derive global
-      minimum-variance weights by Lagrange multipliers, allowing shorts;
-      formulate equality/inequality growth targets, distinguish full and efficient
-      frontiers, and explain long-only constraints.
-    \item \hilite{Evaluate estimated allocations}: connect the weights to
-      their estimated inputs and compare buy-and-hold performance on prices
-      reserved for testing.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Formulate portfolio reward and risk}: derive matrix expressions
+      for expected growth and variance, and explain diversification through covariance.
+    \item \hilite{Construct minimum-variance portfolios}: compute GMV weights
+      allowing shorts, identify the efficient branch, and explain how long-only
+      constraints, exact growth targets, and growth floors affect the solution.
+    \item \hilite{Evaluate estimated allocations}: explain how estimated inputs
+      affect the weights, and evaluate wealth and NPV using prices reserved for testing.
   \end{itemize}
 \end{frame}
 
@@ -71,95 +68,109 @@
   \textbf{\ink{Lecture:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb}{Data-Driven Minimum-Variance Portfolios}
 
-  \vspace{0.9em}
+  \vspace{0.7em}
   \textbf{\ink{Example 1:}}
+  \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb}{Portfolio Weights and Dirichlet Sampling}
+
+  Draw long-only allocations, compare their estimated growth and risk, and
+  follow selected buy-and-hold portfolios.
+
+  \vspace{0.7em}
+  \textbf{\ink{Example 2:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Minimum-Variance Portfolios from Data}
 
-  How do we choose portfolio weights from historical data? We estimate
-  inputs from 2014--2024 data, solve the minimum-variance problem, trace the
-  frontier, and compare portfolios using 2025 prices.
+  Estimate inputs from 2014--2024 data and trace the frontier. Compare long-only
+  GMV, equal weights, and an index fund using 2025 prices.
 
-  \vspace{0.9em}
-  \textbf{\ink{Example 2:}}
+  \vspace{0.7em}
+  \textbf{\ink{Example 3:}}
   \href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}
 
-  How much might a chosen portfolio's wealth vary? We simulate correlated
-  prices and buy-and-hold wealth, compare with 2025 observations, and estimate
-  the probability of exceeding a target scaled net present value.
+  Simulate correlated prices and buy-and-hold wealth; estimate the probability
+  of exceeding a target scaled NPV.
 \end{frame}
 
 % ==== concept review =========================================
-\begin{frame}{Concept Review: Multiple Asset GBM}
-  Recall the multiple asset geometric Brownian motion model from L5b.
-  With constant parameters, the price of asset $i=1,\ldots,M$ advances by:
+\begin{frame}{Concept Review: Portfolio Weights}
+  How much of our money should we put into each asset? For $M$ assets,
+  $w_i$ is the fraction of initial wealth invested in asset $i$:
   \[
-    S_i(t+\Delta t)=S_i(t)\exp\!\left[
-      \mu_{g,i}\Delta t+\sqrt{\Delta t}\,(\bA\bZ)_i\right].
-  \]
-
-  Here, $\Delta t>0$ is measured in years, and:
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item $\mu_{g,i}$ is the asset's \hilite{mean growth rate}
-      (year$^{-1}$).
-    \item The loading matrix satisfies $\bA\bA^{\top}=\bC$, where
-      $\bC$ is the \hilite{covariance rate} (year$^{-1}$).
-    \item Use the same vector $\bZ\sim\mathcal N(\mathbf 0,\mathbf I_M)$
-      for all assets in a step; draw a new independent vector at each step.
-  \end{itemize}
-  \vspace{0.5em}
-  We estimate the mean growth rates and covariance rate from historical
-  growth observations.
-\end{frame}
-
-\begin{frame}{Concept Review: Estimating Covariance}
-  From $N\ge2$ aligned growth-rate observations, $\bg'$ estimates the mean
-  vector $\boldsymbol{\mu}_g$. Subtract each asset's sample mean to form
-  $\tilde{\mathbf G}\in\mathbb R^{N\times M}$.
-
-  Recall $\Sig=\bC/\Delta t$. The corresponding estimates are:
-  \[
-    \boxed{\Sg=\frac{\tilde{\mathbf G}^{\top}\tilde{\mathbf G}}{N-1}},
+    \underbrace{\bw=[w_1,\ldots,w_M]^{\top}}_{\text{mix of assets}},
     \qquad
-    \boxed{\Ch=\Delta t\,\Sg}.
+    \underbrace{w_i\ge0}_{\text{long only}},
+    \qquad
+    \underbrace{\sum_{i=1}^{M}w_i=1}_{\text{fully invested}}.
   \]
 
-  These estimates have different roles:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item Use $\Sg$ to calculate portfolio growth-rate variance
-      (year$^{-2}$) and $\Ch$ to simulate prices
-      (covariance rate: year$^{-1}$).
-    \item The sample covariance is positive semidefinite, so variances are
-      nonnegative. Today's closed-form weights require a positive-definite estimate.
+  These constraints define the \hilite{allocation simplex}:
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item Two assets give a line segment; three assets give a triangle.
+    \item Each corner invests the entire budget in one asset. Equal weights
+      lie at the center.
+    \item With initial wealth $W_0>0$, invest $w_iW_0$ dollars in asset $i$.
+      Holding the purchased shares fixed allows the weights to change with prices.
   \end{itemize}
-  \slidenote{L5b example:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Example-CovarianceMatrix-Fall-2026.ipynb}{Covariance and Correlation from Data}. Continue here if unfinished.}
+
+  \vspace{0.5em}
+  We first sample feasible allocations, then develop an optimization problem
+  to choose the weights.
 \end{frame}
 
-\begin{frame}{Concept Review: Wealth and Scaled NPV}
-  Initial weights $w_i\ge0$, with $\sum_iw_i=1$, divide wealth $W_0>0$
-  among the assets. Buy $n_i=w_iW_0/S_i(0)$ shares and hold them fixed:
+\begin{frame}{Concept Review: Dirichlet Sampling}
+  The \href{https://juliastats.org/Distributions.jl/stable/multivariate/\#Distributions.Dirichlet}{Dirichlet distribution}
+  generates fully invested, long-only allocations.
+  Draw $\bw\sim\operatorname{Dirichlet}(\boldsymbol{\alpha})$, with
+  dimensionless $\alpha_i>0$ and $\alpha_0=\sum_i\alpha_i$.
+  Each weight has:
   \[
-    \begin{aligned}
-      W_t&=W_0\sum_{i=1}^{M}w_i\frac{S_i(t)}{S_i(0)},\\[0.3em]
-      \rho_T&=\frac{W_T}{W_0}e^{-g_yT}-1.
-    \end{aligned}
+    \boxed{\E[w_i]=\frac{\alpha_i}{\alpha_0}},
+    \qquad
+    \boxed{\Var(w_i)=\frac{\alpha_i(\alpha_0-\alpha_i)}
+      {\alpha_0^2(\alpha_0+1)}}.
   \]
-  Here, $g_y$ is the constant benchmark growth rate and $T$ is the holding
-  period in years. We allow fractional shares and omit dividends and trading costs.
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item The ratios $\alpha_i/\alpha_0$ set the expected weights; larger
+      $\alpha_0$ at fixed ratios reduces their spread across draws.
+    \item With equal $\alpha_i=\alpha$: $\alpha<1$ favors the boundary,
+      $\alpha=1$ samples uniformly, and large $\alpha$ clusters draws near equal weights.
+  \end{itemize}
+
+  Finding the minimum variance over all feasible weights requires optimization.
+  \slidenote{Example 1:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb}{Portfolio Weights and Dirichlet Sampling}}
+\end{frame}
+
+% ==== company profile ========================================
+\begin{frame}{Company Profile: AllianceBernstein}
+  \href{https://www.alliancebernstein.com/corporate/en/home/about-us.html}{AllianceBernstein}
+  manages investments for institutional and individual clients.
 
   \vspace{0.4em}
-  Simulated wealth outcomes estimate $\Pmeasure(\rho_T>\rho_\star)$ for a
-  target scaled NPV $\rho_\star$.
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Investment management}: equity, fixed-income, and multi-asset
+      strategies, supported by quantitative research and data science.
+    \item \hilite{Managing risk}: the
+      \href{https://www.alliancebernstein.com/us/en-us/investments/products/etf/equities/ab-international-low-volatility-equity-etf.html}{AB International Low Volatility Equity ETF}
+      combines quantitative and fundamental research, emphasizing risk mitigation.
+    \item \hilite{Artificial intelligence}:
+      \href{https://www.linkedin.com/in/andrewchin17/}{Andrew Chin}, Chief Artificial
+      Intelligence Officer and Cornell alumnus, leads the firm's AI strategy.
+      I know Andrew through the
+      \href{https://ecornell.cornell.edu/certificates/ai/ai-in-finance/}{AI in Finance short course}.
+  \end{itemize}
 
-  \vspace{0.4em}
-  L5b sampled candidate allocations. Today, we minimize variance for a
-  required expected growth rate.
+  \vspace{0.5em}
+  Today's connection: how should we choose portfolio weights to balance
+  expected growth and risk?
+  \slidenote{Explore:}{\href{https://www.alliancebernstein.com/corporate/en/careers/students.html}{Student opportunities}
+    \quad\href{https://cornell-keynotes.simplecast.com/episodes/ai-in-finance-a-partner-not-a-replacement-uylbuylr-MfXqBdm4}{Cornell Keynotes conversation with Andrew Chin}}
 \end{frame}
 
 % ==== MPT ====================================================
 \begin{frame}{Modern Portfolio Theory: Portfolio Reward}
   For $M$ risky assets, $w_i$ is the initial fraction invested in asset $i$,
   with $\sum_iw_i=1$. Hold the weights fixed when calculating reward and risk.
-  The model uses weighted growth rates over one observation interval:
+  Let $\bg=[g_1,\ldots,g_M]^{\top}$ contain the asset growth rates over
+  one observation interval. Their weighted average is:
   \[
     g_p=\sum_{i=1}^{M}w_i g_i=\bw^{\top}\bg.
   \]
@@ -169,7 +180,8 @@
     \boxed{\E[g_p]=\sum_{i=1}^{M}w_i\E[g_i]
       =\bw^{\top}\boldsymbol{\mu}_g}.
   \]
-  From data, $\bw^{\top}\bg'$ estimates expected growth (year$^{-1}$).
+  The sample-mean vector $\bg'$ estimates $\boldsymbol{\mu}_g$.
+  Estimated reward is $\bw^{\top}\bg'$ (year$^{-1}$).
 
   \vspace{0.5em}
   Expected growth is linear in the portfolio weights.
@@ -227,7 +239,7 @@
   standard deviations $\sigma_{g,1}$ and $\sigma_{g,2}$ and correlation $\rho_{12}$:
   \[
     \Var(g_p)=w^2\sigma_{g,1}^2+(1-w)^2\sigma_{g,2}^2
-      +2w(1-w)\rho_{12}\sigma_{g,1}\sigma_{g,2}.
+      +2w(1-w)\underbrace{\rho_{12}\sigma_{g,1}\sigma_{g,2}}_{\Cov(g_1,g_2)}.
   \]
 
   Correlation determines what mixing achieves:
@@ -277,7 +289,7 @@
     \begin{aligned}
       \sigma_{g,p}&=\sqrt{\bw^{\top}\Sig\bw}
         &&\text{(year$^{-1}$)},\\[0.5em]
-      \text{Volatility}&=\sqrt{\bw^{\top}\bC\bw}
+      \text{GBM volatility}&=\sqrt{\bw^{\top}\bC\bw}
         =\sqrt{\Delta t}\,\sigma_{g,p}
         &&\text{(year$^{-1/2}$)}.
     \end{aligned}
@@ -461,7 +473,7 @@
 
   \vspace{0.4em}
   Let's estimate the inputs, sweep the target, and inspect how the weights change.
-  \slidenote{Example 1:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Minimum-Variance Portfolios from Data}}
+  \slidenote{Example 2:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb}{Minimum-Variance Portfolios from Data}}
 \end{frame}
 
 % ==== risk-free asset ========================================
@@ -484,9 +496,30 @@
   alongside equal weights and an index fund.
 
   \vspace{0.5em}
-  \slidenote{Example 2:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}.
+  \slidenote{Example 3:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}.
     Hold the fitted inputs and allocation fixed; simulate buy-and-hold wealth
     and estimate the probability of exceeding a target scaled NPV.}
+\end{frame}
+
+\begin{frame}{Portfolio Wealth and Scaled NPV}
+  Initial weights $w_i\ge0$, with $\sum_iw_i=1$, divide wealth $W_0>0$
+  among the assets. Buy $n_i=w_iW_0/S_i(0)$ shares and hold them fixed:
+  \[
+    \begin{aligned}
+      W_t&=W_0\sum_{i=1}^{M}w_i\frac{S_i(t)}{S_i(0)},\\[0.3em]
+      \rho_T&=\frac{W_T}{W_0}e^{-g_yT}-1.
+    \end{aligned}
+  \]
+  Here, $g_y$ is the constant benchmark growth rate and $T$ is the holding
+  period in years. We allow fractional shares and omit dividends and trading costs.
+
+  \vspace{0.4em}
+  Simulated wealth outcomes estimate $\Pmeasure(\rho_T>\rho_\star)$ for a
+  target scaled NPV $\rho_\star$.
+
+  \vspace{0.4em}
+  The optimized weights set the initial holdings; wealth and NPV measure
+  how the resulting investment performs through time.
 \end{frame}
 
 % ==== optional advanced material =============================

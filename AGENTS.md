@@ -307,6 +307,33 @@
   This was a targeted wording pass; existing section reviews and scores remain
   closed and refer to their recorded snapshots.
 
+## Completed L6a minimum-variance lecture review
+
+- The L6a data-driven minimum-variance lecture was marked reviewed and complete
+  by the instructor September 24, 2026, with a final editorial score of 9.1/10.
+  The [saved review record](lectures/instructor/L6a-LECTURE-REVIEW-HANDOFF.md)
+  records the density pass, short-position development, complete GMV derivation
+  companion, visual-first frontier, defined and annotated theorem-style boxes,
+  long-only growth floor, wealth/NPV closing, and final checks. The instructor
+  subsequently reconfirmed completion after the Dirichlet review, local sampling
+  example, AllianceBernstein profile, and boxed-result follow-up edits; the saved
+  record identifies that final snapshot. No proposals remain
+  pending; do not restart approved lecture sections unless another round is
+  requested. The minimum-variance data example has its own review.
+- On September 25, 2026, the instructor requested a density and flow round
+  (independent rating 8.5/10, final 9.0/10). The approved edits rebuilt the
+  Estimated Inputs opening and Objective 3, fixed the frontier figure's
+  attainable-region wording, moved the negative-weight example ahead of the
+  GMV box, tightened transitions and redefinitions, and condensed the log-return
+  and GBM-volatility material into a short note. The portfolio problem stays in
+  the growth-rate covariance; self-contained box Setups were kept. The same handoff records the edits, checks, deferred items, and
+  needed deck changes; the instructor has not yet separately marked it complete.
+- A follow-up polish round the same day (independent rating 8.9/10, final
+  9.2/10) removed nine clause semicolons, replaced the lecture's package-doc
+  Dirichlet link, linked the held-out 2025 wealth comparison in Estimated Inputs,
+  and fixed the Concept Review closer and reward-display spacing. The same
+  handoff records the edits, declined suggestions, and one deck-sync item.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned

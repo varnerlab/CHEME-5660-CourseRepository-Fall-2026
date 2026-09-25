@@ -384,7 +384,11 @@ figure, cutting the "does not imply" caveats, presenting the main result in a
 titled labeled box, removing the cell-free and reactor-operation extensions, and
 splitting a three-subsection cell. Do not apply the lecture and example lessons
 to a derivation companion without asking; its prose-and-equation form, caveats,
-and side cases were acceptable to him as written.
+and side cases were acceptable to him as written. One exception he called out
+the same day: "We compare dilution with a metabolic turnover rate, rather than
+with the dimensionless number one or the net flux sum that balances dilution."
+("what the heck?? ... come on"). A sentence that argues against a misreading no
+student would make is not a caveat; cut it in any notebook type.
 
 ## Slides as a note-taking companion — CHEME 5660
 
