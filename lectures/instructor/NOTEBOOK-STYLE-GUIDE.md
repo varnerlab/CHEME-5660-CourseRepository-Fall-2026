@@ -370,6 +370,22 @@ scope for an example edit.
 The duplicated `___` at the end of the title cell and start of the Setup cell was
 reduced to one, directly after "Let's get started!" with no blank line.
 
+## Derivation companions are judged differently — September 25, 2026
+
+After the two L6a rounds, the assistant reviewed the L6a FBA derivation companion
+against those lessons and listed seven issues. The instructor said "This is a
+derivation notebook, so maybe diff rules" and took only two as actionable:
+objectives and takeaways in his current register (definition sentence plus
+"We'll" sentence; short claim labels with two "We" sentences), and small fixes
+(a stream-set symbol that differed from the stoichiometric matrix only in font,
+a title that overclaimed, and "advanced lecture" where the lecture says
+"companion derivation"). He set aside, for this derivation notebook: adding a
+figure, cutting the "does not imply" caveats, presenting the main result in a
+titled labeled box, removing the cell-free and reactor-operation extensions, and
+splitting a three-subsection cell. Do not apply the lecture and example lessons
+to a derivation companion without asking; its prose-and-equation form, caveats,
+and side cases were acceptable to him as written.
+
 ## Slides as a note-taking companion — CHEME 5660
 
 Confirmed September 12, 2026. The instructor presents the lecture notebook while
