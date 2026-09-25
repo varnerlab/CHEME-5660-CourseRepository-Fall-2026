@@ -29,6 +29,216 @@ their rules to this agreement. Preserve unrelated course requirements, technical
 correctness checks, lab design, and release procedures. Current explicit user
 instructions take precedence.
 
+## Prose density and the instructor's voice — September 24, 2026
+
+This applies to authoring and polishing notebooks across the courses covered by
+this guide. The instructor explained that repeated assistant passes still leave
+hours of manual tightening. In the L6a comparison, he preferred the sharper, less
+text-heavy 2025 presentation while explicitly valuing the new 2026 mathematics.
+Treat that feedback as evidence that the editorial standard needs adjustment,
+not as a request for another round of minor wording substitutions.
+
+- Judge the whole section and its rendered reading burden. Individually useful
+  sentences can accumulate into excessive explanation. Correctness and completeness
+  alone do not establish that a notebook matches the instructor's voice.
+- Let equations, annotated derivations, matrices, and figures carry their share of
+  the explanation. Use prose to motivate, define, connect, and interpret; avoid
+  routinely announcing a result, showing it, restating it, and summarizing it again.
+- Keep complete, natural sentences and the reasoning students need. Tighten repeated
+  definitions, obvious-step narration, and transitions that merely repeat headings.
+  Preserve new topics and essential mathematical steps while reducing their prose
+  overhead. A substantial reduction can be appropriate when the section is overgrown;
+  neither a fixed reduction percentage nor a universal limit to small edits applies.
+- Compare matched topics with the instructor's reference before expanding a draft.
+  Inspect prose between displays, dense inline notation, and visible paragraph length
+  at comparable text widths. Word counts help diagnose density; they are not quotas.
+- Calibrate one representative section early, then carry the accepted density and
+  presentation into subsequent work. Do not defer this comparison until a high
+  final score has been assigned. Distinguish an approved general preference from
+  a newly drafted passage the instructor has not yet evaluated.
+- When an instructor-revised version is available, examine the actual changes and
+  record concrete lessons here. Do not infer edit authorship or invent preferences.
+  Repeated manual rework is a reason to revisit the approach, not to defend earlier
+  assistant scores or shift the problem to classroom pacing.
+
+This refines the earlier preservation guidance: preserve the teaching substance,
+not every sentence surrounding it. Historical approvals remain closed unless the
+instructor requests another pass. The instructor approved the tightened
+[L6a Portfolio Risk passage](../week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb)
+on September 24 as the first density calibration: approximately 470 to 270 prose
+words, retaining the mathematical development and two-asset example while making
+the standard-deviation and volatility formulas separate displays. Use its balance
+of prose and mathematics as a reference across courses, not as a word-count target.
+On September 25 the instructor approved condensing that passage's closing: the
+log-return box and separate GBM-volatility display became a three-sentence note on
+conventions. The stated reason was that the lecture never uses log returns or the
+covariance rate again, and its examples convert to volatility themselves. The
+standard-deviation display and two-asset example remain the reference.
+
+## Algorithm pseudocode formatting — September 25, 2026
+
+The instructor explicitly requested the 2025 pseudocode formatting across algorithm
+notebooks. Inspect the corresponding 2025 algorithm before editing. Preserve its
+bold initialization label, explicit loop line, ordered algorithm steps, and indented
+conditional branches with bold control words such as `do` and `then`. Keep distinct
+operations, such as updating the solution and incrementing the counter, as separate
+steps when the reference does. Preserve the method-specific recursive or loop
+structure; do not flatten it into a generic “Repeat” list during a correctness pass.
+
+The CHEME 5800 Fall 2025 L6c Jacobi, Gauss–Seidel, and SOR notebooks provide the
+iterative-solver examples of this format. Retain current mathematical and stopping
+corrections: return immediately on termination and distinguish convergence from an
+iteration limit. This preference concerns pseudocode formatting and does not call
+for rewriting already accepted surrounding sections.
+
+## Lecture structure lessons from the instructor's L6a edits — September 25, 2026
+
+First round of the voice-calibration experiment. The assistant draft is the CHEME
+5800 L6a flux balance analysis lecture at commit `9c4c05a`, backed up in that
+repository at `instructor/voice-calibration/L6a-Lecture-FluxBalanceAnalysis/`.
+The instructor edited the notebook by hand the same morning. The lessons below
+come from that diff; quoted text is his. Do not extend them to preferences the
+diff does not show.
+
+The rework was about order, framing, and figures, not length. Body prose stayed
+near 1650 words in both versions; total prose rose from about 2050 to 2250 because
+the objectives and takeaways grew. Two figures were added.
+
+**Order: build the pieces, then assemble the problem.** The draft went
+stoichiometric matrix, linear program, then bounds as a separate H2. He made
+`## Flux Balance Analysis` the single main section with H3 subsections in this
+order: `### Stoichiometric Matrix`, `### A Model for Flux Bounds`,
+`### Linear Programming Formulation`. The formulation comes last because it uses
+both pieces. The example callout follows the assembled problem box
+("Let's consider an example to illustrate the FBA problem and its solution.") and
+the `___` closes the H2 after the callout. One markdown cell per H3.
+
+**Open a main section with a definition and a figure, not a verbal preview.** The
+draft opened FBA with two paragraphs explaining steady-state balances, bounds, and
+the objective in words. He replaced them with two defining sentences ("FBA uses
+linear programming to find the flux distribution (reaction rates) that optimizes a
+chosen objective function, subject to stoichiometric and capacity constraints, at a
+__pseudo-steady state__."), a linear-program geometry figure (null space, bounds
+polytope, optimal edge, flux variability bracket), a caption paragraph opened by a
+bold run-in label ("__Conservation, bounds, and alternate optima.__ The balance
+equations define the null space..."), an attribution line ("Adapted from the
+[Varner lab chapter's linear-program geometry figure](...)"), and a roadmap
+sentence ("Let's look at the different components of the FBA problem and how they
+are formulated, starting with the stoichiometric matrix."). He is comfortable
+naming advanced ideas in an overview as forward references without developing them
+(null space, flux variability analysis, "the convex decomposition of the
+stoichiometric array").
+
+**A toy worked example gets its own H4 and a picture.** He added
+`#### Example: Stoichiometric Column` and a control-volume figure (dashed boundary,
+∅ for the surroundings) before the column display, then used the figure's vocabulary
+in the prose that follows ("A positive flux brings $A$ into the control volume").
+The exchange example changed from exporting the product $C$ to importing the
+reactant $A$, so uptake is the case shown. The section on data sources lost its
+own H3; the resource table survived inside the stoichiometric-matrix subsection
+behind a one-sentence definition of a metabolic reconstruction, while the
+catabolism/anabolism and compartment paragraphs were cut.
+
+**Motivate from the general biology to the field, and name the field before its
+box.** The draft opened with the sharing-of-metabolites argument and, after the
+figure, an inventory of branch points. He replaced both: "Metabolic pathways encode
+the enzyme catalyzed reactions that convert nutrients into biomass and energy in
+living cells. There is an amazing diversity of metabolic pathways in different
+organisms, but also some highly conserved pathways that are shared across many
+species, such as __central metabolism__ (glycolysis, the pentose phosphate pathway,
+and the TCA cycle)." After the figure: "These are the reaction networks that we
+need to manipulate in order to produce a desired compound. The systematic study and
+analysis of these networks is called __metabolic engineering__." The section closes
+on a one-sentence paragraph that names the tool: "Flux balance analysis (FBA) is a
+quantitative tool that provides a way to answer these questions."
+
+**Restate definitions in plain words with the vocabulary in bold.** The definition
+bullets became "$\sigma_{ij}>0$: species $i$ is __produced__ by the reaction $j$,
+i.e., species $i$ is a __product__ of reaction $j$." Jargon gets a parenthetical
+gloss on first use: "reaction rates (called fluxes)", "chemical species
+(metabolites)", "estimates (optimal) metabolic reaction rates (fluxes)". Inside the
+problem box he bolded the words that carry the idea: "A __feasible__ flux
+distribution satisfies the balances and bounds. The objective selects an
+__optimal__ distribution from the set of feasible distributions. However, the
+optimal solution may __not be unique__." He also added the practical remark the
+draft lacked: "The sign convention does not affect the FBA solution, but it does
+affect the interpretation of the fluxes."
+
+**Parameter models: display, then "where", with dimension words in backticks.**
+Directly under the bounds display, with no blank line: "where $V_{max,j}^{\circ}$
+denotes the maximum reaction velocity (units: `flux`) computed at some
+_characteristic enzyme abundance_. Thus, the maximum reaction velocity is given
+by:" and, after that display, "where $k_{cat,j}$ is the catalytic constant or
+turnover number for the enzyme (units: `1/time`) and $e^{\circ}$ is a
+characteristic enzyme abundance (units: `concentration`)." The full quantity table
+stays as well: the prose defines the symbols the reader needs to follow the
+argument, the table is the reference. Approximate-to-one assumptions are written
+with $\sim$: "Let's initially assume that $(e/e^{\circ})\sim{1}$, there are no
+allosteric inputs $\theta_{j}\left(\dots\right)\sim{1}$, and the substrates are
+saturating $f_{j}\left(\dots\right)\sim{1}$." The simplified model closes with an
+interpretation, not a procedure: "This is a simple model for the flux bounds. It is
+easy to see that the flux bounds are a function of the maximum reaction velocity,
+the catalytic constant or turnover number, and our assumed value of a
+characteristic enzyme abundance." He cut "To set these simplified bounds for each
+enzyme-catalyzed reaction, we need estimates of..." and "Not every bound affects
+the optimum."
+
+**The central problem statement is boxed and its constraints are labeled.** The
+display is wrapped in `\boxed{...}`, the decision variables are enumerated in the
+subscript ($\hat{v}_1,\hat{v}_2,\ldots,\hat{v}_{|\mathcal{R}|}$ rather than
+$\hat{\mathbf{v}}$), and each constraint line ends with
+`\quad\text{(material balance constraints)}` or
+`\quad\text{(thermodynamics and kinetic constraints)}`. The box title names the
+object, "Flux balance analysis (FBA) problem", not "as a linear program". The
+lead-in stays: "Under these assumptions, the __flux balance analysis problem__ is
+given by:".
+
+**Framings he reached for.** "Integrative" appears three times: "the flux bounds
+are _integrative_, i.e., these constraints integrate many types of genetic and
+biochemical information into the problem", again in the example description, and
+in the takeaways. The example description gained a generalization sentence: "While
+this example is specific to the urea cycle, the same approach can be applied to any
+metabolic network." Hedges were removed: "it does not establish how the cell
+actually operates" and the closing "An optimal flux distribution tells us what the
+model allows under the conditions we specify" became "Flux balance analysis is a
+powerful tool for metabolic engineering, allowing us to predict how changes in the
+metabolic network can affect the production of desired compounds."
+
+**Cuts that carried no replacement.** The steady-state display
+$\mathbf{S}\hat{\mathbf{v}}=\mathbf{0}$ and its three sentences left the
+stoichiometric-matrix subsection; the balance now appears only in the problem box.
+The question opener "How does material enter or leave the network?" went. The
+bounds motivation paragraph ("The material balances require reaction rates to be
+consistent with one another, but they do not specify how fast an enzyme can
+operate...") went. "We fix all of these quantities before solving, so each bound is
+a number and the problem remains a linear program" went. The urea objective-sign
+paragraph with the Orth and Heirendt references was parked in an HTML comment
+rather than deleted. The L5c link became "the minimum-cost flow problem we explored
+previously" with no link. He confirmed the reason on September 25: weekly releases
+ship one week's folder, so a relative link into another week's notebook is broken
+for students. In lecture prose, refer to earlier weeks' material in words; link
+only files that ship in the same weekly release.
+
+**Objectives and takeaways.** Each objective became one sentence saying what the
+object is, then one "We'll" sentence: "__Represent a metabolic reaction network as
+a stoichiometric matrix:__ The stoichiometric matrix is the digital representation
+of the reaction biochemistry occurring inside a cell. We'll construct a
+stoichiometric matrix from biochemical reactions and interpret its rows, columns,
+and coefficient signs." The labels are longer and more specific than the draft's.
+The title cell ends with the example preview and the exclamation in one paragraph:
+"We'll demonstrate these concepts with an example, where we estimate the metabolic
+fluxes in the urea cycle of a mammalian liver cell. Let's get started!" The
+takeaways are concept statements of two to four sentences ("The stoichiometric
+matrix is a mathematical representation of the metabolic network, where each row
+corresponds to a metabolite and each column corresponds to a reaction...") rather
+than the "We derived..." retrospective approved for L4a on September 10. Both
+voices are now on record; do not rewrite one into the other.
+
+**Figure HTML.** New figures sit in `<p align="center">` with
+`style="max-width:100%; height:auto;"` on the image, widths 1100 for a full-width
+panel figure and 780 for the small schematic, and the same theme `<style>` block
+as before.
+
 ## Slides as a note-taking companion — CHEME 5660
 
 Confirmed September 12, 2026. The instructor presents the lecture notebook while
@@ -148,8 +358,9 @@ limitation rather than asking the instructor to repeat the style discussion.
   instructor endorsed the conversational voice but found parts of the revised
   N-ary section too wordy. However, the subsequent pass removing roughly one third
   of its prose was explicitly rejected as too large a cut and was reverted.
-  Keep the fuller version as the baseline. Any future tightening should be modest,
-  localized sentence edits, not a section-wide reduction target. Preserve the
+  Keep the fuller N-ary version as that notebook's baseline. That rejection is
+  specific to the N-ary revision, not a general prohibition on substantial tightening
+  of overgrown prose; follow the September 24 density guidance above. Preserve the
   worked examples, mathematical steps, and explanatory pacing; keeping equations
   intact alone does not mean that the teaching explanation has been preserved.
 - Use direct, accessible sentences. “Suppose,” “Let's,” and questions such as “Why
@@ -172,6 +383,25 @@ limitation rather than asking the instructor to repeat the style discussion.
   teaching role. Prepare the reader and connect formal results with prose. Do not
   collect motivation, assumptions, derivation, every edge case, implementation
   advice, and interpretation into one block merely to make it self-contained.
+- Treat result blockquotes as “lite theorems”: include the mathematical setup,
+  assumptions, result, and a short derivation sketch when useful. Keep the lead-in
+  brief instead of accumulating the setup in dense paragraphs before the box.
+  A linked derivation companion can carry the full calculation. The instructor
+  requested this organization for the L6a GMV passage on September 24, 2026.
+  “Lite” means offloading the full proof, not omitting definitions. Within each
+  box, identify what we solve for, define every mathematical quantity used, and
+  distinguish supplied inputs from unknowns and computed shorthand coefficients.
+  Retain relevant dimensions and units. Use equation labels and selective
+  annotations to explain the objective, constraints, and result. In multiline
+  displays, place brief explanations to the right using `\quad\text{...}` or an
+  aligned text column. Use underbraces when identifying a particular term helps;
+  not every annotation needs an underbrace. Choose the placement that makes the
+  reasoning easiest to follow without crowding the equation.
+- For geometric explanations, begin with the figure and its interpretation before
+  developing the mathematics. Connect to visual ideas already encountered in
+  earlier lectures. In L6a, the instructor requested the frontier figure first,
+  recalling the random-weight comparisons in L5b; distinguish those long-only
+  samples from the short-allowed frontier developed here.
 - Retain intermediate algebra that helps students learn. A formal statement may
   precede or follow a derivation according to the lesson; there is no universal
   requirement that every section follow an identical sequence.
@@ -346,7 +576,7 @@ Approved descriptions from the 2026 L4a lecture:
 Approved September 10, 2026 when beginning the L4a cumulative-probability example
 review. Extend this shared guide for examples; do not create a separate voice or
 competing style memory. The same teaching voice, current course notation,
-formatting, three objectives, three retrospective takeaways, and modest tightening
+formatting, three objectives, three retrospective takeaways, and prose-density guidance
 apply to lecture, example, and advanced-example notebooks.
 
 - Introduce the problem before the computation: what we want to calculate, why
