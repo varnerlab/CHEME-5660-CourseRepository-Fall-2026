@@ -334,6 +334,22 @@
   and fixed the Concept Review closer and reward-display spacing. The same
   handoff records the edits, declined suggestions, and one deck-sync item.
 
+## Completed L6a multiple-asset GBM example polish
+
+- The instructor marked the L6a multiple-asset GBM portfolio example polish
+  complete September 26, 2026 (initial rating 8.2/10, final 9.0/10). The
+  [saved review record](lectures/instructor/L6a-MAGBM-REVIEW-HANDOFF.md)
+  records the four accepted steps: links to other weeks became references in
+  words; Task 1 was tightened and reordered to build the pieces, then the model;
+  Tasks 2 and 3 now recall the GMV problem and portfolio NPV from the L6a lecture,
+  add `__What do we see?__` readings and types, and cut denials of unproposed
+  misreadings. Task prose went from 3,008 to 2,282 words. It also records the
+  Codex checks and accuracy fixes, and the saved snapshot. No proposals remain
+  pending; do not restart approved sections unless another round is requested.
+  Setup, Data, and Constants were not part of this round. Show future proposals
+  as rendered before/after PNGs; the instructor found terminal markdown hard to
+  read.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned

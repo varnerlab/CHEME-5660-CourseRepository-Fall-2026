@@ -55,6 +55,18 @@ rule applies to every notebook type, including derivation companions, and to
 both Codex and Claude. Apply it when drafting, and when reviewing report each
 instance found.
 
+## Links into other weeks — both courses, September 25, 2026
+
+Each weekly student bundle ships one week's folder, so a relative link into
+another week's notebook does not work for students. The instructor set this for
+CHEME 5800 lectures and confirmed it for CHEME 5660 during the L6a MAGBM example
+polish: "this will be in the Week-06 bundle, so links to week-5 will NOT work."
+Refer to other weeks' notebooks in words ("the L4b trade rule", "the
+out-of-sample example in L5a") and link only files in the same week's folder.
+This applies to lecture and example notebooks. An earlier Week 5 release note
+describes cross-week links rewritten to the tagged GitHub repository; follow
+this rule rather than relying on that rewrite.
+
 ## Prose density and the instructor's voice — September 24, 2026
 
 This applies to authoring and polishing notebooks across the courses covered by
