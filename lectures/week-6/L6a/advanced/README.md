@@ -19,7 +19,7 @@ follows the risk-free portfolio material in L6b. None is a prerequisite for L6a.
   attributes the tangent portfolio's instability to the mean growth rates, and
   pushes every resampled portfolio through 2025.
 
-The geometry notebook is about what the optimizer can reach; the estimation
-notebook is about how much of that reach survives re-estimation. Begin with
-frontier geometry; return to estimation risk after the risk-free portfolio
-material in L6b.
+The geometry notebook is about what the optimizer can reach, and the estimation
+notebook is about how much of that reach survives re-estimation. Begin with the
+GMV derivation, then frontier geometry. Return to estimation risk after the
+risk-free portfolio material in L6b.

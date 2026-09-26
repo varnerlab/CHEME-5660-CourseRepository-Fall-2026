@@ -350,6 +350,21 @@
   as rendered before/after PNGs; the instructor found terminal markdown hard to
   read.
 
+## Completed L6a GMV derivation companion review
+
+- The instructor accepted a review of the L6a
+  [GMV derivation companion](lectures/week-6/L6a/advanced/gmv-derivation/CHEME-5660-L6a-Derivation-GMV-Fall-2026.ipynb)
+  on September 26, 2026, and marked it complete. The derivation matched the
+  lecture's GMV-1 to GMV-3 boxes and was correct. The accepted fixes: weights
+  defined as fractions of the initial investment (not "dollar weights"),
+  positivity of the normalizing denominator argued from the positive-definite
+  inverse where λ is solved, the standard-deviation sentence placed beside the
+  boxed variance, a lead sentence that no longer names the multiplier before it
+  is introduced, and the minimum variance stated in the third takeaway. The kept
+  "does not change the minimizing weights" note on the factor of one half matches
+  the lecture and answers a real student question. The advanced README now
+  recommends the GMV derivation first.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned
