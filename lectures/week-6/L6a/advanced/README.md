@@ -8,11 +8,11 @@ follows the risk-free portfolio material in L6b. None is a prerequisite for L6a.
   gives the full Lagrange-multiplier derivation of the short-allowed GMV weights
   and minimum variance, extending the lecture's brief calculation.
 - [`frontier-geometry/CHEME-5660-L6a-Advanced-FrontierGeometry-Fall-2026.ipynb`](frontier-geometry/CHEME-5660-L6a-Advanced-FrontierGeometry-Fall-2026.ipynb)
-  derives the closed-form frontier for every target growth rate, checks it
-  against a numerical solver, shows that every unconstrained frontier portfolio
-  is a combination of two fixed frontier portfolios (the two-fund theorem), and
-  measures what a short-sale limit and a long-only constraint cost in variance
-  for this dataset.
+  derives the closed-form frontier for every target growth rate and checks it
+  against a numerical solver. It shows that every unconstrained frontier
+  portfolio combines two fixed frontier portfolios (the two-fund theorem). It
+  measures what a position cap and a long-only constraint cost in risk for this
+  dataset.
 - [`../../L6b/advanced/estimation-risk/CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb`](../../L6b/advanced/estimation-risk/CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb)
   resamples the 2014 to 2024 growth rates to measure how far the frontier, the
   minimum-variance weights, and the tangent weights move under sampling error,

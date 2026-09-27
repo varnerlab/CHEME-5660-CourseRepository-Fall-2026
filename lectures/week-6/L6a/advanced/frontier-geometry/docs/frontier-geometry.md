@@ -54,20 +54,3 @@ feasible model, or `nothing` otherwise. An infeasible target is one possible
 reason for `nothing`. Budget, growth, and bound constraints hold to solver
 tolerance. The caller supplies finite, dimensionally consistent inputs;
 infinite weight bounds are allowed.
-
-## interpolate_frontier_risk
-
-```julia
-interpolate_frontier_risk(frontier::DataFrame, g_target::Float64)
-```
-
-Estimates the frontier standard deviation at a target expected growth rate by
-linear interpolation. The table has finite Float64 columns `g` and `σ`, both in
-inverse years, with growth values in strictly increasing order. The target is
-also finite and in inverse years.
-
-Returns a `Float64` standard deviation. At a sampled target it returns the stored
-risk; between two targets it linearly interpolates their risks. It returns `NaN`
-outside the sampled range and does not extrapolate or solve another portfolio
-problem. Task 3 uses it to compare the three frontiers at common growth targets
-because their grids start at different GMV growth rates.

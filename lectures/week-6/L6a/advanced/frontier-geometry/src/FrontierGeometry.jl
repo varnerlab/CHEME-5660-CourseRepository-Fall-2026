@@ -79,31 +79,3 @@ function solve_frontier_point(g_target::Float64, mean_growth::Vector{Float64},
     is_solved_and_feasible(model) || return nothing
     return value.(w)
 end
-
-"""
-    interpolate_frontier_risk(frontier::DataFrame, g_target::Float64)
-
-Linearly interpolate growth-rate standard deviation at a target expected growth.
-
-# Arguments
-- `frontier`: A nonempty table with Float64 columns `g` (expected growth) and
-  `σ` (standard deviation), both in inverse years. Rows must have finite values
-  and strictly increasing `g`, as produced by the notebook's frontier sweep.
-- `g_target`: A finite expected growth rate, in inverse years.
-
-# Returns and assumptions
-Returns a `Float64` standard deviation in inverse years. At a sampled target,
-returns its stored risk; between targets, interpolates between the neighboring
-rows. Returns `NaN` outside the sampled growth range rather than extrapolating.
-This is an approximation between solved portfolios, not another optimization.
-"""
-function interpolate_frontier_risk(frontier::DataFrame, g_target::Float64)
-    # Restrict interpolation to the sampled growth range -
-    (g_target < frontier.g[1] || g_target > frontier.g[end]) && return NaN
-    k = searchsortedlast(frontier.g, g_target);
-    k == nrow(frontier) && return frontier.σ[end]
-
-    # Interpolate between the two neighboring frontier points -
-    return frontier.σ[k] + (frontier.σ[k+1] - frontier.σ[k])*
-        (g_target - frontier.g[k])/(frontier.g[k+1] - frontier.g[k])
-end

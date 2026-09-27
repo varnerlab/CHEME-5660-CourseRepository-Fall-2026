@@ -162,7 +162,10 @@ this be done often, for lectures and examples in both courses.
    left length alone. Note loose ends his edit left (dangling references, typos,
    inconsistencies) as observations for him to decide, not as fixes.
 4. Execute the edited notebook from its own folder before committing it, so a
-   broken cell is caught while the edit is fresh.
+   broken cell is caught while the edit is fresh. When a cell offers commented
+   alternatives for students to uncomment, run each alternative too; in round 3
+   an edit deleted a solve line, and only those runs showed that the cell drew a
+   stale result. The validation suite did not exercise that cell.
 5. Record the lessons in this guide as a dated section with quoted passages,
    then commit the notebook, the backup, and the guide. Do not infer preferences
    the diff does not show, and do not treat one round's choice as a rule for a
@@ -170,7 +173,81 @@ this be done often, for lectures and examples in both courses.
 
 **Rounds so far.** L6a flux balance analysis lecture (CHEME 5800, lecture) and
 L6a urea-cycle example (CHEME 5800, computational example), both September 25,
-2026; their lessons are the two sections that follow.
+2026; their lessons are the two sections that follow. L6b overflow-metabolism
+lab (CHEME 5800, live walkthrough lab), September 27, 2026; its lessons follow
+the derivation-companion section. The next section distills all three for both
+courses.
+
+## What the rounds show so far, for both courses — September 27, 2026
+
+All three rounds so far are CHEME 5800 week 6 notebooks: a lecture, a
+computational example, and a live lab. On September 27 the instructor asked that
+the lessons reach the CHEME 5660 notebooks too, which he is revising now. The
+dated sections below hold the evidence and his quoted text; this section says
+which lessons have held and where each applies in CHEME 5660. Where they differ,
+the CHEME 5660 rules elsewhere in this guide win: 5660 lecture notes carry no
+language or package implementation detail (L4b refinements), and derivation
+companions are judged differently.
+
+**Held in every round.**
+
+- *Length is not the lever.* Body prose changed by about 0, 0, and -8 percent
+  across the three rounds; his rework was order, framing, figures, and register.
+  Look there first when a draft misses his voice. The prose-density guidance
+  above still governs when a section is overgrown.
+- *Bold run-in labels that the instructor would say aloud.* The lecture used
+  "__Conservation, bounds, and alternate optima.__" on a figure caption, the
+  example "__What does the model contain?__", and the lab "__What do we see?__".
+  The 5660 lectures and examples already use the same device ("__How does
+  diversification reduce risk?__", "__What do we see?__"); keep and extend it.
+
+**Held in the lecture and the lab; apply to 5660 lectures and examples.**
+
+- *No preview paragraphs or itineraries.* In the lecture he replaced a
+  two-paragraph verbal opening with a definition and a figure, keeping one
+  handoff sentence: "Let's look at the different components of the FBA problem
+  and how they are formulated, starting with the stoichiometric matrix." In the
+  lab he cut the task-by-task roadmap and the closing question, and the overview
+  below the objectives became one sentence of what and why: "Here, we apply FBA to
+  the *E. coli* core model, ... to explore overflow metabolism." This fits the
+  5660 example conventions below (an "In this example, …" overview under the
+  objectives, an "In this task, …" opening sentence): keep both, and keep them
+  short, without an itinerary.
+- *Plain words where the meaning survives.* The lecture cut hedges and restated
+  definitions in plain words with bold vocabulary; the lab replaced "respire" with
+  "consume" and cut "a simple sugar" and "completely".
+- *Symbols are defined where they are used.* The lecture put "where ... denotes
+  ... (units: `flux`)" directly under each display. The lab did the same for
+  symbols carried over from another notebook: "where $\mathbf{c}$ is the cost
+  vector and $\hat{\mathbf{v}}$ is the vector of decision variables."
+
+**Seen in the example and the lab; apply to 5660 examples, not lectures.**
+
+- *Code is written as a lesson.* Stage comments end in " -"; trailing comments
+  explain the statement or the idiom; a comment prompts the student ("# fancy,
+  what is going on here?", "# Hmmmm. Tricky, why does this work?"); loops and
+  comprehensions use `∈`. In the lab he wrote the explicit loop first and gave the
+  comprehension as a comment. 5660 lectures keep no language or package
+  implementation detail or function links; approved mathematical pseudocode may
+  remain.
+
+**Seen once; reasonable defaults for 5660 until a round says otherwise.**
+
+- A sentence that leads into a code cell gets its own paragraph.
+- Headings name the condition and add the technical term in parentheses: "No
+  oxygen (anaerobic growth)".
+- A claim borrowed from another field gets a citation (the Warburg comparison).
+- Prose that only reads a table back is cut; the paragraph that interprets a
+  result stays.
+- Figure text follows the prose conventions: units in titles, italics where the
+  prose uses italics.
+
+**Lab-only so far.** In Tasks 2 and 3, chains of short direct questions replaced
+the draft's premise, scripted calls, and evidence instructions (Task 1 kept a
+short premise), and "__Prediction:__" prompts offer the answer set
+("{increase, decrease, or stay the same}"). CHEME 5660 has no labs. If a 5660
+notebook poses questions to students, try the short direct shape first, and treat
+it as untested there.
 
 ## Lecture structure lessons from the instructor's L6a edits — September 25, 2026
 
@@ -428,6 +505,114 @@ with the dimensionless number one or the net flux sum that balances dilution."
 ("what the heck?? ... come on"). A sentence that argues against a misreading no
 student would make is not a caveat; cut it in any notebook type. See the rule
 "No denials of unproposed misreadings" near the top of this guide.
+
+## Lab lessons from the instructor's L6b overflow edits — September 27, 2026
+
+Third round of the voice-calibration experiment, and the first on a live
+walkthrough lab. The assistant draft is the CHEME 5800 L6b overflow-metabolism
+lab as left uncommitted on September 26 on top of `ab29e5c`, backed up in that
+repository at `instructor/voice-calibration/L6b-Lab-OverflowMetabolism/`. Quoted
+text is the instructor's. Markdown prose fell about 8 percent (about 1,680 to
+1,540 words, mostly from the intro and the three questions); the main change was
+to what the questions ask.
+
+**Questions are short and direct, without the draft's scaffolding.** He rewrote
+all three "Things to think about" questions. The Task 2 draft asked students to
+"argue why respiration wins when oxygen is free" and to predict which arrows a
+later oxygen cap would change, and it stated an ATP fact inside the question that
+the figure does not show. His version reads the numbers on screen: "Compare the
+glucose and oxygen uptake rates with their limits. Which nutrient is already at
+its uptake limit? Would increasing only the oxygen limit allow more growth?
+Briefly explain." The Task 3 draft offered a three-way choice ("Is acetate a
+valve for carbon the cell cannot respire, a way to make ATP, or both?") and told students
+which runs to compare; his asks for an account of each run: "Can you explain what
+is going on in each scenario? How does the cell respond to the oxygen cap, the
+acetate block, and the cytochrome oxidase knockout? How do these scenarios
+compare with the no-oxygen case?" The Task 1 draft asked students to explain the
+sign convention and name the bound for a flask out of oxygen; his ties the bounds
+to the bench, a sealed shake flask "(this still allows sampling)": "What
+experimental measurements would you need to make to estimate the bounds on
+glucose, acetate, and oxygen uptake?" Each heading still has one `__Question:__`
+paragraph with no bullets, as he asked on September 25. In Tasks 2 and 3 the
+paragraph is now a chain of short direct questions rather than the draft's
+premise, ask, calls to run, and evidence to cite; Task 1 keeps a short premise
+and asks one question.
+
+**Observation and prediction cells carry run-in labels.** Two result paragraphs
+open "__What do we see?__" (the aerobic and oxygen-capped results), the model
+description opens "__What's in the model?__", and "__Predict:__" became
+"__Prediction:__" (once "__Prediction__:", colon outside). The Your turn cell lost
+its label: "`Uncomment` one pair of changes at a time, predict the growth rate and
+the secretions, then run the cell." sits directly under the heading, and the
+draft's "Each change below is a pair of commented lines." is gone. A prediction frames a
+supposition and offers the answer set: "Let's suppose we cap the oxygen uptake at
+$15\;\mathrm{mmol\,gDW^{-1}\,h^{-1}}$, below the 21.8 used in the aerobic
+solution. Does the growth rate {increase, decrease, or stay the same}, and does
+the cell secrete anything new?" Headings name the condition and add the technical
+term: "Less oxygen is available", "No oxygen (anaerobic growth)", "Limit oxygen
+and predict what changes". Round 2's "__What does the model contain?__" is the
+same device.
+
+**The intro is context, objectives, then the lecture link; no roadmap.** He
+deleted the draft's closing question ("How does restricting respiration change
+the balance between growth and secretion?") and the roadmap paragraph after the
+objectives ("In this lab, we load the model, ... In Task 2, you build the growth
+objective yourself, ..."). The lecture-link paragraph moved from before the
+objectives into the roadmap's slot above "Let's get started!", and now defines the
+method in a clause: "In [the L6a lecture](...), we introduced flux balance
+analysis (FBA), a linear programming method for predicting metabolic fluxes.
+Here, we apply FBA to the *E. coli* core model, ... to explore overflow
+metabolism." This matches round 1's cut of verbal preview paragraphs. In the
+plain-language biology opener, written the day before at his request, he cut "a
+simple sugar" and "completely", changed "more glucose than it can respire" to
+"than it can consume", opened the second paragraph with "However,", and added a
+source for the Warburg comparison ("[Shan et al.,
+2018](https://doi.org/10.1371/journal.pcbi.1006584)").
+
+**A code lead-in gets its own paragraph, and symbols get defined.** He split "It
+returns `result::NamedTuple` with ..." and "The test at the end passes when your
+growth rate matches `result.growth`:" off the paragraphs above them, and moved
+the units sentence into its own paragraph. Where the prose cites the L6a
+objective he defined its symbols: "where $\mathbf{c}$ is the cost vector and
+$\hat{\mathbf{v}}$ is the vector of decision variables." He described the figure
+encoding in plain words: "(bigger flux, thicker arrow). The plot shows the glucose
+uptake and by-product secretion rates, and the growth rate." He deleted the
+paragraph that read the bounds table back ("Glucose uptake is limited to 10,
+while oxygen uptake is effectively unlimited at 1000. ..."), so the table goes
+straight to its question, and cut the draft's gloss on exchanges ("which move a
+compound between the cell and its surroundings"). The paragraphs that read each
+solved result stayed. Small additions point ahead or name the goal: the bounds
+"(we'll need to update these later)", and in Task 2 "The objective is to maximize
+cell growth, the biomass reaction, ...".
+
+**Code shows the explicit form first and comments more lines.** The
+draft's comprehension became a nested `for ... ∈` loop with `break`, followed by
+the compact form as a comment: "# We could have used an array comprehension to
+find the rows, but the above is more explicit and easier to read." Trailing
+comments went from 5 to 16 of the notebook's roughly 45 code lines: `# reaction IDs to explore`, `# set the
+objective to biomass and solve the linear program`, `# returns a NamedTuple with
+the results of the checks`, `# make a changed copy of the model with the oxygen
+uptake capped at 15`, `# knock out the last step in the electron transport
+chain`. The `pretty_table` input became a named `df` with its own stage comment
+(`# put data into a DataFrame for pretty printing -`). Nested calls became a pipe
+into an anonymous function, which reads left to right:
+`with_uptake_limit(model, "EX_o2_e", 15.0) |> y -> with_bounds(y, "EX_ac_e", 0.0, 0.0)`.
+The short-circuit guard got a prompt to the student, `# Hmmmm. Tricky, why does
+this work?`, the same device as round 2's `# fancy, what is going on here?`. He
+dropped the trailing display `(maximum_residual = checks.maximum_residual,)`, so
+the check cell ends at its test set, and put units in a figure title: `"Oxygen
+uptake capped at 15 mmol/gDW/h"`.
+
+**Figures follow the prose conventions.** In `src/BoundaryPlots.jl` he split the
+cell label so "E. coli" is set in italics (`family = "Helvetica Oblique"`) above
+"core metabolism".
+
+**Loose end caught by execution.** His edit of the Your turn cell also deleted
+`scenario_result = solve_growth(scenario);`, so each uncommented change drew the
+no-oxygen result left by an earlier cell (growth 0.212 instead of 1.047 and
+0.663). The validation suite passed; running each commented change showed it. At
+his request the line was restored, along with three typos in the Task 1
+question.
 
 ## Slides as a note-taking companion — CHEME 5660
 

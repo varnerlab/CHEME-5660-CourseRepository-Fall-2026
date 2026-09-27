@@ -365,6 +365,50 @@
   the lecture and answers a real student question. The advanced README now
   recommends the GMV derivation first.
 
+## Completed L6a minimum-variance data example review
+
+- The instructor marked the L6a data-driven minimum-variance example reviewed
+  and complete September 26, 2026 (opening assessment 8.6/10, no rescoring).
+  The [saved review record](lectures/instructor/L6a-MINVAR-REVIEW-HANDOFF.md)
+  records the opening assessment and the one change made after it: Task 3 now
+  also tests the shorts-allowed GMV portfolio out of sample, as a "blue sky"
+  first implementation with no borrowing fee, collateral, or dividends owed, and
+  a dashed navy wealth path. The cell 50 reading is a lead sentence,
+  three labeled bullets, and a closing sentence. The opening assessment's density
+  suggestions were not taken up. No proposals remain pending; do not restart
+  the review unless the instructor asks for another round.
+
+## Completed L6a slides review
+
+- The instructor marked the L6a slides reviewed and complete September 26,
+  2026, after asking to finish the remaining steps in one pass (initial 8.0/10,
+  final 9.0/10). The only change requested after the previews was shorter text
+  below the long-only box on page 17. The [saved review record](lectures/instructor/L6a-SLIDES-REVIEW-HANDOFF.md)
+  records the sync with the stabilized lecture. Objective 3, the Dirichlet link,
+  and Estimated Inputs now match the lecture. The buy-and-hold and log-return
+  slides were removed, and a one-line conventions note replaces them. The
+  GMV/frontier section follows the lecture's order: negative weight, boxed GMV,
+  derivation with a companion link, frontier figure, then the boxed target
+  problem and formula. The long-only section is the boxed LO-1 plus one
+  growth-floor slide. The deck went from 25 to 23 pages with zero overfull
+  boxes. Two lecture sentences now say the data example tests both GMV
+  portfolios. No proposals remain pending; do not restart unless another round
+  is requested.
+
+## Completed L6a advanced frontier-geometry review
+
+- The instructor marked the relocated L6a frontier-geometry advanced example
+  reviewed and complete September 27, 2026 (initial 8.2/10, final 9.0/10). The
+  [saved review record](lectures/instructor/L6a-FRONTIER-REVIEW-HANDOFF.md)
+  records the six accepted steps and the September 27 follow-up. Links into
+  other weeks were cut or named in words, the corrupted figures were repaired,
+  and `Max |w_i|` table columns now carry the weight claims. Prose went from
+  3,751 to about 2,500 words, with readings as short `__What do we see?__` lists.
+  Task 3 solves each weight rule directly at the comparison targets instead of
+  interpolating, and the interpolation helper was removed. The L6a lecture and
+  advanced README now describe the constraint as a position cap. No proposals
+  remain pending. Do not restart unless the instructor requests another round.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned
