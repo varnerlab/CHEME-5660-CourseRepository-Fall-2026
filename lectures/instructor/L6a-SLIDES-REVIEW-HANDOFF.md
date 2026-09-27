@@ -338,3 +338,16 @@ PDF SHA-256:
 `f9e076affc856bd3d68b213b9c4be9c4b2240ae8c05100c8eecbd74a6341cfdd`
 
 Evidence: `build/notebook-previews/L6a-slides-frontier-2026-09-27/` (ignored).
+
+## Estimation-risk entry removed — September 27, 2026
+
+The Optional Advanced Material frame now lists only the frontier-geometry example
+under "Advanced:", with the lead "This example develops the frontier geometry
+further." This mirrors the lecture, which dropped its L6b estimation-risk link
+before the `week-06.0` release. 23 pages, zero overfull boxes.
+
+Source SHA-256:
+`73e5de70ec9b7432c3c1094c1be5061c8e89069d87e2e0cbb88a9f3b06a9ff9f`
+
+PDF SHA-256:
+`59408f9e93b1d96afdab7c6397b23419791d86f10af1f0374b8330a61c051011`

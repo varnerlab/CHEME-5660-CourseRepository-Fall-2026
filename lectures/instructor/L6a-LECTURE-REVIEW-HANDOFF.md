@@ -7,6 +7,21 @@ and no proposals remain pending. Do not restart approved lecture sections unless
 the instructor requests another round. The minimum-variance example review is
 separate.
 
+## Estimation-risk link removed for the week-06.0 release — September 27, 2026
+
+The release check found that the Optional Advanced Material linked
+`../L6b/advanced/estimation-risk/...`. Release `week-06.0` ships L6a only, and the
+release script keeps same-week links relative, so that link was dead in the
+bundle. The L6b lecture already lists the notebook. The instructor chose to
+"delete it from L6a". The bullet is gone, and the lead now reads "This example
+develops the frontier geometry further." The advanced README lost its entry and
+its estimation-risk sentences and now ends "Begin with the GMV derivation, then
+frontier geometry." The deck's Advanced 2 block was removed, and its label is
+now "Advanced:". A mention in words stays in the frontier-geometry closing.
+
+Lecture SHA-256:
+`40a037551188290a1e3bf4f9f120b7981704b39c75bbd48d0cee18336e2c8336`
+
 ## Target-growth subsection and "efficient frontier" — September 27, 2026
 
 Asked whether to change or reorganize the target-growth subsection, the
