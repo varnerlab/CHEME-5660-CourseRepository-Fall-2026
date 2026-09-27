@@ -309,3 +309,32 @@ PDF SHA-256:
 
 Evidence: `build/notebook-previews/L6a-slides-resync-2026-09-27/` (ignored):
 `before.pdf`, `after.pdf`, page renders, and `slides-before-after.png`.
+
+## Frontier sync and "efficient frontier" — September 27, 2026
+
+Synchronized with the lecture's target-growth edits and the instructor's
+request to "switch to efficient frontier everywhere". Still 23 pages, zero
+overfull boxes.
+
+- **Portfolio Reward (p8):** $\boldsymbol{\mu}_g$ is gone, following the
+  lecture's September 27 notation change, which had not reached the deck. The
+  box now ends $\bw^{\top}\E[\bg]\approx\bw^{\top}\bg'$, followed by "We
+  estimate expected growth using the sample-mean vector $\bg'$."
+- **The Minimum-Variance Frontier (p14):** bullets reordered to curve,
+  dominance, then "The upper branch, starting at the GMV portfolio $p_2$, is the
+  efficient frontier."
+- **The Target-Growth Problem (p15) and Minimum Variance at a Growth Target
+  (p16):** $\bg'$ replaces $\boldsymbol{\mu}_g$ in the constraint and in $b$
+  and $c$. The equal-means condition is one sentence. The closing names $b/a$ as the expected growth rate of the GMV portfolio
+  $p_2$ and states that $g_\star\ge b/a$ gives the efficient frontier.
+- **Objectives (p3), The Growth Floor (p18), Summary (p22):** "efficient
+  branch" became "efficient frontier". On p18, "Long-only growth averages" became
+  "Growth averages" to avoid a one-word last line.
+
+Source SHA-256:
+`d68ccccbd99ca85ae3308b524a9dea217887400a50f5932cda15cf2b3c0ac0c1`
+
+PDF SHA-256:
+`f9e076affc856bd3d68b213b9c4be9c4b2240ae8c05100c8eecbd74a6341cfdd`
+
+Evidence: `build/notebook-previews/L6a-slides-frontier-2026-09-27/` (ignored).

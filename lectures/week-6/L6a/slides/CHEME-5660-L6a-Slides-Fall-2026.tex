@@ -57,7 +57,7 @@
     \item \hilite{Formulate portfolio reward and risk}: derive matrix expressions
       for expected growth and variance, and explain diversification through covariance.
     \item \hilite{Construct minimum-variance portfolios}: compute GMV weights
-      allowing shorts, identify the efficient branch, and explain how long-only
+      allowing shorts, identify the efficient frontier, and explain how long-only
       constraints, exact growth targets, and growth floors affect the solution.
     \item \hilite{Evaluate estimated allocations}: identify which estimated inputs
       each allocation depends on, and evaluate the resulting investment using
@@ -176,13 +176,13 @@
     g_p=\sum_{i=1}^{M}w_i g_i=\bw^{\top}\bg.
   \]
 
-  With fixed weights and $\E[g_i]=\mu_{g,i}$, \hilite{reward} is:
+  With fixed weights, \hilite{reward} is:
   \[
     \boxed{\E[g_p]=\sum_{i=1}^{M}w_i\E[g_i]
-      =\bw^{\top}\boldsymbol{\mu}_g}.
+      =\bw^{\top}\E[\bg]\approx\bw^{\top}\bg'}.
   \]
-  The sample-mean vector $\bg'$ estimates $\boldsymbol{\mu}_g$.
-  Estimated reward is $\bw^{\top}\bg'$ (year$^{-1}$).
+  We estimate expected growth using the sample-mean vector $\bg'$
+  (year$^{-1}$).
 
   \vspace{0.5em}
   Expected growth is linear in the portfolio weights.
@@ -312,12 +312,12 @@
     \end{column}
     \begin{column}{0.43\textwidth}
       \begin{itemize}\setlength{\itemsep}{0.45em}
-        \item $p_1$ has higher growth than $p_3$ at the same risk, so $p_3$
-          and the lower branch are dominated.
-        \item The upper branch, including the GMV portfolio $p_2$, is
-          \hilite{efficient}.
         \item The curve gives the smallest variance at each growth rate.
           Every feasible portfolio lies on or to its right.
+        \item $p_1$ has higher growth than $p_3$ at the same risk, so $p_3$
+          and the lower branch are dominated.
+        \item The upper branch, starting at the GMV portfolio $p_2$, is the
+          \hilite{efficient frontier}.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -326,8 +326,8 @@
 \end{frame}
 
 \begin{frame}{The Target-Growth Problem}
-  How do we calculate the frontier? For a chosen expected growth rate
-  $g_\star$ (year$^{-1}$) and mean growth-rate vector $\boldsymbol{\mu}_g$,
+  How do we calculate the minimum-variance frontier? Given sample means
+  $\bg'$ and a target $g_\star$ (year$^{-1}$) for estimated expected growth,
   solve:
   \[
     \boxed{
@@ -335,7 +335,7 @@
       \underset{\bw\in\mathbb R^M}{\text{minimize}}\quad
         &\bw^{\top}\Sig\bw
         &&\quad\text{minimize growth-rate variance}\\
-      \text{subject to}\quad &\boldsymbol{\mu}_g^{\top}\bw=g_\star
+      \text{subject to}\quad &(\bg')^{\top}\bw=g_\star
         &&\quad\text{meet the exact growth target}\\
         &\bone^{\top}\bw=1
         &&\quad\text{weights sum to one}.
@@ -344,17 +344,17 @@
   Short positions are allowed, and $\Sig$ is positive definite.
 
   \vspace{0.4em}
-  The asset mean growth rates must not all be equal. With equal means,
-  changing the weights cannot change expected growth.
+  The sample means must not all be equal, since otherwise every portfolio
+  has the same estimated expected growth.
 \end{frame}
 
 \begin{frame}{Minimum Variance at a Growth Target}
-  Define four scalars from the means and covariance matrix:
+  Define four scalars from the sample means and covariance matrix:
   \[
     \begin{aligned}
       a&=\bone^{\top}\Sig^{-1}\bone,
-        & b&=\bone^{\top}\Sig^{-1}\boldsymbol{\mu}_g,\\[0.3em]
-      c&=\boldsymbol{\mu}_g^{\top}\Sig^{-1}\boldsymbol{\mu}_g,
+        & b&=\bone^{\top}\Sig^{-1}\bg',\\[0.3em]
+      c&=(\bg')^{\top}\Sig^{-1}\bg',
         & d&=ac-b^2>0.
     \end{aligned}
   \]
@@ -365,8 +365,9 @@
       =\underbrace{\frac1a}_{\text{GMV variance}}
       +\underbrace{\frac{a}{d}\left(g_\star-\frac ba\right)^2}_{\text{extra variance for the target}}.}
   \]
-  Here, $b/a$ is the GMV expected growth rate. Varying $g_\star$ traces the
-  \hilite{minimum-variance frontier}, the hyperbola in the figure.
+  Here, $b/a$ is the expected growth rate of the GMV portfolio $p_2$. Varying
+  $g_\star$ traces the \hilite{minimum-variance frontier}, and $g_\star\ge b/a$
+  gives the efficient frontier.
 \end{frame}
 
 \begin{frame}{The Long-Only Problem}
@@ -399,8 +400,8 @@
     \item \textbf{At or below it:} the long-only GMV portfolio meets the
       floor and stays optimal.
     \item \textbf{Above it:} a feasible floor binds, so the optimal portfolio
-      meets the target exactly. Raising the floor traces the efficient branch,
-      never the dominated one. Long-only growth averages the sample means,
+      meets the target exactly. Raising the floor traces the efficient frontier,
+      never the dominated branch. Growth averages the sample means,
       so $\max_i g_i'$ is the highest feasible floor.
     \item \textbf{Compared with shorts allowed:} with the same inputs, the
       long-only frontier lies on or to the right of the short-allowed frontier.
@@ -477,8 +478,8 @@
       variance using asset growth rates and portfolio weights. Covariance
       determines how combining assets changes risk and creates diversification.
     \item \hilite{Minimum-variance portfolios}: we obtained the GMV weights and
-      identified the efficient branch. With long-only constraints, sweeping a
-      growth floor returns the long-only GMV portfolio and the efficient branch.
+      identified the efficient frontier. With long-only constraints, sweeping a
+      growth floor returns the long-only GMV portfolio and the efficient frontier.
     \item \hilite{Estimated inputs and realized performance}: we connected the
       estimated inputs to the weights and evaluated wealth and NPV on prices
       reserved for testing. An allocation optimized on historical estimates

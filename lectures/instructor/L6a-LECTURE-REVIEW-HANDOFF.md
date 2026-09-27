@@ -7,6 +7,43 @@ and no proposals remain pending. Do not restart approved lecture sections unless
 the instructor requests another round. The minimum-variance example review is
 separate.
 
+## Target-growth subsection and "efficient frontier" — September 27, 2026
+
+Asked whether to change or reorganize the target-growth subsection, the
+assistant found it sound (figure first, as requested September 24) and proposed
+small, word-neutral edits (334 to 331 words). The instructor approved them
+("Agree. Update") and asked to "switch to efficient frontier everywhere".
+
+- The figure bullets now build in order: Feasible (what the curve is),
+  Comparing ($p_3$ is dominated), Efficient (the definition). The Efficient
+  bullet names the curve the heading and the figure label call the efficient
+  frontier: "The upper branch, starting at the GMV portfolio, is the
+  __efficient frontier__."
+- "minimum-variance boundary at each expected growth rate" became "How do we
+  calculate the minimum-variance frontier?"
+- In the F-1 box, "For a target $g_{\star}$ for" became "Given a target
+  $g_{\star}$ for", and the equal-means condition is one sentence.
+- The box closes by tying $b/a$ to point $p_2$ and stating that targets
+  $g_{\star}\geq b/a$ give the efficient frontier.
+- "Efficient branch" became "efficient frontier" in the second objective, the
+  figure alt text, the growth-floor bullet, and the second takeaway.
+  "Dominated branch" stays, matching the figure label.
+
+A Codex check confirmed with SymPy that targets $g_{\star}\geq b/a$ are exactly
+the efficient frontier, found no "efficient branch" or $\boldsymbol{\mu}_g$ left
+in the lecture or deck, and found the diff limited to cells 0, 5, and 8. It
+flagged that "point $p_2$" attached to the growth rate rather than the portfolio.
+The sentence now reads "the estimated expected growth rate of the GMV portfolio,
+point $p_2$ in the figure."
+
+The deck was synchronized in the same pass (see the slides record). Other
+notebooks that still say "efficient branch" (the frontier-geometry advanced
+notebook, the L6b estimation-risk notebook and its `src`, the L6b deck) were
+not changed. Renders are in `build/notebook-previews/L6a-frontier-review-2026-09-27/`.
+
+Lecture SHA-256:
+`dbc46063966b39f9b072512d1a4f051631b701c2effe0e5926ddca5fc7eaa76f`
+
 ## GMV subsection reorganized — September 27, 2026
 
 The instructor liked the GMV subsection but found its organization "a little off,
