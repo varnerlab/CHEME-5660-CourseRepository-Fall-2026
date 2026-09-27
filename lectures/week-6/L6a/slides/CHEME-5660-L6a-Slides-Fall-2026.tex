@@ -224,40 +224,17 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item At $\rho_{12}=1$, $\sigma_{g,p}=w\sigma_{g,1}+(1-w)\sigma_{g,2}$ is the weighted average.
     \item For $\rho_{12}<1$, it falls below that weighted average.
-    \item If $\rho_{12}$ is below the smaller standard deviation divided
-      by the larger, some allocation has less variance than either asset.
-      For 2 and 4 per year, the cutoff is $\rho_{12}<0.5$, which still
-      allows a positive correlation.
+    \item If $\sigma_{g,1}\leq\sigma_{g,2}$ and $\rho_{12}<\sigma_{g,1}/\sigma_{g,2}$,
+      some mix has less variance than either asset.
   \end{itemize}
-  \slidenote{Conventions:}{Log returns $\mathbf r=\Delta t\,\bg$, with target $\Delta t\,g_\star$,
-    give the same optimal weights. GBM volatility is $\sqrt{\Delta t}\,\sigma_{g,p}$.}
 \end{frame}
 
 % ==== minimum-variance portfolios ============================
-\begin{frame}{What Does a Negative Weight Mean?}
-  The \hilite{global minimum-variance (GMV) portfolio} has the smallest
-  growth-rate variance among fully invested portfolios. With short positions
-  allowed, some of its weights can be negative.
-
-  \vspace{0.5em}
-  Suppose we begin with 1,000 USD and choose $w_1=1.2$ and $w_2=-0.2$:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item Borrow and sell 200 USD of asset 2, then buy 1,200 USD of asset 1.
-    \item Our net position is still 1,000 USD, but we must buy back and return
-      the borrowed shares.
-    \item A fall in the shorted price lowers the repurchase cost, and a rise
-      increases it.
-  \end{itemize}
-
-  \vspace{0.5em}
-  A short can reduce portfolio variance, depending on the covariance and
-  position size. We assume its proceeds can finance long holdings and omit
-  borrowing fees, collateral requirements, and position limits.
-\end{frame}
-
 \begin{frame}{The Global Minimum-Variance Portfolio}
-  Choose the weights $\bw\in\mathbb R^M$ of $M$ risky assets. Given a symmetric,
-  positive-definite covariance matrix $\Sig$ and the vector of ones $\bone$, solve:
+  The \hilite{global minimum-variance (GMV) portfolio} has the smallest
+  growth-rate variance among fully invested portfolios. With shorts allowed,
+  some weights can be negative. For $M$ risky assets with positive-definite
+  covariance $\Sig$ and vector of ones $\bone$, solve:
   \[
     \boxed{
     \begin{aligned}
@@ -276,7 +253,6 @@
       =\frac{1}{\bone^{\top}\Sig^{-1}\bone}.}
   \]
   No mean-growth estimate is needed because there is no growth target.
-  From data, we use a positive-definite estimate $\Sg$.
 \end{frame}
 
 \begin{frame}{Deriving the GMV Weights}
@@ -308,6 +284,23 @@
   Positive definiteness makes the objective strictly convex, so these
   weights give the unique minimum.
   \slidenote{Derivation:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/advanced/gmv-derivation/CHEME-5660-L6a-Derivation-GMV-Fall-2026.ipynb}{Complete GMV derivation companion}}
+\end{frame}
+
+\begin{frame}{What Does a Negative Weight Mean?}
+  For two assets with $\sigma_{g,1}\leq\sigma_{g,2}$, the GMV portfolio shorts
+  the riskier asset when:
+  \[
+    \rho_{12}>\frac{\sigma_{g,1}}{\sigma_{g,2}}.
+  \]
+  With 1,000 USD and weights $w_1=1.2$ and $w_2=-0.2$:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Borrow and sell 200 USD of asset 2, then buy 1,200 USD of asset 1.
+    \item We must repurchase the borrowed shares, so the short gains when the
+      price of the borrowed shares falls and loses when the price rises.
+  \end{itemize}
+
+  \vspace{0.5em}
+  We ignore borrowing fees, collateral, and position limits.
 \end{frame}
 
 \begin{frame}{The Minimum-Variance Frontier}

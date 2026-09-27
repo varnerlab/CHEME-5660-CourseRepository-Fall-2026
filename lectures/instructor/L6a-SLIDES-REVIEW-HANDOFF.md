@@ -273,3 +273,39 @@ Lecture SHA-256 after step 1:
 Evidence: `build/notebook-previews/L6a-slides-sync-2026-09-26/` (ignored):
 `before.tex`, `before.pdf`, `after.tex`, `lecture-before.ipynb`, the page
 renders, and the before/after sheets `s0-lecture.png` through `s5-closing.png`.
+
+## Resync after the lecture's Diversification and GMV edits — September 27, 2026
+
+The instructor asked to "resync the L6a slides" after tightening the lecture's
+Diversification discussion and reorganizing its GMV subsection (see the lecture
+record). Three frames changed and the deck stays at 23 pages:
+
+- **Two-Asset Diversification (p10):** the "2 and 4 per year" cutoff and the
+  log-return Conventions slidenote are gone, matching the lecture. The third
+  bullet reads "If $\sigma_{g,1}\leq\sigma_{g,2}$ and
+  $\rho_{12}<\sigma_{g,1}/\sigma_{g,2}$, some mix has less variance than either
+  asset."
+- **The Global Minimum-Variance Portfolio (p11):** it now opens with the GMV
+  definition and "With shorts allowed, some weights can be negative," moved from
+  the old negative-weight frame. The $\hat{\mathbf{\Sigma}}_g$ sentence is cut,
+  as in the lecture.
+- **What Does a Negative Weight Mean? (now p13):** moved after "Deriving the GMV
+  Weights" to follow the lecture's order. It opens with the two-asset shorting
+  condition as a display, keeps the trade bullet, uses the instructor's
+  repurchase sentence, and ends on "We ignore borrowing fees, collateral, and
+  position limits." The net-position bullet and the vague covariance sentence
+  are gone.
+
+Layout fixes in the same pass: "some allocation" became "some mix" and "short
+positions" became "shorts" to remove one-word last lines, and the shorting
+condition became a display instead of wrapping inline. `make slides` reports zero
+overfull boxes.
+
+Source SHA-256:
+`59a69f4084b9d1697decce53337dc38a3602651cd844461181dd65796a488c67`
+
+PDF SHA-256:
+`42fed0a0d0b4c784718216d91dfca1c244f0c50369411c7d553443732d46ebcc`
+
+Evidence: `build/notebook-previews/L6a-slides-resync-2026-09-27/` (ignored):
+`before.pdf`, `after.pdf`, page renders, and `slides-before-after.png`.

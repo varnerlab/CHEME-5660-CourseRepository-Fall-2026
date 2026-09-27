@@ -7,6 +7,69 @@ and no proposals remain pending. Do not restart approved lecture sections unless
 the instructor requests another round. The minimum-variance example review is
 separate.
 
+## GMV subsection reorganized — September 27, 2026
+
+The instructor liked the GMV subsection but found its organization "a little off,
+and choppy". The dollar example sat between the definition and the box, a vague
+sentence followed it, and the box closed on four unrelated sentences. Approved
+order ("Really like this reorg"): definition, then box, then negative weights.
+Prose fell from about 286 to 241 words, and every display is unchanged.
+
+- The lead-in is the definition, "We allow short positions, so some of its
+  weights can be negative," one new sentence tying back to the Diversification
+  discussion ("For two assets with $\sigma_{g,1}\leq\sigma_{g,2}$, the GMV
+  portfolio shorts the riskier asset when $\rho_{12}>\sigma_{g,1}/\sigma_{g,2}$."),
+  and the box lead-in. The new sentence replaced "A short can reduce portfolio
+  variance, depending on the covariance and position size."
+- The box closes on "No mean-growth estimate is needed..." and the companion link.
+  The variance units moved into the Solution line. "The weights are
+  dimensionless" and the $\hat{\mathbf{\Sigma}}_g$ sentence, already stated in
+  Portfolio risk, were cut.
+- The negative-weight paragraph follows the box, the order approved in the
+  September 24 GMV split. On projection grounds ("can't have large tracts of
+  prose. Too long") it was cut to three sentences: the trade, the buy-back gain
+  or loss, and "We ignore borrowing fees, collateral, and position limits."
+  Short selling first appears here, so the financing assumption is shown by the
+  trade itself rather than stated before the box.
+
+Only Markdown cell 5 changed in this round. The deck was resynchronized the
+same day (see the slides record). A Codex check confirmed the two-asset shorting
+condition with SymPy, found all seven displays character-for-character unchanged
+and on one quoted source line, and found no dangling references downstream. Its one wording flag ("we gain" could
+read as the whole portfolio) was resolved in the instructor's words: "We must
+repurchase the borrowed shares, so the short gains when the price of the borrowed
+shares falls and loses when the price rises."
+Renders are in `build/notebook-previews/L6a-gmv-organization-2026-09-27/`.
+
+Lecture SHA-256:
+`22a6429f02c5dadf4b723cb00154bb45ce0a1367cd9f708eb78c65762e0a0d81`
+
+## Diversification discussion tightened — September 27, 2026
+
+The instructor added the `### Discussion: Diversification` heading and asked to
+tighten the subsection ("I like it, but I think we could tighten"). Prose fell from
+about 180 to 90 words. Equations, the bold question, the setup sentence, and the
+closing handoff are unchanged. Two cuts were his:
+
+- The log-return conventions note was dropped rather than moved up to Portfolio
+  risk. The lecture never uses log returns again, and every L6a example defines
+  the covariance rate and GBM volatility itself.
+- The "standard deviations of 2 and 4 per year" illustration was dropped ("what??").
+
+The weighted-average and below-both-assets sentences were merged into one
+paragraph, and the below-both condition is now written as
+$\rho_{12}<\sigma_{g,1}/\sigma_{g,2}$ with $\sigma_{g,1}\leq\sigma_{g,2}$. Only
+Markdown cell 4 changed. The deck was resynchronized the same day (see the
+slides record). A Codex check
+confirmed both inequalities with SymPy, found no dangling references, and found
+the JSON diff limited to cell 4's source. Of its two optional wordings, the instructor
+accepted "the variance is a perfect square" and declined merging "This is the
+benefit of __diversification__" into the preceding sentence. Renders are in
+`build/notebook-previews/L6a-diversification-2026-09-27/`.
+
+Lecture SHA-256:
+`115ff9ee43a45d884db11638cf6ff859dec20410893e19f5cd556f8a070d02ab`
+
 ## Mean-growth notation simplification — September 27, 2026
 
 The instructor approved removing $\boldsymbol{\mu}_g$ from this lecture because
