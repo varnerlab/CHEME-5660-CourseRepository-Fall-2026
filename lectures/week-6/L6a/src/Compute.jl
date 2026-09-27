@@ -10,8 +10,7 @@ Return the outer product of the real-valued vectors `a` and `b`, the matrix
 
 ### Returns
 - `Y::Matrix`: an `m × n` matrix with `Y[i,j] = a[i]*b[j]`. Its element type is
-  wide enough to hold both inputs, e.g. `Float64` when `a` holds integers and
-  `b` holds floats.
+  `promote_type(eltype(a), eltype(b))`, e.g. `Float64` for `Int64` and `Float64` inputs.
 
 ### Example
 ```julia
@@ -23,7 +22,7 @@ function ⊗(a::AbstractVector{<:Real}, b::AbstractVector{<:Real})::Matrix
     # Initialize -
     m = length(a); # number of rows
     n = length(b); # number of columns
-    T = promote_type(eltype(a), eltype(b)); # element type that can hold both inputs
+    T = promote_type(eltype(a), eltype(b)); # common element type of the two inputs
     Y = Matrix{T}(undef, m, n); # allocate without filling, every entry is set below
 
     # Populate the outer product -

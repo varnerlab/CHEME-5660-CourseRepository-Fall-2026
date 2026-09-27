@@ -409,6 +409,16 @@
   advanced README now describe the constraint as a position cap. No proposals
   remain pending. Do not restart unless the instructor requests another round.
 
+## Completed L6a code-commenting pass
+
+- On September 27, 2026 the instructor asked for good docstrings and thorough
+  comments in all L6a example code and `src`, because students read it. The
+  pass covers all 80 code cells in the three examples and the frontier-geometry
+  notebook, plus both `src` files, both `Include.jl` files, and the frontier
+  reference page. The [saved record](lectures/instructor/L6a-CODE-COMMENTS-HANDOFF.md)
+  holds the conventions, the validation, and the items that need code edits.
+  Syntax-tree checks confirm that only comments and docstrings changed.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned
