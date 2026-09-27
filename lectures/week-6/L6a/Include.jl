@@ -6,11 +6,12 @@ const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
 # Activate the nearest course environment (repository root or weekly bundle root) -
 import Pkg # package-environment activation
-let d = @__DIR__
+let d = @__DIR__ # start in this folder
+    # Walk up one folder at a time until a Project.toml appears or we reach the filesystem root.
     while !isfile(joinpath(d, "Project.toml")) && d != dirname(d)
         d = dirname(d)
     end
-    Pkg.activate(d; io = devnull); Pkg.instantiate(; io = devnull);
+    Pkg.activate(d; io = devnull); Pkg.instantiate(; io = devnull); # io = devnull hides Pkg messages
 end
 
 # Load external packages -
@@ -33,4 +34,4 @@ using HypothesisTests              # statistical tests
 using MathOptInterface             # solver termination statuses
 
 # Include local helper code -
-include(joinpath(_PATH_TO_SRC, "Compute.jl"));
+include(joinpath(_PATH_TO_SRC, "Compute.jl")); # ⊗ and scaled_wealth_quantiles
