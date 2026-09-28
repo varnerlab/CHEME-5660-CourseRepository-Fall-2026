@@ -9,20 +9,29 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\SR}{\operatorname{SR}}
 \newcommand{\bg}{\mathbf{g}}
 \newcommand{\bw}{\mathbf{w}}
 \newcommand{\br}{\mathbf{r}}
-\newcommand{\bal}{\boldsymbol{\alpha}}
-\newcommand{\bbe}{\boldsymbol{\beta}}
-\newcommand{\beps}{\boldsymbol{\varepsilon}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\bX}{\hat{\mathbf{X}}}
+\newcommand{\bth}{\symbfit{\theta}}
+\newcommand{\bal}{\symbfit{\alpha}}
+\newcommand{\bbe}{\symbfit{\beta}}
+\newcommand{\beps}{\symbfit{\varepsilon}}
+\newcommand{\bmu}{\symbfit{\mu}_{g}}
 \newcommand{\Dg}{\mathbf{D}_{g}}
-\newcommand{\Sig}{\boldsymbol{\Sigma}_{g}}
-\newcommand{\SigSIM}{\hat{\boldsymbol{\Sigma}}_{g,\mathrm{SIM}}}
+\newcommand{\Sig}{\symbf{\Sigma}_{g}}
+\newcommand{\Sg}{\hat{\symbf{\Sigma}}_{g}}
+\newcommand{\SigSIM}{\hat{\symbf{\Sigma}}_{g,\mathrm{SIM}}}
 \newcommand{\gSIM}{\hat{\bg}_{\mathrm{SIM}}}
 \newcommand{\Tan}{\mathcal{T}}
-\newcommand{\np}{|\mathcal P|}
+\newcommand{\np}{|\mathcal{P}|}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b}
 
-\title{\texorpdfstring{{\vnheavy L6b}}{L6b}: Single Index Model Portfolio Allocation}
+\title{\texorpdfstring{{\vnheavy L6b}}{L6b}: Single Index Models, Portfolio Allocation, and a Risk-Free Asset}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -49,395 +58,523 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today we put the single index model of L6a to work: assemble its inputs for a
-  portfolio, solve L5b's allocation problems with them, and compare the result
-  with the data-driven portfolios in sample and out of sample.
+  By the end of this lecture, you should be able to:
 
-  \vspace{0.6em}
-  {\large\textbf{\ink{Today's concepts}}}
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Construct and diagnose SIM portfolio inputs}: the SIM mean
-      vector and covariance from the archive, why the mean vector reproduces the
-      sample means, and which residual covariances the SIM omits.
-    \item \hilite{Solve SIM allocation problems}: long-only risky and risky and
-      risk-free portfolios, the tangent portfolio from the ray of solutions, and
-      what bounds, a borrowing restriction, or a higher borrowing rate change.
-    \item \hilite{Evaluate what the model changes}: weights and covariance regret
-      in sample, frozen allocations on the 2025 test year, and what one split can
-      and cannot say.
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Interpret and estimate a single index model (SIM)}: explain how
+      a factor model describes co-movement, interpret alpha, beta, and the
+      residual, and estimate the parameters, their uncertainty, and the fit.
+    \item \hilite{Build minimum-variance portfolios from SIM inputs}: derive the
+      SIM mean vector and covariance matrix, identify the co-movement the model
+      leaves out, and compare the allocations with data-driven portfolios.
+    \item \hilite{Add a risk-free asset}: derive the capital allocation line,
+      compute the tangent portfolio, and explain how lending, borrowing, and
+      financing limits affect portfolio choice.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Lectures and Examples}
-  \vspace{0.3em}
-  {\normalsize\textbf{\ink{Lecture:}}\par
-  \dimmed{CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb}}
+  \textbf{\ink{Lecture:}}
+  \href{\repo/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb}{Single Index Models, Portfolio Allocation, and a Risk-Free Asset}
 
-  \vspace{0.7em}
-  {\normalsize\textbf{\ink{Example 1:}}\par
-  \dimmed{CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}}
+  \vspace{0.4em}
+  \textbf{\ink{Example 1:}}
+  \href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}
 
-  \vspace{0.7em}
-  {\normalsize\textbf{\ink{Example 2:}}\par
-  \dimmed{CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}}
+  Fit one firm, then every firm in the dataset, and save the portfolio inputs.
+
+  \vspace{0.4em}
+  \textbf{\ink{Example 2:}}
+  \href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}
+
+  Compare the classical confidence intervals with 1,000 bootstrap estimates.
+
+  \vspace{0.4em}
+  \textbf{\ink{Example 3:}}
+  \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}
+
+  Compare the inputs, frontiers, holdings, and 2025 performance of both portfolios.
+
+  \vspace{0.4em}
+  \textbf{\ink{Example 4:}}
+  \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}
+
+  Find the tangent portfolio and compare complete portfolios that lend or borrow.
+\end{frame}
+
+% ==== company profile ========================================
+\begin{frame}{Company Profile: MSCI}
+  \href{https://www.msci.com/discover-msci/about-us}{MSCI}, originally Morgan
+  Stanley Capital International, builds the indexes, risk models, and data that
+  investors use to measure markets and manage portfolio risk. In 2004 it
+  combined with Barra, the risk-modeling firm Barr Rosenberg founded in 1975.
+
+  \vspace{0.2em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Indexes}: the
+      \href{https://www.msci.com/indexes/index/892400}{MSCI ACWI} covers about 85\%
+      of the investable stock market in 47 countries. Investors use indexes like
+      this as the market when they measure beta.
+    \item \hilite{Factor risk models}: the
+      \href{https://www.msci.com/data-and-analytics/factor-investing/equity-factor-models}{Barra models}
+      describe how more than 90,000 securities move together using market,
+      country, industry, and style factors.
+    \item \hilite{Predicting beta}:
+      \href{https://doi.org/10.2469/faj.v32.n3.60}{Rosenberg and Guy (1976)} showed
+      that a firm's business fundamentals help predict its beta.
+  \end{itemize}
+
+  \vspace{0.4em}
+  Today's connection: the SIM is the simplest factor model. What does one
+  market factor leave out?
+  \slidenote{Explore:}{\href{https://careers.msci.com/early-careers}{Early careers}
+    \quad\href{https://www.youtube.com/watch?v=ro07evEWbCE}{Factor Modeling (MIT OpenCourseWare)}}
+\end{frame}
+
+% ==== factor models ==========================================
+\begin{frame}{Factor Models}
+  The minimum-variance problem of L6a needs a covariance for every pair of
+  assets: $\np(\np+1)/2$ numbers from the same few years of data. Yet most
+  stocks move together when market-wide news arrives. A \hilite{factor model}
+  explains that shared movement with a few common factors:
+  \[
+    g_{i,t}=\underbrace{\alpha_i}_{\text{firm}}
+      +\underbrace{\beta_i\,g_{M,t}}_{\text{market}}
+      +\underbrace{\sum_{j=1}^{m}\gamma_{ij}\,f_{j,t}}_{\text{other factors}}
+      +\underbrace{\varepsilon_{i,t}}_{\text{residual}}
+  \]
+  where $g_{i,t}$ and $g_{M,t}$ are the growth rates (year$^{-1}$) of asset $i$
+  and the market on day $t$. The $f_{j,t}$ are $m$ other factors, such as
+  interest rates or inflation, and $\beta_i$ and $\gamma_{ij}$ are the asset's
+  sensitivities to the factors.
+\end{frame}
+
+\begin{frame}{Two Well-Known Factor Models}
+  In our growth-rate notation:
+
+  \vspace{0.4em}
+  \hilite{Capital Asset Pricing Model (CAPM)}: the market is the only factor, in
+  excess of the risk-free growth rate $g_f$, with no intercept:
+  \[
+    g_{i,t}-g_f=\beta_i\left(g_{M,t}-g_f\right)+\varepsilon_{i,t}
+  \]
+
+  \hilite{Fama--French three-factor model}: size and value factors join the market:
+  \[
+    g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+s_i\,\mathrm{SMB}_t+h_i\,\mathrm{HML}_t+\varepsilon_{i,t}
+  \]
+  where $s_i$ and $h_i$ are the sensitivities to SMB (small minus big firms) and
+  HML (high minus low book-to-market firms). The three factors explain over 90\%
+  of the return variation in 21 of 25 test portfolios, versus 2 for the market alone.
+
+  \vspace{0.4em}
+  We keep only the market factor: the \hilite{single index model (SIM)}.
+  \slidenote{Source:}{\href{https://doi.org/10.1016/0304-405X(93)90023-5}{Fama and French (1993)}}
+\end{frame}
+
+% ==== single index model =====================================
+\begin{frame}{The Single Index Model}
+  With SPY as the market, for asset $i\in\mathcal P$ on trading day $t$
+  (\href{https://doi.org/10.1287/mnsc.9.2.277}{Sharpe, 1963}):
+  \[
+    \boxed{g_{i,t}=\underbrace{\alpha_i}_{\text{intercept}}
+      +\underbrace{\beta_i\,g_{M,t}}_{\text{market}}
+      +\underbrace{\varepsilon_{i,t}}_{\text{residual}}}
+  \]
+  Here, $\beta_i$ is the \hilite{market exposure} (dimensionless) and
+  $\varepsilon_{i,t}$ is the \hilite{idiosyncratic} residual. Growth rates,
+  $\alpha_i$, and $\varepsilon_{i,t}$ are in year$^{-1}$. For a single day, the
+  model assumes:
+  \[
+    \underbrace{\E[\varepsilon_i]=0}_{\text{zero mean}}\qquad
+    \underbrace{\Cov(\varepsilon_i,g_M)=0}_{\text{uncorrelated with the market}}\qquad
+    \underbrace{\Cov(\varepsilon_i,\varepsilon_j)=0\ \ (i\neq j)}_{\text{uncorrelated across assets}}
+  \]
+  The first two determine $\alpha_i$ and $\beta_i$. The third,
+  \hilite{only the market links two assets}, is an extra assumption that
+  Example 1 checks.
+\end{frame}
+
+\begin{frame}{What Do the Parameters Mean?}
+  Taking the covariance with $g_M$ and the expectation of both sides of the SIM
+  gives:
+  \[
+    \begin{aligned}
+      \Cov(g_i,g_M)&=\underbrace{\Cov(\alpha_i,g_M)}_{=0}
+        +\beta_i\underbrace{\Cov(g_M,g_M)}_{=\Var(g_M)}
+        +\underbrace{\Cov(\varepsilon_i,g_M)}_{=0}\\[0.2em]
+      \Longrightarrow\quad\beta_i&=\boxed{\frac{\Cov(g_i,g_M)}{\Var(g_M)}
+        =\rho_{iM}\,\frac{\sigma_{g,i}}{\sigma_{g,M}}}\\[0.2em]
+      \alpha_i&=\E[g_i]-\beta_i\,\E[g_M]
+    \end{aligned}
+  \]
+  where $\sigma_{g,i}$ and $\sigma_{g,M}$ are growth-rate standard deviations and
+  $\rho_{iM}$ is their correlation.
+
+  \vspace{0.4em}
+  \hilite{Beta is the slope of the line}: the change in the asset's predicted
+  growth rate per unit change in the market growth rate.
+\end{frame}
+
+\begin{frame}{Systematic and Idiosyncratic Risk}
+  The \hilite{risk interpretation} of beta comes from the variance of both sides
+  of the SIM:
+  \[
+    \begin{aligned}
+      \Var(g_i)&=\beta_i^2\,\Var(g_M)+\Var(\varepsilon_i)
+        +2\beta_i\underbrace{\Cov(g_M,\varepsilon_i)}_{=0}
+        \qquad\text{($\alpha_i$ is constant)}\\[0.2em]
+      &=\boxed{\underbrace{\beta_i^2\,\sigma^2_{g,M}}_{\text{systematic}}
+        +\underbrace{\sigma^2_{g,\varepsilon,i}}_{\text{idiosyncratic}}}
+    \end{aligned}
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Systematic}: comes from the market. Adding assets that share
+      the same market does not diversify it away.
+    \item \hilite{Idiosyncratic}: belongs to the asset alone, with residual
+      variance $\sigma^2_{g,\varepsilon,i}=\Var(\varepsilon_i)$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Beta as a Measure of Relative Risk}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item $\beta_i=1$: the asset carries the same systematic risk as the market.
+    \item $\beta_i>1$: the asset carries more systematic risk than the market, so
+      its total variance is also larger.
+    \item $0<\beta_i<1$: the asset carries less systematic risk, but its total
+      variance can still be larger when the residual variance dominates.
+    \item $\beta_i<0$: the asset moves against the market.
+  \end{itemize}
 
   \vspace{0.6em}
-  The first example assembles the SIM inputs for thirteen firms, checks two exact
-  facts about them, traces the long-only frontier from each input set, compares
-  weights and regret, and scores the portfolios on 2025 data. The second adds
-  the risk-free asset, reads the tangent portfolio off the ray of solutions, and
-  scores complete portfolios that lend, hold, or borrow.
+  In our dataset, the betas run from near zero to a little above two, with a
+  median close to one.
+
+  \vspace{0.6em}
+  How do we estimate $\alpha_i$ and $\beta_i$ from data?
 \end{frame}
 
-% ==== concept review =========================================
-\begin{frame}{Concept Review: The Single Index Model and Its Covariance}
-  L6a: for asset $i\in\mathcal P$ on day $t$, with growth rate $g_{i,t}$ (inverse
-  years), market growth rate $g_{M,t}$ (SPY; $M$ names the index), intercept
-  $\alpha_i$, exposure $\beta_i$, and residual $\varepsilon_{i,t}$:
+% ==== estimation =============================================
+\begin{frame}{Estimating the Parameters}
+  We estimate the SIM one asset at a time by \hilite{least squares}, which
+  minimizes the sum of squared residuals over $N$ trading days:
   \[
-    g_{i,t}=\alpha_i+\beta_i\,g_{M,t}+\varepsilon_{i,t}
+    \underbrace{\begin{bmatrix}g_{i,1}\\ \vdots\\ g_{i,N}\end{bmatrix}}_{\by}
+    =\underbrace{\begin{bmatrix}1&g_{M,1}\\ \vdots&\vdots\\ 1&g_{M,N}\end{bmatrix}}_{\bX}
+    \underbrace{\begin{bmatrix}\alpha_i\\ \beta_i\end{bmatrix}}_{\bth_i}
+    +\beps,
+    \qquad
+    \boxed{\hat{\bth}_i=\arg\min_{\bth}\,\lVert\by-\bX\bth\rVert_2^2
+      =\left(\bX^{\top}\bX\right)^{-1}\bX^{\top}\by}
   \]
-  with $\E[\varepsilon_{i,t}]=0$, $\Cov(\varepsilon_{i,t},g_{M,t})=0$, and
-  $\Cov(\varepsilon_{i,t},\varepsilon_{j,t})=0$ for $i\ne j$.
-  Stack the assets ($\bg,\bal,\bbe,\beps$), let $\bar g_M=\E[g_M]$,
-  $\sigma^2_{g,M}=\Var(g_M)$, and
-  $\Dg=\operatorname{diag}(\sigma^2_{g,\varepsilon,1},\ldots,\sigma^2_{g,\varepsilon,\np})$;
-  under the three assumptions:
-  \[
-    \boxed{\bar{\bg}=\bal+\bbe\,\bar g_M,\qquad
-      \Sig=\sigma^2_{g,M}\,\bbe\bbe^{\top}+\Dg}
-  \]
-  \hilite{Rank one plus diagonal}: $2\np+1$ numbers for the covariance and
-  $\np+1$ for the mean, in place of $\np(\np+1)/2$ covariances. Uncorrelated
-  residuals is the assumption that makes it a covariance model.
+  The estimates are the sample versions of the parameter formulas,
+  $\hat\beta_i=\widehat{\Cov}(g_i,g_M)/\widehat{\Var}(g_M)$ and
+  $\hat\alpha_i=g'_i-\hat\beta_i\,g'_M$, with sample means $g'_i$ and $g'_M$.
+  The residuals $\br=\by-\bX\hat{\bth}_i$ estimate $\beps$.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}}
 \end{frame}
 
-\begin{frame}{Concept Review: Portfolio Risk and the Archive}
-  For fixed weights $\bw$, the linearized growth rate $g_p=\bw^{\top}\bg$ (L5b)
-  has portfolio beta $\beta_p=\bw^{\top}\bbe$ and:
+\begin{frame}{Parameter Uncertainty and Goodness of Fit}
+  \hilite{How well does the model fit?} The coefficient of determination is the
+  fraction of the asset's growth-rate variation that the market term explains:
   \[
-    \Var(g_p)=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
-      +\underbrace{\bw^{\top}\Dg\bw}_{\text{residual risk}}
+    R^2=1-\frac{\lVert\br\rVert_2^2}{\sum_{t=1}^{N}\left(g_{i,t}-g'_i\right)^2}
   \]
-
-  \vspace{0.1em}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item Everything above is a population statement.
-    \item The L6a estimation example fitted the model by least squares for every
-      security in the 2014 to 2024 data and saved the estimates: that archive is
-      where today's inputs come from.
-    \item \hilite{Derivation} (one line): $g_i-\E[g_i]=\beta_i(g_M-\bar g_M)+\varepsilon_i$;
-      multiply for $i,j$, take expectations; the assumptions kill the cross
-      terms and, for $i\ne j$, the residual product.
-  \end{itemize}
-  \slidenote{Catch-up:}{\dimmed{../L6a/CHEME-5660-L6a-Example-SVD-SIM-Estimation-Fall-2026.ipynb}}
-\end{frame}
-
-% ==== inputs from the archive ================================
-\begin{frame}{SIM Portfolio Inputs from the Archive}
-  The archive holds, per security fitted against SPY on the $N$ training days,
-  the least-squares estimates $\hat\alpha_i$, $\hat\beta_i$, and the residual
-  variance $s^2_{g,\varepsilon,i}=\lVert\br_i\rVert_2^2/(N-2)$ ($\br_i$ the
-  fitted residual series), and once the training-period sample mean $g'_M$ and
-  variance $s^2_{g,M}$ of the market. Substituting estimates for population
-  quantities gives the SIM inputs for a portfolio:
-  \[
-    \boxed{\gSIM=\hat{\bal}+\hat{\bbe}\,g'_M,\qquad
-      \SigSIM=s^2_{g,M}\,\hat{\bbe}\hat{\bbe}^{\top}+\hat{\Dg},\qquad
-      \hat{\Dg}=\operatorname{diag}(s^2_{g,\varepsilon,1},\ldots,s^2_{g,\varepsilon,\np})}
-  \]
-
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Market moments from the training period}: taking them from a
-      later window mixes an in-sample fit with out-of-sample information; the
-      archive stores the training values so it cannot happen by accident.
-    \item Growth-rate units throughout: means in inverse years, variances in
-      inverse years squared, no $\Delta t$ (L6a).
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Two Exact Facts about the SIM Inputs}
-  How do they compare with L5b's data-driven inputs, the sample means
-  $\hat{\bg}$ and sample covariance $\hat{\Sig}$ of the same firms over the same
-  days?
-
-  \vspace{0.4em}
-  \hilite{The SIM mean vector is the sample-mean vector.} A least-squares line
-  with an intercept passes through the point of sample means (the residuals sum
-  to zero), so $\hat\alpha_i+\hat\beta_i g'_M=g'_i$ and
-  $\gSIM=\hat{\bg}$. The two input sets agree on the reward.
-
-  \vspace{0.4em}
-  \hilite{The SIM covariance is the sample covariance with the residual
-  covariances removed.} Residuals are orthogonal to the ones and to the market
-  series, so:
-  \[
-    \hat\Sigma_{g,ij}=\hat\beta_i\hat\beta_j\,s^2_{g,M}+\widehat{\Cov}(\br_i,\br_j)
-  \]
-  so off the diagonal $(\hat{\Sig}-\SigSIM)_{ij}=\widehat{\Cov}(\br_i,\br_j)$
-  exactly, the residual covariances L6a measured; on the diagonal only $N-1$
-  versus $N-2$ on the residual term, $-\lVert\br_i\rVert_2^2/[(N-1)(N-2)]$, a
-  factor of about $1.0004$.
-\end{frame}
-
-\begin{frame}{Where the SIM Covariance Errs, and Positive Definiteness}
-  The SIM covariance error is not a vague approximation: it is the residual
-  covariance, pair by pair, with the sign structure L6a found.
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item Same industry: positively correlated residuals (banks with banks by
-      several tenths; automakers; semiconductor firms). The SIM
-      \hilite{understates} their correlation.
-    \item Technology firms with banks: negatively correlated residuals, two or
-      three tenths. The SIM \hilite{overstates} their correlation.
-    \item The SIM correlation matrix has one pattern, off the diagonal
-      $\hat\beta_i\hat\beta_j s^2_{g,M}$ over the two total standard deviations,
-      so no blocks; the data have blocks.
-  \end{itemize}
+  With an intercept, $R^2$ is the squared sample correlation, an estimate of
+  $\rho_{iM}^2$.
 
   \vspace{0.3em}
-  \hilite{Positive definiteness}: for any $\mathbf x$,
-  $\mathbf x^{\top}\SigSIM\mathbf x=s^2_{g,M}(\hat{\bbe}^{\top}\mathbf x)^2+\sum_i s^2_{g,\varepsilon,i}x_i^2\ge0$;
-  positive definite whenever every residual variance is positive (sufficient,
-  not necessary). It is what the closed forms need; it says nothing about
-  whether the matrix describes future co-movement.
+  \hilite{How precise are the estimates?} Assuming the errors are uncorrelated
+  across days with constant variance:
+  \[
+    s^2_{g,\varepsilon,i}=\frac{\lVert\br\rVert_2^2}{N-2},\qquad
+    \widehat{\Cov}\bigl(\hat{\bth}_i\bigr)=s^2_{g,\varepsilon,i}\left(\bX^{\top}\bX\right)^{-1}
+  \]
+  The standard errors are the square roots of the diagonal. Each has its
+  parameter's units, and smaller values mean more precise estimates. With
+  thousands of daily observations, a 95\% interval is the estimate plus or
+  minus about 1.96 standard errors.
 \end{frame}
 
-% ==== risky-only =============================================
-\begin{frame}{Risky Asset Portfolios using Single Index Models}
-  L5b's long-only problem with SIM inputs, for a target growth rate $g_\star$:
+\begin{frame}{What If We Had Another Dataset?}
+  The bootstrap answers this by simulation:
+
+  \vspace{0.5em}
+  \textbf{Initialization:} Given $\bX$, the estimates $\hat{\bth}_i$, the
+  residuals $\br$, and the number of samples $K$, fit a normal distribution to
+  the residuals.
+
+  \vspace{0.5em}
+  For each $k=1,2,\dots,K$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.4em}
+    \item Draw synthetic residuals $\beps^{(k)}$ from the fitted normal distribution.
+    \item Create synthetic observations: $\by^{(k)}\gets\bX\hat{\bth}_i+\beps^{(k)}$.
+    \item Estimate parameters from them:
+      $\hat{\bth}^{(k)}\gets\left(\bX^{\top}\bX\right)^{-1}\bX^{\top}\by^{(k)}$.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  Compare the spread of $\hat{\bth}^{(1)},\dots,\hat{\bth}^{(K)}$ with the
+  standard errors.
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}}
+\end{frame}
+
+% ==== minimum-variance portfolios with SIM inputs ============
+\begin{frame}{The Covariance Implied by a SIM}
+  Stacking the SIM gives $\bg=\bal+\bbe\,g_M+\beps$. Under the three assumptions:
   \[
-    \boxed{\begin{aligned}
-      \min_{\bw}\ &\bw^{\top}\SigSIM\bw
-        =\underbrace{s^2_{g,M}(\hat{\bbe}^{\top}\bw)^2}_{\text{market risk}}
-        +\underbrace{\textstyle\sum_i s^2_{g,\varepsilon,i}w_i^2}_{\text{residual risk}}\\
-      \text{s.t.}\ &\gSIM^{\top}\bw\ge g_\star,\qquad \mathbf 1^{\top}\bw=1,\qquad 0\le w_i\le1
+    \boxed{
+    \begin{aligned}
+      \bmu&=\bal+\bbe\,\mu_{g,M}
+        &&\quad\text{mean growth rates}\\
+      \Sig&=\underbrace{\sigma^2_{g,M}\,\bbe\bbe^{\top}}_{\text{market}}
+        +\underbrace{\Dg}_{\text{residual}}
+        &&\quad\text{growth-rate covariance}
     \end{aligned}}
   \]
-
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Market term depends on the weights only through the portfolio beta;
-      the residual term is a weighted sum of squares that diversification
-      shrinks.
-    \item The target is a floor: sweeping $g_\star$ from the GMV growth rate
-      upward traces the GMV portfolio and the efficient branch, same convex
-      quadratic program, same package.
+  where $\mu_{g,M}=\E[g_M]$, $\sigma^2_{g,M}=\Var(g_M)$, and
+  $\Dg=\operatorname{diag}(\sigma^2_{g,\varepsilon,1},\dots,\sigma^2_{g,\varepsilon,\np})$.
+  Off the diagonal, $\Cov(g_i,g_j)=\beta_i\beta_j\,\sigma^2_{g,M}$.
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Fewer parameters}: $2\np+1$ numbers instead of
+      $\np(\np+1)/2$. For the S\&P 500, about a thousand instead of more than a
+      hundred thousand.
+    \item \hilite{What is assumed away}: covariance between residuals. Most
+      residual correlations are near zero, but some bank pairs exceed 0.6.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Same Means, Different Covariance: Regret}
-  The mean vectors agree, so \hilite{every difference between the two frontiers
-  is a residual covariance}. For the same weights (ordered pairs):
+\begin{frame}{Portfolio Risk under a SIM}
+  For fixed weights $\bw$, the portfolio growth rate $g_p=\bw^{\top}\bg$ follows
+  a SIM with portfolio beta $\beta_p=\bw^{\top}\bbe$. Its variance is:
   \[
-    \bw^{\top}\SigSIM\bw=\bw^{\top}\hat{\Sig}\bw
-      -\sum_{i\ne j}w_iw_j\,\widehat{\Cov}(\br_i,\br_j)
-      +\sum_i\frac{\lVert\br_i\rVert_2^2}{(N-1)(N-2)}\,w_i^2
+    \boxed{\Var(g_p)=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
+      +\underbrace{\sum_{i\in\mathcal P}w_i^2\,\sigma^2_{g,\varepsilon,i}}_{\text{residual risk}}}
   \]
-  The SIM \hilite{understates} variance where the held residuals correlate
-  positively and \hilite{overstates} it where they correlate negatively. The
-  honest comparison evaluates the SIM weights under the data covariance at the
-  same target: the \hilite{regret}
-  $\bw_{\mathrm{SIM}}(g_\star)^{\top}\hat{\Sig}\,\bw_{\mathrm{SIM}}(g_\star)-\bw(g_\star)^{\top}\hat{\Sig}\,\bw(g_\star)\ge0$,
-  because the data-optimal weights minimize exactly that quantity. Example 1: a
-  variance regret of $0.01$ to $1.2$, a gap of a few thousandths to a tenth of a
-  standard-deviation unit; nearly the same firms, weights up to seven points apart.
-  \slidenote{Example 1:}{\dimmed{CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Market risk}: depends on the weights only through $\beta_p$.
+      Adding assets with the same market exposure does not reduce it.
+    \item \hilite{Residual risk}: with equal weights $w_i=1/\np$ and every
+      residual variance below $\bar\sigma^2$, it is at most $\bar\sigma^2/\np$.
+    \item \hilite{Diversification}: with uncorrelated residuals, spreading the
+      weights drives residual risk toward zero and leaves the market risk set
+      by $\beta_p$.
+  \end{itemize}
 \end{frame}
 
-% ==== risky + risk-free ======================================
-\begin{frame}{Risky and Risk-Free Asset Portfolios using Single Index Models}
-  Add L5b's risk-free asset: growth rate $g_f$, zero variance over the matched
-  horizon (a bill or a STRIP held to maturity; sold earlier it carries L2b's
-  rate risk). Risk-free fraction $w_f$, risky weights $\bw$, $w_f+\mathbf 1^{\top}\bw=1$.
-  The problem the package solves:
+\begin{frame}{Estimated SIM Portfolio Inputs}
+  Substituting the estimates for the population quantities gives the SIM inputs:
   \[
-    \boxed{\min_{\bw}\ \bw^{\top}\SigSIM\bw\quad\text{s.t.}\quad
-      \gSIM^{\top}\bw+\underbrace{(1-\mathbf 1^{\top}\bw)}_{w_f}\,g_f\ge g_\star,\qquad
-      0\le w_i\le1}
+    \boxed{\gSIM=\hat{\bal}+\hat{\bbe}\,g'_M,\qquad
+      \SigSIM=s^2_{g,M}\,\hat{\bbe}\hat{\bbe}^{\top}+\hat{\mathbf D}_g}
   \]
-
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item Only the risky weights carry variance and only they are bounded;
-      \hilite{$w_f$ is not sign-constrained}: $w_f<0$ borrows at $g_f$, and the
-      package allows it.
-    \item Eliminating $w_f$: a constraint on the \hilite{excess} growth rate,
-      $(\gSIM-g_f\mathbf 1)^{\top}\bw\ge g_\star-g_f$.
+  where $g'_M$ and $s^2_{g,M}$ are the market's sample mean and variance, and
+  $\hat{\mathbf D}_g$ holds the residual variances, all from the training days.
+  Compared with the L6a inputs:
+  \begin{itemize}\setlength{\itemsep}{0.25em}
+    \item \hilite{The SIM mean vector is the sample-mean vector}: a least-squares
+      line with an intercept passes through the sample means $\bg'$, so $\gSIM=\bg'$.
+    \item \hilite{The SIM covariance drops the residual covariances}: off the
+      diagonal, the sample covariance $\Sg$ splits as
+      $\hat\Sigma_{g,ij}=\hat\beta_i\hat\beta_j\,s^2_{g,M}+\widehat{\Cov}(\br_i,\br_j)$,
+      and the SIM keeps the first term. On the diagonal, the two differ only by
+      $(N-1)/(N-2)\approx1$ on the residual variance.
   \end{itemize}
+  Every residual variance is positive, so $\SigSIM$ is positive definite and
+  every feasible allocation problem has a unique solution.
+\end{frame}
+
+\begin{frame}{The Long-Only Problem with SIM Inputs}
+  SIM-1 is L6a's long-only problem with SIM inputs and a floor $g_\star$ (year$^{-1}$):
+  \[
+    \boxed{
+    \begin{aligned}
+      \underset{\bw}{\text{minimize}}\quad
+        &\underbrace{s^2_{g,M}\bigl(\hat{\bbe}^{\top}\bw\bigr)^2}_{\text{market risk}}
+        +\underbrace{\textstyle\sum_{i}s^2_{g,\varepsilon,i}\,w_i^2}_{\text{residual risk}}
+        &&\quad\text{minimize }\bw^{\top}\SigSIM\bw\\
+      \text{subject to}\quad &\gSIM^{\top}\bw\ge g_\star
+        &&\quad\text{meet or exceed the growth target}\\
+      &\bone^{\top}\bw=1
+        &&\quad\text{weights sum to one}\\
+      &0\le w_i\le1,\quad i\in\mathcal P
+        &&\quad\text{exclude short positions}.
+    \end{aligned}}
+  \]
+  This is L6a's LO-1 with a different covariance and the same means. Sweeping
+  $g_\star$ up from the long-only GMV growth rate traces the efficient frontier.
+  We compare both allocations under one covariance, then on 2025 prices.
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}}
+\end{frame}
+
+% ==== risk-free asset ========================================
+\begin{frame}{Adding a Risk-Free Asset}
+  A \hilite{risk-free asset} has a known growth rate $g_f$ (year$^{-1}$) and zero
+  variance over the holding period, such as a Treasury bill held to maturity:
+
+  \begin{columns}[c]
+    \begin{column}{0.56\textwidth}
+      \includegraphics[width=\textwidth]{../figs/capital-allocation-line/cal.pdf}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\setlength{\itemsep}{0.5em}
+        \item \hilite{Capital allocation line (CAL)}: mixing the risk-free asset
+          with a risky portfolio gives a straight line from $(0,g_f)$ through
+          that portfolio.
+        \item \hilite{Tangent portfolio} $\Tan$: the steepest such line touches
+          the efficient frontier at $\Tan$.
+        \item \hilite{Lending and borrowing}: points before $\Tan$ lend at $g_f$,
+          and points beyond it borrow at $g_f$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Capital Allocation Line}
+  Put a fraction $w_f$ of wealth in the risk-free asset and $1-w_f$ in a risky
+  portfolio $p$ with $\sigma_{g,p}>0$. The \hilite{complete portfolio} $c$ has:
+  \[
+    \E[g_c]=g_f+(1-w_f)\bigl(\E[g_p]-g_f\bigr),\qquad
+    \sigma_{g,c}=|1-w_f|\,\sigma_{g,p}
+  \]
+  For $w_f\le1$, substituting $1-w_f=\sigma_{g,c}/\sigma_{g,p}$ gives the
+  \hilite{capital allocation line}:
+  \[
+    \boxed{\E[g_c]=g_f+\underbrace{\frac{\E[g_p]-g_f}{\sigma_{g,p}}}_{\text{Sharpe ratio }\SR_p}\,\sigma_{g,c}}
+  \]
+  We lend for $0<w_f<1$, hold $p$ alone for $w_f=0$, and borrow for $w_f<0$.
+  For daily data, the slope is a one-day Sharpe ratio.
+  \slidenote{Annualized:}{Under L5b's model of independent increments,
+    $\SR_p^{\mathrm{annual}}=\sqrt{\tau/\Delta t}\,\SR_p\approx15.9\,\SR_p$
+    for $\tau=1$ year and $\Delta t=1/252$ years
+    (\href{https://web.stanford.edu/~wfsharpe/art/sr/SR.htm}{Sharpe, 1994}).}
+\end{frame}
+
+\begin{frame}{The Tangent Portfolio}
+  The \hilite{tangent portfolio} $\Tan$ maximizes the Sharpe ratio. Let $\Sig$
+  be positive definite, let the GMV portfolio's expected growth exceed $g_f$,
+  and define $\be=\bmu-g_f\bone$. With short positions allowed, solve:
+  \[
+    \underset{\bw}{\text{maximize}}\quad\frac{\be^{\top}\bw}{\sqrt{\bw^{\top}\Sig\bw}}
+    \qquad\text{subject to}\quad\bone^{\top}\bw=1
+    \tag{T-1}
+  \]
+  At a stationary point, $\Sig\bw=\bigl(\bw^{\top}\Sig\bw/\be^{\top}\bw\bigr)\,\be$,
+  so the weights point in the direction $\Sig^{-1}\be$. Requiring them to sum
+  to one gives:
+  \[
+    \boxed{\bw_{\Tan}=\frac{\Sig^{-1}\left(\bmu-g_f\bone\right)}
+      {\bone^{\top}\Sig^{-1}\left(\bmu-g_f\bone\right)}}
+    \tag{T-3}
+  \]
+  With long-only weights, there is no closed form, so we solve numerically.
+\end{frame}
+
+\begin{frame}{Two-Fund Separation}
+  The steepest CAL separates choosing a risky portfolio from choosing how much
+  risk to take. Mean-variance investors with the same inputs and risk-free rate
+  hold the \hilite{same risky fund} $\Tan$, combined with the risk-free asset.
+  Their risk preferences set $w_f$
+  (\href{https://doi.org/10.2307/2296205}{Tobin, 1958}).
+
+  \vspace{0.6em}
+  Real investors face limits on how they finance their positions:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long-only weights}: the risky fund is the long-only
+      maximum-Sharpe portfolio, and investors still choose $w_f$.
+    \item \hilite{No borrowing} ($w_f\ge0$): the efficient boundary follows the
+      CAL up to $\Tan$, then the risky efficient frontier.
+    \item \hilite{Costlier borrowing}: a borrowing rate above $g_f$ gives
+      borrowers a flatter line through a different risky portfolio.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Risky and Risk-Free Allocation with SIM Inputs}
+  Choose the risky weights $\bw$ and put the rest, $w_f=1-\bone^{\top}\bw$, in
+  the risk-free asset. For a target $g_\star>g_f$ (year$^{-1}$), problem SIM-2 is:
+  \[
+    \boxed{
+    \begin{aligned}
+      \underset{\bw}{\text{minimize}}\quad &\bw^{\top}\SigSIM\bw
+        &&\quad\text{minimize growth-rate variance}\\
+      \text{subject to}\quad
+        &\gSIM^{\top}\bw+\underbrace{\bigl(1-\bone^{\top}\bw\bigr)}_{w_f}g_f\ge g_\star
+        &&\quad\text{meet or exceed the growth target}\\
+      &0\le w_i\le1,\quad i\in\mathcal P
+        &&\quad\text{exclude short positions}.
+    \end{aligned}}
+  \]
+  The fraction $w_f$ has no sign constraint, so $w_f<0$ means borrowing at $g_f$.
+
+  \vspace{0.4em}
+  Eliminating $w_f$ gives the excess-growth constraint
+  $(\gSIM-g_f\bone)^{\top}\bw\ge g_\star-g_f$.
 \end{frame}
 
 \begin{frame}{The Solutions Lie on a Ray}
-  Scale the risky weights by a positive constant: excess growth scales by it,
-  variance by its square, $w_i\ge0$ unchanged. So, for feasible $g_\star>g_f$
-  ($\SigSIM\succ0$, so the minimizer is unique) and until an upper bound
-  $w_i\le1$ binds, the minimizers are \hilite{one risky direction} scaled by the target. With $\bw_{\Tan}$ the point on the ray with
-  $\mathbf 1^{\top}\bw=1$ ($w_f=0$):
+  Scaling $\bw$ by $c>0$ scales the excess growth by $c$ and the variance by
+  $c^2$. So, until a bound $w_i\le1$ binds, every target selects the same risky
+  direction:
   \[
     \boxed{\bw(g_\star)=(1-w_f)\,\bw_{\Tan},\qquad
-      1-w_f=\frac{g_\star-g_f}{\E[g_{\Tan}]-g_f}}
+      1-w_f=\frac{g_\star-g_f}{\gSIM^{\top}\bw_{\Tan}-g_f}}
+    \tag{SIM-3}
   \]
+  where the long-only tangent portfolio, $\bw_{\Tan}=\bw/\bone^{\top}\bw$, is
+  any solution rescaled to sum to one.
 
-  \vspace{0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item Below $\E[g_{\Tan}]$: lend ($0<w_f<1$). Above: borrow ($w_f<0$). Valid
-      until $(1-w_f)\max_i w_{\Tan,i}=1$, then the boundary kinks.
-    \item $\bw_{\Tan}=\bw/\mathbf 1^{\top}\bw$ from \hilite{any} solution on the
-      ray (at $g_\star=g_f$ the solution is $\mathbf 0$).
-    \item Example 2 sweeps the target, checks every normalized solution is the
-      same vector, and reads $\bw_{\Tan}$ off the ray: the tangent portfolio of
-      L5b.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{The Picture}
-  \begin{center}
-    \includegraphics[height=0.62\textheight,keepaspectratio]{../figs/Fig-MinVar-RiskFree-Schematic.png}
-  \end{center}
-  \vspace{-0.4em}
-  Portfolio 1 is the tangent portfolio $\Tan$, portfolio 2 the GMV portfolio;
-  the CAL runs from $(0,g_f)$ through $\Tan$; the dashed lower branch is
-  dominated.
-\end{frame}
-
-\begin{frame}{The Capital Allocation Line and the Tangent Portfolio (Recall)}
-  L5b: mixing a risky portfolio $p$ ($\E[g_p]$, $\sigma_{g,p}>0$) with fraction
-  $w_f$ risk-free gives $\E[g_c]=g_f+(1-w_f)(\E[g_p]-g_f)$ and
-  $\sigma_{g,c}=|1-w_f|\,\sigma_{g,p}$; eliminating $w_f$ (for $w_f\le1$) gives
-  the \hilite{capital allocation line} $\E[g_c]=g_f+\mathrm{SR}_p\,\sigma_{g,c}$,
-  a line from $(0,g_f)$ through $p$ whose slope is the Sharpe ratio
-  $\mathrm{SR}_p=(\E[g_p]-g_f)/\sigma_{g,p}$.
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item A steeper line is better at every risk: hold the risky portfolio with
-      the largest Sharpe ratio, the \hilite{tangent portfolio} $\Tan$; its CAL
-      touches the frontier at $\Tan$.
-    \item The ray \hilite{is} that CAL: least variance per unit of excess growth
-      is the largest Sharpe ratio, so the ray's direction is the long-only
-      maximum-Sharpe portfolio (Example 2 checks it against the frontier).
-    \item Under SIM inputs, with $\hat\beta_{\Tan}=\hat{\bbe}^{\top}\bw_{\Tan}$:
-      $\mathrm{SR}_{\Tan}=\bigl(\hat{\bal}^{\top}\bw_{\Tan}+\hat\beta_{\Tan} g'_M-g_f\bigr)\big/
-      \sqrt{s^2_{g,M}\hat\beta_{\Tan}^2+\bw_{\Tan}^{\top}\hat{\Dg}\bw_{\Tan}}$.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Closed Form and Sharpe Conventions (Recall)}
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Closed form} (shorts allowed, $\SigSIM\succ0$, GMV portfolio
-      earns more than $g_f$): $\bw_{\Tan}\propto\SigSIM^{-1}(\gSIM-g_f\mathbf 1)$
-      normalized to sum to one; the rank-one-plus-diagonal structure gives the
-      inverse in closed form (notes). Long-only: no closed form; the ray or the
-      frontier sweep.
-    \item \hilite{Which Sharpe ratio}: with $\sigma_{g,p}$ in the denominator it
-      is the CAL slope in growth-rate units, a one-observation-interval quantity.
-      Dividing by the volatility $\sqrt{\Delta t}\,\sigma_{g,p}$ ($\Delta t$ the
-      observation interval in years) gives the
-      \hilite{annualized} value $\mathrm{SR}_p/\sqrt{\Delta t}$, larger by
-      $\sqrt{252}\approx15.9$. Same ranking; from here on the course quotes
-      annualized.
-    \item Example 2: about $1.3$ annualized for both the SIM and the data-driven
-      tangent portfolios on the training data; both hold the same three
-      high-growth technology names, the SIM version less concentrated plus a
-      small semiconductor position.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Separation, and What Breaks It}
-  With one financing rate and no risk-free-leg or dollar constraints, investors
-  sharing the inputs hold one tangent fund and vary only $w_f$ (Tobin, L5b).
-  Long-only bounds on the risky proportions preserve this result. What breaks it:
-  \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{No borrowing} ($w_f\ge0$): truncates the CAL at $\Tan$; above
-      it the efficient boundary generally follows the risky frontier. The package
-      does not impose this restriction.
-    \item \hilite{Position bounds} ($w_i\le u$): kink the ray where they bind and
-      curb extreme, mean-sensitive weights; robustness must be tested.
-    \item \hilite{Higher borrowing rate}: a fixed fund gets a flatter ray at
-      $\Tan$; reoptimization generally yields another borrowing tangent, with a
-      risky-frontier segment between the two.
-  \end{itemize}
-  \slidenote{Example 2:}{\dimmed{CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}}
-\end{frame}
-
-% ==== what changes, how to check =============================
-\begin{frame}{What the SIM Inputs Change, and How to Check}
+  \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item The SIM does \hilite{not} change the reward input; it replaces the
-      sample covariance by a rank-one-plus-diagonal matrix that omits the
-      residual covariances, with $2\np+1$ numbers instead of $\np(\np+1)/2$.
-    \item Where most residual correlations are small (median $0.14$ here, a few
-      industry pairs $0.6$ to $0.7$) that costs little in sample: nearly the same
-      assets, weights up to seven points apart, a standard-deviation gap of at
-      most a tenth. It bites for two banks or two share classes of one firm.
-    \item What it buys is not visible with thirteen firms: with hundreds of
-      assets and a few years of daily data the sample covariance has more
-      parameters than the data pin down and its inverse amplifies noise (L5b
-      advanced); the SIM covariance is a few numbers per asset, always
-      positive semidefinite, interpretable. Whether that helps out of sample is
-      an empirical question about the universe.
+    \item Targets below $\gSIM^{\top}\bw_{\Tan}$ lend ($0<w_f<1$).
+    \item Targets above it borrow ($w_f<0$).
   \end{itemize}
-\end{frame}
 
-\begin{frame}{Checking: Freeze, Test, Read for What It Is}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Freeze} everything on the training window: universe, SIM
-      parameters, market moments, $g_f$ at the decision date, weights.
-    \item \hilite{Test} the frozen weights with the buy-and-hold wealth rule on
-      the test year, next to baselines: equal weights, the GMV portfolio, an
-      index fund.
-    \item \hilite{Read} it as one year, one draw, one universe. The paired SIM
-      and data-driven portfolios earned nearly the same 2025 wealth: the input
-      sets selected nearly the same portfolios, and one year cannot rank them
-      (the gap is far smaller than the sampling error). Realized risk of the
-      complete portfolios scaled almost exactly with $1-w_f$ (buy-and-hold
-      drifts, so not exactly);
-      realized growth did not match the model, whose least certain input is the
-      tangent portfolio's growth.
-    \item Narrow beta intervals do not imply stable weights: propagating L6a's
-      parameter uncertainty into the weights is the advanced notebook, and the
-      question to ask before trading.
-  \end{itemize}
+  \vspace{0.3em}
+  The estimation-risk notebook asks how much these allocations move when the
+  inputs change.
+  \slidenote{Example 4:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.4em}
-  {\normalsize\textbf{\ink{Advanced:}} \dimmed{advanced/uncertainty/}\par
-  \dimmed{CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb}}
+  These notebooks extend today's material. The
+  \href{\repo/advanced/README.md}{advanced index} gives a suggested order.
 
-  \vspace{0.7em}
-  Optional, not a prerequisite for L7a. Bootstraps the SIM parameters of a
-  six-firm universe two ways (empirical residuals and Gaussian innovations),
-  keeps each asset's joint draw of intercept, beta, and residual scale, rebuilds
-  the SIM covariance for every draw, and reads the distributions of a fixed
-  unconstrained minimum-variance portfolio's growth-rate standard deviation, allocation
-  distance, and variance regret.
-  \slidenote{Notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-6/L6b/advanced}{lectures/week-6/L6b/advanced}, also linked from the lecture notebook.}
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \href{\repo/advanced/sim/CHEME-5660-L6b-Advanced-SIM-Theory-Fall-2026.ipynb}{SIM estimation theory}:
+      the ridge estimator, its covariance, and the two bootstraps.
+    \item \href{\repo/advanced/diagnostics/CHEME-5660-L6b-Advanced-SIM-Diagnostics-Fall-2026.ipynb}{Residual diagnostics and two bootstrap methods}:
+      heavy tails, dependence, and autocorrelation-consistent standard errors.
+    \item \href{\repo/advanced/uncertainty/CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb}{SIM parameter uncertainty in portfolios}:
+      rebuild the SIM covariance for each bootstrap draw.
+    \item \href{\repo/advanced/estimation-risk/CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb}{Estimation risk in portfolio weights}:
+      resample the growth data and compare GMV and tangent portfolios on 2025 prices.
+    \item \href{\repo/advanced/data-risk-free/CHEME-5660-L6b-Advanced-Data-MinVar-RiskFree-Fall-2026.ipynb}{Data-driven portfolios with a risk-free asset}:
+      approximate the tangent portfolio from sample estimates.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Summary}
-  Today: the SIM inputs for a portfolio, L5b's allocation problems with them,
-  the CAL and separation as the package computes them, and the comparison in
-  and out of sample.
-
-  \vspace{0.1em}
-  {\large\textbf{\ink{Key takeaways}}}
-  \vspace{0.05em}
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{The SIM changes only the covariance, and we know how}: same
-      sample means; sample covariance minus the off-diagonal residual covariances.
-    \item \hilite{One risky answer for every risk-free fraction}: a free $w_f$
-      makes the constraint one on excess growth, every target scales one
-      direction by $1-w_f$, and the fully invested point is the tangent portfolio;
-      bounds or no borrowing kink or truncate the ray, while a higher borrowing
-      rate generally introduces a second tangent risky fund.
-    \item \hilite{Regret in sample, frozen weights out of sample}: SIM weights
-      under the data covariance can only lose, and by little here; one test year
-      checks weights without ranking input sets.
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Factor models and the single index model}: we introduced factor
+      models, such as the CAPM and the Fama--French model, and kept one market
+      factor to get the SIM. We estimated beta, which measures systematic risk
+      relative to the market, with its uncertainty and fit.
+    \item \hilite{Portfolio inputs from a factor model}: we built the covariance
+      from betas and residual variances, with far fewer parameters than a full
+      covariance matrix. The SIM means equal the sample means, so the two
+      portfolios differ mainly through the omitted residual covariances.
+    \item \hilite{Risk-free allocation and the tangent portfolio}: we derived the
+      capital allocation line and the tangent portfolio, the risky fund with the
+      largest Sharpe ratio. Lending and borrowing set how much we hold of that
+      fund, and financing limits can change which risky fund we hold.
   \end{itemize}
-  Next, L7a: a utility-based rebalancing engine, preferences recomputed daily.
+  In L7a and L7b, we turn to utility-based allocation, rebalancing, and updating
+  the SIM parameters as new data arrive.
 \end{frame}
 
-\transitionframe{Today: the same means, a covariance you can write the error of, and one risky answer for every risk-free fraction.}
+\transitionframe{Next: turn SIM parameters into daily preferences and rebalance the portfolio.}
 
 \end{document}
