@@ -348,8 +348,8 @@
   has the same estimated expected growth.
 \end{frame}
 
-\begin{frame}{Minimum Variance at a Growth Target}
-  Define four scalars from the sample means and covariance matrix:
+\begin{frame}{Optimal Weights at an Exact Growth Target}
+  For $(\bg')^{\top}\bw=g_\star$ with short positions allowed, define:
   \[
     \begin{aligned}
       a&=\bone^{\top}\Sig^{-1}\bone,
@@ -358,7 +358,23 @@
         & d&=ac-b^2>0.
     \end{aligned}
   \]
-  The smallest variance at target $g_\star$, in year$^{-2}$, is:
+  The unique minimizing weights are:
+  \[
+    \boxed{\bw_\star(g_\star)
+      =\frac{c-bg_\star}{d}\,\Sig^{-1}\bone
+      +\frac{ag_\star-b}{d}\,\Sig^{-1}\bg'.}
+  \]
+  These weights sum to one and meet the growth target exactly.
+
+  \vspace{0.4em}
+  When $g_\star=b/a$, the second term vanishes and we recover the GMV
+  weights, $\bw_{\mathrm{GMV}}=\Sig^{-1}\bone/a$.
+  \slidenote{Derivation:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/advanced/target-growth-derivation/CHEME-5660-L6a-Derivation-TargetGrowth-Fall-2026.ipynb}{Complete target-growth derivation companion}}
+\end{frame}
+
+\begin{frame}{Minimum Variance at a Growth Target}
+  Using the same coefficients, the smallest variance at target $g_\star$,
+  in year$^{-2}$, is:
   \[
     \boxed{\sigma_g^2(g_\star)
       =\frac{a g_\star^2-2b g_\star+c}{d}
