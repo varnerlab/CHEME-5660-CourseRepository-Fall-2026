@@ -1,0 +1,55 @@
+{
+  "updated": "2026-09-29",
+  "source_commit": "39d60e7e47d9531d5bc1a41ba301fd6584330515",
+  "scope": "Main lectures through L6b; optional and worked-example-only notation excluded",
+  "sources": [
+    {
+      "path": "lectures/week-1/L1a/slides/CHEME-5660-L1a-Slides-Fall-2026.tex",
+      "sha256": "f4b5970c3891acd8df3d5b5cac472598c183d88f58b497f9a3442b78ce604450"
+    },
+    {
+      "path": "lectures/week-1/L1b/CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb",
+      "sha256": "4b635cbb34ea8f2ca997cbd2f810db17718ac81381f16d0ebf85a37dc21da984"
+    },
+    {
+      "path": "lectures/week-2/L2a/CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb",
+      "sha256": "2e881800a4042d58d94f33fdeeca4cea770296cb159b7c968710c5888ddf5651"
+    },
+    {
+      "path": "lectures/week-2/L2b/CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb",
+      "sha256": "fa8998039b1fd8f48230f03f31cb4f18ffe39014d469d2cdb29e3dae71bd586a"
+    },
+    {
+      "path": "lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb",
+      "sha256": "7a956aba609b624bf4218c5906972dd0f1c010c21b8943ddadf8268a69533406"
+    },
+    {
+      "path": "lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb",
+      "sha256": "2543f52072a24d65b746763ac8fd47074efe6507e2bc09ca0b26fd2090204377"
+    },
+    {
+      "path": "lectures/week-4/L4a/CHEME-5660-L4a-Lecture-LatticeModel-TradeRule-Fall-2026.ipynb",
+      "sha256": "2789b79997ad3cf9d6ff32a660a5e9f48d716717f8790bd758401820983a9afa"
+    },
+    {
+      "path": "lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb",
+      "sha256": "9b34c8ce269b58501c29627bbb3e777ae66f8a7cb3a7b277b1871e24f6f1f3f5"
+    },
+    {
+      "path": "lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb",
+      "sha256": "c336b64e4021eb93e443caf4ad78f7dc1ec42dcfd24ef5aa28192d9262902dca"
+    },
+    {
+      "path": "lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb",
+      "sha256": "c0b4bcf5f2f1aa44a1f2653aab6eda657d494d70d8e92bbce004736e33a32171"
+    },
+    {
+      "path": "lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb",
+      "sha256": "d96398eb8135a67da60a5a427b3d9c261fd41854793b0a12198dd50adadc2bc7"
+    },
+    {
+      "path": "lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb",
+      "sha256": "f2cbd1e08f0532c36bf5cd55d6171273164e8b2f69aba1c869aab30b7bce3b6a"
+    }
+  ]
+}

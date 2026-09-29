@@ -1,0 +1,14 @@
+{
+  "source_lecture": "L3a, Volatility Clustering",
+  "reuse": "Unmodified copies of the existing lecture SVG and PDF; no new plot or schematic.",
+  "sources": [
+    {
+      "path": "lectures/week-3/L3a/figs/Fig-L3a-AMD-Volatility-Clustering.svg",
+      "sha256": "eb649e13701d5d3f74920c2820e5e61cf36fc9cf04847e949a470490fab8f581"
+    },
+    {
+      "path": "lectures/week-3/L3a/figs/Fig-L3a-AMD-Volatility-Clustering.pdf",
+      "sha256": "28f652e4b7c12436229edc9c0e793e402155e8873e49bd728f1ec2c10ee647ae"
+    }
+  ]
+}

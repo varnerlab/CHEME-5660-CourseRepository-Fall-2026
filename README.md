@@ -39,6 +39,14 @@ There are two ways to use the course materials:
 Problem sets and the practicum are distributed through separate repositories; see
 [Assignments and practicum](#assignments-and-practicum) below.
 
+## Running course reference
+
+The [nomenclature notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.ipynb)
+and its [PDF](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf) collect symbols,
+definitions, units, and lecture context from the main lectures through Week 6.
+We will extend this reference as the course progresses. It can be read on its own
+without running code or installing the course environment.
+
 ## One-time setup
 
 The supported environment is Julia 1.12 in VS Code with the Julia and Jupyter
