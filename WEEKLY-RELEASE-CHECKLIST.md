@@ -79,8 +79,9 @@ Review `lectures/week-${WEEK_NUMBER}/` before building:
   author-machine paths, and dependency-version messages.
 - Confirm every lecture and example notebook has exactly three learning
   objectives and exactly three key takeaways.
-- Use `___` only immediately before a new level-two heading. Do not place it
-  between level-three subsections or after the final section.
+- Use `___` immediately before each new level-two heading and at the end of the
+  final Disclaimer and Risks section. Do not place it between level-three
+  subsections.
 
 Treat notebook errors, missing resources, repeated dependency-version messages,
 or author-machine paths as release blockers.

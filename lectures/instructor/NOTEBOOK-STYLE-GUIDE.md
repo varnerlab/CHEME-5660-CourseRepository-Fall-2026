@@ -816,8 +816,9 @@ For lecture and example notebooks:
   supported by the notebook's actual content. Use the familiar blockquoted panels
   with bold item labels and explanatory text.
 - Use `___` at major-section boundaries immediately before a new level-two
-  heading, and always end the final Summary with `___`. Do not put it between
-  level-three subsections.
+  heading, and always end the final Summary with `___`. In CHEME 5660, also end
+  the closing Disclaimer and Risks section with `___` (September 29, 2026). Do
+  not put it between level-three subsections.
 - Use a descriptive title and introduction, an appropriate section hierarchy, and
   a closing Summary. Computational notebooks need useful setup and task guidance;
   a conceptual lecture does not need an artificial setup or task structure.
