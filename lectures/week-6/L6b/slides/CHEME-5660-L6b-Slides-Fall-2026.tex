@@ -30,6 +30,7 @@
 \newcommand{\Tan}{\mathcal{T}}
 \newcommand{\np}{|\mathcal{P}|}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b}
+\newcommand{\repoprev}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a}
 
 \title{\texorpdfstring{{\vnheavy L6b}}{L6b}: Single Index Models, Portfolio Allocation, and a Risk-Free Asset}
 \subtitle{CHEME 5660 Cornell University}
@@ -63,13 +64,15 @@
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Interpret and estimate a single index model (SIM)}: explain how
-      a factor model describes co-movement, interpret alpha, beta, and the
-      residual, and estimate the parameters, their uncertainty, and the fit.
+      a factor model describes the co-movement of growth rates, interpret alpha,
+      beta, and the residual, and estimate alpha and beta with their uncertainty
+      and the model's fit.
     \item \hilite{Build minimum-variance portfolios from SIM inputs}: derive the
       SIM mean vector and covariance matrix, identify the co-movement the model
-      leaves out, and compare the allocations with data-driven portfolios.
-    \item \hilite{Add a risk-free asset}: derive the capital allocation line,
-      compute the tangent portfolio, and explain how lending, borrowing, and
+      leaves out, and compare the allocations with data-driven ones. How
+      different are they, and why?
+    \item \hilite{Add a risk-free asset}: derive the capital allocation line
+      and the tangent portfolio, and explain how lending, borrowing, and
       financing limits affect portfolio choice.
   \end{itemize}
 \end{frame}
@@ -79,28 +82,77 @@
   \href{\repo/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb}{Single Index Models, Portfolio Allocation, and a Risk-Free Asset}
 
   \vspace{0.4em}
+  \textbf{\ink{From L6a:}}
+  \href{\repoprev/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}
+
+  Simulate buy-and-hold wealth and estimate the chance of beating a target NPV.
+
+  \vspace{0.4em}
   \textbf{\ink{Example 1:}}
   \href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}
 
-  Fit one firm, then every firm in the dataset, and save the portfolio inputs.
+  What do alpha and beta tell us? Fit one firm three ways, then every firm.
 
   \vspace{0.4em}
   \textbf{\ink{Example 2:}}
   \href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}
 
-  Compare the classical confidence intervals with 1,000 bootstrap estimates.
+  Refit 1,000 synthetic datasets and compare the estimates with the classical intervals.
 
   \vspace{0.4em}
   \textbf{\ink{Example 3:}}
   \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}
 
-  Compare the inputs, frontiers, holdings, and 2025 performance of both portfolios.
+  Compare the covariances, frontiers, and weights, then test on 2025 prices.
 
   \vspace{0.4em}
   \textbf{\ink{Example 4:}}
   \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}
 
-  Find the tangent portfolio and compare complete portfolios that lend or borrow.
+  Does every target pick the same risky portfolio? Test lending and borrowing in 2025.
+\end{frame}
+
+% ==== concept review =========================================
+\begin{frame}{Concept Review: Estimated Inputs}
+  Which estimated inputs does each L6a allocation depend on?
+
+  \vspace{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item The GMV weights use only the estimated covariance $\Sg$. A growth
+      target or floor also uses the mean growth rates $\bg'$, which are harder
+      to pin down.
+    \item The optimizer treats its inputs as exact, so it favors asset
+      combinations whose variance is underestimated or whose mean growth is
+      overestimated.
+  \end{itemize}
+
+  \vspace{0.6em}
+  We therefore evaluate allocations on prices that were not used to choose them.
+
+  \vspace{0.4em}
+  Today, Examples 3 and 4 test the SIM and risk-free allocations on 2025 prices.
+\end{frame}
+
+\begin{frame}{Concept Review: Wealth and Scaled NPV}
+  Buy $n_i=w_iW_0/S_i(0)$ shares, with $w_i\ge0$ and $\sum_iw_i=1$, and hold
+  them fixed. For a sale after $T$ years at constant benchmark growth rate $g_y$:
+  \[
+    \boxed{
+    \begin{aligned}
+      W_t&=W_0\sum_{i=1}^{M}w_i\frac{S_i(t)}{S_i(0)}
+        &&\quad\text{portfolio value in dollars}\\[0.2em]
+      \rho_T&=\frac{\operatorname{NPV}(g_y,T)}{W_0}=\frac{W_T}{W_0}e^{-g_yT}-1
+        &&\quad\text{discounted gain per dollar invested}.
+    \end{aligned}}
+  \]
+  The sign of $\rho_T$ shows whether the investment beats or trails the
+  benchmark. We allow fractional shares and omit dividends and trading costs.
+
+  \vspace{0.4em}
+  The L6a data example applies $W_t$ to the held-out 2025 prices. The L6a MAGBM
+  example simulates wealth with the fitted model to estimate
+  $\mathbb{P}(\rho_T>\rho_\star)$.
+  \slidenote{From L6a:}{\href{\repoprev/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}}
 \end{frame}
 
 % ==== company profile ========================================
@@ -531,8 +583,8 @@
   \end{itemize}
 
   \vspace{0.3em}
-  The estimation-risk notebook asks how much these allocations move when the
-  inputs change.
+  The estimation-risk notebook asks how much GMV and tangent allocations move
+  when the estimated inputs change.
   \slidenote{Example 4:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
 \end{frame}
 
@@ -543,36 +595,31 @@
 
   \vspace{0.4em}
   \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \href{\repo/advanced/sim/CHEME-5660-L6b-Advanced-SIM-Theory-Fall-2026.ipynb}{SIM estimation theory}:
-      the ridge estimator, its covariance, and the two bootstraps.
     \item \href{\repo/advanced/diagnostics/CHEME-5660-L6b-Advanced-SIM-Diagnostics-Fall-2026.ipynb}{Residual diagnostics and two bootstrap methods}:
-      heavy tails, dependence, and autocorrelation-consistent standard errors.
-    \item \href{\repo/advanced/uncertainty/CHEME-5660-L6b-Advanced-SIM-Portfolio-Uncertainty-Fall-2026.ipynb}{SIM parameter uncertainty in portfolios}:
-      rebuild the SIM covariance for each bootstrap draw.
+      two bootstraps, heavy tails and autocorrelation, and
+      autocorrelation-consistent standard errors.
     \item \href{\repo/advanced/estimation-risk/CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb}{Estimation risk in portfolio weights}:
-      resample the growth data and compare GMV and tangent portfolios on 2025 prices.
-    \item \href{\repo/advanced/data-risk-free/CHEME-5660-L6b-Advanced-Data-MinVar-RiskFree-Fall-2026.ipynb}{Data-driven portfolios with a risk-free asset}:
-      approximate the tangent portfolio from sample estimates.
+      resample trading days, compare GMV and tangent weights, and test the
+      long-only ones on 2025 prices.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Summary}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Factor models and the single index model}: we introduced factor
-      models, such as the CAPM and the Fama--French model, and kept one market
-      factor to get the SIM. We estimated beta, which measures systematic risk
-      relative to the market, with its uncertainty and fit.
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Factor models and the single index model}: we kept one market
+      factor to get the SIM. Beta measures systematic risk, and the residual
+      carries idiosyncratic risk. We estimated alpha and beta, their
+      uncertainty, and the model's fit.
     \item \hilite{Portfolio inputs from a factor model}: we built the covariance
       from betas and residual variances, with far fewer parameters than a full
-      covariance matrix. The SIM means equal the sample means, so the two
-      portfolios differ mainly through the omitted residual covariances.
+      covariance matrix. The means match, so SIM and data-driven portfolios
+      differ mainly through the dropped residual covariances.
     \item \hilite{Risk-free allocation and the tangent portfolio}: we derived the
       capital allocation line and the tangent portfolio, the risky fund with the
-      largest Sharpe ratio. Lending and borrowing set how much we hold of that
-      fund, and financing limits can change which risky fund we hold.
+      largest Sharpe ratio. By two-fund separation, investors with the same
+      inputs hold that fund and lend or borrow to set their risk. Financing
+      limits can change the fund.
   \end{itemize}
-  In L7a and L7b, we turn to utility-based allocation, rebalancing, and updating
-  the SIM parameters as new data arrive.
 \end{frame}
 
 \transitionframe{Next: turn SIM parameters into daily preferences and rebalance the portfolio.}

@@ -2,7 +2,7 @@
 
 These helpers are defined in [EstimationRisk.jl](../src/EstimationRisk.jl) and
 loaded by [Include.jl](../Include.jl). Return to the
-[estimation-risk notebook](../CHEME-5660-L5b-Advanced-EstimationRisk-Fall-2026.ipynb).
+[estimation-risk notebook](../CHEME-5660-L6b-Advanced-EstimationRisk-Fall-2026.ipynb).
 
 All weights are dimensionless. Inputs use the same asset ordering. Covariance
 matrices are assumed symmetric and positive definite.
@@ -37,18 +37,15 @@ and [`solve(...)`](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/d
 functions, with equal weights as the initial guess. Solver failures propagate.
 
 <a id="tangent_long_only"></a>
-## `tangent_long_only(g, Σ, g_f; number_of_points::Int = 31)`
+## `tangent_long_only(g, Σ, g_f)`
 
-Inputs have the dimensions and units above; `number_of_points` is the number
-of target floors and must be at least two. Return the largest-Sharpe allocation
-among the long-only GMV portfolio and successfully solved frontier candidates.
-The target grid starts at the GMV mean and ends at `maximum(g) - 1e-4` inverse
-years. The supplied data give an increasing target range. This is a grid
-approximation, not an exact maximum-Sharpe optimization.
-
-The baseline GMV solve must succeed. A sweep point is skipped when the package
-solver raises an `AssertionError`; other exceptions propagate. Negative and
-positive weight tolerances are those of the package solver.
+Inputs have the dimensions and units above, and at least one mean must exceed
+`g_f`. Return the long-only tangent portfolio: the fully invested allocation with
+weights between zero and one that has the largest Sharpe ratio. Following the
+L6b lecture (SIM-3), the function solves the risky and risk-free problem once, at
+the growth target `(g_f + maximum(g))/2`, and rescales the risky weights to sum
+to one. It asserts that no risky weight sits at its upper bound, where the
+rescaling would not apply.
 
 
 <a id="hyperbola"></a>

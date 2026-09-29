@@ -419,6 +419,166 @@
   holds the conventions, the validation, and the items that need code edits.
   Syntax-tree checks confirm that only comments and docstrings changed.
 
+## Completed L6b slides review
+
+- The instructor marked the L6b slides reviewed September 28, 2026, after a
+  same-day pass over the lecture's objectives, example and advanced
+  descriptions, and key takeaways (approved "as shown") and a deck sync with the
+  bullets tightened to fit. The [saved review record](lectures/instructor/L6b-SLIDES-REVIEW-HANDOFF.md)
+  holds the snapshot hashes, the lecture changes, the five synced frames, and
+  the deliberately shortened Summary slide (no closing line). The lecture and deck edits are not yet
+  committed: the instructor deferred the commit until the L6b example notebooks
+  are reviewed. No proposals remain pending; do not restart unless another round
+  is requested.
+
+## Completed L6b bootstrap uncertainty example review
+
+- The instructor marked the L6b bootstrap uncertainty example reviewed
+  September 28, 2026 (initial 6.0/10, final 9.1/10). The
+  [saved review record](lectures/instructor/L6b-BOOTSTRAP-REVIEW-HANDOFF.md)
+  records the regroup into fit all firms and R², generate the bootstrap, and
+  compare standard errors; the corrected Monte Carlo explanation; the new
+  across-firm, standard-error, and coverage tables and histogram figure; the
+  closing reading that answers the opening question; and the checks. Outputs are
+  stored. Not yet committed: the instructor deferred the commit until all four
+  L6b examples are reviewed. No proposals remain pending; do not restart unless
+  another round is requested.
+
+## Completed L6b SIM estimation example review
+
+- The instructor marked the L6b SIM estimation example reviewed September 28,
+  2026 (initial 6.5/10). Round 1 closed at 8.3, below the 9.0 threshold, and a
+  second round closed at 9.0/10. The
+  [saved review record](lectures/instructor/L6b-ESTIMATION-REVIEW-HANDOFF.md)
+  records the steps and checks:
+  - the standard opening;
+  - task openers and subsections;
+  - lecture recalls in place of re-derivations;
+  - readings that hold for any ticker;
+  - the stock versus index-fund contrast moved after the all-security fit;
+  - five corrected claims;
+  - prose cut from 2,197 to 1,651 words;
+  - code lines reflowed to at most 100 characters;
+  - the heatmap margin fix.
+  The parameter archive stayed byte-identical through every re-execution. The
+  round also changed one sentence of the L6b lecture, the example callout, to
+  match the new order. Not yet committed: the instructor deferred the commit
+  until all four L6b examples are reviewed. No proposals remain pending; do not
+  restart unless another round is requested.
+
+## Completed L6b SIM portfolio (RA) example review
+
+- The instructor marked the L6b SIM portfolio (risky assets) example reviewed
+  September 28, 2026 (initial 6.5/10). Round 1 closed at 8.6, below the 9.0
+  threshold, and a second round closed at 9.0/10. The
+  [saved review record](lectures/instructor/L6b-RA-REVIEW-HANDOFF.md) records
+  the steps and checks:
+  - the standard opening, with the setup, data, and Task 3 code ported from L6a;
+  - lecture recalls in place of re-derivations;
+  - `g_target` set to the middle floor of a common sweep, so other ticker lists run;
+  - a figure panel for the SIM's risk misjudgment and the extra risk of its weights;
+  - the covariance split as a display labeled "SIM keeps" and "SIM drops";
+  - a weight reading tied back to the Task 1 pair table;
+  - a closing answer to the opening question;
+  - prose cut from 2,830 to about 2,150 words.
+  Every stored text output matched after the round-2 re-execution. A final
+  whole-notebook Codex check passed, and the instructor's cell 25 wording
+  ("directly links") was applied after it. The instructor confirmed the
+  notebook complete the same day. Not yet committed: the instructor deferred
+  the commit until all four L6b examples are reviewed. No proposals remain
+  pending; do not restart unless another round is requested.
+
+## Completed L6b risky and risk-free (RRFA) example review
+
+- The instructor marked the L6b tangent portfolio and capital allocation line
+  (RRFA) example reviewed September 28, 2026 (initial 5.5/10). Round 1 closed at
+  8.4, below the 9.0 threshold. A second round closed at 9.0/10, and Codex
+  scored it 9.1 on its own. The
+  [saved review record](lectures/instructor/L6b-RRFA-REVIEW-HANDOFF.md) records
+  both rounds and their checks:
+  - the standard opening, with setup, data, and Task 3 code ported from L6a;
+  - one SIM frontier sweep with a tangency check, keeping the original CAL
+    figure style at the instructor's request;
+  - both tangent portfolios scored under the sample covariance (SIM 1.265
+    against data 1.285 annualized);
+  - a Task 3 reading that compares each complete portfolio with SPY at similar
+    realized risk, as Objective 3 promises;
+  - the fuller two-sentence Summary opener;
+  - fixes for a `$k$th` render bug and a dead JLD2 anchor.
+  Round 2 was word-neutral, and its only code change was two print lines. With
+  this review, all four L6b examples are reviewed. The lecture, deck, and
+  examples are not yet committed, because the instructor deferred that commit
+  until now. No proposals remain pending; do not restart unless another round
+  is requested.
+
+## L6b advanced material cut to two notebooks
+
+- On September 28, 2026 the instructor cut the L6b optional advanced notebooks
+  from five to two. The review burden was high, and it was unclear whether
+  students read them. Kept: residual diagnostics (`advanced/diagnostics/`) and
+  estimation risk (`advanced/estimation-risk/`). Moved unchanged to
+  [the archive](lectures/archive/week-6-L6b-advanced-cut-2026-09-28/README.md):
+  the data-driven risk-free notebook, the markdown-only SIM theory notebook,
+  and SIM parameter uncertainty in portfolios. Do not restore them or propose
+  new L6b advanced notebooks unless the instructor asks.
+- Follow-on edits: the lecture's advanced list and one lecture sentence
+  linking the theory notebook, `advanced/README.md`, the slides' advanced frame
+  (PDF rebuilt), the RRFA example's closing link (now the estimation-risk
+  notebook, matching the deck), the diagnostics closing line, and the
+  estimation-risk links and closing paragraph. The estimation-risk links still
+  pointed to its pre-relocation L5b paths. The estimation-risk notebook ran in
+  place with no errors, and its stored outputs were left as reviewed.
+- Open for the L7b review: the L7b lecture cites "the ridge estimator of L6a's
+  optional material," which no longer exists in live material.
+
+## Completed L6b advanced estimation-risk review
+
+- The instructor marked the L6b estimation-risk advanced notebook reviewed
+  September 28, 2026 (initial 7.0/10, final 9.0/10). It had been reviewed as an
+  L5b notebook on September 17. That review predates the current density rules
+  and the L6b lecture's SIM-3 result. The
+  [saved review record](lectures/instructor/L6b-ESTIMATION-RISK-REVIEW-HANDOFF.md)
+  records the six accepted steps and their checks:
+  - the input estimation and the four weight rules moved from Setup into
+    Tasks 1 and 2;
+  - the bootstrap loop keeps only the resampled inputs, and a Task 2
+    `weights` cell computes the four rules;
+  - `tangent_long_only` uses the lecture's exact SIM-3 solve and rescale
+    instead of a 31-point grid (`src` and `docs` changed, tangent rows moved at
+    most 0.007);
+  - the introduction asks the L6b question, whether the means or the
+    covariance moves the weights more, and Task 2 answers it;
+  - prose went from 3,830 to 2,669 words;
+  - the closing Codex fixes are applied.
+  Every non-tangent output matched after re-execution. This supersedes the
+  "stored outputs were left as reviewed" note above. Not yet committed: it is
+  part of the deferred L6b commit. No proposals remain pending; do not restart
+  unless another round is requested.
+
+## Completed L6b advanced residual-diagnostics review
+
+- The instructor marked the L6b residual-diagnostics advanced notebook reviewed
+  September 28, 2026 (initial 6.0/10, final 9.0/10; Codex 7.6 to 9.0). The
+  [saved review record](lectures/instructor/L6b-DIAGNOSTICS-REVIEW-HANDOFF.md)
+  records the six accepted steps and their checks:
+  - retitled "L6b Advanced: Residual Diagnostics and Two Bootstrap Methods",
+    with a two-sentence lead-in that follows on from the bootstrap example;
+  - regrouped as heavy tails (Task 1, a density and log-scale tail figure, and
+    the Hill index against a Gaussian reference), then two bootstraps (Task 2),
+    then dependence (Task 3);
+  - Task 3 traces the lag-one dependence to VWAP averaging with an
+    all-securities VWAP-versus-close table and a Working (1960) citation, and
+    gives Newey-West as display equations computed with plain loops;
+  - a false volatility-clustering claim, a stale ridge reference, and an
+    unsupported all-firms extrapolation were cut;
+  - all code rewritten as a lesson, with no lines over 100 characters;
+  - prose is flat (1,583 to 1,589 words), and the longest sentence went from
+    85 to 34 words.
+  Re-executed with no errors. The stale 0.981 output is now 0.993. The lecture
+  description and README still match. Not yet committed: it is part of the
+  deferred L6b commit. No proposals remain pending; do not restart unless
+  another round is requested.
+
 ## Interactive notebook polishing
 
 For a "notebook polish round," use the versioned

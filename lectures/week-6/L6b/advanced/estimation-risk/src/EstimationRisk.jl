@@ -64,55 +64,36 @@ function gmv_long_only(g, Σ)
 end
 
 """
-    tangent_long_only(g, Σ, g_f; number_of_points::Int = 31) -> Vector
+    tangent_long_only(g, Σ, g_f) -> Vector
 
-Select the largest-Sharpe long-only allocation among sampled frontier candidates.
+Return the long-only tangent portfolio: the fully invested allocation with
+0 ≤ wᵢ ≤ 1 that has the largest Sharpe ratio (dot(g,w) - g_f)/sqrt(dot(w,Σ*w)).
 
 `g` contains M mean growth estimates (inverse years), `Σ` is their M × M
 symmetric positive-definite covariance (inverse years squared), and `g_f` is
-the risk-free benchmark (inverse years). `number_of_points` must be at least two.
-Return M dimensionless weights with 0 ≤ wᵢ ≤ 1 and sum(w) = 1, within solver
-tolerance. This is a grid approximation, not an exact maximum-Sharpe solve.
+the risk-free growth rate (inverse years). At least one mean must exceed `g_f`.
 
-Include the long-only GMV allocation, then solve at `number_of_points` evenly
-spaced growth floors from its estimated mean to maximum(g) - 1e-4 inverse years.
-This retains the notebook's endpoint offset and grid. For an increasing sweep,
-the upper endpoint must exceed the GMV mean; the supplied data satisfy this.
-Rank candidates by (dot(g,w) - g_f)/sqrt(dot(w,Σ*w)). The baseline GMV solve
-must succeed. Skip sweep points for which the package solver raises an
-`AssertionError`, preserving the original failure handling; other errors propagate.
+Following the L6b lecture (SIM-3), solve the risky and risk-free problem once, at
+the growth target (g_f + maximum(g))/2, and rescale the risky weights to sum to one.
+The rescaling is exact when no risky weight sits at its upper bound of one, which is
+checked. Return M dimensionless weights that sum to one, within solver tolerance.
 """
-function tangent_long_only(g, Σ, g_f; number_of_points::Int = 31)
-    number_of_points >= 2 || throw(ArgumentError("At least two grid points are required."));
+function tangent_long_only(g, Σ, g_f)
+    maximum(g) > g_f || throw(DomainError(maximum(g), "No mean growth rate exceeds g_f."));
     M = length(g); # number of assets
-    bounds = zeros(M, 2); # lower and upper weight bounds
+    bounds = zeros(M, 2); # lower bounds in column 1, upper bounds in column 2
     bounds[:, 2] .= 1.0;
-    problem = build(MyMarkowitzRiskyAssetOnlyPortfolioChoiceProblem, (
+    problem = build(MyMarkowitzRiskyRiskFreePortfolioChoiceProblem, (
         Σ = Σ,
         μ = g,
         bounds = bounds,
         initial = (1/M)*ones(M),
-        R = minimum(g),
+        risk_free_rate = g_f,
+        R = (g_f + maximum(g))/2, # between g_f and the largest mean, so always feasible
     ));
-
-    # Include the GMV portfolio before sweeping the growth targets -
-    w_gmv = solve(problem)["argmax"];
-    best_w = w_gmv;
-    best_SR = (g'*w_gmv - g_f)/sqrt(w_gmv'*Σ*w_gmv);
-    for target ∈ range(g'*w_gmv, stop = maximum(g) - 1e-4, length = number_of_points)
-        problem.R = target;
-        w = try
-            solve(problem)["argmax"]
-        catch err
-            err isa AssertionError ? continue : rethrow();
-        end
-        SR = (g'*w - g_f)/sqrt(w'*Σ*w);
-        if SR > best_SR
-            best_SR = SR;
-            best_w = w;
-        end
-    end
-    return best_w;
+    w = solve(problem)["argmax"]; # risky weights; the rest, 1 - sum(w), is lent or borrowed
+    @assert maximum(w) < 1 - 1e-6 # no upper bound binds, so the rescaling is exact
+    return w / sum(w);
 end
 
 """

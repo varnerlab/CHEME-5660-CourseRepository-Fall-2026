@@ -31,8 +31,9 @@ Older counterparts compared:
 - Approved 2026 notebooks: the L6a data example
   ([CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb](../../L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb),
   marked complete September 26) and the optional
-  [data risk-free notebook](../advanced/data-risk-free/CHEME-5660-L6b-Advanced-Data-MinVar-RiskFree-Fall-2026.ipynb)
-  (from the reviewed 9.1/10 L5b example).
+  [data risk-free notebook](../../../archive/week-6-L6b-advanced-cut-2026-09-28/week-6/L6b/advanced/data-risk-free/CHEME-5660-L6b-Advanced-Data-MinVar-RiskFree-Fall-2026.ipynb)
+  (from the reviewed 9.1/10 L5b example, archived September 28 when the
+  advanced material was cut to two notebooks).
 - Prior decisions: [WEEK-6-REUSE-INVENTORY.md](../../../instructor/WEEK-6-REUSE-INVENTORY.md).
 
 ## Provenance measured
@@ -361,11 +362,56 @@ variable swaps, leaving about 60 new lines; prose drops to about 1,300 words.
 
 ## Suggested order for September 28
 
-1. Regenerate the SIM parameter archive from the estimation example and commit
-   it; decide on the week-7 copies.
-2. Bootstrap example (cheapest; about 10 cells; target about 8.5).
-3. Estimation example prose rewrite.
+1. **Done September 28 (`9ccb147`).** Regenerated the SIM parameter archive
+   from the estimation example (120 fields, 12 tickers, as predicted). RA and
+   RRFA re-ran with identical stored outputs. The week-7 copies stay stale
+   until the week-7 review, and five week-7 examples load them.
+2. **Done September 28 (polish round, uncommitted, marked reviewed).**
+   Bootstrap example: regrouped into fit all firms and R², generate the
+   bootstrap, and compare standard errors; standard opening; lecture
+   pseudocode; corrected Monte Carlo explanation; new across-firm,
+   standard-error, and coverage tables and a histogram figure; a closing
+   reading that answers the opening question. Re-executed with outputs stored.
+   Rescored 6.0 to 9.1. Record:
+   [L6b-BOOTSTRAP-REVIEW-HANDOFF.md](../../../instructor/L6b-BOOTSTRAP-REVIEW-HANDOFF.md).
+3. **Done September 28 (polish round, uncommitted, marked reviewed).** Estimation example:
+   standard opening, "In this task" openers and subsections, lecture recalls
+   instead of re-derivations, ticker-independent readings, the stock versus
+   index-fund contrast moved after the Task 3 fit (nested `fit` removed),
+   corrected claims (condition number, INTC, residual correlations, the
+   diagnostics link), new takeaways, and code comments. Prose 2,197 to 1,966
+   words, no clause semicolons. Re-executed with no errors, and the archive is
+   byte-identical. Rescored 6.5 to 8.3. A second round the same day, to reach
+   the 9.0 threshold, cut prose to 1,651 words, reflowed every code line to at
+   most 100 characters (outputs and archive unchanged), fixed the clipped
+   heatmap colorbar with L6a's margin, and changed the lecture's example
+   callout to match the new order. Rescored 9.0. Record:
+   [L6b-ESTIMATION-REVIEW-HANDOFF.md](../../../instructor/L6b-ESTIMATION-REVIEW-HANDOFF.md).
 4. RA and RRFA hybrids together, since both port the same L6a code.
+   **RRFA done September 28 (polish round, uncommitted, all five proposals
+   accepted).** The tasks now map one to one onto the objectives. Setup, data,
+   and Task 3 follow the approved L6a code. The SIM frontier is swept once. The
+   data-driven tangent comes from the same solver, and both tangent portfolios
+   are scored under the sample covariance (SIM 1.265 against data 1.285
+   annualized). The fixed 0.60 target is gone, so other ticker lists run. Prose
+   went from 2,020 to 1,758 words. Rescored 5.5 to 8.4. The instructor kept the
+   original CAL figure style. Round 2 the same day (three proposals, all
+   accepted, word-neutral) fixed a `$k$th` render bug and a dead JLD2 anchor. It
+   added the SPY comparison that Objective 3 promised, retitled Task 2, and gave
+   the Summary its fuller opener. Rescored 8.4 to 9.0 (Codex 9.1). Marked reviewed September 28;
+   all four examples are now reviewed. Record:
+   [L6b-RRFA-REVIEW-HANDOFF.md](../../../instructor/L6b-RRFA-REVIEW-HANDOFF.md).
+   **RA done September 28 (polish round, uncommitted, all five proposals
+   accepted).** Setup, data, and Task 3 follow the approved L6a code. Task 1
+   cites the lecture's two facts instead of re-deriving them. Task 2 builds
+   and sweeps both problems at common floors, and a new figure panel shows the
+   SIM's risk misjudgment and the extra risk of its weights. `g_target` is the
+   middle floor of the sweep, so other ticker lists run (tested with seven and
+   three firms). Prose went from 2,830 to 2,143 words. Rescored 6.5 to 8.6.
+   A second round the same day, to reach the 9.0 threshold, made the covariance
+   split a display, tied the weight reading to the Task 1 pair table, and
+   answered the opening question in a closing Task 3 reading. Rescored 9.0 and
+   marked reviewed. Record: [L6b-RA-REVIEW-HANDOFF.md](../../../instructor/L6b-RA-REVIEW-HANDOFF.md).
 
 Working agreement from the style guide and saved preferences: exactly three
 tasks with "In this task, …" openers; three objectives and three takeaways
