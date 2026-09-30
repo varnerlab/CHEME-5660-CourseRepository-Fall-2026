@@ -73,6 +73,7 @@ ideas, not treated as current source.
 | Source material | CHEME 5660 disposition |
 |---|---|
 | Introduction / Maya's first portfolio | Narrative framing was not copied; the allocation-under-pressure decision is represented by the L6b and L7b scorecards. |
+| Ticker interview (`interview.md`) | Adapted in September 2026 as the L6b client interview. A reproducible beta-band screen of the L6b SIM archive replaces the hand-picked archetype lists, and the answers feed the L6b RA and RRFA examples. |
 | Core risky-asset minimum-variance build | Existing L5b/L6b portfolio examples remain the numerical foundation. The useful hybrid-validation idea is represented in the bootstrap propagation and L7b stress modules without a second-repository dependency. |
 | Core risky/risk-free allocation and CAL | Existing L6b risky/risk-free and tangent-portfolio examples retained; SOCP theory remains in the advanced SIM module. |
 | Optional SIM parameter estimation | Newly integrated into the L6a core uncertainty example and course package API. Batch persistence was intentionally omitted so the notebook cannot silently overwrite shared calibration data. |

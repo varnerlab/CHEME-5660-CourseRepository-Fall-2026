@@ -26,3 +26,4 @@ using Random                        # reproducible bootstrap samples
 using Distributions                 # Gaussian residuals and interval quantiles
 using CSV                           # prior growth-parameter comparisons
 using StatsPlots                    # allocation area plots in the data companion
+using TOML                          # client settings written by the L6b interview

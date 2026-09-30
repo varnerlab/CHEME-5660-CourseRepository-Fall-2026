@@ -130,15 +130,77 @@ The inline `acf1` became the package's `sample_autocorrelation`.
   the bootstrap and estimation examples' links still describe the notebook
   accurately.
 
+## Round 2 — September 30, 2026 (markdown only)
+
+The instructor asked for another polish, voice, and organization pass if the
+notebook scored below 9.0, and accepted the round the same day ("Agree.
+Update"). The notebook is marked reviewed as of September 30, 2026. A fresh read scored it 8.6 (correctness 9.0,
+organization 8.5, voice 8.5, presentation 9.0, density 8.0), and an
+independent Codex read scored it 8.5 while confirming the Newey-West display
+and code, the band, and the interval widths. The round changed seven
+markdown cells and no code; code cells and stored outputs are byte-identical,
+so the notebook was not re-executed. Body prose is 1,596 words before and
+after.
+
+- **Objectives follow the tasks.** Objective 1 had described Task 2, and
+  objective 2 straddled Tasks 1 and 3. They are now heavy tails (Task 1),
+  two bootstraps (Task 2), and dependence plus Newey-West (Task 3). The
+  takeaways already followed that order.
+- **Task 3 opener.** The itinerary sentence ("We then trace the dependence we
+  find to its source and correct the standard errors for it") was cut, and
+  the 88-word paragraph is split so the function sentence leads into the code.
+- **Task 2 opener.** The percentile-interval parenthetical and the blank-cells
+  sentence were cut; the display formatter's comment already explains the
+  blanks.
+- **Tail-index lead-in.** "A smaller tail index means heavier tails" now
+  links to the figure it follows: "The tail index from L3a summarizes the
+  right panel: a smaller index means heavier tails."
+- **Newey-West lag rule.** The lag paragraph now says a common rule of thumb
+  sets L near N^(1/4), about 7 here (N = 2766 gives 7.25), so the L = 5 and
+  L = 10 rows bracket it. The reading names what the L = 0 row isolates:
+  "The L = 0 row adjusts only for the changing variance. Adding lags then
+  raises the standard error of beta well above the classical value, while
+  that of alpha changes much less."
+- **Small fixes.** "raises only part of that day's average" became "moves",
+  the prediction sentence got its own paragraph, and the VWAP reading claims
+  the *positive* dependence, which is what the closing-price test supports.
+
+Codex items declined, with reasons: softening "should disappear" (the
+positive dependence does disappear in the table, and the claim already says
+positive); a takeaway rewrite that turned a claim into a recipe; extra
+caveats on the Hill reference and the white-noise band, which the September
+28 round cut on purpose; ticker-neutral readings that would say nothing
+(Task 3 shows the pattern holds for 99.3% of securities); deleting the
+Summary opener, which the instructor keeps in its fuller form; and a
+staircase tail-fraction plot, a code change with no visible benefit at
+N = 2766.
+
+Codex re-read the saved notebook and scored it 9.0 (correctness 9.2,
+organization 9.3, voice 9.0, presentation 8.9, density 8.6). It confirmed the
+objective order, the lag rule (2766^(1/4) = 7.25), and the L = 0 reading. Two
+of its four leftover items were applied, still word-neutral: "the fraction of
+residuals whose size exceeds x standard deviations" (the panel counts both
+tails), "the covariance matrix's diagonal entries" (the display just before
+it is the middle matrix), and paragraph breaks before the Task 2 storage
+sentence and before the L = 0 sentence. Declined: display-equation
+punctuation (the course convention leaves displays unpunctuated) and a break
+before the Data subsection's storage sentence (the standard Data form).
+
+Round-2 scores: correctness 9.2, organization 9.3, voice 9.0, presentation
+9.0, density 8.8, overall 9.1. The lecture's Optional Advanced description and `advanced/README.md`
+still describe the notebook accurately. Not yet committed: it is part of the
+deferred L6b commit.
+
+Backup, patch script (`p1.py`), and draft are in
+`build/notebook-previews/diag2/`; the before/after preview is
+`build/notebook-previews/diag2-p1-all.png`.
+
 ## Left for a possible later round
 
-- Prose length is flat. Trim candidates: the percentile-interval parenthetical
-  and the blank-cells sentence in the Task 2 opener, the Task 3 opener, and
-  the two sentences after the Newey-West display.
-- The notebook gives no rule for choosing the Newey-West lag L, such as
-  L ≈ N^(1/4).
 - A `___` directly under a text line prints literally in nbconvert HTML. It
   renders in VS Code, and it is the house pattern, so it was left.
+- The tail-fraction panel draws straight segments between the largest
+  residuals; a step plot would be exact there.
 
-Drafts, patch scripts (`p1.py`–`p6.py`), and previews are in
+Round-1 drafts, patch scripts (`p1.py`–`p6.py`), and previews are in
 `build/notebook-previews/diag/` and `build/notebook-previews/diag-p*.png`.

@@ -52,3 +52,7 @@ artifacts/
 
 # Local instructor previews produced during notebook polish rounds
 /build/notebook-previews/
+
+# L6b client-interview outputs: instructor demo only, the examples fall back to the default list
+lectures/week-6/L6b/data/my-tickers.csv
+lectures/week-6/L6b/data/my-client.toml

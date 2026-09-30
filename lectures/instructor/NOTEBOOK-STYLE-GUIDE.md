@@ -175,8 +175,10 @@ this be done often, for lectures and examples in both courses.
 L6a urea-cycle example (CHEME 5800, computational example), both September 25,
 2026; their lessons are the two sections that follow. L6b overflow-metabolism
 lab (CHEME 5800, live walkthrough lab), September 27, 2026; its lessons follow
-the derivation-companion section. The next section distills all three for both
-courses.
+the derivation-companion section. L6b SIM lecture (CHEME 5660, lecture Examples
+section and example stops), September 30, 2026, a small unplanned round; its
+lessons follow the L6b lab section. The next section distills the first three for
+both courses.
 
 ## What the rounds show so far, for both courses — September 27, 2026
 
@@ -241,6 +243,9 @@ companions are judged differently.
   result stays.
 - Figure text follows the prose conventions: units in titles, italics where the
   prose uses italics.
+- An example stop sits just before the step that uses its output, and
+  consecutive stops share one "__Examples:__" label (CHEME 5660 L6b lecture,
+  September 30).
 
 **Lab-only so far.** In Tasks 2 and 3, chains of short direct questions replaced
 the draft's premise, scripted calls, and evidence instructions (Task 1 kept a
@@ -613,6 +618,36 @@ no-oxygen result left by an earlier cell (growth 0.212 instead of 1.047 and
 0.663). The validation suite passed; running each commented change showed it. At
 his request the line was restored, along with three typos in the Task 1
 question.
+
+## Example-stop lessons from the instructor's L6b lecture edit — September 30, 2026
+
+A small, unplanned round on the CHEME 5660 L6b lecture. The assistant had just
+split the Examples section into an in-lecture group and a review-on-your-own
+group, and had added a stop for the new client-interview demo at the end of
+"Parameter uncertainty and goodness of fit". No backup was frozen. The baseline
+is the assistant's version as written that morning, reconstructed from its edit
+script. The instructor made three changes and asked whether the result was OK.
+
+**A stop sits just before the step that uses it.** He moved the interview stop
+to the SIM-portfolio stop in "The long-only problem with SIM inputs", directly
+before the example that runs on the interview's output. The assistant had placed
+it where beta and $R^2$ were defined. He placed it where the list is used.
+
+**Consecutive stops share one label.** Instead of two blockquotes, he wrote one
+block headed "__Examples:__" holding both entries, "[▶ Choose the firms with a
+client interview](...)" and then "[▶ Compare data-driven and SIM
+portfolios](...)", separated by a quoted blank line.
+
+**Group introductions carry bold.** In the Examples section he bolded the second
+group's introduction: "__Review these examples on your own__. They estimate the
+single index model parameters that the lecture examples use:". He then approved
+bolding the first group's introduction to match and moving the period inside the
+bold, as in every other run-in label in the lecture ("__Setup.__", "__Example:__"):
+"__We will work through these examples in lecture:__" and "__Review these
+examples on your own.__".
+
+Loose end noted for him: the RA stop's lead-in, "Then we test both on 2025
+prices:", now also introduces the interview.
 
 ## Slides as a note-taking companion — CHEME 5660
 

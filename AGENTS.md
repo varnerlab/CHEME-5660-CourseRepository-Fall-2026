@@ -551,9 +551,17 @@
   - prose went from 3,830 to 2,669 words;
   - the closing Codex fixes are applied.
   Every non-tangent output matched after re-execution. This supersedes the
-  "stored outputs were left as reviewed" note above. Not yet committed: it is
-  part of the deferred L6b commit. No proposals remain pending; do not restart
-  unless another round is requested.
+  "stored outputs were left as reviewed" note above. Released as week-06.1.
+- On September 30, 2026 the instructor asked for a second polish, voice, and
+  organization round (opening 8.4/10, closing 9.0/10). The round-2 section of
+  the same record lists the four changes: Task 2 now opens with the frontier
+  figure before the four rules and resampled weights, blank lines separate
+  every display from the prose, the title is "Estimation Risk in Portfolio
+  Weights" to match the lecture list and README, and nine code comments lost
+  denials or repeated prose. Prose is flat (2,635 to 2,642 words). Re-executed
+  with every output matching week-06.1. The instructor accepted the round
+  and marked it complete the same day. No proposals remain pending; do not
+  restart unless another round is requested.
 
 ## Completed L6b advanced residual-diagnostics review
 
@@ -576,8 +584,65 @@
     85 to 34 words.
   Re-executed with no errors. The stale 0.981 output is now 0.993. The lecture
   description and README still match. Not yet committed: it is part of the
-  deferred L6b commit. No proposals remain pending; do not restart unless
-  another round is requested.
+  deferred L6b commit.
+- Round 2, September 30, 2026: the instructor asked for another pass if the
+  notebook scored below 9.0. It scored 8.6 (Codex 8.5), so a markdown-only
+  round closed at 9.1 (Codex 9.0). Eight cells changed and no code: objectives reordered
+  to follow the tasks, the Task 3 itinerary sentence cut, the Task 2 opener
+  trimmed, a Newey-West lag rule of thumb (L near N^(1/4)) and a reading of the
+  L = 0 row added, all word-neutral. The
+  [saved review record](lectures/instructor/L6b-DIAGNOSTICS-REVIEW-HANDOFF.md)
+  lists the Codex items declined and why. The instructor accepted the round
+  the same day. No proposals remain pending; do not restart unless another
+  round is requested.
+
+## L6b client interview demo — September 30, 2026
+
+- For the October 1 lecture, the instructor asked for a live demo modeled on the
+  eCornell Session 1 ticker interview. [The interview](lectures/week-6/L6b/interview/interview.md)
+  runs with Claude Code's AskUserQuestion UI. Three questions set a beta band,
+  exclusions, and the client's risk-free fraction, and
+  [`screen-tickers.jl`](lectures/week-6/L6b/interview/screen-tickers.jl) picks
+  the firms. The instructor did not like the eCornell archetype lists, which were
+  hand-picked large caps (AAPL, MSFT, JPM, and AMT in all five, and mostly
+  2014–2024 winners in the growth lists). The screen is therefore a fixed rule:
+  the top two SIM R² per GICS sector inside the band, never mean growth. Do not
+  replace it with curated lists.
+- The RA and RRFA examples read `data/my-tickers.csv` if it exists and otherwise
+  use the thirteen L6a firms. RRFA also reads `data/my-client.toml` and labels
+  the client's w_f in the Task 3 figure and table. Both files are gitignored.
+  With no client files, every stored text output matched the reviewed
+  September 28 outputs except the new ticker print line. The examples ran
+  without errors on all three bands, with exclusions, add/drop, and a new w_f.
+  Two tables no longer crop: the Task 3 table (`fit_table_in_display_horizontally`)
+  and the RA weights table (`fit_table_in_display_vertically`).
+- The instructor then split the lecture's Examples section in two (approved as
+  previewed). In lecture: the L6a MAGBM carryover, the client interview, RA, and
+  RRFA. Review on your own: SIM estimation and parameter uncertainty. These are
+  core examples, distinct from the Optional Advanced Material. Their in-lecture
+  stops are labeled "Example (review on your own):". The instructor moved the
+  interview stop into one "Examples:" block with the RA stop, just before RA
+  runs, and the RA stop now says "the client's firms." The
+  L6b slides' examples frame has not been synced to this split yet.
+
+## L6b tangent derivation companion — September 30, 2026
+
+- At the instructor's request, a markdown-only [tangent derivation companion](lectures/week-6/L6b/advanced/tangent-derivation/CHEME-5660-L6b-Derivation-Tangent-Fall-2026.ipynb)
+  follows the L6a GMV and target-growth companions. It derives the Sharpe-ratio
+  gradient and the zero budget multiplier (T-2), the tangent weights (T-3), and
+  why the GMV growth rate must exceed g_f (the normalizing denominator factors
+  into a positive term times the GMV excess growth). It then gives the
+  Cauchy–Schwarz bound on the Sharpe ratio and, as the instructor asked, the
+  risky and risk-free problem with short positions, which selects the same risky
+  mix and traces the CAL. The lecture's tangent box links it in one sentence,
+  and `advanced/README.md` lists it second. As in L6a, it is not in the
+  lecture's Optional Advanced Material list, so the two-notebook cap there is
+  unchanged. Codex checked it twice (8.5, then 9/10 after fixes). The fixes
+  assume M ≥ 2 and unequal expected growth rates, and they correct a long-only
+  sentence: long-only bounds can change the risky direction, and the common
+  direction lasts only until an upper bound binds. Codex's cuts to the
+  zero-multiplier and scalar-k sentences were declined, since those sentences
+  fill the lecture's gaps. The instructor has not yet reviewed the draft.
 
 ## Interactive notebook polishing
 

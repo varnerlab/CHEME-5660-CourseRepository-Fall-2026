@@ -153,3 +153,80 @@ Notebook SHA-256 at marking:
 Previews and the `p1.py`–`p6.py` patch scripts are in the ignored
 `build/notebook-previews/estrisk/` folder. The rendered steps are
 `build/notebook-previews/estrisk-p*.png`.
+
+## Round 2 — September 30, 2026
+
+The instructor asked for a second polish, voice, and organization pass, to be
+treated as a notebook below 9/10. The round ran autonomously: the edits were
+applied, the notebook re-executed, and rendered before/after previews were left
+for the instructor to accept or reject. The instructor accepted the round
+("Agree. Update.") and marked it complete on September 30, 2026, asking that
+the notebook be released soon. The previous state is commit `5a76757` (week-06.1).
+
+### Scores
+
+| Dimension | Opening | Closing |
+| --- | ---: | ---: |
+| Technical correctness and consistency | 9.0 | 9.0 |
+| Organization and sequencing | 8.0 | 9.0 |
+| Narrative and interpretation | 8.5 | 9.0 |
+| Presentation | 8.0 | 9.0 |
+| Density and pacing | 8.5 | 8.5 |
+| **Overall** | **8.4** | **9.0** |
+
+Prose is 2,635 → 2,642 words (the new Task 2 opener adds seven). Length was
+not the lever this round; order, spacing, and comments were.
+
+### Changes
+
+1. **Task 2 opens with the frontier figure.** The task had computed the four
+   portfolios, broken off to the frontier hyperbola and figure, then returned
+   to the weight box plots. The frontier subsection now follows the task opener
+   directly, ahead of "Four portfolio rules" and the resampled weights, so the
+   picture (stable GMV point, branches fanning as the target rises) comes
+   before the rules, and the κ subsection reuses the coefficients after them.
+   The opener now reads "we trace the efficient frontier from every resample,
+   then compute four portfolios from each and measure how much their weights
+   move." The opener and the frontier subsection share one cell, as in Tasks 1
+   and 3. No prose inside the moved cells changed.
+2. **Blank lines around every display.** All 32 display equations had sat
+   directly against the prose lines. Each now has a blank line before and
+   after, per the guide's formatting rule. No wording changed.
+3. **Title.** "Estimation Risk in Mean-Variance Optimization" became
+   "Estimation Risk in Portfolio Weights", matching the lecture's advanced
+   list and `advanced/README.md`, as the diagnostics notebook was retitled.
+4. **Nine code comments.** Denials of misreadings nobody proposed were cut
+   ("not Δt-scaled covariance rate", "not turnover", "not a mathematical
+   boundary", "not B duplicate observations", "not a future-wealth
+   distribution", "need not share a mean growth"), and the baseline-weights
+   comment that repeated the prose above it became one line pointing at the
+   docs page. The `sqrt(B)` comment is kept as a positive statement, since
+   dividing by √B is a trap students do fall into. "Not additive components"
+   became "need not add up".
+
+### Verification
+
+- Re-executed from its own folder with a clean nbconvert run: no errors,
+  execution counts 1–27, kernelspec and cell metadata shape preserved. Every
+  code cell's text output and image count matched the reviewed week-06.1
+  outputs (26 of 26 substantive cells; the Include cell's "Activating project"
+  stream was stripped, as the release script does). The reorder consumes no
+  random draws, so the resamples are unchanged.
+- Structure checks: 3 objectives, 3 tasks, 3 takeaways, `___` only at section
+  ends, no clause semicolons or em dashes, all local links and docs anchors
+  resolve. The lecture description, README, RRFA closing link, and diagnostics
+  closing link still describe the notebook accurately.
+- Previews: `build/notebook-previews/estrisk2-r2a.png` (title and Task 2 order)
+  and `estrisk2-r2b.png` (spacing and comments). Draft, executed copy, patch
+  script, and comparison script are in the session scratchpad.
+
+### Remaining limitations
+
+- Density stays at 8.5: the notebook is still about 350 words above the
+  sibling range, mostly Task 2's five results. Cutting further would reopen
+  sections the instructor accepted on September 28.
+- Objective 2 still says "tangent portfolios for every resample" although 15
+  closed-form allocations are minimum-Sharpe; Task 2 explains this.
+
+Notebook SHA-256 after this round:
+`fe9d835df30fd97e7e85dc6524de5d47df038f6323a1d17c7fb821df25d97fad`
