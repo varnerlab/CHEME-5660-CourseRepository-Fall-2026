@@ -81,35 +81,35 @@
   \textbf{\ink{Lecture:}}
   \href{\repo/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb}{Single Index Models, Portfolio Allocation, and a Risk-Free Asset}
 
-  \vspace{0.4em}
+  \vspace{0.3em}
   \textbf{\ink{From L6a:}}
   \href{\repoprev/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb}{Portfolio Wealth with Multiple Asset GBM}
 
   Simulate buy-and-hold wealth and estimate the chance of beating a target NPV.
 
-  \vspace{0.4em}
+  \vspace{0.3em}
+  \textbf{\ink{Interview:}}
+  \href{\repo/interview/interview.md}{Choose the Firms with a Client Interview}
+
+  The answers set a beta band and a risk-free fraction, and a fixed rule picks the firms.
+
+  \vspace{0.3em}
   \textbf{\ink{Example 1:}}
-  \href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}
-
-  What do alpha and beta tell us? Fit one firm three ways, then every firm.
-
-  \vspace{0.4em}
-  \textbf{\ink{Example 2:}}
-  \href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}
-
-  Refit 1,000 synthetic datasets and compare the estimates with the classical intervals.
-
-  \vspace{0.4em}
-  \textbf{\ink{Example 3:}}
   \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}
 
   Compare the covariances, frontiers, and weights, then test on 2025 prices.
 
-  \vspace{0.4em}
-  \textbf{\ink{Example 4:}}
+  \vspace{0.3em}
+  \textbf{\ink{Example 2:}}
   \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}
 
   Does every target pick the same risky portfolio? Test lending and borrowing in 2025.
+
+  \vspace{0.3em}
+  \textbf{\ink{Review on your own:}}
+  \href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data} and
+  \href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation},
+  which supply the SIM parameters.
 \end{frame}
 
 % ==== concept review =========================================
@@ -130,7 +130,7 @@
   We therefore evaluate allocations on prices that were not used to choose them.
 
   \vspace{0.4em}
-  Today, Examples 3 and 4 test the SIM and risk-free allocations on 2025 prices.
+  Today, Examples 1 and 2 test the SIM and risk-free allocations on 2025 prices.
 \end{frame}
 
 \begin{frame}{Concept Review: Wealth and Scaled NPV}
@@ -245,7 +245,7 @@
   \]
   The first two determine $\alpha_i$ and $\beta_i$. The third,
   \hilite{only the market links two assets}, is an extra assumption that
-  Example 1 checks.
+  the estimation example checks.
 \end{frame}
 
 \begin{frame}{What Do the Parameters Mean?}
@@ -324,7 +324,7 @@
   $\hat\beta_i=\widehat{\Cov}(g_i,g_M)/\widehat{\Var}(g_M)$ and
   $\hat\alpha_i=g'_i-\hat\beta_i\,g'_M$, with sample means $g'_i$ and $g'_M$.
   The residuals $\br=\by-\bX\hat{\bth}_i$ estimate $\beps$.
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}}
+  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb}{Estimate Single Index Models from Historical Data}}
 \end{frame}
 
 \begin{frame}{Parameter Uncertainty and Goodness of Fit}
@@ -369,7 +369,7 @@
   \vspace{0.5em}
   Compare the spread of $\hat{\bth}^{(1)},\dots,\hat{\bth}^{(K)}$ with the
   standard errors.
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}}
+  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb}{Estimate Parameter Uncertainty by Simulation}}
 \end{frame}
 
 % ==== minimum-variance portfolios with SIM inputs ============
@@ -457,7 +457,7 @@
   This is L6a's LO-1 with a different covariance and the same means. Sweeping
   $g_\star$ up from the long-only GMV growth rate traces the efficient frontier.
   We compare both allocations under one covariance, then on 2025 prices.
-  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}}
+  \slidenote{Examples:}{\href{\repo/interview/interview.md}{Choose the Firms with a Client Interview} and \href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb}{Compare Data-Driven and SIM Portfolios}}
 \end{frame}
 
 % ==== risk-free asset ========================================
@@ -585,7 +585,7 @@
   \vspace{0.3em}
   The estimation-risk notebook asks how much GMV and tangent allocations move
   when the estimated inputs change.
-  \slidenote{Example 4:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
 \end{frame}
 
 % ==== optional advanced material =============================

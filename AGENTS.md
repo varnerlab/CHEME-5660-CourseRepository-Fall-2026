@@ -623,7 +623,8 @@
   stops are labeled "Example (review on your own):". The instructor moved the
   interview stop into one "Examples:" block with the RA stop, just before RA
   runs, and the RA stop now says "the client's firms." The
-  L6b slides' examples frame has not been synced to this split yet.
+  L6b slides were synced to this split on September 30 for week-06.3 (see the
+  [slides record](lectures/instructor/L6b-SLIDES-REVIEW-HANDOFF.md)).
 
 ## L6b tangent derivation companion — September 30, 2026
 

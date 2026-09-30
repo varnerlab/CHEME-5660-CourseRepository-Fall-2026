@@ -73,3 +73,26 @@ takeaway text on this slide.
 - The estimation-risk advanced notebook links twice to `../frontier-geometry/`,
   which exists only under `L6a/advanced/`. Per the cross-week rule, refer to it in
   words.
+
+## Sync to the examples split — September 30, 2026
+
+The instructor asked to sync the deck to the lecture's September 30 Examples
+split before the week-06.3 release. Two slides changed, rendered before and
+after in `build/notebook-previews/L6b-slides-sync-2026-09-30.png`:
+
+- **Lectures and Examples (page 4)** now mirrors the lecture: Lecture, From L6a,
+  Interview (linked to `interview/interview.md`, "The answers set a beta band
+  and a risk-free fraction, and a fixed rule picks the firms."), Example 1
+  (SIM portfolios), Example 2 (tangent portfolio), and a "Review on your own"
+  line with the two estimation examples, "which supply the SIM parameters".
+  The frame overflowed by 13 pt at first; 0.3 em gaps and one-line descriptions
+  brought it to zero overfull boxes.
+- **In-body stops** take the lecture's labels: the estimation and uncertainty
+  stops say "Review on your own:", the SIM-portfolio stop is one "Examples:"
+  line with the interview and the portfolio example (page 20), and the
+  tangent stop is "Example 2:". The concept-review line now says "Examples 1
+  and 2 test ...", and the SIM-assumptions slide says "the estimation example
+  checks".
+
+Built with `make slides`: 29 pages, zero overfull boxes. Source SHA-256 begins
+`1aedf24f1ba65df4`, PDF `3f2610465606d40f`. Committed with the week-06.3 release.
