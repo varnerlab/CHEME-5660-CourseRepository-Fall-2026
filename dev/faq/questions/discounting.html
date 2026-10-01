@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why discount cash flows, and what does positive NPV mean? · CHEME 5660</title>
+  <meta name="description" content="Discounting expresses dated cash flows on a common valuation date. Positive NPV means the present value of the future net cash flows exceeds the initial cost at the stated benchmark rate.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Cash flows &amp; bonds</span>
+    </p>
+    <h1 id='article-title'>Why discount cash flows, and what does positive NPV mean?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Discounting expresses dated cash flows on a common valuation date. Positive NPV means the present value of the future net cash flows exceeds the initial cost at the stated benchmark rate.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Why is receiving 110 USD next year worth less than receiving it today?</strong> Suppose our benchmark pays 5% with annual compounding. An investment of 100 USD today becomes 105 USD in one year. To find today’s equivalent of a promised 110 USD, reverse that same calculation: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>110</mn><mi>/</mi><mn>1.05</mn><mo>=</mo><mn>104.76</mn></mrow><annotation encoding="application/x-tex">110/1.05=104.76</annotation></semantics></math> USD. Discounting asks how much we would need today to reach the future payment at the selected benchmark.</p>
+<p><strong>How do the cash-flow symbols become a value?</strong> At date <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, multiply each cash amount <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">c_{j,k}</annotation></semantics></math> by its direction <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\nu_{j,k}</annotation></semantics></math> and add the results. Then discount that date’s net cash flow to time zero:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>c</mi><mo accent="true">‾</mo></mover><mi>j</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>m</mi><mi>j</mi></msub></munderover><msub><mi>c</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><msub><mi>ν</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mo>NPV</mo><mn>0</mn></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>N</mi></munderover><msubsup><mi>𝒟</mi><mrow><mi>j</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mover><mi>c</mi><mo accent="true">‾</mo></mover><mi>j</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\bar c_j=\sum_{k=1}^{m_j}c_{j,k}\nu_{j,k},\qquad
+\operatorname{NPV}_0=\sum_{j=0}^{N}\mathcal D_{j,0}^{-1}\bar c_j.
+</annotation></semantics></math></div>
+<p>The first sum combines payments made on the same date. The second combines their present values across dates. Paying 100 USD today and receiving 110 USD in one year therefore gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>NPV</mo><mn>0</mn></msub><mo>=</mo><mo>−</mo><mn>100</mn><mo>+</mo><mn>110</mn><mi>/</mi><mn>1.05</mn><mo>≈</mo><mn>4.76</mn></mrow><annotation encoding="application/x-tex">\operatorname{NPV}_0=-100+110/1.05\approx4.76</annotation></semantics></math> USD. The positive result means that the payment exceeds the benchmark requirement by 4.76 USD in today’s money. The discount factor is dimensionless, so each term in the NPV retains units of USD.</p>
+<p><strong>What if there are two cash flows on the sale date?</strong> Receiving 110 USD and paying a 2 USD fee gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>c</mi><mo accent="true">‾</mo></mover><mn>1</mn></msub><mo>=</mo><mn>110</mn><mrow><mo stretchy="true" form="prefix">(</mo><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>108</mn></mrow><annotation encoding="application/x-tex">\bar c_1=110(+1)+2(-1)=108</annotation></semantics></math> USD. Discount the net amount: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>100</mn><mo>+</mo><mn>108</mn><mi>/</mi><mn>1.05</mn><mo>=</mo><mn>2.86</mn></mrow><annotation encoding="application/x-tex">-100+108/1.05=2.86</annotation></semantics></math> USD. Combining same-date payments first explains the inner sum; discounting each date explains the outer sum.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Keep the 110 USD receipt, with no fee, but raise the benchmark to 10%. </p><details><summary>Show the answer</summary><div> NPV becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>100</mn><mo>+</mo><mn>110</mn><mi>/</mi><mn>1.10</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-100+110/1.10=0</annotation></semantics></math>. The cash gain is still 10 USD; it now exactly meets the benchmark. With uncertain future receipts, this calculation values the supplied cash-flow scenario.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-1/L1b/CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb">L1b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L1b">L1b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="bond-payments.html">How do coupon payments and yield determine a bond price?</a></li><li><a href="duration.html">Why does a higher yield lower a bond’s price?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

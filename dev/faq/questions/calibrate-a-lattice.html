@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do we construct a lattice from observations? · CHEME 5660</title>
+  <meta name="description" content="We estimate up and down price factors from observed movements, and the up probability from their frequency. Ordered paths that reach the same terminal price contribute to that node together.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Lattices &amp; pricing</span>
+    </p>
+    <h1 id='article-title'>How do we construct a lattice from observations?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>We estimate up and down price factors from observed movements, and the up probability from their frequency. Ordered paths that reach the same terminal price contribute to that node together.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p>Our data-driven example estimates the up factor from observed positive movements, the down factor from negative movements, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> from the frequency of up moves. Suppose four consecutive price factors are:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.02</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>0.99</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>1.04</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>0.98</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1.02,\quad0.99,\quad1.04,\quad0.98.
+</annotation></semantics></math></div>
+<p>The estimates are:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mfrac><mrow><mn>1.02</mn><mo>+</mo><mn>1.04</mn></mrow><mn>2</mn></mfrac><mo>=</mo><mn>1.03</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>d</mi><mo>=</mo><mfrac><mrow><mn>0.99</mn><mo>+</mo><mn>0.98</mn></mrow><mn>2</mn></mfrac><mo>=</mo><mn>0.985</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>p</mi><mo>=</mo><mfrac><mn>2</mn><mn>4</mn></mfrac><mo>=</mo><mn>0.50</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u=\frac{1.02+1.04}{2}=1.03,
+\qquad
+d=\frac{0.99+0.98}{2}=0.985,
+\qquad
+p=\frac{2}{4}=0.50.
+</annotation></semantics></math></div>
+<p>Starting from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S_0=100</annotation></semantics></math>, a two-step lattice has three terminal states:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Up moves</th>
+<th style="text-align: right;">Terminal price</th>
+<th style="text-align: right;">Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><msup><mi>u</mi><mn>2</mn></msup><mo>=</mo><mn>106.09</mn></mrow><annotation encoding="application/x-tex">100u^2=106.09</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>p</mi><mn>2</mn></msup><mo>=</mo><mn>0.25</mn></mrow><annotation encoding="application/x-tex">p^2=0.25</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>u</mi><mi>d</mi><mo>=</mo><mn>101.455</mn></mrow><annotation encoding="application/x-tex">100ud=101.455</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">2p(1-p)=0.50</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><msup><mi>d</mi><mn>2</mn></msup><mo>=</mo><mn>97.0225</mn></mrow><annotation encoding="application/x-tex">100d^2=97.0225</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>0.25</mn></mrow><annotation encoding="application/x-tex">(1-p)^2=0.25</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table></div>
+<p>There are four ordered paths but only three terminal states: up–down and down–up reach the same price. Their probabilities must be added. Recombination follows from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>d</mi><mo>=</mo><mi>d</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">ud=du</annotation></semantics></math>; it does not require <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">d=1/u</annotation></semantics></math>. The value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">p=0.50</annotation></semantics></math> comes from this particular sample, not from a requirement of the model.</p>
+<p>When the observations are stored as growth rates, recover the price factor with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>k</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_k\Delta t}</annotation></semantics></math>. This reverses the earlier logarithm and time scaling. The course estimator averages factors within each sign group; averaging the logarithms and exponentiating would be a different estimator. A zero-change observation joins neither factor group but remains in the denominator when estimating <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>. We need at least one up move and one down move to estimate both factors.</p>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb">L3b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L3b">L3b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="forecasting-and-pricing.html">Why does one tree use two probabilities?</a></li><li><a href="lattice-targets.html">Which lattice prices beat a trading target?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

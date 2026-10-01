@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why mix assets when one has a smaller variance? · CHEME 5660</title>
+  <meta name="description" content="An allocation can have less variance than either asset alone because each variance is multiplied by its squared weight and covariance determines the cross terms. The GMV calculation finds the least-variance allocation under its constraints.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Portfolios &amp; decisions</span>
+    </p>
+    <h1 id='article-title'>Why mix assets when one has a smaller variance?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>An allocation can have less variance than either asset alone because each variance is multiplied by its squared weight and covariance determines the cross terms. The GMV calculation finds the least-variance allocation under its constraints.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Why mix assets when one has a smaller variance?</strong> Suppose two uncorrelated assets have growth variances 1 and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">4\,\mathrm{yr}^{-2}</annotation></semantics></math>. Put weight <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math> in the first and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">1-w</annotation></semantics></math> in the second. Their portfolio variance is:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>p</mi></mrow><mn>2</mn></msubsup><mo>=</mo><msup><mi>w</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>5</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>−</mo><mn>0.8</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>0.8</mn><mspace width="1.0em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sigma_{g,p}^2=w^2+4(1-w)^2
+=5(w-0.8)^2+0.8\quad[\mathrm{yr}^{-2}].
+</annotation></semantics></math></div>
+<p>The square is smallest at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">w=0.8</annotation></semantics></math>, giving variance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.8</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.8\,\mathrm{yr}^{-2}</annotation></semantics></math>, below either asset alone. Each asset’s variance is multiplied by its squared weight, and zero covariance removes the cross term. This calculation finds the best allocation among all weights, whereas random sampling only compares the allocations drawn.</p>
+<p><strong>How do we generalize to many assets?</strong> The global minimum-variance (GMV) problem supplies the covariance matrix and chooses the weights. A positive-definite covariance gives a unique minimum. We first allow signed weights, so the budget is the only constraint:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>minimize</mo><mi>𝐰</mi></munder><mspace width="1.0em"></mspace><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>𝐰</mi><mi>⊤</mi></msup><msub><mi>𝚺</mi><mi>g</mi></msub><mi>𝐰</mi><mspace width="2.0em"></mspace><mtext mathvariant="normal">subject to</mtext><mspace width="1.0em"></mspace><msup><mn>𝟏</mn><mi>⊤</mi></msup><mi>𝐰</mi><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\underset{\mathbf w}{\operatorname{minimize}}\quad
+\frac12\mathbf w^{\top}\mathbf\Sigma_g\mathbf w
+\qquad\text{subject to}\quad\mathbf1^{\top}\mathbf w=1.
+</annotation></semantics></math></div>
+<p><strong>Why does the inverse covariance appear?</strong> We attach a multiplier to the budget constraint and set the gradient to zero:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐰</mi><mo>,</mo><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><msup><mi>𝐰</mi><mi>⊤</mi></msup><msub><mi>𝚺</mi><mi>g</mi></msub><mi>𝐰</mi><mo>−</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mn>𝟏</mn><mi>⊤</mi></msup><mi>𝐰</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>𝚺</mi><mi>g</mi></msub><mi>𝐰</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>λ</mi><mn>𝟏</mn><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><mi>𝐰</mi><mo>=</mo><mi>λ</mi><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathcal L(\mathbf w,\lambda)
+&amp;=\tfrac12\mathbf w^{\top}\mathbf\Sigma_g\mathbf w
+-\lambda(\mathbf1^{\top}\mathbf w-1),\\
+\mathbf\Sigma_g\mathbf w&amp;=\lambda\mathbf1
+\quad\Longrightarrow\quad\mathbf w=\lambda\mathbf\Sigma_g^{-1}\mathbf1.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">1/2</annotation></semantics></math> simplifies differentiation. Requiring the weights to sum to one determines <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> and gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐰</mi><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">V</mi></mrow></msub><mo>=</mo><mfrac><mrow><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn></mrow><mrow><msup><mn>𝟏</mn><mi>⊤</mi></msup><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">V</mi></mrow></mrow><mn>2</mn></msubsup><mo>=</mo><mfrac><mn>1</mn><mrow><msup><mn>𝟏</mn><mi>⊤</mi></msup><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbf w_{\mathrm{GMV}}
+=\frac{\mathbf\Sigma_g^{-1}\mathbf1}{\mathbf1^{\top}\mathbf\Sigma_g^{-1}\mathbf1},
+\qquad
+\sigma_{g,\mathrm{GMV}}^2
+=\frac{1}{\mathbf1^{\top}\mathbf\Sigma_g^{-1}\mathbf1}.
+</annotation></semantics></math></div>
+<p>The numerator accounts for variances and covariances; the denominator normalizes the allocation. The data example solves <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>𝚺</mi><mo accent="true">̂</mo></mover><mi>g</mi></msub><mi>𝐱</mi><mo>=</mo><mn>𝟏</mn></mrow><annotation encoding="application/x-tex">\hat{\mathbf\Sigma}_g\mathbf x=\mathbf1</annotation></semantics></math> and divides <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf x</annotation></semantics></math> by the sum of its entries. Mean-growth estimates enter only when we add a growth requirement.</p>
+<p><strong>A two-asset calculation.</strong> For uncorrelated assets with growth variances <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">4\,\mathrm{yr}^{-2}</annotation></semantics></math>, the unnormalized vector is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mi>/</mi><mn>4</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">(1,1/4)\,\mathrm{yr}^{2}</annotation></semantics></math>. Normalizing gives weights <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.8</mn><mo>,</mo><mn>0.2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.8,0.2)</annotation></semantics></math> and variance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>1</mn><mi>/</mi><mn>4</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.8</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1/(1+1/4)=0.8\,\mathrm{yr}^{-2}</annotation></semantics></math>. The lower-variance asset receives more of the budget.</p>
+<p><strong>What does a negative weight mean?</strong> With 1,000 USD and weights <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.2</mn><mo>,</mo><mo>−</mo><mn>0.2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1.2,-0.2)</annotation></semantics></math>, we borrow and sell 200 USD of the second asset and buy 1,200 USD of the first. The short position is a liability: a price increase raises the cost of buying back the borrowed shares. The lecture’s calculation omits borrowing fees, collateral, and dividends owed.</p>
+<div class="answer-check"><p><strong>Try it.</strong> If an unrestricted GMV solution contains a negative weight, what happens when we require <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w_i\geq0</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> we solve again over the smaller feasible set. The minimum variance increases for a positive-definite covariance. If the unrestricted weights were already nonnegative, they would remain optimal.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb">L6a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L6a">L6a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="buy-and-hold-weights.html">What stays fixed when we buy and hold?</a></li><li><a href="portfolio-risk.html">How do individual growth rates become portfolio risk?</a></li><li><a href="growth-targets.html">How do exact growth targets differ from growth floors?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

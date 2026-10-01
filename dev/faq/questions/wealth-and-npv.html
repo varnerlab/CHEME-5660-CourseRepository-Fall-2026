@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do portfolio weights become wealth and NPV? · CHEME 5660</title>
+  <meta name="description" content="Use the initial dollar allocation and prices to determine share counts, then value those shares at later prices. NPV discounts terminal wealth before comparing it with the initial investment.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Portfolios &amp; decisions</span>
+    </p>
+    <h1 id='article-title'>How do portfolio weights become wealth and NPV?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Use the initial dollar allocation and prices to determine share counts, then value those shares at later prices. NPV discounts terminal wealth before comparing it with the initial investment.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How do we evaluate the investment after choosing its weights?</strong> We convert the initial dollar allocations to shares, keep the share counts fixed, and value them at later prices. The data and multiple-asset GBM examples use the same wealth calculation on observed and simulated prices.</p>
+<p><strong>Work from dollars to shares.</strong> Suppose <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">W_0=1{,}000</annotation></semantics></math> USD, weights are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.6</mn><mo>,</mo><mn>0.4</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.6,0.4)</annotation></semantics></math>, and initial share prices are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>100</mn><mo>,</mo><mn>50</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(100,50)</annotation></semantics></math> USD. We buy six shares of the first asset and eight of the second. In symbols:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>w</mi><mi>i</mi></msub><msub><mi>W</mi><mn>0</mn></msub></mrow><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>W</mi><mi>t</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>n</mi><mi>i</mi></msub><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><mfrac><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+n_i=\frac{w_iW_0}{S_i(0)},\qquad
+W_t=\sum_i n_iS_i(t)=W_0\sum_i w_i\frac{S_i(t)}{S_i(0)}.
+</annotation></semantics></math></div>
+<p>If the prices after one year are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>110</mn><mo>,</mo><mn>45</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(110,45)</annotation></semantics></math> USD, wealth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>110</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>8</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>45</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo><mn>020</mn></mrow><annotation encoding="application/x-tex">6(110)+8(45)=1{,}020</annotation></semantics></math> USD. The first asset now represents <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>660</mn><mi>/</mi><mn>1</mn><mo>,</mo><mn>020</mn><mo>=</mo><mn>64.7</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">660/1{,}020=64.7\%</annotation></semantics></math> of wealth. Its initial fraction was 60%; the share count stayed six as its wealth fraction changed.</p>
+<p><strong>Did we exceed the benchmark?</strong> Discount terminal wealth before comparing it with the initial investment:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>NPV</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo>,</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><msub><mi>W</mi><mn>0</mn></msub><mo>+</mo><msub><mi>W</mi><mi>T</mi></msub><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ρ</mi><mi>T</mi></msub><mo>=</mo><mfrac><msub><mi>W</mi><mi>T</mi></msub><msub><mi>W</mi><mn>0</mn></msub></mfrac><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><mo>−</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{NPV}(g_y,T)=-W_0+W_Te^{-g_yT},\qquad
+\rho_T=\frac{W_T}{W_0}e^{-g_yT}-1.
+</annotation></semantics></math></div>
+<p>For <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.03</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_y=0.03\,\mathrm{yr}^{-1}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T=1</annotation></semantics></math> yr, the scaled NPV is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.02</mn><msup><mi>e</mi><mrow><mo>−</mo><mn>0.03</mn></mrow></msup><mo>−</mo><mn>1</mn><mo>≈</mo><mo>−</mo><mn>0.01015</mn></mrow><annotation encoding="application/x-tex">1.02e^{-0.03}-1\approx-0.01015</annotation></semantics></math>. Wealth rose by 20 USD, but its discounted value fell short of the initial investment by about 10.15 USD. To exceed a scaled target <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mo>⋆</mo></msub><mo>&gt;</mo><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\rho_\star&gt;-1</annotation></semantics></math>, terminal wealth must satisfy:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>T</mi></msub><mo>&gt;</mo><msub><mi>W</mi><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>ρ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+W_T&gt;W_0(1+\rho_\star)e^{g_yT}.
+</annotation></semantics></math></div>
+<p>For a zero target, the required wealth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>030.45</mn></mrow><annotation encoding="application/x-tex">1{,}030.45</annotation></semantics></math> USD. This translates the NPV question into a terminal-wealth event that we can count in simulated paths.</p>
+<p><strong>How do we use the testing data?</strong> The data example estimates the inputs from 2014 to 2024 and evaluates both GMV allocations, equal weights, and SPY on 2025 prices. Realized mean growth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mi>T</mi></msub><mi>/</mi><msub><mi>W</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\ln(W_T/W_0)/T</annotation></semantics></math> when wealth remains positive. Realized risk is the sample standard deviation of daily wealth growth rates. These quantities describe the investment actually held, whose weights can drift through time.</p>
+<div class="answer-check"><p><strong>Try it.</strong> If we double <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mn>0</mn></msub><annotation encoding="application/x-tex">W_0</annotation></semantics></math> and keep the weights and price ratios fixed, what changes? </p><details><summary>Show the answer</summary><div> share counts, wealth, and dollar NPV double. Scaled NPV and the probability of exceeding a scaled target stay the same. The calculation allows fractional shares and omits trading costs and dividends.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb">L6a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L6a">L6a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="buy-and-hold-weights.html">What stays fixed when we buy and hold?</a></li><li><a href="portfolio-risk.html">How do individual growth rates become portfolio risk?</a></li><li><a href="minimum-variance.html">Why mix assets when one has a smaller variance?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

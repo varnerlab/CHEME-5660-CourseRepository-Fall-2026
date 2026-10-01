@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do independent inputs produce correlated movements? · CHEME 5660</title>
+  <meta name="description" content="The assets share random inputs through a loading matrix. Multiplying independent standard normal draws by a matrix A produces covariance AAᵀ, so the loadings determine how the assets move together.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Dependence &amp; covariance</span>
+    </p>
+    <h1 id='article-title'>How do independent inputs produce correlated movements?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The assets share random inputs through a loading matrix. Multiplying independent standard normal draws by a matrix A produces covariance AAᵀ, so the loadings determine how the assets move together.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How can independent inputs produce correlated asset movements?</strong> Give the assets a shared random input. Suppose their volatility parameters are 0.20 and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, with correlation 0.50. The required covariance rate and a loading matrix that produces it are:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐂</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>0.04</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.03</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.03</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.09</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>𝐀</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>0.20</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.15</mn></mtd><mtd columnalign="center" style="text-align: center"><msqrt><mn>0.0675</mn></msqrt></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbf C=\begin{bmatrix}0.04&amp;0.03\\0.03&amp;0.09\end{bmatrix}\mathrm{yr}^{-1},
+\qquad
+\mathbf A=\begin{bmatrix}0.20&amp;0\\0.15&amp;\sqrt{0.0675}\end{bmatrix}\mathrm{yr}^{-1/2}.
+</annotation></semantics></math></div>
+<p>The first diagonal loading is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>0.04</mn></msqrt><mo>=</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">\sqrt{0.04}=0.20</annotation></semantics></math>. The shared loading is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.03</mn><mi>/</mi><mn>0.20</mn><mo>=</mo><mn>0.15</mn></mrow><annotation encoding="application/x-tex">0.03/0.20=0.15</annotation></semantics></math>; the remaining loading is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mn>0.09</mn><mo>−</mo><msup><mn>0.15</mn><mn>2</mn></msup></mrow></msqrt><mo>=</mo><msqrt><mn>0.0675</mn></msqrt><mo>≈</mo><mn>0.259808</mn></mrow><annotation encoding="application/x-tex">\sqrt{0.09-0.15^2}=\sqrt{0.0675}\approx0.259808</annotation></semantics></math>. These choices make <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐀</mi><msup><mi>𝐀</mi><mi>⊤</mi></msup><mo>=</mo><mi>𝐂</mi></mrow><annotation encoding="application/x-tex">\mathbf A\mathbf A^\top=\mathbf C</annotation></semantics></math>.</p>
+<p>Let <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mn>1</mn></msub><annotation encoding="application/x-tex">Z_1</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mn>2</mn></msub><annotation encoding="application/x-tex">Z_2</annotation></semantics></math> be independent standard normal variables. Write <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mo>=</mo><mi>𝐀</mi><mi>𝐙</mi></mrow><annotation encoding="application/x-tex">\mathbf X=\mathbf A\mathbf Z</annotation></semantics></math> for the two noise contributions before time scaling. Expanding the matrix product gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><mn>0.20</mn><msub><mi>Z</mi><mn>1</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mn>0.15</mn><msub><mi>Z</mi><mn>1</mn></msub><mo>+</mo><msqrt><mn>0.0675</mn></msqrt><mspace width="0.167em"></mspace><msub><mi>Z</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_1=0.20Z_1,\qquad X_2=0.15Z_1+\sqrt{0.0675}\,Z_2.
+</annotation></semantics></math></div>
+<p>Both assets use <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mn>1</mn></msub><annotation encoding="application/x-tex">Z_1</annotation></semantics></math>, which produces their covariance. Independence removes the cross term containing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Z</mi><mn>1</mn></msub><msub><mi>Z</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">Z_1Z_2</annotation></semantics></math>, and each input has variance one, so:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msup><mn>0.20</mn><mn>2</mn></msup><mo>=</mo><mn>0.04</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msup><mn>0.15</mn><mn>2</mn></msup><mo>+</mo><mn>0.0675</mn><mo>=</mo><mn>0.09</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>0.20</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.15</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.03</mn><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\operatorname{Var}(X_1)&amp;=0.20^2=0.04,\\
+\operatorname{Var}(X_2)&amp;=0.15^2+0.0675=0.09,\\
+\operatorname{Cov}(X_1,X_2)&amp;=0.20(0.15)=0.03.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>These values have units <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>. Dividing the covariance by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.20</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.30</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">0.20(0.30)</annotation></semantics></math> recovers correlation 0.50. One draw illustrates the multiplication: if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐙</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf Z=(1,-1)^\top</annotation></semantics></math>, then <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mo>≈</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.20</mn><mo>,</mo><mo>−</mo><mn>0.109808</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf X\approx(0.20,-0.109808)^\top\,\mathrm{yr}^{-1/2}</annotation></semantics></math>. Positive correlation allows individual draws with opposite signs; it describes the joint distribution across draws.</p>
+<p><strong>How do these numbers enter a price step?</strong> For asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, add mean log growth and the time-scaled noise in the exponent:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mi>Δ</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>exp</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>μ</mi><mrow><mi>g</mi><mo>,</mo><mi>i</mi></mrow></msub><mi>Δ</mi><mi>t</mi><mo>+</mo><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mspace width="0.167em"></mspace><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>μ</mi><mrow><mi>g</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>μ</mi><mi>i</mi></msub><mo>−</mo><msub><mi>C</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mi>/</mi><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_i(t+\Delta t)=S_i(t)\exp\!\left[\mu_{g,i}\Delta t+\sqrt{\Delta t}\,X_i\right],
+\qquad \mu_{g,i}=\mu_i-C_{ii}/2.
+</annotation></semantics></math></div>
+<p>For <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>252</mn></mrow><annotation encoding="application/x-tex">\Delta t=1/252</annotation></semantics></math> yr, starting prices of 100 USD/share, and both mean growth rates <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.06</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.06\,\mathrm{yr}^{-1}</annotation></semantics></math>, the draw above gives next prices about 101.29 and 99.33 USD/share. The same vector is shared across assets within the step; we draw a fresh vector at the next step.</p>
+<p><strong>Why use a loading matrix?</strong> For independent standard normal inputs, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐀</mi><mi>𝐙</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝐀</mi><msup><mi>𝐀</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\operatorname{Cov}(\mathbf A\mathbf Z)=\mathbf A\mathbf A^\top</annotation></semantics></math>. Multiplying by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐂</mi><annotation encoding="application/x-tex">\mathbf C</annotation></semantics></math> itself would produce <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐂</mi><msup><mi>𝐂</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf C\mathbf C^\top</annotation></semantics></math>, with the wrong covariance and units.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Replace the loading 0.15 by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.15</mn></mrow><annotation encoding="application/x-tex">-0.15</annotation></semantics></math>. </p><details><summary>Show the answer</summary><div> both variances stay the same because they use squared loadings. Covariance becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.03</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-0.03\,\mathrm{yr}^{-1}</annotation></semantics></math> and correlation becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">-0.50</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb">L5b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L5b">L5b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="covariance-from-data.html">How do observations become a covariance matrix?</a></li><li><a href="independence.html">When do independent single-asset models agree with MA-GBM?</a></li><li><a href="sim-risk.html">Which covariance does the single index model keep or omit?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

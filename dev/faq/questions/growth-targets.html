@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do exact growth targets differ from growth floors? · CHEME 5660</title>
+  <meta name="description" content="An exact target requires equality. A floor accepts any allocation that meets or exceeds the required mean growth, so it can retain a minimum-variance portfolio whose mean already exceeds the floor.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Portfolios &amp; decisions</span>
+    </p>
+    <h1 id='article-title'>How do exact growth targets differ from growth floors?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>An exact target requires equality. A floor accepts any allocation that meets or exceeds the required mean growth, so it can retain a minimum-variance portfolio whose mean already exceeds the floor.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How much additional risk does a growth requirement impose?</strong> The lecture first requires the weighted sample means to equal a target, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐠</mi><mi>′</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><mi>𝐰</mi><mo>=</mo><msub><mi>g</mi><mo>⋆</mo></msub></mrow><annotation encoding="application/x-tex">(\mathbf g^{\prime})^{\top}\mathbf w=g_\star</annotation></semantics></math>, while allowing short positions. The minimum variance at each target traces the minimum-variance frontier.</p>
+<p>Return to uncorrelated variances <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">(1,4)\,\mathrm{yr}^{-2}</annotation></semantics></math> and suppose the means are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.04</mn><mo>,</mo><mn>0.14</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">(0.04,0.14)\,\mathrm{yr}^{-1}</annotation></semantics></math>. The GMV weights <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.8</mn><mo>,</mo><mn>0.2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.8,0.2)</annotation></semantics></math> give mean growth <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.06</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.06\,\mathrm{yr}^{-1}</annotation></semantics></math>. A floor of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.05</mn><annotation encoding="application/x-tex">0.05</annotation></semantics></math> leaves this allocation unchanged. An exact target of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.05</mn><annotation encoding="application/x-tex">0.05</annotation></semantics></math> instead requires weights <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.9</mn><mo>,</mo><mn>0.1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.9,0.1)</annotation></semantics></math> and variance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.85</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.85\,\mathrm{yr}^{-2}</annotation></semantics></math>. The exact target selects a lower-growth, higher-risk allocation than the GMV portfolio; the floor accepts the GMV allocation.</p>
+<p>To see where those weights come from, write the first-asset weight as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math> and the second as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">1-w</annotation></semantics></math>. The mean growth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.04</mn><mi>w</mi><mo>+</mo><mn>0.14</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.14</mn><mo>−</mo><mn>0.10</mn><mi>w</mi></mrow><annotation encoding="application/x-tex">0.04w+0.14(1-w)=0.14-0.10w</annotation></semantics></math>. Setting it to 0.05 gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0.9</mn></mrow><annotation encoding="application/x-tex">w=0.9</annotation></semantics></math>. A floor asks only for a mean of at least 0.05; the GMV mean of 0.06 already qualifies.</p>
+<p><strong>What changes with a floor and long-only weights?</strong> We solve the following problem numerically using estimated inputs:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><munder><mo>minimize</mo><mi>𝐰</mi></munder><mspace width="1.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><msup><mi>𝐰</mi><mi>⊤</mi></msup><msub><mover><mi>𝚺</mi><mo accent="true">̂</mo></mover><mi>g</mi></msub><mi>𝐰</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">subject to</mtext><mspace width="1.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐠</mi><mi>′</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><mi>𝐰</mi><mo>≥</mo><msub><mi>g</mi><mo>⋆</mo></msub><mo>,</mo><mspace width="2.0em"></mspace><msup><mn>𝟏</mn><mi>⊤</mi></msup><mi>𝐰</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><msub><mi>w</mi><mi>i</mi></msub><mo>≤</mo><mn>1</mn><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\underset{\mathbf w}{\operatorname{minimize}}\quad&amp;\mathbf w^{\top}\hat{\mathbf\Sigma}_g\mathbf w\\
+\text{subject to}\quad &amp;(\mathbf g^{\prime})^{\top}\mathbf w\geq g_\star,\qquad
+\mathbf1^{\top}\mathbf w=1,\qquad 0\leq w_i\leq1.
+\end{aligned}
+</annotation></semantics></math></div>
+<div class="answer-check"><p><strong>Try it.</strong> Raise the floor to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.09</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.09\,\mathrm{yr}^{-1}</annotation></semantics></math>. </p><details><summary>Show the answer</summary><div> it binds at weights <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo>,</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.5,0.5)</annotation></semantics></math>, giving variance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.25</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1.25\,\mathrm{yr}^{-2}</annotation></semantics></math>. A long-only floor above <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.14</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.14\,\mathrm{yr}^{-1}</annotation></semantics></math> is infeasible. Setting the floor to the smallest asset mean, as in the examples’ GMV solve, allows every fully invested long-only allocation.</div></details></div>
+<h3 id="the-formula-for-an-exact-target">The formula for an exact target</h3>
+<p>The two-asset calculation above determines the weights from the budget and growth equations. With more assets, many allocations can satisfy both equations; the covariance determines which has the least risk. The lecture writes that solution using four shorthand coefficients:</p>
+<p>For a positive-definite <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝚺</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mathbf\Sigma_g</annotation></semantics></math> and unequal asset sample means, calculate:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>a</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msup><mn>𝟏</mn><mi>⊤</mi></msup><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn><mo>,</mo></mtd><mtd columnalign="right" style="text-align: right"><mi>b</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msup><mn>𝟏</mn><mi>⊤</mi></msup><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msup><mi>𝐠</mi><mi>′</mi></msup><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>c</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐠</mi><mi>′</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msup><mi>𝐠</mi><mi>′</mi></msup><mo>,</mo></mtd><mtd columnalign="right" style="text-align: right"><mi>d</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>a</mi><mi>c</mi><mo>−</mo><msup><mi>b</mi><mn>2</mn></msup><mo>&gt;</mo><mn>0</mn><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+a&amp;=\mathbf1^{\top}\mathbf\Sigma_g^{-1}\mathbf1,&amp;
+b&amp;=\mathbf1^{\top}\mathbf\Sigma_g^{-1}\mathbf g^{\prime},\\
+c&amp;=(\mathbf g^{\prime})^{\top}\mathbf\Sigma_g^{-1}\mathbf g^{\prime},&amp;d&amp;=ac-b^2&gt;0.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The budget and growth constraints determine the coefficients of two vectors. The resulting weights and variance are:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>𝐰</mi><mo>⋆</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac><mrow><mi>c</mi><mo>−</mo><mi>b</mi><msub><mi>g</mi><mo>⋆</mo></msub></mrow><mi>d</mi></mfrac><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mn>𝟏</mn><mo>+</mo><mfrac><mrow><mi>a</mi><msub><mi>g</mi><mo>⋆</mo></msub><mo>−</mo><mi>b</mi></mrow><mi>d</mi></mfrac><msubsup><mi>𝚺</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msup><mi>𝐠</mi><mi>′</mi></msup><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>σ</mi><mi>g</mi><mn>2</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac><mrow><mi>a</mi><msubsup><mi>g</mi><mo>⋆</mo><mn>2</mn></msubsup><mo>−</mo><mn>2</mn><mi>b</mi><msub><mi>g</mi><mo>⋆</mo></msub><mo>+</mo><mi>c</mi></mrow><mi>d</mi></mfrac><mo>=</mo><mfrac><mn>1</mn><mi>a</mi></mfrac><mo>+</mo><mfrac><mi>a</mi><mi>d</mi></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mo>⋆</mo></msub><mo>−</mo><mfrac><mi>b</mi><mi>a</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathbf w_\star(g_\star)
+&amp;=\frac{c-bg_\star}{d}\mathbf\Sigma_g^{-1}\mathbf1
++\frac{ag_\star-b}{d}\mathbf\Sigma_g^{-1}\mathbf g^{\prime},\\
+\sigma_g^2(g_\star)
+&amp;=\frac{ag_\star^2-2bg_\star+c}{d}
+=\frac1a+\frac ad\left(g_\star-\frac ba\right)^2.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The last expression separates GMV variance, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">1/a</annotation></semantics></math>, from the extra variance imposed by the target. The GMV mean is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">b/a</annotation></semantics></math>. The upper branch, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mo>⋆</mo></msub><mo>≥</mo><mi>b</mi><mi>/</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">g_\star\geq b/a</annotation></semantics></math>, is efficient: a point on the lower branch has a higher-growth counterpart at the same risk.</p>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb">L6a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L6a">L6a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="buy-and-hold-weights.html">What stays fixed when we buy and hold?</a></li><li><a href="portfolio-risk.html">How do individual growth rates become portfolio risk?</a></li><li><a href="minimum-variance.html">Why mix assets when one has a smaller variance?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

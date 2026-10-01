@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do coupon payments and yield determine a bond price? · CHEME 5660</title>
+  <meta name="description" content="The coupon rate sets the promised coupon payments. The valuation yield discounts those payments and par to the present, so the payment schedule and yield play different roles.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Cash flows &amp; bonds</span>
+    </p>
+    <h1 id='article-title'>How do coupon payments and yield determine a bond price?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The coupon rate sets the promised coupon payments. The valuation yield discounts those payments and par to the present, so the payment schedule and yield play different roles.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Where does the investment gain come from?</strong> A bill held to maturity pays par once; we buy it for a lower amount in the example below. A coupon bond also pays cash along the way. In both cases, identify the dated payments first, then use the stated rate convention to connect them to today’s price.</p>
+<p><strong>From a bill quote to investment growth.</strong> The bank-discount quote expresses the discount as a fraction of par. We first calculate the purchase price, then use the purchase-to-par ratio to calculate growth over the holding period:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>B</mi></msub><mo>=</mo><msub><mi>V</mi><mi>P</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>d</mi><mfrac><mi>D</mi><mn>360</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>g</mi><mi>B</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>V</mi><mi>P</mi></msub><msub><mi>V</mi><mi>B</mi></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_B=V_P\left(1-d\frac{D}{360}\right),\qquad
+g_B=\frac{1}{T}\ln\left(\frac{V_P}{V_B}\right).
+</annotation></semantics></math></div>
+<p>For <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>P</mi></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">V_P=100</annotation></semantics></math> USD, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.04</mn></mrow><annotation encoding="application/x-tex">d=0.04</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><mn>90</mn></mrow><annotation encoding="application/x-tex">D=90</annotation></semantics></math> days, the bill costs 99 USD. If we select <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>90</mn><mi>/</mi><mn>365</mn></mrow><annotation encoding="application/x-tex">T=90/365</annotation></semantics></math> years for valuation, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>B</mi></msub><mo>≈</mo><mn>0.04076</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_B\approx0.04076\,\mathrm{yr}^{-1}</annotation></semantics></math>. The quote uses par and a 360-day basis; the growth calculation uses the amount invested and the selected holding-time convention.</p>
+<p><strong>What changes for a coupon bond?</strong> We receive coupons along the way as well as par at maturity. Just after a coupon payment, with a constant discount yield, its value is the sum of those discounted payments:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>B</mi></msub><mo>=</mo><munder><munder><mrow><msub><mi>V</mi><mi>P</mi></msub><msubsup><mi>𝒟</mi><mrow><mi>N</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">present value of par</mtext></munder><mo>+</mo><munder><munder><mrow><mi>C</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msubsup><mi>𝒟</mi><mrow><mi>j</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">present value of coupons</mtext></munder><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_B=\underbrace{V_P\mathcal D_{N,0}^{-1}}_{\text{present value of par}}
++\underbrace{C\sum_{j=1}^{N}\mathcal D_{j,0}^{-1}}_{\text{present value of coupons}}.
+</annotation></semantics></math></div>
+<p>Each discount factor applies to the date of its payment. This is the L1b cash-flow calculation with the bond’s payment schedule supplied.</p>
+<p><strong>Price a short coupon schedule.</strong> Let par be 100 USD, the annual coupon rate be 4%, and payments occur twice per year. Each coupon is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.04</mn><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>100</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">C=(0.04/2)(100)=2</annotation></semantics></math> USD. With one year remaining, the payments are 2 USD in six months and 102 USD in one year. At a 6% nominal yield compounded semiannually:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>B</mi></msub><mo>=</mo><mfrac><mn>2</mn><mn>1.03</mn></mfrac><mo>+</mo><mfrac><mn>102</mn><msup><mn>1.03</mn><mn>2</mn></msup></mfrac><mo>=</mo><mn>98.09</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_B=\frac{2}{1.03}+\frac{102}{1.03^2}=98.09\ \mathrm{USD}.
+</annotation></semantics></math></div>
+<p>The coupon rate specifies the promised 2 USD payments. The yield discounts them. Here the coupon rate is below the yield, so the price is below par.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Keep the same payments but use a 4% yield. </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>1.02</mn><mo>+</mo><mn>102</mn><mi>/</mi><msup><mn>1.02</mn><mn>2</mn></msup><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">2/1.02+102/1.02^2=100</annotation></semantics></math> USD. The payments are unchanged; their present values are larger.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2a/CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb">L2a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L2a">L2a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="discounting.html">Why discount cash flows, and what does positive NPV mean?</a></li><li><a href="duration.html">Why does a higher yield lower a bond’s price?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

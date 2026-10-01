@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why does one tree use two probabilities? · CHEME 5660</title>
+  <meta name="description" content="The real-world probability describes forecast frequencies. The risk-neutral weight prices a payoff through a replication argument. They answer different questions on the same price tree.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Lattices &amp; pricing</span>
+    </p>
+    <h1 id='article-title'>Why does one tree use two probabilities?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The real-world probability describes forecast frequencies. The risk-neutral weight prices a payoff through a replication argument. They answer different questions on the same price tree.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Why does one tree use two probabilities?</strong> Suppose a share costs 100 USD today and will be worth either 120 or 90 USD after one step. The up and down factors are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.20</mn></mrow><annotation encoding="application/x-tex">u=1.20</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.90</mn></mrow><annotation encoding="application/x-tex">d=0.90</annotation></semantics></math>. Keep these prices fixed while we ask two different questions.</p>
+<p><strong>Forecasting: how often might each outcome occur?</strong> Let the estimated real-world up probability be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.65</mn></mrow><annotation encoding="application/x-tex">p=0.65</annotation></semantics></math>. Weighting the two prices by their forecast probabilities gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔼</mi><mi>ℙ</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>0.65</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>120</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>0.35</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>109.50</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb E_{\mathbb P}[S_1]=0.65(120)+0.35(90)=109.50\ \mathrm{USD/share}.
+</annotation></semantics></math></div>
+<p>This average describes the forecast distribution. Its quality depends on whether the estimated probabilities describe later outcomes adequately.</p>
+<p><strong>Pricing: what should a specified payoff cost today?</strong> Suppose a claim pays <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mi>u</mi></msub><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">H_u=20</annotation></semantics></math> USD after an up move and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mi>d</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">H_d=0</annotation></semantics></math> after a down move. Let the risk-free accumulation factor over the same step be <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo><mn>1.02</mn></mrow><annotation encoding="application/x-tex">R_f=1.02</annotation></semantics></math>. With frictionless trading, short positions allowed, and borrowing or lending at this rate, no-arbitrage requires the risk-neutral weight <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> to satisfy:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mi>u</mi><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mo>=</mo><msub><mi>R</mi><mi>f</mi></msub><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><mi>q</mi><mo>=</mo><mfrac><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>−</mo><mi>d</mi></mrow><mrow><mi>u</mi><mo>−</mo><mi>d</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>1.02</mn><mo>−</mo><mn>0.90</mn></mrow><mrow><mn>1.20</mn><mo>−</mo><mn>0.90</mn></mrow></mfrac><mo>=</mo><mn>0.40</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+qu+(1-q)d=R_f
+\quad\Longrightarrow\quad
+q=\frac{R_f-d}{u-d}=\frac{1.02-0.90}{1.20-0.90}=0.40.
+</annotation></semantics></math></div>
+<p>The condition <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>&lt;</mo><msub><mi>R</mi><mi>f</mi></msub><mo>&lt;</mo><mi>u</mi></mrow><annotation encoding="application/x-tex">d&lt;R_f&lt;u</annotation></semantics></math> gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>q</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;q&lt;1</annotation></semantics></math>. We use these weights to average the claim’s payoffs and then discount one step:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>0</mn></msub><mo>=</mo><mfrac><mrow><mi>q</mi><msub><mi>H</mi><mi>u</mi></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>H</mi><mi>d</mi></msub></mrow><msub><mi>R</mi><mi>f</mi></msub></mfrac><mo>=</mo><mfrac><mrow><mn>0.40</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>0.60</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mn>1.02</mn></mfrac><mo>≈</mo><mn>7.84</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_0=\frac{qH_u+(1-q)H_d}{R_f}
+=\frac{0.40(20)+0.60(0)}{1.02}\approx7.84\ \mathrm{USD}.
+</annotation></semantics></math></div>
+<p><strong>Why is that the price?</strong> We can build the claim’s payoff from the share and a loan. The claim’s payoff differs by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mo>−</mo><mn>0</mn><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">20-0=20</annotation></semantics></math> USD between the two states, while the share price differs by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>120</mn><mo>−</mo><mn>90</mn><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">120-90=30</annotation></semantics></math> USD/share. Holding <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi>/</mi><mn>30</mn><mo>=</mo><mn>2</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">20/30=2/3</annotation></semantics></math> of a share therefore reproduces the payoff difference. In the down state those shares are worth 60 USD and the claim pays zero, so we need a loan repayment of 60 USD. Borrowing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mi>/</mi><mn>1.02</mn></mrow><annotation encoding="application/x-tex">60/1.02</annotation></semantics></math> USD today supplies that repayment after one step. After one step the shares are worth 80 or 60 USD, and the loan repayment is 60 USD. The net payoff is therefore 20 or zero, exactly the claim’s payoff. The initial cost is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mi>/</mi><mn>3</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>60</mn><mi>/</mi><mn>1.02</mn><mo>≈</mo><mn>7.84</mn></mrow><annotation encoding="application/x-tex">100(2/3)-60/1.02\approx7.84</annotation></semantics></math> USD. A different claim price would let us trade the claim against this replicating position for an arbitrage profit under the stated assumptions.</p>
+<p>Thus <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> describes forecast frequencies, while <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> values a payoff through a trading argument. Risk-neutral pricing does not assert that the stock is risk-free or that 40% of actual moves will be upward.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Change only <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> from 0.65 to 0.50. What changes? </p><details><summary>Show the answer</summary><div> the forecast expected price becomes 105 USD/share. The replicated payoff still costs about 7.84 USD because the two possible share prices and the borrowing rate are unchanged.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb">L3b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L3b">L3b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="calibrate-a-lattice.html">How do we construct a lattice from observations?</a></li><li><a href="lattice-targets.html">Which lattice prices beat a trading target?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
