@@ -1,7 +1,8 @@
 # Nomenclature and worked explanations
 
 The [notebook](CHEME-5660-Nomenclature-Fall-2026.ipynb) and
-[PDF](CHEME-5660-Nomenclature-Fall-2026.pdf) cover the main lectures through L6b.
+[PDF](CHEME-5660-Nomenclature-Fall-2026.pdf) cover the main lectures through L6b and the seven core L6a/L6b examples in the
+Week 06.3 release.
 The notebook contains only Markdown cells and can be read without a Julia kernel.
 
 The September 29 revision connects the notation to the engagement-survey questions
@@ -17,6 +18,14 @@ explanatory steps, and an interpretation.
 The [independent Claude review and revision record](../instructor/NOMENCLATURE-CLARITY-REVIEW-2026-09-29.md)
 preserves both assessments, the changes they prompted, and the separate source
 and rendering checks.
+
+The October 1 revision refreshes Week 6 against `CHEME-5660-Fall-2026-Week-06.3`.
+It adds worked calculations for covariance and portfolio risk, GMV weights,
+exact growth targets versus floors, wealth and NPV, Monte Carlo uncertainty,
+SIM estimation and bootstrap uncertainty, omitted residual covariance, and
+tangent and complete portfolios. Each new calculation includes an answer check.
+The L1b-L5b teaching sections and existing course figure are preserved. The
+notebook, PDF footer, and source hashes carry the updated date and scope.
 
 ## Updating the reference
 
@@ -50,7 +59,8 @@ and the hashes; do not redraw it for this reference.
 
 Inspect the rendered PDF after regenerating it. The notebook is the maintained
 source; the PDF is its posting copy. `nomenclature-sources.json` records the lecture
-files and hashes used for the initial reference. Refresh it when reviewing new
+files and hashes used for the initial reference, plus the release-specific
+lecture and core-example hashes used for Week 6. Refresh it when reviewing new
 lecture content. The September 29 explanatory revision checked those hashes
 against the current lectures and corrected the SIM residual-variance bound from
 `K` to the lecture's `bar(sigma)^2` notation.

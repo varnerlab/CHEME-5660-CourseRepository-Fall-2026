@@ -1,7 +1,7 @@
 {
-  "updated": "2026-09-29",
+  "updated": "2026-10-01",
   "source_commit": "39d60e7e47d9531d5bc1a41ba301fd6584330515",
-  "scope": "Main lectures through L6b; optional and worked-example-only notation excluded",
+  "scope": "Main lectures through L6b, plus seven core L6a/L6b example notebooks from Week 06.3; optional advanced-only notation excluded",
   "sources": [
     {
       "path": "lectures/week-1/L1a/slides/CHEME-5660-L1a-Slides-Fall-2026.tex",
@@ -44,12 +44,63 @@
       "sha256": "c0b4bcf5f2f1aa44a1f2653aab6eda657d494d70d8e92bbce004736e33a32171"
     },
     {
+      "path": "lectures/week-6/L6a/CHEME-5660-L6a-Example-Data-MinVar-Portfolio-Fall-2026.ipynb",
+      "sha256": "7b7e001c3d8928ff0f57ef292182fc3729ad97617aff771d5f3fdd99d80dba8f",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
+      "path": "lectures/week-6/L6a/CHEME-5660-L6a-Example-Dirichlet-PortfolioWeights-Fall-2026.ipynb",
+      "sha256": "4f7155da7d5e095870e8f9fb21c00c30cfbfc874d6fbac58a154de3fc5b9800f",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
+      "path": "lectures/week-6/L6a/CHEME-5660-L6a-Example-MAGBM-Portfolio-Fall-2026.ipynb",
+      "sha256": "61bc6b07308972107e8f9ac684f1006edb1daa0c2c49ea80a2c50e7b6df992b5",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
       "path": "lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb",
-      "sha256": "d96398eb8135a67da60a5a427b3d9c261fd41854793b0a12198dd50adadc2bc7"
+      "sha256": "b7273cdd29739d2237f6e12047e3a1878d7fb4f5a22f13aa75b964caf87f8994",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "lecture"
+    },
+    {
+      "path": "lectures/week-6/L6b/CHEME-5660-L6b-Example-SIM-MinVar-RA-Fall-2026.ipynb",
+      "sha256": "dacf320143f1e28f0b66e9ac9dea4d68bda4af762b0e4b1f0c170f67d2aea698",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
+      "path": "lectures/week-6/L6b/CHEME-5660-L6b-Example-SIM-MinVar-RRFA-Fall-2026.ipynb",
+      "sha256": "06d759e97129edf5fcc68e016e982eefb0308043332b5c353fffb54ab44401a2",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
+      "path": "lectures/week-6/L6b/CHEME-5660-L6b-Example-SIM-Parameter-Uncertainty-Fall-2026.ipynb",
+      "sha256": "bfd4fa7607182e680f4d8e4a5f626af5bd1632af17db586363354bf70b0d656a",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
+    },
+    {
+      "path": "lectures/week-6/L6b/CHEME-5660-L6b-Example-SVD-SIM-Estimation-Fall-2026.ipynb",
+      "sha256": "1a74cce54b7ce8bca26ea5ddeccf241d097fa17e57db09c95d26c2bb8d078f27",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "core example"
     },
     {
       "path": "lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb",
-      "sha256": "f2cbd1e08f0532c36bf5cd55d6171273164e8b2f69aba1c869aab30b7bce3b6a"
+      "sha256": "7effd14173e7a35c3c1e9f0f066ffe7936e2e5b2e5b0bba673bfeff7bf5c68cd",
+      "release": "CHEME-5660-Fall-2026-Week-06.3",
+      "role": "lecture"
     }
-  ]
+  ],
+  "week_6_release": {
+    "name": "CHEME-5660-Fall-2026-Week-06.3",
+    "root": "/Users/jeffreyvarner/Desktop/classes/CHEME-5660-Course-Content/F26/CHEME-5660-Fall-2026-Week-06.3"
+  },
+  "source_commit_note": "The source_commit identifies the earlier baseline; the Week 6 sources below are the supplied release snapshot."
 }

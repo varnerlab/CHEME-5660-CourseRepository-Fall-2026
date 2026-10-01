@@ -14,6 +14,7 @@ for materials, installation, and weekly notebooks.
 |---|---|
 | **[Course syllabus](https://cornell.box.com/s/boxou8voal3ctaecouzwue8f4dfqq39b)** | Policies, grading, expectations, and course logistics |
 | **[Fall 2026 schedule](https://cornell.box.com/s/oztxiu2cc7oh4gos9snt2wbqdt7kk885)** | Lecture sequence, weekly topics, and important dates |
+| **[Nomenclature and worked explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)** | Symbols, units, worked calculations, and answer checks through L6b |
 
 ## Getting the course material
 
@@ -41,11 +42,15 @@ Problem sets and the practicum are distributed through separate repositories; se
 
 ## Running course reference
 
-The [nomenclature notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.ipynb)
-and its [PDF](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf) collect symbols,
-definitions, units, and lecture context from the main lectures through Week 6.
-We will extend this reference as the course progresses. It can be read on its own
-without running code or installing the course environment.
+The [Nomenclature and Worked Explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)
+connects the course symbols and units to worked calculations and short checks
+with answers. It covers the main lectures through Week 6, including the L6a
+and L6b lectures and core examples in the Week 06.3 release.
+
+The [notebook version](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.ipynb)
+contains the same material and requires no code execution. We will extend this
+reference as the course progresses; these links always point to the current
+published versions.
 
 ## One-time setup
 

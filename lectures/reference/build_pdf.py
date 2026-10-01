@@ -34,7 +34,7 @@ pdfsubject={Student questions, worked calculations, and lecture notation through
 \fancyhf{}
 \fancyhead[L]{\small\color{black}CHEME 5660 \enspace / \enspace Nomenclature and worked explanations}
 \fancyhead[R]{\small\color{black}Fall 2026}
-\fancyfoot[L]{\small\color{black}Through Week 6 \enspace | \enspace September 29, 2026}
+\fancyfoot[L]{\small\color{black}Through Week 6 \enspace | \enspace October 1, 2026}
 \fancyfoot[R]{\small\color{black}\thepage}
 \renewcommand{\headrulewidth}{0.25pt}
 \renewcommand{\footrulewidth}{0pt}
