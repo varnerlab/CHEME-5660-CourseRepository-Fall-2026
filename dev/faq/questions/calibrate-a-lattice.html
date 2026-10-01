@@ -4,7 +4,7 @@
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <title>How do we construct a lattice from observations? · CHEME 5660</title>
-  <meta name="description" content="We estimate up and down price factors from observed movements, and the up probability from their frequency. Ordered paths that reach the same terminal price contribute to that node together.">
+  <meta name="description" content="We estimate the up and down price factors from the observed up and down movements, and the up probability from how often up moves occur. Different paths that reach the same terminal price all contribute to that node’s probability.">
   <meta name='color-scheme' content='light'>
   <meta name='theme-color' content='#faf7f2'>
   <link rel='stylesheet' href='../assets/faq.css'>
@@ -53,7 +53,7 @@
     <div class='article-main'>
       <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
         <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
-        <div class='answer-body'><p>We estimate up and down price factors from observed movements, and the up probability from their frequency. Ordered paths that reach the same terminal price contribute to that node together.</p>
+        <div class='answer-body'><p>We estimate the up and down price factors from the observed up and down movements, and the up probability from how often up moves occur. Different paths that reach the same terminal price all contribute to that node’s probability.</p>
 </div>
       </section>
 
@@ -61,7 +61,7 @@
            For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
       <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
         <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
-        <div class='prose'><p>Our data-driven example estimates the up factor from observed positive movements, the down factor from negative movements, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> from the frequency of up moves. Suppose four consecutive price factors are:</p>
+        <div class='prose'><p>Our data-driven example estimates the up factor from the observed upward movements, the down factor from the downward movements, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> from the frequency of up moves. Suppose four consecutive price factors are:</p>
 <div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.02</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>0.99</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>1.04</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>0.98</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
 1.02,\quad0.99,\quad1.04,\quad0.98.
 </annotation></semantics></math></div>
@@ -100,8 +100,8 @@ p=\frac{2}{4}=0.50.
 </tr>
 </tbody>
 </table></div>
-<p>There are four ordered paths but only three terminal states: up–down and down–up reach the same price. Their probabilities must be added. Recombination follows from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>d</mi><mo>=</mo><mi>d</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">ud=du</annotation></semantics></math>; it does not require <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">d=1/u</annotation></semantics></math>. The value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">p=0.50</annotation></semantics></math> comes from this particular sample, not from a requirement of the model.</p>
-<p>When the observations are stored as growth rates, recover the price factor with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>k</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_k\Delta t}</annotation></semantics></math>. This reverses the earlier logarithm and time scaling. The course estimator averages factors within each sign group; averaging the logarithms and exponentiating would be a different estimator. A zero-change observation joins neither factor group but remains in the denominator when estimating <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>. We need at least one up move and one down move to estimate both factors.</p>
+<p>There are four ordered paths but only three terminal states: up–down and down–up reach the same price, so we add their probabilities. The lattice recombines because <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>d</mi><mo>=</mo><mi>d</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">ud=du</annotation></semantics></math>; it does not require <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">d=1/u</annotation></semantics></math>. The value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">p=0.50</annotation></semantics></math> comes from this particular sample; the model does not require it.</p>
+<p>When the observations are stored as growth rates, we recover each price factor with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>k</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_k\Delta t}</annotation></semantics></math>, which undoes the earlier logarithm and time scaling. The course estimator averages the factors within the up group and within the down group; averaging the logarithms and then exponentiating would be a different estimator. A zero-change observation joins neither group but still counts in the denominator when we estimate <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>. We need at least one up move and one down move to estimate both factors.</p>
 </div>
       </section>
     </div>
