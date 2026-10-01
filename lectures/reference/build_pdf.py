@@ -14,9 +14,7 @@ HEADER = r'''\documentclass[10pt,letterpaper]{article}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern,amsmath,amssymb,array,longtable,booktabs,calc,microtype}
 \usepackage{xcolor,titlesec,fancyhdr,hyperref,graphicx}
-\definecolor{CornellRed}{HTML}{B31B1B}
-\definecolor{InkGray}{HTML}{555555}
-\hypersetup{colorlinks=true,linkcolor=CornellRed,urlcolor=CornellRed,
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,
 pdftitle={CHEME 5660: Nomenclature and Worked Explanations},pdfauthor={CHEME 5660},
 pdfsubject={Student questions, worked calculations, and lecture notation through Week 6}}
 \setlength{\parindent}{0pt}
@@ -26,18 +24,18 @@ pdfsubject={Student questions, worked calculations, and lecture notation through
 \setlength{\LTpre}{5pt}
 \setlength{\LTpost}{8pt}
 \setcounter{secnumdepth}{0}
-\titleformat{\section}{\color{CornellRed}\LARGE\bfseries}{}{0pt}{}
-\titleformat{\subsection}{\color{CornellRed}\Large\bfseries}{}{0pt}{}
-\titleformat{\subsubsection}{\color{CornellRed}\normalsize\bfseries}{}{0pt}{}
+\titleformat{\section}{\color{black}\LARGE\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\color{black}\Large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\color{black}\normalsize\bfseries}{}{0pt}{}
 \titlespacing*{\section}{0pt}{0pt}{9pt}
 \titlespacing*{\subsection}{0pt}{0pt}{8pt}
 \titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{InkGray}CHEME 5660 \enspace / \enspace Nomenclature and worked explanations}
-\fancyhead[R]{\small\color{InkGray}Fall 2026}
-\fancyfoot[L]{\small\color{InkGray}Through Week 6 \enspace | \enspace September 29, 2026}
-\fancyfoot[R]{\small\color{InkGray}\thepage}
+\fancyhead[L]{\small\color{black}CHEME 5660 \enspace / \enspace Nomenclature and worked explanations}
+\fancyhead[R]{\small\color{black}Fall 2026}
+\fancyfoot[L]{\small\color{black}Through Week 6 \enspace | \enspace September 29, 2026}
+\fancyfoot[R]{\small\color{black}\thepage}
 \renewcommand{\headrulewidth}{0.25pt}
 \renewcommand{\footrulewidth}{0pt}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
