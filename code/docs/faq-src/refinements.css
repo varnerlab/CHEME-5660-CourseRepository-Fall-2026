@@ -1,0 +1,28 @@
+/* Integration refinements; the base visual design is in design.json. */
+[hidden] { display: none !important; }
+.featured-link::before { grid-row: 1 / 3; }
+.featured-link > span { grid-column: 2; }
+.featured-label { font-family: var(--sans); font-size: .625rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: .25rem; }
+.lecture-list label { display: block; margin: 1rem 0 .4rem; color: var(--ink-muted); }
+.lecture-list select { width: 100%; min-height: 2.75rem; padding: .6rem; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 0; }
+.theme-count { font-variant-numeric: tabular-nums; margin-inline-start: auto; }
+.theme-filter { column-gap: .5rem; }
+.theme-count { flex-shrink: 0; }
+.question-meta { display: flex; flex-wrap: wrap; gap: .4rem 1rem; }
+.question-row { min-width: 0; }
+.featured-link { position: relative; }
+.featured-label { display: block; }
+.featured-arrow { margin-inline-start: auto; }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.notation-section { scroll-margin-top: 7rem; }
+.notation-section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; }
+.prose img { max-width:100%; height:auto; }
+.answer-check { margin-block:2rem; }
+.answer-check details { margin-top:.6rem; }
+.table-hint { display: none; }
+@media (max-width: 39.99rem) {
+  .home-head .featured { display: none; }
+  .browse { margin-top: 2rem; gap: 1.5rem; }
+  .table-hint { display: block; margin-top: .5rem; font-size: .875rem; color: var(--ink-muted); }
+}
+@media print { .site-header, .site-footer, .theme-filter, .search-form {display:none;} .prose {max-width:none;} }

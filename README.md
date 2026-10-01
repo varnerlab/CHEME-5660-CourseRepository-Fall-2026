@@ -14,6 +14,8 @@ for materials, installation, and weekly notebooks.
 |---|---|
 | **[Course syllabus](https://cornell.box.com/s/boxou8voal3ctaecouzwue8f4dfqq39b)** | Policies, grading, expectations, and course logistics |
 | **[Fall 2026 schedule](https://cornell.box.com/s/oztxiu2cc7oh4gos9snt2wbqdt7kk885)** | Lecture sequence, weekly topics, and important dates |
+| **[Course FAQ](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/)** | Search worked answers by theme, with links to lecture notes |
+| **[Notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html)** | Look up symbols, meanings, and units by lecture |
 | **[Nomenclature and worked explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)** | Symbols, units, worked calculations, and answer checks through L6b |
 
 ## Getting the course material
@@ -41,6 +43,11 @@ Problem sets and the practicum are distributed through separate repositories; se
 [Assignments and practicum](#assignments-and-practicum) below.
 
 ## Running course reference
+
+The [course FAQ](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/) groups conceptual questions by theme and gives a short
+answer before each worked explanation. Search across the answers, or use the
+[separate notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html) to look up symbols and units
+by lecture. Both follow the course notes through Week 6.
 
 The [Nomenclature and Worked Explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)
 connects the course symbols and units to worked calculations and short checks

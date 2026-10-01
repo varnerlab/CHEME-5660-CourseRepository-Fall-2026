@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>What stays fixed when we buy and hold? · CHEME 5660</title>
+  <meta name="description" content="The initial allocation determines the share counts, which stay fixed in buy-and-hold trading. Current wealth fractions change as prices move, and the exact wealth calculation follows those fixed shares.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Portfolios &amp; decisions</span>
+    </p>
+    <h1 id='article-title'>What stays fixed when we buy and hold?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The initial allocation determines the share counts, which stay fixed in buy-and-hold trading. Current wealth fractions change as prices move, and the exact wealth calculation follows those fixed shares.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What stays fixed when we buy and hold?</strong> We choose initial dollar fractions, use them to buy shares, and keep those share counts. The fraction of current wealth in each asset then changes with its price.</p>
+<p><strong>How do weights become wealth?</strong> Allocate the fraction <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math> of initial wealth <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mn>0</mn></msub><annotation encoding="application/x-tex">W_0</annotation></semantics></math> to asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, buying <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>i</mi></msub><mo>=</mo><msub><mi>w</mi><mi>i</mi></msub><msub><mi>W</mi><mn>0</mn></msub><mi>/</mi><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">n_i=w_iW_0/S_i(0)</annotation></semantics></math> shares. Holding those shares fixed gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>t</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>n</mi><mi>i</mi></msub><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><mfrac><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+W_t=\sum_i n_iS_i(t)=W_0\sum_iw_i\frac{S_i(t)}{S_i(0)}.
+</annotation></semantics></math></div>
+<p>If two equal allocations experience price factors 1.20 and 0.90, the wealth factor is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.5</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>0.5</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1.05</mn></mrow><annotation encoding="application/x-tex">0.5(1.20)+0.5(0.90)=1.05</annotation></semantics></math>. The first asset now accounts for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.5</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mn>1.05</mn><mo>=</mo><mn>57.14</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0.5(1.20)/1.05=57.14\%</annotation></semantics></math> of wealth and the second for 42.86%. Restoring equal fractions would require selling some of the first asset and buying more of the second.</p>
+<p><strong>Why do portfolio calculations use a weighted growth rate?</strong> Over one short interval, substitute the asset price factors <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>i</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_i\Delta t}</annotation></semantics></math> into the wealth ratio:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>Δ</mi><mi>t</mi></mrow></msub><mi>/</mi><msub><mi>W</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>i</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>g</mi><mi>i</mi></msub><mo>=</mo><msub><mi>g</mi><mi>p</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{1}{\Delta t}\ln(W_{\Delta t}/W_0)
+=\frac{1}{\Delta t}\ln\left(\sum_iw_ie^{g_i\Delta t}\right)
+\approx\sum_iw_ig_i=g_p.
+</annotation></semantics></math></div>
+<p>The approximation uses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>e</mi><mi>x</mi></msup><mo>≈</mo><mn>1</mn><mo>+</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">e^x\approx1+x</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\ln(1+x)\approx x</annotation></semantics></math>, and weights summing to one. It is useful for small interval changes; the wealth formula supplies the exact buy-and-hold calculation. For these price factors, the exact portfolio log return is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.05</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.04879</mn></mrow><annotation encoding="application/x-tex">\ln(1.05)=0.04879</annotation></semantics></math>. The weighted asset log returns give <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mi>/</mi><mn>2</mn><mo>=</mo><mn>0.03848</mn></mrow><annotation encoding="application/x-tex">[\ln(1.20)+\ln(0.90)]/2=0.03848</annotation></semantics></math>. The difference shows why we use the exact wealth formula for the investment actually held.</p>
+<p><strong>What does a Dirichlet draw choose?</strong> Dirichlet sampling generates candidate long-only weight vectors. Equal concentration parameters of one give uniform sampling over the simplex, while larger equal concentrations favor weights near equal allocation. Comparing sampled portfolios explores possible allocations; optimization in L6a determines the minimum for the specified constraints.</p>
+<div class="answer-check"><p><strong>Try it.</strong> With two assets and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛂</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol\alpha=(1,1)</annotation></semantics></math>, must every draw give <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo>,</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.5,0.5)</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> no. The distribution samples all splits along the allocation line uniformly; a draw such as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.8</mn><mo>,</mo><mn>0.2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0.8,0.2)</annotation></semantics></math> is an 80%/20% investment. Concentration controls which allocations we explore, while the price data determine their estimated reward and risk.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb">L5b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L5b">L5b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="portfolio-risk.html">How do individual growth rates become portfolio risk?</a></li><li><a href="minimum-variance.html">Why mix assets when one has a smaller variance?</a></li><li><a href="growth-targets.html">How do exact growth targets differ from growth floors?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

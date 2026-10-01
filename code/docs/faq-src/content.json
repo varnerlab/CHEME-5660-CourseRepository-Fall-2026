@@ -1,0 +1,931 @@
+{
+  "course": "CHEME 5660",
+  "semester": "Fall 2026",
+  "updated": "2026-10-01",
+  "themes": [
+    {
+      "id": "models",
+      "name": "Model purpose & evidence",
+      "description": "What our models tell us, and how to check their forecasts."
+    },
+    {
+      "id": "growth",
+      "name": "Growth & volatility",
+      "description": "Connect observed prices, growth rates, and movement size."
+    },
+    {
+      "id": "lattices",
+      "name": "Lattices & pricing",
+      "description": "Build a tree, distinguish its probabilities, and evaluate a target."
+    },
+    {
+      "id": "dependence",
+      "name": "Dependence & covariance",
+      "description": "Follow the calculation from data to correlated shocks."
+    },
+    {
+      "id": "estimation",
+      "name": "Estimation & uncertainty",
+      "description": "Update estimates and interpret what remains uncertain."
+    },
+    {
+      "id": "portfolios",
+      "name": "Portfolios & decisions",
+      "description": "Turn allocations into risk, growth, and wealth."
+    },
+    {
+      "id": "cashflows",
+      "name": "Cash flows & bonds",
+      "description": "Discount dated payments and read yield sensitivity."
+    }
+  ],
+  "articles": [
+    {
+      "id": "model-purpose",
+      "theme": "models",
+      "title": "What can a price model help us decide?",
+      "answer": "A model gives probabilities for a specified decision. We can translate a required gain into a terminal-price threshold, calculate the probability of exceeding it, and examine how assumptions change that answer.",
+      "body": "**What can we decide if we cannot predict the exact price?** Suppose we buy a share for $S_0=100$ USD/share and plan to sell after $T=1$ year. We want the proceeds to exceed an investment growing at the benchmark rate $g_y=0.02\\,\\mathrm{yr}^{-1}$. We assume a scheduled sale, no dividends or trading costs, and a constant benchmark rate. Discounting the sale price $S_T$ gives the scaled net present value:\n\n$$\n\\rho_T=\\frac{-S_0+S_Te^{-g_yT}}{S_0}.\n$$\n\nThe target $\\rho_T>0$ means that the discounted proceeds exceed the purchase cost. Solving this inequality tells us which future prices count as successes:\n\n$$\n\\rho_T>0\\quad\\Longleftrightarrow\\quad\nS_T>S_0e^{g_yT}=100e^{0.02}\\approx102.02\\ \\mathrm{USD/share}.\n$$\n\n**Where does the probability come from?** Under geometric Brownian motion (GBM), the log price ratio at the sale date is normally distributed. Let $\\mu_g=0.06\\,\\mathrm{yr}^{-1}$ be mean growth and $\\sigma=0.20\\,\\mathrm{yr}^{-1/2}$ be volatility. The model writes:\n\n$$\n\\ln(S_T/S_0)=\\mu_gT+\\sigma\\sqrt T\\,Z,\n\\qquad Z\\sim\\mathcal N(0,1).\n$$\n\nHere $Z$ is a standard normal random variable. Substitute the model into the target condition, then subtract the mean and divide by the positive scale $\\sigma\\sqrt T$:\n\n$$\n\\begin{aligned}\n\\mu_gT+\\sigma\\sqrt T\\,Z&>g_yT,\\\\\nZ&>\\frac{(g_y-\\mu_g)T}{\\sigma\\sqrt T}\n=\\frac{0.02-0.06}{0.20}=-0.20.\n\\end{aligned}\n$$\n\nThe normal cumulative distribution function $\\Phi(z)$ gives the probability to the left of $z$. Our target uses the area to the right, so:\n\n$$\n\\mathbb P(\\rho_T>0)=1-\\Phi(-0.20)\\approx0.5793.\n$$\n\nWe obtain a **57.9% model probability of beating the benchmark**, and a 42.1% probability of finishing at or below it. This supplies a risk comparison for the specified trade. It concerns the sale date; exiting when a price first reaches a boundary is a different trading rule.\n\n**How much should we trust the answer?** If mean growth were $0.02\\,\\mathrm{yr}^{-1}$ instead, the threshold for $Z$ would be zero and the success probability would be 50%. Estimated inputs therefore matter. The model also assumes constant parameters and independent, normally distributed log-price increments. Clustering or heavier tails in the data can change the risk beyond what a new mean estimate captures.\n\nTo check the forecast, fit on earlier observations and save probabilities for later, fixed-horizon trades before their outcomes are known. Over many comparable cases, compare the forecast probabilities with the frequency of the same event. For a prediction interval at one date, we check whether the price at that date lies inside it. To check a band intended to contain an entire path, every observed price must remain inside its bounds; one crossing is enough to fail that check. The L5a out-of-sample example develops that distinction.\n\n**Check.** Keep the parameters above but require a 5% scaled NPV. What changes? **Answer:** the price threshold becomes $100(1.05)e^{0.02}\\approx107.12$, and the probability falls to about 48.2%. We raise the target before asking the model for its probability.",
+      "lectures": [
+        "L4b",
+        "L5a"
+      ],
+      "keywords": "forecast trust usefulness validation NPV benchmark",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-02"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        },
+        {
+          "label": "L5a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "model-limits",
+      "theme": "models",
+      "title": "Why study models that miss important market behavior?",
+      "answer": "A simple model connects assumptions with consequences we can calculate and test. Its forecasts become useful when we state the event clearly and compare issued probabilities with later outcomes.",
+      "body": "We use a simple model to connect assumptions with consequences we can calculate and test. A forecast can be a probability distribution over outcomes. It does not have to name the exact future price to be a forecast.\n\nThe fixed-parameter binomial lattice has only two possible one-step growth rates and independent successive moves. It cannot reproduce heavy-tailed one-step growth or volatility clustering. Constant-parameter GBM permits a continuous range of price movements, but its growth rates are normal and independent, so it also misses those features.\n\nFitting parameters does not make either model memorize the observed path. It summarizes the data within the chosen structure. If later observations disagree with the model, we should examine both parameter uncertainty and structural assumptions. The disagreement alone does not tell us which caused it.\n\nA useful next step is to ask a specific question: does the forecast assign reasonable probabilities to later outcomes, under a clearly stated evaluation rule? This is why we separate fitting from out-of-sample testing. Updating parameters may help, but it must be tested on observations unavailable when each forecast was made.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L3b",
+        "L4b",
+        "L5a"
+      ],
+      "keywords": "limitations heavy tails independent increments out of sample validation",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 9
+      },
+      "sources": [
+        {
+          "label": "L3b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb"
+        },
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        },
+        {
+          "label": "L5a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "growth-and-drift",
+      "theme": "growth",
+      "title": "How do mean growth and drift differ?",
+      "answer": "Drift controls the growth of the expected price. Mean growth describes expected log growth per unit time. The half-variance correction connects these two averages under GBM.",
+      "body": "**Which average do drift and mean growth describe?** Geometric Brownian motion uses drift $\\mu$ for expected price growth and volatility $\\sigma$ for the size of random changes. With constant parameters, the price equation is:\n\n$$\n\\frac{dS(t)}{S(t)}=\\mu\\,dt+\\sigma\\,dW(t).\n$$\n\nHere $W(t)$ is a Wiener process; its increment over $\\Delta t$ has variance $\\Delta t$. The random price increment has zero conditional mean, so averaging the price equation gives $d\\mathbb E[S(t)]/dt=\\mu\\mathbb E[S(t)]$. Solving this mean equation gives $\\mathbb E[S_T]=S_0e^{\\mu T}$. We will compare that expression with the average obtained from the log-price solution to find how drift relates to mean growth.\n\nFor the price at a fixed time $T$, the solution in terms of mean growth $\\mu_g$ is:\n\n$$\n\\ln(S_T/S_0)=\\mu_gT+\\sigma\\sqrt T\\,Z,\n\\qquad Z\\sim\\mathcal N(0,1).\n$$\n\nAveraging this equation makes the random term vanish because $\\mathbb E[Z]=0$. Thus $\\mu_g$ is expected log growth per unit time. To average the price itself, we exponentiate first. The normal identity $\\mathbb E[e^{aZ}]=e^{a^2/2}$, valid for any real number $a$, gives:\n\n$$\n\\mathbb E[S_T]\n=S_0e^{\\mu_gT}\\mathbb E[e^{\\sigma\\sqrt T Z}]\n=S_0e^{(\\mu_g+\\sigma^2/2)T}.\n$$\n\nComparing this result with $\\mathbb E[S_T]=S_0e^{\\mu T}$ gives $\\mu=\\mu_g+\\sigma^2/2$, or $\\mu_g=\\mu-\\sigma^2/2$. This is the **half-variance correction**. Averaging prices and averaging their logarithms are different operations; the normal exponential average supplies the precise difference for GBM. The L4b derivation obtains the same correction from Itô's lemma.\n\n**A numerical comparison.** Let $S_0=100$ USD/share, $\\mu=0.08\\,\\mathrm{yr}^{-1}$, $\\sigma=0.20\\,\\mathrm{yr}^{-1/2}$, and $T=1$ year. Then $\\mu_g=0.06\\,\\mathrm{yr}^{-1}$, giving:\n\n$$\n\\begin{aligned}\n\\mathbb E[S_T]&=100e^{0.08}\\approx108.33\\ \\mathrm{USD/share},\\\\\n\\operatorname{median}(S_T)&=100e^{0.06}\\approx106.18\\ \\mathrm{USD/share}.\n\\end{aligned}\n$$\n\nThe median splits the possible prices into equal lower and upper halves. It follows from the median $Z=0$ and the increasing exponential function. The right tail pulls the expected price above the median; neither summary identifies a particular future path.\n\n**Which number belongs in a simulation?** The equivalent updates are:\n\n$$\nS_{t+\\Delta t}=S_t e^{\\mu_g\\Delta t+\\sigma\\sqrt{\\Delta t}\\,Z}\n=S_t e^{(\\mu-\\sigma^2/2)\\Delta t+\\sigma\\sqrt{\\Delta t}\\,Z}.\n$$\n\nThe same draw $Z$ gives the same price in both forms. If we estimate $\\mu_g$ from observed growth rates, the correction is already included; subtracting it again would lower the simulated mean growth incorrectly.\n\n**Check.** Hold $\\mu=0.08\\,\\mathrm{yr}^{-1}$ fixed and increase $\\sigma$ to $0.40\\,\\mathrm{yr}^{-1/2}$. **Answer:** $\\mu_g=0$, the expected one-year price remains about 108.33 USD/share, and the median becomes 100 USD/share. Higher volatility separates the two averages further.",
+      "lectures": [
+        "L4b"
+      ],
+      "keywords": "mu mu_g μ μ_g half variance correction typical median expected average",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-11"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "growth-return-volatility",
+      "theme": "growth",
+      "title": "How do growth rate, log return, and volatility differ?",
+      "answer": "They describe a price change or its variability on different time scales. Dividing log return by the observation interval gives a growth rate; converting its standard deviation to GBM volatility also uses the time step.",
+      "body": "We start with the same observed price change and express it in different units. For observations separated by $\\Delta t$ years, the log return $r_k$ and growth rate $g_k$ are:\n\n$$\nr_k=\\ln\\left(\\frac{S_k}{S_{k-1}}\\right),\n\\qquad\ng_k=\\frac{r_k}{\\Delta t}.\n$$\n\n| Quantity | Meaning | Units when time is in years |\n| --- | --- | --- |\n| $r_k$ | Log return over one observation interval | Dimensionless |\n| $g_k$ | Log return per unit time | $\\mathrm{year}^{-1}$ |\n| $\\sigma_g$ | Sample standard deviation of the observed growth rates | $\\mathrm{year}^{-1}$ |\n| $\\sigma_r(\\Delta t)$ | Sample standard deviation of interval log returns | Dimensionless |\n| $\\hat\\sigma$ | Estimated GBM volatility parameter | $\\mathrm{year}^{-1/2}$ |\n\nFor a fixed observation interval, scaling every observation scales its standard deviation by the same factor. Therefore:\n\n$$\n\\sigma_r(\\Delta t)=\\Delta t\\,\\sigma_g.\n$$\n\nUnder the constant-parameter GBM model, growth rates have variance $\\sigma^2/\\Delta t$. We recover the model's volatility estimate using:\n\n$$\n\\hat\\sigma=\\sqrt{\\Delta t}\\,\\sigma_g\n=\\frac{\\sigma_r(\\Delta t)}{\\sqrt{\\Delta t}}.\n$$\n\nFor daily observations with $\\Delta t=1/252$, a growth-rate standard deviation of approximately $3.1749\\ \\mathrm{year}^{-1}$ gives $\\hat\\sigma\\approx0.20\\ \\mathrm{year}^{-1/2}$. The same calculation starts from daily log-return standard deviation $0.012599$ and multiplies it by $\\sqrt{252}$.\n\nThe first conversion is an exact change of units. Using square-root-of-time scaling to forecast risk over a different horizon requires assumptions about dependence and variability. Volatility clustering is a reason to check those assumptions.\n\nThe sample mean of the $g_k$ estimates $\\mu_g$. Add $\\hat\\sigma^2/2$ to recover $\\hat\\mu$; do not add half the unscaled variance of the annualized daily growth rates.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L3a",
+        "L4b"
+      ],
+      "keywords": "sigma σ annualize units 252 sqrt delta t rate return",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 2
+      },
+      "sources": [
+        {
+          "label": "L3a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb"
+        },
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "volatility-purpose",
+      "theme": "growth",
+      "title": "If volatility cannot predict direction, why is it useful?",
+      "answer": "Volatility describes the range of outcomes we should consider. Movement size changes the probability of crossing a loss or profit threshold even when we cannot determine the next direction.",
+      "body": "It tells us about the range of outcomes we should be prepared to consider. A price distribution with a larger spread gives different probabilities of crossing a loss or profit threshold, even when we cannot determine the sign of the next move.\n\nVolatility clustering is the tendency for large movements to occur near other large movements. We observed persistence in growth-rate magnitudes even when signed growth rates had little linear autocorrelation. The conclusion is that recent large movements can inform our expectation of future magnitude. It does not guarantee another large movement, imply alternating gains and losses, or establish a 50/50 chance of an up move.\n\nThere is no single duration after which every volatility cluster ends. We can inspect the autocorrelation of magnitudes to describe persistence in a dataset and evaluate models that update risk estimates. An autocorrelation plot is not a countdown to the end of the current episode, and the observed pattern alone does not identify its cause.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L3a"
+      ],
+      "keywords": "volatility direction risk clustering useful persistence duration",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 8
+      },
+      "sources": [
+        {
+          "label": "L3a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "volatility-clustering",
+      "theme": "growth",
+      "title": "What persists during a volatile period?",
+      "answer": "Volatility clustering concerns persistence in movement size. Large gains and large losses can occur in the same turbulent period, so evidence of clustering can inform risk without determining the next direction.",
+      "body": "**What persists when direction is hard to predict?** Volatility clustering describes persistence in the **size** of movements. A turbulent period can contain both gains and losses. We measure direction with signed growth rates and movement size with their absolute values.\n\nFirst convert consecutive prices into growth rates. For asset $i$, the observation interval $\\Delta t_j$ divides the log price ratio:\n\n$$\ng_{j,j-1}^{(i)}=\\frac{1}{\\Delta t_j}\\ln\\left(\\frac{S_j^{(i)}}{S_{j-1}^{(i)}}\\right).\n$$\n\nA change from 100 to 101 USD/share over $1/252$ year gives a log return $\\ln(1.01)\\approx0.00995$ and a growth rate $252\\ln(1.01)\\approx2.507\\,\\mathrm{yr}^{-1}$. The rate is large because we divide a small one-day change by a small fraction of a year. If that same log-price change occurred on each of 252 trading days, the accumulated log change would be 2.507. Here, we use the per-year scale to record one observed day; a forecast requires a model for the days that follow.\n\n![The L3a lecture figure: daily SPY and AMD growth rates, a shared high-volatility period, and an isolated AMD price jump.](../assets/volatility-clustering.svg)\n\n**What do we see?** This is the figure from L3a's *Volatility Clustering* section. The shaded March-2020 period contains many large movements of both signs in SPY and AMD. The isolated April-2016 AMD spike is one large jump. Clustering concerns a sequence of large movements, so we distinguish that turbulent period from the isolated spike.\n\nThe lecture measures persistence using **autocorrelation**, the linear association between observations separated by a specified number of time steps. Applying it to signed growth rates asks whether positive or negative deviations tend to recur. Applying it to growth magnitudes asks whether large or small movements tend to recur. Positive magnitude autocorrelation across several lags is evidence of persistence in movement size.\n\n**Why does this matter for a model?** A fixed volatility uses the same uncertainty scale after calm and turbulent days. Clustering suggests that recent movement sizes contain information about upcoming risk. When we reach the lattice and GBM models, we can ask whether their assumptions preserve or discard that information.\n\n**Check.** If signed growth has little autocorrelation but magnitude has persistent positive autocorrelation, can we infer the sign of tomorrow's change? **Answer:** this evidence supports persistence in movement size. It supplies no directional prediction or fixed date when a turbulent episode must end.",
+      "lectures": [
+        "L3a"
+      ],
+      "keywords": "clustering persistence autocorrelation magnitude signed direction",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-06"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L3a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "forecasting-and-pricing",
+      "theme": "lattices",
+      "title": "Why does one tree use two probabilities?",
+      "answer": "The real-world probability describes forecast frequencies. The risk-neutral weight prices a payoff through a replication argument. They answer different questions on the same price tree.",
+      "body": "**Why does one tree use two probabilities?** Suppose a share costs 100 USD today and will be worth either 120 or 90 USD after one step. The up and down factors are $u=1.20$ and $d=0.90$. Keep these prices fixed while we ask two different questions.\n\n**Forecasting: how often might each outcome occur?** Let the estimated real-world up probability be $p=0.65$. Weighting the two prices by their forecast probabilities gives:\n\n$$\n\\mathbb E_{\\mathbb P}[S_1]=0.65(120)+0.35(90)=109.50\\ \\mathrm{USD/share}.\n$$\n\nThis average describes the forecast distribution. Its quality depends on whether the estimated probabilities describe later outcomes adequately.\n\n**Pricing: what should a specified payoff cost today?** Suppose a claim pays $H_u=20$ USD after an up move and $H_d=0$ after a down move. Let the risk-free accumulation factor over the same step be $R_f=1.02$. With frictionless trading, short positions allowed, and borrowing or lending at this rate, no-arbitrage requires the risk-neutral weight $q$ to satisfy:\n\n$$\nqu+(1-q)d=R_f\n\\quad\\Longrightarrow\\quad\nq=\\frac{R_f-d}{u-d}=\\frac{1.02-0.90}{1.20-0.90}=0.40.\n$$\n\nThe condition $d<R_f<u$ gives $0<q<1$. We use these weights to average the claim's payoffs and then discount one step:\n\n$$\nV_0=\\frac{qH_u+(1-q)H_d}{R_f}\n=\\frac{0.40(20)+0.60(0)}{1.02}\\approx7.84\\ \\mathrm{USD}.\n$$\n\n**Why is that the price?** We can build the claim's payoff from the share and a loan. The claim's payoff differs by $20-0=20$ USD between the two states, while the share price differs by $120-90=30$ USD/share. Holding $20/30=2/3$ of a share therefore reproduces the payoff difference. In the down state those shares are worth 60 USD and the claim pays zero, so we need a loan repayment of 60 USD. Borrowing $60/1.02$ USD today supplies that repayment after one step. After one step the shares are worth 80 or 60 USD, and the loan repayment is 60 USD. The net payoff is therefore 20 or zero, exactly the claim's payoff. The initial cost is $100(2/3)-60/1.02\\approx7.84$ USD. A different claim price would let us trade the claim against this replicating position for an arbitrage profit under the stated assumptions.\n\nThus $p$ describes forecast frequencies, while $q$ values a payoff through a trading argument. Risk-neutral pricing does not assert that the stock is risk-free or that 40% of actual moves will be upward.\n\n**Check.** Change only $p$ from 0.65 to 0.50. What changes? **Answer:** the forecast expected price becomes 105 USD/share. The replicated payoff still costs about 7.84 USD because the two possible share prices and the borrowing rate are unchanged.",
+      "lectures": [
+        "L3b"
+      ],
+      "keywords": "risk neutral real world p q arbitrage replication pricing forecasting",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-08"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L3b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "calibrate-a-lattice",
+      "theme": "lattices",
+      "title": "How do we construct a lattice from observations?",
+      "answer": "We estimate up and down price factors from observed movements, and the up probability from their frequency. Ordered paths that reach the same terminal price contribute to that node together.",
+      "body": "Our data-driven example estimates the up factor from observed positive movements, the down factor from negative movements, and $p$ from the frequency of up moves. Suppose four consecutive price factors are:\n\n$$\n1.02,\\quad0.99,\\quad1.04,\\quad0.98.\n$$\n\nThe estimates are:\n\n$$\nu=\\frac{1.02+1.04}{2}=1.03,\n\\qquad\nd=\\frac{0.99+0.98}{2}=0.985,\n\\qquad\np=\\frac{2}{4}=0.50.\n$$\n\nStarting from $S_0=100$, a two-step lattice has three terminal states:\n\n| Up moves | Terminal price | Probability |\n| ---: | ---: | ---: |\n| 2 | $100u^2=106.09$ | $p^2=0.25$ |\n| 1 | $100ud=101.455$ | $2p(1-p)=0.50$ |\n| 0 | $100d^2=97.0225$ | $(1-p)^2=0.25$ |\n\nThere are four ordered paths but only three terminal states: up–down and down–up reach the same price. Their probabilities must be added. Recombination follows from $ud=du$; it does not require $d=1/u$. The value $p=0.50$ comes from this particular sample, not from a requirement of the model.\n\nWhen the observations are stored as growth rates, recover the price factor with $e^{g_k\\Delta t}$. This reverses the earlier logarithm and time scaling. The course estimator averages factors within each sign group; averaging the logarithms and exponentiating would be a different estimator. A zero-change observation joins neither factor group but remains in the denominator when estimating $p$. We need at least one up move and one down move to estimate both factors.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L3b"
+      ],
+      "keywords": "binomial tree lattice calibration u d p recombining paths nodes",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 7
+      },
+      "sources": [
+        {
+          "label": "L3b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "lattice-targets",
+      "theme": "lattices",
+      "title": "Which lattice prices beat a trading target?",
+      "answer": "First translate the required scaled NPV into a sale-price threshold. Then add the real-world probabilities of terminal nodes whose prices strictly exceed it.",
+      "body": "**How do we turn a trading requirement into a probability?** First find the sale prices that satisfy the requirement, then add the probabilities of those outcomes. We buy shares now and sell at a scheduled terminal date. Scaled NPV compares discounted sale proceeds with the purchase cost.\n\n\n\n\n**Which lattice outcomes beat our target?** Buying $n_0$ shares costs $n_0S_0$ today; their sale brings $n_0S_T$ at time $T$. Ignoring dividends and trading costs, discount and divide by the purchase cost:\n\n$$\n\\rho_T=\\frac{-n_0S_0+n_0S_Te^{-g_yT}}{n_0S_0}\n=\\frac{S_T}{S_0}e^{-g_yT}-1.\n$$\n\n**Try the two-step tree from L3b.** Start at 100 USD/share with $u=1.20$, $d=0.90$, and real-world up probability $p=0.65$. Set the benchmark to zero for this illustration and require $\\rho_T>0.05$. The terminal prices are 81, 108, and 144 USD/share for zero, one, and two up moves. The required price is $100(1.05)=105$, so the middle and upper nodes succeed. Their combined probability is:\n\n$$\n\\mathbb P(\\rho_T>0.05)=2(0.65)(0.35)+0.65^2=0.8775.\n$$\n\nThere are two paths to the middle price but only one to the top price. This is why their probabilities have different counting factors.\n\n**How does the threshold formula reproduce this calculation?** At a terminal lattice node with $k$ up moves, substitute $S_T/S_0=u^kd^{N-k}$. For a target $\\rho_\\star>-1$ and factors $u>d>0$, taking logs of $\\rho(k)>\\rho_\\star$ and collecting the terms in $k$ gives:\n\n$$\n\\begin{aligned}\nk\\ln u+(N-k)\\ln d&>\\ln(1+\\rho_\\star)+g_yT,\\\\\nk>\\tau(\\rho_\\star)&=\\frac{\\ln(1+\\rho_\\star)+g_yT-N\\ln d}{\\ln(u/d)}.\n\\end{aligned}\n$$\n\nThe up count is an integer, so the first strictly successful count is $\\lfloor\\tau\\rfloor+1$. Add the binomial probabilities for that count and all higher counts. If $\\tau=2$ exactly, success starts at three up moves; two only meets the target. Clipping the first count to $[0,N+1]$ represents the cases where every node or no node succeeds. This turns a trading requirement into a probability over the model's terminal outcomes.\n\nHere $\\tau=\\ln(1.05/0.90^2)/\\ln(1.20/0.90)\\approx0.902$, so the first successful count is one, as we found by inspecting the prices.\n\n**Check.** Raise the target to $\\rho_\\star=0.08$ with a strict inequality. **Answer:** the 108 USD middle node only meets the target. Only 144 USD succeeds, giving probability $0.65^2=0.4225$.\n\n**Where do bid and ask enter?** Buying at an ask of 100.10 and immediately selling at a bid of 99.90 loses 0.20 USD/share. For executable trade cash flows, use the entry ask and sale bid; a midpoint-based price model omits that spread cost.",
+      "lectures": [
+        "L4a"
+      ],
+      "keywords": "NPV target strict inequality threshold binomial tail bid ask spread",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-10"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L4a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Lecture-LatticeModel-TradeRule-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "correlated-shocks",
+      "theme": "dependence",
+      "title": "How do independent inputs produce correlated movements?",
+      "answer": "The assets share random inputs through a loading matrix. Multiplying independent standard normal draws by a matrix A produces covariance AAᵀ, so the loadings determine how the assets move together.",
+      "body": "**How can independent inputs produce correlated asset movements?** Give the assets a shared random input. Suppose their volatility parameters are 0.20 and $0.30\\,\\mathrm{yr}^{-1/2}$, with correlation 0.50. The required covariance rate and a loading matrix that produces it are:\n\n$$\n\\mathbf C=\\begin{bmatrix}0.04&0.03\\\\0.03&0.09\\end{bmatrix}\\mathrm{yr}^{-1},\n\\qquad\n\\mathbf A=\\begin{bmatrix}0.20&0\\\\0.15&\\sqrt{0.0675}\\end{bmatrix}\\mathrm{yr}^{-1/2}.\n$$\n\nThe first diagonal loading is $\\sqrt{0.04}=0.20$. The shared loading is $0.03/0.20=0.15$; the remaining loading is $\\sqrt{0.09-0.15^2}=\\sqrt{0.0675}\\approx0.259808$. These choices make $\\mathbf A\\mathbf A^\\top=\\mathbf C$.\n\nLet $Z_1$ and $Z_2$ be independent standard normal variables. Write $\\mathbf X=\\mathbf A\\mathbf Z$ for the two noise contributions before time scaling. Expanding the matrix product gives:\n\n$$\nX_1=0.20Z_1,\\qquad X_2=0.15Z_1+\\sqrt{0.0675}\\,Z_2.\n$$\n\nBoth assets use $Z_1$, which produces their covariance. Independence removes the cross term containing $Z_1Z_2$, and each input has variance one, so:\n\n$$\n\\begin{aligned}\n\\operatorname{Var}(X_1)&=0.20^2=0.04,\\\\\n\\operatorname{Var}(X_2)&=0.15^2+0.0675=0.09,\\\\\n\\operatorname{Cov}(X_1,X_2)&=0.20(0.15)=0.03.\n\\end{aligned}\n$$\n\nThese values have units $\\mathrm{yr}^{-1}$. Dividing the covariance by $0.20(0.30)$ recovers correlation 0.50. One draw illustrates the multiplication: if $\\mathbf Z=(1,-1)^\\top$, then $\\mathbf X\\approx(0.20,-0.109808)^\\top\\,\\mathrm{yr}^{-1/2}$. Positive correlation allows individual draws with opposite signs; it describes the joint distribution across draws.\n\n**How do these numbers enter a price step?** For asset $i$, add mean log growth and the time-scaled noise in the exponent:\n\n$$\nS_i(t+\\Delta t)=S_i(t)\\exp\\!\\left[\\mu_{g,i}\\Delta t+\\sqrt{\\Delta t}\\,X_i\\right],\n\\qquad \\mu_{g,i}=\\mu_i-C_{ii}/2.\n$$\n\nFor $\\Delta t=1/252$ yr, starting prices of 100 USD/share, and both mean growth rates $0.06\\,\\mathrm{yr}^{-1}$, the draw above gives next prices about 101.29 and 99.33 USD/share. The same vector is shared across assets within the step; we draw a fresh vector at the next step.\n\n**Why use a loading matrix?** For independent standard normal inputs, $\\operatorname{Cov}(\\mathbf A\\mathbf Z)=\\mathbf A\\mathbf A^\\top$. Multiplying by $\\mathbf C$ itself would produce $\\mathbf C\\mathbf C^\\top$, with the wrong covariance and units.\n\n**Check.** Replace the loading 0.15 by $-0.15$. **Answer:** both variances stay the same because they use squared loadings. Covariance becomes $-0.03\\,\\mathrm{yr}^{-1}$ and correlation becomes $-0.50$.",
+      "lectures": [
+        "L5b"
+      ],
+      "keywords": "loading matrix Cholesky square root A C covariance shared shocks normal",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-15"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L5b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "covariance-from-data",
+      "theme": "dependence",
+      "title": "How do observations become a covariance matrix?",
+      "answer": "Center each asset’s growth-rate observations, multiply deviations from matching dates, and average with the sample denominator. The observation interval then connects growth-rate covariance to the covariance needed in a GBM step.",
+      "body": "**How do observations become the covariance matrix?** Suppose three aligned observations of two assets' growth rates form the matrix below. Each row is one date and each column is one asset; every entry has units $\\mathrm{yr}^{-1}$:\n\n$$\n\\mathbf G=\\begin{bmatrix}1&2\\\\2&1\\\\3&3\\end{bmatrix},\\qquad\n\\mathbf g^{\\prime}=\\begin{bmatrix}2\\\\2\\end{bmatrix},\\qquad\n\\tilde{\\mathbf G}=\\begin{bmatrix}-1&0\\\\0&-1\\\\1&1\\end{bmatrix}.\n$$\n\nAverage each column to obtain its mean, then subtract that mean from every observation in that column. This measures whether the assets move above or below their own means together.\n\n**Compute one entry at a time.** The first asset's deviations are $(-1,0,1)$, so its sample variance is $[(-1)^2+0^2+1^2]/(3-1)=1\\,\\mathrm{yr}^{-2}$. For the covariance, multiply deviations on matching dates and add: \n\n$$\n[(-1)(0)+(0)(-1)+(1)(1)]/2=0.5\\,\\mathrm{yr}^{-2}.\n$$\n\n The matrix product performs all these calculations at once:\n\n$$\n\\hat{\\mathbf\\Sigma}_g\n=\\frac{\\tilde{\\mathbf G}^{\\top}\\tilde{\\mathbf G}}{3-1}\n=\\frac12\\begin{bmatrix}2&1\\\\1&2\\end{bmatrix}\n=\\begin{bmatrix}1&0.5\\\\0.5&1\\end{bmatrix}\\mathrm{yr}^{-2}.\n$$\n\nThe two variances are on the diagonal; their covariance appears in both off-diagonal positions. Their standard deviations are both one, so the correlation is $0.5/(1\\cdot1)=0.5$.\n\n**Which time conversion belongs in GBM?** Growth rates divide log returns by the observation interval. For daily spacing $\\Delta t=1/252$ yr, the model's covariance rate and the interval log-return covariance are:\n\n$$\n\\hat{\\mathbf C}=\\frac1{252}\\begin{bmatrix}1&0.5\\\\0.5&1\\end{bmatrix}\\mathrm{yr}^{-1},\\qquad\n\\hat{\\mathbf\\Sigma}_r=\\frac1{252^2}\\begin{bmatrix}1&0.5\\\\0.5&1\\end{bmatrix}.\n$$\n\nThe GBM step uses $\\Delta t\\,\\hat{\\mathbf C}$ as its log-return covariance, which recovers $\\hat{\\mathbf\\Sigma}_r$. This provides a direct check on the time factors. The growth-rate equation gives covariance $\\mathbf C/\\Delta t$, so $\\hat{\\mathbf C}=\\Delta t\\,\\hat{\\mathbf\\Sigma}_g$.\n\n**Check.** Add $5\\,\\mathrm{yr}^{-1}$ to every first-asset observation. **Answer:** its mean rises from 2 to 7, but its centered deviations remain $(-1,0,1)$. Every covariance entry stays the same. Adding a constant changes the level, not the variability about that level.\n\nThese three observations make the arithmetic visible; a useful empirical estimate requires enough aligned data to describe the assets under study. L6a uses the resulting means and covariance to compare allocations.",
+      "lectures": [
+        "L5b"
+      ],
+      "keywords": "data matrix G center centered sample covariance Sigma time scaling delta t",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "clarity-covariance-data"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L5b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "independence",
+      "theme": "dependence",
+      "title": "When do independent single-asset models agree with MA-GBM?",
+      "answer": "With matching individual parameters, the models agree in their joint distribution when the cross-asset covariances are zero. Joint normality supplies the connection between zero covariance and independence here.",
+      "body": "Use the same initial prices, drifts, and individual volatilities in both constructions. The independent simulations then agree with the multiple-asset model's joint distribution when all cross-asset covariances are zero. Each asset has the same individual distribution in either construction even when the cross covariances are nonzero; what changes is how the assets move together.\n\nThe exact agreement follows because the model uses jointly normal growth-rate shocks. For a jointly normal vector, a diagonal covariance matrix gives independent components. In a small example, very weak correlations can make independent simulation a reasonable approximation. Whether the difference matters depends on the portfolio, horizon, and number of assets; many small cross terms can add up.\n\nZero correlation does not establish independence for arbitrary data. Consider an equally likely variable $X\\in\\{-1,0,1\\}$ and define $Y=X^2$. Their covariance is zero, but knowing $X$ determines $Y$ exactly. The normal-model assumption supplies the additional structure in GBM.\n\nWe should also distinguish equality in distribution from identical simulated paths. Two independent runs can follow different paths even when they use exactly the same model.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L5b"
+      ],
+      "keywords": "zero correlation independence SA GBM MA GBM joint normal marginal",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 4
+      },
+      "sources": [
+        {
+          "label": "L5b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "fitted-log-price",
+      "theme": "estimation",
+      "title": "What does a fitted log-price line predict?",
+      "answer": "The fitted line predicts log price at an observation time. Exponentiating gives a fitted price trend; interpreting it as an expected price under GBM requires the volatility correction.",
+      "body": "**What does the fitted line predict at one observation?** Suppose the fitted intercept is $\\ln(100)$ and the slope is $0.06\\,\\mathrm{yr}^{-1}$. At $t=0.5$ yr, the fitted log price is $\\ln(100)+0.06(0.5)$. Exponentiating gives $100e^{0.03}=103.05$ USD/share. If the observed price is 104 USD/share, the residual is the observed log price minus the fitted log price:\n\n$$\nr_j=\\ln(104)-[\\ln(100)+0.03]=0.00922.\n$$\n\nThe residual is dimensionless because we fitted logarithms. In matrix notation, the row $[1,0.5]$ multiplies the intercept and slope to make this same prediction. L6b will replace elapsed time with market growth as the predictor.\n\n\n\n\n**What are we fitting, and what does the interval describe?** For observation $j$, the lecture fits log price as an intercept plus mean growth times elapsed time. Stacking all observations gives:\n\n$$\n\\ln S_j=\\ln S_0+\\mu_gt_j+\\epsilon_j\n\\quad\\Longleftrightarrow\\quad\n\\mathbf y=\\hat{\\mathbf X}\\boldsymbol\\theta+\\boldsymbol\\epsilon.\n$$\n\nEach row of the design matrix is $[1,t_j]$. Least squares chooses the intercept and slope to minimize the squared residuals. For a fitted coefficient $\\hat\\theta_j$, the standard error estimates its uncertainty; a smaller value indicates greater precision. The lecture's two-sided confidence interval is:\n\n$$\n\\hat\\theta_j\\ \\pm\\ t_{1-\\alpha/2,\\nu}\\operatorname{SE}(\\hat\\theta_j).\n$$\n\nThis is an interval for a model coefficient. A prediction interval for a future price must also account for future random price changes. The classical coefficient interval assumes independent, constant-variance, normally distributed errors. GBM log-price errors accumulate through time and share earlier shocks, so this simplifying regression-error assumption limits the interval's interpretation. Fitting a line alone does not validate its uncertainty calculation.\n\n**Check.** Does the fitted price 103.05 USD identify GBM's expected price at six months? **Answer:** it describes the fitted log-price trend and, under GBM, the median price. If $\\sigma=0.20\\,\\mathrm{yr}^{-1/2}$, expected price is $100e^{(0.06+0.20^2/2)(0.5)}=104.08$ USD. We need the volatility correction when averaging prices.",
+      "lectures": [
+        "L4b"
+      ],
+      "keywords": "regression residual fit log price design matrix slope confidence interval",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-13"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "ema-updates",
+      "theme": "estimation",
+      "title": "What changes when another price observation arrives?",
+      "answer": "An exponential moving average updates the growth-rate mean and variance. Its half-life controls the influence of older observations, while the forecast horizon specifies how far ahead the resulting model is used.",
+      "body": "**What should we do with a new price observation?** Convert it to a growth rate, update the estimates using only information available now, and use those estimates for the next forecast. An exponential moving average (EMA) controls how much the new observation changes the estimates.\n\n\n\n\n**What changes when another price arrives?** The new growth observation $g_k$ differs from the previous mean by the innovation $\\delta_k=g_k-m_{k-1}$. We retain a fraction $\\lambda$ of the old information and give the new observation weight $1-\\lambda$:\n\n$$\nm_k=\\lambda m_{k-1}+(1-\\lambda)g_k\n=m_{k-1}+(1-\\lambda)\\delta_k.\n$$\n\nFor a 21-observation half-life, $\\lambda=2^{-1/21}\\approx0.9675$, so the new observation receives about 3.25% of the mean's weight. Half-life describes estimation memory; $T$ describes how far ahead we forecast.\n\n**Why is the variance update different?** Variance is measured about the updated mean. Measuring the old observations about this new center adds the squared shift of the mean to the old variance. Combining their contribution with the new observation gives:\n\n$$\nv_k=\\lambda\\left[v_{k-1}+(m_{k-1}-m_k)^2\\right]\n+(1-\\lambda)(g_k-m_k)^2.\n$$\n\nThe mean update gives $m_k-m_{k-1}=(1-\\lambda)\\delta_k$, and the new observation's deviation is $g_k-m_k=\\lambda\\delta_k$. Substituting these two deviations and collecting terms yields:\n\n$$\n\\begin{aligned}\nv_k&=\\lambda v_{k-1}+\\lambda(1-\\lambda)^2\\delta_k^2\n+(1-\\lambda)\\lambda^2\\delta_k^2\\\\\n&=\\lambda\\left[v_{k-1}+(1-\\lambda)\\delta_k^2\\right].\n\\end{aligned}\n$$\n\nThese are exponentially weighted moments; $v_k$ has no finite-sample unbiased correction. Initialize $m_s=\\hat\\mu_{g,0}$ and $v_s=\\hat\\sigma_0^2/\\Delta t$ from the training data. The updated growth variance has units $\\mathrm{yr}^{-2}$; multiplying by $\\Delta t$ and taking a square root gives GBM volatility $\\hat\\sigma_k=\\sqrt{v_k\\Delta t}$. Each new forecast uses the updated estimates. In the course example, those estimates remain fixed over that forecast's horizon, so updating them does not by itself model future volatility clusters within the horizon.\n\n**Work one update.** For easy arithmetic, take $\\lambda=0.9$, previous mean $m_{k-1}=0.10\\,\\mathrm{yr}^{-1}$, previous variance $v_{k-1}=4\\,\\mathrm{yr}^{-2}$, and new growth $g_k=1.10\\,\\mathrm{yr}^{-1}$. Then $\\delta_k=1.00\\,\\mathrm{yr}^{-1}$ and:\n\n$$\nm_k=0.10+0.1(1.00)=0.20\\,\\mathrm{yr}^{-1},\\qquad\nv_k=0.9[4+0.1(1.00)^2]=3.69\\,\\mathrm{yr}^{-2}.\n$$\n\nThe mean rises, while the variance falls because the new observation is close relative to the previous spread. At daily spacing, updated volatility is $\\sqrt{3.69/252}=0.1210\\,\\mathrm{yr}^{-1/2}$.\n\n**Check.** Use $g_k=3.10\\,\\mathrm{yr}^{-1}$ instead. **Answer:** $\\delta_k=3$, $m_k=0.40$, and $v_k=0.9[4+0.1(9)]=4.41$. A sufficiently large deviation raises the variance. Save each forecast when issued so its later evaluation uses the information available at that time.",
+      "lectures": [
+        "L5a"
+      ],
+      "keywords": "EMA half life lambda λ update recenter mean variance memory",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-14"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L5a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "prediction-bands",
+      "theme": "estimation",
+      "title": "Does a 95% band contain 95% of complete price paths?",
+      "answer": "A pointwise interval concerns the price at one specified date. Remaining inside a band at every date is a different event, so whole-path coverage requires its own calculation.",
+      "body": "No. A pointwise 95% prediction interval describes the model's price distribution at one specified future date. Staying inside an interval at every date is a different event.\n\nFor fitted GBM parameters held fixed and elapsed time $\\tau>0$, the bounds are:\n\n$$\nL_z(\\tau)=S_0e^{\\hat\\mu_g\\tau-z\\hat\\sigma\\sqrt\\tau},\n\\qquad\nU_z(\\tau)=S_0e^{\\hat\\mu_g\\tau+z\\hat\\sigma\\sqrt\\tau}.\n$$\n\nThe values $z=1$, $1.96$, and $2.576$ give approximately 68%, 95%, and 99% pointwise coverage under the fitted model. They come from standard normal quantiles before exponentiation. The price bounds are not symmetric about the expected price because the price distribution is lognormal.\n\nAn entire path has many opportunities to leave these bounds. Its prices are dependent across dates, so we cannot obtain the whole-path probability by simply multiplying the pointwise percentages. Also, these bands treat the fitted parameters as known; they do not include uncertainty in their estimates.\n\nThe lattice example uses expectation-plus-or-minus-standard-deviation bands and computes its whole-window benchmark directly. Because the lattice distribution is discrete, the familiar normal percentage is not automatically its exact pointwise coverage either. Keep each example's band definition and scoring event explicit.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L4b",
+        "L5a"
+      ],
+      "keywords": "95 coverage prediction interval confidence band path whole window out of sample",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 10
+      },
+      "sources": [
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        },
+        {
+          "label": "L5a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "simulation-uncertainty",
+      "theme": "estimation",
+      "title": "What uncertainty does a Monte Carlo simulation measure?",
+      "answer": "The spread of simulated wealth describes modeled investment outcomes. The standard error of a simulated mean or probability measures the numerical uncertainty from using finitely many paths.",
+      "body": "**What does a band around simulated wealth describe?** The multiple-asset GBM example holds the fitted parameters and initial allocation fixed, simulates correlated prices, and computes wealth on every path. At a given date, the paths give a distribution of possible wealth outcomes under that model.\n\n\n\n**Separate outcome spread from precision of the mean.** Average the wealth values across paths, then measure their spread:\n\n$$\n\\bar W_t=\\frac1n\\sum_{k=1}^{n}W_t^{(k)},\\qquad\ns_W(t)=\\sqrt{\\frac{1}{n-1}\\sum_{k=1}^{n}(W_t^{(k)}-\\bar W_t)^2}.\n$$\n\nSuppose 2,000 independent paths give a mean of 1,100 USD and a standard deviation of 150 USD at a selected date. The example's approximate 95% pointwise prediction band is:\n\n$$\n\\bar W_t\\pm1.96s_W(t)=1{,}100\\pm294\\ \\mathrm{USD}.\n$$\n\nIt describes the spread of wealth outcomes on that date. Its normal approximation can be imperfect because wealth is skewed. By contrast, the Monte Carlo standard error of the mean is $150/\\sqrt{2{,}000}=3.35$ USD, giving an approximate 95% interval of $1{,}100\\pm6.57$ USD for the model's expected wealth. Pointwise coverage refers to a single date; whole-path coverage is a different event.\n\n**Estimate a target probability.** Discount each path's terminal wealth to obtain $\\rho_T^{(k)}$. Count the paths strictly above $\\rho_\\star$ and divide by the number of paths:\n\n$$\n\\hat p=\\frac{\\#\\{k:\\rho_T^{(k)}>\\rho_\\star\\}}{n},\\qquad\n\\operatorname{SE}(\\hat p)=\\sqrt{\\frac{\\hat p(1-\\hat p)}{n}}.\n$$\n\nIf 1,360 of 2,000 paths exceed the target, $\\hat p=0.68$ and its standard error is $0.0104$, about one percentage point. An approximate 95% Monte Carlo interval is $0.68\\pm0.0204$. This quantifies the effect of using finitely many random paths while keeping the model inputs fixed.\n\nThe simulation first checks that generated growth rates reproduce the fitted means and covariance. The later comparison with observed 2025 wealth asks a separate question: how well those fitted inputs describe a new period.\n\n**Check.** Increase the number of independent paths from 2,000 to 8,000. What should shrink? **Answer:** Monte Carlo standard errors are approximately halved. The estimated spread of individual wealth outcomes remains near 150 USD because the model and allocation have not changed. More paths improve numerical precision; uncertainty in the fitted inputs requires a separate analysis.",
+      "lectures": [
+        "L6a"
+      ],
+      "keywords": "Monte Carlo MC standard error SE prediction interval confidence interval simulation paths",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-simulation"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "sim-fit",
+      "theme": "estimation",
+      "title": "What do alpha, beta, and residuals tell us?",
+      "answer": "The single index model separates an asset’s fitted response to market growth from its residual. Alpha is an intercept, beta measures sensitivity to market growth, and a residual records the observation’s unexplained part.",
+      "body": "The single index model (SIM) relates an asset's growth rate to market growth. The subscript $M$ means market; the number of portfolio assets is $\\lvert\\mathcal P\\rvert$. The release uses SPY as the market proxy and fits growth rates from aligned trading days.\n\n\n**What does an asset's beta tell us?** The single index model separates the fitted market response from the asset-specific residual:\n\n$$\ng_{i,t}=\\alpha_i+\\beta_i g_{M,t}+\\varepsilon_{i,t},\\qquad\n\\beta_i=\\frac{\\operatorname{Cov}(g_i,g_M)}{\\operatorname{Var}(g_M)}\n=\\rho_{iM}\\frac{\\sigma_{g,i}}{\\sigma_{g,M}}.\n$$\n\nBeta includes both correlation and the ratio of growth-rate scales. With correlation 0.60 and asset variability twice the market's, beta is 1.20. A $0.10\\,\\mathrm{yr}^{-1}$ increase in market growth then raises fitted asset growth by $0.12\\,\\mathrm{yr}^{-1}$.\n\nSuppose $\\alpha_i=0.02\\,\\mathrm{yr}^{-1}$ and the observed market growth on a day is $0.10\\,\\mathrm{yr}^{-1}$. The fitted asset growth is $0.02+1.2(0.10)=0.14\\,\\mathrm{yr}^{-1}$. If the observed asset growth is $-0.06\\,\\mathrm{yr}^{-1}$, its fitted residual is $-0.20\\,\\mathrm{yr}^{-1}$. The residual records the part of that observation left unexplained by the line.\n\n**How do we fit the line?** Choose alpha and beta to minimize the squared residuals. For a full-column-rank design matrix, the lecture gives:\n\n$$\n\\hat{\\boldsymbol\\theta}_i\n=\\arg\\min_{\\boldsymbol\\theta}\\lVert\\mathbf y-\\hat{\\mathbf X}\\boldsymbol\\theta\\rVert_2^2\n=(\\hat{\\mathbf X}^{\\top}\\hat{\\mathbf X})^{-1}\\hat{\\mathbf X}^{\\top}\\mathbf y.\n$$\n\nThe equivalent sample formulas explain the fitted coefficients:\n\n$$\n\\hat\\beta_i=\\frac{\\widehat{\\operatorname{Cov}}(g_i,g_M)}{s_{g,M}^2},\\qquad\n\\hat\\alpha_i=g_i^{\\prime}-\\hat\\beta_i g_M^{\\prime}.\n$$\n\nThe intercept ensures that the fitted line passes through the sample means. The SVD example computes the same estimate as $\\mathbf V\\mathbf\\Sigma^{-1}\\mathbf U^{\\top}\\mathbf y$. Agreement among the three solves checks the numerical calculation.\n\n**How much variation did the fit explain?** For an asset with nonzero sample variation, compare squared residuals with squared deviations from the asset's sample mean:\n\n$$\nR^2=1-\\frac{\\lVert\\mathbf r_i\\rVert_2^2}{\\sum_{t=1}^{N}(g_{i,t}-g_i^{\\prime})^2}.\n$$\n\nIf residuals retain 40% of the original sum of squares, $R^2=0.60$. In this one-predictor regression with an intercept, $R^2$ equals squared sample correlation. It measures in-sample fit; later observations are needed to assess forecast usefulness.\n\n**Check.** Suppose the sample correlation is 0.60 and the asset's sample standard deviation is twice the market's. What are $\\hat\\beta_i$ and $R^2$? **Answer:** $\\hat\\beta_i=1.20$ and $R^2=0.36$. Beta measures sensitivity to market growth, while $R^2$ measures the fraction of variation explained. The client interview uses both when screening firms.\n\n**Reading the design matrix.** Each row of $\\hat{\\mathbf X}$ pairs the number one with that day's market growth. Multiplying by $(\\alpha_i,\\beta_i)^{\\top}$ produces the intercept plus market contribution for each day. The fitted residual vector is what remains after subtracting those fitted values from observations.\n\nThe estimation example solves the same least-squares problem by normal equations, a QR-based solve, and singular value decomposition (SVD). For the thin SVD $\\hat{\\mathbf X}=\\mathbf U\\mathbf\\Sigma\\mathbf V^{\\top}$, $\\mathbf U$ is $N\\times2$, and $\\mathbf\\Sigma$ and $\\mathbf V$ are $2\\times2$. Here $\\mathbf\\Sigma$ contains singular values; $\\mathbf\\Sigma_g$ denotes a growth covariance. Nonzero singular values give full column rank and a unique fit.",
+      "lectures": [
+        "L6b"
+      ],
+      "keywords": "SIM single index alpha beta α β regression SVD design matrix R squared",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-19",
+          "week06-sim-fit"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "bootstrap-uncertainty",
+      "theme": "estimation",
+      "title": "How uncertain are the fitted alpha and beta?",
+      "answer": "Standard errors describe variation in coefficient estimates across repeated datasets under an error model. A bootstrap constructs and refits synthetic datasets to make that variation visible.",
+      "body": "**How much might alpha and beta change with another dataset?** The fitted line gives one alpha and one beta. New observations would move the fitted line. A standard error describes the spread we expect in the fitted coefficient across repeated datasets under our error model; it differs from the day-to-day spread of asset growth.\n\n**Where does the standard error come from?** Conditional on the observed market growth rates, the classical calculation assumes zero-mean errors with constant variance and no correlation across days. With $N>2$ observations and a full-column-rank design matrix, we estimate the error variance after fitting two coefficients:\n\n$$\ns_{g,\\varepsilon,i}^2=\\frac{\\lVert\\mathbf r_i\\rVert_2^2}{N-2},\\qquad\n\\widehat{\\operatorname{Cov}}(\\hat{\\boldsymbol\\theta}_i)\n=s_{g,\\varepsilon,i}^2(\\hat{\\mathbf X}^{\\top}\\hat{\\mathbf X})^{-1}.\n$$\n\nSquare roots of the two diagonal entries give $\\operatorname{SE}(\\hat\\alpha_i)$ and $\\operatorname{SE}(\\hat\\beta_i)$. Alpha's standard error has units of inverse years; beta's is dimensionless.\n\n\n\n**Read an interval.** With thousands of observations, the 95% interval is approximately the estimate plus or minus 1.96 standard errors. Suppose $\\hat\\alpha_i=0.02\\,\\mathrm{yr}^{-1}$ with standard error $0.03\\,\\mathrm{yr}^{-1}$, and $\\hat\\beta_i=1.20$ with standard error $0.05$. Then:\n\n$$\n\\begin{aligned}\n\\alpha_i:&\\quad 0.02\\pm1.96(0.03)=[-0.0388,0.0788]\\,\\mathrm{yr}^{-1},\\\\\n\\beta_i:&\\quad 1.20\\pm1.96(0.05)=[1.102,1.298].\n\\end{aligned}\n$$\n\nThe alpha interval includes zero, while the beta interval lies above one. Under the regression assumptions, these data estimate market exposure more precisely relative to its magnitude. The estimation example uses the Student-$t$ critical value; the large-sample Gaussian value is used in the bootstrap comparison. Jointly Gaussian errors under these assumptions give the exact classical $t$ interval.\n\n**What does the Gaussian bootstrap hold fixed?** The uncertainty example keeps $\\hat{\\mathbf X}$ fixed, draws independent synthetic residuals from a fitted normal distribution, and adds them to fitted growth:\n\n$$\n\\mathbf y^{(k)}=\\hat{\\mathbf X}\\hat{\\boldsymbol\\theta}_i+\\boldsymbol\\varepsilon^{(k)}.\n$$\n\nFor one day, suppose fitted growth is $0.14\\,\\mathrm{yr}^{-1}$ and a synthetic error draw is $-0.20\\,\\mathrm{yr}^{-1}$. That day's synthetic observation is $-0.06\\,\\mathrm{yr}^{-1}$. Repeat this addition for every day, keeping its market observation, and fit a new line. Repeat the entire process for each of the $K=1{,}000$ synthetic datasets. The standard deviation of the refitted alphas or betas estimates its standard error. Because these datasets follow the fitted Gaussian model, agreement with the classical calculation checks that calculation. The optional residual-diagnostics example separately examines heavy tails and dependence across days.\n\n**Check.** Does increasing $K$ from 1,000 to 4,000 make the original beta estimate twice as precise? **Answer:** it improves the numerical precision of the bootstrap comparison. The original observations and their information about beta remain the same.",
+      "lectures": [
+        "L6b"
+      ],
+      "keywords": "bootstrap standard error coefficient uncertainty confidence intervals parametric gaussian",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-uncertainty"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "buy-and-hold-weights",
+      "theme": "portfolios",
+      "title": "What stays fixed when we buy and hold?",
+      "answer": "The initial allocation determines the share counts, which stay fixed in buy-and-hold trading. Current wealth fractions change as prices move, and the exact wealth calculation follows those fixed shares.",
+      "body": "**What stays fixed when we buy and hold?** We choose initial dollar fractions, use them to buy shares, and keep those share counts. The fraction of current wealth in each asset then changes with its price.\n\n\n\n\n**How do weights become wealth?** Allocate the fraction $w_i$ of initial wealth $W_0$ to asset $i$, buying $n_i=w_iW_0/S_i(0)$ shares. Holding those shares fixed gives:\n\n$$\nW_t=\\sum_i n_iS_i(t)=W_0\\sum_iw_i\\frac{S_i(t)}{S_i(0)}.\n$$\n\nIf two equal allocations experience price factors 1.20 and 0.90, the wealth factor is $0.5(1.20)+0.5(0.90)=1.05$. The first asset now accounts for $0.5(1.20)/1.05=57.14\\%$ of wealth and the second for 42.86%. Restoring equal fractions would require selling some of the first asset and buying more of the second.\n\n**Why do portfolio calculations use a weighted growth rate?** Over one short interval, substitute the asset price factors $e^{g_i\\Delta t}$ into the wealth ratio:\n\n$$\n\\frac{1}{\\Delta t}\\ln(W_{\\Delta t}/W_0)\n=\\frac{1}{\\Delta t}\\ln\\left(\\sum_iw_ie^{g_i\\Delta t}\\right)\n\\approx\\sum_iw_ig_i=g_p.\n$$\n\nThe approximation uses $e^x\\approx1+x$, $\\ln(1+x)\\approx x$, and weights summing to one. It is useful for small interval changes; the wealth formula supplies the exact buy-and-hold calculation. For these price factors, the exact portfolio log return is $\\ln(1.05)=0.04879$. The weighted asset log returns give $[\\ln(1.20)+\\ln(0.90)]/2=0.03848$. The difference shows why we use the exact wealth formula for the investment actually held.\n\n**What does a Dirichlet draw choose?** Dirichlet sampling generates candidate long-only weight vectors. Equal concentration parameters of one give uniform sampling over the simplex, while larger equal concentrations favor weights near equal allocation. Comparing sampled portfolios explores possible allocations; optimization in L6a determines the minimum for the specified constraints.\n\n**Check.** With two assets and $\\boldsymbol\\alpha=(1,1)$, must every draw give $(0.5,0.5)$? **Answer:** no. The distribution samples all splits along the allocation line uniformly; a draw such as $(0.8,0.2)$ is an 80%/20% investment. Concentration controls which allocations we explore, while the price data determine their estimated reward and risk.",
+      "lectures": [
+        "L5b"
+      ],
+      "keywords": "weights rebalancing Dirichlet simplex allocations concentration buy hold exact log growth",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-17"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L5b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "portfolio-risk",
+      "theme": "portfolios",
+      "title": "How do individual growth rates become portfolio risk?",
+      "answer": "For the course’s linear growth-rate proxy, weights combine asset means and the covariance matrix combines their variances and cross terms. Correlation affects portfolio risk through those cross terms.",
+      "body": "**How do individual growth rates become portfolio reward and risk?** We use fixed weights to form the linear growth proxy $g_p=\\mathbf w^{\\top}\\mathbf g$. Its expected value measures reward, and its variance measures risk. The L6a Dirichlet example compares sampled allocations this way; the data example chooses weights by optimization.\n\n\n\n**Estimate the inputs.** Each entry of $\\mathbf G$ comes from an aligned price pair: $g_{i,k}=\\ln[S_i(t_k)/S_i(t_{k-1})]/\\Delta t$. Average each column and then average the products of its centered observations with those of another column:\n\n$$\ng_i^{\\prime}=\\frac{1}{N}\\sum_{k=1}^{N}g_{i,k},\\qquad\n\\hat\\Sigma_{g,ij}=\\frac{1}{N-1}\\sum_{k=1}^{N}(g_{i,k}-g_i^{\\prime})(g_{j,k}-g_j^{\\prime}).\n$$\n\nThe diagonal records individual variances. The off-diagonal records whether assets tend to be above or below their own means together.\n\n**Work through two assets.** Suppose the estimated means are $(0.06,0.12)\\,\\mathrm{yr}^{-1}$, their growth-rate standard deviations are $(2,4)\\,\\mathrm{yr}^{-1}$, and their correlation is $0.25$. For weights $(0.75,0.25)$, the covariance is $0.25(2)(4)=2\\,\\mathrm{yr}^{-2}$. Thus:\n\n$$\n\\begin{aligned}\n\\hat{\\mathbf\\Sigma}_g&=\\begin{bmatrix}4&2\\\\2&16\\end{bmatrix}\\,\\mathrm{yr}^{-2},\\\\\n\\widehat{\\mathbb E}[g_p]&=0.75(0.06)+0.25(0.12)=0.075\\,\\mathrm{yr}^{-1},\\\\\n\\widehat{\\operatorname{Var}}(g_p)&=0.75^2(4)+0.25^2(16)+2(0.75)(0.25)(2)\n=4\\,\\mathrm{yr}^{-2}.\n\\end{aligned}\n$$\n\nThe portfolio standard deviation is $2\\,\\mathrm{yr}^{-1}$. For $\\Delta t=1/252$ yr, its corresponding diffusion-volatility scale is $\\sqrt{\\Delta t}\\,\\sigma_{g,p}=0.126\\,\\mathrm{yr}^{-1/2}$. The examples use this conversion when comparing growth-rate variability with GBM volatility.\n\n**Check.** Keep the weights and individual variances fixed, but set the correlation to zero. What changes? **Answer:** mean growth stays $0.075\\,\\mathrm{yr}^{-1}$, while variance falls to $3.25\\,\\mathrm{yr}^{-2}$ and standard deviation to $1.803\\,\\mathrm{yr}^{-1}$. The smaller covariance reduces portfolio risk.",
+      "lectures": [
+        "L6a"
+      ],
+      "keywords": "portfolio variance diversification covariance correlation sigma risk reward",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-reward-risk"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "minimum-variance",
+      "theme": "portfolios",
+      "title": "Why mix assets when one has a smaller variance?",
+      "answer": "An allocation can have less variance than either asset alone because each variance is multiplied by its squared weight and covariance determines the cross terms. The GMV calculation finds the least-variance allocation under its constraints.",
+      "body": "**Why mix assets when one has a smaller variance?** Suppose two uncorrelated assets have growth variances 1 and $4\\,\\mathrm{yr}^{-2}$. Put weight $w$ in the first and $1-w$ in the second. Their portfolio variance is:\n\n$$\n\\sigma_{g,p}^2=w^2+4(1-w)^2\n=5(w-0.8)^2+0.8\\quad[\\mathrm{yr}^{-2}].\n$$\n\nThe square is smallest at $w=0.8$, giving variance $0.8\\,\\mathrm{yr}^{-2}$, below either asset alone. Each asset's variance is multiplied by its squared weight, and zero covariance removes the cross term. This calculation finds the best allocation among all weights, whereas random sampling only compares the allocations drawn.\n\n**How do we generalize to many assets?** The global minimum-variance (GMV) problem supplies the covariance matrix and chooses the weights. A positive-definite covariance gives a unique minimum. We first allow signed weights, so the budget is the only constraint:\n\n$$\n\\underset{\\mathbf w}{\\operatorname{minimize}}\\quad\n\\frac12\\mathbf w^{\\top}\\mathbf\\Sigma_g\\mathbf w\n\\qquad\\text{subject to}\\quad\\mathbf1^{\\top}\\mathbf w=1.\n$$\n\n\n\n**Why does the inverse covariance appear?** We attach a multiplier to the budget constraint and set the gradient to zero:\n\n$$\n\\begin{aligned}\n\\mathcal L(\\mathbf w,\\lambda)\n&=\\tfrac12\\mathbf w^{\\top}\\mathbf\\Sigma_g\\mathbf w\n-\\lambda(\\mathbf1^{\\top}\\mathbf w-1),\\\\\n\\mathbf\\Sigma_g\\mathbf w&=\\lambda\\mathbf1\n\\quad\\Longrightarrow\\quad\\mathbf w=\\lambda\\mathbf\\Sigma_g^{-1}\\mathbf1.\n\\end{aligned}\n$$\n\nThe factor $1/2$ simplifies differentiation. Requiring the weights to sum to one determines $\\lambda$ and gives:\n\n$$\n\\mathbf w_{\\mathrm{GMV}}\n=\\frac{\\mathbf\\Sigma_g^{-1}\\mathbf1}{\\mathbf1^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf1},\n\\qquad\n\\sigma_{g,\\mathrm{GMV}}^2\n=\\frac{1}{\\mathbf1^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf1}.\n$$\n\nThe numerator accounts for variances and covariances; the denominator normalizes the allocation. The data example solves $\\hat{\\mathbf\\Sigma}_g\\mathbf x=\\mathbf1$ and divides $\\mathbf x$ by the sum of its entries. Mean-growth estimates enter only when we add a growth requirement.\n\n**A two-asset calculation.** For uncorrelated assets with growth variances $1$ and $4\\,\\mathrm{yr}^{-2}$, the unnormalized vector is $(1,1/4)\\,\\mathrm{yr}^{2}$. Normalizing gives weights $(0.8,0.2)$ and variance $1/(1+1/4)=0.8\\,\\mathrm{yr}^{-2}$. The lower-variance asset receives more of the budget.\n\n**What does a negative weight mean?** With 1,000 USD and weights $(1.2,-0.2)$, we borrow and sell 200 USD of the second asset and buy 1,200 USD of the first. The short position is a liability: a price increase raises the cost of buying back the borrowed shares. The lecture's calculation omits borrowing fees, collateral, and dividends owed.\n\n**Check.** If an unrestricted GMV solution contains a negative weight, what happens when we require $w_i\\geq0$? **Answer:** we solve again over the smaller feasible set. The minimum variance increases for a positive-definite covariance. If the unrestricted weights were already nonnegative, they would remain optimal.",
+      "lectures": [
+        "L6a"
+      ],
+      "keywords": "GMV global minimum variance inverse covariance optimization weights short selling",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-18"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "growth-targets",
+      "theme": "portfolios",
+      "title": "How do exact growth targets differ from growth floors?",
+      "answer": "An exact target requires equality. A floor accepts any allocation that meets or exceeds the required mean growth, so it can retain a minimum-variance portfolio whose mean already exceeds the floor.",
+      "body": "**How much additional risk does a growth requirement impose?** The lecture first requires the weighted sample means to equal a target, $(\\mathbf g^{\\prime})^{\\top}\\mathbf w=g_\\star$, while allowing short positions. The minimum variance at each target traces the minimum-variance frontier.\n\nReturn to uncorrelated variances $(1,4)\\,\\mathrm{yr}^{-2}$ and suppose the means are $(0.04,0.14)\\,\\mathrm{yr}^{-1}$. The GMV weights $(0.8,0.2)$ give mean growth $0.06\\,\\mathrm{yr}^{-1}$. A floor of $0.05$ leaves this allocation unchanged. An exact target of $0.05$ instead requires weights $(0.9,0.1)$ and variance $0.85\\,\\mathrm{yr}^{-2}$. The exact target selects a lower-growth, higher-risk allocation than the GMV portfolio; the floor accepts the GMV allocation.\n\nTo see where those weights come from, write the first-asset weight as $w$ and the second as $1-w$. The mean growth is $0.04w+0.14(1-w)=0.14-0.10w$. Setting it to 0.05 gives $w=0.9$. A floor asks only for a mean of at least 0.05; the GMV mean of 0.06 already qualifies.\n\n**What changes with a floor and long-only weights?** We solve the following problem numerically using estimated inputs:\n\n$$\n\\begin{aligned}\n\\underset{\\mathbf w}{\\operatorname{minimize}}\\quad&\\mathbf w^{\\top}\\hat{\\mathbf\\Sigma}_g\\mathbf w\\\\\n\\text{subject to}\\quad &(\\mathbf g^{\\prime})^{\\top}\\mathbf w\\geq g_\\star,\\qquad\n\\mathbf1^{\\top}\\mathbf w=1,\\qquad 0\\leq w_i\\leq1.\n\\end{aligned}\n$$\n\n**Check.** Raise the floor to $0.09\\,\\mathrm{yr}^{-1}$. **Answer:** it binds at weights $(0.5,0.5)$, giving variance $1.25\\,\\mathrm{yr}^{-2}$. A long-only floor above $0.14\\,\\mathrm{yr}^{-1}$ is infeasible. Setting the floor to the smallest asset mean, as in the examples' GMV solve, allows every fully invested long-only allocation.\n\n### The formula for an exact target\n\nThe two-asset calculation above determines the weights from the budget and growth equations. With more assets, many allocations can satisfy both equations; the covariance determines which has the least risk. The lecture writes that solution using four shorthand coefficients:\n\nFor a positive-definite $\\mathbf\\Sigma_g$ and unequal asset sample means, calculate:\n\n$$\n\\begin{aligned}\na&=\\mathbf1^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf1,&\nb&=\\mathbf1^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf g^{\\prime},\\\\\nc&=(\\mathbf g^{\\prime})^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf g^{\\prime},&d&=ac-b^2>0.\n\\end{aligned}\n$$\n\nThe budget and growth constraints determine the coefficients of two vectors. The resulting weights and variance are:\n\n$$\n\\begin{aligned}\n\\mathbf w_\\star(g_\\star)\n&=\\frac{c-bg_\\star}{d}\\mathbf\\Sigma_g^{-1}\\mathbf1\n+\\frac{ag_\\star-b}{d}\\mathbf\\Sigma_g^{-1}\\mathbf g^{\\prime},\\\\\n\\sigma_g^2(g_\\star)\n&=\\frac{ag_\\star^2-2bg_\\star+c}{d}\n=\\frac1a+\\frac ad\\left(g_\\star-\\frac ba\\right)^2.\n\\end{aligned}\n$$\n\nThe last expression separates GMV variance, $1/a$, from the extra variance imposed by the target. The GMV mean is $b/a$. The upper branch, $g_\\star\\geq b/a$, is efficient: a point on the lower branch has a higher-growth counterpart at the same risk.",
+      "lectures": [
+        "L6a"
+      ],
+      "keywords": "target floor equality inequality efficient frontier GMV mean growth constraints",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-frontier"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "gbm-target-probability",
+      "theme": "portfolios",
+      "title": "How does an NPV target become a normal probability?",
+      "answer": "Translate the discounted-profit target into a price threshold, substitute the GBM price equation, and standardize. The probability to the right of that normal threshold is the model probability of exceeding the target at the scheduled sale date.",
+      "body": "First specify the trade. We buy at $S_0$ and sell at the scheduled time $T$, ignoring dividends, fees, and other trading costs. With a constant benchmark growth rate $g_y$, the scaled NPV is:\n\n$$\n\\rho_T=e^{-g_yT}\\frac{S_T}{S_0}-1.\n$$\n\nThe benchmark need not be risk-free; it represents the growth requirement used in this comparison. We ask whether $\\rho_T$ exceeds a target $\\rho_\\star>-1$.\n\nSubstitute the GBM solution, add one, and take the logarithm. The event becomes:\n\n$$\n(\\mu_g-g_y)T+\\sigma\\sqrt T\\,Z>\\ln(1+\\rho_\\star).\n$$\n\nFor $T>0$ and $\\sigma>0$, divide by the positive quantity $\\sigma\\sqrt T$. This gives a threshold for the standard normal variable:\n\n$$\nZ>z_\\star,\n\\qquad\nz_\\star=\\frac{\\ln(1+\\rho_\\star)-(\\mu_g-g_y)T}{\\sigma\\sqrt T},\n\\qquad\n\\mathbb P(\\rho_T>\\rho_\\star)=1-\\Phi(z_\\star).\n$$\n\nFor example, take $\\mu_g=0.06$, $g_y=0.02$, $\\sigma=0.20$, and $T=1$ in the corresponding year-based units. With target $\\rho_\\star=0$, the threshold is $z_\\star=-0.20$, giving probability about $0.5793$. We have calculated a model probability of beating the benchmark at the scheduled sale time.\n\nA lower threshold leaves more normal probability to its right. This explains why increasing mean growth, with the other quantities fixed, raises the probability even though it lowers $z_\\star$.\n\nThis calculation does not give the probability of reaching the target at any earlier time and selling immediately. That is a first-passage question with a different event.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L4b",
+        "L5a"
+      ],
+      "keywords": "NPV target probability normal Phi terminal first passage threshold benchmark",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 11
+      },
+      "sources": [
+        {
+          "label": "L4b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb"
+        },
+        {
+          "label": "L5a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "daily-leverage",
+      "theme": "portfolios",
+      "title": "Why does daily leverage not multiply the long-run return?",
+      "answer": "The daily multiple applies before each day’s result compounds. A benchmark can return to its starting price while a product targeting twice its daily return finishes below its starting value.",
+      "body": "A daily multiple is applied to each day's return, and those results compound. Many leveraged ETFs target a multiple of **daily** performance; their longer-horizon return can differ substantially from that multiple of the benchmark's return. See the [SEC's investor bulletin on leveraged and inverse ETFs][leveraged-etfs].\n\nConsider an idealized product that delivers exactly twice each day's benchmark return, ignoring fees, financing costs, and tracking differences. Start both values at 100. The benchmark gains 10% on day one, reaching 110, then loses $1/11\\approx9.09\\%$ on day two, returning to 100.\n\nThe daily two-times product follows a different calculation:\n\n$$\n100(1+2(0.10))\\left(1+2\\left(-\\frac{1}{11}\\right)\\right)\n=120\\left(\\frac{9}{11}\\right)\n\\approx98.18.\n$$\n\nThe benchmark finishes unchanged while the product loses approximately 1.82%. This does not mean every leveraged path must decline. It shows why the sequence of returns and the reset interval matter, and why returning to the benchmark's starting price does not guarantee that the leveraged product also returns to its starting value.\n\n[l3a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb\n[l3b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb\n[l4b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb\n[l5a]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb\n[l5b]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb\n[lattice-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-LatticeModelSharePrice-RWPM-Example-Fall-2026.ipynb\n[oos-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-OOS-SAGBM-Fall-2026.ipynb\n[npv-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-GBM-NPV-TradeRule-Fall-2026.ipynb\n[ema-example]: https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Example-EMA-SAGBM-Fall-2026.ipynb\n[leveraged-etfs]: https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec",
+      "lectures": [
+        "L3a"
+      ],
+      "keywords": "ETF daily leverage leveraged compounding reset 2x volatility drag",
+      "origin": {
+        "kind": "survey-faq-draft",
+        "question": 14
+      },
+      "sources": [
+        {
+          "label": "L3a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "wealth-and-npv",
+      "theme": "portfolios",
+      "title": "How do portfolio weights become wealth and NPV?",
+      "answer": "Use the initial dollar allocation and prices to determine share counts, then value those shares at later prices. NPV discounts terminal wealth before comparing it with the initial investment.",
+      "body": "**How do we evaluate the investment after choosing its weights?** We convert the initial dollar allocations to shares, keep the share counts fixed, and value them at later prices. The data and multiple-asset GBM examples use the same wealth calculation on observed and simulated prices.\n\n\n\n**Work from dollars to shares.** Suppose $W_0=1{,}000$ USD, weights are $(0.6,0.4)$, and initial share prices are $(100,50)$ USD. We buy six shares of the first asset and eight of the second. In symbols:\n\n$$\nn_i=\\frac{w_iW_0}{S_i(0)},\\qquad\nW_t=\\sum_i n_iS_i(t)=W_0\\sum_i w_i\\frac{S_i(t)}{S_i(0)}.\n$$\n\nIf the prices after one year are $(110,45)$ USD, wealth is $6(110)+8(45)=1{,}020$ USD. The first asset now represents $660/1{,}020=64.7\\%$ of wealth. Its initial fraction was 60%; the share count stayed six as its wealth fraction changed.\n\n**Did we exceed the benchmark?** Discount terminal wealth before comparing it with the initial investment:\n\n$$\n\\operatorname{NPV}(g_y,T)=-W_0+W_Te^{-g_yT},\\qquad\n\\rho_T=\\frac{W_T}{W_0}e^{-g_yT}-1.\n$$\n\nFor $g_y=0.03\\,\\mathrm{yr}^{-1}$ and $T=1$ yr, the scaled NPV is $1.02e^{-0.03}-1\\approx-0.01015$. Wealth rose by 20 USD, but its discounted value fell short of the initial investment by about 10.15 USD. To exceed a scaled target $\\rho_\\star>-1$, terminal wealth must satisfy:\n\n$$\nW_T>W_0(1+\\rho_\\star)e^{g_yT}.\n$$\n\nFor a zero target, the required wealth is $1{,}030.45$ USD. This translates the NPV question into a terminal-wealth event that we can count in simulated paths.\n\n**How do we use the testing data?** The data example estimates the inputs from 2014 to 2024 and evaluates both GMV allocations, equal weights, and SPY on 2025 prices. Realized mean growth is $\\ln(W_T/W_0)/T$ when wealth remains positive. Realized risk is the sample standard deviation of daily wealth growth rates. These quantities describe the investment actually held, whose weights can drift through time.\n\n**Check.** If we double $W_0$ and keep the weights and price ratios fixed, what changes? **Answer:** share counts, wealth, and dollar NPV double. Scaled NPV and the probability of exceeding a scaled target stay the same. The calculation allows fractional shares and omits trading costs and dividends.",
+      "lectures": [
+        "L6a"
+      ],
+      "keywords": "wealth NPV shares budget terminal target scaled discounted benchmark",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-wealth"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "sim-risk",
+      "theme": "dependence",
+      "title": "Which covariance does the single index model keep or omit?",
+      "answer": "The SIM keeps covariance generated by shared market exposure. Its diagonal residual approximation omits cross-asset residual covariance, which can make estimated portfolio risk higher or lower than the sample-covariance result.",
+      "body": "The SIM covariance separates a common market contribution from asset-specific residual variances. Its diagonal residual matrix imposes zero cross-asset residual covariance. This is an additional assumption beyond fitting each asset by least squares.\n\n\n\n**How does the market model supply portfolio inputs?** Assume residuals have zero mean, are uncorrelated with market growth, and are uncorrelated across assets. Taking means and covariances gives:\n\n$$\n\\boldsymbol\\mu_g=\\boldsymbol\\alpha+\\boldsymbol\\beta\\mu_{g,M},\\qquad\n\\mathbf\\Sigma_g=\\sigma_{g,M}^2\\boldsymbol\\beta\\boldsymbol\\beta^{\\top}+\\mathbf D_g.\n$$\n\nSubstitute estimates from the same training observations to construct:\n\n$$\n\\hat{\\mathbf g}_{\\mathrm{SIM}}=\\hat{\\boldsymbol\\alpha}+\\hat{\\boldsymbol\\beta}g_M^{\\prime},\\qquad\n\\hat{\\mathbf\\Sigma}_{g,\\mathrm{SIM}}=s_{g,M}^2\\hat{\\boldsymbol\\beta}\\hat{\\boldsymbol\\beta}^{\\top}+\\hat{\\mathbf D}_g.\n$$\n\nThe diagonal contains both market and residual variance. Off-diagonal entries contain only the shared market contribution. Positive residual variances make the fitted covariance positive definite. These inputs replace the empirical ones in L6a's allocation problem.\n\n**Which input changes when we use the SIM?** With an intercept and the same training days, $\\hat\\alpha_i=g_i^{\\prime}-\\hat\\beta_i g_M^{\\prime}$, so $\\hat{\\mathbf g}_{\\mathrm{SIM}}=\\mathbf g^{\\prime}$. The reward inputs agree. The covariance changes because the model removes residual co-movement.\n\nFor different assets, the sample covariance splits exactly into:\n\n$$\n\\hat\\Sigma_{g,ij}\n=\\underbrace{\\hat\\beta_i\\hat\\beta_j s_{g,M}^2}_{\\text{SIM keeps}}\n+\\underbrace{\\widehat{\\operatorname{Cov}}(\\mathbf r_i,\\mathbf r_j)}_{\\text{SIM omits}},\\qquad i\\ne j.\n$$\n\nOn the diagonal, the SIM divides residual sums of squares by $N-2$, whereas the sample residual covariance uses $N-1$. Thus, the SIM residual contribution is larger by the factor $(N-1)/(N-2)$, nearly one for thousands of observations.\n\n**Build a two-asset covariance.** Suppose the fitted betas are $(1,1.5)$, the market growth variance is $4\\,\\mathrm{yr}^{-2}$, and fitted residual variances are $(1,4)\\,\\mathrm{yr}^{-2}$. Then:\n\n$$\n\\hat{\\mathbf\\Sigma}_{g,\\mathrm{SIM}}\n=4\\begin{bmatrix}1&1.5\\\\1.5&2.25\\end{bmatrix}\n+\\begin{bmatrix}1&0\\\\0&4\\end{bmatrix}\n=\\begin{bmatrix}5&6\\\\6&13\\end{bmatrix}\\,\\mathrm{yr}^{-2}.\n$$\n\nFor fixed weights, portfolio beta is $\\beta_p=\\mathbf w^{\\top}\\boldsymbol\\beta$. Multiplying the covariance by the weights on both sides gives the general risk decomposition:\n\n$$\n\\operatorname{Var}(g_p)=\\beta_p^2\\sigma_{g,M}^2+\\sum_i w_i^2\\sigma_{g,\\varepsilon,i}^2.\n$$\n\nAt equal weights, fitted portfolio beta is $0.5(1)+0.5(1.5)=1.25$. Substituting the fitted inputs gives:\n\n$$\n\\widehat{\\operatorname{Var}}_{\\mathrm{SIM}}(g_p)\n=\\underbrace{1.25^2(4)}_{6.25\\text{ market}}\n+\\underbrace{0.5^2(1)+0.5^2(4)}_{1.25\\text{ residual}}\n=7.5\\,\\mathrm{yr}^{-2}.\n$$\n\nIf residual covariance were $1\\,\\mathrm{yr}^{-2}$, keeping these diagonal entries fixed would add the cross term $2(0.5)(0.5)(1)=0.5\\,\\mathrm{yr}^{-2}$. The variance would be $8\\,\\mathrm{yr}^{-2}$. Positive residual co-movement increases the risk of these positive-weight holdings.\n\n**Which risk can diversification reduce?** With $\\lvert\\mathcal P\\rvert$ equally weighted assets and uncorrelated residuals of common variance $v$, residual risk is $v/\\lvert\\mathcal P\\rvert$. More generally, a common upper bound $\\bar\\sigma^2$ gives a bound $\\bar\\sigma^2/\\lvert\\mathcal P\\rvert$. Market risk remains $\\beta_p^2\\sigma_{g,M}^2$, determined by the portfolio beta.\n\n**How do the portfolio examples compare allocations?** The risky-assets example scores both weight vectors under the sample covariance at common growth floors, then tests both on 2025 prices. The data-optimal weights have at most the sample-covariance risk of the SIM weights at the same floor. Using the same covariance separates the effect of choosing different holdings from the effect of measuring risk differently.\n\n**Check.** In the two-asset calculation, replace residual covariance $1$ by $-1\\,\\mathrm{yr}^{-2}$. **Answer:** with the same diagonal entries, variance becomes $7\\,\\mathrm{yr}^{-2}$. The SIM now overstates this portfolio's risk by omitting a negative covariance.",
+      "lectures": [
+        "L6b"
+      ],
+      "keywords": "SIM residual covariance diagonal idiosyncratic market risk diversification beta",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-20",
+          "week06-covariance-worked"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "risk-free-allocation",
+      "theme": "portfolios",
+      "title": "What changes when we lend or borrow?",
+      "answer": "The risk-free fraction controls exposure to the risky portfolio. Lending reduces that exposure. When the risky portfolio has positive excess mean growth, borrowing raises both expected growth and risk.",
+      "body": "We combine a risky portfolio with an asset whose growth rate is known over the holding period. The risk-free weight controls lending and borrowing. We use the course's fixed-weight, linear growth-rate proxy here; the buy-and-hold wealth calculation follows the actual holdings as their wealth fractions change.\n\n\n\n**What happens when we lend or borrow?** Put fraction $w_f$ in the risk-free asset and fraction $1-w_f$ in a fixed risky portfolio. Its known growth contributes to the mean and adds zero variance:\n\n$$\n\\mathbb E[g_c]=g_f+(1-w_f)(\\mathbb E[g_p]-g_f),\\qquad\n\\sigma_{g,c}=|1-w_f|\\sigma_{g,p}.\n$$\n\nFor daily observations ($\\Delta t=1/252$ yr), suppose $g_f=0.02\\,\\mathrm{yr}^{-1}$, $\\mathbb E[g_p]=0.08\\,\\mathrm{yr}^{-1}$, and $\\sigma_{g,p}=3.0\\,\\mathrm{yr}^{-1}$. A 50% risk-free allocation gives mean growth $0.05$ and standard deviation $1.5\\,\\mathrm{yr}^{-1}$. Borrowing 50% of initial wealth gives $w_f=-0.5$: mean growth becomes $0.11$ and standard deviation $4.5\\,\\mathrm{yr}^{-1}$. Borrowing increases both risky exposure and uncertainty.\n\nFor $w_f\\leq1$, eliminating the risky fraction gives the capital allocation line:\n\n$$\n\\mathbb E[g_c]=g_f+\\mathrm{SR}_p\\,\\sigma_{g,c}.\n$$\n\nIts slope is $(0.08-0.02)/3=0.02$. The annualized ratio is $\\sqrt{252}(0.02)=0.3175$ under independent-increment scaling. Expressing daily growth in inverse years does not by itself annualize this ratio.\n\n**Check.** For a target mean growth of $0.065\\,\\mathrm{yr}^{-1}$, what risk-free fraction is needed? **Answer:** $1-w_f=(0.065-0.02)/(0.08-0.02)=0.75$, so $w_f=0.25$ and standard deviation is $2.25\\,\\mathrm{yr}^{-1}$.",
+      "lectures": [
+        "L6b"
+      ],
+      "keywords": "capital allocation line CAL risk free lending borrowing leverage Sharpe ratio",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-21"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "tangent-portfolio",
+      "theme": "portfolios",
+      "title": "Which weights describe the risky fund and the whole investment?",
+      "answer": "Normalized risky weights describe the composition of the risky fund. Complete-investment weights also specify how much wealth is lent or borrowed at the risk-free rate.",
+      "body": "**Which weights describe the risky fund, and which describe the whole investment?** With 1,000 USD of initial wealth, risky weights $(0.30,0.45)$ mean 300 USD in the first firm and 450 USD in the second. The remaining 250 USD is lent at the risk-free rate. The risky weights sum to $0.75$, so $w_f=0.25$ and the normalized risky-fund weights are $(0.4,0.6)$. Borrowing 50% instead would give complete-portfolio risky weights $(0.6,0.9)$, with the same normalized mix.\n\n**Which risky portfolio defines the steepest capital allocation line?** The tangent portfolio maximizes excess mean growth per unit standard deviation. With a positive-definite covariance, signed risky weights allowed, and GMV mean growth exceeding $g_f$, the lecture obtains:\n\n$$\n\\mathbf w_{\\mathcal T}=\\frac{\\mathbf\\Sigma_g^{-1}\\mathbf e}{\\mathbf1^{\\top}\\mathbf\\Sigma_g^{-1}\\mathbf e},\n\\qquad \\mathbf e=\\boldsymbol\\mu_g-g_f\\mathbf1.\n$$\n\nThe inverse covariance adjusts the excess-growth vector for risk; the denominator makes the risky fund's weights sum to one. Long-only restrictions require a numerical solve. In the release, SIM-2 uses risky weights measured as fractions of total initial wealth:\n\n$$\n\\begin{aligned}\n\\underset{\\mathbf w}{\\operatorname{minimize}}\\quad\n&\\mathbf w^{\\top}\\hat{\\mathbf\\Sigma}_{g,\\mathrm{SIM}}\\mathbf w\\\\\n\\text{subject to}\\quad\n&(\\hat{\\mathbf g}_{\\mathrm{SIM}}-g_f\\mathbf1)^{\\top}\\mathbf w\\geq g_\\star-g_f,\\\\\n&0\\leq w_i\\leq1,\\qquad w_f=1-\\mathbf1^{\\top}\\mathbf w.\n\\end{aligned}\n$$\n\nThe risky weights can sum above one because borrowing is allowed. The bounds $w_i\\leq1$ limit each risky position to the initial wealth, so they can eventually restrict borrowing along a fixed risky direction.\n\n**Recover the risky fund.** For feasible targets $g_\\star>g_f$, until an upper bound binds, normalize a nonzero solution by its risky fraction. Every such target selects the same long-only tangent mix:\n\n$$\n\\mathbf w_{\\mathcal T}=\\frac{\\mathbf w}{\\mathbf1^{\\top}\\mathbf w},\\qquad\n\\mathbf w(g_\\star)=(1-w_f)\\mathbf w_{\\mathcal T},\\qquad\n1-w_f=\\frac{g_\\star-g_f}{\\hat{\\mathbf g}_{\\mathrm{SIM}}^{\\top}\\mathbf w_{\\mathcal T}-g_f}.\n$$\n\n**Follow the complete investment.** The risky/risk-free example fixes the initial share counts and lets the risk-free position accumulate. With the tangent weights normalized to one, wealth is:\n\n$$\nW_t=W_0\\left[w_fe^{g_ft}+(1-w_f)\\sum_i w_{\\mathcal T,i}\\frac{S_i(t)}{S_i(0)}\\right].\n$$\n\nFor $w_f<0$, the first term is the growing debt. The example assumes the same borrowing and lending rate. Buy-and-hold lets the risk-free fraction and firm fractions drift, so realized growth and risk need not equal the fixed-weight CAL predictions. The comparison uses 2025 prices reserved from estimation and scores both tangent funds under the same sample covariance.\n\n**Check.** Let $W_0=1{,}000$ USD, $w_f=-0.5$, $g_f=0.02\\,\\mathrm{yr}^{-1}$, and suppose the risky fund gains 10% over one year. **Answer:** net wealth is $1{,}000[-0.5e^{0.02}+1.5(1.10)]=1{,}139.90$ USD. The 1,650 USD risky holding is offset by a 510.10 USD repayment obligation.",
+      "lectures": [
+        "L6b"
+      ],
+      "keywords": "tangent tangency normalized weights complete investment risk free Sharpe",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "week06-tangent"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L6b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "discounting",
+      "theme": "cashflows",
+      "title": "Why discount cash flows, and what does positive NPV mean?",
+      "answer": "Discounting expresses dated cash flows on a common valuation date. Positive NPV means the present value of the future net cash flows exceeds the initial cost at the stated benchmark rate.",
+      "body": "**Why is receiving 110 USD next year worth less than receiving it today?** Suppose our benchmark pays 5% with annual compounding. An investment of 100 USD today becomes 105 USD in one year. To find today's equivalent of a promised 110 USD, reverse that same calculation: $110/1.05=104.76$ USD. Discounting asks how much we would need today to reach the future payment at the selected benchmark.\n\n\n\n\n**How do the cash-flow symbols become a value?** At date $j$, multiply each cash amount $c_{j,k}$ by its direction $\\nu_{j,k}$ and add the results. Then discount that date's net cash flow to time zero:\n\n$$\n\\bar c_j=\\sum_{k=1}^{m_j}c_{j,k}\\nu_{j,k},\\qquad\n\\operatorname{NPV}_0=\\sum_{j=0}^{N}\\mathcal D_{j,0}^{-1}\\bar c_j.\n$$\n\nThe first sum combines payments made on the same date. The second combines their present values across dates. Paying 100 USD today and receiving 110 USD in one year therefore gives $\\operatorname{NPV}_0=-100+110/1.05\\approx4.76$ USD. The positive result means that the payment exceeds the benchmark requirement by 4.76 USD in today's money. The discount factor is dimensionless, so each term in the NPV retains units of USD.\n\n**What if there are two cash flows on the sale date?** Receiving 110 USD and paying a 2 USD fee gives $\\bar c_1=110(+1)+2(-1)=108$ USD. Discount the net amount: $-100+108/1.05=2.86$ USD. Combining same-date payments first explains the inner sum; discounting each date explains the outer sum.\n\n**Check.** Keep the 110 USD receipt, with no fee, but raise the benchmark to 10%. **Answer:** NPV becomes $-100+110/1.10=0$. The cash gain is still 10 USD; it now exactly meets the benchmark. With uncertain future receipts, this calculation values the supplied cash-flow scenario.",
+      "lectures": [
+        "L1b"
+      ],
+      "keywords": "discount present value NPV cash flow compounding benchmark",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-03"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L1b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-1/L1b/CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "bond-payments",
+      "theme": "cashflows",
+      "title": "How do coupon payments and yield determine a bond price?",
+      "answer": "The coupon rate sets the promised coupon payments. The valuation yield discounts those payments and par to the present, so the payment schedule and yield play different roles.",
+      "body": "**Where does the investment gain come from?** A bill held to maturity pays par once; we buy it for a lower amount in the example below. A coupon bond also pays cash along the way. In both cases, identify the dated payments first, then use the stated rate convention to connect them to today's price.\n\n\n\n\n**From a bill quote to investment growth.** The bank-discount quote expresses the discount as a fraction of par. We first calculate the purchase price, then use the purchase-to-par ratio to calculate growth over the holding period:\n\n$$\nV_B=V_P\\left(1-d\\frac{D}{360}\\right),\\qquad\ng_B=\\frac{1}{T}\\ln\\left(\\frac{V_P}{V_B}\\right).\n$$\n\nFor $V_P=100$ USD, $d=0.04$, and $D=90$ days, the bill costs 99 USD. If we select $T=90/365$ years for valuation, $g_B\\approx0.04076\\,\\mathrm{yr}^{-1}$. The quote uses par and a 360-day basis; the growth calculation uses the amount invested and the selected holding-time convention.\n\n**What changes for a coupon bond?** We receive coupons along the way as well as par at maturity. Just after a coupon payment, with a constant discount yield, its value is the sum of those discounted payments:\n\n$$\nV_B=\\underbrace{V_P\\mathcal D_{N,0}^{-1}}_{\\text{present value of par}}\n+\\underbrace{C\\sum_{j=1}^{N}\\mathcal D_{j,0}^{-1}}_{\\text{present value of coupons}}.\n$$\n\nEach discount factor applies to the date of its payment. This is the L1b cash-flow calculation with the bond's payment schedule supplied.\n\n**Price a short coupon schedule.** Let par be 100 USD, the annual coupon rate be 4%, and payments occur twice per year. Each coupon is $C=(0.04/2)(100)=2$ USD. With one year remaining, the payments are 2 USD in six months and 102 USD in one year. At a 6% nominal yield compounded semiannually:\n\n$$\nV_B=\\frac{2}{1.03}+\\frac{102}{1.03^2}=98.09\\ \\mathrm{USD}.\n$$\n\nThe coupon rate specifies the promised 2 USD payments. The yield discounts them. Here the coupon rate is below the yield, so the price is below par.\n\n**Check.** Keep the same payments but use a 4% yield. **Answer:** $2/1.02+102/1.02^2=100$ USD. The payments are unchanged; their present values are larger.",
+      "lectures": [
+        "L2a"
+      ],
+      "keywords": "Treasury bond bill coupon yield par price discount security",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-04"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L2a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2a/CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "duration",
+      "theme": "cashflows",
+      "title": "Why does a higher yield lower a bond’s price?",
+      "answer": "With promised payments fixed, a higher yield discounts every payment more heavily. Duration and convexity summarize the local sensitivity of the resulting price.",
+      "body": "**Why does a higher yield lower a bond's price?** Keep the promised payments fixed. Raising the yield increases the denominator used to discount each payment, so each present value falls. For example, the two payments from L2a, 2 USD in six months and 102 USD in one year, are worth 100 USD at a 4% nominal yield and 98.09 USD at 6%. The investor requires more growth from the same cash payments, which requires a lower purchase price.\n\n\n\n\n**What does duration measure?** At the 4% yield, those payment present values are $2/1.02=1.9608$ and $102/1.02^2=98.0392$ USD. Divide by the 100 USD price to get their weights. Macaulay duration averages the payment times using these weights:\n\n$$\nD_{\\mathrm{mac}}=0.5(0.019608)+1(0.980392)=0.9902\\ \\mathrm{yr}.\n$$\n\nMost value arrives at the last date, so duration is close to one year. Moving more present value to the earlier coupon would lower this weighted time.\n\n**How much will a yield change move the price?** Modified duration gives the first-order price sensitivity; convexity corrects for curvature. With the lecture's nominal-yield convention:\n\n$$\nD_{\\mathrm{mod}}=\\frac{D_{\\mathrm{mac}}}{1+y/n},\\qquad\n\\frac{\\Delta V_B}{V_B}\\approx-D_{\\mathrm{mod}}\\Delta y+\\frac12K(\\Delta y)^2.\n$$\n\nFor a separate bond with $D_{\\mathrm{mod}}=5$ yr, $K=30\\,\\mathrm{yr}^2$, and a yield increase $\\Delta y=0.01\\,\\mathrm{yr}^{-1}$, the estimated price change is $-0.05+0.0015=-0.0485$, or a 4.85% decrease. This local approximation is most useful for small yield changes.\n\n**How do we value payments with a yield curve?** The curve supplies a discount factor $D(0,t_j)$ for each payment date. Adding the discounted payments gives the price; setting that price equal to par and solving for the coupon rate gives:\n\n$$\nV_B=\\sum_{j=1}^{N}X_jD(0,t_j),\\qquad\nc_{\\mathrm{par}}=n\\frac{1-D(0,t_N)}{\\sum_{j=1}^{N}D(0,t_j)}.\n$$\n\nThe par coupon makes the present value of the coupons equal the difference between par and the present value of the final par repayment.\n\nFor example, if the six-month and one-year discount factors are 0.98 and 0.95, the same payments have value $2(0.98)+102(0.95)=98.86$ USD. A par coupon must fill the $100-100(0.95)=5$ USD gap. Thus each coupon is $5/(0.98+0.95)=2.5907$ USD, corresponding to $c_{\\mathrm{par}}=2(2.5907)/100=0.05181\\,\\mathrm{yr}^{-1}$.\n\n**Check.** In the duration-convexity example, lower yield by 0.01 instead. **Answer:** the estimated change is $+0.05+0.0015=+5.15\\%$. The duration term changes sign; the positive curvature correction does not.",
+      "lectures": [
+        "L2b"
+      ],
+      "keywords": "bond duration convexity yield curve spot par coupon sensitivity",
+      "origin": {
+        "kind": "reference-notebook",
+        "cells": [
+          "nomenclature-05"
+        ]
+      },
+      "sources": [
+        {
+          "label": "L2b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb"
+        }
+      ]
+    }
+  ],
+  "notation": [
+    {
+      "lecture": "General",
+      "title": "Reading the Notation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $\\ln x$, $\\log x$ | Natural logarithm; price ratios inside a logarithm are dimensionless. | 1 |\n| $\\mathbb{E}[X]$ | Expected value of a random quantity $X$. | Same as $X$ |\n| $\\operatorname{Var}(X)$ | Variance; the square of the standard deviation. | Units of $X$ squared |\n| $\\operatorname{Cov}(X,Y)$ | Covariance of two random quantities. | Units of $X$ times units of $Y$ |\n| $\\mathbb{P}$, $\\mathbb{Q}$ | Real-world and risk-neutral probability laws (L3b). | Probabilities: 1 |\n| $\\hat{x}$ | Usually an estimate from observations. The augmented design matrix $\\hat{\\mathbf{X}}$ is a separate convention (L4b, L6b). | Same as $x$ |\n| $g^{\\prime}$ | Sample mean growth rate; the prime marks a mean in these lectures. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf{x}$, $\\mathbf{A}$ | Bold symbols denote vectors or matrices; subscripts identify entries. | Context dependent |\n| $\\mathbf{A}^{\\top}$, $\\mathbf{A}^{-1}$ | Transpose and inverse, respectively. An inverse requires a square, nonsingular matrix. | Context dependent |\n| $\\mathbf{1}$, $\\mathbf{I}_M$ | Vector of ones of the required length; $M\\times M$ identity matrix. | 1 |\n| $\\lVert\\mathbf{x}\\rVert_2^2$ | Sum of squared entries of $\\mathbf{x}$. | Entry units squared |\n",
+      "source_cell": "nomenclature-01"
+    },
+    {
+      "lecture": "L1b",
+      "title": "L1b: Time Value of Money and Net Present Value",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $P$, $F_j$ | Present value at time zero and future value after $j$ compounding periods. | USD |\n| $y$ | Nominal annual yield, quoted as a decimal, with its compounding convention. | $\\mathrm{yr}^{-1}$ |\n| $n$ | Compounding frequency: number of periods per year. | $\\mathrm{yr}^{-1}$ |\n| $j$, $\\ell$, $N$ | Period indices and final cash-flow index; $j/n$ is elapsed time in years. | Counts |\n| $T$ | Elapsed time or investment horizon; $nT$ is the number of periods. | yr |\n| $i_\\ell$ | Effective rate during compounding period $\\ell$. | 1 |\n| $\\mathcal{D}_{j,0}$ | Accumulation factor from date 0 to period $j$; for a constant yield, $(1+y/n)^j$. | 1 |\n| $\\mathcal{D}_{j,0}^{-1}$ | Discount factor from period $j$ to date 0. | 1 |\n| $g(t)$, $g$ | Time-varying or constant continuously compounded growth rate. | $\\mathrm{yr}^{-1}$ |\n| $g_y$ | Continuous growth rate equivalent to the quoted yield: $n\\log(1+y/n)$. | $\\mathrm{yr}^{-1}$ |\n| $\\mathcal{A}$ | Abstract asset represented by its dated net cash flows. | Cash-flow collection |\n| $c_{j,k}$, $\\mathbf{c}_j$ | Nonnegative amount of cash flow $k$ at date $j$; vector of the $m_j$ amounts. | USD |\n| $\\nu_{j,k}$, $\\boldsymbol{\\nu}_j$ | Cash-flow direction: $+1$ for money received, $-1$ for money paid. | 1 |\n| $m_j$ | Number of cash-flow components at date $j$. | Count |\n| $\\bar c_j$, $\\bar{\\mathbf c}$ | Signed net cash flow at date $j$; vector of net cash flows at dates $0,\\ldots,N$. | USD |\n| $\\mathcal{D}_{\\star,0}^{-1}$ | Vector of the $N+1$ discount factors for those cash-flow dates. | 1 |\n| $\\operatorname{NPV}_0$ | Net present value: sum of discounted signed cash flows. | Time-0 USD |\n",
+      "source_cell": "nomenclature-03"
+    },
+    {
+      "lecture": "L2a",
+      "title": "L2a: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $V_B$ | Purchase price or modeled value of the Treasury security. | USD |\n| $V_P$ | Par (face) value paid at maturity. | USD |\n| $d$ | Annual bank-discount quote for a Treasury bill, entered as a decimal. | Annual quote, 360-day basis |\n| $D$ | Actual number of days remaining to bill maturity. | Days |\n| $T$ | Time to maturity under the selected valuation day-count convention. | yr |\n| $y$, $n$, $g_y$ | Nominal annual yield, compounding frequency, and equivalent continuous rate from L1b. | $\\mathrm{yr}^{-1}$ |\n| $g_B$ | Realized continuously compounded growth for a bill held to maturity. | $\\mathrm{yr}^{-1}$ |\n| $r_B$ | Bill's holding-period log return: $r_B=Tg_B$. | 1 |\n| $c$ | Nominal annual coupon rate as a decimal. | $\\mathrm{yr}^{-1}$ |\n| $C$ | Cash coupon per payment date: $C=(c/n)V_P$. | USD |\n| $N$ | Number of remaining coupon payments; $N=nT$ on the lecture's coupon-date grid. | Count |\n| $\\mathcal{D}_{N,0}^{-1}$ | Discount factor for the par repayment date. | 1 |\n",
+      "source_cell": "clarity-lookup-3"
+    },
+    {
+      "lecture": "L2b",
+      "title": "L2b: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $V_B(y,T)$ | Security price as a function of yield and time to maturity. | USD |\n| $X_j$ | Promised cash flow at payment $j$, including par at maturity. | USD |\n| $t_j=j/n$ | Time of payment $j$. | yr |\n| $V_{B,y}$ | Yield-sensitivity magnitude: $-\\partial V_B/\\partial y$. | $\\mathrm{USD}\\cdot\\mathrm{yr}$ |\n| $V_{B,T}$ | Bill maturity-sensitivity quantity: $-\\partial V_B/\\partial T$. | $\\mathrm{USD}/\\mathrm{yr}$ |\n| $V_{B,c}$ | Coupon-rate sensitivity: $\\partial V_B/\\partial c$. | $\\mathrm{USD}\\cdot\\mathrm{yr}$ |\n| $D_{\\mathrm{mod}}$ | Modified duration: $-(1/V_B)(dV_B/dy)$. | yr |\n| $D_{\\mathrm{mac}}$ | Macaulay duration: payment times averaged using their shares of present value. | yr |\n| $K(y)$ | Convexity: $(1/V_B)(d^2V_B/dy^2)$. | $\\mathrm{yr}^{2}$ |\n| $\\Delta y$, $\\Delta V_B$ | Finite changes in quoted yield and price. Enter yield changes as decimals; 1 basis point is 0.0001. | $\\mathrm{yr}^{-1}$; USD |\n| $\\bar y$ | Yield to maturity: one constant yield reproducing the market price from promised payments. | $\\mathrm{yr}^{-1}$ |\n| $D(0,t_j)$ | Spot-curve discount factor for a payment at $t_j$. This is the date-indexed counterpart of $\\mathcal D_{j,0}^{-1}$. | 1 |\n| $c_{\\mathrm{par}}$ | Coupon rate that prices a hypothetical bond at par under the spot curve. | $\\mathrm{yr}^{-1}$ |\n",
+      "source_cell": "clarity-lookup-4"
+    },
+    {
+      "lecture": "L3a",
+      "title": "L3a: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $S_j^{(i)}$ | Observed share price of asset $i$ at observation $j$. | USD/share |\n| $\\Delta t_j$ | Time from price observation $j-1$ to $j$; $\\Delta t$ denotes equal spacing. | yr |\n| $g_{j,j-1}^{(i)}$, $g_t$ | Observed log-price change divided by the observation interval. | $\\mathrm{yr}^{-1}$ |\n| $r_t$ | Log return over one interval: $r_t=\\Delta t\\,g_t$. | 1 |\n| $\\bar g$ | Excess growth relative to the benchmark: $g-g_y$. | $\\mathrm{yr}^{-1}$ |\n| $T$ | Number of price observations in this lecture; there are $T-1$ growth observations. | Count |\n| $g^{\\prime}$, $r^{\\prime}$ | Sample means of growth rates and log returns. | $\\mathrm{yr}^{-1}$; 1 |\n| $\\sigma_g$ | Sample standard deviation of interval growth rates. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma_r(\\Delta t)$ | Standard deviation of interval log returns: $\\Delta t\\,\\sigma_g$. | 1 |\n| $\\sigma_{\\mathrm{ann}}$ | Annualized log-return volatility: $\\sqrt{\\Delta t}\\,\\sigma_g$, under square-root-of-time scaling. Under GBM this is the diffusion volatility $\\sigma$ used in L4b. | $\\mathrm{yr}^{-1/2}$ |\n| $X=\\lvert g\\rvert$, $x$ | Growth magnitude and a tail threshold in the same units. | $\\mathrm{yr}^{-1}$ |\n| $\\alpha$, $\\hat\\alpha_k$ | Power-law tail index and its Hill estimate using the largest $k$ magnitudes. | 1 |\n| $X_{(i)}$, $n$, $k$ | Magnitudes ranked largest first, total tail-analysis sample size, and number of upper-order observations used. | Growth units; counts |\n| $L(x)$ | Slowly varying factor in the tail expression $\\mathbb P(X>x)\\sim L(x)x^{-\\alpha}$; evaluated in a fixed unit convention. | Tail-scaling factor |\n| $\\nu$ | Degrees of freedom of a Student-$t$ distribution used to discuss heavy tails. | 1 |\n| $\\hat R(k)$ | Sample growth-rate autocovariance at lag $k$. | $\\mathrm{yr}^{-2}$ |\n| $\\rho(k)$ | Growth-rate autocorrelation: $\\hat R(k)/\\hat R(0)$. | 1 |\n| $\\overline{\\lvert g\\rvert_i}$, $\\hat\\rho_i(k)$ | Mean growth magnitude for asset $i$ and its magnitude autocorrelation at lag $k$. | $\\mathrm{yr}^{-1}$; 1 |\n| $k$ (autocorrelation) | Separation between observations; elapsed separation is $k\\Delta t$. | Lag steps |\n",
+      "source_cell": "nomenclature-07"
+    },
+    {
+      "lecture": "L3b",
+      "title": "L3b: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $S_0$, $S_{t,k}$ | Initial price and node price after $t$ steps with $k$ up moves. | USD/share |\n| $t$, $k$, $N$ | Lattice level, number of up moves, and total number of simulated steps. | Counts |\n| $u$, $d$ | Up and down multiplicative price factors. | 1 |\n| $p$ | Up-move probability under the real-world law $\\mathbb P$. | 1 |\n| $q$ | Up-move probability under the risk-neutral law $\\mathbb Q$. | 1 |\n| $\\Delta t$ | Length of one lattice step. | yr |\n| $R_f$ | Risk-free gross growth factor for one step: $e^{g_y\\Delta t}$. | 1 |\n| $H_u$, $H_d$, $V_0$ | Claim payoffs in the two next-step states and its present price. | USD |\n| $U$, $D$ | Collections of observed up and down price multipliers used in calibration. | Multipliers: 1 |\n| $X_j$ | Bernoulli indicator: 1 for an up move at step $j$, 0 for a down move. | 1 |\n| $g_j$, $\\mu_g$, $\\sigma_g^2$ | One-step growth rate, its model mean, and its model variance. | $\\mathrm{yr}^{-1}$; $\\mathrm{yr}^{-2}$ for variance |\n| $M$ (growth bound) | Bound on growth magnitude: $\\max\\{\\lvert\\ln d\\rvert,\\lvert\\ln u\\rvert\\}/\\Delta t$. | $\\mathrm{yr}^{-1}$ |\n| $\\mathcal F_j$ | Information from the first $j$ moves. | Information set |\n| $\\tau$, $\\rho_g(\\tau)$ | Lag in lattice steps and growth autocorrelation at that lag. | Count; 1 |\n",
+      "source_cell": "nomenclature-09"
+    },
+    {
+      "lecture": "L4a",
+      "title": "L4a: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $a_t$, $b_t$ | Best ask and best bid at time $t$. | USD/share |\n| $s_t$, $m_t$ | Quoted spread $a_t-b_t$ and midpoint $(a_t+b_t)/2$. | USD/share |\n| $n_0$ | Number of shares bought at entry and held to sale. | Shares |\n| $S_0$, $S_T$ | Entry and terminal model share prices. | USD/share |\n| $N$, $T=N\\Delta t$ | Number of lattice steps and elapsed holding time. | Count; yr |\n| $g_y$ | Continuous benchmark growth rate used to discount sale proceeds. | $\\mathrm{yr}^{-1}$ |\n| $\\rho_T$ | Scaled trade NPV: $\\operatorname{NPV}_0/(n_0S_0)$. | 1 |\n| $\\rho_\\star$ | Investor's target scaled NPV, with $\\rho_\\star>-1$. | 1 |\n| $\\rho(k)$ | Scaled NPV at the terminal node with $k$ up moves. | 1 |\n| $K_N$ | Random number of up moves in $N$ steps; binomial with parameters $N,p$. | Count |\n| $\\tau(\\rho_\\star)$ | Real-valued up-count threshold obtained by solving $\\rho(k)>\\rho_\\star$. | Step-count threshold |\n| $\\kappa$, $k_{\\min}$ | $\\kappa=\\lfloor\\tau\\rfloor+1$ is the first strictly successful integer; $k_{\\min}$ clips it to $[0,N+1]$. | Counts |\n| $m$, $f_j$, $p_j$ | Number of branches, positive price factor on branch $j$, and its probability in an $m$-ary lattice. | Count; 1; 1 |\n| $x_j$, $\\mathbf x$, $\\mathbf X_t$ | Number of branch-$j$ moves, count vector, and random count vector after $t$ steps; $\\sum_jx_j=t$. | Counts |\n| $S_t(\\mathbf x)$ | Price at count state $\\mathbf x$: $S_0\\prod_{j=1}^{m}f_j^{x_j}$. | USD/share |\n| $L_t$ | Number of count states: $\\binom{t+m-1}{m-1}$. Distinct count states can have the same price. | Count |\n",
+      "source_cell": "clarity-lookup-9"
+    },
+    {
+      "lecture": "L4b",
+      "title": "L4b: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $S(t)$, $S_{t_j}$ | Continuous-time share price and its value on the simulation grid. | USD/share |\n| $\\mu$ | GBM drift: $\\mathbb E[S_T]=S_0e^{\\mu T}$. | $\\mathrm{yr}^{-1}$ |\n| $\\mu_g$ | Mean log growth rate: $\\mu-\\sigma^2/2$. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma$ | GBM diffusion volatility. | $\\mathrm{yr}^{-1/2}$ |\n| $W(t)$, $dW(t)$ | Wiener process and its infinitesimal increment. An increment over $\\Delta t$ has variance $\\Delta t$. | $\\mathrm{yr}^{1/2}$ |\n| $Z$, $Z_j$ | Standard normal shock; simulation uses independent shocks across time steps. | 1 |\n| $\\Delta t$, $t_j=j\\Delta t$, $T$ | Step length, elapsed grid time, and terminal horizon. | yr |\n| $N$, $M$ (simulation) | Number of steps and number of Monte Carlo paths. | Counts |\n| $\\mathbf S$ | Simulated price array with $N+1$ rows and $M$ paths as columns. | USD/share |\n| $g_j$, $g^{\\prime}$, $\\sigma_g$ | Observed interval growth, its sample mean, and sample standard deviation. | $\\mathrm{yr}^{-1}$ |\n| $\\hat\\mu_g$ | Estimate of mean log growth, commonly $g^{\\prime}$. | $\\mathrm{yr}^{-1}$ |\n| $\\hat\\sigma$ | Estimated GBM volatility: $\\sigma_g\\sqrt{\\Delta t}$. | $\\mathrm{yr}^{-1/2}$ |\n| $\\hat\\mu$ | Estimated drift: $\\hat\\mu_g+\\hat\\sigma^2/2$. | $\\mathrm{yr}^{-1}$ |\n| $\\Phi(z)$ | Standard normal cumulative distribution function. | Probability: 1 |\n| $z_\\star$ | Standardized threshold for the scheduled-sale scaled-NPV target. | 1 |\n",
+      "source_cell": "nomenclature-12"
+    },
+    {
+      "lecture": "L4b",
+      "title": "L4b: Regression and Parameter Uncertainty",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $\\mathbf y$ | Vector of the $N+1$ observed log prices. A fixed price unit is implicit when taking log price. | 1 |\n| $\\hat{\\mathbf X}$ | Augmented design matrix: $N+1$ rows, columns of ones and times $t_j$. | Columns: 1; yr |\n| $\\boldsymbol\\theta$ | Parameter vector $(\\ln S_0,\\mu_g)^{\\top}$. | Entries: 1; $\\mathrm{yr}^{-1}$ |\n| $\\hat{\\boldsymbol\\theta}$ | Least-squares estimate of the intercept and slope. | Same as parameters |\n| $\\epsilon_j$ | Cumulative stochastic deviation of log price from the line at time $t_j$. | 1 |\n| $\\mathbf r$ | Fitted residual vector: $\\mathbf y-\\hat{\\mathbf X}\\hat{\\boldsymbol\\theta}$. | 1 |\n| $n=N+1$, $p=2$ | Number of regression observations and number of fitted parameters. | Counts |\n| $\\nu=n-p$ | Residual degrees of freedom. | Count |\n| $\\hat\\sigma_\\epsilon^2$ | Residual variance estimate under the lecture's simplifying regression-error model. | 1 |\n| $\\operatorname{SE}(\\hat\\theta_j)$ | Standard error of fitted coefficient $j$. | Same as coefficient |\n| $\\alpha$ | Significance level; the stated confidence level is $1-\\alpha$. | 1 |\n| $t_{1-\\alpha/2,\\nu}$ | Student-$t$ quantile used in a two-sided coefficient interval. | 1 |\n",
+      "source_cell": "nomenclature-13"
+    },
+    {
+      "lecture": "L5a",
+      "title": "L5a: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $K$ | Terminal price threshold corresponding to target scaled NPV: $S_0(1+\\rho_\\star)e^{g_yT}$. | USD/share |\n| $\\rho_T$, $\\rho_\\star$ | Realized scaled trade NPV and the investor's target. | 1 |\n| $s$, $k$ | Entry observation index and subsequent update index. | Counts |\n| $g_k$ | Latest growth observation: $\\ln(S_k/S_{k-1})/\\Delta t$. | $\\mathrm{yr}^{-1}$ |\n| $\\lambda$ | EMA decay factor, with $0<\\lambda<1$. | 1 |\n| $H_{\\mathrm{half}}$ | Number of observations over which an old weight halves; $\\lambda=2^{-1/H_{\\mathrm{half}}}$. | Observation count |\n| $\\delta_k$ | Innovation relative to the previous mean: $g_k-m_{k-1}$. | $\\mathrm{yr}^{-1}$ |\n| $m_k$ | Exponentially weighted mean growth rate after observation $k$. | $\\mathrm{yr}^{-1}$ |\n| $v_k$ | Exponentially weighted growth-rate variance after observation $k$. | $\\mathrm{yr}^{-2}$ |\n| $\\hat\\mu_{g,k}$ | Updated GBM mean log growth: $m_k$. | $\\mathrm{yr}^{-1}$ |\n| $\\hat\\sigma_k$ | Updated GBM volatility: $\\sqrt{v_k\\Delta t}$. | $\\mathrm{yr}^{-1/2}$ |\n| $\\hat\\mu_k$ | Updated GBM drift: $\\hat\\mu_{g,k}+\\hat\\sigma_k^2/2$. | $\\mathrm{yr}^{-1}$ |\n| $\\hat\\mu_{g,0}$, $\\hat\\sigma_0$ | Initial training estimates used to initialize $m_s$ and $v_s$. | $\\mathrm{yr}^{-1}$; $\\mathrm{yr}^{-1/2}$ |\n",
+      "source_cell": "clarity-lookup-14"
+    },
+    {
+      "lecture": "L5b",
+      "title": "L5b: Notation for the Worked Explanation",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $\\mathcal P$, $M=\\lvert\\mathcal P\\rvert$ | Asset set and number of assets. | Set; count |\n| $i$, $j$, $\\ell$ | Asset indices $i,j$ and independent noise-source index $\\ell$. | Indices |\n| $\\mu_i$, $\\mu_{g,i}$ | Asset drift and mean log growth; $\\mu_{g,i}=\\mu_i-C_{ii}/2$. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf A$ | $M\\times M$ loading matrix multiplying independent Wiener shocks. | $\\mathrm{yr}^{-1/2}$ |\n| $\\mathbf C=\\mathbf A\\mathbf A^{\\top}$ | $M\\times M$ instantaneous covariance-rate matrix. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma_i=\\sqrt{C_{ii}}$ | Diffusion volatility of asset $i$. | $\\mathrm{yr}^{-1/2}$ |\n| $W_\\ell(t)$ | Independent Wiener process for noise source $\\ell$. | $\\mathrm{yr}^{1/2}$ |\n| $\\mathbf X=\\mathbf A\\mathbf Z$ | Noise contributions before time scaling in the worked example; length $M$. | $\\mathrm{yr}^{-1/2}$ |\n| $\\mathbf g_k$, $\\boldsymbol\\mu_g$ | Length-$M$ vectors of interval growth rates and their population means. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf\\Sigma_g$ | Population covariance of the interval growth-rate vector; $M\\times M$. | $\\mathrm{yr}^{-2}$ |\n| $\\mathbf Z_k$ | Length-$M$ vector of independent standard normal shocks at step $k$. | 1 |\n| $N$, $\\mathbf G$ | Number of aligned growth observations and the $N\\times M$ data matrix. | Count; $\\mathrm{yr}^{-1}$ |\n| $\\mathbf g^{(i)}$ | Length-$N$ column of growth observations for asset $i$. | $\\mathrm{yr}^{-1}$ |\n| $g_i^{\\prime}$, $\\mathbf g^{\\prime}$ | Sample mean for asset $i$ and length-$M$ vector of asset means. | $\\mathrm{yr}^{-1}$ |\n| $\\tilde{\\mathbf G}$ | Column-centered growth matrix: $\\mathbf G-\\mathbf 1(\\mathbf g^{\\prime})^{\\top}$. | $\\mathrm{yr}^{-1}$ |\n| $\\hat{\\mathbf\\Sigma}_g$ | Sample covariance of interval growth rates; $M\\times M$. | $\\mathrm{yr}^{-2}$ |\n| $\\hat{\\mathbf C}$ | Estimated GBM covariance rate: $\\Delta t\\,\\hat{\\mathbf\\Sigma}_g$. | $\\mathrm{yr}^{-1}$ |\n| $\\rho_{ij}$ | Correlation of assets $i$ and $j$; covariance divided by their standard deviations. | 1 |\n",
+      "source_cell": "nomenclature-16"
+    },
+    {
+      "lecture": "L5b",
+      "title": "L5b: Portfolio Weights and Dirichlet Sampling",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $W_0$, $W_t$ | Initial budget and portfolio wealth at time $t$. | USD |\n| $w_i$, $\\mathbf w$ | Initial fraction in asset $i$ and length-$M$ allocation vector. | 1 |\n| $n_i$ | Shares purchased: $w_iW_0/S_i(0)$. | Shares |\n| $w_i(t)$ | Current wealth fraction: $n_iS_i(t)/W_t$. | 1 |\n| $\\Delta^{M-1}$ | Simplex of long-only weights with $w_i\\geq0$ and $\\sum_iw_i=1$. | Set of allocations |\n| $\\boldsymbol\\alpha$, $\\alpha_i$ | Positive Dirichlet concentration parameters used to sample allocations. | 1 |\n| $\\alpha_0$ | Total concentration: $\\sum_i\\alpha_i$. | 1 |\n| $\\alpha$ (symmetric case) | Common concentration when every $\\alpha_i=\\alpha$. | 1 |\n| $\\mathbf g$ | Length-$M$ vector of asset growth rates over one interval. | $\\mathrm{yr}^{-1}$ |\n| $g_p$ | Linear one-period portfolio growth proxy: $\\mathbf w^{\\top}\\mathbf g$. | $\\mathrm{yr}^{-1}$ |\n| $g_p^{\\prime}$ | Sample mean of the proxy: $\\mathbf w^{\\top}\\mathbf g^{\\prime}$. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma_{g,p}^2$ | Proxy's sample variance: $\\mathbf w^{\\top}\\hat{\\mathbf\\Sigma}_g\\mathbf w$. | $\\mathrm{yr}^{-2}$ |\n",
+      "source_cell": "nomenclature-17"
+    },
+    {
+      "lecture": "L6a",
+      "title": "L6a: Estimated Growth and Portfolio Risk",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $M$, $N$ | Number of assets and number of aligned growth observations. | Counts |\n| $\\mathbf G$ | $N\\times M$ data matrix: one observation per row, one asset per column. | $\\mathrm{yr}^{-1}$ |\n| $\\boldsymbol\\mu_g$ | Length-$M$ vector of population mean growth rates. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf g^{\\prime}$, $\\hat{\\mathbf g}$ | Sample-mean vector; stored as `ĝ` in the examples. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf\\Sigma_g$, $\\hat{\\mathbf\\Sigma}_g$ | Population and sample growth covariance matrices. | $\\mathrm{yr}^{-2}$ |\n| $g_p$, $\\sigma_{g,p}$ | Weighted growth proxy and its standard deviation. | $\\mathrm{yr}^{-1}$ |\n| $\\rho_{12}$ | Correlation of two asset growth rates. | 1 |\n| $\\mathbf C$, $\\mathbf\\Sigma_r$ | Covariance rate $\\Delta t\\,\\mathbf\\Sigma_g$; interval log-return covariance $(\\Delta t)^2\\mathbf\\Sigma_g$. | $\\mathrm{yr}^{-1}$; 1 |\n",
+      "source_cell": "week06-reward-risk"
+    },
+    {
+      "lecture": "L6a",
+      "title": "L6a: Data-Driven Minimum-Variance Portfolios",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $\\mathbf w_{\\mathrm{GMV}}$ | Fully invested global minimum-variance weights. | 1 |\n| $\\sigma_{g,\\mathrm{GMV}}^2$ | Smallest growth variance under the stated weight constraints. | $\\mathrm{yr}^{-2}$ |\n| $\\mathcal L$, $\\lambda$ | Lagrangian and budget-constraint multiplier for the half-variance objective. | $\\mathrm{yr}^{-2}$ |\n| $\\mathbf x$ | Solution of $\\mathbf\\Sigma_g\\mathbf x=\\mathbf1$ before normalization. | $\\mathrm{yr}^{2}$ |\n",
+      "source_cell": "nomenclature-18"
+    },
+    {
+      "lecture": "L6a",
+      "title": "L6a: Exact Growth Targets and Growth Floors",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $g_\\star$ | Exact target in the signed-weight problem; lower bound in the long-only problem. | $\\mathrm{yr}^{-1}$ |\n| $\\mathbf w_\\star(g_\\star)$ | Minimum-variance weights for an exact growth target. | 1 |\n| $a$, $b$, $c$, $d$ | Scalar frontier coefficients from the [exact-target formula](questions/growth-targets.html#the-formula-for-an-exact-target), using the lecture's sample means. | $\\mathrm{yr}^{2}$; yr; 1; $\\mathrm{yr}^{2}$ |\n| $\\sigma_g^2(g_\\star)$ | Minimum growth variance at the exact target. | $\\mathrm{yr}^{-2}$ |\n| $R$ (solver input) | Name used for the growth floor $g_\\star$ in the portfolio examples. | $\\mathrm{yr}^{-1}$ |\n",
+      "source_cell": "week06-frontier"
+    },
+    {
+      "lecture": "L6a",
+      "title": "L6a: From Portfolio Weights to Wealth and NPV",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $W_0$, $W_t$ | Initial investment and net portfolio wealth at time $t$. | USD |\n| $w_i$, $n_i$ | Initial wealth fraction and fixed share count for asset $i$. | 1; shares |\n| $S_i(0)$, $S_i(t)$ | Initial and later price per share. | USD/share |\n| $T$, $\\Delta t$ | Holding period and observation interval. | yr |\n| $g_y$ | Constant benchmark growth rate used to discount wealth. | $\\mathrm{yr}^{-1}$ |\n| $\\rho_T$, $\\rho_\\star$ | Scaled terminal NPV and its target. | 1 |\n",
+      "source_cell": "week06-wealth"
+    },
+    {
+      "lecture": "L6a",
+      "title": "L6a: Simulated Wealth and Target Probabilities",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $n$, $k$ | Number of simulated paths and path index in the wealth simulations. | Counts |\n| $W_t^{(k)}$, $\\bar W_t$ | Wealth on path $k$ and mean wealth across paths at date $t$. | USD |\n| $s_W(t)$ | Sample standard deviation of wealth across paths. | USD |\n| $s_W(t)/\\sqrt n$ | Monte Carlo standard error of the estimated mean wealth. | USD |\n| $\\hat p$, $\\operatorname{SE}(\\hat p)$ | Estimated target probability and its Monte Carlo standard error. | 1 |\n",
+      "source_cell": "week06-simulation"
+    },
+    {
+      "lecture": "L6b",
+      "title": "L6b: Notation and the Design Matrix",
+      "markdown": "| Symbol| Meaning and context | Units |\n|---|---|---|\n| $g_{i,t}$, $g_{M,t}$ | Asset and market growth rates on aligned observation $t$. | $\\mathrm{yr}^{-1}$ |\n| $N$, $t$ | Number of aligned observations and observation index. | Counts |\n| $\\alpha_i$ | Intercept of the asset's linear projection on market growth. | $\\mathrm{yr}^{-1}$ |\n| $\\beta_i$ | Market exposure: $\\operatorname{Cov}(g_i,g_M)/\\operatorname{Var}(g_M)$. | 1 |\n| $\\varepsilon_{i,t}$ | Asset-specific residual growth after removing the intercept and market contribution. | $\\mathrm{yr}^{-1}$ |\n| $\\rho_{iM}$ | Correlation between asset and market growth. | 1 |\n| $\\sigma_{g,i}$, $\\sigma_{g,M}$ | Asset and market growth-rate standard deviations. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma_{g,\\varepsilon,i}^2$ | Population residual growth variance for asset $i$. | $\\mathrm{yr}^{-2}$ |\n| $\\mathbf y$, $\\hat{\\mathbf y}$ | Length-$N$ vectors of observed and fitted asset growth rates. | $\\mathrm{yr}^{-1}$ |\n| $\\hat{\\mathbf X}$ | $N\\times2$ augmented design matrix, with columns of ones and market growth rates. | Columns: 1; $\\mathrm{yr}^{-1}$ |\n| $\\boldsymbol\\theta_i$, $\\hat{\\boldsymbol\\theta}_i$ | Parameter vector $(\\alpha_i,\\beta_i)^{\\top}$ and its least-squares estimate. | Entries: $\\mathrm{yr}^{-1}$; 1 |\n| $\\mathbf r_i$ | Fitted residual series for asset $i$: $\\mathbf y-\\hat{\\mathbf y}$. | $\\mathrm{yr}^{-1}$ |\n| $\\operatorname{SE}(\\hat\\alpha_i)$, $\\operatorname{SE}(\\hat\\beta_i)$ | Standard errors of the fitted coefficients. | $\\mathrm{yr}^{-1}$; 1 |\n| $R^2$ | Fraction of sample growth variation explained by the fitted regression with an intercept. | 1 |\n| $g_i^{\\prime}$ | Sample mean of the observed growth rates for asset $i$. | $\\mathrm{yr}^{-1}$ |\n| $g_M^{\\prime}$, $s_{g,M}^2$ | Training-period sample mean and sample variance of market growth. | $\\mathrm{yr}^{-1}$; $\\mathrm{yr}^{-2}$ |\n| $s_{g,\\varepsilon,i}^2$ | Residual variance estimate: $\\lVert\\mathbf r_i\\rVert_2^2/(N-2)$. | $\\mathrm{yr}^{-2}$ |\n| $m$, $f_{j,t}$ | Number of additional factors and value of factor $j$ on day $t$ in the opening factor-model discussion. | Count; factor-specific |\n| $\\gamma_{ij}$ | Sensitivity to factor $j$; $\\gamma_{ij}f_{j,t}$ contributes a growth rate. | $\\mathrm{yr}^{-1}$ per factor unit |\n| $\\mathrm{SMB}_t$, $\\mathrm{HML}_t$; $s_i$, $h_i$ | Size and value factors (small minus big; high minus low book-to-market), and their sensitivities in the three-factor model. | Growth factors: $\\mathrm{yr}^{-1}$; sensitivities: 1 |\n",
+      "source_cell": "week06-sim-fit"
+    },
+    {
+      "lecture": "L6b",
+      "title": "L6b: Standard Errors and Bootstrap Uncertainty",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $N-2$ | Residual degrees of freedom after fitting an intercept and slope. | Count |\n| $t_{0.975,N-2}$ | 97.5th percentile of a Student-$t$ law with $N-2$ degrees of freedom. | 1 |\n| $z_{0.975}$ | Standard-normal critical value, approximately 1.96. | 1 |\n| $K$, $k$ | Number of bootstrap datasets and dataset index. | Counts |\n| $\\boldsymbol\\varepsilon^{(k)}$, $\\mathbf y^{(k)}$ | Synthetic errors and synthetic asset-growth observations. | $\\mathrm{yr}^{-1}$ |\n| $\\hat{\\boldsymbol\\theta}^{(k)}$ | Alpha and beta refitted on synthetic dataset $k$. | $\\mathrm{yr}^{-1}$; 1 |\n",
+      "source_cell": "week06-uncertainty"
+    },
+    {
+      "lecture": "L6b",
+      "title": "L6b: SIM Portfolio Inputs and Risk Decomposition",
+      "markdown": "| Symbol| Meaning and context | Units |\n|---|---|---|\n| $\\boldsymbol\\alpha$, $\\boldsymbol\\beta$ | Intercept and beta vectors, each of length $\\lvert\\mathcal P\\rvert$. | $\\mathrm{yr}^{-1}$; 1 |\n| $\\boldsymbol\\varepsilon$ | Vector of asset residual growth rates for one observation. | $\\mathrm{yr}^{-1}$ |\n| $\\mu_{g,M}$, $\\sigma_{g,M}^2$ | Population mean and variance of market growth. | $\\mathrm{yr}^{-1}$; $\\mathrm{yr}^{-2}$ |\n| $\\mathbf D_g$ | Diagonal matrix with entries $\\sigma_{g,\\varepsilon,i}^2$. | $\\mathrm{yr}^{-2}$ |\n| $\\mathbf\\Omega_\\varepsilon$, $\\hat{\\mathbf\\Omega}_\\varepsilon$ | Population and sample residual covariance matrices, allowing nonzero off-diagonal entries. | $\\mathrm{yr}^{-2}$ |\n| $\\hat{\\mathbf D}_g$ | Diagonal matrix of fitted residual variances $s_{g,\\varepsilon,i}^2$. | $\\mathrm{yr}^{-2}$ |\n| $\\hat{\\mathbf g}_{\\mathrm{SIM}}$ | Fitted mean vector: $\\hat{\\boldsymbol\\alpha}+\\hat{\\boldsymbol\\beta}g_M^{\\prime}$. | $\\mathrm{yr}^{-1}$ |\n| $\\hat{\\mathbf\\Sigma}_{g,\\mathrm{SIM}}$ | Fitted SIM growth covariance, using the same training observations as the coefficient fits. | $\\mathrm{yr}^{-2}$ |\n| $\\beta_p$ | Portfolio market exposure: $\\mathbf w^{\\top}\\boldsymbol\\beta$. | 1 |\n| $\\varepsilon_p$ | Portfolio residual: $\\mathbf w^{\\top}\\boldsymbol\\varepsilon$. | $\\mathrm{yr}^{-1}$ |\n| $\\bar\\sigma^2$ (residual bound) | Common upper bound on residual variances in the diversification argument. | $\\mathrm{yr}^{-2}$ |\n",
+      "source_cell": "nomenclature-20"
+    },
+    {
+      "lecture": "L6b",
+      "title": "L6b: Risk-Free Allocation and the Capital Allocation Line",
+      "markdown": "| Symbol| Meaning and context | Units |\n|---|---|---|\n| $g_f$ | Known growth rate of the risk-free asset over the matched holding period. | $\\mathrm{yr}^{-1}$ |\n| $w_f$ | Risk-free wealth fraction; negative values represent borrowing. | 1 |\n| $p$, $c$ (subscripts) | Risky portfolio and complete portfolio that combines risky and risk-free positions. | Portfolio labels |\n| $g_p$, $g_c$ | Growth-rate proxies for the risky and complete portfolios. | $\\mathrm{yr}^{-1}$ |\n| $\\sigma_{g,p}$, $\\sigma_{g,c}$ | Corresponding growth-rate standard deviations. | $\\mathrm{yr}^{-1}$ |\n| $\\mathrm{SR}_p$ | CAL slope: $(\\mathbb E[g_p]-g_f)/\\sigma_{g,p}$ for the observation interval. | 1 |\n| $\\tau=1\\,\\mathrm{yr}$ | Reference year used when annualizing the Sharpe ratio. | yr |\n| $\\mathrm{SR}_p^{\\mathrm{annual}}$ | Annualized ratio: $\\sqrt{\\tau/\\Delta t}\\,\\mathrm{SR}_p$ under independent-increment scaling. | 1 |\n| $\\mathbf e$ | Excess-growth vector: $\\boldsymbol\\mu_g-g_f\\mathbf1$. | $\\mathrm{yr}^{-1}$ |\n| $\\mathcal T$, $\\mathbf w_{\\mathcal T}$ | Tangent risky portfolio and its weights, normalized to sum to one. | Label; 1 |\n| $\\mathbf w$ (complete allocation) | Risky weights as fractions of total initial wealth; $\\mathbf1^{\\top}\\mathbf w=1-w_f$. | 1 |\n| $g_\\star$ | Required mean growth of the complete portfolio. | $\\mathrm{yr}^{-1}$ |\n",
+      "source_cell": "nomenclature-21"
+    },
+    {
+      "lecture": "Context",
+      "title": "Symbols Whose Meaning Changes with Context",
+      "markdown": "| Symbol | Contexts to distinguish | Where |\n|---|---|---|\n| $\\alpha$ | Tail index; regression significance level; Dirichlet concentration; SIM intercept. | L3a; L4b; L5b-L6a; L6b |\n| $\\delta$ | Option sensitivity in the orientation preview; growth innovation $\\delta_k$ in EMA. | L1a; L5a |\n| $\\lambda$ | EMA decay factor; GMV equality-constraint multiplier. | L5a; L6a |\n| $\\mu$, $\\mu_g$ | Drift of expected share price; mean log growth. Under GBM, $\\mu_g=\\mu-\\sigma^2/2$. | L4b-L5b |\n| $\\sigma_g$, $\\sigma$ | Standard deviation of observed growth rates; diffusion volatility. They satisfy $\\sigma=\\sqrt{\\Delta t}\\,\\sigma_g$ under the matched GBM convention. | L3a-L6b |\n| $C$, $\\mathbf C$ | Cash coupon; covariance-rate matrix. Boldface and context distinguish them. | L2a; L5b |\n| $\\mathbf\\Sigma_g$, $\\mathbf C$ | Growth covariance; covariance rate, with $\\mathbf C=\\Delta t\\,\\mathbf\\Sigma_g$. | L5b-L6b |\n| $D$, $D(0,t)$, $D_{\\mathrm{mod}}$, $D_{\\mathrm{mac}}$, $\\mathbf D_g$ | Days to bill maturity; discount factor; duration measures; observed down-multiplier set; diagonal residual covariance. | L2a; L2b; L3b; L6b |\n| $n$ | Compounding periods per year; tail-analysis sample size; simulated path count; share count $n_i$. | L1b-L2a; L3a; L6a |\n| $d$ | Bill discount quote; lattice down factor; frontier coefficient $ac-b^2$. | L2a; L3b; L6a |\n| $K$, $K_N$ | Bond convexity; terminal price target; binomial up-count $K_N$; bootstrap dataset count. | L2b; L5a; L4a; L6b |\n| $R$, $R^2$ | Solver growth floor $R=g_\\star$; coefficient of determination $R^2$. | L6a-L6b |\n| $M$ | Growth-magnitude bound; Monte Carlo path count; asset count; market subscript. | L3b; L4b; L5b; L6b |\n| $T$, $t$ | L3a uses $T$ for a count of prices; lattice $t$ is a step count; continuous-time models use time in years. | L3a-L6b |\n| $p$ | Up probability; number of regression parameters; risky-portfolio label. | L3b; L4b; L6b |\n| $\\rho(k)$, $\\rho_T$, $\\rho_{ij}$ | Autocorrelation; scaled NPV (including L4a node function $\\rho(k)$); cross-asset correlation. | L3a; L4a; L5b |\n| $W(t)$, $W_t$ | Wiener process; portfolio wealth. | L4b; L5b |\n| $\\mathbf\\Sigma$, $\\mathbf\\Sigma_g$ | Diagonal singular-value matrix in SVD; growth covariance matrix. | L6b |\n| $r_{i,t}$, $\\mathbf r_i$ | Interval log return $r_{i,t}=g_{i,t}\\Delta t$; fitted regression residual vector. | L6b; L4b/L6b |\n| $\\hat{\\mathbf X}$ | Design matrix with time as predictor; design matrix with market growth as predictor. | L4b; L6b |\n| $\\tau$ | Lattice lag; real-valued up-count threshold; reference year for annualizing a Sharpe ratio. | L3b; L4a; L6b |\n| $\\nu$, $\\nu_{j,k}$ | Student-$t$ degrees of freedom; regression residual degrees of freedom; cash-flow direction. | L3a; L4b; L1b |\n| $X$, $X_j$, $\\mathbf X_t$, $\\mathbf X$ | Growth magnitude; bond cash flow or lattice up indicator; branch-count vector; worked-example noise vector. | L3a; L2b/L3b; L4a; L5b |\n| $c$, $c_{j,k}$ | Coupon rate; frontier coefficient; complete-portfolio subscript; cash-flow amount. | L2a-L2b; L6a; L6b; L1b |\n",
+      "source_cell": "nomenclature-22"
+    }
+  ],
+  "lecture_sources": {
+    "L1b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-1/L1b/CHEME-5660-L1b-Lecture-TimeValueMoney-Fall-2026.ipynb",
+    "L2a": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2a/CHEME-5660-L2a-Lecture-TreasurySecurities-Fall-2026.ipynb",
+    "L2b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb",
+    "L3a": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3a/CHEME-5660-L3a-Lecture-Equity-Exchanges-Return-StylizedFacts-Fall-2026.ipynb",
+    "L3b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-3/L3b/CHEME-5660-L3b-Lecture-LatticeModels-Equity-Price-Fall-2026.ipynb",
+    "L4a": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4a/CHEME-5660-L4a-Lecture-LatticeModel-TradeRule-Fall-2026.ipynb",
+    "L4b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/CHEME-5660-L4b-Lecture-SingleAsset-GeometricBrownianMotion-TradeRule-Fall-2026.ipynb",
+    "L5a": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5a/CHEME-5660-L5a-Lecture-SAGBM-NPV-Fall-2026.ipynb",
+    "L5b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-5/L5b/CHEME-5660-L5b-Lecture-MultipleAsset-GBM-Fall-2026.ipynb",
+    "L6a": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6a/CHEME-5660-L6a-Lecture-MAGBM-Data-Portfolios-Fall-2026.ipynb",
+    "L6b": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb"
+  },
+  "provenance": {
+    "reference_sha256": "656813444d6ad99da441db445572e7def8cc164bc9733958516e583e6fb2bfd5",
+    "faq_draft_sha256": "7e3574f4556f0f22ba036542653ae0a23c585c2436abeb7f6762bbe5675832be",
+    "survey_scope": [
+      "L3a",
+      "L3b",
+      "L4b",
+      "L5b"
+    ],
+    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included."
+  }
+}

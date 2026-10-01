@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why does a higher yield lower a bond’s price? · CHEME 5660</title>
+  <meta name="description" content="With promised payments fixed, a higher yield discounts every payment more heavily. Duration and convexity summarize the local sensitivity of the resulting price.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Cash flows &amp; bonds</span>
+    </p>
+    <h1 id='article-title'>Why does a higher yield lower a bond’s price?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>With promised payments fixed, a higher yield discounts every payment more heavily. Duration and convexity summarize the local sensitivity of the resulting price.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Why does a higher yield lower a bond’s price?</strong> Keep the promised payments fixed. Raising the yield increases the denominator used to discount each payment, so each present value falls. For example, the two payments from L2a, 2 USD in six months and 102 USD in one year, are worth 100 USD at a 4% nominal yield and 98.09 USD at 6%. The investor requires more growth from the same cash payments, which requires a lower purchase price.</p>
+<p><strong>What does duration measure?</strong> At the 4% yield, those payment present values are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>1.02</mn><mo>=</mo><mn>1.9608</mn></mrow><annotation encoding="application/x-tex">2/1.02=1.9608</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>102</mn><mi>/</mi><msup><mn>1.02</mn><mn>2</mn></msup><mo>=</mo><mn>98.0392</mn></mrow><annotation encoding="application/x-tex">102/1.02^2=98.0392</annotation></semantics></math> USD. Divide by the 100 USD price to get their weights. Macaulay duration averages the payment times using these weights:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow></msub><mo>=</mo><mn>0.5</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.019608</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>1</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.980392</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.9902</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+D_{\mathrm{mac}}=0.5(0.019608)+1(0.980392)=0.9902\ \mathrm{yr}.
+</annotation></semantics></math></div>
+<p>Most value arrives at the last date, so duration is close to one year. Moving more present value to the earlier coupon would lower this weighted time.</p>
+<p><strong>How much will a yield change move the price?</strong> Modified duration gives the first-order price sensitivity; convexity corrects for curvature. With the lecture’s nominal-yield convention:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mfrac><msub><mi>D</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow></msub><mrow><mn>1</mn><mo>+</mo><mi>y</mi><mi>/</mi><mi>n</mi></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mrow><mi>Δ</mi><msub><mi>V</mi><mi>B</mi></msub></mrow><msub><mi>V</mi><mi>B</mi></msub></mfrac><mo>≈</mo><mo>−</mo><msub><mi>D</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow></msub><mi>Δ</mi><mi>y</mi><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>K</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Δ</mi><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+D_{\mathrm{mod}}=\frac{D_{\mathrm{mac}}}{1+y/n},\qquad
+\frac{\Delta V_B}{V_B}\approx-D_{\mathrm{mod}}\Delta y+\frac12K(\Delta y)^2.
+</annotation></semantics></math></div>
+<p>For a separate bond with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">D_{\mathrm{mod}}=5</annotation></semantics></math> yr, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">K=30\,\mathrm{yr}^2</annotation></semantics></math>, and a yield increase <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>y</mi><mo>=</mo><mn>0.01</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Delta y=0.01\,\mathrm{yr}^{-1}</annotation></semantics></math>, the estimated price change is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.05</mn><mo>+</mo><mn>0.0015</mn><mo>=</mo><mo>−</mo><mn>0.0485</mn></mrow><annotation encoding="application/x-tex">-0.05+0.0015=-0.0485</annotation></semantics></math>, or a 4.85% decrease. This local approximation is most useful for small yield changes.</p>
+<p><strong>How do we value payments with a yield curve?</strong> The curve supplies a discount factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>t</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D(0,t_j)</annotation></semantics></math> for each payment date. Adding the discounted payments gives the price; setting that price equal to par and solving for the coupon rate gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>B</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mi>X</mi><mi>j</mi></msub><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>t</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>c</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi></mrow></msub><mo>=</mo><mi>n</mi><mfrac><mrow><mn>1</mn><mo>−</mo><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>t</mi><mi>N</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>t</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_B=\sum_{j=1}^{N}X_jD(0,t_j),\qquad
+c_{\mathrm{par}}=n\frac{1-D(0,t_N)}{\sum_{j=1}^{N}D(0,t_j)}.
+</annotation></semantics></math></div>
+<p>The par coupon makes the present value of the coupons equal the difference between par and the present value of the final par repayment.</p>
+<p>For example, if the six-month and one-year discount factors are 0.98 and 0.95, the same payments have value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.98</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>102</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.95</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>98.86</mn></mrow><annotation encoding="application/x-tex">2(0.98)+102(0.95)=98.86</annotation></semantics></math> USD. A par coupon must fill the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mo>−</mo><mn>100</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.95</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">100-100(0.95)=5</annotation></semantics></math> USD gap. Thus each coupon is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.98</mn><mo>+</mo><mn>0.95</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>2.5907</mn></mrow><annotation encoding="application/x-tex">5/(0.98+0.95)=2.5907</annotation></semantics></math> USD, corresponding to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi></mrow></msub><mo>=</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>2.5907</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mn>100</mn><mo>=</mo><mn>0.05181</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">c_{\mathrm{par}}=2(2.5907)/100=0.05181\,\mathrm{yr}^{-1}</annotation></semantics></math>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> In the duration-convexity example, lower yield by 0.01 instead. </p><details><summary>Show the answer</summary><div> the estimated change is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>0.05</mn><mo>+</mo><mn>0.0015</mn><mo>=</mo><mo>+</mo><mn>5.15</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">+0.05+0.0015=+5.15\%</annotation></semantics></math>. The duration term changes sign; the positive curvature correction does not.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb">L2b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L2b">L2b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="discounting.html">Why discount cash flows, and what does positive NPV mean?</a></li><li><a href="bond-payments.html">How do coupon payments and yield determine a bond price?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

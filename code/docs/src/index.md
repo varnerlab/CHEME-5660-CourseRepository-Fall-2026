@@ -5,6 +5,11 @@ CHEME 5660 course notebooks. It provides teaching implementations for fixed
 income, equity and derivative pricing, portfolio optimization, stochastic
 simulation, Markov models, bandits, and reinforcement learning.
 
+## Course questions
+
+Search the [course FAQ](faq/index.html) for worked explanations, or use the
+[notation reference](faq/notation.html) to look up a symbol and its units.
+
 ## Using the course snapshot
 
 Clone or download the course repository, activate its root Julia environment,

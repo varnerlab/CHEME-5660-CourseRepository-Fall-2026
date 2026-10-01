@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How uncertain are the fitted alpha and beta? · CHEME 5660</title>
+  <meta name="description" content="Standard errors describe variation in coefficient estimates across repeated datasets under an error model. A bootstrap constructs and refits synthetic datasets to make that variation visible.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Estimation &amp; uncertainty</span>
+    </p>
+    <h1 id='article-title'>How uncertain are the fitted alpha and beta?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Standard errors describe variation in coefficient estimates across repeated datasets under an error model. A bootstrap constructs and refits synthetic datasets to make that variation visible.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How much might alpha and beta change with another dataset?</strong> The fitted line gives one alpha and one beta. New observations would move the fitted line. A standard error describes the spread we expect in the fitted coefficient across repeated datasets under our error model; it differs from the day-to-day spread of asset growth.</p>
+<p><strong>Where does the standard error come from?</strong> Conditional on the observed market growth rates, the classical calculation assumes zero-mean errors with constant variance and no correlation across days. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>&gt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N&gt;2</annotation></semantics></math> observations and a full-column-rank design matrix, we estimate the error variance after fitting two coefficients:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mrow><mi>g</mi><mo>,</mo><mi>ε</mi><mo>,</mo><mi>i</mi></mrow><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">∥</mo><msub><mi>𝐫</mi><mi>i</mi></msub><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup></mrow><mrow><mi>N</mi><mo>−</mo><mn>2</mn></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mover><mo>Cov</mo><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝛉</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mi>s</mi><mrow><mi>g</mi><mo>,</mo><mi>ε</mi><mo>,</mo><mi>i</mi></mrow><mn>2</mn></msubsup><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mi>⊤</mi></msup><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+s_{g,\varepsilon,i}^2=\frac{\lVert\mathbf r_i\rVert_2^2}{N-2},\qquad
+\widehat{\operatorname{Cov}}(\hat{\boldsymbol\theta}_i)
+=s_{g,\varepsilon,i}^2(\hat{\mathbf X}^{\top}\hat{\mathbf X})^{-1}.
+</annotation></semantics></math></div>
+<p>Square roots of the two diagonal entries give <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>SE</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>α</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{SE}(\hat\alpha_i)</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>SE</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{SE}(\hat\beta_i)</annotation></semantics></math>. Alpha’s standard error has units of inverse years; beta’s is dimensionless.</p>
+<p><strong>Read an interval.</strong> With thousands of observations, the 95% interval is approximately the estimate plus or minus 1.96 standard errors. Suppose <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>α</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mn>0.02</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat\alpha_i=0.02\,\mathrm{yr}^{-1}</annotation></semantics></math> with standard error <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.03</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.03\,\mathrm{yr}^{-1}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mn>1.20</mn></mrow><annotation encoding="application/x-tex">\hat\beta_i=1.20</annotation></semantics></math> with standard error <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.05</mn><annotation encoding="application/x-tex">0.05</annotation></semantics></math>. Then:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>α</mi><mi>i</mi></msub><mo>:</mo></mtd><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mn>0.02</mn><mo>±</mo><mn>1.96</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.03</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mn>0.0388</mn><mo>,</mo><mn>0.0788</mn><mo stretchy="true" form="postfix">]</mo></mrow><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>β</mi><mi>i</mi></msub><mo>:</mo></mtd><mtd columnalign="left" style="text-align: left"><mspace width="1.0em"></mspace><mn>1.20</mn><mo>±</mo><mn>1.96</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.05</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>1.102</mn><mo>,</mo><mn>1.298</mn><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\alpha_i:&amp;\quad 0.02\pm1.96(0.03)=[-0.0388,0.0788]\,\mathrm{yr}^{-1},\\
+\beta_i:&amp;\quad 1.20\pm1.96(0.05)=[1.102,1.298].
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The alpha interval includes zero, while the beta interval lies above one. Under the regression assumptions, these data estimate market exposure more precisely relative to its magnitude. The estimation example uses the Student-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> critical value; the large-sample Gaussian value is used in the bootstrap comparison. Jointly Gaussian errors under these assumptions give the exact classical <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> interval.</p>
+<p><strong>What does the Gaussian bootstrap hold fixed?</strong> The uncertainty example keeps <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\mathbf X}</annotation></semantics></math> fixed, draws independent synthetic residuals from a fitted normal distribution, and adds them to fitted growth:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐲</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><msub><mover><mi>𝛉</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>+</mo><msup><mi>𝛆</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbf y^{(k)}=\hat{\mathbf X}\hat{\boldsymbol\theta}_i+\boldsymbol\varepsilon^{(k)}.
+</annotation></semantics></math></div>
+<p>For one day, suppose fitted growth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.14</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.14\,\mathrm{yr}^{-1}</annotation></semantics></math> and a synthetic error draw is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.20</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-0.20\,\mathrm{yr}^{-1}</annotation></semantics></math>. That day’s synthetic observation is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.06</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-0.06\,\mathrm{yr}^{-1}</annotation></semantics></math>. Repeat this addition for every day, keeping its market observation, and fit a new line. Repeat the entire process for each of the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">K=1{,}000</annotation></semantics></math> synthetic datasets. The standard deviation of the refitted alphas or betas estimates its standard error. Because these datasets follow the fitted Gaussian model, agreement with the classical calculation checks that calculation. The optional residual-diagnostics example separately examines heavy tails and dependence across days.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Does increasing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> from 1,000 to 4,000 make the original beta estimate twice as precise? </p><details><summary>Show the answer</summary><div> it improves the numerical precision of the bootstrap comparison. The original observations and their information about beta remain the same.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb">L6b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L6b">L6b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="fitted-log-price.html">What does a fitted log-price line predict?</a></li><li><a href="ema-updates.html">What changes when another price observation arrives?</a></li><li><a href="prediction-bands.html">Does a 95% band contain 95% of complete price paths?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>What do alpha, beta, and residuals tell us? · CHEME 5660</title>
+  <meta name="description" content="The single index model separates an asset’s fitted response to market growth from its residual. Alpha is an intercept, beta measures sensitivity to market growth, and a residual records the observation’s unexplained part.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Estimation &amp; uncertainty</span>
+    </p>
+    <h1 id='article-title'>What do alpha, beta, and residuals tell us?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The single index model separates an asset’s fitted response to market growth from its residual. Alpha is an intercept, beta measures sensitivity to market growth, and a residual records the observation’s unexplained part.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p>The single index model (SIM) relates an asset’s growth rate to market growth. The subscript <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math> means market; the number of portfolio assets is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>𝒫</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\lvert\mathcal P\rvert</annotation></semantics></math>. The release uses SPY as the market proxy and fits growth rates from aligned trading days.</p>
+<p><strong>What does an asset’s beta tell us?</strong> The single index model separates the fitted market response from the asset-specific residual:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mi>i</mi></msub><msub><mi>g</mi><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>ε</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>β</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>i</mi></msub><mo>,</mo><msub><mi>g</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>=</mo><msub><mi>ρ</mi><mrow><mi>i</mi><mi>M</mi></mrow></msub><mfrac><msub><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>i</mi></mrow></msub><msub><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>M</mi></mrow></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g_{i,t}=\alpha_i+\beta_i g_{M,t}+\varepsilon_{i,t},\qquad
+\beta_i=\frac{\operatorname{Cov}(g_i,g_M)}{\operatorname{Var}(g_M)}
+=\rho_{iM}\frac{\sigma_{g,i}}{\sigma_{g,M}}.
+</annotation></semantics></math></div>
+<p>Beta includes both correlation and the ratio of growth-rate scales. With correlation 0.60 and asset variability twice the market’s, beta is 1.20. A <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.10</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.10\,\mathrm{yr}^{-1}</annotation></semantics></math> increase in market growth then raises fitted asset growth by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.12</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.12\,\mathrm{yr}^{-1}</annotation></semantics></math>.</p>
+<p>Suppose <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mn>0.02</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\alpha_i=0.02\,\mathrm{yr}^{-1}</annotation></semantics></math> and the observed market growth on a day is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.10</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.10\,\mathrm{yr}^{-1}</annotation></semantics></math>. The fitted asset growth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.02</mn><mo>+</mo><mn>1.2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.14</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.02+1.2(0.10)=0.14\,\mathrm{yr}^{-1}</annotation></semantics></math>. If the observed asset growth is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.06</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-0.06\,\mathrm{yr}^{-1}</annotation></semantics></math>, its fitted residual is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.20</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-0.20\,\mathrm{yr}^{-1}</annotation></semantics></math>. The residual records the part of that observation left unexplained by the line.</p>
+<p><strong>How do we fit the line?</strong> Choose alpha and beta to minimize the squared residuals. For a full-column-rank design matrix, the lecture gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>𝛉</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>𝛉</mi></munder><mo stretchy="false" form="prefix">∥</mo><mi>𝐲</mi><mo>−</mo><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mi>𝛉</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mi>⊤</mi></msup><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mi>⊤</mi></msup><mi>𝐲</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\hat{\boldsymbol\theta}_i
+=\arg\min_{\boldsymbol\theta}\lVert\mathbf y-\hat{\mathbf X}\boldsymbol\theta\rVert_2^2
+=(\hat{\mathbf X}^{\top}\hat{\mathbf X})^{-1}\hat{\mathbf X}^{\top}\mathbf y.
+</annotation></semantics></math></div>
+<p>The equivalent sample formulas explain the fitted coefficients:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mover><mo>Cov</mo><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>i</mi></msub><mo>,</mo><msub><mi>g</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msubsup><mi>s</mi><mrow><mi>g</mi><mo>,</mo><mi>M</mi></mrow><mn>2</mn></msubsup></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mover><mi>α</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><msubsup><mi>g</mi><mi>i</mi><mi>′</mi></msubsup><mo>−</mo><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><msubsup><mi>g</mi><mi>M</mi><mi>′</mi></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\hat\beta_i=\frac{\widehat{\operatorname{Cov}}(g_i,g_M)}{s_{g,M}^2},\qquad
+\hat\alpha_i=g_i^{\prime}-\hat\beta_i g_M^{\prime}.
+</annotation></semantics></math></div>
+<p>The intercept ensures that the fitted line passes through the sample means. The SVD example computes the same estimate as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐕</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐔</mi><mi>⊤</mi></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">\mathbf V\mathbf\Sigma^{-1}\mathbf U^{\top}\mathbf y</annotation></semantics></math>. Agreement among the three solves checks the numerical calculation.</p>
+<p><strong>How much variation did the fit explain?</strong> For an asset with nonzero sample variation, compare squared residuals with squared deviations from the asset’s sample mean:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mo stretchy="false" form="prefix">∥</mo><msub><mi>𝐫</mi><mi>i</mi></msub><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup></mrow><mrow><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>−</mo><msubsup><mi>g</mi><mi>i</mi><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+R^2=1-\frac{\lVert\mathbf r_i\rVert_2^2}{\sum_{t=1}^{N}(g_{i,t}-g_i^{\prime})^2}.
+</annotation></semantics></math></div>
+<p>If residuals retain 40% of the original sum of squares, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>0.60</mn></mrow><annotation encoding="application/x-tex">R^2=0.60</annotation></semantics></math>. In this one-predictor regression with an intercept, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math> equals squared sample correlation. It measures in-sample fit; later observations are needed to assess forecast usefulness.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Suppose the sample correlation is 0.60 and the asset’s sample standard deviation is twice the market’s. What are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><annotation encoding="application/x-tex">\hat\beta_i</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mn>1.20</mn></mrow><annotation encoding="application/x-tex">\hat\beta_i=1.20</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>0.36</mn></mrow><annotation encoding="application/x-tex">R^2=0.36</annotation></semantics></math>. Beta measures sensitivity to market growth, while <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math> measures the fraction of variation explained. The client interview uses both when screening firms.</div></details></div>
+<p><strong>Reading the design matrix.</strong> Each row of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\mathbf X}</annotation></semantics></math> pairs the number one with that day’s market growth. Multiplying by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mi>i</mi></msub><mo>,</mo><msub><mi>β</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><annotation encoding="application/x-tex">(\alpha_i,\beta_i)^{\top}</annotation></semantics></math> produces the intercept plus market contribution for each day. The fitted residual vector is what remains after subtracting those fitted values from observations.</p>
+<p>The estimation example solves the same least-squares problem by normal equations, a QR-based solve, and singular value decomposition (SVD). For the thin SVD <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐗</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>𝐔</mi><mi>𝚺</mi><msup><mi>𝐕</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\hat{\mathbf X}=\mathbf U\mathbf\Sigma\mathbf V^{\top}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐔</mi><annotation encoding="application/x-tex">\mathbf U</annotation></semantics></math> is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N\times2</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\mathbf\Sigma</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐕</mi><annotation encoding="application/x-tex">\mathbf V</annotation></semantics></math> are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2\times2</annotation></semantics></math>. Here <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\mathbf\Sigma</annotation></semantics></math> contains singular values; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝚺</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mathbf\Sigma_g</annotation></semantics></math> denotes a growth covariance. Nonzero singular values give full column rank and a unique fit.</p>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-6/L6b/CHEME-5660-L6b-Lecture-SIM-Portfolio-RF-Fall-2026.ipynb">L6b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L6b">L6b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="fitted-log-price.html">What does a fitted log-price line predict?</a></li><li><a href="ema-updates.html">What changes when another price observation arrives?</a></li><li><a href="prediction-bands.html">Does a 95% band contain 95% of complete price paths?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

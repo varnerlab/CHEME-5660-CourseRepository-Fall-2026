@@ -1,0 +1,9 @@
+{
+  "designer": "Claude Code",
+  "date": "2026-10-01",
+  "templates_sha256": "39fb1088363b602224102819e484a67cbfe6ebed710841560fbb82ac79b7395d",
+  "models": [
+    "claude-fable-5-1"
+  ],
+  "scope": "HTML templates and base stylesheet. Local integration changes are in build_site.py and refinements.css."
+}

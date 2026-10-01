@@ -8,6 +8,7 @@ makedocs(
     warnonly = false,
     pages = [
         "Home" => "index.md",
+        "Course questions" => "learning.md",
 
         "Data" => "data.md",
         "Market microstructure" => "microstructure.md",
