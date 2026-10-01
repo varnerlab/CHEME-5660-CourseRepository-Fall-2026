@@ -4,7 +4,7 @@
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <title>Why does daily leverage not multiply the long-run return? · CHEME 5660</title>
-  <meta name="description" content="The daily multiple applies before each day’s result compounds. A benchmark can return to its starting price while a product targeting twice its daily return finishes below its starting value.">
+  <meta name="description" content="The multiple applies to each day’s return, and the daily results then compound. A benchmark can return to its starting price while a product that targets twice its daily return finishes below where it started.">
   <meta name='color-scheme' content='light'>
   <meta name='theme-color' content='#faf7f2'>
   <link rel='stylesheet' href='../assets/faq.css'>
@@ -53,7 +53,7 @@
     <div class='article-main'>
       <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
         <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
-        <div class='answer-body'><p>The daily multiple applies before each day’s result compounds. A benchmark can return to its starting price while a product targeting twice its daily return finishes below its starting value.</p>
+        <div class='answer-body'><p>The multiple applies to each day’s return, and the daily results then compound. A benchmark can return to its starting price while a product that targets twice its daily return finishes below where it started.</p>
 </div>
       </section>
 
@@ -61,15 +61,15 @@
            For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
       <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
         <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
-        <div class='prose'><p>A daily multiple is applied to each day’s return, and those results compound. Many leveraged ETFs target a multiple of <strong>daily</strong> performance; their longer-horizon return can differ substantially from that multiple of the benchmark’s return. See the <a href="https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec">SEC’s investor bulletin on leveraged and inverse ETFs</a>.</p>
-<p>Consider an idealized product that delivers exactly twice each day’s benchmark return, ignoring fees, financing costs, and tracking differences. Start both values at 100. The benchmark gains 10% on day one, reaching 110, then loses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>11</mn><mo>≈</mo><mn>9.09</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1/11\approx9.09\%</annotation></semantics></math> on day two, returning to 100.</p>
-<p>The daily two-times product follows a different calculation:</p>
+        <div class='prose'><p>A daily multiple is applied to each day’s return, and those results compound. Many leveraged ETFs target a multiple of <strong>daily</strong> performance; over longer horizons, their return can differ substantially from that multiple of the benchmark’s return. See the <a href="https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/sec">SEC’s investor bulletin on leveraged and inverse ETFs</a>.</p>
+<p>Consider an idealized product that delivers exactly twice each day’s benchmark return, ignoring fees, financing costs, and tracking differences. Start both the benchmark and the product at 100. The benchmark gains 10% on day one, reaching 110, then loses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>11</mn><mo>≈</mo><mn>9.09</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1/11\approx9.09\%</annotation></semantics></math> on day two, returning to 100.</p>
+<p>The two-times daily product follows a different path:</p>
 <div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mfrac><mn>1</mn><mn>11</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>120</mn><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>9</mn><mn>11</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mn>98.18</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
 100(1+2(0.10))\left(1+2\left(-\frac{1}{11}\right)\right)
 =120\left(\frac{9}{11}\right)
 \approx98.18.
 </annotation></semantics></math></div>
-<p>The benchmark finishes unchanged while the product loses approximately 1.82%. This does not mean every leveraged path must decline. It shows why the sequence of returns and the reset interval matter, and why returning to the benchmark’s starting price does not guarantee that the leveraged product also returns to its starting value.</p>
+<p>The benchmark finishes unchanged while the product loses approximately 1.82%. This does not mean that every leveraged path must decline. It shows that the sequence of returns and the reset interval matter: when the benchmark returns to its starting price, the leveraged product need not return to its starting value.</p>
 </div>
       </section>
     </div>

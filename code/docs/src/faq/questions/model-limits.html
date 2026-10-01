@@ -4,7 +4,7 @@
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <title>Why study models that miss important market behavior? · CHEME 5660</title>
-  <meta name="description" content="A simple model connects assumptions with consequences we can calculate and test. Its forecasts become useful when we state the event clearly and compare issued probabilities with later outcomes.">
+  <meta name="description" content="A simple model connects assumptions with consequences we can calculate and test. Its forecasts become useful when we state the event clearly and compare the forecast probabilities with later outcomes.">
   <meta name='color-scheme' content='light'>
   <meta name='theme-color' content='#faf7f2'>
   <link rel='stylesheet' href='../assets/faq.css'>
@@ -53,7 +53,7 @@
     <div class='article-main'>
       <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
         <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
-        <div class='answer-body'><p>A simple model connects assumptions with consequences we can calculate and test. Its forecasts become useful when we state the event clearly and compare issued probabilities with later outcomes.</p>
+        <div class='answer-body'><p>A simple model connects assumptions with consequences we can calculate and test. Its forecasts become useful when we state the event clearly and compare the forecast probabilities with later outcomes.</p>
 </div>
       </section>
 
@@ -61,10 +61,10 @@
            For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
       <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
         <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
-        <div class='prose'><p>We use a simple model to connect assumptions with consequences we can calculate and test. A forecast can be a probability distribution over outcomes. It does not have to name the exact future price to be a forecast.</p>
-<p>The fixed-parameter binomial lattice has only two possible one-step growth rates and independent successive moves. It cannot reproduce heavy-tailed one-step growth or volatility clustering. Constant-parameter GBM permits a continuous range of price movements, but its growth rates are normal and independent, so it also misses those features.</p>
-<p>Fitting parameters does not make either model memorize the observed path. It summarizes the data within the chosen structure. If later observations disagree with the model, we should examine both parameter uncertainty and structural assumptions. The disagreement alone does not tell us which caused it.</p>
-<p>A useful next step is to ask a specific question: does the forecast assign reasonable probabilities to later outcomes, under a clearly stated evaluation rule? This is why we separate fitting from out-of-sample testing. Updating parameters may help, but it must be tested on observations unavailable when each forecast was made.</p>
+        <div class='prose'><p>We use a simple model to connect assumptions with consequences we can calculate and test. A forecast can be a probability distribution over outcomes; it does not have to name the exact future price.</p>
+<p>The fixed-parameter binomial lattice has only two possible one-step growth rates, and its successive moves are independent. It cannot reproduce heavy-tailed one-step growth or volatility clustering. Constant-parameter GBM permits a continuous range of price movements, but its growth rates are normal and independent, so it also misses those features.</p>
+<p>Fitting parameters does not make either model memorize the observed path; the fit summarizes the data within the chosen structure. If later observations disagree with the model, we should examine both the parameter uncertainty and the structural assumptions, because the disagreement alone does not tell us which one caused it.</p>
+<p>A useful next step is to ask a specific question: does the forecast assign reasonable probabilities to later outcomes, under a clearly stated evaluation rule? This is why we separate fitting from out-of-sample testing. Updating the parameters may help, but each updated forecast must be tested on observations that were unavailable when it was made.</p>
 </div>
       </section>
     </div>

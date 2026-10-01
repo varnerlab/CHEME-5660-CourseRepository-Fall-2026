@@ -55,3 +55,5 @@ External checks used [TreasuryDirect's pricing explanation](https://www.treasury
 | Why does a higher yield lower a bond’s price? | L2b | Equations, units, assumptions, and interpretation checked |
 
 Audited content SHA-256: `ac7e823e5bdedee3121a507e992ce5f3bda8dff0111492f50777599c585f596d`. These checks document this snapshot; future content changes should receive a corresponding review.
+
+A language-only pass followed the audit on October 1, 2026. It reworded short answers and explanatory prose; every equation, inline math expression, table, link, and worked number in the 31 answers is unchanged from the audited snapshot, and the notation tables were not edited. `verify_math.py` and `verify_site.py` pass on the result. The reworded prose has not had a separate technical review. Current content SHA-256: `5adacde12206f316a451ee44c875a242893e82e340a4719c2318e55e302e8e27`.

@@ -4,7 +4,7 @@
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <title>Does a 95% band contain 95% of complete price paths? · CHEME 5660</title>
-  <meta name="description" content="A pointwise interval concerns the price at one specified date. Remaining inside a band at every date is a different event, so whole-path coverage requires its own calculation.">
+  <meta name="description" content="No. A pointwise interval describes the price at one specified date. Staying inside the band on every date is a different event, so whole-path coverage requires its own calculation.">
   <meta name='color-scheme' content='light'>
   <meta name='theme-color' content='#faf7f2'>
   <link rel='stylesheet' href='../assets/faq.css'>
@@ -53,7 +53,7 @@
     <div class='article-main'>
       <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
         <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
-        <div class='answer-body'><p>A pointwise interval concerns the price at one specified date. Remaining inside a band at every date is a different event, so whole-path coverage requires its own calculation.</p>
+        <div class='answer-body'><p>No. A pointwise interval describes the price at one specified date. Staying inside the band on every date is a different event, so whole-path coverage requires its own calculation.</p>
 </div>
       </section>
 
@@ -61,16 +61,16 @@
            For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
       <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
         <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
-        <div class='prose'><p>No. A pointwise 95% prediction interval describes the model’s price distribution at one specified future date. Staying inside an interval at every date is a different event.</p>
-<p>For fitted GBM parameters held fixed and elapsed time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau&gt;0</annotation></semantics></math>, the bounds are:</p>
+        <div class='prose'><p>A pointwise 95% prediction interval describes the model’s price distribution at one specified future date. Staying inside the interval on every date is a different event.</p>
+<p>With the fitted GBM parameters held fixed, the bounds at elapsed time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau&gt;0</annotation></semantics></math> are:</p>
 <div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mi>z</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>S</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>g</mi></msub><mi>τ</mi><mo>−</mo><mi>z</mi><mover><mi>σ</mi><mo accent="true">̂</mo></mover><msqrt><mi>τ</mi></msqrt></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>U</mi><mi>z</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>S</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>g</mi></msub><mi>τ</mi><mo>+</mo><mi>z</mi><mover><mi>σ</mi><mo accent="true">̂</mo></mover><msqrt><mi>τ</mi></msqrt></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
 L_z(\tau)=S_0e^{\hat\mu_g\tau-z\hat\sigma\sqrt\tau},
 \qquad
 U_z(\tau)=S_0e^{\hat\mu_g\tau+z\hat\sigma\sqrt\tau}.
 </annotation></semantics></math></div>
-<p>The values <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.96</mn><annotation encoding="application/x-tex">1.96</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.576</mn><annotation encoding="application/x-tex">2.576</annotation></semantics></math> give approximately 68%, 95%, and 99% pointwise coverage under the fitted model. They come from standard normal quantiles before exponentiation. The price bounds are not symmetric about the expected price because the price distribution is lognormal.</p>
-<p>An entire path has many opportunities to leave these bounds. Its prices are dependent across dates, so we cannot obtain the whole-path probability by simply multiplying the pointwise percentages. Also, these bands treat the fitted parameters as known; they do not include uncertainty in their estimates.</p>
-<p>The lattice example uses expectation-plus-or-minus-standard-deviation bands and computes its whole-window benchmark directly. Because the lattice distribution is discrete, the familiar normal percentage is not automatically its exact pointwise coverage either. Keep each example’s band definition and scoring event explicit.</p>
+<p>The values <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.96</mn><annotation encoding="application/x-tex">1.96</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.576</mn><annotation encoding="application/x-tex">2.576</annotation></semantics></math> give approximately 68%, 95%, and 99% pointwise coverage under the fitted model. These values are standard normal quantiles, applied to the log price before we exponentiate. The price bounds are not symmetric about the expected price because the price distribution is lognormal.</p>
+<p>An entire path has many opportunities to leave these bounds. Its prices on different dates are dependent, so we cannot obtain the whole-path probability by simply multiplying the pointwise percentages. These bands also treat the fitted parameters as known; they do not include the uncertainty in those estimates.</p>
+<p>The lattice example builds its bands from the expectation plus or minus a multiple of the standard deviation and computes its whole-window benchmark directly. Because the lattice distribution is discrete, the familiar normal percentage is not automatically its exact pointwise coverage either. For each example, we should state the band definition and the event being scored.</p>
 </div>
       </section>
     </div>
