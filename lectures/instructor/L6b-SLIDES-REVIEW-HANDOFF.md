@@ -96,3 +96,38 @@ after in `build/notebook-previews/L6b-slides-sync-2026-09-30.png`:
 
 Built with `make slides`: 29 pages, zero overfull boxes. Source SHA-256 begins
 `1aedf24f1ba65df4`, PDF `3f2610465606d40f`. Committed with the week-06.3 release.
+
+## SIM derivations for re-recording — October 2, 2026
+
+The instructor needs to re-record the L6b lecture after a technical glitch and
+asked for the clearer derivations developed for L7a. The lecture and deck
+changes below were approved step by step with previews.
+
+**Lecture**
+- Cell 5, risk calculation: the dropped
+  $2\beta_i\,\mathrm{Cov}(g_M,\varepsilon_i)$ term is marked $=0$.
+- Cell 8, "The covariance implied by a SIM":
+  - the diagonal $\mathrm{Var}(g_i)$ is derived step by step, replacing
+    "For $i=j$, the same calculation gives…";
+  - the off-diagonal derivation marks its three vanishing terms $=0$;
+  - the two-matrix split shows where $\mathbf{D}_g$ comes from, before the
+    population box. The line under the box no longer repeats $\mathbf{D}_g$.
+- Cell 8, "Portfolio risk under a SIM": derives $\mathrm{Var}(g_p)$ from the
+  L6a double sum in five lines, replacing "follows a SIM with portfolio beta".
+  The bullets are unchanged.
+- Lecture SHA-256: `b5e1b2f3ac20b8c3b72274cf587cb1c1e4a8d5fcbc6b4084b630647c129eb843`.
+
+**Deck (29 to 30 pages, zero overfull boxes)**
+- "The Covariance Implied by a SIM" holds both derivations.
+- A new "The SIM Covariance Matrix" frame holds the split and the two
+  existing bullets.
+- "Portfolio Risk under a SIM" holds the five-step derivation and two lines
+  of reading.
+- "Systematic and Idiosyncratic Risk" already marked the zero term and is
+  unchanged.
+
+Codex checked the lecture derivations alongside the L7a changes and found no
+errors after the wording fix. Codex's suggestion to delete the redundant
+Diversification bullet was left for the instructor. Not yet released: the
+Week 6 bundle needs a week-06.4 release (tag, draft, instructor publishes)
+before students see the update.

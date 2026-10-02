@@ -374,20 +374,36 @@
 
 % ==== minimum-variance portfolios with SIM inputs ============
 \begin{frame}{The Covariance Implied by a SIM}
-  Stacking the SIM gives $\bg=\bal+\bbe\,g_M+\beps$. Under the three assumptions:
+  Stacking the SIM gives $\bg=\bal+\bbe\,g_M+\beps$, with mean growth rates
+  $\bmu=\bal+\bbe\,\mu_{g,M}$, where $\mu_{g,M}=\E[g_M]$.
+  \hilite{On the diagonal}:
   \[
-    \boxed{
     \begin{aligned}
-      \bmu&=\bal+\bbe\,\mu_{g,M}
-        &&\quad\text{mean growth rates}\\
-      \Sig&=\underbrace{\sigma^2_{g,M}\,\bbe\bbe^{\top}}_{\text{market}}
-        +\underbrace{\Dg}_{\text{residual}}
-        &&\quad\text{growth-rate covariance}
-    \end{aligned}}
+      \Var(g_i)&=\beta_i^2\Var(g_M)+2\beta_i\underbrace{\Cov(g_M,\varepsilon_i)}_{=0}+\Var(\varepsilon_i)
+        &&\quad\text{expand the SIM}\\
+      &=\beta_i^2\,\sigma^2_{g,M}+\sigma^2_{g,\varepsilon,i}
+        &&\quad\text{second assumption}
+    \end{aligned}
   \]
-  where $\mu_{g,M}=\E[g_M]$, $\sigma^2_{g,M}=\Var(g_M)$, and
-  $\Dg=\operatorname{diag}(\sigma^2_{g,\varepsilon,1},\dots,\sigma^2_{g,\varepsilon,\np})$.
-  Off the diagonal, $\Cov(g_i,g_j)=\beta_i\beta_j\,\sigma^2_{g,M}$.
+  \hilite{Off the diagonal} ($i\neq j$), the second and third assumptions remove three terms:
+  \[
+    \begin{aligned}
+      \Cov(g_i,g_j)&=\beta_i\beta_j\Var(g_M)+\beta_i\underbrace{\Cov(g_M,\varepsilon_j)}_{=0}
+        +\beta_j\underbrace{\Cov(\varepsilon_i,g_M)}_{=0}+\underbrace{\Cov(\varepsilon_i,\varepsilon_j)}_{=0}\\
+      &=\beta_i\beta_j\,\sigma^2_{g,M}
+    \end{aligned}
+  \]
+\end{frame}
+
+\begin{frame}{The SIM Covariance Matrix}
+  Splitting each entry into its market and residual parts:
+  \[
+    \Sig=\sigma^2_{g,M}\begin{bmatrix}\beta_1^2&\beta_1\beta_2&\cdots\\ \beta_2\beta_1&\beta_2^2&\cdots\\ \vdots&\vdots&\ddots\end{bmatrix}
+    +\begin{bmatrix}\sigma^2_{g,\varepsilon,1}&0&\cdots\\ 0&\sigma^2_{g,\varepsilon,2}&\cdots\\ \vdots&\vdots&\ddots\end{bmatrix}
+    =\underbrace{\sigma^2_{g,M}\,\bbe\bbe^{\top}}_{\text{market}}+\underbrace{\Dg}_{\text{residual}}
+  \]
+  Each diagonal entry splits into a market part $\beta_i^2\sigma^2_{g,M}$ and a
+  residual part $\sigma^2_{g,\varepsilon,i}$, which is what $\Dg$ holds.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Fewer parameters}: $2\np+1$ numbers instead of
       $\np(\np+1)/2$. For the S\&P 500, about a thousand instead of more than a
@@ -398,21 +414,28 @@
 \end{frame}
 
 \begin{frame}{Portfolio Risk under a SIM}
-  For fixed weights $\bw$, the portfolio growth rate $g_p=\bw^{\top}\bg$ follows
-  a SIM with portfolio beta $\beta_p=\bw^{\top}\bbe$. Its variance is:
+  For fixed weights $\bw$, substituting the SIM entries of $\Sig$ into the
+  portfolio variance gives:
   \[
-    \boxed{\Var(g_p)=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
-      +\underbrace{\sum_{i\in\mathcal P}w_i^2\,\sigma^2_{g,\varepsilon,i}}_{\text{residual risk}}}
+    \begin{aligned}
+      \Var(g_p)&=\textstyle\sum_{i}\sum_{j}w_iw_j\Cov(g_i,g_j)
+        &&\text{portfolio variance (L6a)}\\
+      &=\textstyle\sum_{i}w_i^2\bigl(\beta_i^2\sigma^2_{g,M}+\sigma^2_{g,\varepsilon,i}\bigr)
+        +\sum_{i}\sum_{j\neq i}w_iw_j\beta_i\beta_j\sigma^2_{g,M}
+        &&\text{SIM entries}\\
+      &=\textstyle\sigma^2_{g,M}\sum_{i}\sum_{j}(w_i\beta_i)(w_j\beta_j)
+        +\sum_{i}w_i^2\sigma^2_{g,\varepsilon,i}
+        &&\text{collect market terms}\\
+      &=\textstyle\sigma^2_{g,M}\bigl(\sum_{i}w_i\beta_i\bigr)^2
+        +\sum_{i}w_i^2\sigma^2_{g,\varepsilon,i}
+        &&\text{a perfect square}\\
+      &=\underbrace{\beta_p^2\,\sigma^2_{g,M}}_{\text{market risk}}
+        +\underbrace{\textstyle\sum_{i}w_i^2\sigma^2_{g,\varepsilon,i}}_{\text{residual risk}}
+        &&\beta_p=\textstyle\sum_{i}w_i\beta_i
+    \end{aligned}
   \]
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Market risk}: depends on the weights only through $\beta_p$.
-      Adding assets with the same market exposure does not reduce it.
-    \item \hilite{Residual risk}: with equal weights $w_i=1/\np$ and every
-      residual variance below $\bar\sigma^2$, it is at most $\bar\sigma^2/\np$.
-    \item \hilite{Diversification}: with uncorrelated residuals, spreading the
-      weights drives residual risk toward zero and leaves the market risk set
-      by $\beta_p$.
-  \end{itemize}
+  Market risk depends on $\bw$ only through $\beta_p$. Even weights over many
+  assets with uncorrelated, similar-size residuals drive residual risk toward zero.
 \end{frame}
 
 \begin{frame}{Estimated SIM Portfolio Inputs}
