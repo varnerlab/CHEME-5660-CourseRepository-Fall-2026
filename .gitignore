@@ -56,3 +56,9 @@ artifacts/
 # L6b client-interview outputs: instructor demo only, the examples fall back to the default list
 lectures/week-6/L6b/data/my-tickers.csv
 lectures/week-6/L6b/data/my-client.toml
+
+# L7a and L7b copies of the L6b client interview outputs
+lectures/week-7/L7a/data/my-tickers.csv
+lectures/week-7/L7a/data/my-client.toml
+lectures/week-7/L7b/data/my-tickers.csv
+lectures/week-7/L7b/data/my-client.toml

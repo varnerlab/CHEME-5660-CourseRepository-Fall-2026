@@ -1,5 +1,22 @@
 # Repository Working Agreements
 
+## Week 7 pivot — October 1, 2026
+
+- The former L7a utility-allocation and rebalancing material now teaches as
+  L7b. The former L7b online-SIM and scenario-ensemble material is deferred in
+  `lectures/archive/week-7-before-pivot-2026-10-01/`, with no new date assigned.
+- New L7a resumes L6b at minimum-variance portfolios with SIM inputs: a concise
+  theory review and the risky-assets example, followed by the risk-free asset,
+  tangent portfolio, capital allocation line, and risky/risk-free example.
+  BlackRock is the draft company profile.
+- The client interview stays in L6b. Copy its `data/my-tickers.csv` and
+  `data/my-client.toml` into L7a's local `data` folder after the interview, or use
+  the examples' existing hardcoded defaults. Do not relocate the interview to
+  L7a or make the Week 7 bundle depend on a Week 6 relative path.
+- Read [the refactor handoff](lectures/instructor/WEEK-7-REFACTOR-HANDOFF.md)
+  before follow-up work. Existing L6b review scores belong to their recorded
+  snapshots; this structural refactor does not constitute a new polish review.
+
 ## Lecture and Example Notebooks
 
 - Before authoring, editing, or reviewing course notebooks, read [the shared notebook style guide](lectures/instructor/NOTEBOOK-STYLE-GUIDE.md). It records the September 10, 2026 reset and the reference passages from CHEME 5660 Fall 2025 and CHEME 5820 Spring 2026.
@@ -644,6 +661,63 @@
   direction lasts only until an upper bound binds. Codex's cuts to the
   zero-multiplier and scalar-k sentences were declined, since those sentences
   fill the lecture's gaps. The instructor has not yet reviewed the draft.
+
+## Completed L7a lecture review
+
+- The instructor marked the L7a SIM portfolios and risk-free asset lecture
+  reviewed October 2, 2026, after a polish, voice, and organization round
+  (initial 8.2/10, final 9.0/10; Codex 8.5 before the closing fix). The
+  [saved review record](lectures/instructor/L7a-LECTURE-REVIEW-HANDOFF.md)
+  lists the accepted steps and checks:
+  - the Concept Review displays the SIM equation, defines its symbols where
+    used, and drops the variance box that SIM-1 repeats;
+  - the BlackRock profile has its founders, iShares, Aladdin, a dated
+    internship line, and videos, with every fact sourced;
+  - the opening, Objective 2, and the client-files note were rewritten;
+  - the CAL derivation is one step per line, and the risk-free section is
+    split into one cell per subsection;
+  - the takeaways state results, and Takeaway 3 gives the condition
+    two-fund separation needs.
+  The two-fund separation subsection is unchanged. No proposals remain
+  pending; do not restart unless another round is requested. The deck was
+  synced and approved the same day (17 to 16 pages, zero overfull boxes); the
+  record lists the frame changes. A follow-up the same day added the SIM
+  covariance derivation to the Concept Review at the instructor's request:
+  the diagonal and off-diagonal entries, with `=0` underbraces on the dropped
+  terms, and the assembled matrix. The deck's Concept Review became two frames
+  (17 pages). Later the same day, a two-matrix split showed where D_g comes
+  from, and a five-line Var(g_p) derivation (the 2025 L8b route) was added
+  before SIM-1. The deck gained a Portfolio Risk slide (18 pages).
+
+## L6b SIM derivations for re-recording — October 2, 2026
+
+- The instructor is re-recording L6b after a technical glitch and asked for
+  the clearer SIM derivations developed for L7a. In the lecture, cell 8 now:
+  - derives the diagonal variance step by step;
+  - marks the dropped terms with `=0` underbraces;
+  - shows the two-matrix split that defines D_g;
+  - derives Var(g_p) from the L6a double sum.
+  Cell 5's risk calculation also marks its zero term. The deck went from 29
+  to 30 pages with zero overfull boxes. The
+  [slides record](lectures/instructor/L6b-SLIDES-REVIEW-HANDOFF.md) lists the
+  frames. Week 6 needs a week-06.4 release before students see the update.
+
+## Completed L7a tangent derivation review
+
+- The instructor asked for a polish round on the L7a tangent derivation
+  companion if it scored below 9.0. It opened at 8.9 (Codex 8.9). One
+  markdown-only step was approved October 2, 2026, and the round closed at
+  9.1 (Codex 9.0). This is the instructor's first review of the September 30
+  draft. The [saved record](lectures/instructor/L7a-TANGENT-DERIVATION-REVIEW-HANDOFF.md)
+  lists the seven changed lines, the checks, and the declined suggestions:
+  - why the means must differ;
+  - the named L6a GMV derivation;
+  - why the lecture's growth floor binds;
+  - "feasible target" in the long-only note.
+  The objectives, takeaways, and boxes are unchanged. The instructor marked the
+  companion reviewed the same day. The L6b copy shipped in week-06.2 and still
+  has the earlier text. No proposals remain pending; do not restart unless
+  another round is requested.
 
 ## Interactive notebook polishing
 

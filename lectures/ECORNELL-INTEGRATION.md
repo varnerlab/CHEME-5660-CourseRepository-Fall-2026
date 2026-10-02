@@ -1,5 +1,12 @@
 # eCornell AI-in-Finance Integration for Fall 2026
 
+> **October 1, 2026 schedule update:** The utility/rebalancing material described
+> below as L7a now teaches as L7b. The former L7b online-SIM and scenario-ensemble
+> material is deferred in `archive/week-7-before-pivot-2026-10-01/`.
+> New L7a completes L6b's SIM portfolio and risk-free allocation material.
+> The tables below retain the earlier integration history; use the
+> [active Week 7 index](instructor/WEEK-7-INDEX.md) for current teaching locations.
+
 ## Source and integration standard
 
 The curriculum upgrades in this repository were adapted from the May 2026

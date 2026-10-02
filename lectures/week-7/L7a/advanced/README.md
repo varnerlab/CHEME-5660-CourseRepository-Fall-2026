@@ -1,15 +1,6 @@
-# L7a optional advanced material
+# L7a companions and optional material
 
-This standalone notebook extends the L7a treatment of utility-based
-allocation. It is optional and is not a prerequisite for L7b.
+- [Tangent portfolio derivation](tangent-derivation/CHEME-5660-L7a-Derivation-Tangent-Fall-2026.ipynb): the full calculation behind T-1 to T-3 and its connection to risky and risk-free allocation.
+- [Estimation risk in portfolio weights](estimation-risk/CHEME-5660-L7a-Advanced-EstimationRisk-Fall-2026.ipynb): resample the inputs, compare GMV and tangent weights, and test the long-only allocations out of sample.
 
-- [`adaptive_utility/CHEME-5660-L7a-Advanced-CES-Limits-Fall-2026.ipynb`](adaptive_utility/CHEME-5660-L7a-Advanced-CES-Limits-Fall-2026.ipynb)
-  derives the closed-form CES optimum in share counts from the budget-constrained
-  Lagrangian, proves its three limits (Cobb–Douglas at unit elasticity,
-  concentration on the best bang for the buck as the elasticity grows, equal
-  share counts as it vanishes), reads the two limits of the engine's elasticity
-  rule, shows that log-linear utility has the Cobb–Douglas optimizer, and records
-  the share-denomination caveat of the CES weights.
-
-It is a derivation notebook with no code; the L7a examples exercise the same
-allocators on course data.
+These are local copies of the L6b companions for the Week 7 bundle. The residual-diagnostics notebook and the SIM estimation examples remain in Week 6.

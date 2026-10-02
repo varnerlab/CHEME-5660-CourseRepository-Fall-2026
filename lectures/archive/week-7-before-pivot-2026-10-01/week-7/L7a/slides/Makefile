@@ -6,9 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-CAL_DIR := ../figs/capital-allocation-line
-CAL_PDF := $(CAL_DIR)/cal.pdf
-FIGURES := $(CAL_PDF)
+FIGURES := ../figs/Fig-L7a-Rebalancing-Engine-Loop.png
 
 .DEFAULT_GOAL := slides
 
@@ -18,9 +16,6 @@ slides: $(PDF)
 
 $(PDF): $(TEXFILE) vnslides.sty $(STYLE) $(FIGURES)
 	$(LATEXMK) -xelatex $(LATEX_FLAGS) $(TEXFILE)
-
-$(CAL_PDF): $(CAL_DIR)/cal.tex $(CAL_DIR)/Makefile ../../../templates/vnflow.sty
-	$(MAKE) -C $(CAL_DIR) all
 
 clean:
 	$(LATEXMK) -c $(TEXFILE)
