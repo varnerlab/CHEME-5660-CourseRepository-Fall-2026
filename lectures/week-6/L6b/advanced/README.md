@@ -1,7 +1,6 @@
 # L6b optional advanced material
 
-These notebooks extend the L6b lecture. They are optional and are not
-prerequisites for Week 7. A suggested order:
+These notebooks extend the L6b lecture. They are optional. A suggested order:
 
 1. [Residual diagnostics and two bootstrap methods](diagnostics/CHEME-5660-L6b-Advanced-SIM-Diagnostics-Fall-2026.ipynb):
    empirical-residual and Gaussian bootstraps against the classical standard
