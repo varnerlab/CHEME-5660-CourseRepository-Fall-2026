@@ -340,25 +340,77 @@ function _validate_choice_inputs(prices, gamma, B, epsilon)
     epsilon >= 0 || throw(ArgumentError("epsilon must be nonnegative"))
 end
 
-"""Solve a budget-constrained Cobb–Douglas choice problem analytically."""
+# Budget-constrained allocation with a share floor `epsilon` on every asset (pin and solve).
+# Non-preferred assets (gamma <= 0) sit at the floor. The free preferred assets split the
+# remaining budget in proportion to (gamma_i/S_i)^eta, where eta = 1 is Cobb–Douglas. A
+# preferred asset whose count falls below the floor is pinned at the floor, and the rest are
+# solved again. Each pass pins at least one asset, so the loop ends after at most |A+| passes,
+# and the result is the exact optimum of the floor-on-every-asset problem.
+function _allocate_with_floors(prices, gamma, B, epsilon, eta)
+    shares = zeros(length(gamma))
+    free = gamma .> 0                     # preferred assets not pinned at the floor
+    shares[.!free] .= epsilon             # non-preferred assets sit at the floor
+    while true
+        remaining = B - dot(prices[.!free], shares[.!free]) # net budget for the free preferred assets (USD)
+        remaining >= -sqrt(eps(Float64)) || throw(ArgumentError("minimum-share floor exceeds budget"))
+        if !any(free) || remaining <= 0
+            any(free) && epsilon > 0 && throw(ArgumentError("minimum-share floor exceeds budget"))
+            return shares, max(remaining, 0.0) # floors plus cash
+        end
+        if eta == 1
+            n = (gamma[free] ./ sum(gamma[free])) .* remaining ./ prices[free] # Cobb–Douglas closed form
+        else
+            raw = (gamma[free] ./ prices[free]) .^ eta
+            n = remaining .* raw ./ dot(prices[free], raw) # CES closed form
+        end
+        below = n .< epsilon
+        if !any(below)
+            shares[free] .= n
+            return shares, 0.0
+        end
+        pinned = findall(free)[below]
+        shares[pinned] .= epsilon         # pin at the floor, then solve again with the rest
+        free[pinned] .= false
+    end
+end
+
+"""
+    allocate_cobb_douglas(problem::MyCobbDouglasChoiceProblem) -> Tuple{Vector{Float64}, Float64}
+
+Solve the budget-constrained Cobb–Douglas problem: maximize the product of `n_i^gamma_i` over
+every asset, subject to `sum(prices .* n) = B` and the share floor `n_i >= epsilon`.
+
+Non-preferred assets (`gamma_i <= 0`) sit at the floor. The preferred assets (`gamma_i > 0`)
+split the net budget `B - epsilon * sum(prices[nonpreferred])` in proportion to `gamma_i`. If a
+preferred count falls below the floor, that asset is pinned at the floor and the rest are solved
+again, which gives the exact optimum of the floor-constrained problem.
+
+### Arguments
+- `problem::MyCobbDouglasChoiceProblem`: preference weights `gamma` in (-1, 1), prices `prices`
+  (USD/share, positive), budget `B` (USD), and share floor `epsilon` (shares, nonnegative).
+
+### Returns
+- `(shares, cash)`: share counts for every asset and unspent cash (USD). Cash is positive only
+  when no asset is preferred, in which case the allocation is the floors plus cash.
+
+Throws an `ArgumentError` when the budget cannot fund the floors.
+"""
 function allocate_cobb_douglas(problem::MyCobbDouglasChoiceProblem)
     gamma, prices, B, epsilon = problem.gamma, problem.prices, problem.B, problem.epsilon
     _validate_choice_inputs(prices, gamma, B, epsilon)
-    preferred = findall(>(0), gamma)
-    nonpreferred = findall(<=(0), gamma)
-    shares = zeros(length(gamma))
-    shares[nonpreferred] .= epsilon
-    remaining = B - dot(prices, shares)
-    remaining >= -sqrt(eps(Float64)) || throw(ArgumentError("minimum-share floor exceeds budget"))
-    cash = max(remaining, 0.0)
-    if !isempty(preferred) && remaining > 0
-        shares[preferred] .= (gamma[preferred] ./ sum(gamma[preferred])) .* remaining ./ prices[preferred]
-        cash = 0.0
-    end
-    return shares, cash
+    return _allocate_with_floors(prices, gamma, B, epsilon, 1.0)
 end
 
-"""Convenience Cobb–Douglas allocator returning shares, dollars, weights, and cash."""
+"""
+    allocate_cobb_douglas(prices, gamma, B; epsilon=0.0) -> NamedTuple
+
+Convenience form of [`allocate_cobb_douglas`](@ref) for prices `prices` (USD/share), preference
+weights `gamma`, budget `B` (USD), and share floor `epsilon` (shares).
+
+### Returns
+- `(shares, dollars, weights, cash)`: share counts, dollars per asset (USD), weights of the
+  invested dollars, and unspent cash (USD).
+"""
 function allocate_cobb_douglas(prices::AbstractVector, gamma::AbstractVector, B::Real; epsilon::Real=0.0)
     problem = build(MyCobbDouglasChoiceProblem,
         (gamma=Float64.(gamma), prices=Float64.(prices), B=Float64(B), epsilon=Float64(epsilon)))
@@ -369,27 +421,45 @@ function allocate_cobb_douglas(prices::AbstractVector, gamma::AbstractVector, B:
     return (shares=shares, dollars=dollars, weights=weights, cash=cash)
 end
 
-"""Solve a budget-constrained constant-elasticity-of-substitution choice problem."""
+"""
+    allocate_ces(problem::MyCESChoiceProblem) -> Tuple{Vector{Float64}, Float64}
+
+Solve the budget-constrained constant-elasticity-of-substitution (CES) problem over the preferred
+assets, with the share floor `n_i >= epsilon` on every asset.
+
+Non-preferred assets (`gamma_i <= 0`) sit at the floor. The preferred share counts are
+proportional to `(gamma_i / prices_i)^eta` and spend the net budget. If a preferred count falls
+below the floor, that asset is pinned at the floor and the rest are solved again, which gives the
+exact optimum of the floor-constrained problem. At `eta = 1` the result equals
+[`allocate_cobb_douglas`](@ref).
+
+### Arguments
+- `problem::MyCESChoiceProblem`: preference weights `gamma`, prices `prices` (USD/share,
+  positive), budget `B` (USD), share floor `epsilon` (shares, nonnegative), and elasticity of
+  substitution `eta > 0`.
+
+### Returns
+- `(shares, cash)`: share counts for every asset and unspent cash (USD).
+
+Throws an `ArgumentError` when the budget cannot fund the floors or `eta <= 0`.
+"""
 function allocate_ces(problem::MyCESChoiceProblem)
     gamma, prices, B, epsilon, eta = problem.gamma, problem.prices, problem.B, problem.epsilon, problem.eta
     _validate_choice_inputs(prices, gamma, B, epsilon)
     eta > 0 || throw(ArgumentError("eta must be positive"))
-    preferred = findall(>(0), gamma)
-    nonpreferred = findall(<=(0), gamma)
-    shares = zeros(length(gamma))
-    shares[nonpreferred] .= epsilon
-    remaining = B - dot(prices, shares)
-    remaining >= -sqrt(eps(Float64)) || throw(ArgumentError("minimum-share floor exceeds budget"))
-    cash = max(remaining, 0.0)
-    if !isempty(preferred) && remaining > 0
-        raw = (gamma[preferred] ./ prices[preferred]).^eta
-        shares[preferred] .= remaining .* raw ./ dot(prices[preferred], raw)
-        cash = 0.0
-    end
-    return shares, cash
+    return _allocate_with_floors(prices, gamma, B, epsilon, eta)
 end
 
-"""Convenience CES allocator returning shares, dollars, weights, and cash."""
+"""
+    allocate_ces(prices, gamma, B, eta; epsilon=0.0) -> NamedTuple
+
+Convenience form of [`allocate_ces`](@ref) for prices `prices` (USD/share), preference weights
+`gamma`, budget `B` (USD), elasticity `eta`, and share floor `epsilon` (shares).
+
+### Returns
+- `(shares, dollars, weights, cash)`: share counts, dollars per asset (USD), weights of the
+  invested dollars, and unspent cash (USD).
+"""
 function allocate_ces(prices::AbstractVector, gamma::AbstractVector, B::Real, eta::Real; epsilon::Real=0.0)
     problem = build(MyCESChoiceProblem, (gamma=Float64.(gamma), prices=Float64.(prices),
         B=Float64(B), epsilon=Float64(epsilon), eta=Float64(eta)))

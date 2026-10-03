@@ -6,6 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
+FIGURES := ../figs/Fig-L7b-Rebalancing-Engine-Loop.png
 
 .DEFAULT_GOAL := slides
 
@@ -13,7 +14,7 @@ STYLE := ../../../templates/vnslides.sty
 
 slides: $(PDF)
 
-$(PDF): $(TEXFILE) vnslides.sty $(STYLE)
+$(PDF): $(TEXFILE) vnslides.sty $(STYLE) $(FIGURES)
 	$(LATEXMK) -xelatex $(LATEX_FLAGS) $(TEXFILE)
 
 clean:

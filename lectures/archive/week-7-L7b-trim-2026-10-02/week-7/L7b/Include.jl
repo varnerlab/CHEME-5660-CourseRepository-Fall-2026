@@ -1,5 +1,5 @@
 # setup paths -
-const _ROOT = @__DIR__; # this lecture folder, so data paths resolve from any working directory
+const _ROOT = pwd();
 const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 
@@ -34,7 +34,6 @@ using StatsBase
 using KernelFunctions
 using HypothesisTests
 using Random
-using TOML # client settings copied from the L6b interview
 
 # load my codes -
 # include(joinpath(_PATH_TO_SRC, "Files.jl"));

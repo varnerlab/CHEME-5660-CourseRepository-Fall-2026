@@ -137,7 +137,7 @@ for published student bundles.
 | 4 | Lattice trading rules and geometric Brownian motion | [Week 4](lectures/week-4/) |
 | 5 | Single-asset GBM, out-of-sample NPV predictions, and multiple-asset GBM with portfolio weights | [Week 5](lectures/week-5/) |
 | 6 | Single-index models and risky/risk-free allocation | [Week 6](lectures/week-6/) |
-| 7 | Utility-based allocation and adaptive portfolio rebalancing | [Week 7](lectures/week-7/) |
+| 7 | SIM portfolios with a risk-free asset and utility-based allocation | [Week 7](lectures/week-7/) |
 | 8 | Option contracts: call and put payoff and profit | [Week 8](lectures/week-8/) |
 | 9 | European and American option pricing | [Week 9](lectures/week-9/) |
 | 10 | Option sensitivities, probability of profit, composite contracts, and delta hedging | [Week 10](lectures/week-10/) |

@@ -65,8 +65,8 @@ All changes below apply to `Sheet1`.
 | `F23` | 5b | Sep 24 | Minimum-variance allocation, efficient frontier, capital allocation line, and market portfolio |
 | `F26` | 6a | Sep 29 | Introduction to single-index models |
 | `F27` | 6b | Oct 1 | SIM-based risky/risk-free minimum-variance allocation |
-| 7a row (Oct 6) | 7a | Oct 6 | Utility-based allocation and the adaptive rebalancing engine (was: Goldman Sachs recorded Q/A; changed 2026-08-17, guest unconfirmed) |
-| `F32` | 7b | Oct 8 | Online SIM estimation: updating the engine as data arrive |
+| 7a row (Oct 6) | 7a | Oct 6 | SIM portfolios and a risk-free asset (L6b continuation; updated 2026-10-01) |
+| `F32` | 7b | Oct 8 | Utility-based portfolio allocation (trimmed 2026-10-02; rebalancing engine archived, online SIM deferred) |
 | `F36` | 8b | Oct 15 | Option contracts: call and put payoff and profit |
 | `F40` | 9a | Oct 20 | European option pricing with Black–Scholes–Merton |
 | `F41` | 9b | Oct 22 | American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value |

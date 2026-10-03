@@ -84,3 +84,167 @@ schedule.
   were inspected after the final rebuild.
 
 Changes are local and uncommitted. No GitHub release or Canvas update was made.
+
+## L7b trim — October 2, 2026
+
+The instructor said class time covers two examples, at most three, and L7b had
+three examples behind a 5,225-word lecture. He also proposed an example in the
+style of CHEME 5760 F23 `L5b-CAL-Optimal` to tie L7a's risk-free asset to L7b's
+utility. Decisions:
+
+- L7b teaches utility-based allocation only, with two examples. The
+  rebalancing engine, mechanical drift, the elasticity rule, and the
+  realized-path scorecard left the lecture.
+- Cut material is archived in
+  [`archive/week-7-L7b-trim-2026-10-02/`](../archive/week-7-L7b-trim-2026-10-02/README.md),
+  not moved into L13a. The instructor: "what we do in week-13 could change. I
+  dont want for a topic on a future date." L7b has no forward pointers.
+
+| File | Change |
+| --- | --- |
+| `CHEME-5660-L7b-Lecture-Utility-Allocation-Fall-2026.ipynb` | Renamed from `...-Utility-Allocation-Rebalancing-...`. 5,225 to about 2,600 markdown words. New CAL concept review and a mean-variance utility section with a one-step-per-line derivation of the optimal risky fraction, A_T, indifference curves, and the inverted formula for a client's A. Fragile inputs, Cobb–Douglas (derivation now one step per line), CES (limits as bullets), and SIM preference weights are trimmed from the old text. |
+| `CHEME-5660-L7b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb` | New. Task 1 finds the SIM tangent portfolio with the L7a sweep-and-rescale method. Task 2 sweeps A and draws indifference curves. Task 3 inverts the four interview answers to A and recomputes the client's fraction from T's 2025 values. Reads `data/my-tickers.csv` and `data/my-client.toml` (default client w_f = 0.25). |
+| `CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb` | Regrouped from five tasks to three. The η(ξ) rule, engine wording, and the L12b/L13a pointer are gone. Standard opening ported from L7a. |
+| `advanced/adaptive_utility/...CES-Limits...` | Elasticity-rule section and the "later in the course" and L13a pointers removed. Two clause semicolons and one display lead-in fixed. |
+| `Include.jl` | `_ROOT = @__DIR__` and `using TOML`, as in L7a. |
+
+The utility in both the lecture and the example is
+U = E[g_c] − (A/2) Δt σ²_{g,c}. Here Δt σ² is the squared GBM volatility (L5a),
+so A is dimensionless and lands in the textbook range. For the default firms,
+A_T = 4.96 and the interview answers imply A = 9.91, 6.61, 4.96, and 3.97.
+Without the Δt factor, A would come out near 0.02.
+
+Checks: both examples executed from their folder with no errors. The
+allocator's text outputs match the pre-trim run except the dropped η(ξ) column.
+The CAL example's tangent weights match the L7a RRFA example. It also ran with
+temporary client files (seven low-beta firms, w_f = 0.1, shown as a separate
+client row), and the files were removed afterward. All four notebooks render
+through VS Code's KaTeX with zero errors. Previews are in
+`build/notebook-previews/L7b-trim-2026-10-02/`. Codex first scored the drafts
+8.5 (lecture), 8.6 (CAL), and 9.0 (allocator). Its fixes were applied: the
+CES utility limit needs normalized weights, so the lecture states only the
+allocation limit. Other fixes covered thresholds rather than "strongest
+intercepts", the reciprocal effect of variance, squared-volatility wording in
+the CAL example, and long sentences. A second Codex pass scored 9.0, 9.3, and
+9.0. Its remaining precision fixes were then applied: "several times larger"
+than the intercepts, held-fixed inputs, Δt defined, and the CES companion's
+one-sided limits. The allocator re-ran with identical text outputs.
+`.gitignore` covers the L7b client files.
+The Week 7 index (moved to `instructor/WEEK-7-INDEX.md` by a concurrent
+release session) gained the copy commands for `L7b/data`.
+
+Follow-up the same day: the instructor asked for a section introducing utility,
+because students may not have seen it. A first draft (bulleted properties, a
+ln W coin flip, a Taylor expansion, Bernoulli and Levy–Markowitz citations) was
+rejected: "not my voice or style. Very poorly done." The replacement is ported
+from the instructor's own CHEME 5760 Decisions Book (varnerlab, `utilityfunctions.md`,
+`risk.md`) and the CHEME-145 Module 1 Arrow–Pratt material, and was approved after
+two revisions he asked for. It has two parts.
+
+- `## Utility Functions and Rational Choice`: a labeled utility-function definition
+  (agent, alternatives, utils, ≻ and ∼, ordinal), a rational-choice key idea, and
+  a table of linear, logarithmic, Cobb–Douglas, Leontief, and CES utility, with the
+  CES limits named.
+- `### Risk and Risk Aversion`: expected utility, a curvature/risk-attitude table,
+  certainty equivalent and risk premium, and an Arrow–Pratt box (r and r-bar, the
+  Decisions Book notation, so the mean-variance A is not reused). It ends with
+  Pratt's small-risk risk premium as the bridge to mean-variance utility.
+
+The instructor had marginal utility removed ("we don't do anything with it"). The
+Cobb–Douglas consumer-choice sentence that used it was removed too. A
+correctness-only Codex pass led to three precision fixes: ln U for positive U,
+η ≠ 1, and "for small returns". All six blockquoted displays in the lecture now
+quote every line, as in the reviewed L4a–L5b lectures. The lecture is about 3,300
+words.
+
+The instructor then deleted `## Fragile Inputs` ("no idea what this is even saying"). The
+mean-variance section now ends: "...every investor holds the same risky fund. What if
+we write down the investor's preferences for each asset instead?" The lecture is about
+3,140 words.
+
+Open items:
+
+- Done the same day: the L7b deck was rebuilt to mirror the lecture, going from 24
+  to 21 pages with zero overfull boxes. Every page was rendered and inspected. It
+  follows the approved L7a deck style (`\href` example links, `\symbfit` vectors,
+  literal en dashes in titles) and drops the drift, fragile-inputs, engine, and
+  scorecard frames. New frames cover utility functions, the utility table,
+  risk and risk aversion, Arrow–Pratt, mean-variance utility, the optimal
+  complete portfolio, and indifference curves. The pre-trim deck is in the
+  archive's `slides/` folder, and the Makefile no longer needs the engine figure.
+- `week-13/L13a/docs/Notes.tex` links the old L7b filename and says that L7b
+  introduces the rebalancing engine. L13a was left untouched, as the
+  instructor asked.
+- `lectures/LECTURE-ARTIFACT-SCHEDULE.md` rows 7a and 7b predate the October 1
+  pivot.
+- The allocator still uses the thirteen default firms, not the client's list.
+
+## Cobb–Douglas model restored — October 3, 2026
+
+The instructor found that the L7b Cobb–Douglas derivation did not match the 2025
+L9a/L14a lectures or eCornell Session 2. An August 17 rewrite (`a25ab33`) had
+restricted the product to the preferred set, dropped κ, and turned the ε > 0
+share floor into an assumed n_min ≥ 0. The instructor's model, now restored:
+
+- maximize ∏ over every asset of n_i^γ_i, subject to the budget constraint
+  Σ n_i S_i(t) = W_P(t) and the share floor n_i ≥ n_min > 0, boxed with labels;
+- the derivation shows that the floor binds on 𝒜⁻ (γ_k/n_k ≤ 0), substitutes
+  the floors into the budget, and derives W_adj as the net budget for 𝒜⁺
+  before the Lagrangian. The instructor rejected a draft that defined W_adj in
+  prose ("where is the budget constraint????").
+
+The symbol stays n_min. The Utility Allocator example already uses ε for the SIM
+residual, and the example's code and outputs are unchanged.
+
+Why κ = ±1 exists: the instructor's 2025 INFORMS `world` function and eCornell's
+`evaluate_cobb_douglas` compute the shares from the closed form and apply κ only
+to the utility value, which is the combinatorial bandit's reward. An asset with
+γ < 0 at a floor ε < 1 contributes ε^γ > 1, so without κ = −1 the bandit would
+favor baskets that hold non-preferred assets. No written material had stated
+this reason. L7b has no bandit, so it states the problem without κ.
+
+Changes, approved from rendered previews in
+`build/notebook-previews/cobb-douglas-2026-10-02/`:
+
+- L7b lecture cell 6: the Cobb–Douglas subsection (173 → 172 prose words).
+- L7b deck: the two Cobb–Douglas frames became three (problem; floors and net
+  budget; allocation). 21 → 22 pages, zero overfull boxes.
+- L13a lecture cell 5: two sentences giving the reason for κ.
+- L13a advanced bandit notebook cell 4: an August 3 commit (`04ae0fc`) had
+  removed the floors and κ and replaced the tanh SIM preference model with an
+  always-positive softplus model. The 2025 L14a text is restored, with the κ
+  reason, the β_i > 0 assumption that L7b states, and its three clause semicolons
+  removed.
+
+When the closed form holds (decided October 3). The closed form assumes every
+preferred share count stays above n_min. On the example's 2025 data with
+W = 1,000 USD, 3 of 193 nonempty-basket days break it (GS, γ ≈ 0.001–0.004). It
+breaks routinely in CES at high η. The instructor chose Option 2: a floor on every
+asset, and when a preferred count falls below n_min, pin it at the floor and solve
+again. Option 3 (floor on 𝒜⁻ only) keeps the closed forms exact but lets a
+preferred asset hold fewer shares than a non-preferred one, which he rejected.
+Codex confirmed that pin-and-solve is the exact optimum for Cobb–Douglas and for CES
+at any η, with n_i* = max{n_min, (γ_i/(λS_i))^η}. Changes:
+
+- Lecture cell 6: the assumption is stated before the stationarity step, the
+  pin-and-solve sentence follows the Cobb–Douglas box, the CES maximizer has "the
+  same floor check", and the η → ∞ bullet now says that every other asset falls to
+  its floor.
+- CES companion cells 1, 2, 4: the floor assumption, "when no floor binds" after
+  `allocate_ces`, and the η → ∞ limit with floors.
+- Course package: `allocate_cobb_douglas` and `allocate_ces` share
+  `_allocate_with_floors` (pin and solve) and have full docstrings. With ε = 0 the
+  results are unchanged. Infeasible floors now raise an error. New tests cover
+  Codex's counterexamples, high-η CES, no floor, and infeasible floors.
+  `Pkg.test()` passes 1,965 of 1,965 tests, including Aqua.
+- Utility Allocator example re-executed: only the η = 5 CES column (AAPL and MSFT
+  at the floor, NVDA 0.9868 to 0.9802) and the high-η end of the sweep figure
+  changed. No prose quotes those numbers.
+- Deck: the floors frame ends with the assumption, the allocation frame with the
+  pin rule (with `\jot` set to 0 to fit), and the CES frame mirrors the lecture. It
+  is 22 pages with zero overfull boxes.
+- The Stone–Geary alternative is saved in
+  [STONE-GEARY-UTILITY-NOTE.md](STONE-GEARY-UTILITY-NOTE.md).
+
+L13a is paused at the instructor's request. Its changes and open items are in
+[L13a-PINNED-ISSUES.md](L13a-PINNED-ISSUES.md).

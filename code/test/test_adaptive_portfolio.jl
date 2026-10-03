@@ -58,6 +58,29 @@ using VLQuantitativeFinancePackage
     ces = allocate_ces([10.0, 20.0, 40.0], gamma, 1_000.0, 2.0)
     @test sum(ces.dollars) + ces.cash ≈ 1_000.0
 
+    # share floor on every asset: a preferred count below the floor is pinned and the rest re-solved
+    floor_cd = allocate_cobb_douglas(fill(100.0, 4), [0.9, 0.001, -0.5, 0.0], 100.0; epsilon=0.01)
+    @test floor_cd.shares ≈ [0.97, 0.01, 0.01, 0.01]
+    @test floor_cd.cash == 0.0
+    # one pass is not enough here: the second asset falls below the floor only after the first is pinned
+    two_pass = allocate_cobb_douglas(ones(4), [0.001, 0.01005, 0.98895, -0.1], 101.0; epsilon=1.0)
+    @test two_pass.shares ≈ [1.0, 1.0, 98.0, 1.0]
+    # high-elasticity CES: floors hold, the budget is spent, and free assets satisfy the CES ratio
+    prices_ces = [180.0, 420.0, 120.0, 140.0, 30.0]
+    gamma_ces = [0.07, 0.05, 0.16, 0.55, -0.4]
+    high_eta = allocate_ces(prices_ces, gamma_ces, 1_000.0, 5.0; epsilon=0.01)
+    @test all(high_eta.shares .>= 0.01 - 1e-12)
+    @test count(isapprox.(high_eta.shares[1:4], 0.01)) == 2 # two preferred assets are pinned at the floor
+    @test sum(high_eta.dollars) ≈ 1_000.0
+    free = findall(high_eta.shares .> 0.01 + 1e-9)
+    ratio = high_eta.shares[free] ./ (gamma_ces[free] ./ prices_ces[free]) .^ 5.0
+    @test all(ratio .≈ ratio[1])
+    # with no floor the allocation is the unpinned closed form
+    no_floor = allocate_cobb_douglas([10.0, 20.0, 40.0], [0.2, 0.3, 0.5], 1_000.0)
+    @test no_floor.shares ≈ [0.2, 0.3, 0.5] .* 1_000.0 ./ [10.0, 20.0, 40.0]
+    # floors the budget cannot fund
+    @test_throws ArgumentError allocate_cobb_douglas(fill(100.0, 3), [0.5, 0.2, -0.1], 2.0; epsilon=0.01)
+
     @test compute_ema([1.0, 2.0, 3.0], 3) ≈ [1.0, 1.5, 2.25]
     @test sum(adaptive_target_weights(0.2, β)) ≈ 1.0
 

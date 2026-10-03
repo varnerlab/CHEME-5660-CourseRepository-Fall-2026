@@ -1,3 +1,3 @@
 # Advanced online learning
 
-This optional derivation covers REINFORCE with a variance-reducing baseline. The exponentially weighted least squares derivation that used to sit beside it moved to `week-7/L7b/advanced/online_learning/` (2026-08-17), where L7b introduces EWLS.
+This optional derivation covers REINFORCE with a variance-reducing baseline. The exponentially weighted least squares derivation is preserved in the deferred Week 7 archive after the October 1, 2026 pivot. Its later teaching placement remains undecided.

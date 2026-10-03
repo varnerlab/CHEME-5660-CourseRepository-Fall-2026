@@ -16,6 +16,28 @@
 - Read [the refactor handoff](lectures/instructor/WEEK-7-REFACTOR-HANDOFF.md)
   before follow-up work. Existing L6b review scores belong to their recorded
   snapshots; this structural refactor does not constitute a new polish review.
+- October 2 L7b trim: class time covers two examples, at most three, so L7b is
+  utility-based allocation only. A new example chooses the optimal point on the
+  capital allocation line with mean-variance utility and infers the client's
+  risk aversion from the L6b interview answer. The utility allocator is
+  regrouped into three tasks. The drift and rebalancing-scorecard examples, the
+  engine figure, and the engine, elasticity-rule, and scorecard lecture
+  sections are in `lectures/archive/week-7-L7b-trim-2026-10-02/`. The
+  instructor asked that cut material not move into a later week and that
+  lectures not point to topics on future dates. The handoff's October 2
+  section lists the checks.
+- October 3 Cobb–Douglas fix: L7b, its deck, and the L13a lecture and advanced
+  bandit notebook again state the instructor's 2025/eCornell model. The product
+  runs over every asset, subject to the budget and an n_min > 0 floor. W_adj is
+  derived from the budget constraint, and κ = ±1 signs only the bandit's
+  utility reward. Before rewriting a derivation, compare its model statement
+  with the 2025 and eCornell versions. The handoff's October 3 section records
+  the details. L13a is paused (the material may not stay there). Do not edit
+  week-13 files. Open items are in `lectures/instructor/L13a-PINNED-ISSUES.md`.
+- L7b lecture polish round: paused after the opening assessment (8.2/10) on
+  October 3. No polish edits yet. Resume from
+  [the review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md) at step 1
+  (Utility over Holdings structure).
 
 ## Lecture and Example Notebooks
 
