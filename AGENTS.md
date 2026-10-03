@@ -388,6 +388,13 @@
   Setup, Data, and Constants were not part of this round. Show future proposals
   as rendered before/after PNGs; the instructor found terminal markdown hard to
   read.
+- October 3 instructor request (released as week-06.8): Task 2 now displays
+  the full (LO-1) problem, with the growth floor and long-only constraints,
+  and the wealth figure shows the simulated mean with pointwise mean ± 1,
+  1.96, and 2.57 standard-deviation bands instead of the median and
+  percentiles. Do not restore the percentile bands. The
+  [release record](lectures/instructor/WEEK-06.8-RELEASE-HANDOFF.md) lists
+  the text changes and checked values.
 
 ## Completed L6a GMV derivation companion review
 

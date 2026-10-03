@@ -34,4 +34,4 @@ using HypothesisTests              # statistical tests
 using MathOptInterface             # solver termination statuses
 
 # Include local helper code -
-include(joinpath(_PATH_TO_SRC, "Compute.jl")); # ⊗ and scaled_wealth_quantiles
+include(joinpath(_PATH_TO_SRC, "Compute.jl")); # ⊗ (outer product)
