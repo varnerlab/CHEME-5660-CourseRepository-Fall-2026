@@ -731,6 +731,16 @@
   [slides record](lectures/instructor/L6b-SLIDES-REVIEW-HANDOFF.md) lists the
   frames. Week 6 needs a week-06.4 release before students see the update.
 
+## L6b least-squares matrix renamed — October 4, 2026
+
+- The L6b lecture's parameter-uncertainty derivation called
+  (X̂ᵀX̂)⁻¹X̂ᵀ **A**, which clashed with the L5b/L6a MAGBM loading matrix
+  (AAᵀ = C). The instructor chose the pseudoinverse **X̂⁺**, which also
+  matches VΣ⁻¹Uᵀ in the SVD estimation example. **A** is reserved for the
+  loading matrix. The SVD example's Σ (singular values) was left as-is by
+  request. Released as week-06.9; see the
+  [release record](lectures/instructor/WEEK-06.9-RELEASE-HANDOFF.md).
+
 ## Completed L7a tangent derivation review
 
 - The instructor asked for a polish round on the L7a tangent derivation
