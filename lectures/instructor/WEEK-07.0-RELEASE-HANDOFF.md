@@ -83,3 +83,44 @@ rows.
 
 Pushing the annotated tag `week-07.0` starts the release workflow, which
 creates the draft. Verify the assets and checksum, then publish it.
+
+## Re-cut — October 4, 2026
+
+The October 2 draft of `week-07.0` was never published, and its ZIP was
+built from `d38e8d3`, before the October 4 L7a polish. The instructor
+deleted the draft and approved re-cutting `week-07.0` on the current main,
+so students get the polished L7a for the October 6 class. This is a
+deliberate exception to the runbook's "never move a pushed tag" rule. That
+rule protects published releases, and this one was never downloaded. The old
+tag pointed to `d38e8d3`. The new annotated tag points to this commit.
+
+- **Changes since the first cut.**
+  - The BlackRock profile was rewritten.
+  - The risk-free section was polished (CAL variance, one-day Sharpe ratio,
+    T-2 sketch, GMV and two-fund-separation scope).
+  - Five deck frames were synced.
+  - The instructor edited lecture cells 0, 2, and 3 and both examples.
+  - See the [review record](L7a-LECTURE-REVIEW-HANDOFF.md).
+- **Package.** `code/src/AdaptivePortfolio.jl` changed in `cef7f2c` (the L7b
+  Cobb–Douglas floors). No L7a notebook calls the changed function, and the
+  L7a runs below match their saved outputs.
+- **Bundle.**
+  - Built from a `git archive` of `HEAD` (`63e593c` plus this record).
+  - Title "CHEME 5660 - Week 07 (L7a)", `included=L7a`, with 121 files.
+  - One root folder, no L7b, and no client files.
+  - Checksum passes, SHA-256 `ef6a45d4ae29793c4e91493753de9cbdf4134a22223516945b953b80d841d47e` for the local build. The CI build is
+    separate, and its digest is what students verify.
+- **Extracted-bundle test.**
+  - `Pkg.instantiate()` and `using VLQuantitativeFinancePackage` succeed,
+    and both `Include.jl` files load.
+  - RA (21 code cells), RRFA (19), and estimation-risk (27) ran from the top
+    in fresh Julia 1.12.7 kernels with no errors.
+  - Every text output matches the saved notebooks, except the setup cell's
+    "Activating project" line, which the saved notebook correctly omits.
+- **Notebook checks.**
+  - All five L7a notebooks have 3 objectives and 3 takeaways and the
+    required `___` placement.
+  - In the bundle there are no dead local links, saved errors, or
+    author-machine paths.
+  - The bundled lecture, deck PDF, and tangent derivation are byte-identical
+    to the repository.
