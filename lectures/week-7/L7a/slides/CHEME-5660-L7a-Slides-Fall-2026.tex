@@ -182,26 +182,27 @@ default firms. The L6b examples show how we estimated the SIM parameters.
 \end{frame}
 
 \begin{frame}{Company Profile: BlackRock}
-\href{https://www.blackrock.com/corporate}{BlackRock} is one of the world's largest
-investment managers. Larry Fink and seven partners
-\href{https://www.blackrock.com/corporate/about-us/who-we-are/history}{founded it in 1988}
-to manage fixed-income assets. Its 2009 purchase of Barclays Global Investors
-brought the \href{https://www.ishares.com/us}{iShares} funds.
+\href{https://www.blackrock.com/corporate}{BlackRock} is the world's largest investment
+manager, with \href{https://www.blackrock.com/corporate/about-us/who-we-are/history}{more than \$13 trillion}
+in client assets. Larry Fink and seven partners founded it in 1988 to manage
+fixed-income assets.
 \begin{itemize}\setlength{\itemsep}{0.3em}
-\item \hilite{Index funds}: funds such as the
-\href{https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf}{iShares Core S\&P 500 ETF}
-hold a whole index.
-\item \hilite{Model portfolios}: \href{https://www.blackrock.com/us/financial-professionals/investments/products/model-portfolios/target-allocation}{Target Allocation portfolios}
-suit different risk tolerances.
-\item \hilite{Portfolio risk}: \href{https://www.blackrock.com/aladdin}{Aladdin}
-and \href{https://www.blackrock.com/aladdin/platforms/products/aladdin-risk}{Aladdin Risk}
-analyze exposures and test scenarios.
-\item \hilite{Cash management}: \href{https://www.blackrock.com/cash/en-us}{money market funds}
-and other short-term investments.
+\item \hilite{Index funds}: \href{https://www.ishares.com/us}{iShares} came with Barclays
+Global Investors in 2009. Its indexing traces to
+\href{https://www.dimensional.com/us-en/insights/remembering-john-mac-mcquown-whose-curiosity-drove-a-life-of-innovation}{John McQuown's}
+1971 Wells Fargo fund, one of the first.
+\item \hilite{Allocation funds}: iShares Core allocation ETFs run from
+\href{https://www.ishares.com/us/products/239733/ishares-conservative-allocation-etf}{30\%}
+to \href{https://www.ishares.com/us/products/239729/ishares-aggressive-allocation-etf}{80\% stocks}.
+\item \hilite{Capital market assumptions}: the
+\href{https://www.blackrock.com/corporate/insights/blackrock-investment-institute}{BlackRock Investment Institute}
+publishes \href{https://www.blackrock.com/us/financial-professionals/insights/capital-market-assumptions}{expected returns, volatilities, and correlations}.
+\item \hilite{Aladdin}: built to manage portfolios and risk, and
+\href{https://www.blackrock.com/aladdin/about-us/about/faqs}{sold since 1999}.
 \end{itemize}
 \vspace{0.2em}
-Today's connection: the tangent portfolio supplies the risky fund, and lending
-or borrowing sets the complete portfolio's risk.
+Today's connection: if every investor holds the same risky fund, together they
+hold the market, so a broad index fund approximates that fund.
 \slidenote{Explore:}{\href{https://careers.blackrock.com/students-and-graduates}{Student opportunities}
 \quad\href{https://careers.blackrock.com/job/new-york/2027-summer-internship-program-amers/45831/90628276544}{2027 Americas internship}
 \quad\href{https://www.youtube.com/@BlackRock}{YouTube channel}}
@@ -234,17 +235,18 @@ or borrowing sets the complete portfolio's risk.
   in a risky portfolio $p$:
   \[
     \begin{aligned}
-      \E[g_c]&=w_f\,g_f+(1-w_f)\,\E[g_p] &&\quad\text{expectation is linear}\\
-      &=g_f+(1-w_f)\bigl(\E[g_p]-g_f\bigr) &&\quad\text{write }w_f=1-(1-w_f)\\
-      \sigma^2_{g,c}&=(1-w_f)^2\,\sigma^2_{g,p} &&\quad\text{the risk-free asset adds no variance}\\
-      \sigma_{g,c}&=|1-w_f|\,\sigma_{g,p} &&\quad\text{take the square root}
+      \E[g_c]&=w_f\,g_f+(1-w_f)\,\E[g_p] &&\text{expectation is linear}\\
+      &=g_f+(1-w_f)\bigl(\E[g_p]-g_f\bigr) &&\text{regroup}\\
+      \sigma^2_{g,c}&=w_f^2\underbrace{\Var(g_f)}_{=0}+2w_f(1-w_f)\underbrace{\Cov(g_f,g_p)}_{=0}+(1-w_f)^2\sigma^2_{g,p}
+        &&g_f\text{ is constant}\\
+      \sigma_{g,c}&=|1-w_f|\,\sigma_{g,p} &&\text{take the root}
     \end{aligned}
   \]
   For $w_f\le1$ and $\sigma_{g,p}>0$, substituting $1-w_f=\sigma_{g,c}/\sigma_{g,p}$
   gives the \hilite{CAL}:
   \[
     \boxed{\E[g_c]=g_f+\SR_p\,\sigma_{g,c},\qquad
-      \SR_p=\frac{\E[g_p]-g_f}{\sigma_{g,p}}\ \text{(Sharpe ratio)}}
+      \SR_p=\bigl(\E[g_p]-g_f\bigr)/\sigma_{g,p}\ \text{(Sharpe ratio)}}
   \]
   We lend for $0<w_f<1$, hold $p$ alone for $w_f=0$, and borrow for $w_f<0$.
   \slidenote{Daily data:}{the slope is a one-day Sharpe ratio. With independent increments,
@@ -253,29 +255,28 @@ or borrowing sets the complete portfolio's risk.
 \end{frame}
 
 \begin{frame}{The Tangent Portfolio}
-  The \hilite{tangent portfolio} $\Tan$ maximizes the Sharpe ratio. Let $\Sig$
-  be positive definite, let the GMV portfolio's expected growth exceed $g_f$,
-  and define $\be=\bmu-g_f\bone$. With short positions allowed, solve:
+  The \hilite{tangent portfolio} $\Tan$ maximizes the Sharpe ratio. Let $\bmu$ hold the
+  expected growth rates, $\Sig$ be positive definite, and the GMV portfolio
+  (shorts allowed) grow faster than $g_f$. With $\be=\bmu-g_f\bone$, solve:
   \[
     \underset{\bw}{\text{maximize}}\quad\frac{\be^{\top}\bw}{\sqrt{\bw^{\top}\Sig\bw}}
     \qquad\text{subject to}\quad\bone^{\top}\bw=1
     \tag{T-1}
   \]
-  At a stationary point, $\Sig\bw=\bigl(\bw^{\top}\Sig\bw/\be^{\top}\bw\bigr)\,\be$,
-  so the weights point in the direction $\Sig^{-1}\be$. Requiring them to sum
-  to one gives:
+  Scaling $\bw$ leaves the ratio unchanged, so we set its gradient to zero
+  (T-2, \href{\repo/advanced/tangent-derivation/CHEME-5660-L7a-Derivation-Tangent-Fall-2026.ipynb}{derivation}) and rescale. The weights point along $\Sig^{-1}\be$, and summing to one gives:
   \[
     \boxed{\bw_{\Tan}=\frac{\Sig^{-1}\left(\bmu-g_f\bone\right)}
       {\bone^{\top}\Sig^{-1}\left(\bmu-g_f\bone\right)}}
     \tag{T-3}
   \]
-  With long-only weights, there is no closed form, so we solve numerically.
+  When T-3 has negative weights, the long-only tangent portfolio has no closed form.
 \end{frame}
 
 \begin{frame}{Two-Fund Separation}
   The steepest CAL separates choosing a risky portfolio from choosing how much
-  risk to take. Mean-variance investors with the same inputs and risk-free rate
-  hold the \hilite{same risky fund} $\Tan$, combined with the risk-free asset.
+  risk to take. Mean-variance investors with the same inputs who can lend and
+  borrow freely at $g_f$ hold the \hilite{same risky fund} $\Tan$, combined with the risk-free asset.
   Their risk preferences set $w_f$
   (\href{https://doi.org/10.2307/2296205}{Tobin, 1958}).
 
@@ -323,17 +324,13 @@ or borrowing sets the complete portfolio's risk.
     \tag{SIM-3}
   \]
   where the long-only tangent portfolio, $\bw_{\Tan}=\bw/\bone^{\top}\bw$, is
-  any solution rescaled to sum to one.
+  the solution at any target, rescaled to sum to one.
 
   \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item Targets below $\gSIM^{\top}\bw_{\Tan}$ lend ($0<w_f<1$).
     \item Targets above it borrow ($w_f<0$).
   \end{itemize}
-
-  \vspace{0.3em}
-  The estimation-risk notebook asks how much GMV and tangent allocations move
-  when the estimated inputs change.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L7a-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
 \end{frame}
 

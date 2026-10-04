@@ -207,3 +207,129 @@ year." Both answers were approved and applied.
   flagged the redundant L6b Diversification bullet, which was left as is.
 
 Lecture SHA-256 after these changes: `f619703d8804341389c5d6a6e437b6118a435028cf48af572295718cdab293ec`.
+
+## Follow-up: BlackRock profile rewrite (October 4)
+
+The instructor asked whether this was the best BlackRock profile possible. It
+was not. The October 2 version (228 words) met the checklist but read as a
+product list, and its connection opened with "BlackRock sells…". The
+instructor approved a rewrite ("Agree"), and the Codex fixes below were
+applied with it. The profile is now 321 words, between MSCI (296) and
+Bridgewater (360).
+
+- **Opening.** "The world's largest investment manager, with more than $13
+  trillion in client assets" (history page), plus the founders.
+- **Panel.** Four bullets:
+  - Index funds: the 2009 BGI purchase, with BGI's indexing traced to John
+    McQuown's 1971 Wells Fargo fund ("one of the first index funds").
+  - Allocation funds: AOK to AOA, 30% to 80% stocks in target proportions.
+  - Capital market assumptions: the BlackRock Investment Institute's
+    expected returns, volatilities, and correlations, read as the mean
+    vector and covariance matrix.
+  - Aladdin: built to manage portfolios and risk, sold since 1999.
+  The Model portfolios bullet, the Cash management bullet, and the Aladdin
+  Risk link were cut.
+- **Connection.** Two-fund separation for investors who can lend and borrow
+  freely at the risk-free rate, then the market-clearing step to the market
+  portfolio (defined as every risky asset in proportion to its market
+  value), approximated by a broad index fund.
+- **Codex fixes applied.** "The first index fund" became "one of the first"
+  because the source says "arguably". "Every stock in the S&P 500" became
+  "the whole S&P 500" because IVV's prospectus allows sampling. "Fixed"
+  became "target" proportions. The lending and borrowing scope was added to
+  match Takeaway 3. "Bonds in place of the risk-free asset" was cut because
+  bonds are risky and covary with stocks. "That business" became "BGI's
+  indexing".
+- **Left out on purpose.** Fink's 1986 First Boston loss (Vanity Fair, April
+  2010) is for the instructor to tell in class.
+- **Checks.** All 15 links returned HTTP 200 (Codex). There are no sentences
+  over 25 words, semicolons, or em dashes. Only cell 4 changed, and nbformat
+  validates. The deck's profile frame has not been synced yet.
+
+## Follow-up: risk-free section polish (October 4)
+
+The instructor asked whether "## Adding a Risk-Free Asset" (cells 5–9) was
+as good as it could be. My estimate was about 8.5. The instructor approved six
+fixes ("Agree"), and Codex then scored the section 9.3. Three Codex precision
+fixes were applied as well. Section prose went from 671 to about 711 words,
+and cells 6 and 7 each gained one display line.
+
+- **Cell 6, CAL variance.** The variance line is now expanded with
+  $\underbrace{\mathrm{Var}(g_f)}_{=0}$ and
+  $\underbrace{\mathrm{Cov}(g_f,g_p)}_{=0}$, followed by a line with the
+  reason "$g_f$ is constant". This matches the Concept Review.
+- **Cell 6, Sharpe note.** It now explains the one-day ratio: "Each growth
+  rate is a one-day log return divided by $\Delta t$. That division scales
+  the excess mean and the standard deviation alike, so the slope is the
+  one-day Sharpe ratio." Codex flagged the earlier "which" clause as
+  ambiguous.
+- **Cell 7, Setup.** $\boldsymbol{\mu}_g$ is now defined. The GMV condition
+  reads "the GMV portfolio with short positions allowed" (Codex), because
+  cell 3's GMV is long-only.
+- **Cell 7, Derivation sketch.** Scale invariance means the gradient can be
+  set to zero and the scale fixed afterward. Two display lines follow: the
+  gradient (quotient rule) and T-2 (solve for $\mathbf{\Sigma}_g\mathbf{w}$).
+- **Cell 7, closing.** "When T-3 has negative weights, the long-only tangent
+  portfolio has no closed form" (Codex). The earlier "no closed form" was too
+  absolute.
+- **Cell 8.** The two-fund separation box now reads "who can lend and borrow
+  freely at $g_f$". Nothing else in the subsection changed.
+- **Cell 9.** "The solution at any target, rescaled to sum to one" replaced
+  "any solution". The estimation-risk pointer was cut because cell 10
+  repeats it.
+- **Declined.**
+  - Two sentences of 26–28 words (the risk-free definition and the RRFA
+    stop). These were declined in the October 2 round.
+  - Rewording the costlier-borrowing bullet. The instructor kept the
+    financing bullets as they are in L6b.
+  - Renaming SIM-3's $\mathbf{w}_{\mathcal{T}}$ to a long-only symbol, which
+    would ripple into the RRFA example.
+  - "Assume PD", "feasible target", the SIM-2 cap annotation, and the "linear
+    growth model" qualifier. These add words for little gain.
+- **Checks.**
+  - SymPy confirmed the gradient, the T-2 rearrangement, T-3 satisfying T-2,
+    and the $\Delta t$ invariance of the Sharpe ratio.
+  - Codex parsed all 65 expressions with strict KaTeX.
+  - Only cells 6–9 changed, and nbformat validates.
+
+Codex scores after the six approved fixes, before the three precision fixes:
+correctness 9.3, organization 9.6, flow 9.3, presentation 9.5, density 9.3,
+overall 9.3.
+
+## Follow-up: deck sync for the October 4 changes
+
+At the instructor's request, five frames were synced to the profile rewrite
+and the risk-free polish. The deck still has 18 pages and builds with zero
+overfull boxes.
+
+- **Company Profile.** Same opening and four bullets as the lecture. The
+  connection line ends "a broad index fund approximates that fund." The
+  Explore slidenote is unchanged.
+- **The Capital Allocation Line.**
+  - The variance line is expanded with the two `=0` underbraces and the
+    reason "$g_f$ is constant".
+  - "Write $w_f=1-(1-w_f)$" is shortened to "regroup", and the Sharpe ratio in
+    the box is written inline, so the frame fits.
+  - The Daily-data slidenote is unchanged. The lecture carries the reason.
+- **The Tangent Portfolio.**
+  - $\boldsymbol{\mu}_g$ is defined, and the GMV condition reads "(shorts
+    allowed)".
+  - The scale-invariance sentence names T-2 and links the derivation
+    companion inline. A Derivation slidenote did not fit.
+  - The closing line reads "When T-3 has negative weights…".
+- **Two-Fund Separation.** "Who can lend and borrow freely at $g_f$".
+- **The Solutions Lie on a Ray.** "The solution at any target, rescaled to sum
+  to one." The estimation-risk sentence was cut.
+- **Not synced.** The Objectives frame and the Concept Review's "Same means /
+  Different covariance" bullets. These depend on the instructor's
+  uncommitted edits to lecture cells 0 and 2.
+
+## Release status (October 4)
+
+The instructor chose to commit and push these changes, along with his own
+edits to lecture cells 0, 2, and 3 and to both L7a examples, without tagging.
+Students keep `week-07.0` for the October 6 class. The changes ship in
+`week-07.1` (L7a and L7b) once the paused L7b polish round reaches 9. The
+pre-commit checks passed for all five L7a notebooks: 3 objectives and 3
+takeaways each, the rule placement, no dead local links, no saved errors, and
+no author-machine paths.
