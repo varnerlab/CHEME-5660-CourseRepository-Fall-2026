@@ -344,3 +344,35 @@ client assets at the end of June 2026", linked to that release, and the deck
 PDF was recompiled (18 pages, profile slide fits). The lecture also gained the
 `__Notation:__` link to the FAQ notation page under its objectives. Both
 changes postdate the week-07.0 bundle and ship with week-07.1.
+
+## Follow-up: in-class edits merged and deck sync (October 6)
+
+The instructor edited the lecture and both examples in his `week-07.0` bundle
+copy around the October 6 class, then asked for those edits to be merged into
+the repository and for the deck to be synced.
+
+- **Merge.** A cell-level three-way merge against `ea2561b` kept the October 5
+  notation link and AUM update. The profile now reads "15.3 trillion USD in
+  client assets at the end of June 2026" (his "USD" form, the SEC figure).
+- **Lecture changes.** The tangent section is now "What is in the tangent
+  portfolio?" with shorts-allowed (T-1 to T-3, $\mathbf{w}_{\mathcal{T}}^{\mathrm{short}}$)
+  and long-only (T-LO) subsections. SIM-2 is stated in excess-growth form with
+  fund weights, wealth weights, and the risky fraction $\theta$. A continuation
+  algorithm replaces the ray argument, so SIM-3 is no longer in the lecture.
+- **Examples.** Both now use the 13 default firms unless the client-file lines
+  are uncommented. The bundle's RA ticker cell had the defaults commented out,
+  which fails without `my-tickers.csv`, so it was set to match the RRFA cell.
+  Saved outputs come from a run without client files. Both examples were
+  re-executed top to bottom with no errors and matching text outputs.
+- **Deck.** Objective 1 mirrors the lecture. The tangent frame became two
+  frames (shorts allowed, long-only with T-LO). The SIM-2 frame became two
+  frames (the two sets of weights with the numeric example, then SIM-2 with its
+  constraints). "Continuation: Finding the Tangent Portfolio" replaces "The
+  Solutions Lie on a Ray". The deck has 20 pages and zero overfull boxes.
+- **Not synced.** The Concept Review's "Same means / Different covariance"
+  bullets stay in the deck, although lecture cell 2 no longer states them. The
+  Adding a Risk-Free Asset frame keeps its shorter bullets.
+- **Open.** SIM-3 is still cited in the RRFA example (cell 21 and two code
+  comments), the estimation-risk notebook and its `src`/`docs` files, both L7b
+  examples, and the FAQ notation source. The examples' prose still says the
+  client list is used automatically when the interview files are present.

@@ -60,9 +60,9 @@
 \begin{frame}{Objectives for Today}
 By the end of this lecture, you should be able to:
 \begin{itemize}\setlength{\itemsep}{0.9em}
-\item \hilite{Compare SIM and data-driven portfolios}: recall the inputs,
-identify omitted co-movement, and compare allocations under one covariance
-and on held-out prices.
+\item \hilite{Compare minimum-variance portfolios with SIM and data-driven inputs}:
+identify the co-movement the SIM leaves out, and compare the allocations under a
+common covariance and on held-out prices.
 \item \hilite{Construct the capital allocation line and tangent portfolio}:
 derive the line relating expected growth to risk, identify its slope as the
 Sharpe ratio, and find the risky portfolio that maximizes it.
@@ -254,23 +254,47 @@ hold the market, so a broad index fund approximates that fund.
     (\href{https://web.stanford.edu/~wfsharpe/art/sr/SR.htm}{Sharpe, 1994}).}
 \end{frame}
 
-\begin{frame}{The Tangent Portfolio}
-  The \hilite{tangent portfolio} $\Tan$ maximizes the Sharpe ratio. Let $\bmu$ hold the
-  expected growth rates, $\Sig$ be positive definite, and the GMV portfolio
-  (shorts allowed) grow faster than $g_f$. With $\be=\bmu-g_f\bone$, solve:
+\begin{frame}{What Is in the Tangent Portfolio?}
+  The \hilite{tangent portfolio} $\Tan$ is the fully invested risky portfolio with the
+  largest Sharpe ratio. Let $\bmu$ hold the expected growth rates, $\Sig$ be positive
+  definite, and $\be=\bmu-g_f\bone$ be the excess-growth vector.
+
+  \hilite{Short positions allowed}: assume GMV growth (shorts allowed) exceeds $g_f$, and solve:
   \[
-    \underset{\bw}{\text{maximize}}\quad\frac{\be^{\top}\bw}{\sqrt{\bw^{\top}\Sig\bw}}
-    \qquad\text{subject to}\quad\bone^{\top}\bw=1
+    \underset{\bw}{\text{maximize}}\quad\SR(\bw)=\frac{\be^{\top}\bw}{\sqrt{\bw^{\top}\Sig\bw}}
+    \qquad\text{subject to}\quad\bone^{\top}\bw=1,\quad w_i\in\mathbb{R}
     \tag{T-1}
   \]
   Scaling $\bw$ leaves the ratio unchanged, so we set its gradient to zero
   (T-2, \href{\repo/advanced/tangent-derivation/CHEME-5660-L7a-Derivation-Tangent-Fall-2026.ipynb}{derivation}) and rescale. The weights point along $\Sig^{-1}\be$, and summing to one gives:
   \[
-    \boxed{\bw_{\Tan}=\frac{\Sig^{-1}\left(\bmu-g_f\bone\right)}
+    \boxed{\bw_{\Tan}^{\mathrm{short}}=\frac{\Sig^{-1}\left(\bmu-g_f\bone\right)}
       {\bone^{\top}\Sig^{-1}\left(\bmu-g_f\bone\right)}}
     \tag{T-3}
   \]
-  When T-3 has negative weights, the long-only tangent portfolio has no closed form.
+  The GMV condition makes the denominator positive, so the CAL touches the efficient frontier.
+\end{frame}
+
+\begin{frame}{Tangent Portfolio: Long-Only Risky Holdings}
+  What changes if we cannot short the risky assets? We now require $w_i\ge0$. The
+  definition of the tangent portfolio is the same, but the feasible portfolios change:
+  \[
+    \underset{\bw}{\text{maximize}}\quad\frac{\be^{\top}\bw}{\sqrt{\bw^{\top}\Sig\bw}}
+    \qquad\text{subject to}\quad\bone^{\top}\bw=1,\qquad w_i\ge0
+    \tag{T-LO}
+  \]
+  We assume at least one risky asset has $\mu_{g,i}>g_f$, so a positive Sharpe ratio
+  is attainable.
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{T-3 gives nonnegative weights}: it is feasible for T-LO and already
+      maximizes the Sharpe ratio over the larger set of portfolios, so it is the
+      long-only tangent portfolio.
+    \item \hilite{T-3 gives some negative weights}: zeroing them and renormalizing is
+      tempting, but it does not, in general, give the optimum. We must determine
+      which assets receive zero weight and reoptimize the remaining holdings.
+  \end{itemize}
+  The worked example computes the long-only tangent weights using a convex
+  minimum-variance problem.
 \end{frame}
 
 \begin{frame}{Two-Fund Separation}
@@ -293,44 +317,73 @@ hold the market, so a broad index fund approximates that fund.
 \end{frame}
 
 \begin{frame}{Risky and Risk-Free Allocation with SIM Inputs}
-  Choose the risky weights $\bw$ and put the rest, $w_f=1-\bone^{\top}\bw$, in
-  the risk-free asset. For a target $g_\star>g_f$ (year$^{-1}$), problem SIM-2 is:
+  Let's find the \hilite{long-only} tangent portfolio using the SIM estimates. Once we can
+  lend or borrow, the risky weights no longer need to sum to one, so we keep track of
+  two sets of weights:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Fund weights} $\bw_{\Tan}$: the mix within the risky fund.
+    \item \hilite{Wealth weights} $\bw$: each risky holding as a fraction of initial wealth.
+  \end{itemize}
+  They differ by the \hilite{risky fraction} $\theta$, the share of initial wealth held in risky assets:
+  \[
+    \boxed{\bw=\theta\,\bw_{\Tan},\qquad\bone^{\top}\bw_{\Tan}=1,\qquad
+    \theta=\bone^{\top}\bw=1-w_f}
+  \]
+  For example, take a risky fund with weights $(0.6,0.4)$:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Lending} ($\theta=0.5$): the wealth weights are $(0.3,0.2)$ and $w_f=0.5$.
+    \item \hilite{Borrowing} ($\theta=1.2$): the wealth weights are $(0.72,0.48)$ and $w_f=-0.2$.
+      We borrow 20\% of initial wealth, while both risky holdings remain long positions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Long-Only Holdings with Lending or Borrowing}
+  Assume $\SigSIM$ is positive definite and at least one estimated mean growth rate exceeds
+  $g_f$. For a feasible target $g_\star>g_f$ (year$^{-1}$), problem SIM-2 chooses $\bw$ to solve:
   \[
     \boxed{
     \begin{aligned}
       \underset{\bw}{\text{minimize}}\quad &\bw^{\top}\SigSIM\bw
         &&\quad\text{minimize growth-rate variance}\\
       \text{subject to}\quad
-        &\gSIM^{\top}\bw+\underbrace{\bigl(1-\bone^{\top}\bw\bigr)}_{w_f}g_f\ge g_\star
-        &&\quad\text{meet or exceed the growth target}\\
+        &(\gSIM-g_f\bone)^{\top}\bw\ge g_\star-g_f
+        &&\quad\text{meet the excess-growth target}\\
       &0\le w_i\le1,\quad i\in\mathcal P
-        &&\quad\text{exclude short positions}.
+        &&\quad\text{long-only holdings with per-asset caps}.
     \end{aligned}}
   \]
-  The fraction $w_f$ has no sign constraint, so $w_f<0$ means borrowing at $g_f$.
-
-  \vspace{0.4em}
-  Eliminating $w_f$ gives the excess-growth constraint
-  $(\gSIM-g_f\bone)^{\top}\bw\ge g_\star-g_f$.
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{No budget constraint}: we do \emph{not} impose $\bone^{\top}\bw=1$. The budget is
+      $\bone^{\top}\bw+w_f=1$, and $w_f$ may be negative.
+    \item \hilite{Bounds}: $w_i\ge0$ prohibits shorting risky assets. The cap $w_i\le1$ is an
+      additional limit that does not follow from the budget.
+    \item \hilite{Solution}: SIM-2 is a convex quadratic program. We solve it numerically,
+      and the solver determines which risky holdings are zero.
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{The Solutions Lie on a Ray}
-  Scaling $\bw$ by $c>0$ scales the excess growth by $c$ and the variance by
-  $c^2$. So, until a bound $w_i\le1$ binds, every target selects the same risky
-  direction:
-  \[
-    \boxed{\bw(g_\star)=(1-w_f)\,\bw_{\Tan},\qquad
-      1-w_f=\frac{g_\star-g_f}{\gSIM^{\top}\bw_{\Tan}-g_f}}
-    \tag{SIM-3}
-  \]
-  where the long-only tangent portfolio, $\bw_{\Tan}=\bw/\bone^{\top}\bw$, is
-  the solution at any target, rescaled to sum to one.
+\begin{frame}{Continuation: Finding the Tangent Portfolio}
+  A \hilite{continuation method} increases the target until the risk-free holding reaches
+  zero. We lend when $\theta<1$, borrow when $\theta>1$, and hold the tangent portfolio at $\theta=1$.
 
-  \vspace{0.5em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item Targets below $\gSIM^{\top}\bw_{\Tan}$ lend ($0<w_f<1$).
-    \item Targets above it borrow ($w_f<0$).
-  \end{itemize}
+  \vspace{0.4em}
+  \hilite{Initialize}: set $g_\star^{(0)}=g_f$, $\bw^{(0)}=\mathbf{0}$, $\theta^{(0)}=0$,
+  $g_L=g_f$, and $g_U=\max_i\hat g_{\mathrm{SIM},i}$. Choose an increment $\Delta g>0$
+  and a tolerance $0<\epsilon<1$. Then repeat:
+  \begin{enumerate}\setlength{\itemsep}{0.2em}
+    \item \hilite{Check}: if $|\theta^{(k)}-1|<\epsilon$, stop and return
+      $\bw_{\Tan}=\bw^{(k)}/\theta^{(k)}$.
+    \item \hilite{Update the interval}: set $g_L=g_\star^{(k)}$ when lending
+      ($\theta^{(k)}<1$), otherwise $g_U=g_\star^{(k)}$.
+    \item \hilite{Next target}: step up to $\min(g_\star^{(k)}+\Delta g,\,g_U)$ until
+      $\theta\ge1$, then bisect $[g_L,g_U]$.
+    \item \hilite{Solve SIM-2} at the new target, starting from $\bw^{(k)}$, and set
+      $\theta^{(k+1)}=\bone^{\top}\bw^{(k+1)}$.
+  \end{enumerate}
+
+  \vspace{0.3em}
+  The highest-growth asset alone meets $g_U$ with $\theta\ge1$, so the sweep must cross
+  $\theta=1$. Past the tangent point, the risky mix stays the same until a per-asset cap binds.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L7a-Example-SIM-MinVar-RRFA-Fall-2026.ipynb}{Construct the Tangent Portfolio and Capital Allocation Line}}
 \end{frame}
 
