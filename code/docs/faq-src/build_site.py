@@ -120,7 +120,7 @@ def main():
     notation_template=re.sub(r'<p\b[^>]*\bid=[\'"]notation-empty[\'"][^>]*>.*?</p>','',design['notation_html'],flags=re.S)
     notation_template=notation_template.replace('</header>', '<p class="table-hint">Scroll tables sideways to see every column.</p></header>',1)
     content=fill(notation_template,LECTURE_NAV=lecture_nav,NOTATION_SECTIONS=notation_html)
-    (out/'notation.html').write_text(document('Notation','Symbols, meanings, units, and lecture context through Week 6.',content,'notation-page'))
+    (out/'notation.html').write_text(document('Notation','Symbols, meanings, units, and lecture context through Week 7.',content,'notation-page'))
     print(f'Built {len(articles)} question pages, a searchable question index, and a separate notation view at {out}')
 
 if __name__=='__main__':main()

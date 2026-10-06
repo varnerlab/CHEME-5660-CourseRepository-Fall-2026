@@ -1,12 +1,12 @@
 # CHEME 5660 course FAQ
 
-The course companion contains 31 questions across seven themes and a separate notation lookup with 273 entries through Week 6. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
+The course companion contains 31 questions across seven themes and a separate notation lookup with 346 entries through Week 7. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
 
 The FAQ is published with the course's existing Documenter/GitHub Pages site at [Course questions](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/). Its HTML templates and base stylesheet were designed with Claude. Search, build, integration, and local refinements are maintained alongside them.
 
 ## Update and build
 
-Edit `content.json`, preserving the course's notation and the assumptions in each answer. With Python 3 and Pandoc installed, run from the repository root:
+Edit `content.json`, preserving the course's notation and the assumptions in each answer. Build with Pandoc 3.1.11.1, which reproduces the published pages exactly. Pandoc 3.5 and later write different MathML on every page, for example minus signs as identifiers. With Python 3 and that Pandoc first on the `PATH`, run from the repository root:
 
 ```sh
 python3 code/docs/faq-src/build_site.py --output code/docs/src/faq

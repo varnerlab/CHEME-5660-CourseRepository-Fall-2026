@@ -333,3 +333,14 @@ Students keep `week-07.0` for the October 6 class. The changes ship in
 pre-commit checks passed for all five L7a notebooks: 3 objectives and 3
 takeaways each, the rule placement, no dead local links, no saved errors, and
 no author-machine paths.
+
+## Follow-up: BlackRock AUM and notation link (October 5)
+
+The profile's "more than $13 trillion" came from BlackRock's history page,
+which dates it to March 2026. The instructor asked for a check. BlackRock
+reported $15.3 trillion in AUM at June 30, 2026 (Q2 2026 earnings release,
+SEC 8-K Exhibit 99.1). The notebook and deck now read "with $15.3 trillion in
+client assets at the end of June 2026", linked to that release, and the deck
+PDF was recompiled (18 pages, profile slide fits). The lecture also gained the
+`__Notation:__` link to the FAQ notation page under its objectives. Both
+changes postdate the week-07.0 bundle and ship with week-07.1.

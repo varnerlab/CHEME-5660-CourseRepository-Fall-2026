@@ -36,6 +36,38 @@ instructor's CHEME 5760 Decisions Book and approved on October 2 after two revis
 Fragile Inputs and marginal utility were removed at his request. The Cobb–Douglas
 model and floor rule were decided on October 3.
 
+October 5: the instructor reopened the risk section himself and asked for a tighter
+certainty-equivalent and Arrow–Pratt passage that shows how the two connect. Approved
+and applied, with the deck's Arrow–Pratt frame synced. He then asked for a less dense
+frame and approved a version with about 40% fewer words: absolute and relative labels as
+underbraces in the box, a one-line sign key, "For a small risk, larger r means a lower CE:"
+over a centered Pratt display, and a two-line portfolio note.
+
+Also October 5: the instructor found the Mean-Variance Utility section unclear ("charges for
+risk") and asked for simple, direct wording. Approved and applied, word-neutral (328 words).
+It now opens "We choose w_f by maximizing the investor's utility." The reward and risk-penalty
+underbraces are gone. A "sets how much the investor dislikes variance." A new "Who lends and
+who borrows?" label was added, the indifference curve is a display, and the inverse formula
+states w_f < 1. Codex (SymPy) confirmed the math. The three deck frames (Mean-Variance Utility,
+The Optimal Complete Portfolio, Indifference Curves) were synced to match, with no overfull boxes.
+
+Also October 5: the instructor asked whether to explain the EMA in the Preference Weights
+section. The cell called its window-based EMA (omega = 2/(L+1)) "the EMA of L5a", but L5a set
+lambda by a half-life with a 21-day default, while a 21-day window has a half-life of about
+7.27 days. Approved and applied: a plain definition, the EMA as a display, the L5a link
+(omega = 1 - lambda), the 7-day sentence, and "The short EMA responds faster to price changes
+than the long EMA" in the Market inputs box. A table of the three windows was drafted and
+dropped at his request, since it added nothing. Prose 121 to 181 words in that part. Codex
+confirmed every claim against compute_ema and L5a. The deck's Market Inputs frame overflowed
+with the addition, so it was split into "Exponential Moving Averages" and "The Market Inputs",
+with no overfull boxes. The passage now opens with "The more concave U is,
+the further the CE falls below E(W)." Pratt's RP ≈ ½ r(E(W)) Var(W) is now a display right after the
+definition box. The two constant-relative-risk-aversion sentences are cut, and prose went from 211 to
+189 words. Codex confirmed the math (numerical Pratt check on ln w and √w). It also noted that in true
+log growth the mapping is A = r̄ − 1. The course treats portfolio growth as linear in the asset growth
+rates, so the text keeps "the form of … with A in the role of r̄." The instructor's own
+hand edits to the opening, the Concept Review, and cells 4–5 (seen at 11:31 that day) are his, not the assistant's.
+
 ## Proposed sequence (not yet started)
 
 1. **Utility over Holdings: structure (recommended start).** Give each subsection its
@@ -46,10 +78,15 @@ model and floor rule were decided on October 3.
    Tighten the "Market inputs" box and the paragraph after it, and fix the "pure
    number at a one-year horizon" sentence. Keep both bold questions.
 3. **Long sentences.** Split the six sentences listed above. This is word-neutral.
-4. **Instructor's call: a company profile.** L6a, L6b, and L7a each have one; L7b
-   does not. One natural fit is a robo-advisor (Betterment or Wealthfront), whose
-   onboarding questionnaire sets the stock/bond split: the CAL optimal point and the
-   inferred A, as a product. Skip it if he prefers L7b lean.
+4. **Company profile: done October 5, 2026.** The instructor chose Wealthfront and
+   approved the draft as shown ("Looks really well done"). The cell sits between
+   the Concept Review and "Utility Functions and Rational Choice" (about 360 words):
+   Risk Score questionnaire, the 2012 utility-tangency post, and Black–Litterman
+   reverse optimization, with a connection that runs the optimum backward (w_f → A,
+   market weights → expected returns). Codex found no factual errors. Sources: the
+   March 9, 2026 methodology white paper, the September 9, 2026 SEC 8-K release, and
+   the Lever board (no internships on October 5). The deck got a matching profile
+   frame (slide 6, after the Concept Review) the same day, with no overfull boxes.
 5. **Close.** Check the objectives, takeaways, and summary against the final text,
    then rescore. The round is not done below 9.0.
 

@@ -106,6 +106,32 @@ or on defaults when the interview files are absent.
   Which $w_f$ should a given investor choose?
 \end{frame}
 
+% ==== company profile ========================================
+\begin{frame}{Company Profile: Wealthfront}
+\href{https://www.wealthfront.com/}{Wealthfront} is a robo-advisor that manages portfolios
+of low-cost index ETFs, with
+\href{https://www.sec.gov/Archives/edgar/data/0001524566/000162828026061131/q227earningsrelease.htm}{more than \$100 billion}
+in client assets in September 2026. Andy Rachleff and Dan Carroll founded it in 2008, and
+Burton Malkiel has been its
+\href{https://www.wealthfront.com/blog/burton-malkiel-joins-wealthfront-as-cio/}{CIO} since 2012.
+\begin{itemize}\setlength{\itemsep}{0.3em}
+\item \hilite{Risk questionnaire}: willingness and capacity to take risk combine into a
+\href{https://research.wealthfront.com/whitepapers/investment-methodology/}{Risk Score}
+from 0.5 to 10, weighted toward the more risk-averse part.
+\item \hilite{Utility and the frontier}: twenty frontier portfolios, one per score. In 2012,
+the firm \href{https://www.wealthfront.com/blog/what-is-risk-tolerance/}{described} picking
+the one where the utility curve touches the frontier.
+\item \hilite{Expected returns}: Black--Litterman finds the returns that make the global
+market portfolio optimal, then adjusts them with factor-model forecasts.
+\end{itemize}
+\vspace{0.2em}
+Today's connection: we infer the $A$ that makes a client's $w_f$ optimal. Black--Litterman
+infers the expected returns that make the market's weights optimal.
+\slidenote{Explore:}{\href{https://www.wealthfront.com/careers}{Careers}
+\quad\href{https://eng.wealthfront.com/2023/10/04/the-wealthfront-engineering-intern-program-not-all-internships-are-built-the-same/}{Engineering intern program}
+\quad\href{https://www.youtube.com/channel/UCFfn9lYtV-pKT5OZmcpXhXg}{YouTube channel}}
+\end{frame}
+
 % ==== utility functions ======================================
 \begin{frame}{Utility Functions and Rational Choice}
   Utility functions describe a decision-maker's preferences for different
@@ -187,11 +213,12 @@ or on defaults when the interview files are absent.
 \end{frame}
 
 \begin{frame}{Arrow–Pratt Measures}
-  How risk averse is a decision-maker? For a twice-differentiable utility of
-  wealth with $U'(w)>0$, Arrow and \href{https://doi.org/10.2307/1913738}{Pratt (1964)}
-  define the coefficients of absolute and relative risk aversion:
+  How risk averse is a decision-maker? Arrow and
+  \href{https://doi.org/10.2307/1913738}{Pratt (1964)} measure the curvature of
+  a utility of wealth with $U'(w)>0$:
   \[
-    \boxed{r(w)=-\frac{U''(w)}{U'(w)}\qquad\text{and}\qquad\bar r(w)=w\,r(w)}
+    \boxed{\underbrace{r(w)=-\frac{U''(w)}{U'(w)}}_{\text{absolute}}\qquad
+    \underbrace{\bar r(w)=w\,r(w)}_{\text{relative}}}
   \]
   \begin{columns}[c]
     \begin{column}{0.42\textwidth}
@@ -207,32 +234,32 @@ or on defaults when the interview files are absent.
       \end{tabular}}
     \end{column}
     \begin{column}{0.55\textwidth}
-      \begin{itemize}\setlength{\itemsep}{0.3em}
-        \item Risk averse: $r(w)>0$. Risk neutral: $r(w)=0$. Risk seeking: $r(w)<0$.
-        \item Log and power utilities have constant relative risk aversion.
-      \end{itemize}
+      $r>0$: averse. $r=0$: neutral. $r<0$: seeking.
+
+      \vspace{0.5em}
+      For a small risk, larger $r$ means a lower CE:
+      \[
+        \RP\approx\tfrac12\,r(\E(W))\,\Var(W)
+      \]
     \end{column}
   \end{columns}
 
   \vspace{0.6em}
-  \hilite{Why it matters for a portfolio}: for a small risk,
-  $\RP\approx\tfrac12\,r(\E(W))\Var(W)$. Per unit of wealth, and for small
-  returns, the certainty-equivalent return is about the expected return minus
-  $\bar r/2$ times the return variance. Mean-variance utility has this form, with
-  $A$ in the role of $\bar r$.
+  \hilite{For a portfolio}: with small returns,
+  CE return $\approx$ expected return $-\,\tfrac{\bar r}{2}\,{\times}$ return variance.
+  Mean-variance utility has this form, with $A$ in the role of $\bar r$.
 \end{frame}
 
 % ==== mean-variance utility ==================================
 \begin{frame}{Mean-Variance Utility}
-  For a complete portfolio, mean-variance utility rewards expected growth and
-  charges for risk:
+  We choose $w_f$ by maximizing the investor's utility. Mean-variance utility
+  rises with expected growth and falls with variance:
   \[
-    \boxed{U(w_f)=\underbrace{\E[g_c]}_{\text{reward}}
-      -\underbrace{\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}}_{\text{risk penalty}}}
+    \boxed{U(w_f)=\E[g_c]-\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}}
   \]
-  $A>0$ is the risk-aversion coefficient (dimensionless). $\Delta t\,\sigma^2_{g,c}$
-  is the squared volatility (L5a), so both terms are in year$^{-1}$. Along the
-  line, both terms depend only on $w_f$:
+  The risk-aversion coefficient $A>0$ (dimensionless) sets how much the investor
+  dislikes variance. As in L5a, $\Delta t\,\sigma^2_{g,c}$ is the squared
+  volatility, in year$^{-1}$. On the line, both terms depend only on $w_f$:
   \[
     \begin{aligned}
       U(w_f)&=g_f+(1-w_f)\bigl(\E[g_{\Tan}]-g_f\bigr)-\tfrac{A}{2}(1-w_f)^2\,\Delta t\,\sigma^2_{g,\Tan}
@@ -246,32 +273,35 @@ or on defaults when the interview files are absent.
 \end{frame}
 
 \begin{frame}{The Optimal Complete Portfolio}
-  Solving the first-order condition for the risky fraction gives:
+  Solving the first-order condition for the fraction in $\Tan$ gives:
   \[
     \boxed{1-w_f^\star=\frac{\E[g_{\Tan}]-g_f}{A\,\Delta t\,\sigma^2_{g,\Tan}}}
   \]
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{A maximum}: the second derivative, $-A\,\Delta t\,\sigma^2_{g,\Tan}$,
-      is negative. Doubling $A$ halves the risky fraction.
-    \item \hilite{Lend or borrow}: the investor with
-      $A_{\Tan}=(\E[g_{\Tan}]-g_f)/(\Delta t\,\sigma^2_{g,\Tan})$ holds $\Tan$ alone.
-      $A>A_{\Tan}$ lends, and $A<A_{\Tan}$ borrows.
+      is negative.
+    \item \hilite{What moves it}: more excess growth $\E[g_{\Tan}]-g_f$ raises the
+      fraction in $\Tan$. A larger $A$ or $\sigma^2_{g,\Tan}$ lowers it, and
+      doubling $A$ halves it.
+    \item \hilite{Who lends and who borrows?} The investor with
+      $A_{\Tan}=(\E[g_{\Tan}]-g_f)/(\Delta t\,\sigma^2_{g,\Tan})$ holds only $\Tan$.
+      $A>A_{\Tan}$ lends at $g_f$. $A<A_{\Tan}$ borrows at $g_f$ to buy more of $\Tan$.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Indifference Curves and Risk Aversion}
   \hilite{Where does the optimum sit on the line?} An \hilite{indifference curve}
-  joins the portfolios with the same utility. Holding $U$ fixed gives a parabola
-  that opens upward in the risk-return plane:
+  joins the portfolios with the same utility. Fixing $U$ gives:
   \[
     \E[g_c]=U+\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}
   \]
-  Higher curves mean higher utility, and the optimal complete portfolio is where
-  the highest curve the investor can reach touches the line.
+  Plotted against $\sigma_{g,c}$, each curve is a parabola that opens upward, and
+  higher curves have higher utility. The optimal portfolio is where the highest
+  curve the investor can reach touches the line.
 
   \vspace{0.6em}
-  The same result runs backward. A client who picks a fraction $w_f$ reveals the
-  coefficient that makes it optimal:
+  The result also runs backward. If a client picks $w_f<1$, the $A$ that makes
+  that choice optimal is:
   \[
     \boxed{A=\frac{\E[g_{\Tan}]-g_f}{(1-w_f)\,\Delta t\,\sigma^2_{g,\Tan}}}
   \]
@@ -402,16 +432,28 @@ or on defaults when the interview files are absent.
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Exponential Moving Averages}
+  Both market inputs come from the SPY price through \hilite{exponential moving
+  averages} (EMAs). An EMA is a running average that gives recent prices the most
+  weight. For a price series $S_t$ and a window of $L$ trading days:
+  \[
+    \boxed{\bar S_t=\omega\,S_t+(1-\omega)\,\bar S_{t-1}\qquad\text{where}\qquad\omega=\frac{2}{L+1}}
+  \]
+  This is the mean update of L5a with $\omega=1-\lambda$, but here a window $L$
+  sets $\omega$ instead of a half-life. A 21-day window has a half-life of about
+  7 days, shorter than the 21-day half-life used in L5a.
+\end{frame}
+
 \begin{frame}{The Market Inputs}
-  Both come from SPY through the EMA of L5a, $\bar S_t=\omega S_t+(1-\omega)\bar S_{t-1}$
-  with $\omega=2/(L+1)$. With $L_{\mathrm{short}}=21$ and $L_{\mathrm{long}}=63$
-  days and a gain $G>0$, the signal is the scaled crossover:
+  With $L_{\mathrm{short}}=21$ and $L_{\mathrm{long}}=63$ days and a gain $G>0$,
+  the market-state signal is the scaled crossover of the two price EMAs:
   \[
     \boxed{\xi_t=-G\left(\frac{\bar S^{\mathrm{short}}_t}{\bar S^{\mathrm{long}}_t}-1\right)}
   \]
   \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item Falling market: $\xi_t>0$ (bearish). Rising market: $\xi_t<0$ (bullish).
-      $G$ makes $|\xi_t|\le1$ on 99\% of training days.
+    \item The short EMA responds faster. Falling market: $\xi_t>0$ (bearish).
+      Rising market: $\xi_t<0$ (bullish). $G$ makes $|\xi_t|\le1$ on 99\% of
+      training days.
     \item $\tilde g_{M,t}$: the EMA ($L_{\mathrm{growth}}=10$ days) of
       $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$. It swings by about one per year, several
       times the intercepts, so assets cross their thresholds.
