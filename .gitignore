@@ -62,3 +62,6 @@ lectures/week-7/L7a/data/my-tickers.csv
 lectures/week-7/L7a/data/my-client.toml
 lectures/week-7/L7b/data/my-tickers.csv
 lectures/week-7/L7b/data/my-client.toml
+
+# L7b income-gamble interview output: instructor demo only, the CAL example runs without it
+lectures/week-7/L7b/data/my-risk-aversion.toml

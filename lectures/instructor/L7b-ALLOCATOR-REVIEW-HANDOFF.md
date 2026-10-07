@@ -117,8 +117,9 @@ reflowing three long lines unchanged from HEAD (L7a has longer ones).
 
 ## Not changed
 
-- Setup, data loading, and the ticker list (the allocator still uses the
-  thirteen default firms, as the lecture's Examples section says).
+- Setup, data loading, and the ticker list. On October 7 the instructor made the
+  ticker cell read the L6b client list when it is present. The checks and follow-up
+  edits are in the October 7 section of `L7b-LECTURE-REVIEW-HANDOFF.md`.
 - The figure styles, including the trading-day-index x axes in the Task 1
   figure.
 - The `cd` variable name, which shadows `Base.cd` but works.

@@ -34,10 +34,32 @@
   with the 2025 and eCornell versions. The handoff's October 3 section records
   the details. L13a is paused (the material may not stay there). Do not edit
   week-13 files. Open items are in `lectures/instructor/L13a-PINNED-ISSUES.md`.
-- L7b lecture polish round: paused after the opening assessment (8.2/10) on
-  October 3. No polish edits yet. Resume from
-  [the review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md) at step 1
-  (Utility over Holdings structure).
+- L7b lecture polish round: opened October 3 (8.2/10) and paused. On October 6 a
+  polish, voice, and navigation pass was applied in one round (8.3 to 9.0), and
+  the instructor approved it that day. The deck was synced the same day. Both
+  were released in week-07.1. See
+  [the review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md) for the
+  changes and the open items (empty-basket budget, companion and package).
+- October 7 L7b income-gamble interview: `lectures/week-7/L7b/interview/` runs
+  the published Barsky–Juster–Kimball–Shapiro (1997) income gambles in student
+  wording. The instructor chose them because they are published. Two refinement
+  questions in the same form, labeled as our extension, follow the six published
+  categories, and `income-gamble.jl` brackets r̄ (= A) into the gitignored
+  `data/my-risk-aversion.toml`, which the CAL example's Task 3 reads. The cut is δ,
+  because λ is the Cobb–Douglas multiplier. Do not swap in an unpublished
+  questionnaire, and keep the inflation sentence on every screen. The handoff's
+  October 7 section has the details. The deck frame is still to do.
+- October 7 CES limits companion pass: the instructor asked for a polish,
+  voice, and organization pass if the notebook scored below 9. It opened at 7.7
+  (Codex 8.0), so the pass was applied in one round, closing at 9.1 (Codex 9.2).
+  The pass makes the limit at small elasticity exactly the minimum, labels the
+  no-floor box for large elasticity, and changes μ to the lecture's λ. The three
+  limits are now H3s under one H2. The instructor approved it the same day, and it
+  was released in week-07.1. See
+  [the review record](lectures/instructor/L7b-CES-LIMITS-REVIEW-HANDOFF.md).
+- October 7 release: `week-07.1` ships the complete week (L7a and L7b). The
+  [release record](lectures/instructor/WEEK-07.1-RELEASE-HANDOFF.md) lists the
+  checks and the items still open, including the deck's interview frame.
 
 ## Lecture and Example Notebooks
 

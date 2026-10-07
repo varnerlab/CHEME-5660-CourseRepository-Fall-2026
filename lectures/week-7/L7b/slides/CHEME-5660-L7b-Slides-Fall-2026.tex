@@ -312,15 +312,16 @@ infers the expected returns that make the market's weights optimal.
 \begin{frame}{Utility over Holdings}
   Every investor so far holds the same risky fund. Instead, ask a
   consumer-choice question: given a budget and today's prices, which holdings
-  does the investor prefer most? At time $t$, with prices $S_i(t)$ (USD per
-  share) and wealth $\WP(t)$ (USD), choose the share counts $n_i\ge0$:
-  \[
-    \boxed{\operatorname*{maximize}_{n_1,\ldots,n_{\np}}\;U(n_1,\ldots,n_{\np})
-      \qquad\text{subject to}\qquad\sum_{i\in\mathcal{P}}n_i\,S_i(t)=\WP(t)}
-  \]
-  This is a \hilite{holding utility}, a preference over the shares held today at
-  today's prices. It has no variance term. Risk enters through the preference
-  weights, which depend on the SIM betas and the state of the market.
+  does the investor prefer most?
+
+  \vspace{0.8em}
+  The investor chooses share counts that maximize a \hilite{holding utility}, a
+  preference over the shares held today at today's prices.
+
+  \vspace{0.8em}
+  Unlike the mean-variance utility, a holding utility has no variance term. Risk
+  enters through the preference weights, which depend on the SIM betas and the
+  state of the market.
 \end{frame}
 
 \begin{frame}{Cobb–Douglas Utility}
@@ -334,10 +335,11 @@ infers the expected returns that make the market's weights optimal.
       &n_i\ge n_{\min}\quad\forall\,i\in\mathcal{P}&&\quad\text{(share floor)}
     \end{aligned}}
   \]
-  The floor keeps the utility finite, because for $\gamma_i<0$ the term
-  $n_i^{\gamma_i}$ grows without bound as $n_i\to0$. The sign of $\gamma_i$ splits
-  the assets in two: the \hilite{preferred set} $\Ap=\{i:\gamma_i>0\}$ is the
-  basket, and the rest form the \hilite{non-preferred set} $\Am=\{i:\gamma_i\le0\}$.
+  where $n_i$ is the share count of asset $i$ in the asset set $\mathcal{P}$,
+  $S_i(t)$ its price (USD per share), and $\WP(t)$ the wealth (USD). The floor
+  keeps $U$ finite, because $n_i^{\gamma_i}\to\infty$ as $n_i\to0$ when
+  $\gamma_i<0$. The \hilite{preferred set} $\Ap=\{i:\gamma_i>0\}$ is the basket,
+  and the rest form the \hilite{non-preferred set} $\Am=\{i:\gamma_i\le0\}$.
 \end{frame}
 
 \begin{frame}{Cobb–Douglas Utility: Floors and Net Budget}
@@ -365,6 +367,7 @@ infers the expected returns that make the market's weights optimal.
 
 \begin{frame}{Cobb–Douglas Utility: Allocation}
   \setlength{\jot}{0pt}
+  Adding the multiplier $\lambda$ for the net budget gives:
   \[
     \begin{aligned}
       \mathcal{L}&=\textstyle\sum_{i\in\Ap}\gamma_i\ln n_i-\lambda\bigl(\sum_{i\in\Ap}n_iS_i(t)-\Wadj\bigr)
@@ -385,25 +388,26 @@ infers the expected returns that make the market's weights optimal.
       \cdot\underbrace{\frac{\Wadj}{S_i(t)}}_{\text{budget in shares}}\quad(i\in\Ap),
       \quad n_i^\star=n_{\min}\quad(i\in\Am)}
   \]
-  If a preferred count falls below $n_{\min}$, pin it at the floor and solve again
-  with the rest. The dollar weight within $\Wadj$ is $\gamma_i/\sum_j\gamma_j$.
+  If a preferred count falls below $n_{\min}$, pin it at the floor, subtract its
+  cost from $\Wadj$, and solve again. With no binding floor, dollars are
+  proportional to $\gamma_i$.
 \end{frame}
 
 \begin{frame}{CES Utility: A Concentration Dial}
-  The elasticity $\eta>0$ controls how willingly the allocator trades one
-  preferred asset for another. For $\eta\ne1$:
+  CES adds one parameter to Cobb--Douglas, the elasticity $\eta>0$. It controls
+  how willingly the allocator trades one preferred asset for another. For $\eta\ne1$:
   \[
     U_{\mathrm{CES}}=\Bigl(\sum_{i\in\Ap}\gamma_i\,n_i^{(\eta-1)/\eta}\Bigr)^{\eta/(\eta-1)}
     \qquad
     \boxed{n_i^\star=\Wadj\;\frac{\bigl(\gamma_i/S_i(t)\bigr)^{\eta}}
       {\sum_{j\in\Ap}S_j(t)\bigl(\gamma_j/S_j(t)\bigr)^{\eta}}\quad(i\in\Ap)}
   \]
-  Share counts are proportional to the \emph{bang for the buck}
-  $\gamma_i/S_i(t)$ raised to $\eta$, with the same floor check. Three limits:
+  With the same floor check, share counts above the floors are proportional to
+  the \emph{bang for the buck} $\gamma_i/S_i(t)$ raised to $\eta$. Three limits:
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Unit elasticity} ($\eta\to1$): the Cobb--Douglas allocation.
-    \item \hilite{Large elasticity} ($\eta\to\infty$): every other asset falls to
-      its floor, and the rest goes to the largest $\gamma_i/S_i(t)$, when unique.
+    \item \hilite{Large elasticity} ($\eta\to\infty$): the asset with the largest
+      $\gamma_i/S_i(t)$, when unique, gets the whole budget above the floors.
     \item \hilite{Small elasticity} ($\eta\to0^+$): equal share counts of every
       preferred asset.
   \end{itemize}
@@ -420,8 +424,8 @@ infers the expected returns that make the market's weights optimal.
   \]
   The $\tanh$ keeps the weight in $(-1,1)$. The argument equals
   $(\alpha_i+\beta_i\tilde g_{M,t})/\beta_i^{\xi_t}$, the SIM's expected growth of
-  asset $i$ in today's market divided by $\beta_i^{\xi_t}$. The model assumes
-  $\beta_i>0$.
+  asset $i$ in today's market divided by $\beta_i^{\xi_t}$, made dimensionless by a
+  one-year horizon. The model assumes $\beta_i>0$.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Which assets belong in the basket?} $\gamma_i(t)>0$ exactly when
       $\tilde g_{M,t}>-\alpha_i/\beta_i$. A weak market keeps only the assets with
