@@ -128,7 +128,7 @@ function replay(answers::Vector{String})
         elseif (category < 6) && (refinements < NUMBER_OF_REFINEMENTS)
             REFINEMENT_NEXT_CUT[(accepted, refused)]
         else
-            error("the interview ended after $(length(asked)) answers; $(length(answers)) were given")
+            error("the interview ended after $(length(asked)) answers, but $(length(answers)) were given")
         end
         isnothing(category) || (refinements += 1);
 

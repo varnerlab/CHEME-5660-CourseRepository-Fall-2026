@@ -632,3 +632,117 @@ b6799584d334…  CHEME-5660-L7b-Lecture-Utility-Allocation-Fall-2026.ipynb
 
 **Open.** The empty-basket budget question and the deck's interview frame, as above. Release:
 week-07.2.
+
+## October 9, last: re-score after the fixes (approved October 9)
+
+The instructor asked: "So are at 9 or above on these assets?" The four reviewers were rerun on
+the committed files (`799f53e`) with the same rubric. They were told not to re-raise declined
+items and to state what any declined item still cost.
+
+| File | Before the fixes | Re-score | Reviewer's estimate after this round |
+| --- | ---: | ---: | ---: |
+| Interview | 8.5 | 9.2 | about 9.4 |
+| CES limits | 9.1 | 9.1 | 9.1 or above |
+| Lecture | 9.0 | 9.0 (cross-file check) | 9.0 |
+| SIM reference | 8.2 | 8.9 | about 9.1 |
+| CAL example | 8.0 | 8.8 | about 9.0 |
+| Algorithm notebook | 7.2 | 8.6 | about 9.0 |
+| Allocator | 7.6 | 8.3 (8.8 without length) | about 8.6 (9.0 without length) |
+
+Every finding was checked against the files and stored outputs. The previews are 18 to 20, and
+the instructor approved them ("Apply"). Only markdown sources changed. No code or output changed.
+
+**Errors in text written earlier on October 9.**
+
+- *CAL `4b562687`.* "The first three printed numbers" pointed at the weight table, which prints
+  first. It now names $g_{f}$, $\mathbb{E}[g_{\mathcal{T}}]$, and $\sigma_{g,\mathcal{T}}$.
+- *Algorithm `93c4702d`.* "Always has $\theta\geq1$, so step 2 never accepts it" gave the wrong
+  reason. $\theta=1$ passes the tolerance. The weight test rejects the allocation in step 2, and
+  $\theta\geq1$ sends it to the upper end in step 3.
+- *SIM reference `d2204dd6`.* "$w_{i}\leq1$" holds for every solution. It is now $w_{i}=1$.
+- *`interview.md`.* The ticker lines replace the default list, so "adds" became "swaps in".
+
+**Other fixes.**
+
+- *Lecture `a7c3e5d1` and deck.* The Power row read $w^{\tau}$ with $\tau>0$, which reaches only
+  $\bar{r}<1$. Yet the lecture's $-1/w$ ($\bar{r}=2$) and the interview's $\bar{r}$ up to 28 are
+  called power utility. It now reads $w^{\tau}/\tau$ with $\tau\neq0$, and $r(w)$ and $\bar{r}$ are
+  unchanged.
+- *"Floor binds" in plain words.* "No preferred floor binds" became "every preferred share count
+  stays above its floor", the lecture's own phrase in the same cell. This was applied in:
+  - lecture `1090dc65`;
+  - CES `6446f896` and `924cd712`;
+  - allocator `9fec5b93` (twice);
+  - the deck's Cobb–Douglas frame.
+
+  Also: SIM reference "makes the floor inactive" and allocator "so that it never binds" became
+  "a floor every long-only portfolio meets".
+- *CAL.*
+  - `ee5b0baf` says why the sweep runs ("One solve would do, as [the notebook] explains, so the
+    sweep is a check", word-neutral).
+  - `bd63a009` names the 100% skip the code already makes.
+  - `7b019fdb` drops "of Task 2" inside Task 2.
+- *Algorithm.*
+  - The SIM-3 box is named "One risky direction", as on the reference page.
+  - "If the target asks for more" became "needs a holding above 100%".
+  - `c7d4e2a9` dropped "and the examples use it", because the CAL example sweeps. It also dropped
+    a third "the allocator runs both" sentence.
+  - `0978b1ef` replaced its restatement of the rule with "one added rule for the 100% limit".
+  - LO 1 and takeaway 3 were split into two sentences each.
+- *Allocator* (fixes allowed under the freeze: math, technical, phrasing).
+  - $W_{\text{adj}}$ used $W_{\mathcal{P}}(0)$ with day-$t$ prices. It now uses
+    $W_{\mathcal{P}}(t)$, as in the lecture.
+  - "The commented-out lines" is now "The last commented-out lines", because the cell has two
+    blocks.
+  - "The line under the table" is now "first" and "second", because it named two lines.
+  - "Drops below the thresholds of the firms whose thresholds sit closest to it" became "falls
+    below another firm's threshold".
+  - The repeated "For the adaptive runs" and "For the buy-and-hold runs" labels were removed.
+  - "Finds the tangent point itself" became "directly".
+  - "A one-solve shortcut of the tangent continuation algorithm" now links the shortcut section,
+    like the CAL example.
+  - "With both" became "with the adaptive runs".
+- *`income-gamble.jl`.* A clause semicolon in an error message was replaced.
+
+**Not done.**
+
+- *CAL.* Cutting the Task 2 derivation recap (about 55 words), because it removes content and is
+  not needed for 9. The "doubling the excess growth" bullet stays, because it is the instructor's
+  style of describing what changes as an input moves. The LO wording "the one the 2025 data would
+  have made" also stays.
+- *Allocator.*
+  - The printed "a preferred floor binds" and the code-comment jargon (ray, warm start, cap). Both
+    need a re-run of the frozen notebook.
+  - The claims that hold only for the default list. Each of those cells already says results may
+    differ.
+  - The allocator's length. The instructor's freeze rules it out, so 9.0 without length is the
+    allocator's bar.
+- *Lecture.* "The mean update of L5a with $\omega=1-\lambda$" uses L5a's $\lambda$ while this
+  lecture's $\lambda$ is the Cobb–Douglas multiplier. It is the instructor's sentence.
+
+**Checks.**
+
+- All six notebooks validate, and only the listed markdown cells changed.
+- 49 relative links resolve, including both `#The-one-solve-shortcut` anchors. One link went with
+  a cut sentence.
+- All 99 L7b markdown cells render through KaTeX.
+- No "bind", "inactive", "warm start", or "ray" remains in L7b markdown prose.
+- The deck has 27 pages, 0 overfull and 0 underfull boxes, and slides 12 and 19 were checked
+  visually.
+
+SHA-256 prefixes:
+
+```
+fc8f080fbf24…  CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb
+d57bb90877e0…  CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb
+cae302a03b37…  CHEME-5660-L7b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb
+498373ca9656…  CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb
+39f45d98abcf…  CHEME-5660-L7b-Lecture-Utility-Allocation-Fall-2026.ipynb
+00e1536d80fe…  CHEME-5660-L7b-Advanced-CES-Limits-Fall-2026.ipynb
+```
+
+**Closed and marked reviewed (October 9).** The instructor ruled on the allocator: "I'm not cutting
+the allocator text - you are wrong there, so we are done. Mark the L7b as reviewed". Its length is
+not a deduction, so its score stands at 8.8 without length, about 9.0 after this round. The
+post-round scores above are the reviewers' estimates and were not re-measured. Committed and
+pushed with no release. The week-07.2 release is still to do.

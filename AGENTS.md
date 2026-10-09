@@ -660,8 +660,8 @@
   estimation-risk links and closing paragraph. The estimation-risk links still
   pointed to its pre-relocation L5b paths. The estimation-risk notebook ran in
   place with no errors, and its stored outputs were left as reviewed.
-- Open for the L7b review: the L7b lecture cites "the ridge estimator of L6a's
-  optional material," which no longer exists in live material.
+- Closed in the L7b review (October 9): the L7b lecture no longer cites the
+  ridge estimator.
 
 ## Completed L6b advanced estimation-risk review
 
@@ -843,6 +843,31 @@
   companion reviewed the same day. The L6b copy shipped in week-06.2 and still
   has the earlier text. No proposals remain pending; do not restart unless
   another round is requested.
+
+## Completed L7b review
+
+- The instructor marked the L7b material reviewed October 9, 2026. This covers
+  the lecture, both examples, the tangent portfolio notebook, the SIM reference
+  page, the CES limits companion, the income-gamble interview, and the deck.
+  The last round re-scored the committed files. Interview 9.2, CES limits 9.1,
+  and the lecture 9.0 were at or above the bar. The SIM reference was 8.9, the
+  CAL example 8.8, the tangent portfolio notebook 8.6, and the allocator 8.3
+  (8.8 without length). The approved fixes were then applied. The reviewers
+  estimate about 9.0 to 9.1 for the SIM reference, CAL example, and tangent
+  notebook. These estimates were not re-measured, because the instructor
+  closed the round.
+- The allocator's length is not a deduction. The instructor: "I'm not cutting
+  the allocator text - you are wrong there". Do not score it down for density
+  or propose cuts. Change only mathematical mistakes, technical errors, and
+  awkward phrasing.
+- The October 9 sections of
+  [the lecture review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md)
+  list every change, the declined items, and the checks. Still open:
+  - the empty-basket versus budget-equality question;
+  - the deck's interview frame;
+  - the week-07.2 release, which ships everything committed since week-07.1.
+- No proposals remain pending. Do not restart unless another round is
+  requested.
 
 ## Interactive notebook polishing
 

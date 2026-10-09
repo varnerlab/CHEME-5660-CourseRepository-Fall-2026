@@ -260,7 +260,7 @@ higher Risk Score plays the role of a smaller $A$.
         \midrule
         Log & $\ln w$ & $1/w$ & $1$\\
         Linear & $a\,w+b$ & $0$ & $0$\\
-        Power & $w^{\tau}$ & $(1-\tau)/w$ & $1-\tau$\\
+        Power & $w^{\tau}/\tau$ & $(1-\tau)/w$ & $1-\tau$\\
         \bottomrule
       \end{tabular}}
     \end{column}
@@ -420,7 +420,7 @@ higher Risk Score plays the role of a smaller $A$.
       \quad n_i^\star=n_{\min}\quad(i\in\Am)}
   \]
   If a preferred count falls below $n_{\min}$, pin it at the floor, subtract its
-  cost from $\Wadj$, and solve again. With no binding floor, dollars are
+  cost from $\Wadj$, and solve again. If every preferred count stays above its floor, dollars are
   proportional to $\gamma_i$.
 \end{frame}
 

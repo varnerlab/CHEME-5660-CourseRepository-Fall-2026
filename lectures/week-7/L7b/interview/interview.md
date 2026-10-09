@@ -97,7 +97,7 @@ The script replays the questions, prints the published category with its HRS sha
 
 ## Step 6: Run the example in class
 
-Open [the capital allocation line example](../CHEME-5660-L7b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb) and run it from the top. If `data/my-client.toml` has been copied from L6b, it also uses the client's risk-free fraction. Uncommenting its ticker-file lines adds the client's firms from `data/my-tickers.csv`.
+Open [the capital allocation line example](../CHEME-5660-L7b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb) and run it from the top. If `data/my-client.toml` has been copied from L6b, it also uses the client's risk-free fraction. Uncommenting its ticker-file lines swaps in the client's firms from `data/my-tickers.csv`.
 
 __What to look for:__
 
