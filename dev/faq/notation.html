@@ -2017,55 +2017,60 @@
 <tbody>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\gamma_i(t)</annotation></semantics></math></td>
-<td>Preference weight of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> on day <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>tanh</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mi>i</mi></msub><mi>/</mi><msubsup><mi>β</mi><mi>i</mi><msub><mi>ξ</mi><mi>t</mi></msub></msubsup><mo>+</mo><msubsup><mi>β</mi><mi>i</mi><mrow><mn>1</mn><mo>−</mo><msub><mi>ξ</mi><mi>t</mi></msub></mrow></msubsup><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tanh\bigl(\alpha_i/\beta_i^{\xi_t}+\beta_i^{1-\xi_t}\tilde g_{M,t}\bigr)</annotation></semantics></math>.</td>
+<td>Preference weight of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> on day <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>tanh</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>h</mi><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>α</mi><mi>i</mi></msub><mi>/</mi><msubsup><mi>β</mi><mi>i</mi><msub><mi>ξ</mi><mi>t</mi></msub></msubsup><mo>+</mo><msubsup><mi>β</mi><mi>i</mi><mrow><mn>1</mn><mo>−</mo><msub><mi>ξ</mi><mi>t</mi></msub></mrow></msubsup><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tanh\bigl(h\,[\alpha_i/\beta_i^{\xi_t}+\beta_i^{1-\xi_t}\tilde g_{M,t}]\bigr)</annotation></semantics></math>.</td>
 <td>1</td>
 </tr>
 <tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math></td>
+<td>Horizon that makes the argument of the preference model dimensionless, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">h=1</annotation></semantics></math> year.</td>
+<td>yr</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\beta_i</annotation></semantics></math></td>
 <td>L6b SIM intercept and beta. The model assumes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\beta_i&gt;0</annotation></semantics></math>.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{M,t}</annotation></semantics></math></td>
-<td>Recent market growth rate: the 10-day EMA of daily SPY growth rates.</td>
+<td>Recent market growth rate: the 252-day EMA of daily SPY growth rates.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\xi_t</annotation></semantics></math></td>
 <td>Market-state signal: positive (bearish) after a falling market and negative (bullish) after a rising one.</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">g_{M,t}</annotation></semantics></math></td>
 <td>Daily market growth rate <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mi>/</mi><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\ln(S_t/S_{t-1})/\Delta t</annotation></semantics></math>.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\bar S_t</annotation></semantics></math></td>
 <td>SPY share price and its EMA.</td>
 <td>USD/share</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math></td>
 <td>EMA window in trading days and weight on the newest price, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>=</mo><mn>2</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>L</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\omega=2/(L+1)</annotation></semantics></math>. L5a’s decay factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> corresponds to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>ω</mi></mrow><annotation encoding="application/x-tex">1-\omega</annotation></semantics></math>.</td>
 <td>Days; 1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{short}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">g</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{long}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{growth}}</annotation></semantics></math></td>
-<td>EMA windows of 21, 63, and 10 trading days.</td>
+<td>EMA windows of 21, 63, and 252 trading days.</td>
 <td>Days</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></msubsup><annotation encoding="application/x-tex">\bar S_t^{\mathrm{short}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">g</mi></mrow></msubsup><annotation encoding="application/x-tex">\bar S_t^{\mathrm{long}}</annotation></semantics></math></td>
 <td>Short and long price EMAs, whose crossover sets <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\xi_t</annotation></semantics></math>.</td>
 <td>USD/share</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math></td>
 <td>Gain chosen on the training data so that <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>ξ</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">|</mo><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lvert\xi_t\rvert\leq1</annotation></semantics></math> on 99% of training days.</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>α</mi><mi>i</mi></msub><mi>/</mi><msub><mi>β</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">-\alpha_i/\beta_i</annotation></semantics></math></td>
 <td>Basket threshold: asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> enters when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{M,t}</annotation></semantics></math> exceeds it.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
