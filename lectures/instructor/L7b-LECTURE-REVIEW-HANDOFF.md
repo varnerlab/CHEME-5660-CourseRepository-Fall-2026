@@ -484,3 +484,151 @@ preview build exactly. Deck SHA-256:
   floors plus cash leaves the boxed budget equality unmet. This is the instructor's model call.
 - *Deck interview frame* (from October 7). It is still a separate step.
 - *Release.* These changes and the October 8 changes need the week-07.2 fix release.
+
+## October 9, later: L7b-wide review, fixes, and the algorithm notebook (approved October 9)
+
+After the lecture round, the instructor asked: "Is there anything in the ... L7b materials that is
+not at a 9 out 10? Any obvious things that we need to change?" Four read-only reviewers scored
+the files. Every must-fix item was checked against the files and stored outputs before it was
+reported.
+
+| File | Score | Main problem |
+| --- | ---: | --- |
+| Lecture | 9.0 | the interview question count |
+| CES limits (advanced) | 9.1 (Oct 7) | two stale facts |
+| Interview (`interview.md` and script) | 8.5 | the question count, gaps for a live run |
+| SIM reference page | 8.2 | repeated the algorithm notebook's error |
+| CAL example | 8.0 | stored outputs from a run with a client file |
+| Allocator example | 7.6 | length, three misleading phrases |
+| Algorithm notebook | 7.2 | contradicted itself |
+
+**Instructor decisions.**
+
+- "Fix 1 - 6." Approved from previews 12 to 14 ("Apply all"), including the labeled extras.
+- *The allocator example is frozen.* "Keep the allocator the same => I like this content, and when
+  you cut stuff - you make it shitty ... If there are obvious mathematical mistakes, ok - but
+  otherwise, short of awkward phrasing or technical issue - leave this alone." Its length is not a
+  to-do. Change only mathematical mistakes, technical errors, and awkward phrasing, and reword
+  rather than cut.
+- *Algorithm notebook polish.* "we **really** need to get the single step versus multistep shit
+  correct, I have never understood the single step shortcut algo, its seems like magical bullshit
+  to me". The instructor chose to build the notebook on the amount-times-mix explanation, keep the
+  full pseudocode as the second method and a check, and add a small made-up two-asset example.
+- *Plain wording.* On the draft: "what does 'no cap binds' mean? this sounds like typical AI
+  gibberish - speak ... english". The bound $w_{i}\leq1$ is now introduced as "the bounds keep
+  each risky holding between zero and 100% of our initial wealth", and every "no cap binds" or
+  "below the caps" became "no holding hits the 100% limit". "Left the line/ray" became "stops
+  being a scaled copy of the tangent portfolio". "Holds with equality" became "we hit the target
+  exactly". Approved ("Agree").
+
+**Fixes 1 to 6 (applied).**
+
+1. *CAL example.* Commit `f9d95b5` stored outputs from a run with the instructor's
+   `data/my-client.toml` (client $w_{f}=0$, implied $A=4.96$), although the prose and code default
+   say a quarter in T-bills. It was re-executed with no client files (24 s, no errors). Every output
+   now matches week-07.1 (client $w_{f}=0.25$, implied $A=6.61$) except the `U` column, whose
+   formatter still pointed at the old column numbers and now reads `[2, 4, 5, 6, 7]`. Text: "The
+   first three printed numbers" (four are printed), "the lecture's Concept Review", "The
+   client's $A$ rests on the 2014 to 2024 estimates", and one clause semicolon.
+2. *Algorithm notebook and SIM reference.* Handled in the algorithm round below.
+3. *Question count.* A category-6 client stops after three answers, so "four or five questions"
+   became "three to five" in lecture cells `40320cbd` and `9323c463` and in `interview.md`.
+4. *Interview Step 6.* The CAL example reads only the client's risk-free fraction unless its
+   ticker-file lines are uncommented. The after-class note gives the full `git checkout` path and
+   names the ignored file. Saving the example after a live run is how its outputs went stale.
+5. *CES limits.* "which sweeps the elasticity" became "which runs CES at $\eta = 0.5$ next to
+   Cobb–Douglas", and "the correlation of L5a" became L5b (L5a's $\rho$ is the scaled NPV).
+6. *Allocator, seven cells, text only.*
+   - "nothing pulls it out of the market during a drawdown", which contradicted the empty-basket
+     rule (the basket emptied once, the day after the SPY low), became "the engine has no
+     stop-loss rule".
+   - "the Task 2 table" for $\sigma_{g}$ became "the expected-performance table" in two cells.
+   - "a few tenths per year" became "a few tenths of a $\mathrm{year}^{-1}$".
+   - The $h$ sentence now says "Since $h = 1$, the code below omits it."
+   - Three clause semicolons became periods.
+
+**Algorithm notebook (applied).** New title: "The Tangent Portfolio: One Solve or a Search?". The
+cell ids are kept, and one new cell, `c7d4e2a9`, was added. The prose is about the same length as
+before (about 1,980 words), so the material was reorganized, not cut.
+
+- *How much, and which mix?* SIM-2 in excess-growth form. The split $\mathbf{w}=\theta\,\mathbf{u}$
+  is followed by a one-step-per-line derivation of variance $=s^{2}/\mathrm{SR}(\mathbf{u})^{2}$:
+  the target only scales the variance, so every target picks the maximum-Sharpe mix. Then come
+  "What about the 100% limit?", the boxed SIM-3, and the example. The example uses uncorrelated
+  assets with excess growth 0.10 and 0.05 and variances 0.04 and 0.01, giving
+  $\mathbf{w}_{\mathcal{T}}=(1/3,2/3)$ at $s=0.02$, $0.04$, and $1/15$.
+- *The one-solve shortcut* has three steps. Because $\theta$ is a straight line through zero, the
+  same solve also gives the tangent target, $g_{\mathcal{T}}=\hat{\mathbf{g}}_{\mathrm{SIM}}^{\top}\mathbf{w}_{\mathcal{T}}$.
+  This removes the false claim that the shortcut "does not give the tangent point itself".
+- *The search by continuation* keeps the instructor's L7a pseudocode lines unchanged. Only the
+  October 8 rule's wording changed. "Why does this work?" now uses the weighted-average argument
+  ($g_{\mathcal{T}}\leq g_{U}$), and the residual halving is qualified to the range where no
+  holding hits the limit.
+- *How does this differ from the lecture?* keeps the counterexample. "Can we converge faster?" was
+  removed, because its linear jump is the one-solve shortcut.
+- *One solve or a search?* (new) is a table of solves, why each method works, how each gets
+  $\mathbf{w}_{\mathcal{T}}$ and $g_{\mathcal{T}}$, and what each must check.
+- *Summary.* New takeaways, with no equations.
+
+SIM reference page, four cells:
+- The opener now reads "two portfolio problems ... and the one result".
+- "The derivations are in the L7a lecture" was replaced with a link to the algorithm notebook.
+- SIM-3 is stated in plain words, without "proves both and locates the tangent point itself".
+- The where-used table names the continuation check.
+- "symbols shared by the three problems" became "symbols used on this page".
+
+CAL cell `ee5b0baf` has the same wording, and its semicolon is gone.
+
+**Checks.**
+
+- All six changed notebooks validate, and only the intended cells changed.
+- All 50 relative links in L7b resolve, including `#The-one-solve-shortcut`.
+- All 99 markdown cells of the changed notebooks render through KaTeX with zero errors.
+- `data/` holds only the archive.
+- Codex verified the draft:
+  - The derivation, and the example as a constrained QP.
+  - The tangent-target algebra, and both examples' checks (risky fraction above 0.01, every
+    weight below one).
+  - That the pseudocode is unchanged, and the counterexample (true tangent $(91/171, 80/171)$,
+    Sharpe 2.09 against 1.00).
+  - It scored the HEAD notebook 7.5 and the draft 8.7, and its corrections were applied before
+    the instructor's review.
+- A final Codex check of the applied notebook scored it 8.0 at HEAD and 8.8 after the rewrite.
+  By dimension: correctness 7.8 to 8.6, organization 8.0 to 9.2, flow 7.7 to 9.2, presentation
+  8.5 to 9.0, density 8.0 to 9.0, navigation 9.0 to 9.2. Its two remaining items were fixed with
+  the instructor's approval ("yes"):
+  - The 100% test in steps 2 and 3 now has a weight tolerance $0<\epsilon_{w}<\epsilon$ in the
+    Initialize line, matching the allocator code ($1-10^{-6}$ with $\epsilon=10^{-3}$). Without
+    it, "below one" would accept 0.999999999.
+  - A sentence covers a tangent portfolio that holds a single asset, which reaches 100% exactly
+    at the tangent point.
+  - "Warm-started" became "that starts from the previous solution".
+- SHA-256 prefixes at the end of the round:
+
+```
+4953fb69d05f…  CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb
+303cf8f774ba…  CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb
+6667753909fc…  CHEME-5660-L7b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb
+8085381187f1…  CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb
+b6799584d334…  CHEME-5660-L7b-Lecture-Utility-Allocation-Fall-2026.ipynb
+```
+
+**Not done (declined or out of scope).**
+
+- *Allocator.* The output reads "empty basket on 1 days". Fixing it needs a code change and a
+  re-run, and the notebook is frozen.
+- *CAL.* Not done:
+  - The $A = 2$ row levers $\mathcal{T}$ to 1.33 of wealth in NVDA, beyond the sweep's limit.
+  - The lend/borrow rule is stated four times.
+  - The Task 3 title is a question.
+  - $\tau$ in a code comment means the one-year horizon.
+- *Interview script.* Not done:
+  - The script ignores unknown flags, so a `--dryrun` typo writes the file.
+  - The utility form is not stated.
+  - "Halve the range of cuts" is loose.
+- *SIM reference.* The where-used table is incomplete for the L7a examples.
+- *L7a lecture.* The SIM-3 reason still says "Scaling $\mathbf{w}$ by $c>0$ ...". The instructor's
+  rule forbids links from L7a into L7b, so L7a was not touched.
+
+**Open.** The empty-basket budget question and the deck's interview frame, as above. Release:
+week-07.2.

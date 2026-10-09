@@ -83,7 +83,10 @@
   gained H3s in the siblings' imperative or question form, and the wealth
   reading is a labeled-bullet "What do we see?". See
   [the review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
-  for the scores, changes, declined Codex items, and checks.
+  for the scores, changes, declined Codex items, and checks. On October 9 the
+  instructor froze this notebook: "I like this content, and when you cut stuff
+  - you make it shitty". Change only mathematical mistakes, technical errors,
+  and awkward phrasing, and reword rather than cut. Its length is not a to-do.
 - October 8 tangent-continuation algorithm notebook: the October 6 L7a lecture
   edit replaced the boxed common-risky-direction result (SIM-3) with the
   continuation pseudocode, while the L7a tangent example and both L7b examples
@@ -100,7 +103,14 @@
   runs the continuation as a check against the single solve (new cells 35 and
   36); both decks are synced. Not yet released (needs a week-07.2 fix release). The
   [allocator review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
-  has the checks.
+  has the checks. On October 9 the instructor, who had "never understood the
+  single step shortcut", had the notebook rewritten as "The Tangent Portfolio:
+  One Solve or a Search?". It splits the risky holdings into amount times mix,
+  so the variance is s²/SR², and every target picks the maximum-Sharpe mix. The
+  same solve gives the tangent target, ĝᵀw_T. The search keeps his pseudocode,
+  and a table compares the two methods. Write "no holding hits the 100% limit",
+  never "no cap binds" ("speak English"). See the October 9, later section of
+  [the lecture review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md).
 - October 8 SIM problem reference: the instructor found bare "SIM-1", "SIM-2",
   "SIM-3" tag references in the L7b notebooks hard to resolve, so
   `lectures/week-7/L7b/CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb`
