@@ -391,3 +391,23 @@ below was re-verified by executing a scratch copy of the notebook with a check c
 attribution); elasticity claims are already scoped to "this year" / "this path"; the 0.46
 expected Sharpe should say "first-day" weights; restore one sentence on the execution
 idealization (orders sized with the close they fill at).
+
+## 2026-10-08 (late): firm-list sensitivity, de-hardcoding, second rating
+
+The instructor switched cell 14 from the 30-firm interview list to the 13-firm default
+(interview-file branch commented out). Every hardcoded reading became false (the daily run
+went from worst to best). All "What do we see?" paragraphs and takeaway 3 were rewritten as
+pattern prose pointing at new printouts: holdings/concentration lines under the expected-
+performance table, terminal and lowest scaled wealth above the wealth plot. Added an expected-
+versus-realized Sharpe table after the scorecard (`expected_performance` is now returned by the
+Task 2 table cell). Verified against the 13-, 15-, and 30-firm lists.
+
+Second rating: Claude 8/10, Codex 7/10 (`codex-rating-output-2.md` in the session scratchpad).
+Applied from Codex, after verification: ticker-file sentence (branch is commented out); NPV is
+the discounted difference, not a shift (1767.13 − 1041.51 = 725.62 vs NPV 696.70);
+"concentrated weights carry the deepest drawdown" contradicted by GMV (w_max 0.64, smallest
+drawdown) → now keyed to expected risk σ_g; estimation-error overclaim softened; "marginal
+firms" defined; figure caption notes the signal's one-day lag. Instructor dropped the
+"(Out-of-Sample Test)" parenthetical (window chosen in-sample, Task 1 says so) and reworded
+takeaway 3 to "reports each run's wealth, drawdown, turnover, and cost". Not acted on: zero-
+cost counterpart runs, a worked basket-exit episode, restating the utility objective.
