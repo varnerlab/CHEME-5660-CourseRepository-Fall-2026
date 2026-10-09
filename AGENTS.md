@@ -92,6 +92,15 @@
   decks are synced. Not yet released (needs a week-07.2 fix release). The
   [allocator review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
   has the checks.
+- October 8 SIM problem reference: the instructor found bare "SIM-1", "SIM-2",
+  "SIM-3" tag references in the L7b notebooks hard to resolve, so
+  `lectures/week-7/L7b/CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb`
+  (markdown only) states the three problems as the L7a lecture boxes them, with a
+  where-used table. Rule: every mention of a SIM tag in L7b markdown is a link,
+  `[SIM-2](CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb)`,
+  never a bare tag. The reference links only to L7b files so it can move with the
+  tangent material. The L6b lecture keeps its own copies of the tags; the instructor
+  decided to leave L6b alone. Not yet released (needs the week-07.2 fix release).
 - October 7 release: `week-07.1` ships the complete week (L7a and L7b). The
   [release record](lectures/instructor/WEEK-07.1-RELEASE-HANDOFF.md) lists the
   checks and the items still open, including the deck's interview frame.

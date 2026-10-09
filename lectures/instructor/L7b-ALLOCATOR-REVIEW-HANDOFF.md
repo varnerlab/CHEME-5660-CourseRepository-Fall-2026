@@ -411,3 +411,18 @@ firms" defined; figure caption notes the signal's one-day lag. Instructor droppe
 "(Out-of-Sample Test)" parenthetical (window chosen in-sample, Task 1 says so) and reworded
 takeaway 3 to "reports each run's wealth, drawdown, turnover, and cost". Not acted on: zero-
 cost counterpart runs, a worked basket-exit episode, restating the utility objective.
+
+## 2026-10-08 (night): SIM problem reference notebook
+
+Instructor: "refs to SIM-1, SIM-x are really hard to find ... I suggest we have a SIM
+notebook that just describes the SIM portfolio problems." Added
+`CHEME-5660-L7b-Reference-SIM-Portfolio-Problems-Fall-2026.ipynb` (markdown only, no
+learning objectives or takeaways: notation, SIM-1, SIM-2, SIM-3 as boxed in the L7a lecture,
+a where-used table, disclaimer). Links only to L7b files so it can move with the material to
+L8d. The CAL example, the allocator example, the algorithm notebook, and the L7b lecture now
+say the problem in words and link to the reference; the algorithm notebook's own
+`\tag{SIM-3}` was removed so the week has one tagged copy per problem. The L6b lecture also defines SIM-1..3; the instructor decided the same evening to leave
+L6b alone ("they are the same problems"), so this is settled, not open.
+Link rule added the same night: every SIM-n mention in L7b markdown is a link to the
+reference (16 mentions across the lecture, both examples, and the algorithm notebook; zero
+bare). Recorded in AGENTS.md (week 7 pivot section).
