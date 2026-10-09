@@ -830,6 +830,17 @@ limitation rather than asking the instructor to repeat the style discussion.
   reporting blocks their own cells, with prose introducing the next step.
   The instructor confirmed this preference during the advanced covariance
   example review on September 14, 2026.
+- Put every `@assert` in a code cell into one block headed `# checks -` (or
+  `# checks: <what> -`), placed after the cell's printout and immediately before
+  its `# return` line, never scattered through the computation. A cell then reads
+  compute, print, checks, return. If a check applies on only one branch, set a
+  flag in the branch (for example `closed_form`) and test it inside the block; if
+  a check sits inside a table-building loop, build the table first and run the
+  check in its own loop before `pretty_table`. Precondition checks move too; the
+  accepted trade-off is that a solver error can surface before the assert's own
+  message. The instructor requested this on October 8, 2026, during the L7b
+  allocator example review, where eight cells were regrouped with outputs
+  unchanged.
 - Keep Julia function definitions in the notebook's local `src/` directory and
   load them through `Include.jl`. Give each function a proper Julia docstring
   describing its arguments, units, returned values, and assumptions. Keep the

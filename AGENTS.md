@@ -57,6 +57,41 @@
   limits are now H3s under one H2. The instructor approved it the same day, and it
   was released in week-07.1. See
   [the review record](lectures/instructor/L7b-CES-LIMITS-REVIEW-HANDOFF.md).
+- October 8 L7b allocator rework: the live demo failed (every firm non-preferred)
+  because the preference input was a 10-day EMA of annualized SPY growth. The
+  example now uses a 252-day EMA, re-solves the allocation daily and monthly
+  through 2025 with the package engine, and plots wealth against GMV, tangent,
+  and SPY buy-and-hold. Before changing any example, open last year's version
+  (Fall 2025 repository) and reproduce its behavior on the demo date. Note that
+  `lectures/week-7/L7b/data/my-tickers.csv` (gitignored) replaces the default
+  firms when present; execute with and without it. The handoff's October 8
+  section has the details and the open lecture-summary sentence.
+- October 8 allocator example polish: the instructor asked for a polish,
+  voice, and organization pass if the reworked example scored below 9. It
+  opened at 8.3 (Codex 7.9), so the pass was applied in one round, prose only,
+  with the code cells and outputs untouched. The Codex pre-review caught three
+  statements the printed outputs contradict ("same costs", GMV "spreads the
+  budget", growth-and-beta "rank market risk"), all fixed. Task 2 and Task 3
+  gained H3s in the siblings' imperative or question form, and the wealth
+  reading is a labeled-bullet "What do we see?". See
+  [the review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
+  for the scores, changes, declined Codex items, and checks.
+- October 8 tangent-continuation algorithm notebook: the October 6 L7a lecture
+  edit replaced the boxed common-risky-direction result (SIM-3) with the
+  continuation pseudocode, while the L7a tangent example and both L7b examples
+  still cite SIM-3 and find the tangent portfolio by one solve of SIM-2
+  rescaled to sum to one. The instructor chose a separate algorithm notebook
+  on the CHEME 5800 L6c Jacobi pattern (markdown only: title and three
+  objectives, derivation, pseudocode and convergence, summary), placed in L7b
+  where the comparison runs:
+  `lectures/week-7/L7b/CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb`.
+  The L7a lecture keeps SIM-2 and its continuation pseudocode and has SIM-3
+  back as its Solution paragraph, with no link into L7b (instructor rule); the
+  L7b lecture links it from the Concept Review; the allocator example runs the
+  continuation as a check against the single solve (new cells 35 and 36); both
+  decks are synced. Not yet released (needs a week-07.2 fix release). The
+  [allocator review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
+  has the checks.
 - October 7 release: `week-07.1` ships the complete week (L7a and L7b). The
   [release record](lectures/instructor/WEEK-07.1-RELEASE-HANDOFF.md) lists the
   checks and the items still open, including the deck's interview frame.
@@ -68,6 +103,7 @@
 - Use the three-underscore horizontal rule at major-section boundaries immediately before a new level-two heading, and always end the final Summary and the closing Disclaimer and Risks section with it (instructor decision, September 29, 2026). Do not use it between level-three subsections.
 - Include exactly three learning objectives in every lecture and example notebook.
 - Include exactly three key takeaways in every lecture and example notebook.
+- In code cells, put every `@assert` in one `# checks -` block immediately before the `# return` line, after the printout, never scattered through the computation (instructor decision, October 8, 2026). The style guide's "Writing and mathematical exposition" section gives the branch and table-loop cases.
 
 ## Week 5 refactor — September 18, 2026
 

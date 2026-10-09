@@ -248,3 +248,99 @@ at any η, with n_i* = max{n_min, (γ_i/(λS_i))^η}. Changes:
 
 L13a is paused at the instructor's request. Its changes and open items are in
 [L13a-PINNED-ISSUES.md](L13a-PINNED-ISSUES.md).
+
+## L7b allocator rework — October 8, 2026
+
+The instructor ran the utility-allocator example live in L7b and every firm came
+out non-preferred on the demo date (January 2, 2025). Cause: the preference
+argument used the eCornell session-2 input, a 10-day EMA of the annualized daily
+SPY growth (−0.76 per year on that date), while the firms' thresholds −α/β lie
+between −0.2 and +0.13 per year. In 2025 that input emptied the basket on 57 of
+250 days. Last year's course example (Fall 2025 L9a INFORMS) used the training
+mean (0.106 per year) and a fixed exponent, so 17 of 20 firms were preferred. The
+eCornell example re-solved the allocation every day; the 2026 example had taken
+its inputs but allocated on one day and then scanned for the first nonempty day.
+A second trigger: `data/my-tickers.csv` (gitignored, 30 client firms from the
+October 4 interview) silently replaces the 13 default firms, and the old tangent
+solve at a hardcoded target of 0.30 per year pushes MSFT to its upper bound on
+that list.
+
+Instructor decisions (same day): keep the tanh model and the daily crossover
+signal; replace the 10-day window with a longer one; re-solve the share counts
+through 2025 daily and monthly; one wealth plot with adaptive daily, adaptive
+monthly, one CES run, GMV and tangent buy-and-hold, and SPY; fewer tables; make
+the tangent estimate explicit.
+
+| File | Change |
+| --- | --- |
+| `CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb` | Rebuilt, three tasks, 53 cells, executed on the default firms. Window `L_growth = 252` (EMA half-life about 87 days): basket nonempty on 249 of 250 days, 13 of 13 preferred on January 2. Task 1 computes lagged inputs for every 2025 day with the perturbation lag check. Task 2 computes the daily preference matrix, the day-one table (with bearish and bullish columns), the basket count, the Cobb–Douglas closed form against the package (floor, nonempty-basket, and CES-at-one checks), and the GMV and tangent weights (tangent from one risky/risk-free solve at a target a quarter of the way from `g_f` to the largest SIM mean, normalized, with PD, status, bound, and sign asserts). Task 3 runs `run_utility_engine` with no cap or breaker: adaptive daily, adaptive monthly, CES monthly (η = 0.5), GMV, tangent, SPY; wealth plot, weights area chart, scorecard. Three tables (day-one preferences, scorecard, plus printed stats), five figures. |
+| `CHEME-5660-L7b-Lecture-Utility-Allocation-Fall-2026.ipynb` | Cells 1 and 11 only: window 10 → 252 with the half-life sentence, the behavior paragraph, and the example description. The instructor's uncommitted edits to the utility and profile cells are untouched. |
+| `slides/...tex` | "Lectures and Examples" blurb and "The Market Inputs" bullet. Rebuilt, 24 pages, 0 overfull. |
+
+Window scan (lagged EMA of annualized SPY growth, 2025, default firms): L = 10
+empties the basket on 57 days, L = 63 on 33, L = 126 on 14, L = 252 on 1, L = 504
+on 0. The client list with L = 252: 30 of 30 preferred on January 2, empty on 8
+days. The notebook was also executed on the client list (not committed) and ran
+clean; with those firms the tangent portfolio is MSFT 70%, APH 17%, V 12%.
+
+Results on the default firms (committed outputs): adaptive daily 1767 USD, 25.5%
+drawdown, turnover 10.9, cost 10.5 USD; adaptive monthly 1644 / 27.0%; CES monthly
+1553 / 25.6%; GMV 1382 / 12.9%; tangent 1275 / 30.6%; SPY 1166 / 19.0%. On the
+client firms the ordering differs (tangent 1283, monthly 1225, CES 1206, SPY 1166,
+daily 1051, GMV 1046), so the interpretation prose describes mechanisms and does
+not claim a winner.
+
+Codex pre-review of the spec (scratchpad `codex/prereview-out.md`) accepted items:
+half-life wording instead of "same horizon as the SIM rates"; the window is a
+teaching choice made after looking at 2025; no named helper inside the let block;
+basket versus holdings defined; bearish and bullish columns to show sign versus
+magnitude; nonempty-basket and floor asserts; CES η = 1 check; PD and sign
+asserts on the solves; "ray argument of L7a" instead of a SIM-3 label (the L7a
+lecture had SIM-1 and SIM-2 only at the time; SIM-3 was restored on October 8
+and the bullet cites it again); engine starts in cash; post-cost scaling of
+the floors disclosed; monthly run holds between rebalances; what is adapted
+stated; idealized close-price sizing stated; day-one weights table replaced by
+printed lines and the grouped bar; growth column dropped from the scorecard;
+daily-versus-monthly conflation sentence. Rejected: merging the basket count into
+the Task 1 figure (the signs are explained in Task 2).
+
+Codex post-audit (scratchpad `codex/postaudit-out.md`) accepted and applied: the
+monthly run never holds cash on an empty-basket day between rebalances (prose
+fixed); floors leave no cash (fixed); "larger beta, less growth" holds for a
+fixed intercept (fixed); day-one reasoning is "above the largest threshold"
+(fixed); Cobb–Douglas favors beta-adjusted expected growth (fixed); CES below
+one moves toward equal share counts, not more even dollar weights (fixed);
+GMV drawdown claim dropped; the 10-day-window range is now printed from an
+executed computation; the window-selection sentence names 2025; the lecture's
+"while the rest stay in" and "any bad fortnight" corrected (every default firm
+left the basket at least once in April); deck footer now says both examples
+use the client firms; stats print and grouped bar split into two cells with
+connective prose; empty-basket and binding-floor cases on day one print a
+message instead of failing; tangent target guarded by `max(ĝ) > g_f`;
+scorecard vertical cropping off; area chart grows with the firm count.
+Not applied: a stronger engine-conservation check (the engine already enforces
+it; Codex found no accounting failure).
+
+Resolved the same day: the instructor confirmed the lecture Summary's closing
+sentence refers to the week-13 material, where the intercepts and betas are
+estimated online and a bandit chooses the tickers in the basket. The sentence now
+contrasts that with today's allocator (holdings re-solved daily, SIM parameters
+fixed from training, basket from the signs). No date is named.
+
+Polish round, same day: the instructor asked for a polish, voice, and
+organization pass if the reworked example scored below 9. It opened at 8.3
+(Codex 7.9) and the pass was applied in one round, prose only. The scores,
+the three factual corrections the Codex pre-review surfaced, the heading and
+reading changes, and the checks are in
+[the allocator review record](L7b-ALLOCATOR-REVIEW-HANDOFF.md).
+
+Tangent-continuation algorithm notebook, same day: the October 6 lecture edit
+dropped the boxed SIM-3 result that the L7a tangent example and both L7b
+examples cite, and no example runs the continuation the lecture sketches. The
+instructor chose a separate algorithm notebook in L7b
+(`CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb`, markdown
+only, on the CHEME 5800 L6c Jacobi pattern). SIM-3 is restored in the L7a
+lecture as the Solution of the SIM-2 box, the lecture's pseudocode stays, the
+L7b lecture, example, and deck link the algorithm notebook (L7a does not), and the allocator example
+runs the continuation as a check against its single solve. Details and checks are in
+[the allocator review record](L7b-ALLOCATOR-REVIEW-HANDOFF.md).

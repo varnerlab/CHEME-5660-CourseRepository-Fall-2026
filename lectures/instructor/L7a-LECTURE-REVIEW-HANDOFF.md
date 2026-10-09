@@ -376,3 +376,7 @@ the repository and for the deck to be synced.
   comments), the estimation-risk notebook and its `src`/`docs` files, both L7b
   examples, and the FAQ notation source. The examples' prose still says the
   client list is used automatically when the interview files are present.
+  Resolved October 8: SIM-3 is back in the lecture as the Solution paragraph of
+  the SIM-2 box and the continuation pseudocode stays; the L7b algorithm
+  notebook is linked from L7b only (see the allocator review record). The
+  citations resolve again.

@@ -217,7 +217,8 @@ on October 5.
   the L6b client interview, or on defaults when the interview files are absent" matches the
   CAL example today. If that example gets the October 6 L7a change (defaults unless the
   client-file lines are uncommented), update this sentence too. Both L7b examples still
-  cite SIM-3, which the October 6 L7a lecture dropped.
+  cite SIM-3, which the October 6 L7a lecture dropped. Resolved October 8: SIM-3 was
+  restored in the L7a lecture, and the Concept Review now links the L7b algorithm notebook.
 
 **Deck sync (October 6, at the instructor's request).** Five frames now match the
 approved lecture. "Utility over Holdings" lost the general box and keeps the

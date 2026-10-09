@@ -77,11 +77,11 @@ Which risk-free fraction maximizes utility? Infer the risk aversion behind each 
 \textbf{\ink{Example 2:}}
 \href{\repo/CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb}{Build a Maximum-Utility Portfolio Allocator}
 
-Which firms belong in the basket today, and how much of each?
+Which firms belong in the basket, how much of each, and what happens when we re-solve the allocation daily and monthly through 2025 against buy-and-hold portfolios?
 
 \vspace{0.8em}
-Example 1 runs on the firms and risk-free fraction from the L6b client interview,
-or on defaults when the interview files are absent.
+Both examples run on the firms from the L6b client interview (Example 1 also on its
+risk-free fraction), or on defaults when the interview files are absent.
 \end{frame}
 
 % ==== concept review =========================================
@@ -97,13 +97,14 @@ or on defaults when the interview files are absent.
   Lending ($0<w_f<1$) and borrowing ($w_f<0$) move $c$ along the capital
   allocation line, whose slope is the Sharpe ratio of $\Tan$.
 
-  \vspace{0.7em}
+  \vspace{0.45em}
   By \hilite{two-fund separation}, investors with the same inputs who can lend and
   borrow freely at $g_f$ hold the same risky fund $\Tan$. Their risk preferences
   set only $w_f$, and the L6b client interview asked for $w_f$ directly.
 
-  \vspace{0.7em}
+  \vspace{0.45em}
   Which $w_f$ should a given investor choose?
+  \slidenote{Algorithm:}{\href{\repo/CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb}{The Tangent Portfolio by Continuation}: why one solve, rescaled, gives $\Tan$.}
 \end{frame}
 
 % ==== company profile ========================================
@@ -448,20 +449,38 @@ infers the expected returns that make the market's weights optimal.
   7 days, shorter than the 21-day half-life used in L5a.
 \end{frame}
 
-\begin{frame}{The Market Inputs}
+\begin{frame}{The Market-State Signal}
   With $L_{\mathrm{short}}=21$ and $L_{\mathrm{long}}=63$ days and a gain $G>0$,
   the market-state signal is the scaled crossover of the two price EMAs:
   \[
     \boxed{\xi_t=-G\left(\frac{\bar S^{\mathrm{short}}_t}{\bar S^{\mathrm{long}}_t}-1\right)}
   \]
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item The short EMA responds faster. Falling market: $\xi_t>0$ (bearish).
-      Rising market: $\xi_t<0$ (bullish). $G$ makes $|\xi_t|\le1$ on 99\% of
-      training days.
-    \item $\tilde g_{M,t}$: the EMA ($L_{\mathrm{growth}}=10$ days) of
-      $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$. It swings by about one per year, several
-      times the intercepts, so assets cross their thresholds.
-    \item Both inputs on day $t$ use prices through day $t-1$.
+  The short EMA follows the last few weeks and the long EMA the last quarter,
+  so the ratio says where recent prices sit against the quarter's average:
+  \begin{itemize}\setlength{\itemsep}{0.1em}
+    \item $\bar S^{\mathrm{short}}_t>\bar S^{\mathrm{long}}_t$: $\xi_t<0$,
+      \hilite{bullish}. Recent prices sit above the quarter's average: the
+      market has been rising.
+    \item $\bar S^{\mathrm{short}}_t=\bar S^{\mathrm{long}}_t$: $\xi_t=0$,
+      \hilite{neutral}, no tilt. A flat market, or the moment a trend reverses
+      and the two EMAs cross.
+    \item $\bar S^{\mathrm{short}}_t<\bar S^{\mathrm{long}}_t$: $\xi_t>0$,
+      \hilite{bearish}. Recent prices sit below the quarter's average: the
+      market has been falling.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Recent Market Growth}
+  We choose $G$ on the training data so that $|\xi_t|\le1$ on 99\% of training
+  days. The second market input is the recent market growth rate $\tilde g_{M,t}$:
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item $\tilde g_{M,t}$ is the EMA ($L_{\mathrm{growth}}=252$ days, half-life
+      about 87) of the daily market growth rates
+      $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$ (inverse years).
+    \item With a short window the estimate $\tilde g_{M,t}$ swings by over one
+      per year and can empty the basket; a one-year window moves by tenths.
+    \item Both inputs on day $t$ use prices through day $t-1$, so a decision
+      never uses a price it could not have known.
   \end{itemize}
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L7b-Example-Utility-Allocator-Fall-2026.ipynb}{Build a Maximum-Utility Portfolio Allocator}}
 \end{frame}
