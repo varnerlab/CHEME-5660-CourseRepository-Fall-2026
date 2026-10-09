@@ -1,6 +1,6 @@
 # CHEME 5660 course FAQ
 
-The course companion contains 31 questions across seven themes and a separate notation lookup with 347 entries through Week 7. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
+The course companion contains 31 questions across seven themes and a separate notation lookup with 348 entries through Week 7. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
 
 The FAQ is published with the course's existing Documenter/GitHub Pages site at [Course questions](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/). Its HTML templates and base stylesheet were designed with Claude. Search, build, integration, and local refinements are maintained alongside them.
 

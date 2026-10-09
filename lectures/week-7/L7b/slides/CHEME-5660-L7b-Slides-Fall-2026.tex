@@ -80,8 +80,9 @@ Which risk-free fraction maximizes utility? Infer the risk aversion behind each 
 Which firms belong in the basket, how much of each, and what happens when we re-solve the allocation daily and monthly through 2025 against buy-and-hold portfolios?
 
 \vspace{0.8em}
-Both examples run on the firms from the L6b client interview (Example 1 also on its
-risk-free fraction), or on defaults when the interview files are absent.
+Both examples use the default firms. Uncomment the ticker-file lines to use the
+client's firms. Example 1 reads the client's risk-free fraction and income-gamble
+range when those files are present.
 \end{frame}
 
 % ==== concept review =========================================
@@ -104,7 +105,6 @@ risk-free fraction), or on defaults when the interview files are absent.
 
   \vspace{0.45em}
   Which $w_f$ should a given investor choose?
-  \slidenote{Algorithm:}{\href{\repo/CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb}{The Tangent Portfolio by Continuation}: why one solve, rescaled, gives $\Tan$.}
 \end{frame}
 
 % ==== company profile ========================================
@@ -119,15 +119,14 @@ Burton Malkiel has been its
 \item \hilite{Risk questionnaire}: willingness and capacity to take risk combine into a
 \href{https://research.wealthfront.com/whitepapers/investment-methodology/}{Risk Score}
 from 0.5 to 10, weighted toward the more risk-averse part.
-\item \hilite{Utility and the frontier}: twenty frontier portfolios, one per score. In 2012,
-the firm \href{https://www.wealthfront.com/blog/what-is-risk-tolerance/}{described} picking
-the one where the utility curve touches the frontier.
-\item \hilite{Expected returns}: Black--Litterman finds the returns that make the global
-market portfolio optimal, then adjusts them with factor-model forecasts.
+\item \hilite{Utility and the frontier}: twenty frontier portfolios, one per score, with
+expected returns from the Black--Litterman model (market-implied returns plus
+factor-model forecasts). In 2012, the firm \href{https://www.wealthfront.com/blog/what-is-risk-tolerance/}{described} mapping
+the score to a risk-aversion coefficient and picking the portfolio where the indifference
+curve touches the frontier.
 \end{itemize}
-\vspace{0.2em}
-Today's connection: we infer the $A$ that makes a client's $w_f$ optimal. Black--Litterman
-infers the expected returns that make the market's weights optimal.
+Today's connection: the questionnaire plays the role of the L6b client interview, and a
+higher Risk Score plays the role of a smaller $A$.
 \slidenote{Explore:}{\href{https://www.wealthfront.com/careers}{Careers}
 \quad\href{https://eng.wealthfront.com/2023/10/04/the-wealthfront-engineering-intern-program-not-all-internships-are-built-the-same/}{Engineering intern program}
 \quad\href{https://www.youtube.com/channel/UCFfn9lYtV-pKT5OZmcpXhXg}{YouTube channel}}
@@ -187,7 +186,8 @@ infers the expected returns that make the market's weights optimal.
   When outcomes are uncertain, a rational decision-maker ranks choices by the
   \hilite{expected utility} $\E[U(W)]$
   (\href{https://en.wikipedia.org/wiki/Von_Neumann\%E2\%80\%93Morgenstern_utility_theorem}{von Neumann--Morgenstern}).
-  The shape of the utility of wealth $U(W)$ sets the attitude toward risk:
+  Only $aU+b$ with $a>0$ keeps this ranking, so the shape of the utility of wealth
+  $U(W)$ sets the attitude toward risk:
 
   \vspace{0.5em}
   \begin{center}
@@ -203,14 +203,44 @@ infers the expected returns that make the market's weights optimal.
   \end{tabular}}
   \end{center}
 
-  \vspace{0.3em}
-  The \hilite{certainty equivalent} is the guaranteed wealth with the same
-  utility, $U(\CE)=\E[U(W)]$. The \hilite{risk premium} is the expected wealth a
-  decision-maker gives up to remove the risk:
+\end{frame}
+
+\begin{frame}{The Certainty Equivalent}
+  Picture a coin flip that leaves you with wealth $W_1$ or $W_2$, and ask two questions:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{What is the gamble worth on average?} $\E(W)$, in USD. A risk-neutral
+      decision-maker would trade the gamble for exactly this sure amount.
+    \item \hilite{What sure wealth $W_3$ would you take instead?} The one that leaves you
+      indifferent is the \hilite{certainty equivalent}, $U(\CE)=\E[U(W)]$, also in USD.
+  \end{itemize}
+  For a risk-averse decision-maker, the definition and the first row of the table chain together:
+  \[
+    \begin{aligned}
+      U(\CE)&=\E[U(W)] &&\quad\text{definition of the CE}\\
+      &\le U(\E(W)) &&\quad\text{concave }U\\
+      \CE&\le\E(W) &&\quad U\text{ is increasing}
+    \end{aligned}
+  \]
+  The gap is the \hilite{risk premium}, the expected wealth given up to remove the risk:
   \[
     \boxed{\RP=\E(W)-\CE}
   \]
-  For a risk-averse decision-maker, $\CE\le\E(W)$ and $\RP\ge0$.
+\end{frame}
+
+\begin{frame}{The Certainty Equivalent: An Example}
+  Let $U(W)=\ln W$, and flip a fair coin for a wealth of 50 or 150 USD:
+  \[
+    \begin{aligned}
+      \E(W)&=\tfrac12(50)+\tfrac12(150)=100 &&\quad\text{average wealth, USD}\\
+      U(\E(W))&=\ln100\approx4.6052 &&\quad\text{utility of the sure average, utils}\\
+      \E[U(W)]&=\tfrac12\ln50+\tfrac12\ln150\approx4.4613 &&\quad\text{expected utility of the gamble, utils}\\
+      \CE&=e^{4.4613}\approx86.60 &&\quad\text{solve }\ln\CE=4.4613\text{ for CE, USD}\\
+      \RP&=100-86.60=13.40 &&\quad\text{risk premium, USD}
+    \end{aligned}
+  \]
+  The investor would accept 86.60 USD for certain in place of a flip that pays 100 USD on
+  average. Logarithmic utility has diminishing marginal utility: the 50 USD gained adds less
+  utility than the 50 USD lost takes away.
 \end{frame}
 
 \begin{frame}{Arrow–Pratt Measures}
@@ -421,19 +451,19 @@ infers the expected returns that make the market's weights optimal.
   Each trading day, from the L6b SIM parameters $(\alpha_i,\beta_i)$, the recent
   market growth rate $\tilde g_{M,t}$, and the market-state signal $\xi_t$:
   \[
-    \boxed{\gamma_i(t)=\tanh\!\left(\frac{\alpha_i}{\beta_i^{\xi_t}}+\beta_i^{1-\xi_t}\,\tilde g_{M,t}\right)}
+    \boxed{\gamma_i(t)=\tanh\!\left(h\left[\frac{\alpha_i}{\beta_i^{\xi_t}}+\beta_i^{1-\xi_t}\,\tilde g_{M,t}\right]\right)}
   \]
-  The $\tanh$ keeps the weight in $(-1,1)$. The argument equals
-  $(\alpha_i+\beta_i\tilde g_{M,t})/\beta_i^{\xi_t}$, the SIM's expected growth of
-  asset $i$ in today's market divided by $\beta_i^{\xi_t}$, made dimensionless by a
-  one-year horizon. The model assumes $\beta_i>0$.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Which assets belong in the basket?} $\gamma_i(t)>0$ exactly when
-      $\tilde g_{M,t}>-\alpha_i/\beta_i$. A weak market keeps only the assets with
-      the lowest thresholds. If every $\gamma_i(t)\le0$, hold the floors plus cash.
-    \item \hilite{How much of each?} The magnitude sets the budget share. A bearish
-      signal ($\xi_t>0$) tilts toward low-beta names, and a bullish one toward
-      high-beta names.
+  The argument is $h\,\tilde g_{i,t}/\beta_i^{\xi_t}$, where $\tilde g_{i,t}=\alpha_i+\beta_i\tilde g_{M,t}$
+  is the SIM's expected growth rate of asset $i$ today. The horizon $h=1$ year makes it
+  dimensionless, and the $\tanh$ keeps the weight in $(-1,1)$. The model assumes $\beta_i>0$.
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Sign, which assets are in the basket}: $\gamma_i(t)>0$ exactly when
+      $\tilde g_{M,t}>-\alpha_i/\beta_i$, the threshold. As $\tilde g_{M,t}$ rises, the basket
+      grows. As it falls, only the lowest-threshold assets stay. If the basket
+      is empty, hold the floors plus cash.
+    \item \hilite{Magnitude, how much each asset gets}: the magnitude sets the budget share.
+      Bearish ($\xi_t>0$) tilts it toward low-beta assets, bullish toward
+      high-beta.
   \end{itemize}
 \end{frame}
 
@@ -478,7 +508,7 @@ infers the expected returns that make the market's weights optimal.
       about 87) of the daily market growth rates
       $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$ (inverse years).
     \item With a short window the estimate $\tilde g_{M,t}$ swings by over one
-      per year and can empty the basket; a one-year window moves by tenths.
+      per year and can empty the basket. A one-year window moves it by tenths.
     \item Both inputs on day $t$ use prices through day $t-1$, so a decision
       never uses a price it could not have known.
   \end{itemize}
@@ -499,9 +529,10 @@ share price levels.
 \begin{frame}{Summary}
 \begin{itemize}\setlength{\itemsep}{0.9em}
 \item \hilite{Risk aversion picks the point on the capital allocation line}: we
-maximized mean-variance utility along the line and found the optimal risky
-fraction in closed form. More risk-averse investors lend more, and a client's
-chosen fraction reveals a risk-aversion coefficient.
+measured risk aversion with the certainty equivalent and the Arrow--Pratt
+coefficient and found the utility-maximizing risky fraction in closed form. More
+risk-averse investors lend more, and a client's chosen fraction implies the
+coefficient that income-gamble answers bracket.
 \item \hilite{Cobb--Douglas turns preferences into weights in closed form}: the
 preferred budget is split in proportion to the positive preference weights. The
 CES elasticity moves the allocation between concentration and equal share counts.

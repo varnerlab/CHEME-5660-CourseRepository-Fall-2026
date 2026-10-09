@@ -6,7 +6,9 @@ Opened: October 3, 2026, using the notebook-polish workflow
 the opening assessment ("save this review for L7b and we can do this later").
 On October 6 the instructor asked for a polish, voice, and navigation pass if the
 lecture scored below 9. It was applied in one round, and he approved it the same
-day ("Agree to edits. Update"). See the October 6 section at the end.
+day ("Agree to edits. Update"). See the October 6 section. A second pass, after the
+instructor's October 8 certainty-equivalent edits, was approved on October 9. See the
+October 9 section at the end.
 
 ## Snapshot reviewed
 
@@ -337,3 +339,148 @@ preferred firm falls below its floor only when a firm such as TDG or NVR is adde
 and the assert then stops loudly. Cells 40 to 48 and Takeaway 2 describe the default run, and
 cell 40 already says results may differ. The L7a examples read the client file only after it
 is uncommented. Both L7b examples read it automatically.
+
+## October 9 pass: polish, voice, and organization (approved October 9)
+
+The instructor asked for "a polish/voice/organization pass on this lecture notebook if
+it's score is less that 9 out of 10" after hand-editing it on October 8 (the
+certainty-equivalent material in the risk section and the Wealthfront profile, committed in
+`f9d95b5`). The baseline is HEAD `242cdd1`, where the lecture last changed in `55be3a2`.
+It opened at 8.2, so the pass was applied in one round. The instructor approved the lecture,
+example, and notation changes from highlighted previews ("Agree - well done"), and then the
+deck sync and two small fixes ("Approve"), and finally the rounding fix below ("Agree").
+Lecture SHA-256: `451e65cc7bce12697998f6b4f3bd7fc8b19239d97d6f860712c27221ebde3e74`.
+Nothing is committed.
+Previews with word-level highlights (green new, red removed) are in
+`build/notebook-previews/L7b-lecture-polish-2026-10-09/` (gitignored).
+
+| Dimension | Initial | Final |
+| --- | ---: | ---: |
+| Technical correctness | 8.5 | 9.2 |
+| Organization | 7.8 | 9.0 |
+| Narrative flow | 8.7 | 9.0 |
+| Presentation | 8.5 | 9.1 |
+| Density and pacing | 7.5 | 8.4 |
+| Navigation | 8.4 | 9.1 |
+| **Overall** | **8.2** | **9.0** |
+
+Codex scored HEAD 8.3 and the applied version 8.9. The two small fixes below close its two
+remaining wording items. Prose went from 4,194 to about 4,056 words. The lecture went from
+15 to 16 markdown cells. Density stays the lowest score because the certainty-equivalent
+material is long, and that material is the instructor's and was kept.
+
+**Instructor decisions.**
+
+- *Explicit horizon.* The instructor rejected "Multiplying the argument by a one-year horizon
+  makes it dimensionless with the same numerical value" ("what?") and proposed writing the
+  argument as Δt·(g/β) with Δt = 1. The symbol is h = 1 year, because L7b already uses
+  Δt = 1/252 for the daily step (12 times in the lecture, 8 in the CAL example), τ is the
+  power-utility exponent, and the subscripted h_i on the notation page is a different symbol.
+  Scope: the lecture, the allocator example's display, the notation page, and the deck.
+- *Concept Review paragraph deleted.* "L7a found T by solving … SIM-2 … The continuation
+  algorithm derives SIM-3 …" was "Not load bearing, and is confusing". Both examples still
+  link the algorithm and SIM reference notebooks (CAL cell 15, allocator cells 33 and 35), so
+  the lecture no longer links the algorithm notebook. This supersedes the October 6 note that
+  "the Concept Review now links the L7b algorithm notebook".
+- *Risk section, all four options:* split into two H3s, state the small-return step, cut the
+  restated line, and flag ordinal versus expected utility.
+- *Preference reading after the box,* and the full in-lecture example stops kept.
+- *Market-strength sentences.* "A strong market pulls in assets with a small negative α_i and a
+  large β_i. A weak market keeps only the assets with the lowest thresholds." was "confusing".
+  The replacement says what changes as the market growth moves.
+
+**Lecture changes** (cells named by id).
+
+1. `40320cbd` Examples. The closing sentences now say that both examples use the default firms,
+   that uncommenting the ticker-file lines uses the L6b interview firms, and that the CAL example
+   reads the client's risk-free fraction and income-gamble range when those files are present.
+   This matches the code (the ticker-file lines are commented out in both examples) and closes
+   the October 6 "Examples sentence" item.
+2. `121b2d7a` Concept Review. The paragraph above is deleted, and "However, which $w_{f}$ should
+   a given investor choose?" joins the two-fund paragraph. The cell now reads as on October 7.
+3. `6b4e8514` Risk and risk aversion. Adds "Unlike the ranking of sure outcomes, this ranking
+   survives only an increasing linear transformation $aU+b$ with $a>0$, so the shape of $U$ now
+   matters." Cuts "For a risk-averse decision-maker, CE ≤ E(W) and RP ≥ 0", which the chain
+   above it already shows. The cell is split at "__How risk averse is a decision-maker?__".
+4. `a7c3e5d1` (new) Measuring risk aversion. The instructor's text, unchanged except that the
+   certainty-equivalent return step is now two lines with reasons ("substitute, divide by
+   $W_{0}$" and "small return, so $\mathbb{E}(W)\approx W_{0}$").
+5. `4e515081` Preference Weights. The box is
+   $\gamma_{i}(t) = \tanh(h[\alpha_{i}/\beta_{i}^{\xi_{t}} + \beta_{i}^{1-\xi_{t}}\tilde{g}_{M,t}])$.
+   The where-line defines $\tilde{g}_{i,t}$, states that the argument is
+   $h\,\tilde{g}_{i,t}/\beta_{i}^{\xi_{t}}$, and says that $h = 1$ year makes it dimensionless.
+   The reading that was split before and after the box is now one "We read the preference
+   weight in two parts:" list after it. *Sign* covers the threshold
+   $-\alpha_{i}/\beta_{i}$, the basket growing as $\tilde{g}_{M,t}$ rises, only the
+   lowest-threshold assets staying as it falls, and floors plus cash when the basket is empty.
+   *Magnitude* covers the budget share and the tilt by $\xi_{t}$.
+6. `1739f0f5` Summary. Takeaway 1 now covers the certainty equivalent and the Arrow–Pratt
+   coefficient. The closer is split into two sentences, and "reads the basket from their signs"
+   became "from the signs of the preference weights" (Codex: "their" pointed at the intercepts
+   and betas).
+7. `6b4e8514` again, the ln W coin flip (found by the Codex deck check). The display rounded
+   $\mathbb{E}[U(W)]$ to 4.461 and then gave $e^{4.461}\approx 86.60$, but $e^{4.461}=86.57$.
+   It now carries four decimals: 4.6052, 4.4613, and $e^{4.4613}\approx 86.60$. The CE, the RP,
+   and the reading are unchanged. The exact value is $\sqrt{50\cdot 150}=86.6025$. The
+   instructor chose this over replacing the line with the geometric mean, which is not a step
+   in the derivation. Preview: `11-ce-rounding-fix.png`.
+
+**Allocator example.** Markdown cell `a539b279` only. The display gains $h$, followed by "where
+the horizon $h = 1$ year makes the argument dimensionless, so the code below omits it." The
+sign bullet uses $h$, and its 28-word sentence is split at the colon, as in the lecture. Code
+cell `0902286f` applies tanh without $h$, which is numerically identical. No code or outputs
+changed. SHA-256: `89c7f472887889f130f4d0abc2695d010524ab69bbf8d27cdd3417c4d52aebfe`.
+
+**Notation FAQ.** In the L7b preference-weights table, the γ row has $h$, and a new $h$ row was
+added (348 entries). Two entries stale since the October 8 window change now say 252 days (the
+EMA of $\tilde g_{M,t}$ and $L_{\mathrm{growth}}$). The site was rebuilt with Pandoc 3.1.11.1,
+and only `notation.html` changed. The answer audit has an October 9 note.
+
+**Deck sync.** The deck went from 25 to 27 pages, with 0 overfull and 0 underfull boxes. The
+following frames changed:
+
+- The Examples footer matches the lecture.
+- The Concept Review loses its "Algorithm:" slidenote.
+- Wealthfront now matches the instructor's October 8 profile (Black–Litterman inside the
+  utility bullet, the score mapped to a risk-aversion coefficient, the indifference curve, and
+  the new connection sentence).
+- Risk and Risk Aversion gains the $aU+b$ sentence.
+- Two new frames, "The Certainty Equivalent" and "The Certainty Equivalent: An Example" (the ln W
+  coin flip), carry the instructor's material.
+- Preference Weights has $h$, the new where-line, and the Sign and Magnitude bullets.
+- The Recent Market Growth loses a clause semicolon.
+- The Summary has the new Takeaway 1.
+- Frame 11 carries the same four-decimal rounding fix as the lecture.
+
+The PDF was rebuilt in place, and before the rounding fix its text matched the approved
+preview build exactly. Deck SHA-256:
+`66e1d56392e7451ee2ab1627794d3d93c950297bba28c07e911c596825053cb6`.
+
+**Checks.**
+
+- Both notebooks validate with nbformat. The ten untouched lecture cells, all other example
+  cells, and the metadata are byte-identical to HEAD (Python diff, confirmed by Codex).
+- Every markdown cell renders through VS Code's KaTeX with zero errors, and all relative links
+  resolve.
+- The changed text has no clause semicolons and no em dashes.
+- Codex found zero SymPy residual for both certainty-equivalent return lines and confirmed the
+  argument identity, the sign, threshold, and tilt rules, the client-file sentence against the
+  example code, and that the example's display matches the lecture's box symbol for symbol.
+- A separate Codex check of the deck against the lecture confirmed the changed displays, the
+  preference box with $h$ (SymPy), the Sign and Magnitude bullets, the footer, the Concept
+  Review, Takeaway 1, the style rules, and a clean build log (27 pages, 0 overfull, 0
+  underfull). It found the rounding step fixed in item 7. Its only other note was the
+  Disclaimer on page 2, which the deck places there on purpose.
+
+**Left as is.**
+
+- Long sentences in the instructor's own text (cells `40320cbd`, `6b4e8514`, `a7c3e5d1`) and
+  "Investors think in returns, not dollars", which Codex called an unneeded contrast.
+- The nbconvert rendering of `___` without a blank line above it, which is house style.
+
+**Open.**
+
+- *Empty basket and the budget equality* (from October 6). Both Codex runs flagged it again:
+  floors plus cash leaves the boxed budget equality unmet. This is the instructor's model call.
+- *Deck interview frame* (from October 7). It is still a separate step.
+- *Release.* These changes and the October 8 changes need the week-07.2 fix release.

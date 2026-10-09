@@ -37,9 +37,17 @@
 - L7b lecture polish round: opened October 3 (8.2/10) and paused. On October 6 a
   polish, voice, and navigation pass was applied in one round (8.3 to 9.0), and
   the instructor approved it that day. The deck was synced the same day. Both
-  were released in week-07.1. See
+  were released in week-07.1. On October 9, after the instructor's
+  certainty-equivalent edits, a second pass took it from 8.2 to 9.0. The
+  preference box now carries an explicit horizon, tanh(h[…]) with h = 1 year,
+  in the lecture, the allocator example, the notation page, and the deck. Do
+  not use Δt for it, because Δt = 1/252 is the daily step. The Concept
+  Review's SIM-2/SIM-3 paragraph was deleted at the instructor's request, and
+  the deck gained two certainty-equivalent frames (27 pages). Not yet
+  released. See
   [the review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md) for the
-  changes and the open items (empty-basket budget, companion and package).
+  changes and the open items (empty-basket budget, the deck's interview frame,
+  companion and package).
 - October 7 L7b income-gamble interview: `lectures/week-7/L7b/interview/` runs
   the published Barsky–Juster–Kimball–Shapiro (1997) income gambles in student
   wording. The instructor chose them because they are published. Two refinement
@@ -87,9 +95,10 @@
   `lectures/week-7/L7b/CHEME-5660-L7b-Algorithm-TangentContinuation-Fall-2026.ipynb`.
   The L7a lecture keeps SIM-2 and its continuation pseudocode and has SIM-3
   back as its Solution paragraph, with no link into L7b (instructor rule); the
-  L7b lecture links it from the Concept Review; the allocator example runs the
-  continuation as a check against the single solve (new cells 35 and 36); both
-  decks are synced. Not yet released (needs a week-07.2 fix release). The
+  L7b lecture and deck linked it from the Concept Review until October 9,
+  when both links were deleted (both examples still link it); the allocator example
+  runs the continuation as a check against the single solve (new cells 35 and
+  36); both decks are synced. Not yet released (needs a week-07.2 fix release). The
   [allocator review record](lectures/instructor/L7b-ALLOCATOR-REVIEW-HANDOFF.md)
   has the checks.
 - October 8 SIM problem reference: the instructor found bare "SIM-1", "SIM-2",
