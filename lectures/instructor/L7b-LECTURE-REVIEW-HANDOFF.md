@@ -746,3 +746,39 @@ the allocator text - you are wrong there, so we are done. Mark the L7b as review
 not a deduction, so its score stands at 8.8 without length, about 9.0 after this round. The
 post-round scores above are the reviewers' estimates and were not re-measured. Committed and
 pushed with no release. The week-07.2 release is still to do.
+
+## October 9: the empty basket gets a cash term (approved October 9)
+
+The instructor asked what the open "empty-basket budget question" was. The boxed Cobb–Douglas
+problem had the budget equality $\sum_i n_iS_i(t)=W_{\mathcal{P}}(t)$, with no cash, yet the
+lecture said an empty basket holds "the floors plus cash". That breaks the equality, and it
+happened on one day of the allocator's 2025 run. Two fixes were offered, writing the budget as
+"≤" or adding a cash term. Both are the same math, since the cash term is the gap that "≤"
+leaves. The instructor chose the cash term. It says where the money goes, and it matches the
+package, which already returns `(shares, cash)`. Preview 21 was approved ("Agree - go").
+
+**Changes.**
+
+- *Lecture `1090dc65`.*
+  - The box has $\sum_i n_iS_i(t)+\text{cash}(t)=W_{\mathcal{P}}(t)$, plus
+    $\text{cash}(t)\ge0$ (no borrowing). The symbol is $\text{cash}(t)$, not $c$, because $c$
+    already names the complete portfolio and the cost rate. The allocator example already writes
+    $W_{\mathcal{P}}(t)=\text{cash}(t)+\sum_i n_i(t)S_i(t)$.
+  - One sentence defines cash and says it does not enter the utility.
+  - The derivation lead-in adds "the cash" and "the preferred set is not empty".
+  - A new line, $\text{cash}^\star(t)=0$, gives the reason "a preferred share raises $\ln U$, and
+    cash does not". The next line becomes "the floors and zero cash substituted". Everything from
+    $W_{\text{adj}}$ through the boxed $n_i^\star$ is unchanged.
+  - The last sentence now gives the reason: "If the preferred set is empty, no share raises
+    $\ln U$, so the allocator holds the floors and keeps the rest in cash."
+- *Deck, slides 17 and 18.* They have the same content. The floor and no-borrowing constraints
+  share one row, slide 18's lead-in reads "Substituting both into the budget constraint", and
+  `\jot` is 1 pt. The deck is 27 pages with 0 overfull and 0 underfull boxes.
+- *Package docstring, `allocate_cobb_douglas`.* The budget reads `sum(prices .* n) + cash = B`
+  with `cash >= 0`. There is no code change. The docs site shows the new wording only after it
+  is rebuilt.
+- *Not changed.* The CES section reuses the same budget. The allocator example and the CES
+  companion do not state the budget. L13a uses the same model, but it is paused.
+
+**Checks.** The lecture validates, and only `1090dc65` changed. All of its markdown renders
+through KaTeX. `AdaptivePortfolio.jl` parses.

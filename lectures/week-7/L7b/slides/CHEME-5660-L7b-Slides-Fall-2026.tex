@@ -362,29 +362,33 @@ higher Risk Score plays the role of a smaller $A$.
   \[
     \boxed{\begin{aligned}
       \operatorname*{maximize}_{n_1,\ldots,n_{\np}}\quad&U(n_1,\ldots,n_{\np})=\prod_{i\in\mathcal{P}}n_i^{\gamma_i}\\
-      \text{subject to}\quad&\sum_{i\in\mathcal{P}}n_i\,S_i(t)=\WP(t)&&\quad\text{(budget constraint)}\\
-      &n_i\ge n_{\min}\quad\forall\,i\in\mathcal{P}&&\quad\text{(share floor)}
+      \text{subject to}\quad&\sum_{i\in\mathcal{P}}n_i\,S_i(t)+\text{cash}(t)=\WP(t)&&\quad\text{(budget constraint)}\\
+      &n_i\ge n_{\min}\quad\forall\,i\in\mathcal{P},\qquad\text{cash}(t)\ge0&&\quad\text{(share floor, no borrowing)}
     \end{aligned}}
   \]
   where $n_i$ is the share count of asset $i$ in the asset set $\mathcal{P}$,
-  $S_i(t)$ its price (USD per share), and $\WP(t)$ the wealth (USD). The floor
+  $S_i(t)$ its price (USD per share), $\WP(t)$ the wealth, and $\text{cash}(t)$
+  the wealth not in shares (USD), which does not enter $U$. The floor
   keeps $U$ finite, because $n_i^{\gamma_i}\to\infty$ as $n_i\to0$ when
   $\gamma_i<0$. The \hilite{preferred set} $\Ap=\{i:\gamma_i>0\}$ is the basket,
   and the rest form the \hilite{non-preferred set} $\Am=\{i:\gamma_i\le0\}$.
 \end{frame}
 
 \begin{frame}{Cobb–Douglas Utility: Floors and Net Budget}
-  Only the ranking matters, so $\ln U$ has the same maximizer as $U$. We set the
-  floors first:
+  \setlength{\jot}{1pt}
+  Only the ranking matters, so $\ln U$ has the same maximizer as $U$. With a
+  non-empty basket, we set the floors and the cash first:
   \[
     \begin{aligned}
       \frac{\partial\ln U}{\partial n_k}&=\frac{\gamma_k}{n_k}\le0
         &&\quad k\in\Am\text{, so more shares never raise }\ln U\\
       n_k^\star&=n_{\min}
-        &&\quad\text{spend every dollar above the floor on }\Ap
+        &&\quad\text{spend every dollar above the floor on }\Ap\\
+      \text{cash}^\star(t)&=0
+        &&\quad\text{a preferred share raises }\ln U\text{, and cash does not}
     \end{aligned}
   \]
-  Substituting the floors into the budget constraint leaves the
+  Substituting both into the budget constraint leaves the
   \hilite{net budget} for the preferred set:
   \[
     \begin{aligned}

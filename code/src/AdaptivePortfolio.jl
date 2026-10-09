@@ -378,7 +378,7 @@ end
     allocate_cobb_douglas(problem::MyCobbDouglasChoiceProblem) -> Tuple{Vector{Float64}, Float64}
 
 Solve the budget-constrained Cobb–Douglas problem: maximize the product of `n_i^gamma_i` over
-every asset, subject to `sum(prices .* n) = B` and the share floor `n_i >= epsilon`.
+every asset, subject to the budget `sum(prices .* n) + cash = B` with `cash >= 0`, and the share floor `n_i >= epsilon`.
 
 Non-preferred assets (`gamma_i <= 0`) sit at the floor. The preferred assets (`gamma_i > 0`)
 split the net budget `B - epsilon * sum(prices[nonpreferred])` in proportion to `gamma_i`. If a

@@ -46,8 +46,8 @@
   the deck gained two certainty-equivalent frames (27 pages). Not yet
   released. See
   [the review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md) for the
-  changes and the open items (empty-basket budget, the deck's interview frame,
-  companion and package).
+  changes and the open items (the deck's interview frame, companion and
+  package). The empty-basket question was resolved on October 9 with a cash term.
 - October 7 L7b income-gamble interview: `lectures/week-7/L7b/interview/` runs
   the published Barsky–Juster–Kimball–Shapiro (1997) income gambles in student
   wording. The instructor chose them because they are published. Two refinement
@@ -863,9 +863,17 @@
 - The October 9 sections of
   [the lecture review record](lectures/instructor/L7b-LECTURE-REVIEW-HANDOFF.md)
   list every change, the declined items, and the checks. Still open:
-  - the empty-basket versus budget-equality question;
   - the deck's interview frame;
   - the week-07.2 release, which ships everything committed since week-07.1.
+- Cobb–Douglas budget with cash (instructor, October 9). The lecture's box
+  reads $\sum_i n_iS_i(t)+\text{cash}(t)=W_{\mathcal{P}}(t)$ with
+  $\text{cash}(t)\ge0$. Cash does not enter the utility. One derivation line
+  sets $\text{cash}^\star=0$ when the basket is not empty, and with an empty
+  basket the model gives the floors plus cash. This matches what
+  `allocate_cobb_douglas` returns, `(shares, cash)`. The instructor chose this
+  over writing the budget as "≤", and his 2025 and eCornell versions keep the
+  equality. The deck (slides 17 and 18) and the package docstring match.
+  L13a is paused and still states the equality.
 - No proposals remain pending. Do not restart unless another round is
   requested.
 
