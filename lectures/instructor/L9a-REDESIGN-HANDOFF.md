@@ -232,6 +232,7 @@ All paths are under `build/notebook-previews/L9a-redesign-2026-10-09/`
    archive code (`code/src`, `code/test`, `Project.toml`, `Manifest.toml`,
    `Artifacts.toml`, the docs data page, the build script) and the L8b build
    (`week-8/L8b`, its handoff, its AGENTS.md block, the schedule's 8b row, its
-   FAQ tables and `p` row, `.gitignore`). Example 1 works for students only
-   after the archive code is committed and the docs site is redeployed.
+   FAQ tables and `p` row, `.gitignore`). The archive code followed in
+   b67862b, and the docs site redeployed with the three loaders, so Example 1
+   and its docs link work for students.
 3. The lecture is backed up in `voice-calibration/` for your hand edits.
