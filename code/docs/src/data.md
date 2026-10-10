@@ -35,6 +35,38 @@ We have also included an options chain dataset that we use for examples and acti
 VLQuantitativeFinancePackage.MyOptionsChainDataSet
 ```
 
+### End-of-day options archive
+
+A second options dataset holds end-of-day chains for 31 tickers (large-cap
+stocks plus SPY, QQQ, and IWM) over 115 trading sessions from April 13 to
+October 8, 2026, captured from the [Alpaca Markets](https://alpaca.markets/)
+options snapshot after each close. Each row is one contract on one session, with
+the closing bid and ask, the last trade, and Alpaca's implied volatility and
+Greeks. Each session keeps the expirations nearest to 2, 7, 14, 30, 45, 60, and
+90 days out, so a contract can be followed from listing to expiration.
+
+The archive is about 112 MB compressed, so it ships as a lazy artifact. The first
+call to one of these loaders downloads it into the Julia depot, and later calls
+reuse that copy.
+
+```julia
+nvda = MyOptionsEODDataSet(ticker = "NVDA")                 # every NVDA contract, every session
+prices = MyOptionsEODUnderlyingDataSet(ticker = "NVDA")     # the share price on each session
+chain = MyOptionsEODChainDataSet(ticker = "NVDA", date = Date(2026, 10, 8),
+    expiration = Date(2026, 11, 20))                        # one chain with its share price
+```
+
+Implied volatility and the Greeks are `missing` for 44% of rows, mostly
+contracts far from the money. The underlying bars come from Alpaca's IEX feed, so
+their volume counts IEX trades only. The `EOD-OPTIONS-DATA.md` note in the
+package's `src/data/options` folder lists the capture gaps and the rebuild steps.
+
+```@docs
+VLQuantitativeFinancePackage.MyOptionsEODDataSet
+VLQuantitativeFinancePackage.MyOptionsEODUnderlyingDataSet
+VLQuantitativeFinancePackage.MyOptionsEODChainDataSet
+```
+
 ## Adaptive portfolio data
 
 The package also contains compact, frozen artifacts used by the SIM,

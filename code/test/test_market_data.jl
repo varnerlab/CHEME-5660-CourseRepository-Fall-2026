@@ -47,3 +47,41 @@ using Dates
         end
     end
 end
+
+@testset "end-of-day options archive" begin
+    underlying = MyOptionsEODUnderlyingDataSet()
+    @test names(underlying) == ["ticker", "date", "capture_ts", "open", "high", "low", "close", "iex_volume", "iex_vwap"]
+    @test length(unique(underlying.ticker)) == 31
+    @test length(unique(underlying.date)) == 115
+    @test extrema(underlying.date) == (Date(2026, 4, 13), Date(2026, 10, 8))
+    @test !any(nonunique(underlying, [:ticker, :date]))
+    @test all(p -> isfinite(p) && p > 0, underlying.close)
+    @test nrow(MyOptionsEODUnderlyingDataSet(ticker = "pfe")) == 113
+    @test_throws ArgumentError MyOptionsEODUnderlyingDataSet(ticker = "TSLA")
+
+    pfe = MyOptionsEODDataSet(ticker = "PFE")
+    @test names(pfe) == ["date", "expiration", "dte", "target_dte", "type", "strike", "bid", "ask", "mid",
+        "bid_size", "ask_size", "last_price", "last_size", "implied_vol", "delta", "gamma", "theta", "vega", "rho"]
+    @test nrow(pfe) == 34_961
+    @test issorted(pfe, [:date, :expiration, :type, :strike])
+    @test !any(nonunique(pfe, [:date, :expiration, :type, :strike]))
+    @test all(pfe.dte .== Dates.value.(pfe.expiration .- pfe.date))
+    @test issubset(unique(pfe.type), ["call", "put"])
+    @test all(pfe.ask .>= pfe.bid .>= 0)
+    @test eltype(pfe.implied_vol) == Union{Missing,Float64}
+    @test sort(unique(pfe.date)) == underlying.date[underlying.ticker .== "PFE"]
+    window = MyOptionsEODDataSet(ticker = "PFE", from = Date(2026, 9, 1), to = Date(2026, 9, 30))
+    @test extrema(window.date) == (Date(2026, 9, 1), Date(2026, 9, 30))
+    @test_throws ArgumentError MyOptionsEODDataSet(ticker = "TSLA")
+
+    session = MyOptionsEODChainDataSet(ticker = "PFE", date = Date(2026, 10, 8))
+    @test session.metadata["DTE"] === nothing
+    @test sort(unique(session.data.expiration)) == session.metadata["expirations"]
+    expiration = session.metadata["expirations"][2]
+    chain = MyOptionsEODChainDataSet(ticker = "PFE", date = Date(2026, 10, 8), expiration = expiration)
+    @test chain.metadata["DTE"] == Dates.value(expiration - Date(2026, 10, 8))
+    @test chain.metadata["underlying_close"] == only(underlying.close[(underlying.ticker .== "PFE") .& (underlying.date .== Date(2026, 10, 8))])
+    @test all(chain.data.expiration .== expiration) && nrow(chain.data) > 0
+    @test_throws ArgumentError MyOptionsEODChainDataSet(ticker = "PFE", date = Date(2026, 4, 14))
+    @test_throws ArgumentError MyOptionsEODChainDataSet(ticker = "PFE", date = Date(2026, 10, 8), expiration = Date(2030, 1, 1))
+end

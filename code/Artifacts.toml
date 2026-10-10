@@ -1,0 +1,7 @@
+[options_eod]
+git-tree-sha1 = "5e66294f9789f6ca48bc3ffd3f73e09651e5b6ce"
+lazy = true
+
+    [[options_eod.download]]
+    sha256 = "8cda9587fbbe16ca1dbda9a199bce786ca5623690fc297a889785db148793a8a"
+    url = "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/releases/download/data-options-eod-2026-10-08/options-eod-2026-10-08.tar.gz"

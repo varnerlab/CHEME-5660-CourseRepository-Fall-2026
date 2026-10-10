@@ -104,6 +104,147 @@ function  MyOptionsChainDataSet(; ticker::String = "amd")::NamedTuple
     return (metadata=metadata, data=data);
 end
 
+# --- End-of-day options archive (lazy artifact) --------------------------------
+
+const _OPTIONS_EOD_MISSABLE = [:bid_size, :ask_size, :last_price, :last_size,
+    :implied_vol, :delta, :gamma, :theta, :vega, :rho]
+
+# the first call downloads the archive from the GitHub release named in code/Artifacts.toml.
+# Julia's package server only hosts artifacts of registered packages, so skip it; otherwise
+# Pkg prints a "Failure artifact" line before it falls back to the GitHub release -
+_options_eod_path(file::String) = withenv("JULIA_PKG_SERVER" => "") do
+    joinpath(artifact"options_eod", file)
+end
+
+function _options_eod_window(data::DataFrame, from::Union{Nothing,Date}, to::Union{Nothing,Date})::DataFrame
+    isnothing(from) == false && (data = data[data.date .>= from, :]);
+    isnothing(to) == false && (data = data[data.date .<= to, :]);
+    return data;
+end
+
+"""
+    MyOptionsEODUnderlyingDataSet(; ticker, from, to) -> DataFrame
+
+Load the underlying share prices that go with the end-of-day options archive,
+one row per ticker per trading session from April 13 to October 8, 2026.
+
+Columns are `ticker`, `date`, `capture_ts` (UTC time of the options capture), and
+the session's `open`, `high`, `low`, `close` (USD/share), `iex_volume` (shares),
+and `iex_vwap` (USD/share). The bars come from Alpaca's IEX feed, so the prices
+track the consolidated tape closely but `iex_volume` counts IEX trades only.
+
+### Arguments
+- `ticker::Union{Nothing,String}`: keep only this ticker, e.g. `"SPY"`. Defaults to `nothing`, i.e. all 31 tickers.
+- `from::Union{Nothing,Date}`: keep sessions on or after this date. Defaults to `nothing`, i.e. no lower bound.
+- `to::Union{Nothing,Date}`: keep sessions on or before this date. Defaults to `nothing`, i.e. no upper bound.
+
+### Returns
+- `DataFrame`: the matching rows, sorted by ticker and date.
+
+The archive is a lazy artifact. The first call to any `MyOptionsEOD...` loader
+downloads it (about 112 MB) into the Julia depot, and later calls reuse that copy.
+"""
+function MyOptionsEODUnderlyingDataSet(; ticker::Union{Nothing,String} = nothing,
+    from::Union{Nothing,Date} = nothing, to::Union{Nothing,Date} = nothing)::DataFrame
+
+    data = CSV.read(_options_eod_path("underlying.csv"), DataFrame; stringtype = String);
+    if isnothing(ticker) == false
+        tk = uppercase(ticker);
+        tk in data.ticker || throw(ArgumentError("no end-of-day options data for \"$(ticker)\"; available tickers: $(join(unique(data.ticker), ", "))"));
+        data = data[data.ticker .== tk, :];
+    end
+    return _options_eod_window(data, from, to);
+end
+
+"""
+    MyOptionsEODDataSet(; ticker, from, to) -> DataFrame
+
+Load the end-of-day option chains for one ticker, one row per contract per
+trading session. The archive covers 31 tickers (large-cap stocks plus SPY, QQQ,
+and IWM) over 115 sessions from April 13 to October 8, 2026, captured from the
+Alpaca Markets options snapshot after each close. Each session keeps the
+expirations nearest to 2, 7, 14, 30, 45, 60, and 90 days out, across all listed
+strikes.
+
+Columns are `date` (trading session), `expiration`, `dte` (calendar days to
+expiration), `target_dte` (the ladder target the expiration matched), `type`
+(`"call"` or `"put"`), `strike`, `bid`, `ask`, `mid`, `bid_size`, `ask_size`,
+`last_price`, `last_size`, `implied_vol`, `delta`, `gamma`, `theta`, `vega`, and
+`rho`. Prices are USD/share, sizes are contracts, `implied_vol` is an annualized
+decimal, `theta` is per calendar day, and `vega` and `rho` are per
+one-percentage-point change.
+
+### Arguments
+- `ticker::String`: the underlying ticker, e.g. `"NVDA"` or `"spy"`. Defaults to `"NVDA"`.
+- `from::Union{Nothing,Date}`: keep sessions on or after this date. Defaults to `nothing`, i.e. no lower bound.
+- `to::Union{Nothing,Date}`: keep sessions on or before this date. Defaults to `nothing`, i.e. no upper bound.
+
+### Returns
+- `DataFrame`: the matching contracts, sorted by date, expiration, type, and strike.
+
+The implied volatility and Greeks are Alpaca's and are `missing` on 44% of rows,
+mostly contracts far from the money. Join [`MyOptionsEODUnderlyingDataSet`](@ref)
+on `date` for the share price. The first call to any `MyOptionsEOD...` loader
+downloads the archive (about 112 MB) into the Julia depot.
+"""
+function MyOptionsEODDataSet(; ticker::String = "NVDA", from::Union{Nothing,Date} = nothing,
+    to::Union{Nothing,Date} = nothing)::DataFrame
+
+    tk = uppercase(ticker);
+    path = _options_eod_path("$(tk).csv.gz");
+    isfile(path) || throw(ArgumentError("no end-of-day options data for \"$(ticker)\"; available tickers: $(join(unique(MyOptionsEODUnderlyingDataSet().ticker), ", "))"));
+    data = CSV.read(path, DataFrame; stringtype = String,
+        types = Dict(c => Union{Missing,Float64} for c in _OPTIONS_EOD_MISSABLE));
+    return _options_eod_window(data, from, to);
+end
+
+"""
+    MyOptionsEODChainDataSet(; ticker, date, expiration) -> NamedTuple
+
+Load one end-of-day options chain from the archive described in
+[`MyOptionsEODDataSet`](@ref), together with the underlying share price on the
+quote date.
+
+### Arguments
+- `ticker::String`: the underlying ticker. Defaults to `"NVDA"`.
+- `date::Date`: the trading session of the quotes. Defaults to October 8, 2026, the last session in the archive.
+- `expiration::Union{Nothing,Date}`: keep only contracts with this expiration. Defaults to `nothing`, i.e. every expiration captured that session.
+
+### Returns
+- `NamedTuple`: with two fields:
+    - `metadata::Dict{String,Any}`: the keys `ticker`, `quote_date`, `expiration_date` and `DTE` (`nothing` when `expiration` is `nothing`), `expirations` (every expiration captured that session), `underlying_open`, `underlying_high`, `underlying_low`, `underlying_close`, `capture_ts`, and `source`.
+    - `data::DataFrame`: the chain, with the columns of [`MyOptionsEODDataSet`](@ref), sorted by expiration, type, and strike.
+"""
+function MyOptionsEODChainDataSet(; ticker::String = "NVDA", date::Date = Date(2026, 10, 8),
+    expiration::Union{Nothing,Date} = nothing)::NamedTuple
+
+    underlying = MyOptionsEODUnderlyingDataSet(ticker = ticker);
+    row = findfirst(==(date), underlying.date);
+    isnothing(row) && throw(ArgumentError("no $(uppercase(ticker)) session on $(date); the archive has $(nrow(underlying)) $(uppercase(ticker)) sessions from $(first(underlying.date)) to $(last(underlying.date))"));
+
+    data = MyOptionsEODDataSet(ticker = ticker, from = date, to = date);
+    expirations = sort(unique(data.expiration));
+    if isnothing(expiration) == false
+        expiration in expirations || throw(ArgumentError("no $(uppercase(ticker)) contracts expiring $(expiration) on $(date); expirations that session: $(join(expirations, ", "))"));
+        data = data[data.expiration .== expiration, :];
+    end
+
+    metadata = Dict{String,Any}(
+        "ticker" => uppercase(ticker),
+        "quote_date" => date,
+        "expiration_date" => expiration,
+        "DTE" => isnothing(expiration) ? nothing : Dates.value(expiration - date),
+        "expirations" => expirations,
+        "underlying_open" => underlying.open[row],
+        "underlying_high" => underlying.high[row],
+        "underlying_low" => underlying.low[row],
+        "underlying_close" => underlying.close[row],
+        "capture_ts" => underlying.capture_ts[row],
+        "source" => "Alpaca Markets options snapshot, end of session");
+
+    return (metadata = metadata, data = data);
+end
+
 # --- Adaptive portfolio teaching data -----------------------------------------
 
 const _PATH_TO_ADAPTIVE_PORTFOLIO_DATA = joinpath(_PATH_TO_DATA, "adaptive_portfolio")
