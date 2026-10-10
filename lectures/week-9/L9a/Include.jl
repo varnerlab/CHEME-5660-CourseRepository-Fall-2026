@@ -1,6 +1,7 @@
 # setup paths -
-# L9a uses no local source or data: the pricing models ship with
-# VLQuantitativeFinancePackage and the figures are prebuilt in figs/.
+# L9a uses no local source or data: the options chains and the pricing models
+# ship with VLQuantitativeFinancePackage (the end-of-day options archive downloads
+# on first use), and the figures are prebuilt in figs/.
 const _ROOT = @__DIR__;
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
@@ -17,7 +18,9 @@ end
 # load external packages -
 using VLQuantitativeFinancePackage
 using DataFrames
+using Dates
 using Statistics
 using Random
 using Plots
 using PrettyTables
+using Colors

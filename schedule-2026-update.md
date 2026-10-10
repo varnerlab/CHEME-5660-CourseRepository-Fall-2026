@@ -68,7 +68,7 @@ All changes below apply to `Sheet1`.
 | 7a row (Oct 6) | 7a | Oct 6 | SIM portfolios and a risk-free asset (L6b continuation; updated 2026-10-01) |
 | `F32` | 7b | Oct 8 | Utility-based portfolio allocation (trimmed 2026-10-02; rebalancing engine archived, online SIM deferred) |
 | `F36` | 8b | Oct 15 | Option contracts: call and put payoff and profit |
-| `F40` | 9a | Oct 20 | European option pricing with Black–Scholes–Merton |
+| `F40` | 9a | Oct 20 | Introduction to derivatives and European option pricing with Black–Scholes–Merton |
 | `F41` | 9b | Oct 22 | American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value |
 | `F45` | 10a | Oct 27 | Option sensitivities: delta, gamma, theta, vega, and rho |
 | `F46` | 10b | Oct 29 | Probability of profit, composite contracts, and delta hedging |

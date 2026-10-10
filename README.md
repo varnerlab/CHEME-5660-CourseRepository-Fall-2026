@@ -139,7 +139,7 @@ for published student bundles.
 | 6 | Single-index models and risky/risk-free allocation | [Week 6](lectures/week-6/) |
 | 7 | SIM portfolios with a risk-free asset and utility-based allocation | [Week 7](lectures/week-7/) |
 | 8 | Option contracts: call and put payoff and profit | [Week 8](lectures/week-8/) |
-| 9 | European and American option pricing | [Week 9](lectures/week-9/) |
+| 9 | Derivatives, options, and European and American pricing | [Week 9](lectures/week-9/) |
 | 10 | Option sensitivities, probability of profit, composite contracts, and delta hedging | [Week 10](lectures/week-10/) |
 | 11 | Covered calls, cash-secured puts, protective collars, and defined-outcome ETFs | [Week 11](lectures/week-11/) |
 | 12 | Stochastic multi-armed bandits and binary ticker selection | [Week 12](lectures/week-12/) |

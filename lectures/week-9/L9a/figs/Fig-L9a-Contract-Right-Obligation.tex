@@ -1,0 +1,40 @@
+% L9a schematic: an option gives the buyer a right and the seller an obligation.
+% Minimal two-row remake of the instructor's 2024 raster (archived in
+% lectures/archive/week-8-L8b-options-2026-10-09/week-8/L8b/figs/): actors and cash flows only.
+% Solid arrow: always paid. Dotted arrow: only if the buyer exercises.
+% No background fill, so the notebook SVG can follow a dark theme (theme_svg.py).
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily,color=vnink,
+    actor/.style={rounded corners=3pt,line width=0.9pt,minimum width=2.3cm,minimum height=1.05cm,font=\sffamily\bfseries},
+    flowlabel/.style={font=\sffamily\small,midway,above=1pt},
+    always/.style={vnink,line width=1.0pt,-{Latex[length=2.6mm]}},
+    ifexercised/.style={vnmuted,line width=1.0pt,densely dotted,-{Latex[length=2.6mm]}}]
+
+  % column headers
+  \node[font=\sffamily\small,text=vnmuted] at (2.6,4.55) {right};
+  \node[font=\sffamily\small,text=vnmuted] at (9.4,4.55) {obligation};
+
+  % CALL row
+  \node[anchor=east,font=\sffamily\bfseries,text=vnlink] at (0.9,3.3) {Call};
+  \node[actor,draw=vnlink,text=vnlink] (bc) at (2.6,3.3) {Buyer};
+  \node[actor,draw=vncarnelian,text=vncarnelian] (sc) at (9.4,3.3) {Seller};
+  \draw[always] ([yshift=0.22cm]bc.east) -- ([yshift=0.22cm]sc.west) node[flowlabel] {premium $\mathcal{P}_{c}$};
+  \draw[ifexercised] ([yshift=-0.22cm]sc.west) -- ([yshift=-0.22cm]bc.east) node[flowlabel,below=1pt,above=0pt,yshift=-0.62cm,text=vnmuted] {shares at $K$};
+
+  % PUT row
+  \node[anchor=east,font=\sffamily\bfseries,text=vncarnelian] at (0.9,1.2) {Put};
+  \node[actor,draw=vnlink,text=vnlink] (bp) at (2.6,1.2) {Buyer};
+  \node[actor,draw=vncarnelian,text=vncarnelian] (sp) at (9.4,1.2) {Seller};
+  \draw[always] ([yshift=0.22cm]bp.east) -- ([yshift=0.22cm]sp.west) node[flowlabel] {premium $\mathcal{P}_{p}$};
+  \draw[ifexercised] ([yshift=-0.22cm]bp.east) -- ([yshift=-0.22cm]sp.west) node[flowlabel,yshift=-0.62cm,text=vnmuted] {shares at $K$};
+
+  % legend
+  \draw[vnink,line width=1.0pt] (2.2,-0.05) -- (3.0,-0.05);
+  \node[anchor=west,font=\sffamily\small] at (3.1,-0.05) {always paid};
+  \draw[vnmuted,line width=1.0pt,densely dotted] (5.6,-0.05) -- (6.4,-0.05);
+  \node[anchor=west,font=\sffamily\small,text=vnmuted] at (6.5,-0.05) {only if the buyer exercises};
+\end{tikzpicture}
+\end{document}

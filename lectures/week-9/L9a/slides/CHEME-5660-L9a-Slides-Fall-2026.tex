@@ -1,13 +1,22 @@
-% L9a student companion deck: European option pricing with BSM.
+% L9a student companion deck: introduction to derivatives and European option pricing.
+%
+% The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
+% instructor preference. Notation follows the lecture: premiums \mathcal{P}_c and
+% \mathcal{P}_p, payoffs V_c and V_p, buyer and seller profit, terminal price S(T),
+% risk-free rate g_y, and BSM's d_+, d_-, and N. Rebuilt October 2026 from the
+% archived L8b deck and the pre-redesign L9a deck (see lectures/archive/).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\gy}{g_y}
-\newcommand{\ST}{S_T}
+\newcommand{\Pc}{\mathcal{P}_{c}}
+\newcommand{\Pp}{\mathcal{P}_{p}}
+\newcommand{\Dinv}{\mathcal{D}^{-1}_{T,0}(g_{y})}
+\newcommand{\ST}{S(T)}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a}
 
-\title{\texorpdfstring{{\vnheavy L9a}}{L9a}: European Option Pricing with Black--Scholes--Merton}
+\title{\texorpdfstring{{\vnheavy L9a}}{L9a}: Introduction to Derivatives and European Option Pricing}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -34,196 +43,291 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  L8b treated a quoted premium as an input. Today we compute that premium for a
-  contract exercisable only at expiration.
+  A Kalshi contract costs less than a dollar today and pays one dollar only if
+  an event occurs. What is a payment that may never arrive worth today?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Explain risk-neutral valuation}: separate a no-arbitrage
-      pricing measure from a real-world return forecast.
-    \item \hilite{Price European calls and puts}: evaluate the
-      Black--Scholes--Merton formulas with consistent units and conventions.
-    \item \hilite{Check the premium}: use put--call parity, nonnegativity,
-      strike monotonicity, and Monte Carlo standard errors.
+    \item \hilite{Define and classify derivatives}: futures, forwards, swaps,
+      and options.
+    \item \hilite{Analyze option payoffs and profits}: long and short calls and
+      puts at expiration, breakevens, and loss bounds.
+    \item \hilite{Price European options contracts}: the premium makes the
+      expected net present value zero under the risk-neutral measure, the
+      Black--Scholes--Merton formulas compute it, and put--call parity links
+      calls and puts.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Lecture and Example Stay on the Same Problem}
-  \textbf{\ink{Lecture:}} European exercise, risk-neutral valuation, the BSM call
-  and put formulas, input conventions, put--call parity, and numerical checks.
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par
+  \href{\repo/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb}}}
 
-  \vspace{1.0em}
-  \textbf{\ink{Example:}} Price the same European call and put by BSM and by
-  risk-neutral Monte Carlo. Report simulation uncertainty, verify parity, and
-  sweep both premiums across strike.
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Example 1:}}\par
+  \href{\repo/CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}}}
 
-  \vspace{1.0em}
-  \textbf{\ink{Next:}} L9b changes the exercise right. The European price from
-  today becomes the benchmark for measuring the value of American early-exercise
-  flexibility.
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Example 2:}}\par
+  \href{\repo/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
+
+  \vspace{0.5em}
+  The first example computes payoff and profit for single long and short call
+  and put contracts. The second computes European premiums with
+  Black--Scholes--Merton and Monte Carlo simulation, then varies the strike.
 \end{frame}
 
-\begin{frame}{European Exercise Means One Terminal Payoff}
-  A European contract can be exercised only at expiration $T$. With strike
-  $K>0$, terminal share price $\ST\geq0$, and $x^+:=\max(x,0)$, the per-share
-  payoffs are
-  \[
-    \boxed{h_c(\ST;K)=(\ST-K)^+,
-    \qquad h_p(\ST;K)=(K-\ST)^+.}
-  \]
+\begin{frame}{Company Profile: Cboe Global Markets}
+  \href{https://www.cboe.com/}{\hilite{Cboe}} opened on April 26, 1973, as the Chicago Board Options Exchange,
+  the world's first exchange for listed options. Black and Scholes published
+  their pricing formula the same year.
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Premiums}: $C_0$ for the call and $P_0$ for the put, both in
-      USD/share at time $0$.
-    \item \hilite{Deliverable}: multiply by shares/contract only when converting
-      a per-share value to account dollars.
-    \item \hilite{Scope}: there is no early-exercise decision to optimize. L9b
-      adds that decision for American contracts.
+    \item \hilite{Listed options}: standard strikes, expirations, and contract
+      sizes, cleared by the Options Clearing Corporation (OCC).
+    \item \hilite{SPX options}: European-style and cash-settled. Standard stock
+      and ETF options are American-style.
+    \item \hilite{VIX}: the market's expected 30-day volatility of the S\&P 500,
+      read from SPX option premiums.
+    \item \hilite{Event contracts}: since June 2026, binary options on the
+      Mini-S\&P 500 that pay 100 USD or nothing.
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Today's question:}} where does a listed premium come from?
+\end{frame}
+
+\begin{frame}{What Is a Derivative?}
+  A \hilite{derivative} is a contract between a buyer and a seller to transact an
+  asset at a set price on a future date. In L1b's language, it is an abstract
+  asset whose cash flows depend on the underlying asset.
+  \vspace{0.3em}
+  \begin{itemize}\setlength{\itemsep}{0.25em}
+    \item \hilite{Futures and forwards}: agreements to buy or sell later at a set
+      price. Futures are exchange-traded, and forwards trade over the counter.
+    \item \hilite{Swaps}: one party exchanges an asset's value or cash flows for
+      another's, over the counter.
+    \item \hilite{Options}: the buyer holds the right, but not the obligation, to
+      buy (call) or sell (put) at a set price. Options are exchange-traded.
+    \item \hilite{Event contracts}: pay a fixed amount, usually one dollar, if an
+      event occurs and nothing otherwise. Kalshi lists them.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Risk Neutral Is a Pricing Measure, Not a Forecast}
-  Let $\gy$ be the continuously compounded risk-free rate, $\delta$ a continuous
-  dividend yield, and $\sigma>0$ annualized volatility. Under the BSM pricing
-  measure $\Q$,
-  \[
-    \frac{dS_t}{S_t}=(\gy-\delta)\,dt+\sigma\,dW_t^{\Q}.
-  \]
-  A European payoff $h(\ST)$ has model value
-  \[
-    \boxed{V_0=e^{-\gy T}\E^{\Q}[h(\ST)].}
-  \]
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The drift $\gy-\delta$ enforces no-arbitrage pricing under the model.
-    \item No estimate of the asset's historical or expected real-world return
-      enters this valuation.
+\begin{frame}{How Big Is the US Options Market?}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{2025}: a record of about 15.2 billion listed contracts, up about
+      24\% from the 2024 record of 12.2 billion (OCC).
+    \item \hilite{Busiest day}: about 110 million contracts on October 10, 2025
+      (Cboe).
+    \item \hilite{2026}: through September, about 70.6 million contracts per
+      day, against 60.6 million for all of 2025, and about 13.2 billion
+      contracts in total (OCC).
+    \item \hilite{Notional}: option flow topped 3 trillion USD per day in January
+      2025, about 5 times the 2024 daily notional of U.S. cash equities (Cboe).
   \end{itemize}
+  \slidenote{Sources:}{the lecture notebook's market table, with dates and links.}
 \end{frame}
 
-\begin{frame}{The Closed Form Comes with Assumptions}
-  Classical BSM assumes:
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item frictionless continuous trading and no arbitrage;
-    \item constant risk-free rate $\gy$, dividend yield $\delta$, and volatility
-      $\sigma$ over the contract's life;
-    \item continuous lognormal underlying-price paths; and
-    \item the ability to trade the underlying and financing asset as required by
-      the replicating hedge.
-  \end{itemize}
+\begin{frame}{Call and Put Options Contracts}
+  \vspace{-0.6em}
+  \begin{center}
+    \includegraphics[width=0.86\textwidth,height=0.80\textheight,keepaspectratio]{../figs/Fig-L9a-Contract-Right-Obligation.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Business Case: Who Risks What}
+  Per share, at expiration:
+  \vspace{0.3em}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \textbf{\ink{Position}} & \textbf{\ink{Maximum profit}} & \textbf{\ink{Maximum loss}}\\[2pt]
+    \hline\\[-7pt]
+    Long call  & unbounded & the premium $\Pc$\\
+    Short call & the premium $\Pc$ & unbounded\\
+    Long put   & $K-\Pp$, if the share price falls to zero & the premium $\Pp$\\
+    Short put  & the premium $\Pp$ & $K-\Pp$, if the share price falls to zero\\
+  \end{tabular}
+  \end{center}
   \vspace{0.4em}
-  Real markets have jumps, discrete trading, volatility smiles, funding spreads,
-  transaction costs, and constraints. A formula can be evaluated exactly while
-  its model remains approximate.
+  Only the uncovered short call can lose without bound. A short put's loss is
+  large but bounded, because the share price cannot fall below zero. Covered
+  calls and cash-secured puts hold the shares or cash for 100 shares per
+  contract.
 \end{frame}
 
-\begin{frame}{Black--Scholes--Merton Prices the Pair}
-  Define the dimensionless quantities
-  \[
-    d_1=\frac{\ln(S_0/K)+(\gy-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
-    \qquad d_2=d_1-\sigma\sqrt T.
-  \]
-  With $\Phi$ the standard-normal CDF, the European premiums are
-  \[
-    \boxed{C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-\gy T}\Phi(d_2)}
-  \]
-  \[
-    \boxed{P_0=Ke^{-\gy T}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1).}
-  \]
-  Both values are in USD/share. Set $\delta=0$ for a non-dividend-paying
-  underlying.
+\begin{frame}{Call and Put Payoffs}
+  A \hilite{call} gives the owner the right, but not the obligation, to buy 100
+  shares at the strike price $K$ by the expiration date. A \hilite{put} gives
+  the right to sell them. With share price $\ST$ at expiration, the payoffs per
+  share are:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      V_{c}(K,\ST) & = \max\bigl(\ST-K,~0\bigr)\\
+      V_{p}(K,\ST) & = \max\bigl(K-\ST,~0\bigr)
+    \end{aligned}}
+  \end{equation*}
+  The call is exercised only when $\ST>K$, and the put only when $\ST<K$. Both
+  payoffs are nonnegative because the buyer may decline. The seller charges a
+  premium, $\Pc$ for a call and $\Pp$ for a put.
 \end{frame}
 
-\begin{frame}{Input Conventions Are Part of the Formula}
-  Before evaluating BSM, reconcile every input:
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{$S_0$ and $K$}: the same currency per share;
-    \item \hilite{$T$}: time to expiration in years, with an explicit day-count
-      convention;
-    \item \hilite{$\gy$}: a continuously compounded annual rate;
-    \item \hilite{$\sigma$}: annualized log-return volatility; and
-    \item \hilite{$\delta$}: a continuous proportional dividend yield.
-  \end{itemize}
-  A mathematically correct formula with inconsistent conventions produces a
-  precisely computed wrong answer.
-\end{frame}
-
-\begin{frame}{Put--Call Parity Checks the Closed Forms}
-  The European call and put satisfy
+\begin{frame}{Profit and Breakeven}
+  The buyer's profit per share is the payoff minus the premium, and the
+  seller's is the premium minus the payoff:
+  \begin{align*}
+    P_{c}^{\text{buyer}} & = V_{c}(K,\ST)-\Pc & P_{c}^{\text{seller}} & = \Pc-V_{c}(K,\ST)\\
+    P_{p}^{\text{buyer}} & = V_{p}(K,\ST)-\Pp & P_{p}^{\text{seller}} & = \Pp-V_{p}(K,\ST)
+  \end{align*}
+  Setting the buyer's profit to zero gives the breakeven share price at
+  expiration:
   \[
-    \boxed{C_0-P_0=S_0e^{-\delta T}-Ke^{-\gy T}.}
-  \]
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Economic meaning}: call minus put replicates the
-      dividend-adjusted share minus a bond paying $K$ at expiration.
-    \item \hilite{Implementation use}: compute the call and put directly, then
-      require the parity residual to match the implementation's precision.
-    \item \hilite{Numerical caution}: do not obtain a tiny premium by subtracting
-      nearly equal rounded quantities; cancellation can produce a negative value.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Monte Carlo Is a Second Route to the Same Value}
-  Draw $M$ independent endpoints under $\Q$, discount each payoff
-  $Y_k=e^{-\gy T}h(S_T^{(k)})$, and estimate
-  \[
-    \widehat V_M=\frac1M\sum_{k=1}^{M}Y_k,
+    S_{\text{BE}}=K+\Pc\ \text{(call)},
     \qquad
-    \widehat{\mathrm{SE}}(\widehat V_M)=\frac{s_Y}{\sqrt M}.
+    S_{\text{BE}}=K-\Pp\ \text{(put)}
   \]
+  Above the call breakeven, and below the put breakeven, the buyer profits and
+  the seller loses.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Options as Abstract Assets}
+  \vspace{-0.6em}
+  \begin{center}
+    \includegraphics[width=0.62\textwidth,keepaspectratio]{../figs/Fig-L9a-Option-CashFlows.pdf}
+  \end{center}
+  \vspace{-0.5em}
+  The buyer pays the premium $\mathcal{P}$ today and receives the payoff
+  $V(K,\ST)\geq 0$ at expiration, so the net present value at $t=0$ is:
+  \[
+    \operatorname{NPV}_{0}=-\mathcal{P}+\Dinv\cdot V(K,\ST)
+  \]
+  The profit $V-\mathcal{P}$ adds dollars from different dates. In today's
+  dollars, the call buyer breaks even at $K+\Pc\cdot\mathcal{D}_{T,0}(g_{y})$
+  rather than $K+\Pc$.
+\end{frame}
+
+\begin{frame}{The European Premium}
+  A Treasury's cash flows are known, so in L2a its price made the NPV zero. An
+  option's payoff is random, so we require a zero \hilite{expected} NPV under
+  the risk-neutral measure $\Q$:
+  \[
+    \E_{\Q}\bigl(\operatorname{NPV}_{0}\bigr)=0
+    \;\Longrightarrow\;
+    \boxed{\mathcal{P}^{\text{EU}}=\E_{\Q}\bigl(\Dinv\cdot V(K,\ST)\bigr)}
+  \]
+  Any other premium creates a risk-free profit opportunity:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Too low}: buy the option and sell a portfolio with the same
+      payoff, built from shares and the risk-free asset.
+    \item \hilite{Too high}: sell the option and buy the portfolio.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise Styles}
+  The exercise style changes the premium:
+  \begin{itemize}\setlength{\itemsep}{0.25em}
+    \item \hilite{European}: exercise only on the expiration date $T$.
+    \item \hilite{American}: exercise at any time up to $T$.
+    \item \hilite{Bermudan}: exercise only on specified dates up to $T$.
+  \end{itemize}
+  The American holder exercises at a time $\tau\leq T$ chosen using only the
+  information available at that time (a stopping time):
+  \[
+    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\mathcal{P}^{\text{EU}}
+  \]
+  The American premium is at least the European one because the holder can
+  choose when to exercise.
+\end{frame}
+
+\begin{frame}{What \texorpdfstring{$\Q$}{Q} Means}
+  Under $\Q$, the expected share price grows at the risk-free rate $g_{y}$ (no
+  dividends), so the share also has zero expected NPV:
+  \[
+    \E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)
+  \]
+  $\Q$ is a pricing rule. The real-world measure $\mathbb{P}$ still describes
+  how often outcomes occur.
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item Compare $\widehat V_M-V_0$ in estimated standard-error units.
-    \item Report the random-seed policy, number of samples, and standard error.
-    \item A nominal 95\% interval is not guaranteed to contain the closed form on
-      every run; interval membership is a diagnostic, not an identity.
+    \item \hilite{May have no value}: an option that expires worthless has
+      scaled NPV $\rho_{T}=-1$. For a call, that happens with real-world
+      probability $\mathbb{P}(\ST\leq K)$ (L5a).
+    \item \hilite{Event contracts}: a one-dollar contract costs
+      $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
+      differ from $\mathbb{P}(\text{event})$.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Strike Moves Calls and Puts in Opposite Directions}
-  Holding $S_0$, $T$, $\gy$, $\delta$, and $\sigma$ fixed:
-  \begin{itemize}\setlength{\itemsep}{0.55em}
-    \item \hilite{Calls are nonincreasing in $K$}: a higher purchase price can
-      only reduce the terminal call payoff state by state.
-    \item \hilite{Puts are nondecreasing in $K$}: a higher sale price can only
-      increase the terminal put payoff state by state.
-    \item \hilite{Both premiums remain nonnegative}: they are prices of
-      nonnegative terminal payoffs.
-  \end{itemize}
-  \vspace{0.4em}
-  The example notebook verifies these properties across strikes from 20 to 100
-  USD/share.
+\begin{frame}{Black–Scholes–Merton Premiums}
+  Under GBM with volatility $\sigma$, the European call and put premiums are:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \Pc & = N(d_{+})\cdot S(0)-N(d_{-})\cdot K\cdot\Dinv\\
+      \Pp & = N(-d_{-})\cdot K\cdot\Dinv-N(-d_{+})\cdot S(0)
+    \end{aligned}}
+  \end{equation*}
+  where $N$ is the standard normal CDF, $T$ is in years, and:
+  \[
+    d_{+}=\frac{1}{\sigma\sqrt{T}}\left[\ln\frac{S(0)}{K}+\Bigl(g_{y}+\frac{\sigma^{2}}{2}\Bigr)T\right],
+    \qquad d_{-}=d_{+}-\sigma\sqrt{T}
+  \]
+  Merton and Scholes received the 1997 Nobel Prize in Economic Sciences.
+  Fischer Black had passed away before the prize was awarded.
 \end{frame}
 
-\begin{frame}{Four Checks Before Trusting the Premium}
-  \begin{enumerate}\setlength{\itemsep}{0.5em}
-    \item $C_0\geq0$ and $P_0\geq0$.
-    \item Put--call parity holds within the formula's rounding tolerance.
-    \item Calls decrease and puts increase as strike rises with other inputs fixed.
-    \item Monte Carlo discrepancies are ordinary when measured in simulation
-      standard-error units.
-  \end{enumerate}
+\begin{frame}{Put–Call Parity}
+  For a call and a put with the same strike and expiration, the payoffs differ
+  by $\ST-K$ at every share price:
+  \[
+    V_{c}(K,\ST)-V_{p}(K,\ST)=\ST-K
+  \]
+  Subtracting the put premium condition from the call premium condition, and
+  using $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$, gives:
+  \[
+    \boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}
+  \]
+  Parity uses only the payoff identity and the share's zero expected NPV, so it
+  holds whatever model describes the share price under $\Q$.
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{advanced/contingent\_claims/}\par
+  \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
+
   \vspace{0.4em}
-  These checks establish internal consistency under BSM. They do not prove that
-  constant volatility, continuous paths, or the other assumptions describe a
-  particular market well.
+  Where do the BSM premiums come from? Replication on a one-step lattice gives
+  the risk-neutral probability and the state prices that price event contracts.
+  The call is an asset-or-nothing claim minus $K$ digital claims.
+
+  \vspace{0.7em}
+  {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par
+  \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
+
+  \vspace{0.4em}
+  Does one volatility price every strike? We invert a synthetic SPXW-style chain
+  of European, cash-settled index options for implied volatility.
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9a/advanced}{lectures/week-9/L9a/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
 \begin{frame}{Summary}
-  L9a prices European options end to end: terminal payoff, risk-neutral
-  valuation, BSM closed form, and numerical validation.
-
-  \vspace{0.4em}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Risk neutral is a pricing measure}: no real-world return
-      forecast enters the premium.
-    \item \hilite{BSM prices European exercise}: inputs and compounding
-      conventions are part of the model specification.
-    \item \hilite{A premium needs checks}: use direct formulas, parity,
-      monotonicity, and Monte Carlo uncertainty together.
-  \end{itemize}
+  Today we introduced derivatives, read the payoff and profit of call and put
+  contracts, and priced European contracts.
 
   \vspace{0.5em}
-  Next, L9b adds American exercise and asks when that extra right makes the
-  American premium exceed this European benchmark.
+  {\large\textbf{\ink{Key takeaways}}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Derivatives derive their value from underlying assets}:
+      common types are futures, forwards, swaps, and options.
+    \item \hilite{Option payoffs are set by the strike and the position}: the
+      premium turns payoff into profit and sets the breakeven.
+    \item \hilite{The premium makes the expected NPV zero under $\Q$}: the BSM
+      formulas compute it for European contracts, and parity links calls and
+      puts.
+  \end{itemize}
 \end{frame}
 
 \end{document}

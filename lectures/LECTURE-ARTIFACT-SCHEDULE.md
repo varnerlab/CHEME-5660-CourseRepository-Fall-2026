@@ -30,7 +30,7 @@ guest Q/A is confirmed it is delivered asynchronously and does not displace 7a.
 | 7a | Oct 6 | 2 | Utility-based allocation and the adaptive rebalancing engine | `week-7/L7a`; utility allocator, engine, and drift examples on course data | Notebook, examples, and slides complete; legacy notes retired |
 | 7b | Oct 8 | 2 | Online SIM estimation: updating the engine as data arrive | `week-7/L7b`; EWLS replay and scenario-ensemble examples on course data | Notebook, examples, and slides complete; legacy notes retired |
 | 8b | Oct 15 | 3 | Option contracts: call/put payoff and profit | `week-8/L8b`; static-replication derivation in `advanced/` | Notebook, examples, and slides complete; legacy notes retired |
-| 9a | Oct 20 | 3 | European option pricing with Black–Scholes–Merton | `week-9/L9a`; BSM and risk-neutral Monte Carlo example; SPXW skew notebook in `advanced/` | Notebook, examples, and slides complete; legacy notes retired |
+| 9a | Oct 20 | 3 | Introduction to derivatives; calls, puts, exercise styles, and European pricing with Black–Scholes–Merton | `week-9/L9a`; single-contract payoff/profit and BSM premium examples; contingent-claims derivation and SPXW skew notebooks in `advanced/` | Rebuilt October 2026 from the 2025 text; awaiting instructor review |
 | 9b | Oct 22 | 3 | American CRR pricing versus the European benchmark; intrinsic, extrinsic, and early-exercise value | `week-9/L9b`; CRR factor derivation in `advanced/` | Notebook, examples, and slides complete; legacy notes retired |
 | 10a | Oct 27 | 3 | Option sensitivities: delta, gamma, theta, vega, and rho | `week-10/L10a` | Notebook complete; slides pending; legacy notes retained temporarily |
 | 10b | Oct 29 | 3 | Probability of profit, composite contracts, and delta hedging | `week-10/L10b` | Notebook complete; slides pending; legacy notes retained temporarily |
@@ -55,8 +55,7 @@ guest Q/A is confirmed it is delivered asynchronously and does not displace 7a.
   lecture directory. L2b contains the former Week 3 yield-curve, stochastic-rate,
   and STRIPS material; L11b contains the Wheel lecture and supporting examples;
   L12a contains the Markov/HMM enrichment module; L7a contains the CES
-  derivation; L7b contains the EWLS recursion derivation; L8b contains the
-  static-replication theorem; L9a contains the SPXW parity and volatility-skew
+  derivation; L7b contains the EWLS recursion derivation; L9a contains the SPXW parity and volatility-skew
   notebook; L9b contains the CRR factor derivation; L13a
   contains the former Bandit/MWA lecture; L15a contains the policy-gradient
   derivation.

@@ -1,0 +1,37 @@
+% L9a option cash-flow timeline (lecture section "Options as Abstract Assets").
+% Modeled on L2a's Fig-L2a-TBill-CashFlows.tex: same timeline, time-point units,
+% and paid/received arrow styles. Keep it structural: the NPV and the pricing
+% condition belong in the notebook.
+% Flow convention: an arrow leaving a time-point unit is money paid,
+% and an arrow entering one is money received.
+% color=vnink replaces TikZ's default black, which theme_svg.py cannot map.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+
+\begin{document}
+\begin{tikzpicture}[x=2.0cm,y=1cm,>=Latex,font=\sffamily\small,color=vnink]
+
+  % Span label ------------------------------------------------
+  \draw[vn brace] (0.45,1.65) -- (3.40,1.65)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries option: premium today, uncertain payoff at expiration};
+
+  % Timeline --------------------------------------------------
+  \draw[vn timeline] (0,0) -- (4.05,0) node[right] {time};
+  \node[vn unit] (b0) at (0.45,0) {};
+  \node[vn unit] (bT) at (3.40,0) {};
+  \node[below=4pt] at (b0) {$t=0$};
+  \node[below=4pt] at (bT) {$t=T$};
+
+  % Premium paid at the valuation date -------------------------
+  \draw[vn paid] (b0.north) -- (0.45,1.05);
+  \node[right,text=vncarnelian] at (0.45,0.62) {$-\mathcal{P}$};
+  \node[above,vn annotation] at (0.45,1.05) {premium paid};
+
+  % Payoff received at expiration, possibly zero ----------------
+  \draw[vn received,dashed] (3.40,1.05) -- (bT.north);
+  \node[right,text=vnlink] at (3.40,0.62) {$+V(K,S(T))\geq 0$};
+  \node[above,vn annotation] at (3.40,1.05) {payoff received, may be zero};
+
+\end{tikzpicture}
+\end{document}

@@ -1,5 +1,24 @@
 # Repository Working Agreements
 
+## Weeks 8–9 options redesign — October 9, 2026
+
+- The instructor is reteaching the L7b material in L8b (October 15), so options no
+  longer start in L8b. The L8b options folder (lecture, both examples, static
+  replication, deck) is archived in
+  `lectures/archive/week-8-L8b-options-2026-10-09/`.
+- L9a (October 20) now introduces derivatives and prices European options. The
+  agreed design is in
+  [the L9a redesign spec](lectures/instructor/L9a-REDESIGN-SPEC.md). The lecture
+  is assembled from the instructor's Fall-2025 text with a listed set of
+  phrase-level fixes. The only new critical-path prose is the five items flagged
+  in the spec. The new replication-to-BSM derivation goes in an optional advanced
+  notebook, because the instructor does not want Claude-drafted theory on the
+  critical path.
+- Any theory an example uses must appear in the lecture first (instructor,
+  October 9: "we can't spring theory in an example").
+- The L9a build follows lectures/instructor/L9a-REDESIGN-PLAN.md. Its handoff is
+  lectures/instructor/L9a-REDESIGN-HANDOFF.md.
+
 ## Week 7 pivot — October 1, 2026
 
 - The former L7a utility-allocation and rebalancing material now teaches as

@@ -1,0 +1,229 @@
+% L9a student companion deck: European option pricing with BSM.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\gy}{g_y}
+\newcommand{\ST}{S_T}
+
+\title{\texorpdfstring{{\vnheavy L9a}}{L9a}: European Option Pricing with Black--Scholes--Merton}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  L8b treated a quoted premium as an input. Today we compute that premium for a
+  contract exercisable only at expiration.
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Explain risk-neutral valuation}: separate a no-arbitrage
+      pricing measure from a real-world return forecast.
+    \item \hilite{Price European calls and puts}: evaluate the
+      Black--Scholes--Merton formulas with consistent units and conventions.
+    \item \hilite{Check the premium}: use put--call parity, nonnegativity,
+      strike monotonicity, and Monte Carlo standard errors.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lecture and Example Stay on the Same Problem}
+  \textbf{\ink{Lecture:}} European exercise, risk-neutral valuation, the BSM call
+  and put formulas, input conventions, put--call parity, and numerical checks.
+
+  \vspace{1.0em}
+  \textbf{\ink{Example:}} Price the same European call and put by BSM and by
+  risk-neutral Monte Carlo. Report simulation uncertainty, verify parity, and
+  sweep both premiums across strike.
+
+  \vspace{1.0em}
+  \textbf{\ink{Next:}} L9b changes the exercise right. The European price from
+  today becomes the benchmark for measuring the value of American early-exercise
+  flexibility.
+\end{frame}
+
+\begin{frame}{European Exercise Means One Terminal Payoff}
+  A European contract can be exercised only at expiration $T$. With strike
+  $K>0$, terminal share price $\ST\geq0$, and $x^+:=\max(x,0)$, the per-share
+  payoffs are
+  \[
+    \boxed{h_c(\ST;K)=(\ST-K)^+,
+    \qquad h_p(\ST;K)=(K-\ST)^+.}
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Premiums}: $C_0$ for the call and $P_0$ for the put, both in
+      USD/share at time $0$.
+    \item \hilite{Deliverable}: multiply by shares/contract only when converting
+      a per-share value to account dollars.
+    \item \hilite{Scope}: there is no early-exercise decision to optimize. L9b
+      adds that decision for American contracts.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Risk Neutral Is a Pricing Measure, Not a Forecast}
+  Let $\gy$ be the continuously compounded risk-free rate, $\delta$ a continuous
+  dividend yield, and $\sigma>0$ annualized volatility. Under the BSM pricing
+  measure $\Q$,
+  \[
+    \frac{dS_t}{S_t}=(\gy-\delta)\,dt+\sigma\,dW_t^{\Q}.
+  \]
+  A European payoff $h(\ST)$ has model value
+  \[
+    \boxed{V_0=e^{-\gy T}\E^{\Q}[h(\ST)].}
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item The drift $\gy-\delta$ enforces no-arbitrage pricing under the model.
+    \item No estimate of the asset's historical or expected real-world return
+      enters this valuation.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Closed Form Comes with Assumptions}
+  Classical BSM assumes:
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item frictionless continuous trading and no arbitrage;
+    \item constant risk-free rate $\gy$, dividend yield $\delta$, and volatility
+      $\sigma$ over the contract's life;
+    \item continuous lognormal underlying-price paths; and
+    \item the ability to trade the underlying and financing asset as required by
+      the replicating hedge.
+  \end{itemize}
+  \vspace{0.4em}
+  Real markets have jumps, discrete trading, volatility smiles, funding spreads,
+  transaction costs, and constraints. A formula can be evaluated exactly while
+  its model remains approximate.
+\end{frame}
+
+\begin{frame}{Black--Scholes--Merton Prices the Pair}
+  Define the dimensionless quantities
+  \[
+    d_1=\frac{\ln(S_0/K)+(\gy-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},
+    \qquad d_2=d_1-\sigma\sqrt T.
+  \]
+  With $\Phi$ the standard-normal CDF, the European premiums are
+  \[
+    \boxed{C_0=S_0e^{-\delta T}\Phi(d_1)-Ke^{-\gy T}\Phi(d_2)}
+  \]
+  \[
+    \boxed{P_0=Ke^{-\gy T}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1).}
+  \]
+  Both values are in USD/share. Set $\delta=0$ for a non-dividend-paying
+  underlying.
+\end{frame}
+
+\begin{frame}{Input Conventions Are Part of the Formula}
+  Before evaluating BSM, reconcile every input:
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{$S_0$ and $K$}: the same currency per share;
+    \item \hilite{$T$}: time to expiration in years, with an explicit day-count
+      convention;
+    \item \hilite{$\gy$}: a continuously compounded annual rate;
+    \item \hilite{$\sigma$}: annualized log-return volatility; and
+    \item \hilite{$\delta$}: a continuous proportional dividend yield.
+  \end{itemize}
+  A mathematically correct formula with inconsistent conventions produces a
+  precisely computed wrong answer.
+\end{frame}
+
+\begin{frame}{Put--Call Parity Checks the Closed Forms}
+  The European call and put satisfy
+  \[
+    \boxed{C_0-P_0=S_0e^{-\delta T}-Ke^{-\gy T}.}
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Economic meaning}: call minus put replicates the
+      dividend-adjusted share minus a bond paying $K$ at expiration.
+    \item \hilite{Implementation use}: compute the call and put directly, then
+      require the parity residual to match the implementation's precision.
+    \item \hilite{Numerical caution}: do not obtain a tiny premium by subtracting
+      nearly equal rounded quantities; cancellation can produce a negative value.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Monte Carlo Is a Second Route to the Same Value}
+  Draw $M$ independent endpoints under $\Q$, discount each payoff
+  $Y_k=e^{-\gy T}h(S_T^{(k)})$, and estimate
+  \[
+    \widehat V_M=\frac1M\sum_{k=1}^{M}Y_k,
+    \qquad
+    \widehat{\mathrm{SE}}(\widehat V_M)=\frac{s_Y}{\sqrt M}.
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item Compare $\widehat V_M-V_0$ in estimated standard-error units.
+    \item Report the random-seed policy, number of samples, and standard error.
+    \item A nominal 95\% interval is not guaranteed to contain the closed form on
+      every run; interval membership is a diagnostic, not an identity.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Strike Moves Calls and Puts in Opposite Directions}
+  Holding $S_0$, $T$, $\gy$, $\delta$, and $\sigma$ fixed:
+  \begin{itemize}\setlength{\itemsep}{0.55em}
+    \item \hilite{Calls are nonincreasing in $K$}: a higher purchase price can
+      only reduce the terminal call payoff state by state.
+    \item \hilite{Puts are nondecreasing in $K$}: a higher sale price can only
+      increase the terminal put payoff state by state.
+    \item \hilite{Both premiums remain nonnegative}: they are prices of
+      nonnegative terminal payoffs.
+  \end{itemize}
+  \vspace{0.4em}
+  The example notebook verifies these properties across strikes from 20 to 100
+  USD/share.
+\end{frame}
+
+\begin{frame}{Four Checks Before Trusting the Premium}
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item $C_0\geq0$ and $P_0\geq0$.
+    \item Put--call parity holds within the formula's rounding tolerance.
+    \item Calls decrease and puts increase as strike rises with other inputs fixed.
+    \item Monte Carlo discrepancies are ordinary when measured in simulation
+      standard-error units.
+  \end{enumerate}
+  \vspace{0.4em}
+  These checks establish internal consistency under BSM. They do not prove that
+  constant volatility, continuous paths, or the other assumptions describe a
+  particular market well.
+\end{frame}
+
+\begin{frame}{Summary}
+  L9a prices European options end to end: terminal payoff, risk-neutral
+  valuation, BSM closed form, and numerical validation.
+
+  \vspace{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Risk neutral is a pricing measure}: no real-world return
+      forecast enters the premium.
+    \item \hilite{BSM prices European exercise}: inputs and compounding
+      conventions are part of the model specification.
+    \item \hilite{A premium needs checks}: use direct formulas, parity,
+      monotonicity, and Monte Carlo uncertainty together.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Next, L9b adds American exercise and asks when that extra right makes the
+  American premium exceed this European benchmark.
+\end{frame}
+
+\end{document}
