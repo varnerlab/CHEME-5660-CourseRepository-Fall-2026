@@ -1,6 +1,7 @@
 # setup paths -
-# L9b uses no local source or data: the option chains ship with
-# VLQuantitativeFinancePackage and the figures are prebuilt in figs/.
+# L9b uses no local source or data: the options chains and the pricing models
+# ship with VLQuantitativeFinancePackage (the end-of-day options archive downloads
+# on first use), and the figures are prebuilt in figs/.
 const _ROOT = @__DIR__;
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
@@ -17,6 +18,7 @@ end
 # load external packages -
 using VLQuantitativeFinancePackage
 using DataFrames
+using Dates
 using Statistics
 using Plots
 using Colors

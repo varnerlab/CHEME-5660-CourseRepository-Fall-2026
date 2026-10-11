@@ -1,5 +1,23 @@
 # Repository Working Agreements
 
+## L9b rebuild — October 11, 2026
+
+- The August–September L9b drafts were rated about 5/10. The lecture had kept 2
+  of its 71 prose sentences from the instructor's Fall-2025 L10a and L10b text.
+  At his request, L9b (October 22) is rebuilt from that text, following
+  [the L9b rebuild spec](lectures/instructor/L9b-REBUILD-SPEC.md). The drafts
+  are archived in `lectures/archive/week-9-L9b-before-rebuild-2026-10-11/`.
+- His decisions: rebuild from 2025, and teach the Hull tree in the lecture from
+  the figure (the Hull notebook is review-on-your-own). The decision-rule
+  schematic is redrawn in TikZ. Option A adds about 180 new words inside his
+  sections. The market section is written as sentence, three bullets, sentence.
+- Standing preference, set the same day: write sentence, {bullets}, sentence
+  instead of a long text passage whenever the content allows.
+- The lattice node value is `V̂_{t,k}`, from his 2025 figure, so `V` keeps its
+  L9a meaning (the payoff). The market examples use the end-of-day options
+  archive, and the ticker is a variable. The extrinsic-value example is renamed
+  without "NVDA".
+
 ## L8b build — October 10, 2026
 
 - At the instructor's request, L8b (October 15) finishes the L7b story before

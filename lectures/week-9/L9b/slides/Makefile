@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-HullExample-American-v-European-Schematic.png
+FIGURES := ../figs/Fig-L9b-American-Decision-Rule.pdf ../figs/Fig-HullExample-American-v-European-Schematic.pdf
 
 .DEFAULT_GOAL := slides
 

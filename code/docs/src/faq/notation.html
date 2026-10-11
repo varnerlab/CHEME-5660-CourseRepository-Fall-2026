@@ -54,7 +54,7 @@
     <!-- LECTURE_NAV slot: a complete ul of li items, each a link to a section id on this page. -->
     <nav class='lecture-nav' aria-labelledby='lecture-nav-title'>
       <h2 id='lecture-nav-title' class='section-label'>Lectures</h2>
-      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="Context">Context</option></select></div>
+      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="Context">Context</option></select></div>
     </nav>
 
     <!-- NOTATION_SECTIONS slot: one section per lecture with class notation-section, data-lecture and an id, containing
@@ -2498,6 +2498,82 @@
 </tr>
 </tbody>
 </table>
+</div></div></section><section class="notation-section" id="L9b" data-lecture="L9b"><div class="notation-section-heading"><h2>L9b</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>American Options on the CRR Lattice</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="American Options on the CRR Lattice"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math></td>
+<td>Lattice level and number of up moves to reach a node.</td>
+<td>Counts</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">S_{t,k}</annotation></semantics></math></td>
+<td>Share price at lattice node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t,k)</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><msup><mi>u</mi><mi>k</mi></msup><msup><mi>d</mi><mrow><mi>t</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex">S_0u^kd^{t-k}</annotation></semantics></math> (L3b).</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math></td>
+<td>Length of one lattice step.</td>
+<td>yr</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></td>
+<td>Implied volatility of the underlying’s growth rate, which sets the CRR factors.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1/2}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math></td>
+<td>CRR up and down factors, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow></msup><annotation encoding="application/x-tex">e^{\sigma\sqrt{\Delta t}}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow></msup><annotation encoding="application/x-tex">e^{-\sigma\sqrt{\Delta t}}</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_y</annotation></semantics></math></td>
+<td>Continuously compounded risk-free rate.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal D_{1,0}(g_y)</annotation></semantics></math></td>
+<td>Accumulation factor for one lattice step, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_y\Delta t}</annotation></semantics></math>, which is L3b’s <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>f</mi></msub><annotation encoding="application/x-tex">R_f</annotation></semantics></math>. Its inverse <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>t</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal D^{-1}_{t+1,t}(g_y)</annotation></semantics></math> discounts one step.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math></td>
+<td>Risk-neutral up probability, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(\mathcal D_{1,0}(g_y)-d)/(u-d)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(K,S_{t,k})</annotation></semantics></math></td>
+<td>Payoff from exercising at node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t,k)</annotation></semantics></math>: the L9a call or put payoff evaluated at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">S_{t,k}</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\hat V_{t,k}</annotation></semantics></math></td>
+<td>Option value at node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t,k)</annotation></semantics></math>. Superscripts AM and EU mark the American and European recursions. The premium is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mn>0</mn><mo>,</mo><mn>0</mn></mrow></msub><annotation encoding="application/x-tex">\hat V_{0,0}</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒫</mi><mtext mathvariant="normal">AM</mtext></msup><annotation encoding="application/x-tex">\mathcal P^{\text{AM}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒫</mi><mtext mathvariant="normal">EU</mtext></msup><annotation encoding="application/x-tex">\mathcal P^{\text{EU}}</annotation></semantics></math></td>
+<td>American and European premiums. Their difference <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝒫</mi><mtext mathvariant="normal">AM</mtext></msup><mo>−</mo><msup><mi>𝒫</mi><mtext mathvariant="normal">EU</mtext></msup><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathcal P^{\text{AM}}-\mathcal P^{\text{EU}}\geq0</annotation></semantics></math> is the early-exercise premium.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_V(t)</annotation></semantics></math></td>
+<td>Extrinsic value at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: the option price minus its intrinsic value.</td>
+<td>USD/share</td>
+</tr>
+</tbody>
+</table>
 </div></div></section><section class="notation-section" id="Context" data-lecture="Context"><div class="notation-section-heading"><h2>Context</h2></div><div class="notation-group"><h3>Symbols Whose Meaning Changes with Context</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Symbols Whose Meaning Changes with Context"><table>
 <colgroup>
 <col style="width: 33%" />
@@ -2675,7 +2751,12 @@
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math></td>
 <td>Risk-neutral up probability; shares per option contract.</td>
-<td>L3b, L9a advanced; L9a Example 1</td>
+<td>L3b, L9a advanced, L9b; L9a Example 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>V</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat V</annotation></semantics></math></td>
+<td>Payoff of a bet or an option at expiration or exercise; option value at a lattice node, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\hat V_{t,k}</annotation></semantics></math>.</td>
+<td>L8b, L9a, L9b; L9b</td>
 </tr>
 </tbody>
 </table>

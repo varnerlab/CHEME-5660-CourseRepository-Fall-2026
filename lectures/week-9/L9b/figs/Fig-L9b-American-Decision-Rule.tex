@@ -1,0 +1,99 @@
+% L9b decision rule for an American contract (lecture section "Decision-Rule for American Options").
+% TikZ redraw of the instructor's 2025 schematic
+% (Fall-2025 lectures/week-10/L10a/figs/Fig-American-Contract-Decision-Schematic.png).
+% Layout, colors, and label sizes follow the 2025 PNG at the instructor's request (October 11):
+% coordinates are the PNG's positions on a 2000 x 1125 grid (x = 0.12 mm per unit, y pointing down).
+% 2026 notation: q is the risk-neutral up probability, V-hat_{t,k} the value at node (t,k),
+% and V(K,S) the payoff, as in L9a.
+% No background fill, so the notebook SVG can follow a dark theme (theme_svg.py).
+% color=vnink replaces TikZ's default black, which theme_svg.py cannot map.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+\definecolor{f25sky}{HTML}{9FCBE0}     % panel border, headings, root node, zoom lines
+\definecolor{f25skyfill}{HTML}{A4D0E5} % decision-cell shading (kept distinct from f25sky for dark mode)
+\definecolor{f25red}{HTML}{CF4238}     % nodes, uncertain-future arrow, panel time lines
+\definecolor{f25line}{HTML}{969696}    % lattice time lines
+\definecolor{f25edge}{HTML}{555659}    % lattice edges
+\definecolor{f25label}{HTML}{5F5F5F}   % today and box captions
+\definecolor{f25exercise}{HTML}{DCDDDF} % exercise-now box
+\definecolor{f25hold}{HTML}{ECB08F}    % hold-for-the-future box
+
+\begin{document}
+\begin{tikzpicture}[x=0.12mm,y=-0.12mm,font=\sffamily,color=vnink,
+    lnode/.style={circle,draw=f25red,fill=white,line width=1.3pt,minimum size=6.0mm,inner sep=0pt},
+    rnode/.style={lnode,draw=f25sky},
+    sknode/.style={lnode,minimum size=5.0mm},
+    edge/.style={f25edge,line width=1.1pt},
+    timeline/.style={f25line,line width=0.8pt,dash pattern=on 4pt off 3pt},
+    ptimeline/.style={f25red,line width=0.8pt,dash pattern=on 4pt off 3pt},
+    tlabel/.style={font=\sffamily\large},
+    elabel/.style={font=\sffamily\large,sloped}]
+
+  % ---- left: three-step lattice (2025 positions) -------------------------------------
+  % decision cell shading, drawn first, behind the lattice
+  \fill[f25skyfill] (455,150) rectangle (833,460);
+
+  \foreach \t/\x/\lab in {0/157/{t = 0 (now)},1/334/{t = 1},2/511/{t = 2},3/688/{t = 3}}{
+    \draw[timeline] (\x,125) -- (\x,965);
+    \node[tlabel] at (\x,1010) {\lab};
+  }
+  \node[rotate=90,anchor=east,font=\sffamily,text=f25label] at (113,118) {today};
+  \draw[f25red,line width=1.2pt,-{Latex[length=3mm]}] (383,90) -- (740,90)
+    node[midway,above=3pt,font=\sffamily,text=f25red] {uncertain future};
+
+  % node (t,k): x = 157 + 177 t, y = 543 - 115 (2k - t)
+  \foreach \t in {0,1,2}{
+    \pgfmathtruncatemacro{\tn}{\t+1}
+    \foreach \k in {0,...,\t}{
+      \pgfmathtruncatemacro{\kn}{\k+1}
+      \draw[edge] ({157+177*\t},{543-115*(2*\k-\t)}) -- ({157+177*\tn},{543-115*(2*\kn-\tn)});
+      \draw[edge] ({157+177*\t},{543-115*(2*\k-\t)}) -- ({157+177*\tn},{543-115*(2*\k-\tn)});
+    }
+  }
+  \path (157,543) -- (334,428) node[elabel,above=1pt,pos=0.45] {(u,q)};
+  \path (157,543) -- (334,658) node[elabel,above=1pt,pos=0.52] {(d,1 - q)};
+
+  \node[rnode] (r) at (157,543) {};
+  \node[anchor=east,font=\large] at ([xshift=-4pt]r.west) {$S_{0}$};
+  \foreach \t in {1,2,3}{
+    \foreach \k in {0,...,\t}{
+      \node[lnode] (n\t\k) at ({157+177*\t},{543-115*(2*\k-\t)}) {};
+    }
+  }
+  \node[anchor=west,font=\large] at ([xshift=3pt]n33.east) {$u^{3}S_{0}$};
+  \node[anchor=west,font=\large] at ([xshift=3pt]n32.east) {$u^{2}dS_{0}$};
+  \node[anchor=west,font=\large] at ([xshift=3pt]n31.east) {$ud^{2}S_{0}$};
+  \node[anchor=west,font=\large] at ([xshift=3pt]n30.east) {$d^{3}S_{0}$};
+
+  % ---- right: the decision cell, zoomed (2025 panel position) -------------------------
+  \draw[f25sky,line width=1.3pt] (913,98) rectangle (1890,830);
+  \node[anchor=west,font=\sffamily\large,text=f25sky] at (918,58) {Single decision cell};
+  \draw[f25sky,line width=0.8pt,densely dotted] (833,150) -- (913,98);
+  \draw[f25sky,line width=0.8pt,densely dotted] (833,460) -- (913,830);
+
+  \draw[ptimeline] (1248,155) -- (1248,760);
+  \draw[ptimeline] (1513,155) -- (1513,760);
+  \node[tlabel] at (1248,795) {t = 2};
+  \node[tlabel,anchor=east] at (1872,795) {t = 3 (contract expiration)};
+  \node[sknode] (p) at (1248,397) {};
+  \node[sknode] (cu) at (1513,222) {};
+  \node[sknode] (cd) at (1513,570) {};
+  \draw[edge] (p) -- (cu) node[elabel,above=1pt,midway] {(u,q)};
+  \draw[edge] (p) -- (cd) node[elabel,below=1pt,midway] {(d,1 - q)};
+  \node[anchor=east,font=\Large] at ([xshift=-6pt]p.west) {$\hat{V}_{2,2}$};
+  \node[anchor=west,font=\Large] at ([xshift=6pt]cu.east) {$\hat{V}_{3,3}$};
+  \node[anchor=west,font=\Large] at ([xshift=6pt]cd.east) {$\hat{V}_{3,2}$};
+
+  % ---- the decision rule, below the panel (2025 position) -----------------------------
+  \node[anchor=west,font=\sffamily\large,text=f25sky] at (918,872) {Decision rule American contract:};
+  \node[anchor=west,inner sep=1pt,font=\Large] (lhs) at (912,985) {$\hat{V}_{t,k}=\max\Bigl\{$};
+  \node[anchor=west,fill=f25exercise,inner sep=6pt,font=\Large] (ex) at (lhs.east) {$V(K,S_{t,k})$};
+  \node[anchor=west,inner sep=1pt,font=\Large] (comma) at (ex.east) {$,$};
+  \node[anchor=west,fill=f25hold,inner sep=6pt,font=\Large] (hold) at ([xshift=2pt]comma.east)
+    {$\mathcal{D}^{-1}_{t+1,t}(g_{y})\cdot\mathbb{E}_{\mathbb{Q}}\bigl(\hat{V}_{t+1}\bigr)$};
+  \node[anchor=west,inner sep=1pt,font=\Large] at (hold.east) {$\Bigr\}$};
+  \node[below=4pt,font=\sffamily\small,text=f25label] at (ex.south) {exercise now};
+  \node[below=4pt,font=\sffamily\small,text=f25label] at (hold.south) {hold for the future};
+
+\end{tikzpicture}
+\end{document}
