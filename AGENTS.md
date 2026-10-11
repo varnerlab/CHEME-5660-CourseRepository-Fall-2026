@@ -17,6 +17,14 @@
   L9a meaning (the payoff). The market examples use the end-of-day options
   archive, and the ticker is a variable. The extrinsic-value example is renamed
   without "NVDA".
+- Later the same day, at his request, a Longstaff–Schwartz section was added
+  after the Hull example. It mirrors L9a's Monte Carlo and comes with an
+  in-class example, `CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb`. He
+  approved the section text from a preview. The package pricer
+  `premium(contract, ::MyLongstaffSchwartzContractPricingModel)` was wrong and
+  is rewritten in `code/src/Longstaff.jl`. `code/test/test_longstaff.jl` pins
+  the paper's 0.1144 and its GBM benchmark of 4.478. He kept the Hull example
+  as the hand way into CRR.
 
 ## L8b build — October 10, 2026
 

@@ -137,9 +137,11 @@ end
 """
     MyLongstaffSchwartzContractPricingModel
 
-Inputs for Longstaff--Schwartz least-squares Monte Carlo pricing. `S` contains
-simulated price paths, `r̄` is the annual discount rate, and `Δt` is the time
-between adjacent rows of `S`.
+Inputs for Longstaff--Schwartz least-squares Monte Carlo pricing. `S` holds
+simulated share price paths under the risk-neutral measure, one path per row and
+one date per column, with today's price in column 1. `r̄` is the continuously
+compounded risk-free rate (1/yr), and `Δt` is the time between adjacent columns
+of `S` (yr).
 """
 mutable struct MyLongstaffSchwartzContractPricingModel <: AbstractEquityPriceTreeModel
 

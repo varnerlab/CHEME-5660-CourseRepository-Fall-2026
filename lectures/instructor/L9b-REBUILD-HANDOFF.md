@@ -163,3 +163,23 @@ The before/after is `previews-lecture/4-decision-rule-hull.png`.
 2. Commit the L9b files through a temporary index, leaving the L9a work in the tree
    untouched.
 3. Week-09 release (L9a and L9b) when you give the go-ahead.
+
+## Longstaff–Schwartz addition (October 11, after 2453ea2)
+
+At your request, L9b now prices American options by simulation as well, to match
+L9a's Monte Carlo.
+
+- **Package fix:** `premium(contract, ::MyLongstaffSchwartzContractPricingModel)` was wrong.
+  - It regressed the next date's intrinsic value instead of the realized later cash flow.
+  - It zeroed out-of-the-money paths and skipped discounting back to today.
+  - It gave 0.1083 on the paper's 8-path example (the paper gives 0.1144). On the paper's GBM case it gave 4.000, today's intrinsic value, against 4.478.
+
+  `code/src/Longstaff.jl` now follows the paper, with `choice(intrinsic, continuation)` as on the lattice. `code/test/test_longstaff.jl` adds five tests, all passing: 0.1144, 4.478, always-hold equals the European price, calls never exercise early, and American ≥ European. The model's docstring had paths and dates swapped and is corrected. The full suite passes (2075 tests). Aqua is skipped because it is not installed in the root environment.
+- **Lecture:** the new section "Monte Carlo Pricing of American Options" sits after the Hull example and is the text you approved from the preview (`lsm-lecture-1-new-section.png`). Objective 2 gains "Estimate the same premium by Monte Carlo simulation.", the new example goes first in the in-lecture list, and the Summary opener gains "and Monte Carlo simulation". All of it is in `build_lecture.py`.
+- **Example (in lecture):** `CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb`, modeled on L9a's BSM/Monte Carlo example.
+  - **Task 1** works the paper's 8 paths by hand and gets 0.1144.
+  - **Task 2** prices the American version of L9a's put (60/60, 1 yr, 5%, 10%): 1.454 by simulation, 1.4625 on the lattice, and a European price of 1.157. The early-exercise premium is about 0.30 by both methods.
+  - **Task 3** sweeps strikes 50 to 70.
+- **Hull example:** kept, as you decided, as the hand way into CRR.
+- **Deck:** two new frames, one for the method and one for the premium with the example link. The example numbering and objective 2 are updated. 18 pages, 0 overfull boxes.
+- **Notation FAQ:** adds $M$ and $\hat C(S)$ with its β coefficients.

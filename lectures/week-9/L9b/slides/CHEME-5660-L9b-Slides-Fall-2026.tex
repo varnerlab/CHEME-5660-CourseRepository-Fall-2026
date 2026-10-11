@@ -5,7 +5,7 @@
 % instructor preference. Notation follows the lecture: payoff V(K,S) as in L9a,
 % premiums \mathcal{P}, \mathcal{P}^{AM}, and \mathcal{P}^{EU}, lattice node value
 % \hat{V}_{t,k}, risk-neutral up probability q, risk-free rate g_y, discount factor
-% \mathcal{D}, and extrinsic value E_V(t). Rebuilt October 2026 from the instructor's
+% \mathcal{D}, continuation value \hat{C}(S) (Longstaff-Schwartz), and extrinsic value E_V(t). Rebuilt October 2026 from the instructor's
 % Fall-2025 American-options lectures (see lectures/instructor/L9b-REBUILD-SPEC.md).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
@@ -55,6 +55,7 @@
       only at expiration, or at any time before expiration.
     \item \hilite{Apply the binomial model to price American options}: build
       CRR trees and compute premiums with the decision rule for early exercise.
+      Estimate the same premium by Monte Carlo simulation.
     \item \hilite{Decompose option premiums into components}: intrinsic value
       (immediate exercise value) and extrinsic value (time value).
   \end{itemize}
@@ -67,20 +68,19 @@
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Example 1:}}\par\small
+  \href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 2:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 
-  \vspace{0.6em}
-  {\normalsize\textbf{\ink{Example 2:}}\par\small
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 3:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 
-  \vspace{0.6em}
+  \vspace{0.45em}
   {\normalsize\textbf{\ink{Review on your own:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
-
-  \vspace{0.5em}
-  The first example prices American calls and puts with CRR and compares them
-  with market prices. The second splits a call premium into intrinsic and
-  extrinsic value. The third reproduces the Hull put node by node.
 \end{frame}
 
 \begin{frame}{Concept Review: CRR Binomial Pricing Model}
@@ -186,6 +186,32 @@
   \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
 \end{frame}
 
+\begin{frame}{Monte Carlo Pricing of American Options}
+  In L9a, we priced European contracts by simulating share prices under $\Q$.
+  Longstaff and Schwartz extended this approach to American contracts. The
+  decision rule needs the expected value of holding, which they estimate by
+  regression, working backward from expiration:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Simulate}: $M$ share price paths under $\Q$ on the exercise
+      dates. At expiration, each path's cash flow is its payoff.
+    \item \hilite{Regress}: the discounted later cash flows of the in-the-money
+      paths on their share prices, giving the continuation value
+      $\hat{C}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$.
+    \item \hilite{Decide}: exercise if $V(K,S(t))>\hat{C}(S(t))$. The payoff now
+      replaces that path's later cash flow.
+  \end{itemize}
+  \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
+\end{frame}
+
+\begin{frame}{The Early-Exercise Premium by Simulation}
+  The premium is the average discounted cash flow over the paths.
+
+  \vspace{0.6em}
+  Holding on every path gives L9a's European Monte Carlo premium, so the
+  difference estimates the early-exercise premium.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
+\end{frame}
+
 \begin{frame}{Compute the Price of an American Call and Put Option Contract}
   Now that we've explored the decision rule through the Hull example, let's
   apply these concepts to real market data.
@@ -201,7 +227,7 @@
       money. The holder receives the strike now and earns the risk-free rate on
       it,\newline so $\PAM_{p}>\PEU_{p}$ is possible.
   \end{itemize}
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Extrinsic versus Intrinsic Value of American Options}
@@ -244,7 +270,7 @@
   \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
   There is still a chance that the share price moves favorably before
   expiration.
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Optional Advanced Material}
@@ -263,8 +289,8 @@
 \end{frame}
 
 \begin{frame}{Summary}
-  Today we priced American options with the CRR binomial model and split option
-  prices into intrinsic and extrinsic components.
+  Today we priced American options with the CRR binomial model and Monte Carlo
+  simulation, and split option prices into intrinsic and extrinsic components.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
