@@ -1,5 +1,38 @@
 # Repository Working Agreements
 
+## L8b build — October 10, 2026
+
+- At the instructor's request, L8b (October 15) finishes the L7b story before
+  options. Order: a Concept Review of utility functions, Cobb–Douglas/CES
+  holdings and the SIM preference weights (light trim), then the allocator
+  example. Next comes the capital allocation line: a CE/RP recap, Arrow–Pratt
+  in full, the optimal complete portfolio, and income gambles, followed by the
+  interview and the CAL example. The lecture closes with "Derivatives: A Bet on
+  the Future". There is no company profile this time.
+- The critical path is the instructor's reviewed L7b text. Every edit is listed
+  in [the L8b build handoff](lectures/instructor/L8b-BUILD-HANDOFF.md), and
+  each new passage is flagged there for his review. The closer prices nothing
+  with a real-world probability as "fair", and it ends on the question "What
+  sets the price?". This keeps it consistent with L9a, which is not edited.
+  The handoff suggests a one-sentence change to the L9a hook.
+- The L8b examples, interview, SIM reference, tangent algorithm notebook, and
+  CES companion are copies of the L7b files, with "L7b" changed to "L8b" in
+  their markdown and paths only. Week bundles cannot link across weeks. L7b is
+  unchanged. Both examples were re-run from week-8/L8b, and every output
+  matched L7b.
+- The figure `figs/Fig-L8b-Bet-CashFlows` (TikZ, light/dark) was approved after
+  two revisions: the payoff as a cases block (S_T ≥ K, S_T < K), and "T years
+  from now".
+- The independent reviewer scored the notebook 8.0, then 8.8, then 9.2. The
+  instructor approved the notebook the same day. The deck (28 pages, zero
+  overfull boxes) mirrors the notebook. It adds an income-gamble frame and
+  three bet frames. At the instructor's request, the deck's dense text was then
+  cut by about a quarter in 18 frames, with every equation, box, and link kept.
+  He approved the result ("looks good"). On October 11 the CE/RP display got
+  term labels (underbraces) and the explicit CE = U⁻¹(𝔼[U(W)]) in the notebook
+  and the deck, at his request. Committed and pushed October 11. The week-08
+  release waits for his go-ahead.
+
 ## Weeks 8–9 options redesign — October 9, 2026
 
 - The instructor is reteaching the L7b material in L8b (October 15), so options no

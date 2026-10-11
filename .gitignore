@@ -66,3 +66,8 @@ lectures/week-7/L7b/data/my-client.toml
 # L7b income-gamble interview output: instructor demo only, the CAL example runs without it
 lectures/week-7/L7b/data/my-risk-aversion.toml
 /build/exec-l7b-default/
+
+# L8b reteaches L7b: the same client files and income-gamble output
+lectures/week-8/L8b/data/my-tickers.csv
+lectures/week-8/L8b/data/my-client.toml
+lectures/week-8/L8b/data/my-risk-aversion.toml
