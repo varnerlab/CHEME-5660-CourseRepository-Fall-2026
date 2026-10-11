@@ -54,7 +54,7 @@
     <!-- LECTURE_NAV slot: a complete ul of li items, each a link to a section id on this page. -->
     <nav class='lecture-nav' aria-labelledby='lecture-nav-title'>
       <h2 id='lecture-nav-title' class='section-label'>Lectures</h2>
-      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L9a">L9a</option><option value="Context">Context</option></select></div>
+      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="Context">Context</option></select></div>
     </nav>
 
     <!-- NOTATION_SECTIONS slot: one section per lecture with class notation-section, data-lecture and an id, containing
@@ -2077,6 +2077,326 @@
 </tr>
 </tbody>
 </table>
+</div></div></section><section class="notation-section" id="L8b" data-lecture="L8b"><div class="notation-section-heading"><h2>L8b</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-8/L8b/CHEME-5660-L8b-Lecture-Utility-Allocation-Bets-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>Utility and Risk Aversion</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Utility and Risk Aversion"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒳</mi><annotation encoding="application/x-tex">\mathcal X</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>i</mi></msub><annotation encoding="application/x-tex">x_i</annotation></semantics></math></td>
+<td>Set of alternatives, such as bundles of goods, portfolios, or states of the world, and one alternative.</td>
+<td>Context dependent</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math></td>
+<td>Utility function, which assigns each alternative a number that ranks preferences.</td>
+<td>utils</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>≻</mo><msub><mi>x</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">x_i\succ x_j</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∼</mo><msub><mi>x</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">x_i\sim x_j</annotation></semantics></math></td>
+<td>The agent strictly prefers <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>i</mi></msub><annotation encoding="application/x-tex">x_i</annotation></semantics></math> to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>j</mi></msub><annotation encoding="application/x-tex">x_j</annotation></semantics></math>, or is indifferent between them.</td>
+<td>Preference relations</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf x</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math></td>
+<td>Bundle of goods, positive parameters of the standard utility forms, and the offset in the logarithmic utility.</td>
+<td>Goods; form-specific</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math></td>
+<td>CES elasticity of substitution: linear as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\eta\to\infty</annotation></semantics></math>, Cobb–Douglas as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\eta\to1</annotation></semantics></math>, and Leontief as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\eta\to0</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb E[U(W)]</annotation></semantics></math></td>
+<td>Uncertain wealth outcome and its expected utility.</td>
+<td>USD; utils</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow><annotation encoding="application/x-tex">\mathrm{CE}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">P</mi></mrow><annotation encoding="application/x-tex">\mathrm{RP}</annotation></semantics></math></td>
+<td>Certainty equivalent, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">U(\mathrm{CE})=\mathbb E[U(W)]</annotation></semantics></math>, and risk premium <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbb E(W)-\mathrm{CE}</annotation></semantics></math>.</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math> (Arrow–Pratt)</td>
+<td>Wealth level at which the risk-aversion measures are evaluated.</td>
+<td>USD</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r(w)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>r</mi><mo accent="true">‾</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\bar r(w)</annotation></semantics></math></td>
+<td>Arrow–Pratt absolute risk aversion <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>U</mi><mi>″</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>U</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">-U&#39;&#39;(w)/U&#39;(w)</annotation></semantics></math> and relative risk aversion <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mspace width="0.167em"></mspace><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">w\,r(w)</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{USD}^{-1}</annotation></semantics></math>; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
+<td>Coefficients of the linear utility of wealth and the exponent of the power utility.</td>
+<td>utils/USD; utils; 1</td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="notation-group"><h3>Utility over Holdings</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Utility over Holdings"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_i(t)</annotation></semantics></math></td>
+<td>Price of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> at decision time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>𝒫</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_{\mathcal P}(t)</annotation></semantics></math></td>
+<td>Wealth to allocate over the assets in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒫</mi><annotation encoding="application/x-tex">\mathcal P</annotation></semantics></math> at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>USD</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mi>i</mi><mo>⋆</mo></msubsup><annotation encoding="application/x-tex">n_i^\star</annotation></semantics></math></td>
+<td>Share count of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> and its optimal value.</td>
+<td>Shares</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mo>min</mo></msub><annotation encoding="application/x-tex">n_{\min}</annotation></semantics></math></td>
+<td>Floor on every share count, which keeps the utility finite when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma_i&lt;0</annotation></semantics></math>.</td>
+<td>Shares</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>γ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\gamma_i</annotation></semantics></math></td>
+<td>Preference weight: the Cobb–Douglas exponent of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(-1,1)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒜</mi><mo>+</mo></msup><annotation encoding="application/x-tex">\mathcal A^{+}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒜</mi><mo>−</mo></msup><annotation encoding="application/x-tex">\mathcal A^{-}</annotation></semantics></math></td>
+<td>Preferred set <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>i</mi><mo>:</mo><msub><mi>γ</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{i:\gamma_i&gt;0\}</annotation></semantics></math>, the basket, and non-preferred set <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>i</mi><mo>:</mo><msub><mi>γ</mi><mi>i</mi></msub><mo>≤</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{i:\gamma_i\leq0\}</annotation></semantics></math>.</td>
+<td>Index sets</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">j</mi></mrow></msub><annotation encoding="application/x-tex">W_{\mathrm{adj}}</annotation></semantics></math></td>
+<td>Budget left for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒜</mi><mo>+</mo></msup><annotation encoding="application/x-tex">\mathcal A^{+}</annotation></semantics></math> after buying the floors: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>𝒫</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>n</mi><mo>min</mo></msub><msub><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msup><mi>𝒜</mi><mo>−</mo></msup></mrow></msub><msub><mi>S</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_{\mathcal P}(t)-n_{\min}\sum_{k\in\mathcal A^{-}}S_k(t)</annotation></semantics></math>.</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℒ</mi><annotation encoding="application/x-tex">\mathcal L</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></td>
+<td>Lagrangian and budget multiplier in the Cobb–Douglas derivation.</td>
+<td>1; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{USD}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi><mi mathvariant="normal">S</mi></mrow></msub><annotation encoding="application/x-tex">U_{\mathrm{CES}}</annotation></semantics></math></td>
+<td>CES holding utility over the preferred set, with elasticity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>.</td>
+<td>utils</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mi>/</mi><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\gamma_i/S_i(t)</annotation></semantics></math></td>
+<td>Bang for the buck: preference weight per dollar of share price.</td>
+<td>Shares/USD</td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="notation-group"><h3>Preference Weights from the Single Index Model</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Preference Weights from the Single Index Model"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\gamma_i(t)</annotation></semantics></math></td>
+<td>Preference weight of asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> on day <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>tanh</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>h</mi><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>α</mi><mi>i</mi></msub><mi>/</mi><msubsup><mi>β</mi><mi>i</mi><msub><mi>ξ</mi><mi>t</mi></msub></msubsup><mo>+</mo><msubsup><mi>β</mi><mi>i</mi><mrow><mn>1</mn><mo>−</mo><msub><mi>ξ</mi><mi>t</mi></msub></mrow></msubsup><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tanh\bigl(h\,[\alpha_i/\beta_i^{\xi_t}+\beta_i^{1-\xi_t}\tilde g_{M,t}]\bigr)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math></td>
+<td>Horizon that makes the argument of the preference model dimensionless, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">h=1</annotation></semantics></math> year.</td>
+<td>yr</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\beta_i</annotation></semantics></math></td>
+<td>L6b SIM intercept and beta. The model assumes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\beta_i&gt;0</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{M,t}</annotation></semantics></math></td>
+<td>Recent market growth rate: the 252-day EMA of daily SPY growth rates.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\xi_t</annotation></semantics></math></td>
+<td>Market-state signal: positive (bearish) after a falling market and negative (bullish) after a rising one.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">g_{M,t}</annotation></semantics></math></td>
+<td>Daily market growth rate <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mi>/</mi><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\ln(S_t/S_{t-1})/\Delta t</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\bar S_t</annotation></semantics></math></td>
+<td>SPY share price and its EMA.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math></td>
+<td>EMA window in trading days and weight on the newest price, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>=</mo><mn>2</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>L</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\omega=2/(L+1)</annotation></semantics></math>. L5a’s decay factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> corresponds to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>ω</mi></mrow><annotation encoding="application/x-tex">1-\omega</annotation></semantics></math>.</td>
+<td>Days; 1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{short}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">g</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{long}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi></mrow></msub><annotation encoding="application/x-tex">L_{\mathrm{growth}}</annotation></semantics></math></td>
+<td>EMA windows of 21, 63, and 252 trading days.</td>
+<td>Days</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></msubsup><annotation encoding="application/x-tex">\bar S_t^{\mathrm{short}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mover><mi>S</mi><mo accent="true">‾</mo></mover><mi>t</mi><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">g</mi></mrow></msubsup><annotation encoding="application/x-tex">\bar S_t^{\mathrm{long}}</annotation></semantics></math></td>
+<td>Short and long price EMAs, whose crossover sets <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\xi_t</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math></td>
+<td>Gain chosen on the training data so that <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>ξ</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">|</mo><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lvert\xi_t\rvert\leq1</annotation></semantics></math> on 99% of training days.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>α</mi><mi>i</mi></msub><mi>/</mi><msub><mi>β</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">-\alpha_i/\beta_i</annotation></semantics></math></td>
+<td>Basket threshold: asset <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> enters when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{M,t}</annotation></semantics></math> exceeds it.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="notation-group"><h3>Mean-Variance Utility on the Capital Allocation Line</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Mean-Variance Utility on the Capital Allocation Line"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>f</mi></msub><annotation encoding="application/x-tex">g_f</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>f</mi></msub><annotation encoding="application/x-tex">w_f</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒯</mi><annotation encoding="application/x-tex">\mathcal T</annotation></semantics></math></td>
+<td>Risk-free growth rate, risk-free fraction, complete portfolio, and tangent portfolio, as in L7a.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; 1; labels</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math></td>
+<td>Risk-aversion coefficient, which plays the role of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>r</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar r</annotation></semantics></math>. A larger <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> charges more for the same risk.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>f</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">U(w_f)</annotation></semantics></math></td>
+<td>Mean-variance utility of the complete portfolio: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>g</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><mfrac displaystyle="false"><mi>A</mi><mn>2</mn></mfrac><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi><mspace width="0.167em"></mspace><msubsup><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\mathbb E[g_c]-\tfrac{A}{2}\,\Delta t\,\sigma_{g,c}^2</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mspace width="0.167em"></mspace><msubsup><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\Delta t\,\sigma_{g,c}^2</annotation></semantics></math></td>
+<td>Squared volatility of the complete portfolio, on the scale of the GBM volatility.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>g</mi><mi>𝒯</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb E[g_{\mathcal T}]</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi>g</mi><mo>,</mo><mi>𝒯</mi></mrow></msub><annotation encoding="application/x-tex">\sigma_{g,\mathcal T}</annotation></semantics></math></td>
+<td>Expected growth rate and growth-rate standard deviation of the tangent portfolio.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>w</mi><mi>f</mi><mo>⋆</mo></msubsup><annotation encoding="application/x-tex">w_f^\star</annotation></semantics></math></td>
+<td>Risk-free fraction that maximizes mean-variance utility.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>𝒯</mi></msub><annotation encoding="application/x-tex">A_{\mathcal T}</annotation></semantics></math></td>
+<td>Risk aversion of the investor who holds <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒯</mi><annotation encoding="application/x-tex">\mathcal T</annotation></semantics></math> alone. Investors with a larger <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> lend, and investors with a smaller <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> borrow.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mo>⋆</mo></msup><annotation encoding="application/x-tex">\delta^\star</annotation></semantics></math></td>
+<td>Income cut of the risky job in the income-gamble interview, as a fraction of the sure income. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mo>⋆</mo></msup><annotation encoding="application/x-tex">\delta^\star</annotation></semantics></math> a person cannot choose between the two jobs, and this cut fixes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>r</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar r</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="notation-group"><h3>A Bet on the Future</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="A Bet on the Future"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math></td>
+<td>Price paid today for the bet.</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math></td>
+<td>Time until the payoff.</td>
+<td>yr</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>T</mi></msub><annotation encoding="application/x-tex">S_T</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math></td>
+<td>Share price at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> and the target price in the condition <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>T</mi></msub><mo>≥</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">S_T\geq K</annotation></semantics></math>, as in L5a.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(S_T)</annotation></semantics></math></td>
+<td>Payoff of the bet: 1 USD if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>T</mi></msub><mo>≥</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">S_T\geq K</annotation></semantics></math> and 0 if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>T</mi></msub><mo>&lt;</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">S_T&lt;K</annotation></semantics></math>.</td>
+<td>USD</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_y</annotation></semantics></math></td>
+<td>Benchmark growth rate used to discount the payoff, as in L5a.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal D^{-1}_{T,0}(g_y)</annotation></semantics></math></td>
+<td>Discount factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><annotation encoding="application/x-tex">e^{-g_yT}</annotation></semantics></math> that converts the payoff to today’s dollars.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>NPV</mo><mn>0</mn></msub><annotation encoding="application/x-tex">\operatorname{NPV}_0</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mo>NPV</mo><mn>0</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb E[\operatorname{NPV}_0]</annotation></semantics></math></td>
+<td>Net present value of the bet, which is random, and its expected value under our beliefs.</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>≥</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(S_T\geq K)</annotation></semantics></math></td>
+<td>Probability, under our beliefs, that the condition is true. For a share that follows GBM, it is L5a’s terminal target probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>Φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1-\Phi(z_\star)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
 </div></div></section><section class="notation-section" id="L9a" data-lecture="L9a"><div class="notation-section-heading"><h2>L9a</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>Derivatives and European Option Pricing</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Derivatives and European Option Pricing"><table>
 <colgroup>
 <col style="width: 33%" />
@@ -2349,8 +2669,8 @@
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math></td>
-<td>Real-world up probability on a lattice; price of a one-dollar event contract.</td>
-<td>L3b; L9a</td>
+<td>Real-world up probability on a lattice; price of a one-dollar event contract or bet.</td>
+<td>L3b; L8b-L9a</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math></td>
