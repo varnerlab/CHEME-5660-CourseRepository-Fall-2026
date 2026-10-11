@@ -782,3 +782,50 @@ package, which already returns `(shares, cash)`. Preview 21 was approved ("Agree
 
 **Checks.** The lecture validates, and only `1090dc65` changed. All of its markdown renders
 through KaTeX. `AdaptivePortfolio.jl` parses.
+
+## October 11: three dense blocks in the algorithm notebook (approved October 11)
+
+The instructor read two blocks in the L8b copy of the algorithm notebook: "good content, but too
+dense (why did this slip through our checks?)". He then added: "It's not just length, but
+organization as well. Perhaps a better organization would be Sentence, {detailed bullets},
+Sentence", and "three bullets". He approved the same change for L7b ("Yes"), noting that L7b is
+not released yet, and asked for the next block too ("please fix this"). The text is identical in
+L7b and L8b, except for the week tag in the links.
+
+**Changes (cells `93c4702d` and `0978b1ef`).** Each block is now one lead sentence, three
+labeled bullets, and one closing sentence. The facts are the same.
+
+- *Why does this work?* The three bullets cover the single crossing (SIM-3), the sweep reaching
+  it ($g_{\mathcal{T}}\leq g_{U}$), and bisection halving the largest possible error. The
+  closing sentence gives the total cost. Two sentences were cut because the facts are stated
+  elsewhere: "The allocator example reports the total" (cell 5's table says about a dozen) and
+  "Each solve is a quadratic program…" (step 5 says each solve starts from the last one).
+  131 to 135 words.
+- *Why check the 100% limit?* The three bullets are: step 2 rejects the allocation; step 3 sets
+  the upper end of the bracket, including the roundoff case; and a one-asset tangent fund still
+  converges. The closing sentence is new: a risky fraction of one alone does not identify the
+  tangent portfolio. 154 to 185 words.
+- *How does this differ from the version shown in lecture?* The lead answers the heading
+  directly: the lecture version has no rule for the 100% limit. The three bullets are: a large
+  step lands on one asset; the lecture version accepts it; the 100% rule rejects it. The closing
+  sentence was corrected from "no sweep step overshoots to a holding at 100%" to "every
+  allocation passes the weight test", because a holding can sit below 100% and still fail
+  $w_{i}<1-\epsilon_{w}$. 146 to 159 words.
+
+The labels and closing sentences cost about 50 words in all. The longest unbroken block went
+from 154 words to about 40.
+
+**Why the checks missed it.** Every sentence passed the sentence-level checks: semicolons,
+jargon, links, KaTeX, and correctness. The second block grew from 107 to 154 words on October
+8 and 9, one appended fix at a time, and each fix was approved from a highlighted diff. The
+density score covered the whole 1,980-word notebook. The L8b copy was treated as approved text.
+`build/notebook-previews/_tools/density_scan.py` now ranks prose blocks by words and clause
+joins, scoring each list item separately. It put these blocks at #1, #2, and #4 in L8b.
+
+**Checks.** Codex compared the before and after versions. Every fact is present. The
+counterexample holds: the single asset has Sharpe ratio 1.000 against 2.090 for the tangent
+fund $(91/171, 80/171)$. No sentence runs over 25 words. Its precision fixes were applied: the
+bisection and step 3 labels, "does not accept it", and the corrected cell 4 closing sentence.
+Both notebooks validate, and only cells 3 and 4 changed. The blocks render through KaTeX with
+zero errors. Previews and the builder are in `build/notebook-previews/L8b-algorithm-density-2026-10-11/`
+(`applied-three-blocks.png`, `edit.py 7b|8b`).
