@@ -131,6 +131,21 @@ VLQuantitativeFinancePackage.estimate_implied_volatility
 ```
 
 ## The Greeks
+
+### Full-precision binomial prices and derivatives
+
+The following functions compare Cox-Ross-Rubinstein (`method=:crr`, the default)
+with Leisen-Reimer (`method=:leisen_reimer`). They rebuild each perturbed lattice
+and retain full precision. The returned Greeks are raw derivatives; divide
+calendar-time theta by 365 for a daily quote and vega/rho by 100 for quotes per
+percentage point. Existing Greek functions keep their original conventions.
+
+```@docs
+VLQuantitativeFinancePackage.binomial_premium
+VLQuantitativeFinancePackage.binomial_greeks
+```
+
+### Existing finite-change functions
 [The Greeks](https://en.wikipedia.org/wiki/en:Greeks_(finance)?variant=zh-tw) quantify the sensitivity of an option's premium to various factors. `Delta`, `theta`, `vega`, `rho` and `gamma` are the most widely used Greeks, measuring an option's sensitivity to changes in the underlying asset's share price, the time decay, implied volatility, the risk-free rate and the rate of change in delta, respectively. 
 
 ```@docs
