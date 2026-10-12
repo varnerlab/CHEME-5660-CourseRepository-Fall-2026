@@ -22,6 +22,24 @@
 - The package code from the Codex session (`binomial_premium`,
   `binomial_greeks` in `code/src/BinomialSensitivities.jl`) is kept.
 
+## Completed L8b review — October 12, 2026
+
+- The instructor marked the week-8 material reviewed on October 12, 2026.
+  This covers the L8b lecture, deck, bet figure, both examples, the tangent
+  algorithm notebook, the SIM reference, the CES companion, and the interview.
+  L8a is the Fall Break and has no lecture.
+- A Claude and Codex re-score of every artifact found two L7b copy defects
+  ("the next example" in the CAL example, "week 7 examples" in the SIM
+  reference) and one wording fix in the lecture ("its discounted expected
+  payoff"). After the fixes every artifact scores at least 9. The
+  [L8b build handoff](lectures/instructor/L8b-BUILD-HANDOFF.md) records the
+  scores, the deductions set aside, and three small items left for his manual
+  pass (deck frame 18, "halve" in the interview, the algorithm heading).
+- He will do a manual pass on October 13 and then make the week-08 release.
+  The lecture is backed up in
+  `lectures/instructor/voice-calibration/L8b-Lecture-Utility-Allocation-Bets/`
+  for the comparison afterward. Do not restart the review unless he asks.
+
 ## Completed L9a materials review — October 11, 2026
 
 - The instructor marked all L9a materials reviewed and complete on October 11,

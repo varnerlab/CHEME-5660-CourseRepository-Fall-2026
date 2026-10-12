@@ -214,3 +214,77 @@ original. The full record, including why the checks missed it, is the
   already in 84b8818.
 - A week-08 release when the instructor asks for it (per the weekly release
   checklist). He said no release yet on October 11.
+
+## Re-score of every L8b artifact (October 12)
+
+The instructor asked whether any L8b material scores below 9, confirmed with
+Codex. Three independent Claude reviewers and three Codex runs scored the
+committed files (`4cb3b2a`) with one brief:
+`build/notebook-previews/L8b-review-2026-10-12/qa-brief.md`. The manager read
+every rendered page and the deck.
+
+| Artifact | Claude | Codex | After fixes |
+|---|---|---|---|
+| Lecture | 9.2 | 8.6 | 9.2 |
+| Deck | 9.1 | 9.5 | — |
+| Figure | 9.3 | 10 | — |
+| Allocator example | 9.0 | 8.8 | — |
+| CAL example | 8.7 | 9.2 | Codex 9.1 |
+| Tangent algorithm | 9.1 | 9.2 | — |
+| SIM reference | 8.8 | 8.8 | Codex 9.2 |
+| CES companion | 9.2 | 8.8 | — |
+| Interview | 9.2 | 8.9 | — |
+
+Fixed (markdown only, on disk, not committed). The first two are copy
+defects from L7b, whose order and week differ:
+
+- CAL example, cell 38: "The next example writes the investor's
+  preferences…" became "The [allocator example](…) wrote…". In L8b the
+  allocator comes before the CAL example.
+- SIM reference, cell 0: "the week 7 examples solve" became "the examples
+  solve".
+- Lecture, cell 12 (instructor approved): "below the discounted
+  probability" became "below its discounted expected payoff". The price is
+  in USD, so the comparison is to a payoff, not a probability.
+
+Codex scores set aside:
+
+- Lecture 8.6 and CES 8.8 came from nbconvert preview artifacts: math tables
+  squeezed, and `___` under a paragraph shown as text. In VS Code's renderer
+  (markdown-it + KaTeX, `vscode.png`) both tables and both rules render
+  correctly.
+- Allocator 8.8 rested on cell 49, "That is where the two paths separate."
+  A scratchpad run of the notebook's code measured the gap between the daily
+  and monthly paths. It stayed at most 0.8% of W₀ while all 13 firms were
+  preferred (days 1–37). It reached 8.5% by day 99 and 13.7% at its peak,
+  after the basket started changing on day 38, so the sentence holds.
+- The lecture's 86-word allocator stop repeats the Examples entry, as in the
+  approved L7b lecture.
+
+Previously declined items (October 9) came up again and were not deducted:
+
+- the CAL lend/borrow rule stated more than once;
+- the interview's "each halve the range of cuts" (approximate; "narrow" is
+  the word-neutral fix);
+- `println` after the checks in allocator cells 16, 20, and 32.
+
+Left unchanged for the instructor's manual pass (October 13):
+
+- Deck frame 18: "larger $r$ means a lower CE" leads into the RP formula.
+  "larger RP" matches the display and the notebook (cell 10) with no added
+  words. A deck edit needs a rebuild: 28 pages, zero overfull boxes.
+- Interview: "each halve" to "narrow" (above), and "halve" to "narrow" in the
+  `income-gamble.jl` comment, line 7.
+- Algorithm notebook: the heading "How does this differ from the version
+  shown in lecture?" now reads as the L8b lecture; "the L7a version" is
+  shorter.
+
+Codex's preview deductions came from the `nbconvert` HTML export, which prints
+a `___` placed directly under a paragraph as underscores. VS Code draws it as
+a rule, as CommonMark specifies. The same pattern appears 252 times across the
+course notebooks, so it was not counted against L8b.
+
+Closed October 12: the instructor marked the week-8 material reviewed (L8a is
+the Fall Break, with no lecture). He will do a manual pass on October 13,
+then make the week-08 release. The lecture was backed up for the
+voice-calibration comparison before that pass.
