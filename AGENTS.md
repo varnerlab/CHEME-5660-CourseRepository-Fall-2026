@@ -1,5 +1,27 @@
 # Repository Working Agreements
 
+## L10a rebuild — October 12, 2026
+
+- On October 12, the instructor found the uncommitted October 11 Codex update of
+  L10a (October 27) poorly organized and below the rigor of the other lectures,
+  with no company profile. It was rated 5/10: it kept 32 of 125 sentences from
+  his Fall-2025 L11a lecture. At his request, L10a is rebuilt from that text,
+  following [the L10a rebuild spec](lectures/instructor/L10a-REBUILD-SPEC.md).
+  The Codex files are archived in
+  `lectures/archive/week-10-L10a-before-rebuild-2026-10-12/`.
+- Do not use the retained `docs/Notes.tex` legacy notes as a source. The
+  instructor called them stale; the source is the Fall-2025 repo (2026 L10a is
+  2025 L11a).
+- His decisions: Leisen–Reimer, the central-difference convergence study, and
+  the BSM Greek formulas move to
+  `week-10/L10a/advanced/numerical_greeks/`. The lecture states only the
+  central-difference repricing rule. The company profile is Susquehanna
+  International Group. Both examples move to the end-of-day options archive and
+  drop the ticker from their file names. The probability of exercise (POE)
+  keeps its name, so the link to L10b holds.
+- The package code from the Codex session (`binomial_premium`,
+  `binomial_greeks` in `code/src/BinomialSensitivities.jl`) is kept.
+
 ## L9b rebuild — October 11, 2026
 
 - The August–September L9b drafts were rated about 5/10. The lecture had kept 2
