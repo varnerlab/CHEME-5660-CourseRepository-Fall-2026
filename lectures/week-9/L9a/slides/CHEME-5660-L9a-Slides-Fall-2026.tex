@@ -226,6 +226,26 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{What \texorpdfstring{$\Q$}{Q} Means}
+  $\Q$ is a pricing rule, while the real-world measure $\mathbb{P}$ still
+  describes how often outcomes occur:
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{The share}: under $\Q$, the expected share price grows at the
+      risk-free rate $g_{y}$ (no dividends), so
+      $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$ and the share also has zero
+      expected NPV.
+    \item \hilite{The option}: one that expires worthless has scaled NPV
+      $\rho_{T}=-1$. For a call, that happens with real-world probability
+      $\mathbb{P}(\ST\leq K)$ (L5a).
+    \item \hilite{The event contract}: a one-dollar contract costs
+      $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
+      differ from $\mathbb{P}(\text{event})$.
+  \end{itemize}
+  A stock-price event takes its $\Q$ from the replicating model, but a general
+  Kalshi event has no replicating portfolio, so choosing its pricing
+  probability requires additional assumptions.
+\end{frame}
+
 \begin{frame}{Exercise Styles}
   The exercise style changes the premium:
   \begin{itemize}\setlength{\itemsep}{0.25em}
@@ -238,28 +258,6 @@
   \[
     \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\mathcal{P}^{\text{EU}}
   \]
-  The American premium is at least the European one because the holder can
-  choose when to exercise.
-\end{frame}
-
-\begin{frame}{What \texorpdfstring{$\Q$}{Q} Means}
-  Under $\Q$, the expected share price grows at the risk-free rate $g_{y}$ (no
-  dividends), so the share also has zero expected NPV:
-  \[
-    \E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)
-  \]
-  $\Q$ is a pricing rule. The real-world measure $\mathbb{P}$ still describes
-  how often outcomes occur.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{May have no value}: an option that expires worthless has
-      scaled NPV $\rho_{T}=-1$. For a call, that happens with real-world
-      probability $\mathbb{P}(\ST\leq K)$ (L5a).
-    \item \hilite{Event contracts under a selected $\Q$}: a one-dollar contract costs
-      $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
-      differ from $\mathbb{P}(\text{event})$.
-  \end{itemize}
-  A general Kalshi event may have no replicating portfolio, so selecting its
-  pricing probability requires additional assumptions.
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}

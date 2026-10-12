@@ -359,3 +359,29 @@ SHA-256 hashes of the saved notebooks and slide sources/output at closure:
 | `advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb` | `ee9807578d9ea9bc64e180725fc2ec56e6862c4a3a80da976e7ee43788ec416f` |
 | `slides/CHEME-5660-L9a-Slides-Fall-2026.tex` | `b07db863ff4cf67a4c6e2be9ec81c2b846b5d723e173804c6b11490e9620becd` |
 | `slides/CHEME-5660-L9a-Slides-Fall-2026.pdf` | `53bfff0c6c104ab684499fe3952fd992ba74db4b49dbc5c191f96a60e198eae0` |
+
+## Pricing section reorganized (October 12)
+
+The instructor found the passage from the American premium through the event
+contract "too long, organized poorly". He approved this change from a
+before/after preview
+(`build/notebook-previews/L9a-pricing-reorg-2026-10-12/pricing-reorg.png`):
+
+- "What does ℚ mean?" moves up, right after the arbitrage paragraph, where the
+  boxed European premium first uses ℚ. It is written as a sentence, three
+  bullets (the share, the option, the event contract), and a closing sentence
+  on general Kalshi events. The event-contract formula is now inline.
+- The exercise-style bullets and the American premium move to the end of the
+  subsection, so they lead into the BSM heading.
+- Cut: "which can increase the premium", the continuous-compounding
+  parenthetical, the sentence after the American display (the third statement
+  of American ≥ European, with a second reason), and the repeated "ℚ gives
+  zero expected NPV" sentence. The passage went from 254 to 194 words. The
+  American display is unchanged, so L9b's "In L9a, we wrote…" still holds.
+- The deck got the same order and cuts: "What ℚ Means" now comes before
+  "Exercise Styles". Rebuilt: 19 pages, zero overfull or underfull boxes,
+  pages 12–15 checked.
+
+The lecture, slide source, and slide PDF no longer match the hashes in the
+reviewed snapshot above. The voice-calibration backup was refreshed to
+include this change.
