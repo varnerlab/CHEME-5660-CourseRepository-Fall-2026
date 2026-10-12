@@ -1,8 +1,13 @@
 # L9a redesign handoff — October 9, 2026
 
+**Review status: reviewed and complete, October 11, 2026.** The instructor
+closed the review of the lecture, both core examples, both advanced notebooks,
+and companion slides. Final scores are 9.0–9.1/10. No proposals remain pending;
+see the completion record at the end before follow-up work.
+
 L9a is rebuilt as "Introduction to Derivatives and European Option Pricing". The
-spec is `L9a-REDESIGN-SPEC.md` and the plan is `L9a-REDESIGN-PLAN.md`. Nothing is
-committed. The work ran in two stages:
+spec is `L9a-REDESIGN-SPEC.md` and the plan is `L9a-REDESIGN-PLAN.md`. The original
+build ran in two stages:
 
 1. **Agent build.** Parallel builder agents, each followed by an independent QA
    reviewer that rated the work 0–10 and polished anything below 9. The manager
@@ -236,3 +241,121 @@ All paths are under `build/notebook-previews/L9a-redesign-2026-10-09/`
    b67862b, and the docs site redeployed with the three loaders, so Example 1
    and its docs link work for students.
 3. The lecture is backed up in `voice-calibration/` for your hand edits.
+
+## Focused pricing and SPXW updates (October 11)
+
+The October 11 review rated the materials 8.7/10 overall, with the lecture at
+8.6 and the SPXW example at 8.0. You authorized the two recommended changes
+after clarifying their scope:
+
+- Keep Kalshi as the hook. Explain why replication fixes the stock-option
+  premium, why a general event contract needs an additional pricing assumption,
+  and state the BSM assumptions before the formulas.
+- Preserve the SPXW content and calculations, including the Yahoo and
+  realized-volatility comparison. Regroup the notebook into three tasks and
+  move applicable price checks before implied-volatility inversion.
+- Synchronize the companion slides and this handoff.
+
+### Lecture and deck
+
+The lecture's Pricing Options section now makes the zero-expected-NPV pricing
+condition conditional on replication. Its arbitrage explanation states that
+the necessary trades must be available without transaction costs. The event
+contract paragraph distinguishes the pricing probability determined by the
+replicating stock model from the additional assumption needed for a general
+Kalshi event. Before the BSM formulas, the lecture states the non-dividend
+GBM, constant volatility and continuously compounded rate, and continuous,
+frictionless trading assumptions, including fractional holdings, short sales,
+and borrowing and lending. The Monte Carlo lead-in specifies risk-neutral
+drift. The existing equations, figures, examples, and Kalshi opener remain.
+
+The corresponding three deck frames were synchronized. The rebuilt PDF has
+19 pages, with no overfull or underfull boxes. All pages were rendered and
+inspected, with the three edited frames also checked at full size.
+
+### SPXW example
+
+The new task sequence is:
+
+1. **Validate quotes and estimate financing inputs.** Pair calls and puts,
+   estimate the discount factor and forward from parity, then check quote
+   ordering, European quote bounds, midpoint bounds for inversion, parity
+   within spreads, midpoint monotonicity, and discrete convexity.
+2. **Recover and verify implied volatility.** Run the existing forward-form
+   BSM inversion, check repricing, then show the existing skew plot and table.
+3. **Interpret the skew and contract settlement.** Retain the skew explanation,
+   Yahoo/history subsection and realized-volatility comparison, settlement
+   example, and real-data schema.
+
+The midpoint guard is new: each solver input must be strictly between the
+European lower and upper price bounds to admit a finite positive implied
+volatility. The original price diagnostics now run before inversion; the
+implementation check runs afterward. The prose distinguishes midpoint
+diagnostics from an executable arbitrage. The BSM and inversion functions are
+unchanged. The notebook now has exactly three learning objectives and three
+key takeaways, and its major-section rules match the course style.
+
+### Verification and saved results
+
+- Executed all 14 revised SPXW code cells with the installed Julia kernel and
+  the actual `Include.jl`; no error outputs. Saved the fresh execution outputs.
+- All six pre-inversion diagnostics passed. The fitted discount factor is
+  0.995979838709678, the forward is 6500, and the continuously compounded rate
+  is 0.04200903741565946 per year. Maximum repricing error is
+  9.094947017729282e-13 index points.
+- Executed the original and revised notebooks with Yahoo disabled. Financing
+  inputs, the entire paired-price/IV table, repricing error, offline index
+  history, and realized-volatility series were exactly identical.
+- Negative checks confirmed that failed quote ordering and an out-of-bounds
+  midpoint stop execution before the inversion function is defined or called.
+- The saved fixture tables and skew plot agree with the preceding notebook.
+  The Yahoo response refreshed from 249 to 252 observations for the same
+  August 14, 2025–August 14, 2026 range. Its latest close remains 7785.76;
+  the refreshed 20-day and 60-day realized volatilities are 13.30% and 13.65%.
+  The history-loading and volatility calculations are unchanged.
+- The existing `check_l9a.py` reports zero failures. All five notebooks validate
+  as nbformat, and their relative links resolve. The focused SPXW checks cover
+  the three objectives/tasks/takeaways, heading rules, assertion placement,
+  execution outputs, and price-check/inversion/repricing order.
+- The edited Markdown passed the VS Code notebook KaTeX renderer without math
+  errors; the changed prose and equations were also inspected in PDF proofs.
+  These proofs check the text and mathematics, not native notebook layout.
+
+The two core examples, the contingent-claims notebook, the fixture data, and
+the local helpers were not edited. No commit or push was made for this pass.
+Backups, execution output, validation scripts/logs, and deck renders are in
+`build/notebook-previews/L9a-updates-2026-10-11/` (gitignored).
+
+## Review completed (October 11, 2026)
+
+After the final reassessment, the instructor closed the review: "Ok - let's
+mark this as reviewed". This covers all L9a teaching materials, including the
+five notebooks, their linked figures, and the synchronized companion slides.
+
+| Material | Final Codex score / 10 |
+| --- | ---: |
+| Lecture notebook | 9.1 |
+| Single-contract payoff/profit example | 9.1 |
+| BSM premium example | 9.0 |
+| Contingent-claims derivation | 9.0 |
+| SPXW volatility-skew example | 9.0 |
+| Companion slides | 9.1 |
+
+The verification recorded above applies to this reviewed snapshot. The final
+ratings are Codex's editorial assessment; the instructor accepted the materials
+and closed the round. No proposals remain pending. Do not restart approved
+sections unless the instructor requests another review.
+
+### Reviewed snapshot
+
+SHA-256 hashes of the saved notebooks and slide sources/output at closure:
+
+| Artifact (under `lectures/week-9/L9a/`) | SHA-256 |
+| --- | --- |
+| `CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb` | `5db7e54da7fd56df14dd9fa483b5304adac1ffbb412669c893c92e786edc95c7` |
+| `CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb` | `bb971c49543867a4e971ce8740a3b0836cd0562c07a1f223f7be44e0abee4c5a` |
+| `CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb` | `86e6e8d02baeeb48b9573335ed55b5222566957eebff5cf76c029bea7a2c3ccb` |
+| `advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb` | `bea92d6d1d9de4cfc538b72f0784f7c81b887d9daf3335b629445b1955b5605e` |
+| `advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb` | `ee9807578d9ea9bc64e180725fc2ec56e6862c4a3a80da976e7ee43788ec416f` |
+| `slides/CHEME-5660-L9a-Slides-Fall-2026.tex` | `b07db863ff4cf67a4c6e2be9ec81c2b846b5d723e173804c6b11490e9620becd` |
+| `slides/CHEME-5660-L9a-Slides-Fall-2026.pdf` | `53bfff0c6c104ab684499fe3952fd992ba74db4b49dbc5c191f96a60e198eae0` |

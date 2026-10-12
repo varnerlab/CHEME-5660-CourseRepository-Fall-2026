@@ -209,15 +209,16 @@
 \end{frame}
 
 \begin{frame}{The European Premium}
-  A Treasury's cash flows are known, so in L2a its price made the NPV zero. An
-  option's payoff is random, so we require a zero \hilite{expected} NPV under
-  the risk-neutral measure $\Q$:
+  When trading shares and the risk-free asset can replicate an option's
+  payoff, no arbitrage fixes its premium as the portfolio's cost. Under the
+  corresponding risk-neutral measure $\Q$, this gives zero
+  \hilite{expected} NPV:
   \[
     \E_{\Q}\bigl(\operatorname{NPV}_{0}\bigr)=0
     \;\Longrightarrow\;
     \boxed{\mathcal{P}^{\text{EU}}=\E_{\Q}\bigl(\Dinv\cdot V(K,\ST)\bigr)}
   \]
-  Any other premium creates a risk-free profit opportunity:
+  With frictionless replication, any other premium creates a risk-free profit:
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{Too low}: buy the option and sell a portfolio with the same
       payoff, built from shares and the risk-free asset.
@@ -253,14 +254,18 @@
     \item \hilite{May have no value}: an option that expires worthless has
       scaled NPV $\rho_{T}=-1$. For a call, that happens with real-world
       probability $\mathbb{P}(\ST\leq K)$ (L5a).
-    \item \hilite{Event contracts}: a one-dollar contract costs
+    \item \hilite{Event contracts under a selected $\Q$}: a one-dollar contract costs
       $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
       differ from $\mathbb{P}(\text{event})$.
   \end{itemize}
+  A general Kalshi event may have no replicating portfolio, so selecting its
+  pricing probability requires additional assumptions.
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}
-  Under GBM with volatility $\sigma$, the European call and put premiums are:
+  Assume a non-dividend-paying share follows GBM with constant volatility
+  $\sigma$ and risk-free rate $g_y$, and frictionless continuous trading in the
+  share and risk-free asset. The European call and put premiums are:
   \begin{equation*}
     \boxed{
     \begin{aligned}

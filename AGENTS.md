@@ -22,6 +22,22 @@
 - The package code from the Codex session (`binomial_premium`,
   `binomial_greeks` in `code/src/BinomialSensitivities.jl`) is kept.
 
+## Completed L9a materials review — October 11, 2026
+
+- The instructor marked all L9a materials reviewed and complete on October 11,
+  2026: the lecture, both core examples, the contingent-claims derivation,
+  the SPXW volatility-skew example, and the companion slides. Final Codex
+  scores are 9.1 for the lecture, payoff/profit example, and slides, and 9.0
+  for the BSM example and both advanced notebooks.
+- The approved updates clarify replication and event-contract pricing, state
+  BSM assumptions before the formulas, and organize the SPXW example into
+  three tasks with price checks before inversion and repricing afterward.
+  The SPXW content and calculations, including the Yahoo comparison, are kept.
+- The [saved review record](lectures/instructor/L9a-REDESIGN-HANDOFF.md)
+  records the changes, verification, final scores, and reviewed snapshot.
+  No proposals remain pending. Read it before follow-up work; do not restart
+  the review unless the instructor requests another round.
+
 ## L9b rebuild — October 11, 2026
 
 - The August–September L9b drafts were rated about 5/10. The lecture had kept 2
