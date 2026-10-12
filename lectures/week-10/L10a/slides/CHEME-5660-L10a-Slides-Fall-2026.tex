@@ -1,0 +1,287 @@
+% L10a student companion deck: the Greeks of American options, Delta as a hedge
+% ratio and a probability estimate, and the probabilities of exercise and profit.
+%
+% The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
+% instructor preference. Notation follows the lecture: contract type
+% \star\in\{c,p\}, premium \mathcal{P}_\star(S,\sigma,t,g_y), Greeks \Delta_\star,
+% \Gamma_\star, \Theta_\star, \nu_\star, \rho_\star, signed contract count n, and
+% extrinsic value E_V(t). Built October 2026 from the rebuilt lecture (see
+% lectures/instructor/L10a-REBUILD-HANDOFF.md). The Concept Review figure is the
+% L9b extrinsic-value SVG converted to PDF with rsvg-convert.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Pst}{\mathcal{P}_{\star}}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a}
+
+\title{\texorpdfstring{{\vnheavy L10a}}{L10a}: Sensitivity Analysis of American Options Premium}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  In L2b, duration and convexity told us how much a bond's price changes when
+  its yield moves. In L9b, we priced American options on a CRR tree. How much
+  does an option's premium change when the share price, volatility, time to
+  expiration, or interest rate changes?
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Compute the Greeks for American options}: Delta, Theta, Vega,
+      Rho, and Gamma from a local Taylor expansion of the options premium.
+    \item \hilite{Interpret Delta as a hedge ratio and a probability estimate}:
+      the shares needed to hedge an option position, compared with the
+      probability of expiring in-the-money.
+    \item \hilite{Calculate probability of profit and probability of exercise}:
+      from projected share price distributions, at the breakeven and at the
+      strike price.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par\small
+  \href{\repo/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Example 1:}}\par\small
+  \href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Example 2:}}\par\small
+  \href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
+
+  \vspace{0.5em}
+  The first example computes the Greeks for call and put options from market
+  data. The second computes the probability of profit and the probability of
+  exercise for a short call, and compares them with Delta.
+\end{frame}
+
+\begin{frame}{Concept Review: Intrinsic and Extrinsic Value}
+  In the last lecture, we split the American premium into two components:
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Intrinsic value}: the immediate exercise value,
+      $\max(0, S_{t} - K)$ for a call and $\max(0, K - S_{t})$ for a put.
+    \item \hilite{Extrinsic value}: also known as time value, the difference
+      between the option price and its intrinsic value.
+  \end{itemize}
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      E_{V}(t) &= \begin{cases}
+      \mathcal{P}_{c} - \max(0, S_{t} - K) & \text{(for Call Options)} \\
+      \mathcal{P}_{p} - \max(0, K - S_{t}) & \text{(for Put Options)}
+      \end{cases}
+    \end{aligned}}
+  \end{equation*}
+  When the option is \hilite{out of the money}, it has no intrinsic value, and
+  the entire option price is extrinsic value.
+\end{frame}
+
+\begin{frame}{Call Premium across Strikes and Expirations}
+  \vspace{-0.6em}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{../figs/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.pdf}
+  \end{center}
+  \vspace{-0.4em}
+  \textbf{\ink{Hmmmm:}} the premium changes with time to expiration and the
+  strike price. How does it change with other factors?
+\end{frame}
+
+\begin{frame}{Company Profile: Susquehanna}
+  \href{https://sig.com/about/}{\hilite{Susquehanna (SIG)}} is a privately held
+  trading firm whose core business is options trading. Friends who traded
+  options on the floor of the Philadelphia Stock Exchange started it in 1987.
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Options market making}: it posts prices to buy and sell, so it
+      takes the other side of its customers' contracts. In October 2026, it was
+      the Designated Primary Market Maker for 1,359 of 5,370 Cboe option
+      classes, the most of any firm.
+    \item \hilite{Managing the Greeks}: its book is exposed to Delta, Vega,
+      Theta, and Rho at once, and the goal is to net these across products.
+    \item \hilite{Training}: interns learn options theory, and poker teaches
+      new traders to decide under uncertainty.
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Connection to today's lecture:}} when a customer buys a call, the
+  firm hedges with $100\,\Delta_{c}$ shares and rebalances as Gamma moves $\Delta_{c}$.
+\end{frame}
+
+\begin{frame}{The Greeks}
+  The \hilite{Greeks} are local sensitivity coefficients that measure how
+  American options premiums change with market conditions:
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Delta $\Delta$}: the change in premium for a
+      \texttt{+1~USD/share} change in the share price.
+    \item \hilite{Theta $\Theta$}: the change in premium for a
+      \texttt{1-day decrease} in the lifetime of the contract (time decay).
+    \item \hilite{Vega $\nu$}: the change in premium for a \texttt{+1\%} change
+      in volatility.
+    \item \hilite{Gamma $\Gamma$}: the change in $\Delta$ for a
+      \texttt{+1~USD/share} change in the share price.
+    \item \hilite{Rho $\rho$}: the change in premium for a \texttt{+1\%} change
+      in the risk-free rate, usually minor except for longer-term options.
+  \end{itemize}
+  Most trading platforms compute these for you!
+\end{frame}
+
+\begin{frame}{A Local Taylor Expansion of the Premium}
+  Expanding the premium $\Pst(S,\sigma,t,g_{y})$ of a contract of type
+  $\star\in\{c,p\}$ to second order in $S$ and first order in the other inputs:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \Delta\Pst \approx \Delta_{\star}\,\Delta S + \nu_{\star}\,\Delta\sigma
+      + \Theta_{\star}\,\Delta t + \rho_{\star}\,\Delta g_{y}
+      + \tfrac{1}{2}\,\Gamma_{\star}\,(\Delta S)^{2}
+    \end{aligned}}
+  \end{equation*}
+  \begin{equation*}
+    \Delta_{\star}=\frac{\partial\Pst}{\partial S}\qquad
+    \nu_{\star}=\frac{\partial\Pst}{\partial \sigma}\qquad
+    \Theta_{\star}=\frac{\partial\Pst}{\partial t}\qquad
+    \rho_{\star}=\frac{\partial\Pst}{\partial g_{y}}\qquad
+    \Gamma_{\star}=\frac{\partial^{2}\Pst}{\partial S^{2}}
+  \end{equation*}
+  Derivatives are taken at the current inputs, with $\Delta t$ in years and
+  $\Delta\sigma$, $\Delta g_{y}$ in decimals. Platforms quote $\Theta_{\star}/365$ per day, and $\nu_{\star}/100$
+  and $\rho_{\star}/100$ per percentage point.
+\end{frame}
+
+\begin{frame}{Delta and Gamma as Duration and Convexity}
+  $\Delta_{\star}$ and $\Gamma_{\star}$ play the roles of duration and
+  convexity in L2b: the slope and the curvature of the premium as a function
+  of the share price.
+
+  \vspace{0.5em}
+  \textbf{\ink{Example:}} a long call has $\Delta_{c}=0.50$ and
+  $\Gamma_{c}=0.02$ per USD/share.
+  \begin{align*}
+    \Delta S=+5:\quad \Delta\mathcal{P}_{c} &\approx 0.50\times5+\tfrac{1}{2}(0.02)(5)^{2}=2.50+0.25=2.75~\text{USD/share}\\
+    \Delta S=-5:\quad \Delta\mathcal{P}_{c} &\approx -2.50+0.25=-2.25~\text{USD/share}
+  \end{align*}
+  The Gamma term adds to the premium whichever way the share price moves.
+\end{frame}
+
+\begin{frame}{Computing the Greeks of American Options}
+  Backward induction on the CRR tree gives no formula to differentiate, so we
+  reprice the tree with one input moved up and down by a step $\epsilon$:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \frac{\partial\Pst}{\partial x} & \approx \frac{\Pst(x+\epsilon)-\Pst(x-\epsilon)}{2\epsilon}\qquad x\in\{S,\sigma,t,g_{y}\}\\
+      \Gamma_{\star} & \approx \frac{\Pst(S+\epsilon)-2\,\Pst(S)+\Pst(S-\epsilon)}{\epsilon^{2}}
+    \end{aligned}}
+  \end{equation*}
+  With no dividends, a call's American and European premiums are equal (L9b),
+  so the L9a Black--Scholes--Merton formulas give Greeks to check against,
+  e.g., $\Delta_{c}=N(d_{+})$.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{The Secret Lives of Delta}
+  Besides measuring the premium change for a \texttt{+1~USD/share} move in the
+  share price, $\Delta$ has two other interpretations:
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Hedge ratio}: for every $n$ contracts held ($n<0$ if the
+      contracts are sold), hold $-100\cdot n\cdot\Delta$ shares to be
+      \hilite{delta-neutral}, i.e., insensitive to small share price moves.
+    \item \hilite{Probability of exercise}: $\Delta$ is often used as an
+      estimate of the probability that the option expires in-the-money. A call
+      with $\Delta=0.7$ suggests a 70\% chance.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Probability of Exercise (POE)}
+  The probability that the contract finishes in-the-money at expiration $t=T$:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \text{POE} & = \begin{cases}
+      \mathbb{P}\left(S_{T} > K + 0.01\right) & \text{(for Call Options)} \\
+      \mathbb{P}\left(S_{T} < K - 0.01\right) & \text{(for Put Options)}
+      \end{cases}
+    \end{aligned}}
+  \end{equation*}
+  In the L9a Black--Scholes--Merton model, a European call has
+  $\Delta_{c}=N(d_{+})$, while the risk-neutral probability that it finishes
+  in-the-money is $N(d_{-})$, which is smaller.
+
+  \vspace{0.5em}
+  \textbf{\ink{Conjecture:}} $\Delta\approx\text{POE}$. Example 2 checks it.
+\end{frame}
+
+\begin{frame}{Probability of Profit (POP)}
+  The probability that the contract's profit at expiration is positive:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \text{POP} & = \mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)
+    \end{aligned}}
+  \end{equation*}
+  where $\hat{P}_{\mathcal{C}}$ is the profit of the (single or composite)
+  contract at expiration.
+
+  \vspace{0.5em}
+  POE reads the projected distribution at the strike price, POP at the
+  breakeven.
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Numerical Greeks:}} \dimmed{advanced/numerical\_greeks/}\par
+  \href{\repo/advanced/numerical_greeks/CHEME-5660-L10a-Advanced-Numerical-Greeks-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Advanced-Numerical-Greeks-Fall-2026.ipynb}}}
+
+  \vspace{0.5em}
+  How accurate are Greeks computed by repricing a binomial tree? The CRR
+  premium bends only where a terminal node crosses the strike, so a step that
+  stays between two bends gives a Gamma of zero. The Leisen--Reimer tree keeps
+  the call Greeks close to the Black--Scholes--Merton values at every number of
+  tree steps we try. We then plot an American put's Delta and Gamma around the
+  early-exercise boundary.
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-10/L10a/advanced}{lectures/week-10/L10a/advanced}, also linked from the lecture notebook.}
+\end{frame}
+
+\begin{frame}{Summary}
+  Today we introduced the Greeks, which measure how American options premiums
+  respond to changes in market conditions.
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{The Greeks quantify option price sensitivity}: they are the
+      partial derivatives in a local Taylor expansion of the premium, which we
+      estimate for American options by repricing the CRR tree.
+    \item \hilite{Delta serves three purposes}: the rate of change in the
+      premium, the hedge ratio for delta-neutral positions, and an
+      approximation of the probability of exercise.
+    \item \hilite{Probability of profit differs from probability of exercise}:
+      POE reads the projected distribution at the strike price, and POP reads
+      it at the breakeven.
+  \end{itemize}
+\end{frame}
+
+\end{document}

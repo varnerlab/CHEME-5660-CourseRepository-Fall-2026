@@ -118,7 +118,10 @@ Everything else is your 2025 text or L9a's disclaimer, with the word-level fixes
    Task 3. I left it as is.
 7. **Documentation links** to `binomial_premium`/`binomial_greeks` resolve only after
    the uncommitted `code/docs/src/derivatives.md` is published.
-8. **No deck yet.** I'll build it after you approve the lecture.
+8. **Deck built October 12** (`slides/`, 16 pages, 0 overfull boxes), mirroring the
+   lecture's order. A fresh reviewer scored it 8.6, then 9.2 after the fixes. The
+   Concept Review figure is the L9b extrinsic-value SVG converted to PDF with
+   `rsvg-convert` (`figs/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.pdf`).
 
 ## Records
 
@@ -150,8 +153,8 @@ Everything else is your 2025 text or L9a's disclaimer, with the word-level fixes
 
 ## Next steps
 
-1. Review the pages. Before your hand edits, back up the lecture for voice calibration.
-2. Commit through a temporary index: the L10a files, the records, and the October 11
-   package code (`BinomialSensitivities.jl`, its tests, exports, and docs). Run the
-   package tests first. Other sessions' L9a work stays out.
-3. Build the L10a deck, then do the week-10 release when you give the go-ahead.
+1. Done October 12: the package tests (2086 of 2086 pass), the commits (package code,
+   L10a rebuild), the voice-calibration backup, and the deck.
+2. Your hand edits of the lecture. When the round is done, compare with
+   `lectures/instructor/voice-calibration/L10a-Lecture-American-Derivatives-Greeks/before.ipynb`.
+3. The week-10 release when you give the go-ahead.
