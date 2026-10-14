@@ -52,13 +52,13 @@
 \begin{frame}{Objectives for Today}
 By the end of this lecture, you should be able to:
 \begin{itemize}\setlength{\itemsep}{0.9em}
-\item \hilite{Solve budget-constrained utility problems}: solve the Cobb--Douglas
-share-count problem in closed form with SIM preference weights, and state how the
-CES elasticity moves the allocation.
+\item \hilite{Solve budget-constrained utility problems}: find the Cobb--Douglas
+share counts in closed form with SIM preference weights, and state how the CES
+elasticity moves the allocation.
 \item \hilite{Choose a point on the capital allocation line}: derive the
 utility-maximizing risk-free fraction and infer a client's risk aversion.
 \item \hilite{Describe a bet on a future condition}: write it as an abstract asset,
-compute its expected NPV, and explain why a risk-averse buyer pays less.
+compute its expected NPV, and explain why buyers with different beliefs value it differently.
 \end{itemize}
 \end{frame}
 
@@ -70,7 +70,7 @@ compute its expected NPV, and explain why a risk-averse buyer pays less.
 \textbf{\ink{Example 1:}}
 \href{\repo/CHEME-5660-L8b-Example-Utility-Allocator-Fall-2026.ipynb}{Build a Maximum-Utility Portfolio Allocator}
 
-Which firms, how much of each, and how does re-solving through 2025 compare with buy-and-hold?
+Which firms, and how much of each? How does re-solving through 2025 compare with buy-and-hold?
 
 \vspace{0.6em}
 \textbf{\ink{Interview:}}
@@ -90,22 +90,22 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
 
 % ==== concept review =========================================
 \begin{frame}{Concept Review: Utility Functions}
-  Utility functions rank a decision-maker's choices, outcomes, or states of the
-  world. A larger utility is always better.
+  Utility functions describe a decision-maker's preferences over choices, outcomes,
+  or states of the world. A larger utility is always better.
 
   \vspace{0.5em}
-  \hilite{Utility function}: an agent chooses from alternatives
-  $\mathcal{X}=\{x_1,\dots,x_n\}$. $U:\mathcal{X}\rightarrow\mathbb{R}$ assigns each
-  one a number, in \emph{utils}, that ranks the agent's preferences:
+  An agent chooses from alternatives $\mathcal{X}=\{x_1,\dots,x_n\}$. A
+  \hilite{utility function} $U:\mathcal{X}\rightarrow\mathbb{R}$ assigns each one a
+  number, in \emph{utils}, that ranks the agent's preferences:
   \[
     \boxed{U(x_i)>U(x_j)\;\Longleftrightarrow\;x_i\succ x_j
       \qquad\text{and}\qquad
       U(x_i)=U(x_j)\;\Longleftrightarrow\;x_i\sim x_j}
   \]
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Ordinal}: $U$ ranks alternatives but does not measure how much
-      better one is, so any order-preserving transformation, e.g., $\ln U$ for
-      positive $U$, describes the same preferences.
+    \item \hilite{Ordinal}: $U$ ranks alternatives without measuring how much
+      better one is, so any order-preserving transformation (e.g., $\ln U$ for
+      $U>0$) keeps the same ranking.
     \item \hilite{Key idea}: a rational decision-maker always chooses the
       alternative with the largest utility.
   \end{itemize}
@@ -116,7 +116,7 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
   a bundle of goods $\bx=(x_1,\dots,x_n)$ with $x_i\ge0$ and $\alpha_i>0$:
 
   \vspace{0.4em}
-  {\footnotesize
+  {\small\setlength{\tabcolsep}{3pt}
   \begin{tabular}{@{}lll@{}}
     \toprule
     \textbf{Utility function} & \textbf{Form} & \textbf{Models}\\
@@ -136,21 +136,10 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
 \end{frame}
 
 % ==== utility over holdings ==================================
-\begin{frame}{Utility over Holdings}
-  In L7a, every investor held the same tangent portfolio and chose only a
-  risk-free fraction. Instead, ask: given a budget and today's prices, which
-  holdings does the investor prefer most?
-
-  \vspace{0.8em}
-  The investor chooses share counts that maximize a \hilite{holding utility}. It
-  has no variance term. Risk enters through preference weights that depend on the
-  SIM betas and the state of the market.
-\end{frame}
-
-\begin{frame}{Cobb–Douglas Utility}
-  The exponents are the \hilite{preference weights} $\gamma_i\in(-1,1)$. Maximize
-  the product over every asset, subject to the budget and a floor $n_{\min}>0$ on
-  each holding:
+\begin{frame}{Cobb–Douglas Utility over Holdings}
+  An investor chooses share counts to maximize a \hilite{holding utility}, which has
+  no variance term. Risk enters through the \hilite{preference weights}
+  $\gamma_i\in(-1,1)$. With them as exponents, the Cobb--Douglas problem is:
   \[
     \boxed{\begin{aligned}
       \operatorname*{maximize}_{n_1,\ldots,n_{\np}}\quad&U(n_1,\ldots,n_{\np})=\prod_{i\in\mathcal{P}}n_i^{\gamma_i}\\
@@ -158,64 +147,31 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
       &n_i\ge n_{\min}\quad\forall\,i\in\mathcal{P},\qquad\text{cash}(t)\ge0&&\quad\text{(share floor, no borrowing)}
     \end{aligned}}
   \]
-  where $n_i$ is the share count of asset $i$, $S_i(t)$ its price (USD per share),
-  $\WP(t)$ the wealth, and $\text{cash}(t)$ the uninvested wealth (USD), which is not
-  in $U$. The floor keeps $U$ finite when $\gamma_i<0$. The \hilite{preferred set}
-  $\Ap=\{i:\gamma_i>0\}$ is the basket, and the rest form $\Am=\{i:\gamma_i\le0\}$.
+  where $\mathcal{P}$ is the asset set, $n_i$ the share count of asset $i$, $S_i(t)$ its price (USD per share),
+  $\WP(t)$ the wealth, and $\text{cash}(t)$ the uninvested wealth (USD). The floor is
+  $n_{\min}>0$ shares, and cash adds no utility.
 \end{frame}
 
-\begin{frame}{Cobb–Douglas Utility: Floors and Net Budget}
-  \setlength{\jot}{1pt}
-  Only the ranking matters, so $\ln U$ has the same maximizer as $U$. With a
-  non-empty basket, we set the floors and the cash first:
-  \[
-    \begin{aligned}
-      \frac{\partial\ln U}{\partial n_k}&=\frac{\gamma_k}{n_k}\le0
-        &&\quad k\in\Am\text{, so more shares never raise }\ln U\\
-      n_k^\star&=n_{\min}
-        &&\quad\text{spend every dollar above the floor on }\Ap\\
-      \text{cash}^\star(t)&=0
-        &&\quad\text{a preferred share raises }\ln U\text{, and cash does not}
-    \end{aligned}
-  \]
-  Substituting both into the budget constraint leaves the
-  \hilite{net budget} for the preferred set:
-  \[
-    \begin{aligned}
-      \sum_{i\in\Ap}n_iS_i(t)+n_{\min}\sum_{k\in\Am}S_k(t)&=\WP(t)\\
-      \sum_{i\in\Ap}n_iS_i(t)&=\WP(t)-n_{\min}\sum_{k\in\Am}S_k(t)\equiv\Wadj>0
-    \end{aligned}
-  \]
-  A Lagrange multiplier $\lambda$ then splits $\Wadj$ over the preferred set,
-  assuming each preferred share count stays above its floor.
-\end{frame}
+\begin{frame}{The Cobb–Douglas Allocation}
+  Assets with $\gamma_i>0$ form the \hilite{preferred set} $\Ap$, the
+  \hilite{basket}. The rest form $\Am=\{i:\gamma_i\le0\}$. The floor keeps $U$ finite
+  when $\gamma_i<0$.
 
-\begin{frame}{Cobb–Douglas Utility: Allocation}
-  \setlength{\jot}{0pt}
-  Adding the multiplier $\lambda$ for the net budget gives:
+  \vspace{0.4em}
+  With positive prices, enough wealth to fund the floors, and a nonempty basket,
+  non-preferred assets stay at their floors and cash is zero, which leaves the
+  \hilite{net budget}:
   \[
-    \begin{aligned}
-      \mathcal{L}&=\textstyle\sum_{i\in\Ap}\gamma_i\ln n_i-\lambda\bigl(\sum_{i\in\Ap}n_iS_i(t)-\Wadj\bigr)
-        &&\text{floor terms are constant}\\
-      0&=\gamma_i/n_i-\lambda\,S_i(t)
-        &&\text{differentiate with respect to }n_i\\
-      n_iS_i(t)&=\gamma_i/\lambda
-        &&\text{dollars in proportion to }\gamma_i\\
-      \Wadj&=\textstyle\sum_{j\in\Ap}\gamma_j/\lambda
-        &&\text{sum over the preferred set}\\
-      1/\lambda&=\Wadj\big/\textstyle\sum_{j\in\Ap}\gamma_j
-        &&\text{solve for the multiplier}
-    \end{aligned}
+    \Wadj=\WP(t)-n_{\min}\sum_{k\in\Am}S_k(t)
   \]
-  Substituting $1/\lambda$ into $n_iS_i(t)=\gamma_i/\lambda$ gives:
+  When preferred holdings stay above their floors, the allocation is:
   \[
     \boxed{n_i^\star=\underbrace{\frac{\gamma_i}{\sum_{j\in\Ap}\gamma_j}}_{\text{preference share}}
       \cdot\underbrace{\frac{\Wadj}{S_i(t)}}_{\text{budget in shares}}\quad(i\in\Ap),
-      \quad n_i^\star=n_{\min}\quad(i\in\Am)}
+      \qquad n_k^\star=n_{\min}\quad(k\in\Am)}
   \]
-  If a preferred count falls below $n_{\min}$, pin it at the floor, subtract its
-  cost from $\Wadj$, and solve again. If every preferred count stays above its floor, dollars are
-  proportional to $\gamma_i$.
+  \slidenote{Derivation:}{\href{\repo/advanced/cobb-douglas-derivation/CHEME-5660-L8b-Derivation-CobbDouglas-Fall-2026.ipynb}{Cobb--Douglas companion},
+    including what to do when a preferred holding reaches its floor.}
 \end{frame}
 
 \begin{frame}{CES Utility: A Concentration Dial}
@@ -232,7 +188,8 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Unit elasticity} ($\eta\to1$): the Cobb--Douglas allocation.
     \item \hilite{Large elasticity} ($\eta\to\infty$): the unique largest
-      $\gamma_i/S_i(t)$ gets the whole budget above the floors.
+      $\gamma_i/S_i(t)$ gets the whole budget above the floors. Every other asset falls
+      to its floor.
     \item \hilite{Small elasticity} ($\eta\to0^+$): equal share counts of every
       preferred asset.
   \end{itemize}
@@ -242,8 +199,9 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
 
 % ==== preference weights =====================================
 \begin{frame}{Preference Weights from the Single Index Model}
-  Each trading day, from the SIM parameters $(\alpha_i,\beta_i)$, the recent market
-  growth rate $\tilde g_{M,t}$, and the market-state signal $\xi_t$:
+  Each trading day, we compute $\gamma_i(t)$ from the SIM parameters $(\alpha_i,\beta_i)$
+  and two SPY inputs: the recent market growth rate $\tilde g_{M,t}$ and the
+  market-state signal $\xi_t$, which says whether the market has been rising or falling:
   \[
     \boxed{\gamma_i(t)=\tanh\!\left(h\left[\frac{\alpha_i}{\beta_i^{\xi_t}}+\beta_i^{1-\xi_t}\,\tilde g_{M,t}\right]\right)}
   \]
@@ -252,143 +210,108 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
   \begin{itemize}\setlength{\itemsep}{0.2em}
     \item \hilite{Sign picks the basket}: $\gamma_i(t)>0$ when $\tilde g_{M,t}>-\alpha_i/\beta_i$.
       As $\tilde g_{M,t}$ rises, the basket grows. As it falls, only the
-      lowest-threshold assets stay. An empty basket holds the floors plus cash.
+      lowest-threshold assets stay. With an empty basket, the allocator holds the floors plus cash.
     \item \hilite{Magnitude splits the budget}: bearish ($\xi_t>0$) tilts it toward
       low-beta assets, bullish toward high-beta.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Exponential Moving Averages}
-  Both market inputs come from the SPY price through \hilite{exponential moving
-  averages} (EMAs). An EMA is a running average that gives recent prices the most
-  weight. For a price series $S_t$ and a window of $L$ trading days:
+\begin{frame}{Market Inputs from SPY}
+  \setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{1pt}
+  Both inputs come from SPY prices through \hilite{exponential moving averages}
+  (EMAs), which weight recent prices most. For windows of $L$ trading days:
   \[
-    \boxed{\bar S_t=\omega\,S_t+(1-\omega)\,\bar S_{t-1}\qquad\text{where}\qquad\omega=\frac{2}{L+1}}
-  \]
-\end{frame}
-
-\begin{frame}{The Market-State Signal}
-  With $L_{\mathrm{short}}=21$ and $L_{\mathrm{long}}=63$ days and a gain $G>0$,
-  the signal is the scaled crossover of the two price EMAs:
-  \[
+    \bar S_t=\omega\,S_t+(1-\omega)\,\bar S_{t-1},\quad\omega=\frac{2}{L+1}
+    \qquad\qquad
     \boxed{\xi_t=-G\left(\frac{\bar S^{\mathrm{short}}_t}{\bar S^{\mathrm{long}}_t}-1\right)}
   \]
-  The ratio says where recent prices sit against the quarter's average:
-  \begin{itemize}\setlength{\itemsep}{0.3em}
+  With $L_{\mathrm{short}}=21$ and $L_{\mathrm{long}}=63$, $\xi_t$ compares recent prices
+  with the quarter's average:
+  \begin{itemize}\setlength{\itemsep}{0em}
     \item $\bar S^{\mathrm{short}}_t>\bar S^{\mathrm{long}}_t$: $\xi_t<0$,
       \hilite{bullish}. The market has been rising.
     \item $\bar S^{\mathrm{short}}_t=\bar S^{\mathrm{long}}_t$: $\xi_t=0$,
-      \hilite{neutral}, no tilt. A flat market or an EMA crossing.
+      \hilite{neutral}, no tilt.
     \item $\bar S^{\mathrm{short}}_t<\bar S^{\mathrm{long}}_t$: $\xi_t>0$,
       \hilite{bearish}. The market has been falling.
   \end{itemize}
-\end{frame}
-
-\begin{frame}{The Recent Market Growth}
-  We choose $G$ so that $|\xi_t|\le1$ on 99\% of training days. The second input is
-  the recent market growth rate:
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item $\tilde g_{M,t}$ is the 252-day EMA of the daily market growth rates
-      $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$ (inverse years).
-    \item Both inputs on day $t$ use prices through day $t-1$, so no decision uses
-      a price it could not have known.
-  \end{itemize}
+  We choose the gain $G>0$ so that $|\xi_t|\le1$ on 99\% of training days, and
+  $\tilde g_{M,t}$ is the 252-day EMA of $g_{M,t}=\ln(S_t/S_{t-1})/\Delta t$, with $\Delta t=1/252$ year. Both
+  inputs use prices through day $t-1$.
   \slidenote{Example 1:}{\href{\repo/CHEME-5660-L8b-Example-Utility-Allocator-Fall-2026.ipynb}{Build a Maximum-Utility Portfolio Allocator}}
 \end{frame}
 
 % ==== mean-variance utility on the CAL ======================
-\begin{frame}{Mean-Variance Utility on the CAL}
-  A \hilite{complete portfolio} $c$ holds $w_f$ in the risk-free asset and $1-w_f$
-  in the tangent portfolio $\Tan$:
+\begin{frame}{The Complete Portfolio}
+  As in L7a, a \hilite{complete portfolio} $c$ puts a fraction $w_f$ of wealth in the risk-free
+  asset and $1-w_f$ in the tangent portfolio $\Tan$. Its expected growth rate and
+  variance are:
   \[
     \begin{aligned}
       \E[g_c]&=g_f+(1-w_f)\bigl(\E[g_{\Tan}]-g_f\bigr) &&\quad\text{expectation is linear}\\
       \sigma^2_{g,c}&=(1-w_f)^2\,\sigma^2_{g,\Tan} &&\quad\text{the risk-free asset adds no variance}
     \end{aligned}
   \]
-  Lending ($0<w_f<1$) and borrowing ($w_f<0$) move $c$ along the capital
-  allocation line, whose slope is the Sharpe ratio of $\Tan$.
+  where growth rates are in inverse years and $g_f$ is the risk-free growth rate.
+  A negative $w_f$ means borrowing at $g_f$ to buy more of $\Tan$.
 
-  \vspace{0.45em}
-  By \hilite{two-fund separation}, investors with the same inputs who can lend and
-  borrow freely at $g_f$ hold the same $\Tan$, so preferences set only $w_f$.
-
-  \vspace{0.45em}
-  Which $w_f$ should a given investor choose?
+  \vspace{0.8em}
+  \textbf{\ink{Which $w_f$ should a given investor choose?}} The answer depends on how
+  risk averse the investor is.
 \end{frame}
 
-\begin{frame}{Certainty Equivalent and Risk Premium}
-  \setlength{\jot}{1pt}
-  \setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}
-  Recall from L7b: we rank uncertain choices by \hilite{expected utility}
-  $\E[U(W)]$, and a concave $U$ means risk aversion:
+\begin{frame}{Measuring Risk Aversion}
+  \setlength{\jot}{0pt}
+  \setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{1pt}
+  The \hilite{certainty equivalent} (CE) is the sure wealth whose utility equals the
+  expected utility of an uncertain wealth $W$. The \hilite{risk premium} is the gap:
   \[
-    \boxed{\begin{aligned}
-      \underbrace{U(\CE)}_{\text{utility of the sure wealth}}&=\underbrace{\E[U(W)]}_{\text{expected utility of the risky outcome}}&\qquad\qquad\RP&=\underbrace{\E(W)}_{\text{expected wealth}}-\underbrace{\CE}_{\text{sure wealth}}\\
-      \CE&=U^{-1}\bigl(\E[U(W)]\bigr)
-    \end{aligned}}
+    \boxed{\underbrace{U(\CE)}_{\text{utility of the sure wealth}}\quad=\quad\underbrace{\E[U(W)]}_{\text{expected utility}}
+    \qquad\qquad
+    \RP=\underbrace{\E[W]}_{\text{expected wealth}}-\underbrace{\CE}_{\text{sure wealth}}}
   \]
-  For example, let $U(W)=\ln W$, and flip a fair coin for a wealth of 50 or 150 USD:
+  The more concave $U$, the further CE falls below $\E[W]$. Arrow and
+  \href{https://doi.org/10.2307/1913738}{Pratt (1964)} measure this curvature with the
+  \hilite{relative risk aversion} $\bar r$. Over one trading day, today's wealth
+  $W_0$ grows to $W=W_0e^{g_c\Delta t}$:
+  {\small
   \[
     \begin{aligned}
-      \E(W)&=\tfrac12(50)+\tfrac12(150)=100 &&\quad\text{average wealth, USD}\\
-      U(\E(W))&=\ln100\approx4.6052 &&\quad\text{utility of the sure average, utils}\\
-      \E[U(W)]&=\tfrac12\ln50+\tfrac12\ln150\approx4.4613 &&\quad\text{expected utility of the gamble, utils}\\
-      \CE&=U^{-1}\bigl(\E[U(W)]\bigr)=e^{4.4613}\approx86.60 &&\quad U^{-1}(x)=e^{x}\text{ undoes }{\ln}\text{, USD}\\
-      \RP&=100-86.60=13.40 &&\quad\text{risk premium, USD}
+      \bar r&=-W_0\frac{U''(W_0)}{U'(W_0)} &&\quad\text{relative risk aversion}\\
+      \RP&\approx-\frac12\,\frac{U''(W_0)}{U'(W_0)}\,\Var(W) &&\quad\text{Pratt (1964), small risk}\\
+      \Var(W)&\approx W_0^2\,(\Delta t)^2\sigma^2_{g,c} &&\quad W\approx W_0(1+g_c\Delta t)\text{ for one day}\\
+      \frac{\RP}{W_0}&\approx\frac{\bar r}{2}\,(\Delta t)^2\sigma^2_{g,c} &&\quad\text{substitute, divide by }W_0
     \end{aligned}
   \]
-  The 50 USD gained adds less utility than the 50 USD lost takes away, so the
-  investor takes 86.60 USD for certain over a flip worth 100 USD on average.
+  }
 \end{frame}
 
-\begin{frame}{Arrow–Pratt Measures}
-  How risk averse is a decision-maker? Arrow and
-  \href{https://doi.org/10.2307/1913738}{Pratt (1964)} measure the curvature of
-  a utility of wealth with $U'(w)>0$:
+\begin{frame}{The Certainty-Equivalent Growth Rate}
+  \setlength{\jot}{2pt}
+  The \hilite{certainty-equivalent growth rate} $g_{\CE}$ is the sure rate that
+  replaces the risky $g_c$:
   \[
-    \boxed{\underbrace{r(w)=-\frac{U''(w)}{U'(w)}}_{\text{absolute}}\qquad
-    \underbrace{\bar r(w)=w\,r(w)}_{\text{relative}}}
+    \begin{aligned}
+      \CE&=W_0\,e^{g_{\CE}\Delta t} &&\text{definition of }g_{\CE}\\
+      \frac{\E[W]}{W_0}&\approx1+\E[g_c]\,\Delta t+\tfrac12(\Delta t)^2\sigma^2_{g,c} &&\text{expand }e^{x}\text{, take expectations, }\E[g_c]^2\ll\sigma^2_{g,c}\\
+      \frac{\CE}{W_0}&=\frac{\E[W]}{W_0}-\frac{\RP}{W_0} &&\RP=\E[W]-\CE\\
+      &\approx1+\E[g_c]\,\Delta t-\frac{\bar r-1}{2}\,(\Delta t)^2\sigma^2_{g,c} &&\text{substitute, collect}\\
+      g_{\CE}&\approx\E[g_c]-\frac{\bar r-1}{2}\,\Delta t\,\sigma^2_{g,c} &&\ln(1+x)\approx x\text{, divide by }\Delta t
+    \end{aligned}
   \]
-  \begin{columns}[c]
-    \begin{column}{0.42\textwidth}
-      {\small
-      \begin{tabular}{@{}llll@{}}
-        \toprule
-        & $U(w)$ & $r(w)$ & $\bar r(w)$\\
-        \midrule
-        Log & $\ln w$ & $1/w$ & $1$\\
-        Linear & $a\,w+b$ & $0$ & $0$\\
-        Power & $w^{\tau}/\tau$ & $(1-\tau)/w$ & $1-\tau$\\
-        \bottomrule
-      \end{tabular}}
-    \end{column}
-    \begin{column}{0.55\textwidth}
-      $r>0$: averse. $r=0$: neutral. $r<0$: seeking.
-
-      \vspace{0.5em}
-      For a small risk, larger $r$ means a lower CE:
-      \[
-        \RP\approx\tfrac12\,r(\E(W))\,\Var(W)
-      \]
-    \end{column}
-  \end{columns}
-
-  \vspace{0.6em}
-  \hilite{For a portfolio}: with small returns,
-  CE return $\approx$ expected return $-\,\tfrac{\bar r}{2}\,{\times}$ return variance.
-  Mean-variance utility has this form, with $A$ in the role of $\bar r$.
+  The variance term lowers $g_{\CE}$ only when $\bar r>1$, which we assume from here on.
+  \slidenote{Every step:}{\href{\repo/CHEME-5660-L8b-Lecture-Utility-Allocation-Bets-Fall-2026.ipynb}{lecture notebook}, Measuring risk aversion.}
 \end{frame}
 
 \begin{frame}{Mean-Variance Utility}
-  We choose $w_f$ by maximizing the investor's utility. Mean-variance utility
-  rises with expected growth and falls with variance:
+  The investor wants the largest sure growth rate. With $A\equiv\bar r-1$, $g_{\CE}$
+  is the \hilite{mean-variance utility}, which we maximize over $w_f$:
   \[
-    \boxed{U(w_f)=\E[g_c]-\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}}
+    \boxed{\underset{w_f}{\operatorname{maximize}}\quad U(w_f)=\E[g_c]-\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}\approx g_{\CE}}
   \]
   The risk-aversion coefficient $A>0$ (dimensionless) sets how much the investor
-  dislikes variance. As in L5a, $\Delta t\,\sigma^2_{g,c}$ is the squared
-  volatility, in year$^{-1}$. On the line, both terms depend only on $w_f$:
+  dislikes variance. We assume $\E[g_{\Tan}]>g_f$. On the line, both terms depend
+  only on $w_f$:
   \[
     \begin{aligned}
       U(w_f)&=g_f+(1-w_f)\bigl(\E[g_{\Tan}]-g_f\bigr)-\tfrac{A}{2}(1-w_f)^2\,\Delta t\,\sigma^2_{g,\Tan}
@@ -402,104 +325,70 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
 \end{frame}
 
 \begin{frame}{The Optimal Complete Portfolio}
+  \setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{4pt}
   Solving the first-order condition for the fraction in $\Tan$ gives:
   \[
     \boxed{1-w_f^\star=\frac{\E[g_{\Tan}]-g_f}{A\,\Delta t\,\sigma^2_{g,\Tan}}}
   \]
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{A maximum}: the second derivative, $-A\,\Delta t\,\sigma^2_{g,\Tan}$,
-      is negative.
-    \item \hilite{What moves it}: more excess growth raises the fraction in $\Tan$.
-      A larger $A$ or $\sigma^2_{g,\Tan}$ lowers it, and doubling $A$ halves it.
-    \item \hilite{Who lends and who borrows?} The investor with
-      $A_{\Tan}=(\E[g_{\Tan}]-g_f)/(\Delta t\,\sigma^2_{g,\Tan})$ holds only $\Tan$.
-      $A>A_{\Tan}$ lends, and $A<A_{\Tan}$ borrows to buy more of $\Tan$.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Indifference Curves and Risk Aversion}
-  An \hilite{indifference curve} joins the portfolios with the same utility. Fixing
-  $U$ gives:
-  \[
-    \E[g_c]=U+\frac{A}{2}\,\Delta t\,\sigma^2_{g,c}
-  \]
-  Against $\sigma_{g,c}$, each curve is a parabola that opens upward, and higher
-  curves are better. The optimum is where the highest reachable curve touches the line.
+  The second derivative, $-A\,\Delta t\,\sigma^2_{g,\Tan}$, is negative, so this is a
+  maximum. The fraction in $\Tan$ rises with the excess growth and falls as $A$ or
+  $\sigma^2_{g,\Tan}$ grows.
 
   \vspace{0.6em}
-  The result also runs backward. A client who picks $w_f<1$ implies:
-  \[
-    \boxed{A=\frac{\E[g_{\Tan}]-g_f}{(1-w_f)\,\Delta t\,\sigma^2_{g,\Tan}}}
-  \]
-\end{frame}
+  An \hilite{indifference curve}, $\E[g_c]=U+\tfrac{A}{2}\,\Delta t\,\sigma^2_{g,c}$, joins the
+  portfolios with the same utility $U$. The optimum is where the highest reachable
+  curve touches the line.
 
-\begin{frame}{Measuring $A$ with Income Gambles}
-  Can we measure $A$ without asking for $w_f$?
-  \href{https://doi.org/10.1162/003355397555280}{Barsky et al. (1997)} offered two
-  jobs: a sure income, or equal chances of doubling it or cutting it by $\delta$. At
-  the cut $\delta^\star$ where a person cannot choose, in units of the sure income:
-  \[
-    \boxed{\tfrac12\,U(2)+\tfrac12\,U(1-\delta^\star)=U(1)}
-  \]
-  \[
-    \begin{aligned}
-      \tfrac12\ln2+\tfrac12\ln\tfrac12&=0=U(1) &&\quad U(w)=\ln w\ (\bar r=1),\ \delta^\star=\tfrac12\\
-      \tfrac12\bigl(-\tfrac12\bigr)+\tfrac12\bigl(-\tfrac32\bigr)&=-1=U(1) &&\quad U(w)=-1/w\ (\bar r=2),\ \delta^\star=\tfrac13
-    \end{aligned}
-  \]
-  More risk-averse people accept only smaller cuts, so a few questions bracket
-  $\bar r$, and with it $A$.
+  \vspace{0.6em}
+  Solving the box for $A$ gives the risk aversion behind a client's chosen $w_f<1$.
   \slidenote{Interview and Example 2:}{\href{\repo/interview/interview.md}{Income-Gamble Interview}
     \quad\href{\repo/CHEME-5660-L8b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb}{Choose the Optimal Point on the Capital Allocation Line}}
 \end{frame}
+
 
 % ==== derivatives: a bet on the future =======================
 \begin{frame}{Derivatives: A Bet on the Future}
   Suppose we pay $p$ today for a contract that pays 1 USD in $T$ years if
   $S_T\ge K$ (the L5a trade rule), and nothing otherwise.
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{../figs/Fig-L8b-Bet-CashFlows.pdf}
+    \includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{../figs/Fig-L8b-Bet-CashFlows.pdf}
   \end{center}
+  Discounting the payoff at the benchmark growth rate $g_y$ gives a random NPV:
+  \[
+    \NPV_0=-p+\Dinv\,V(S_T)=\begin{cases}-p+e^{-g_yT}&\text{if }S_T\ge K\text{ (true)}\\-p&\text{if }S_T<K\text{ (false)}\end{cases}
+  \]
 \end{frame}
 
-\begin{frame}{A Bet as an Abstract Asset}
-  In L1b's language, the contract is an abstract asset with two cash flows:
+\begin{frame}{Expected NPV of the Bet}
+  Under our beliefs about $S_T$, the expected NPV is:
+  {\small
   \[
-    V(S_T)=\begin{cases}1&\text{if }S_T\ge K\\0&\text{if }S_T<K\end{cases}
-    \qquad\qquad
-    \NPV_0=-p+\Dinv\,V(S_T),\quad \Dinv=e^{-g_yT}
+    \begin{aligned}
+      \E[\NPV_0]&=\left(-p+e^{-g_yT}\right)\underbrace{\mathbb{P}(S_T\ge K)}_{\text{true}}+(-p)\,\underbrace{\mathbb{P}(S_T<K)}_{\text{false}} &&\text{weight by probability}\\
+      &=-p\,\underbrace{\left[\mathbb{P}(S_T\ge K)+\mathbb{P}(S_T<K)\right]}_{=1}+e^{-g_yT}\,\mathbb{P}(S_T\ge K) &&\text{collect the }p\text{ terms}\\
+      &=-p+e^{-g_yT}\,\underbrace{\mathbb{P}(S_T\ge K)}_{\text{true}} &&\text{probabilities sum to one}
+    \end{aligned}
   \]
-  Unlike a Treasury bill (L2a), this NPV is random: $-p+e^{-g_yT}$ if true, $-p$ if
-  false. A one-or-zero payoff has an expected value equal to the probability that it
-  is one, so under our beliefs:
-  \[
-    \boxed{\E[\NPV_0]=-p+e^{-g_yT}\,\mathbb{P}(S_T\ge K)}
-  \]
-  For GBM, $\mathbb{P}(S_T\ge K)=1-\Phi(z_\star)$ from L5a. The expected NPV is
-  positive when $p<e^{-g_yT}\,\mathbb{P}(S_T\ge K)$.
-\end{frame}
-
-\begin{frame}{What Would a Risk-Averse Buyer Pay?}
-  On its own, the payoff is a gamble, like the coin flip earlier. A risk-averse
-  buyer values it at its \hilite{certainty equivalent}, below its expected value, so
-  pays less than the discounted expected payoff. How much less depends on the
-  buyer's risk aversion and the number of contracts.
+  }%
+  The bet has a non-negative expected NPV when $p\le e^{-g_yT}\,\mathbb{P}(S_T\ge K)$.
 
   \vspace{0.8em}
-  Contracts whose payoffs depend on another asset's future price are
-  \hilite{derivatives}.
-
-  \vspace{0.3em}
-  Each has one market price, yet buyers differ in beliefs and risk aversion.
+  The bet is a \hilite{derivative contract}: its payoff depends on the future price
+  of another asset. Every buyer pays one market price, yet buyers with different
+  beliefs value the same contract differently.
 
   \vspace{0.8em}
-  \textbf{\ink{What sets the price?}}
+  \textbf{\ink{How is the market price set?}}
 \end{frame}
 
 % ==== optional advanced material =============================
 \begin{frame}{Optional Advanced Material}
-The \href{\repo/advanced/README.md}{advanced index} describes the optional notebook:
+The \href{\repo/advanced/README.md}{advanced index} describes the optional derivation notebooks:
 \begin{itemize}\setlength{\itemsep}{1em}
+\item \href{\repo/advanced/cobb-douglas-derivation/CHEME-5660-L8b-Derivation-CobbDouglas-Fall-2026.ipynb}{Cobb--Douglas allocation with share floors}:
+derive the allocation when a preferred holding reaches its floor, show why fixing
+it there and solving again gives the optimum, and work an example with two floor
+adjustments.
 \item \href{\repo/advanced/adaptive_utility/CHEME-5660-L8b-Advanced-CES-Limits-Fall-2026.ipynb}{CES limits and log-linear utility}:
 derive the closed-form CES optimum and prove its three limits. Show that
 log-linear utility has the Cobb--Douglas optimizer, and why CES weights depend on
@@ -510,17 +399,17 @@ share price levels.
 \begin{frame}{Summary}
 \begin{itemize}\setlength{\itemsep}{0.9em}
 \item \hilite{The single index model and Cobb--Douglas utility turn preferences into
-holdings}: signs pick the basket, and Cobb--Douglas splits the preferred budget by
-the positive weights. The CES elasticity moves the split toward concentration or
-equal share counts.
-\item \hilite{Risk aversion picks the point on the capital allocation line}: measured
-with the certainty equivalent and Arrow--Pratt, it sets the risky fraction in closed
-form. A client's chosen fraction implies the coefficient that income gambles bracket.
+holdings}: the signs of the preference weights pick the basket, and Cobb--Douglas
+splits the net budget in proportion to the positive weights. The CES elasticity moves
+the split toward concentration or equal share counts.
+\item \hilite{Risk aversion picks the point on the capital allocation line}: the
+certainty-equivalent growth rate is a mean-variance utility with $A=\bar r-1$, and
+the risky fraction follows in closed form. A client's chosen fraction implies $A$.
 \item \hilite{A bet on the future is an abstract asset with a random cash flow}: its
-expected NPV depends on our beliefs, and a risk-averse buyer of the bet alone pays less.
+expected NPV depends on our beliefs, so buyers with different beliefs value it differently.
 \end{itemize}
 \end{frame}
 
-\transitionframe{Preference weights pick the assets, risk aversion picks the point on the capital allocation line, and a bet on the future is an abstract asset.}
+\transitionframe{Utility makes investment decisions personal, but a derivative contract trades at one market price that every buyer pays.}
 
 \end{document}

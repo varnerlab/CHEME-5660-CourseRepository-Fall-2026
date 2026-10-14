@@ -91,6 +91,11 @@ cp "$REPO/README.md" "$REPO/LICENSE" "$BUILD/"
 cp "$REPO/scripts/setup.jl" "$BUILD/scripts/"
 mkdir -p "$BUILD/code"
 cp "$REPO/code/Project.toml" "$REPO/code/LICENSE" "$REPO/code/README.md" "$BUILD/code/"
+# The package locates lazily downloaded data (the options archive) through
+# code/Artifacts.toml, so the package cannot precompile without it.
+if [ -f "$REPO/code/Artifacts.toml" ]; then
+  cp "$REPO/code/Artifacts.toml" "$BUILD/code/"
+fi
 rsync -a \
   --exclude '.DS_Store' \
   --exclude '.ipynb_checkpoints' \
