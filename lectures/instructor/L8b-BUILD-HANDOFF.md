@@ -454,3 +454,23 @@ log-normal wealth with constant relative risk aversion ($g_{\mathrm{CE}}=0.0600$
 both ways); the whole lecture renders with no KaTeX errors; the notebook passes
 nbformat validation. The section has 722 prose words, no clause semicolons, and
 no em dashes. The slide deck was not edited.
+
+## Tangent one-solve explanation — October 14, 2026
+
+After moving the continuation search before the shortcut, the instructor found
+that the shortcut still did not explain how rescaling recovered the tangent
+portfolio. He approved a rewrite around the existing two-asset example.
+
+The section is now “Recover the tangent portfolio from one solve.” It walks
+through wealth weights `(0.10, 0.20)`, the original risky fraction `0.30`,
+normalized fund weights `(1/3, 2/3)`, and the fully invested excess target
+`0.02/0.30 = 1/15`. It explains why the minimum-variance solve already selects
+the maximum-Sharpe mix and keeps the original risky fraction distinct from
+holding the normalized fund alone. The numbered instruction list is replaced
+by connected exposition; the numerical and 100% holding checks remain.
+
+Only this markdown cell changed. The instructor's section order, other cells,
+and metadata are preserved. The notebook passes schema and local-link checks,
+and renders without KaTeX errors. Exact-fraction calculations verify the weights,
+normalization, growth targets, and optimality condition. The before-and-after
+PNG was visually checked. This is a targeted follow-up, with no new review score.

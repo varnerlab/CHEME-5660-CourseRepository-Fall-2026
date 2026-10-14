@@ -77,6 +77,11 @@ lecture when it helps students locate a specific derivation, example, or input,
 such as the L6b client interview or the L5a terminal target probability.
 Do not mechanically replace every callback with "Previously".
 
+In prose references to numbered problems, use a complete noun phrase such as
+"the SIM-2 problem" as the link label. Use the appropriate noun for the cited
+object, e.g., "the SIM-3 result" for the scaling relation. Read the surrounding
+sentence for natural English; avoid bare tags such as "we solve SIM-2".
+
 ## Derivations as connected exposition — October 14, 2026
 
 The instructor strongly rejected the numbered run-in labels added to L8b's
