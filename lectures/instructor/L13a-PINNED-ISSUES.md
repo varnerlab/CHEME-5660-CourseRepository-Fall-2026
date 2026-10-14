@@ -51,3 +51,7 @@ so restore only cell 5 there, not the whole file.
    of cell `id` fields at `nbformat_minor` 4. This predates October 3.
 10. **Stale reference (from the October 2 trim).** `docs/Notes.tex` links the old L7b
     filename and says that L7b introduces the rebalancing engine.
+11. **Example-link descriptions (October 14).** The instructor's rule: every
+   `[▶ ...]` link to an example opens its description with "In this example,".
+   The L13a lecture has five links in the old form. Convert them when work on
+   L13a resumes. The style guide records the rule.

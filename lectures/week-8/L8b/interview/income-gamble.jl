@@ -25,7 +25,7 @@
 #   --dry-run           print the result without writing the file
 #
 # Writes, in ../data:
-#   my-risk-aversion.toml   the answers, the category, and the bounds on A (read by the CAL example)
+#   my-risk-aversion.toml   the answers, the category, and the bounds on r̄ (read by the CAL example)
 
 using Printf # aligned text output
 using TOML   # write my-risk-aversion.toml
@@ -190,8 +190,13 @@ r̄_high = indifference_risk_aversion(result.accepted); # accepting a cut means 
     result.category, HRS_2002_SHARE[result.category]);
 @printf("Range of cuts: accepts %s, refuses %s\n",
     result.accepted == 0 ? "none" : percent(result.accepted), result.refused == 1 ? "none" : percent(result.refused));
-@printf("Relative risk aversion: %.2f < r̄ < %s, so A lies in the same range\n",
+@printf("Relative risk aversion: %.2f < r̄ < %s\n",
     r̄_low, isinf(r̄_high) ? "∞" : @sprintf("%.2f", r̄_high));
+@printf("Growth-variance coefficient: %.2f < A = r̄ - 1 < %s\n",
+    r̄_low - 1, isinf(r̄_high) ? "∞" : @sprintf("%.2f", r̄_high - 1));
+if r̄_low <= 1
+    println("The lecture's positive-penalty allocation formula applies only to A > 0 (r̄ > 1).");
+end
 
 # Write the file the CAL example reads -
 if !dry_run
@@ -201,7 +206,7 @@ if !dry_run
         "largest_accepted_cut" => Float64(result.accepted),
         "smallest_refused_cut" => Float64(result.refused),
         "category" => result.category,
-        "risk_aversion_low" => r̄_low,
+        "risk_aversion_low" => r̄_low, # Arrow–Pratt relative risk aversion; the CAL example subtracts one
         "risk_aversion_high" => r̄_high,
         "source" => "Barsky, Juster, Kimball, and Shapiro (1997); categories of Kimball, Sahm, and Shapiro (2008)",
         "created" => string(today())));

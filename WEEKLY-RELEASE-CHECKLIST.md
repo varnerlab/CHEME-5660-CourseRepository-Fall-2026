@@ -82,6 +82,14 @@ Review `lectures/week-${WEEK_NUMBER}/` before building:
 - Use `___` immediately before each new level-two heading and at the end of the
   final Disclaimer and Risks section. Do not place it between level-three
   subsections.
+- In every lecture, each `[▶ ...]` link to an example notebook or interview
+  must be followed by a description that opens with "In this example,". This
+  applies to the opening Examples list and to in-lecture stops. Each link to an
+  `advanced/` notebook opens its description with "In this notebook,". Link
+  descriptions contain no math, not even inline symbols. The
+  instructor set these rules on October 14, 2026, and the shared style guide
+  records them. Lectures released before then (L1b–L7b) are converted at their
+  next release.
 
 Treat notebook errors, missing resources, repeated dependency-version messages,
 or author-machine paths as release blockers.

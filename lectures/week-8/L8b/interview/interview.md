@@ -1,6 +1,6 @@
 # L8b Income-Gamble Interview: How Much Income Risk Would You Take?
 
-A client chooses between two job offers, one with a sure salary and one whose salary may double or be cut. Three to five answers bracket the client's relative risk aversion $\bar{r}$, which plays the role of $A$ in the lecture's mean-variance utility. [The capital allocation line example](../CHEME-5660-L8b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb) reads the result and compares it with the risk aversion behind the client's L6b answer.
+A client chooses between two job offers, one with a sure salary and one whose salary may double or be cut. Three to five answers bracket the client's relative risk aversion $\bar{r}$. The lecture's growth-based mean-variance coefficient is $A=\bar{r}-1$. [The capital allocation line example](../CHEME-5660-L8b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb) converts the interview range and compares it with the coefficient behind the client's L6b answer.
 
 The questions are the income gambles of [Barsky, Juster, Kimball, and Shapiro (1997)](https://doi.org/10.1162/003355397555280), asked in the Health and Retirement Study (HRS) since 1992. From 1998, the HRS offered two new jobs, so that no respondent was choosing whether to leave a current job. We use that version and the six response categories of [Kimball, Sahm, and Shapiro (2008)](https://doi.org/10.1198/016214508000000139). Our wording replaces the HRS household and its doctor-ordered move with a graduating student's two offers. Steps 1 to 3 are the published questions. Step 4 is our extension: two more questions in the same form narrow the range inside the client's category.
 
@@ -92,7 +92,7 @@ From the repository root, with the answers in the order asked:
 julia lectures/week-8/L8b/interview/income-gamble.jl --answers=first,first,second,second,first
 ```
 
-The script replays the questions, prints the published category with its HRS share, and solves the indifference equation for the bounds on $\bar{r}$. It writes `data/my-risk-aversion.toml` in the L8b folder. Show its full output to the client. It uses only Julia's standard library and takes about a second. With fewer answers than the interview needs, it prints the next question and writes nothing. Add `--dry-run` to print the result without writing the file.
+The script replays the questions, prints the published category with its HRS share, and solves the indifference equation for the bounds on $\bar{r}$. It also prints the converted bounds on $A=\bar{r}-1$. It writes the relative-risk-aversion bounds to `data/my-risk-aversion.toml` in the L8b folder; the CAL example subtracts one when reading them. Show its full output to the client. It uses only Julia's standard library and takes about a second. With fewer answers than the interview needs, it prints the next question and writes nothing. Add `--dry-run` to print the result without writing the file.
 
 
 ## Step 6: Run the example in class
@@ -101,7 +101,7 @@ Open [the capital allocation line example](../CHEME-5660-L8b-Example-CAL-Optimal
 
 __What to look for:__
 
-* __Two measures of one client:__ Task 3 adds the two ends of the client's range of $A$ to the table of interview answers, with the risk-free fraction each end would choose. It also says whether the $A$ behind the client's L6b answer lies inside the range.
+* __Two measures of one client:__ Task 3 converts the interview bounds using $A=\bar{r}-1$ and adds them to the table of interview answers, with the risk-free fraction each positive endpoint would choose. An endpoint with $A\leq0$ has no finite optimum under the model's unrestricted borrowing, so its allocation is shown as missing. The table also says whether the $A$ behind the client's L6b answer lies inside the range.
 * __The client and the market:__ The range of $A$ belongs to the client, while the fraction it implies also depends on the firms. A different ticker list changes $\mathbb{E}[g_{\mathcal{T}}]$ and $\sigma_{g,\mathcal{T}}$, so the same range gives different fractions.
 
 __After class:__ close the example without saving, or restore it with `git checkout -- lectures/week-8/L8b/CHEME-5660-L8b-Example-CAL-Optimal-Allocation-Fall-2026.ipynb`, so its stored outputs keep the defaults. Git ignores `data/my-risk-aversion.toml`, so delete it to return to the defaults:

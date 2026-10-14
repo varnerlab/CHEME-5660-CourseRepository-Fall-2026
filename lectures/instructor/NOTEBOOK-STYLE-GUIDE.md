@@ -67,6 +67,76 @@ This applies to lecture and example notebooks. An earlier Week 5 release note
 describes cross-week links rewritten to the tagged GitHub repository; follow
 this rule rather than relying on that rewrite.
 
+## Lecture callbacks — October 14, 2026
+
+While manually polishing L8b, the instructor approved removing generic callbacks
+such as "Recall from L7b..." when the passage already states the needed concept.
+State the concept directly and preserve the explanation. Use "Previously" when
+the change from an earlier approach to the current one matters. Name an earlier
+lecture when it helps students locate a specific derivation, example, or input,
+such as the L6b client interview or the L5a terminal target probability.
+Do not mechanically replace every callback with "Previously".
+
+## Derivations as connected exposition — October 14, 2026
+
+The instructor strongly rejected the numbered run-in labels added to L8b's
+Cobb–Douglas derivation: "I hate Steps 1, 2". In lecture and derivation prose,
+connect the equations through ordinary explanatory sentences. Do not divide a
+derivation into numbered steps or tasks, or substitute a sequence of bold
+instruction labels. Use descriptive topic headings when a developed subsection
+needs one. Preserve the mathematical reasoning and intermediate calculations.
+Algorithms and computational examples follow their own established formats.
+
+For lecture notebooks projected in a classroom, the instructor chose the CES
+presentation as the pattern: show the problem, show the solution with its
+assumptions, explain how to read it, and link to a companion for the detailed
+derivation. Keep the projected prose tight and crisp. The companion carries
+the intermediate algebra, proofs, and detailed treatment of constraints. He
+applied this choice to the L8b Cobb–Douglas section after seeing its expanded
+derivation.
+
+For the L8b capital allocation line section, he kept the utility substitution,
+derivative, first-order condition, boxed optimum, and maximum check in the
+lecture. He also kept the indifference-curve equation with its brief geometric
+interpretation. The approved trim removes the repeated certainty-equivalent
+coin flip, utility comparison table, and income-gamble calculations. Use growth
+rates throughout this development.
+
+Later on October 14 he found that the trimmed section's narrative was "not my
+voice", while its mathematics was correct. The approved pass kept the trim's
+displays and rebuilt the prose from his earlier sentences in his order: the
+complete portfolio and "which $w_f$ should a given investor choose?", then
+measuring risk aversion, then the optimum. Four further rulings apply to lecture
+sections like this one:
+
+- **Length still matters.** "We really need to watch the length." The section
+  went from about 920 prose words before the trim, and 384 after it, to 588.
+- **Define every symbol at or before its first use.** "Students are already
+  complaining about the nomenclature, I need you to be careful with symbols."
+  Use one symbol per quantity ($\sigma_{g,c}$, never also $\sigma_g$), and spell
+  out what a word such as "concave" means for the symbols ($U''<0$, so
+  $\bar r>0$).
+- **Connect each new object to the previous result.** "$U(w_f)$ just seems to be
+  pulled out of a hat." Introduce it as the certainty-equivalent growth rate of
+  the complete portfolio, with $A=\bar r-1$.
+- **Cut theory the class did not cover, and explanations of steps the lecture
+  does not derive.** Two-fund separation was cut as "extra pseudo-math", and a
+  sentence explaining the $-1$ in $\bar r-1$ "makes no sense" to him.
+- **Every display line must follow visibly from earlier lines or a named
+  result.** He asked of each compressed display: "where is the RP expression
+  coming from?", "where is this expression $\mathbb E(W)/W_0$ coming from??",
+  "how do we get CE/W₀?". The fix was explicit steps in the one-step-per-line
+  layout with a reason column: cite Pratt's small-risk result, expand $e^x$,
+  take expectations, substitute, collect. A derivation that shows its steps
+  replaced the prose explanation of the $-1$. Prose length stays tight. The
+  section grew to 722 words only through these display lines.
+- **Use ≈ only for real approximations, consistently down a chain.** Use "=" for
+  exact steps and the course's definitions. The course defines the portfolio
+  growth rate as the weighted sum (L7a), so the capital allocation line
+  relations take "=". Once a line in a chain rests on an approximation, the
+  lines that follow it take ≈. He asked "why did we switch from ≈ to = near the
+  bottom?" and "why so many ≈?".
+
 ## Prose density and the instructor's voice — September 24, 2026
 
 This applies to authoring and polishing notebooks across the courses covered by
@@ -964,6 +1034,36 @@ of external interviews rather than implying they are company channels.
 Review these substantive teaching elements alongside technical correctness and
 rendering; passing mathematical and formatting checks does not establish that
 a company profile is complete.
+
+## Example link descriptions start with "In this example" — October 14, 2026
+
+This supersedes the question-first opening below for every link to an example,
+both in a lecture's opening Examples list and at an in-lecture example stop.
+The instructor had to fix these by hand repeatedly: "whenever we are linking to
+a example, it should start with > [Link] In this example, we will do this and
+we will do that ... You consistently fuck this up." His model, from the L8b
+lecture:
+
+> [▶ Measure risk aversion with an income-gamble interview](interview/interview.md). In this example, a client answers questions about two job offers, and a script brackets the client's relative risk aversion. From that we can infer the risk-aversion coefficient $A$ and the optimal fraction $w_{f}^{\star}$ on the capital allocation line.
+
+The description opens with "In this example," right after the link. It then
+says what we compute and what we learn from it, in two or three sentences, and
+it has no question opener. Describe the example the same way in the Examples
+list and at the stop. Before finishing any lecture edit, scan every `[▶` link
+to an example notebook for this opening.
+
+The same day he extended the rule to Optional Advanced Material: "We should do
+something similar for all optional advanced notebooks." Those entries open with
+"In this notebook," because many are derivation companions, not examples. When
+converting an old entry, fold its question into the first sentence so the
+motivation survives. For example, "In this notebook, we derive where the
+Black–Scholes–Merton premiums come from. We replicate…". The question-first
+format below now applies only outside lecture link lists.
+
+Link descriptions are text only: "no equations, just text". This includes
+inline symbols, as in the learning objectives and takeaways. Write "the
+risk-aversion coefficient", not "$A$", and "the up and down factors of the CRR
+model", not their formulas.
 
 ## Optional example descriptions — all courses
 

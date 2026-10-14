@@ -1,7 +1,13 @@
 # L8b optional advanced material
 
-This standalone notebook extends the L8b treatment of utility-based
-allocation. It is optional.
+These standalone derivation notebooks extend the L8b treatment of utility-based
+allocation. They are optional.
+
+- [Cobb–Douglas allocation with share floors](cobb-douglas-derivation/CHEME-5660-L8b-Derivation-CobbDouglas-Fall-2026.ipynb)
+  derives the Cobb–Douglas allocation from the full problem over shares and
+  cash, gives the optimality conditions with share floors, and proves why
+  pinning a violating holding and solving again gives the optimum. A
+  three-asset example needs two floor adjustments before all conditions hold.
 
 - [`adaptive_utility/CHEME-5660-L8b-Advanced-CES-Limits-Fall-2026.ipynb`](adaptive_utility/CHEME-5660-L8b-Advanced-CES-Limits-Fall-2026.ipynb)
   derives the closed-form CES optimum in share counts from the budget-constrained
@@ -11,5 +17,5 @@ allocation. It is optional.
   Cobb–Douglas optimizer, and records the share-denomination caveat of the CES
   weights.
 
-It is a derivation notebook with no code. The utility allocator example
+Both notebooks develop the mathematics without code. The utility allocator example
 exercises the same allocators on course data.

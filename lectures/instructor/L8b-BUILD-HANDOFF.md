@@ -288,3 +288,169 @@ Closed October 12: the instructor marked the week-8 material reviewed (L8a is
 the Fall Break, with no lecture). He will do a manual pass on October 13,
 then make the week-08 release. The lecture was backed up for the
 voice-calibration comparison before that pass.
+
+## Cobb–Douglas derivation follow-up — October 14, 2026
+
+During his manual polish, the instructor found the Cobb–Douglas derivation
+hard to follow. His final choice follows the CES presentation: state the problem
+and solution in the lecture, and put the detailed derivation in a linked
+companion. The projected lecture prose should be tight and crisp.
+
+- The lecture's Cobb–Douglas subsection states the problem, defines the
+  preferred budget, and gives the allocation under a Solution heading. Short
+  prose states the assumptions, interprets the dollar split, and explains the
+  floor adjustment and empty-basket cases.
+- The new [Cobb–Douglas derivation companion](../week-8/L8b/advanced/cobb-douglas-derivation/CHEME-5660-L8b-Derivation-CobbDouglas-Fall-2026.ipynb)
+  has conceptual sections on the allocation problem, the interior solution,
+  and binding share floors. It derives the reduced problem, the interior allocation,
+  and the floor optimality conditions; proves the finite pin-and-solve rule;
+  and checks a three-asset example requiring two floor adjustments. It also
+  treats an empty preferred basket, zero preference weights, and a budget
+  that only covers the floors.
+- Links appear in the lecture subsection, Optional Advanced Material, and
+  the local advanced index. Every notebook link resolves inside L8b.
+- The 2025 and eCornell passages were consulted before writing. The approved
+  2026 model is preserved: the product runs over every asset, the budget
+  includes cash, and every share count has a positive floor.
+
+Verification: both notebooks pass JSON/schema and section-boundary checks,
+with exactly three objectives and takeaways. The math expressions render
+with VS Code's KaTeX renderer. Static typeset previews were
+visually checked with no overfull boxes. The course allocator passed 359 checks
+covering the worked example, 50 mixed-preference allocations, the empty basket,
+the exact-floor budget, and an infeasible budget.
+
+Compared with the task-start snapshot, only the lecture's Cobb–Douglas and
+Optional Advanced Material cells changed. The instructor's other manual edits
+are preserved. This is a targeted follow-up, with no new review score.
+
+The instructor then strongly rejected the numbered step labels in the lecture.
+They were removed, along with the numbered task framing in the companion.
+The companion reads as connected mathematical exposition. His subsequent
+choice to show the problem and solution in the lecture moved its intermediate
+derivation into the companion. Both presentation preferences are recorded in
+the shared style guide.
+
+## Approved capital allocation line trim — October 14, 2026
+
+The instructor approved the section through before-and-after PNG previews.
+The lecture now connects the wealth risk premium directly to growth rates and
+the certainty-equivalent growth criterion. The variance coefficient is
+`A = r̄ - 1`; the concave allocation case assumes `r̄ > 1`.
+
+- Cut the repeated CE/RP coin flip, absolute/relative risk-aversion utility
+  table, separate lending threshold, inverse-A display, and worked salary-gamble
+  calculations. The interview and CAL example links remain.
+- At his request, retain the full `U(w_f)` substitution, derivative,
+  first-order condition, boxed optimum, and negative-second-derivative check.
+  Retain the indifference-curve equation and its parabola/tangency explanation.
+- Label the course's linear growth-mixture CAL relations as approximations.
+  Correct the Summary's coefficient mapping and remove the bet section's
+  reference to the deleted coin flip.
+- The linked CAL example now subtracts one from the interview's stored relative
+  risk-aversion bounds. Nonpositive endpoints retain their coefficient but
+  show missing allocations, since this model has no finite optimum there under
+  unrestricted borrowing. The interview reports both coefficient conventions;
+  its questions, category boundaries, and TOML field meanings are unchanged.
+  The L8b notation entry is synchronized. The slide deck was not edited.
+
+Verification: the approved section matches its saved proposal exactly. Both
+notebooks pass schema, three-objective/three-takeaway, local-link, and math-rendering
+checks. Twenty Julia checks cover unchanged default output, converted positive
+bounds, zero and negative endpoints, mixed-sign ranges, and an infinite upper
+bound. All six interview categories preserve their relative-risk-aversion bounds;
+an isolated writer check confirms the TOML still stores `r̄`. Existing example
+outputs and unrelated lecture cells are preserved. The 2025 material was consulted;
+the optimal-CAL/income-gamble example was introduced in 2026, so it has no direct
+2025 counterpart. This targeted update does not restart the completed review.
+
+## Capital allocation line voice pass — October 14, 2026 (later)
+
+The instructor judged the trimmed section's narrative "not my voice" and asked
+for a polish, voice, and organization pass that left the mathematics alone. He
+approved v5 of five previews, minus one sentence
+(`build/notebook-previews/L8b-CAL-voice-2026-10-14/`, gitignored).
+
+- **Order:** restored from his pre-trim text. The H2 states the complete
+  portfolio and asks which $w_f$ to choose. `### Measuring risk aversion` covers
+  CE, RP, Arrow–Pratt, and $g_{\mathrm{CE}}$. `### The optimal complete
+  portfolio` covers the optimum, the indifference curves, the inverse use, and
+  the income gambles. The Problem/Solution labels are gone.
+- **Cut at his request:** two-fund separation, and the sentence explaining the
+  $-1$. The lending threshold, the coin flip, and the worked income-gamble
+  calculations stay cut.
+- **Linking:** $U(w_f)$ is introduced as the certainty-equivalent growth rate of
+  the complete portfolio, with $A=\bar r-1$.
+- **Symbols:** every symbol is defined at or before its first use. The
+  risk-premium and $g_{\mathrm{CE}}$ displays now use $g_c$ and
+  $\sigma^2_{g,c}$ in place of $g$ and $\sigma_g^2$, a notation-only change.
+  The other five displays are byte-identical to the trim. A new clause gives
+  $U'>0$ and $U''<0$, so $\bar r>0$. The $U(W)$ and $U(w_f)$ overload was kept
+  by his choice ("both are utility, just the utility of different things").
+- **Notation page:** `content.json` is updated. In the L8b CAL table,
+  $A_{\mathcal T}$ and $\delta^\star$ were removed, and rows were added for
+  $g_c$, $g_{\mathcal T}$, the standard deviations, $U(W)$, CE/RP, $W_0$,
+  $\Delta t$, $\bar r$, and $g_{\mathrm{CE}}$. The L8b concept-review table was
+  renamed "Utility Functions" and lost the rows for removed material ($r(w)$,
+  $w$, $a$, $b$, $\tau$). `notation.html` was rebuilt with Pandoc 3.1.11.1,
+  which reproduced HEAD byte-for-byte first. Only its L8b section changed. The
+  L7b entry is untouched.
+
+Verification: only cells 8–10 of the lecture changed. The section has 588 prose
+words, no clause semicolons, and no em dashes. It renders with no KaTeX errors.
+Display punctuation was checked against the text that follows each display.
+Codex correctness and symbol audits passed, with no required changes. The slide
+deck was not edited.
+
+### Follow-up questions, same session
+
+The instructor then read the applied section line by line. Each question below
+led to the change listed.
+
+- **"We never say what U is??"** $U'$ and $U''$ are now defined as the first and
+  second derivatives of $U$ with respect to wealth. No example utility was added.
+- **"Where is the RP expression coming from?"** The two-line display became a
+  four-line derivation: $\bar r$, Pratt's small-risk result,
+  $\mathrm{Var}(W)\approx W_0^2(\Delta t)^2\sigma^2_{g,c}$ for one day, then
+  substitute and divide by $W_0$.
+- **$g_{\mathrm{CE}}$, "similar treatment".** The block starts from
+  $\mathrm{CE}=W_0e^{g_{\mathrm{CE}}\Delta t}$, at his suggestion. It then expands
+  $e^{g_c\Delta t}$, takes expectations, and drops
+  $(\Delta t)^2\mathbb E[g_c]^2$, which is about 1000 times smaller than the
+  variance term for daily data. It writes
+  $\mathrm{CE}/W_0=\mathbb E[W]/W_0-\mathrm{RP}/W_0$, substitutes, and collects
+  terms. The $-1$ in $\bar r-1$ is now visible: $+\tfrac12$ from $\mathbb E[W]$
+  and $-\tfrac{\bar r}{2}$ from RP.
+- **Approximation signs.** "=" marks exact steps and "≈" marks any line that
+  rests on an approximation, so no line switches from ≈ to = mid-chain. The
+  capital allocation line relations went back to "=", with the L7a reasons
+  "expectation is linear" and "the risk-free asset adds no variance". The course
+  defines $g_p=\mathbf w^\top\mathbf g$ (L7a), so this morning's ≈ labels were
+  removed. The section has 12 ≈ left, each from a real approximation.
+- **The $r̄ > 1$ assumption.** One sentence follows $g_{\mathrm{CE}}$: "The
+  variance term lowers $g_{\mathrm{CE}}$ only when $\bar r>1$, which we assume
+  from here on." A clause about unlimited borrowing for $\bar r\le1$ was cut as
+  "a can of worms".
+- **$g_{\mathrm{CE}}$ to $U(w_f)$.** "I don't get the connection." The optimum
+  subsection now says that each $w_f$ gives its own $g_{\mathrm{CE}}$, and that
+  the investor wants the largest sure growth rate. Its problem display ends
+  with "$\approx g_{\mathrm{CE}}$". $A$ is introduced with $\equiv$.
+- **His own edits, kept:**
+  - the interview stop text
+  - "the more concave the utility function $U$ is"
+  - "Defining $A\equiv\bar r-1$ … (makes the investor happy) … (makes the
+    investor unhappy)"
+  - removing the L6b-interview sentence from the H2, after which "However" was
+    dropped from the question
+- **Link rules (course-wide):** every example link opens with "In this
+  example,", every advanced-notebook link opens with "In this notebook,", and
+  link descriptions contain no math. These are applied to the unreleased
+  lectures (L8b, L9a, L9b, L10a, L11b, L15a, L15b). Released weeks are covered
+  by a new item in step 1 of `WEEKLY-RELEASE-CHECKLIST.md`, and L13a by its
+  pinned issues.
+
+Verification: symbolic checks of every new derivation step; an exact check for
+log-normal wealth with constant relative risk aversion ($g_{\mathrm{CE}}=0.0600$
+both ways); the whole lecture renders with no KaTeX errors; the notebook passes
+nbformat validation. The section has 722 prose words, no clause semicolons, and
+no em dashes. The slide deck was not edited.
