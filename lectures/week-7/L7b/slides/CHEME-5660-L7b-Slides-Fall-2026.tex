@@ -211,9 +211,19 @@ higher Risk Score plays the role of a smaller $A$.
     \item \hilite{What is the gamble worth on average?} $\E(W)$, in USD. A risk-neutral
       decision-maker would trade the gamble for exactly this sure amount.
     \item \hilite{What sure wealth $W_3$ would you take instead?} The one that leaves you
-      indifferent is the \hilite{certainty equivalent}, $U(\CE)=\E[U(W)]$, also in USD.
+      indifferent is the \hilite{certainty equivalent}, also in USD.
   \end{itemize}
-  For a risk-averse decision-maker, the definition and the first row of the table chain together:
+  The CE is the sure wealth with the same utility as the risky outcome:
+  \[
+    \begin{aligned}
+      \underbrace{U(\CE)}_{\text{utility of the sure wealth}}&=\underbrace{\E[U(W)]}_{\text{expected utility of the risky outcome}} &&\quad\text{definition of the CE}\\
+      \CE&=U^{-1}\bigl(\E[U(W)]\bigr) &&\quad U\text{ is increasing, so apply }U^{-1}
+    \end{aligned}
+  \]
+\end{frame}
+
+\begin{frame}{The Risk Premium}
+  For a risk-averse decision-maker, the definition of the CE and concavity of $U$ chain together:
   \[
     \begin{aligned}
       U(\CE)&=\E[U(W)] &&\quad\text{definition of the CE}\\
@@ -223,7 +233,7 @@ higher Risk Score plays the role of a smaller $A$.
   \]
   The gap is the \hilite{risk premium}, the expected wealth given up to remove the risk:
   \[
-    \boxed{\RP=\E(W)-\CE}
+    \boxed{\RP=\underbrace{\E(W)}_{\text{expected wealth}}-\underbrace{\CE}_{\text{sure wealth}}}
   \]
 \end{frame}
 
@@ -234,7 +244,7 @@ higher Risk Score plays the role of a smaller $A$.
       \E(W)&=\tfrac12(50)+\tfrac12(150)=100 &&\quad\text{average wealth, USD}\\
       U(\E(W))&=\ln100\approx4.6052 &&\quad\text{utility of the sure average, utils}\\
       \E[U(W)]&=\tfrac12\ln50+\tfrac12\ln150\approx4.4613 &&\quad\text{expected utility of the gamble, utils}\\
-      \CE&=e^{4.4613}\approx86.60 &&\quad\text{solve }\ln\CE=4.4613\text{ for CE, USD}\\
+      \CE&=U^{-1}\bigl(\E[U(W)]\bigr)=e^{4.4613}\approx86.60 &&\quad U^{-1}(x)=e^{x}\text{ undoes }{\ln}\text{, USD}\\
       \RP&=100-86.60=13.40 &&\quad\text{risk premium, USD}
     \end{aligned}
   \]
