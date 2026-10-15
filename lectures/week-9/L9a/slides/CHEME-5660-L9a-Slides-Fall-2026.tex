@@ -79,6 +79,41 @@
   Black--Scholes--Merton and Monte Carlo simulation, then varies the strike.
 \end{frame}
 
+% ==== concept review: a bet on the future (ported from L8b) ====
+\begin{frame}{Concept Review: A Bet on the Future}
+  Suppose we pay $p$ today for a contract that pays 1 USD in $T$ years if
+  $\ST\ge K$, and nothing otherwise.
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{../figs/Fig-L9a-Bet-CashFlows.pdf}
+  \end{center}
+  Discounting the payoff at the benchmark growth rate $g_y$ gives a random NPV:
+  \[
+    \operatorname{NPV}_0=-p+\Dinv\,V(\ST)=\begin{cases}-p+e^{-g_yT}&\text{if }\ST\ge K\text{ (true)}\\-p&\text{if }\ST<K\text{ (false)}\end{cases}
+  \]
+\end{frame}
+
+\begin{frame}{Expected NPV of the Bet}
+  Under our beliefs about $\ST$, the expected NPV is:
+  {\small
+  \[
+    \begin{aligned}
+      \E[\operatorname{NPV}_0]&=\left(-p+e^{-g_yT}\right)\underbrace{\mathbb{P}(\ST\ge K)}_{\text{true}}+(-p)\,\underbrace{\mathbb{P}(\ST<K)}_{\text{false}} &&\text{\footnotesize weight by probability}\\
+      &=-p\,\underbrace{\left[\mathbb{P}(\ST\ge K)+\mathbb{P}(\ST<K)\right]}_{=1}+e^{-g_yT}\,\mathbb{P}(\ST\ge K) &&\text{\footnotesize collect the }p\text{\footnotesize\ terms}\\
+      &=-p+e^{-g_yT}\,\underbrace{\mathbb{P}(\ST\ge K)}_{\text{true}} &&\text{\footnotesize probabilities sum to one}
+    \end{aligned}
+  \]
+  }%
+  The bet has a non-negative expected NPV when $p\le e^{-g_yT}\,\mathbb{P}(\ST\ge K)$.
+
+  \vspace{0.8em}
+  The bet is a \hilite{derivative contract}: its payoff depends on the future price
+  of another asset. Every buyer pays one market price, yet buyers with different
+  beliefs value the same contract differently.
+
+  \vspace{0.8em}
+  \textbf{\ink{How is the market price set?}}
+\end{frame}
+
 \begin{frame}{Company Profile: Cboe Global Markets}
   \href{https://www.cboe.com/}{\hilite{Cboe}} opened on April 26, 1973, as the Chicago Board Options Exchange,
   the world's first exchange for listed options. Black and Scholes published
@@ -241,9 +276,25 @@
       $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
       differ from $\mathbb{P}(\text{event})$.
   \end{itemize}
-  A stock-price event takes its $\Q$ from the replicating model, but a general
+  A stock-price event, such as the bet in the Concept Review, takes its $\Q$
+  from the replicating model, but a general
   Kalshi event has no replicating portfolio, so choosing its pricing
   probability requires additional assumptions.
+\end{frame}
+
+\begin{frame}{Why Is the Bet So Cheap?}
+  Take a one-year bet that a share finishes at or above today's price, with
+  30\% volatility, a 6\% real-world mean growth rate, and a 4\% risk-free rate:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Real world}: the bet pays off 58\% of the time.
+    \item \hilite{A client} with 50{,}000 USD and relative risk aversion 3 would
+      pay 0.56 USD for it.
+    \item \hilite{The market} charges only 0.47 USD.
+  \end{itemize}
+  \vspace{0.6em}
+  \textbf{\ink{Where did the other 8 cents go?}} The answer depends on when the
+  bet pays, not on how risky the bet is on its own.
+  \slidenote{Optional:}{\href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}, last section.}
 \end{frame}
 
 \begin{frame}{Exercise Styles}
@@ -304,7 +355,8 @@
   \vspace{0.4em}
   Where do the BSM premiums come from? Replication on a one-step lattice gives
   the risk-neutral probability and the state prices that price event contracts.
-  The call is an asset-or-nothing claim minus $K$ digital claims.
+  The call is an asset-or-nothing claim minus $K$ digital claims. Marginal
+  utility then shows where the bet's risk premium goes.
 
   \vspace{0.7em}
   {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par

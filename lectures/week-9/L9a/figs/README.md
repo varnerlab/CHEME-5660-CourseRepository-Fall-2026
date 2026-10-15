@@ -8,6 +8,9 @@ only the actors and the cash flows: the premium is always paid, and the shares
 move only if the buyer exercises.
 `Fig-L9a-Option-CashFlows` is the option cash-flow timeline that opens "Options
 as Abstract Assets". It is modeled on L2a's T-bill timeline.
+`Fig-L9a-Bet-CashFlows` is the bet timeline in "Concept Review: A Bet on the
+Future". It is L8b's `Fig-L8b-Bet-CashFlows` with $S_T$ written as $S(T)$, the
+L9a notation (week bundles cannot link across weeks).
 
 `make` builds each figure's PDF with XeLaTeX and converts it to SVG with
 `pdf2svg`. The SVG build also runs `theme_svg.py`, which adds a dark screen

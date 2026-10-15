@@ -10,6 +10,10 @@ This material extends the lecture's European pricing. It is optional.
   geometric Brownian motion, a digital claim costs the discounted
   $N(d_{-})$ and an asset-or-nothing claim costs $S(0)N(d_{+})$. The call is
   one asset-or-nothing claim minus $K$ digitals, and put–call parity gives the put.
+  The last section compares a client's certainty equivalent for the lecture's
+  one-dollar bet with its market price, and shows that $q$ is the real-world
+  probability reweighted by marginal utility. The lecture's "Why is the bet so
+  cheap?" callout links here.
 - [`spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb`](spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb)
   treats an SPXW-style chain as a cross-section of European, cash-settled index
   claims. It pairs calls and puts, estimates the discount factor and forward

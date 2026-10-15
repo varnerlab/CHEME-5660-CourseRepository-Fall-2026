@@ -13,3 +13,17 @@
   `lectures/instructor/L9a-REDESIGN-HANDOFF.md`.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
+
+**Exclude from the diff (October 15).** The backup was not refreshed this time,
+because the instructor's hand edits had already started (`de73d36`, cells 0 and
+2–4). Two changes made after that are Claude's, applied from a preview he
+approved, and do not count as his edits:
+
+- The new cell `c9a0be70`, "Concept Review: A Bet on the Future". It is L8b's
+  bet section ported with $S_T$ written as $S(T)$ and "the L5a" cut.
+- In cell `ae59290f`, the phrase ", such as the bet in the Concept Review," in
+  the sentence after the "What does ℚ mean?" bullets.
+- Later on October 15, also Claude's, added at his request: the "__Why is the
+  bet so cheap?__" callout and its contingent-claims link in cell `ae59290f`,
+  and the sentence "Finally, we compare a client's certainty equivalent…" in
+  the Optional Advanced Material cell `35eb5c02`.

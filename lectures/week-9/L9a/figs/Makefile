@@ -6,7 +6,7 @@
 #   make clean      remove LaTeX intermediates
 #   make distclean  also remove the generated PDF/SVG
 
-FIGURES := Fig-L9a-Contract-Right-Obligation Fig-L9a-Option-CashFlows
+FIGURES := Fig-L9a-Contract-Right-Obligation Fig-L9a-Option-CashFlows Fig-L9a-Bet-CashFlows
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))

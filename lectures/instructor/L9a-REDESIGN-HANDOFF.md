@@ -385,3 +385,81 @@ before/after preview
 The lecture, slide source, and slide PDF no longer match the hashes in the
 reviewed snapshot above. The voice-calibration backup was refreshed to
 include this change.
+
+## Bet concept review from L8b (October 15)
+
+Class on October 15 stopped when it reached L8b's "Derivatives: A Bet on the
+Future". The instructor asked to move that section into L9a to motivate the
+lecture. He approved it from a before/after preview
+(`build/notebook-previews/L9a-bet-concept-review-2026-10-15/`), and added one
+change: no back reference to L5a.
+
+- **Lecture:** the new cell `## Concept Review: A Bet on the Future` sits
+  between Examples and the Cboe profile, as in the L6a → L6b carryover. It is
+  the L8b section word for word except for three things. The heading changed,
+  $S_T$ became $S(T)$ (L9a notation), and "the L5a benchmark growth rate" became
+  "the benchmark growth rate". It still ends on "How is the market price set?".
+  In "What does ℚ mean?", the closing sentence now reads "A stock-price event,
+  such as the bet in the Concept Review, takes its ℚ from the replicating
+  model…", which answers that question (+6 words). L8b, the L9a opening text,
+  and the objectives and takeaways are unchanged.
+- **Figure:** `figs/Fig-L9a-Bet-CashFlows` is L8b's timeline with $S(T)$. It was
+  added to the figs `Makefile` and `README.md`.
+- **Deck:** two frames ported from L8b ("Concept Review: A Bet on the Future",
+  "Expected NPV of the Bet") come before the Cboe profile. "(the L5a trade
+  rule)" was cut, and $S(T)$ replaces $S_T$. The reason labels in the
+  expected-NPV display are `\footnotesize`, because the wider $S(T)$ ran 5.7 pt
+  over. The same sentence was changed on the "What ℚ Means" frame. Rebuilt:
+  21 pages, zero overfull boxes, pages 5, 6, and 16 checked.
+- **FAQ notation (L9a table):** the $K$ and $p$ rows now cover the bet, and new
+  rows were added for $V(S(T))$ and $\mathbb{E}[\operatorname{NPV}_0]$. Built
+  with Pandoc 3.1.11.1. The pre-edit build reproduced the site exactly, and only
+  `notation.html` changed.
+- **Voice calibration:** the backup was not refreshed, because his hand edits
+  had started. The calibration README lists both changes so the diff excludes
+  them.
+- **Left alone:** the deck's "Objectives for Today" and Cboe frames still carry
+  text from before his notebook hand pass (the Kalshi opener, "Black and Scholes
+  published their pricing formula the same year"). Sync them when his pass is
+  done.
+
+## Risk premium section and lecture teaser (October 15)
+
+The instructor asked whether the option premium connects to the risk premium
+and the certainty equivalent. He then asked to put the answer in the
+contingent-claims notebook and to link to it from the lecture "in a sexy way".
+Previews are in `build/notebook-previews/L9a-risk-premium-section-2026-10-15/`.
+
+- **New H2, "Certainty Equivalents and Market Prices"** (cells `cc0rp001`,
+  `cc0rp002`, before the Summary). It works one case with $S(0)=K=100$,
+  $T=1$, $\sigma=0.30$, $g_y=0.04$, and $\mu_g=0.06$:
+  - **The two probabilities:** $\mathbb{P}=0.579$ and $\mathbb{Q}=0.493$.
+  - **The client's risk premium:** for a client with $\bar r=3$ and a sure
+    50,000 USD, Pratt gives $7.3\times10^{-6}$ USD. The exact CRRA value agrees
+    to three digits.
+  - **The table:** the client would pay 0.557 USD for the up-bet, and the
+    market price is 0.474 USD. For the down-bet the values are 0.404 and 0.487
+    USD.
+  - **The derivation:** one step per line on the one-step lattice, from the
+    optimal holdings to the boxed
+    $q=\mathbb{P}(u)\,U'(W_u)/\mathbb{E}_{\mathbb{P}}(U'(W))$.
+  - **Three bullets:** a bet that pays in the rich state costs less,
+    insurance costs more, and the certainty equivalent values the bet on its
+    own. The closing paragraph cites Rubinstein (1976), DOI 10.2307/3003264,
+    checked against Crossref.
+- **Three sections kept:** "State Prices and Event Contracts" is now a `###`
+  under Replication. LO1 and LO2 were merged, and so were KT1 and KT2. A new LO3
+  and KT3 cover the risk premium. The Summary opener and the Assumptions line
+  each gained one sentence.
+- **Lecture:** a "__Why is the bet so cheap?__" puzzle callout (the numbers
+  above, ending "Where did the other 8 cents go?") follows the "What does ℚ
+  mean?" passage. It has an "In this notebook" link. The Optional Advanced
+  Material bullet gained one sentence. `advanced/README.md` was updated.
+- **Deck:** a new frame, "Why Is the Bet So Cheap?" (page 17), and one added
+  sentence on the Optional Advanced Material frame. Rebuilt: 22 pages, zero
+  overfull boxes.
+- **Checks:** sympy verified the derivation. Codex recomputed every number and
+  passed all of them. Its fixes were applied: ≈ for rounded probabilities,
+  "discounted expected payoff" in the insurance bullet, $\sigma$ named as
+  volatility, $H$ defined, one sentence split, "approximately" on the client's
+  maximum price, and the assumptions stated.

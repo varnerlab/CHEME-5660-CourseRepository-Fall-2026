@@ -1,0 +1,44 @@
+% L9a bet cash-flow timeline (lecture section "Concept Review: A Bet on the Future").
+% Copied from L8b's Fig-L8b-Bet-CashFlows with S_T written as S(T), as in L9a.
+% Modeled on L1b's abstract-asset timeline and L2a's T-bill timeline: same
+% time-point units, paid/received arrow styles, and discount (transport) arrow.
+% Keep it structural: the NPV and the expected NPV belong in the notebook.
+% Flow convention: an arrow leaving a time-point unit is money paid,
+% and an arrow entering one is money received.
+% color=vnink replaces TikZ's default black, which theme_svg.py cannot map.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+
+\begin{document}
+\begin{tikzpicture}[x=2.0cm,y=1cm,>=Latex,font=\sffamily\small,color=vnink]
+
+  % Span label ------------------------------------------------
+  \draw[vn brace] (0.45,1.95) -- (3.40,1.95)
+    node[midway,above=7pt,text=vnink]
+    {\bfseries a bet: pay today, paid $T$ years from now only if the condition is true};
+
+  % Timeline --------------------------------------------------
+  \draw[vn timeline] (0,0) -- (4.05,0) node[right] {time};
+  \node[vn unit] (b0) at (0.45,0) {};
+  \node[vn unit] (bT) at (3.40,0) {};
+  \node[below=4pt] at (b0) {$t=0$};
+  \node[below=4pt] at (bT) {$t=T$};
+
+  % Price paid today -------------------------------------------
+  \draw[vn paid] (b0.north) -- (0.45,1.35);
+  \node[right,text=vncarnelian] at (0.45,0.75) {$-p$};
+  \node[above,vn annotation] at (0.45,1.35) {price paid};
+
+  % One dollar received at T, only if S(T) >= K ------------------
+  \draw[vn received,dashed] (3.40,1.35) -- (bT.north);
+  \node[right,text=vnlink] at (3.50,0.85)
+    {$\text{payoff}=\begin{cases}1\ \text{USD} & \text{if } S(T)\geq K\\ 0 & \text{if } S(T)<K\end{cases}$};
+  \node[above,vn annotation] at (3.40,1.35) {payoff received, may be zero};
+
+  % Discount the payoff to today --------------------------------
+  \draw[vn transport] (3.40,-0.94) -- (0.60,-0.94)
+    node[midway,fill=white,inner sep=3pt,text=vnlink]
+    {discount to today: $\times\,\mathcal{D}^{-1}_{T,0}(g_{y})$};
+
+\end{tikzpicture}
+\end{document}
