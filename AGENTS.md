@@ -131,6 +131,26 @@
   value of American options." The file name still says
   Intrinsic-Extrinsic-Value. The Hull example still defines $E_V$ at the root
   on its own.
+- Same day, a polish pass he approved ("Agree") from previews in
+  `build/notebook-previews/L9b-polish-2026-10-16/`. The fresh reviewer scored
+  8.6, then 8.9, then 9.4. The changes:
+  - The payoff, $K$, $T$, $g_y$ and $\mathbb{Q}$ ("the risk-neutral pricing
+    rule", from L9a) are now defined at first use.
+  - The $q$ derivation shows one step per line.
+  - $\hat\sigma$ is dropped from the historical-volatility formula, because L9a
+    uses $\hat\sigma$ for implied volatility.
+  - A connective sentence now follows each closing blockquote. Two sentences
+    moved instead of new ones being added.
+  - The Longstaff–Schwartz lead says why a regression is needed ("each path
+    has only one future"), and $\hat C$ is "the value of holding", no longer
+    "the continuation value".
+  - Takeaways 2 and 3 no longer repeat their labels, and the example
+    descriptions mention the early-exercise comparison.
+  The pass adds a net 30 words, mostly the definitions. The reviewer's other
+  suggestions were declined: IV becomes $\hat\sigma$ (he asked for IV), the
+  Simulate/Regress/Decide labels and the "How can we use it?" bullet go (both
+  approved), $\Delta t$ in $\sigma_{\mathrm{ann}}$ is renamed (he asked for
+  it), and the title changes.
 
 ## L8b build — October 10, 2026
 

@@ -5,7 +5,7 @@
 % instructor preference. Notation follows the lecture: payoff V(K,S) as in L9a,
 % premiums \mathcal{P}, \mathcal{P}^{AM}, and \mathcal{P}^{EU}, lattice node value
 % \hat{V}_{t,k}, risk-neutral up probability q, risk-free rate g_y, accumulation factor
-% \mathcal{D}, and continuation value \hat{C}(S) (Longstaff-Schwartz). Rebuilt October 2026 from the instructor's
+% \mathcal{D}, and the fitted value of holding \hat{C}(S) (Longstaff-Schwartz). Rebuilt October 2026 from the instructor's
 % Fall-2025 American-options lectures (see lectures/instructor/L9b-REBUILD-SPEC.md).
 % October 16, 2026: re-synced after the lecture voice pass (OCC profile, CRR taught as
 % new material, market section before Monte Carlo, no lecture-number references).
@@ -123,13 +123,14 @@
   \hilite{risk-neutral probability} $q$, or down by a factor $d$ with
   probability $(1-q)$. The CRR parameters are no longer data driven: $q$ makes
   the expected return of the underlying asset match the risk-free rate $g_{y}$.
-  {\small
+  {\small\setlength{\jot}{0pt}
   \begin{equation*}
     \begin{aligned}
       \mathcal{D}_{1,0}(g_{y})\cdot S_{0} & = \E_{\Q}\left(S_{1}\right) && \text{grow at the risk-free rate under }\Q\\
       & = q\cdot(u\cdot S_{0}) + (1-q)\cdot(d\cdot S_{0}) && \text{up with probability } q\text{, down with } (1-q)\\
-      & = S_{0}\bigl(qu + d - qd\bigr) && \text{factor out } S_{0}\text{ and expand } (1-q)d\\
-      & = S_{0}\bigl(d + q(u - d)\bigr) && \text{collect the } q \text{ terms}\\[0.3em]
+      & = S_{0}\bigl(qu + (1-q)d\bigr) && \text{factor out } S_{0}\\
+      & = S_{0}\bigl(qu + d - qd\bigr) && \text{expand } (1-q)d\\
+      & = S_{0}\bigl(d + q(u - d)\bigr) && \text{collect the } q \text{ terms}\\[0.2em]
       \Longrightarrow\quad & \boxed{q = \frac{\mathcal{D}_{1,0}\left(g_{y}\right) - d}{u - d}} && \text{divide by } S_{0}\text{ and solve for } q
     \end{aligned}
   \end{equation*}}%
@@ -161,7 +162,7 @@
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Historical volatility}: previously, we estimated $\sigma$ from
       past share prices as
-      $\hat{\sigma}=\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}$, where
+      $\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}$, where
       $\sigma_{g}$ is the standard deviation of the growth rates and $\Delta t$
       is the time between price observations. This estimate looks backward.
     \item \hilite{Implied volatility}: the
@@ -305,9 +306,9 @@
   this approach to American contracts.
 
   \vspace{0.6em}
-  On every path, the decision rule needs the expected value of holding.
-  Longstaff and Schwartz estimate it by regression, working backward from
-  expiration:
+  The decision rule needs the expected value of holding, but each path has
+  only one future. Longstaff and Schwartz estimate it by regression across
+  paths, working backward from expiration:
 
   \vspace{0.6em}
   \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
@@ -341,12 +342,12 @@
 \end{frame}
 
 \begin{frame}{The Early-Exercise Premium by Simulation}
-  Holding on every path gives the European Monte Carlo premium, so the
-  difference estimates the early-exercise premium.
-
-  \vspace{0.6em}
   Let's price an American put by simulation and compare it with the lattice and
   the European premium.
+
+  \vspace{0.6em}
+  Holding on every path gives the European Monte Carlo premium, so the
+  difference estimates the early-exercise premium.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -358,8 +359,8 @@
   \vspace{0.5em}
   In this notebook, we derive the up and down factors of the CRR model by
   matching the variance of the lattice's one-step log return to the variance
-  of geometric Brownian motion. We then check the match on the lattice priced
-  with the risk-neutral probability, and find how small the time step must be
+  of geometric Brownian motion. We then check that the match holds under the
+  risk-neutral probability, and find how small the time step must be
   to keep that probability between zero and one.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9b/advanced}{lectures/week-9/L9b/advanced}, also linked from the lecture notebook.}
 \end{frame}
@@ -373,11 +374,12 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{Binomial trees price American options}: at each node, the
       holder exercises or holds, so backward induction computes the premium.
-    \item \hilite{Early exercise adds value only when it can pay}: the American
-      premium exceeds the European premium only when exercising early can pay
-      at some node, as it can for puts.
+    \item \hilite{Early exercise can pay for puts}: the American premium
+      exceeds the European premium only when exercising early pays at some
+      node. That never happens for a call on a share with no dividend.
     \item \hilite{Simulation estimates the same premium}: Longstaff--Schwartz
-      regresses the value of holding on the share price.
+      works backward along simulated paths, regressing the value of holding on
+      the share price. Holding on every path gives the European premium.
   \end{itemize}
 
   \vspace{0.4em}
