@@ -92,6 +92,16 @@
   market section now precedes Monte Carlo. The calls/puts bullets became prose,
   and the company profile is the Options Clearing Corporation. A Concept Review
   is only for material a previous lecture actually taught.
+- Later on October 16, he asked whether the CRR $\sigma$ should be $\sigma_g$.
+  It stays $\sigma$: the GBM diffusion volatility (units yr^-1/2), the same
+  $\sigma$ as in BSM, with $\hat\sigma=\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\,\sigma_g$.
+  The 2025 wording "implied volatility of the growth rate" pointed students
+  to $\sigma_g$ and is gone from the lecture, the deck, the advanced CRR-factors
+  notebook, and the FAQ. At his request, a "Historical or implied volatility?"
+  blockquote follows the u/d box. It is built on his 2025 L6a covariance-example
+  text, and it closes with the back-of-the-envelope range
+  $S_{\pm}\approx S_0(1\pm\text{IV}\sqrt{T})$. The deck has two matching
+  frames, for 22 pages.
 
 ## L8b build — October 10, 2026
 
