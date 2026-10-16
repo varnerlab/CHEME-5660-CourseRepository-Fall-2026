@@ -45,20 +45,21 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  A Kalshi contract costs less than a dollar today and pays one dollar only if
-  an event occurs. What is a payment that may never arrive worth today?
+  We introduce derivatives and begin our discussion of derivatives pricing.
+  What is a payment that may never arrive worth today?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Define and classify derivatives}: futures, forwards, swaps,
-      and options.
-    \item \hilite{Analyze option payoffs and profits}: long and short calls and
-      puts at expiration, breakevens, and loss bounds.
+      and options, with their underlying assets and market structures.
+    \item \hilite{Analyze option payoffs and profits}: payoff and profit for
+      long and short calls and puts, and how the strike and premium affect
+      profitability at expiration.
     \item \hilite{Price European options contracts}: the premium makes the
-      expected net present value zero under the risk-neutral measure, the
-      Black--Scholes--Merton formulas compute it, and put--call parity links
-      calls and puts.
+      expected net present value zero under the risk-neutral pricing rule. We
+      compute it by Monte Carlo simulation and with the Black--Scholes--Merton
+      formulas, and relate calls and puts with put--call parity.
   \end{itemize}
 \end{frame}
 
@@ -77,8 +78,9 @@
 
   \vspace{0.5em}
   The first example computes payoff and profit for single long and short call
-  and put contracts. The second computes European premiums with
-  Black--Scholes--Merton and Monte Carlo simulation, then varies the strike.
+  and put contracts. The second computes European call and put premiums by
+  Monte Carlo simulation and with the Black--Scholes--Merton formulas, then
+  looks at how the premium changes with strike price.
 \end{frame}
 
 % ==== concept review: a bet on the future (ported from L8b) ====
@@ -109,7 +111,7 @@
 
   \vspace{0.8em}
   The bet is a \hilite{derivative contract}: its payoff depends on the future price
-  of another asset. Every buyer pays one market price, yet buyers with different
+  of another asset (or event). Every buyer pays one market price, yet buyers with different
   beliefs value the same contract differently.
 
   \vspace{0.8em}
@@ -117,16 +119,18 @@
 \end{frame}
 
 \begin{frame}{Company Profile: Cboe Global Markets}
-  \href{https://www.cboe.com/}{\hilite{Cboe}} opened on April 26, 1973, as the Chicago Board Options Exchange,
-  the world's first exchange for listed options.
+  \href{https://www.cboe.com/}{\hilite{Cboe}} operates markets for options, equities, futures, and
+  foreign exchange. It opened on April 26, 1973, as the Chicago Board Options
+  Exchange, the world's first exchange for listed options.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Listed options}: standard strikes, expirations, and contract
-      sizes, cleared by the Options Clearing Corporation (OCC).
+      sizes, so the same contract can trade many times a day. The Options
+      Clearing Corporation (OCC) stands between the buyer and the seller.
     \item \hilite{Index options and volatility}: SPX options are European-style
       and cash-settled. The VIX reads the market's expected 30-day volatility of
       the S\&P 500 from their premiums.
     \item \hilite{Event contracts}: since June 2026, binary options on the
-      Mini-S\&P 500 that pay 100 USD or nothing.
+      Mini-S\&P 500 that pay 100 USD or nothing, cleared by OCC.
   \end{itemize}
   \vspace{0.3em}
   \textbf{\ink{Today's question:}} where does a listed premium come from?
@@ -251,17 +255,23 @@
   \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Exercise Styles}
-  What is an option's payoff worth today? The answer depends on when the holder
-  can exercise:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{European}: exercise only on the expiration date.
-    \item \hilite{American}: exercise at any time before or on the expiration
-      date. This creates extra risk for the seller, so American-style options
-      cost at least as much as otherwise identical European-style options.
-    \item \hilite{Bermudan}: a less common hybrid, exercised only on specified
-      dates up to the expiration date.
+\begin{frame}{Pricing Put and Call Options Contracts}
+  An option's price depends on the underlying asset's value, strike price, time
+  to expiration, and exercise style.
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{European-style}: exercise only at expiration.
+    \item \hilite{American-style}: exercise any time through expiration.
+    \item \hilite{Bermudan-style}: less common, exercise on specified dates.
   \end{itemize}
+  The American option's added flexibility makes it worth at least as much as an
+  otherwise identical European option.
+
+  \vspace{0.6em}
+  Options on single stocks and on exchange-traded funds such as SPY are
+  American-style. The European-style contracts we can trade are cash-settled
+  index options: SPX (SPXW for weekly expirations), XSP, NDX, and RUT.
+
+  \vspace{0.6em}
   Let's start with European-style options and compute their net present value.
 \end{frame}
 
@@ -282,78 +292,114 @@
 \end{frame}
 
 \begin{frame}{The European Premium}
-  A Treasury's cash flows are known, so its price makes the NPV zero. An
-  option's payoff is random. Suppose a \hilite{replicating portfolio} of shares
-  and the risk-free asset pays the option's payoff in every outcome. With no
-  transaction costs, any premium other than its cost creates a risk-free profit:
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{Too low}: traders buy the option and sell the portfolio.
-    \item \hilite{Too high}: traders sell the option and buy the portfolio.
-    \item \hilite{At cost}: neither trade earns a risk-free profit.
-  \end{itemize}
-  Under the \hilite{risk-neutral measure} $\Q$, the share's expected price grows
-  at $g_{y}$ and the option's expected NPV is zero:
+  \textbf{\ink{How is the market price set?}} A call is a bet whose payoff grows
+  with the share price. It pays $\ST-K$ instead of 1 USD when $\ST>K$, and
+  nothing otherwise. Following the same steps as for the bet:
+  {\small
   \[
-    \E_{\Q}\bigl(\operatorname{NPV}_{0}\bigr)=0
-    \;\Longrightarrow\;
-    \boxed{\mathcal{P}^{\text{EU}}=\E_{\Q}\bigl(\Dinv\cdot V(K,\ST)\bigr)}
+    \begin{alignedat}{2}
+      \E[\operatorname{NPV}_0]&=\left(-\mathcal{P}+\Dinv\,\bar{V}\right)\mathbb{P}(\ST>K)+(-\mathcal{P})\,\mathbb{P}(\ST\le K) &\enspace&\text{\footnotesize weighted sum}\\
+      &=-\mathcal{P}\,\underbrace{\left[\mathbb{P}(\ST>K)+\mathbb{P}(\ST\le K)\right]}_{=1}+\Dinv\,\bar{V}\,\mathbb{P}(\ST>K) &&\text{\footnotesize collect }\mathcal{P}\text{\footnotesize\ terms}\\
+      &=-\mathcal{P}+\Dinv\,\mathbb{P}(\ST>K)\,\bar{V} &&\text{\footnotesize sum to one}
+    \end{alignedat}
+  \]
+  }%
+  where $\bar{V}$ is the average payoff $\ST-K$ over the outcomes with $\ST>K$.
+  The expected NPV is zero when the premium is the discounted chance of exercise
+  times the average payoff when exercised.
+\end{frame}
+
+\begin{frame}{Whose Probabilities?}
+  $\mathbb{P}$ holds our own beliefs about the future share price $\ST$, so this
+  premium is the most we would pay. The market prices every option with one
+  shared \hilite{risk-neutral pricing rule} $\Q$, so there is one price. Under
+  $\Q$, the expected share price grows at the risk-free rate $g_{y}$, and GBM
+  with no dividends has drift $g_{y}$. Repeating the calculation under $\Q$:
+  {\small
+  \[
+    \begin{aligned}
+      \E_{\Q}[\operatorname{NPV}_0]&=\left(-\mathcal{P}+\Dinv\,\bar{V}\right)\Q(\ST>K)+(-\mathcal{P})\,\Q(\ST\le K)\\
+      &=-\mathcal{P}\,\underbrace{\left[\Q(\ST>K)+\Q(\ST\le K)\right]}_{=1}\\
+      &\qquad+\Dinv\,\underbrace{\left[\bar{V}\,\Q(\ST>K)+0\cdot\Q(\ST\le K)\right]}_{=\E_{\Q}[V_{c}(K,\ST)]}\\
+      &=-\mathcal{P}+\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]
+    \end{aligned}
+  \]
+  }%
+  where $\bar{V}$ is now the average payoff over the outcomes with $\ST>K$
+  under $\Q$.
+\end{frame}
+
+\begin{frame}{The Market Premium}
+  The second bracket is the expected payoff of the call under $\Q$: the payoff
+  in each outcome, weighted by its probability. Setting
+  $\E_{\Q}[\operatorname{NPV}_0]=0$ gives the market premium of the call,
+  $\Pc=\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]$.
+
+  \vspace{0.6em}
+  A put, which pays $K-\ST$ when $\ST<K$, gives the same result with $V_{p}$ in
+  place of $V_{c}$. For either contract, the premium is the discounted expected
+  payoff under $\Q$:
+  \[
+    \boxed{\mathcal{P}^{\text{EU}}=\Dinv\cdot\E_{\Q}\bigl[V(K,\ST)\bigr]}
   \]
 \end{frame}
 
-\begin{frame}{What \texorpdfstring{$\Q$}{Q} Means}
-  $\Q$ is a pricing rule, while the real-world probabilities $\mathbb{P}$ still
-  describe how often outcomes occur:
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{The share}: with no dividends, $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$,
-      so the share also has zero expected NPV under $\Q$.
-    \item \hilite{The option}: under $\mathbb{P}$, a call expires worthless with
-      probability $\mathbb{P}(\ST\leq K)$, from the terminal target formula, and
-      the buyer then loses the whole premium.
-    \item \hilite{The event contract}: a one-dollar contract costs
-      $p=\Dinv\cdot\Q(\text{event})$. The pricing probability $\Q(\text{event})$
-      can differ from $\mathbb{P}(\text{event})$.
-  \end{itemize}
-  The Concept Review bet is the event contract on $\ST\geq K$, so
-  $p=\Dinv\cdot\Q(\ST\geq K)$. A general Kalshi event has no replicating
-  portfolio, so choosing its pricing probability requires additional assumptions.
+\begin{frame}{Event Contracts}
+  An \hilite{event contract} pays 1 USD if the event occurs and nothing
+  otherwise. Its price is:
+  \[
+    p=\Dinv\cdot\E_{\Q}\bigl[\mathbb{1}\{\text{event}\}\bigr]=\Dinv\cdot\Q(\text{event})
+  \]
+  The pricing probability $\Q(\text{event})$ can differ from the real-world
+  probability $\mathbb{P}(\text{event})$. The Concept Review bet is the event
+  contract on $\ST\geq K$. A general Kalshi event, such as an election, is not
+  tied to a share price, so choosing its pricing probability requires additional
+  assumptions.
 \end{frame}
 
-\begin{frame}{Why Is the Bet So Cheap?}
-  Take a one-year bet that a share finishes at or above today's price, with
-  30\% volatility, a 6\% real-world mean growth rate, and a 4\% risk-free rate:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Real world}: the bet pays off 58\% of the time.
-    \item \hilite{A client} with 50{,}000 USD and relative risk aversion 3 would
-      pay 0.557 USD for it.
-    \item \hilite{The market} charges only 0.474 USD.
-  \end{itemize}
-  \vspace{0.6em}
-  \textbf{\ink{Where did the other 8 cents go?}} The answer depends on when the
-  bet pays, not on how risky the bet is on its own.
-  \slidenote{Optional:}{\href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}, last section.}
+\begin{frame}{A Monte Carlo Premium}
+  Simulation gives a direct way to estimate the market premium. The payoff
+  depends only on $\ST$, so we draw it from the solution of GBM with drift $g_{y}$.
+
+  \vspace{0.5em}
+  \hilite{Initialize}: given $S(0)$, $K$, the payoff function $V(K,S)$ of the
+  call or put, $T$ (years), $\sigma$, $g_{y}$, and the number of simulated
+  paths $M$.
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item For each path $i=1,2,\dots,M$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Draw a standard normal random number $Z_{i}$.
+        \item[b.] Compute the share price at expiration:
+          $S_{i}(T)\gets S(0)\cdot\exp\bigl[(g_{y}-\sigma^{2}/2)\,T+\sigma\sqrt{T}\,Z_{i}\bigr]$.
+        \item[c.] Compute the payoff: $V_{i}\gets V(K,S_{i}(T))$.
+      \end{itemize}
+    \item The premium is the discounted average payoff:
+      $\mathcal{P}\gets\Dinv\cdot\frac{1}{M}\sum_{i=1}^{M}V_{i}$.
+  \end{enumerate}
+  \slidenote{Optional:}{an alternative way to think about the premium, in the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{The Black–Scholes–Merton Equation}
-  Assume GBM with constant $\sigma$ and $g_{y}$, no dividends, and frictionless
-  continuous trading. Write the premium at time $t$, when the share price is $S$,
-  as $\mathcal{P}(S,t)$, with $\mathcal{P}(S,T)=V(K,S)$. It satisfies:
+  Merton and Scholes received the 1997 Nobel Prize in Economic Sciences for this
+  model. Fischer Black had passed away before the prize was awarded.
+
+  \vspace{0.5em}
+  Assume the price of a non-dividend-paying share follows GBM with constant
+  volatility $\sigma$, and the risk-free rate $g_{y}$ is constant. Write the
+  premium at time $t$, when the share price is $S$, as $\mathcal{P}(S,t)$, with
+  $\mathcal{P}(S,T)=V(K,S)$. It satisfies:
   \[
     \boxed{\frac{\partial\mathcal{P}}{\partial t}+g_{y}\,S\,\frac{\partial\mathcal{P}}{\partial S}+\frac{1}{2}\,\sigma^{2}S^{2}\,\frac{\partial^{2}\mathcal{P}}{\partial S^{2}}=g_{y}\,\mathcal{P}}
   \]
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{Hedge}: hold one option and sell $\Delta=\partial\mathcal{P}/\partial S$
-      shares. The random changes cancel, so the portfolio is risk-free.
-    \item \hilite{No arbitrage}: a risk-free portfolio grows at $g_{y}$, which
-      gives the equation. The real-world expected growth cancels.
-    \item \hilite{Solution}: solving backward from the payoff gives
-      $\mathcal{P}(S(0),0)=\mathcal{P}^{\text{EU}}$.
-  \end{itemize}
+  Only $g_{y}$ and $\sigma$ appear, not the real-world growth rate of the share
+  price. Solving backward from the payoff gives $\mathcal{P}(S(0),0)=\mathcal{P}^{\text{EU}}$,
+  the premium the Monte Carlo simulation estimates.
   \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}
-  To compute the expectation under $\Q$, we can simulate GBM with drift $g_{y}$,
-  or use the closed-form European call and put premiums:
+  Instead of simulating, we can compute the expectation with the closed-form
+  European call and put premiums:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -366,23 +412,68 @@
     d_{+}=\frac{1}{\sigma\sqrt{T}}\left[\ln\frac{S(0)}{K}+\Bigl(g_{y}+\frac{\sigma^{2}}{2}\Bigr)T\right],
     \qquad d_{-}=d_{+}-\sigma\sqrt{T}
   \]
-  Merton and Scholes received the 1997 Nobel Prize in Economic Sciences.
-  Fischer Black had passed away before the prize was awarded.
 \end{frame}
 
-\begin{frame}{Put–Call Parity}
-  For a call and a put with the same strike and expiration, the payoffs differ
-  by $\ST-K$ at every share price:
+\begin{frame}{Which \texorpdfstring{$\sigma$}{Sigma}?}
+  If we knew the right volatility, the formula would return the market premium.
+  In practice, we run it backward. Like a bond's yield to maturity, the
+  \hilite{implied volatility} $\hat{\sigma}$ is the $\sigma$ at which the BSM
+  premium matches the market premium $\mathcal{P}^{\text{market}}$.
+
+  \vspace{0.5em}
+  \hilite{Initialize}: given $\mathcal{P}^{\text{market}}$, $S(0)$, $K$, $T$
+  (years), $g_{y}$, a bracket $\sigma_{\text{lo}}<\sigma_{\text{hi}}$ with
+  $\mathcal{P}(\sigma_{\text{lo}})\leq\mathcal{P}^{\text{market}}\leq\mathcal{P}(\sigma_{\text{hi}})$,
+  a tolerance $\epsilon>0$, $\texttt{maxiter}$, and $i\gets 1$.
+
+  \vspace{0.3em}
+  While $\sigma_{\text{hi}}-\sigma_{\text{lo}}>\epsilon$ and $i\leq\texttt{maxiter}$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.2em}
+    \item Compute $\sigma_{\text{mid}}\gets(\sigma_{\text{lo}}+\sigma_{\text{hi}})/2$
+      and its BSM premium $\mathcal{P}(\sigma_{\text{mid}})$.
+    \item If $\mathcal{P}(\sigma_{\text{mid}})<\mathcal{P}^{\text{market}}$,
+      \textbf{then} $\sigma_{\text{lo}}\gets\sigma_{\text{mid}}$. Otherwise,
+      $\sigma_{\text{hi}}\gets\sigma_{\text{mid}}$.
+    \item Update the iteration counter $i\gets i+1$.
+  \end{enumerate}
+  The implied volatility is the midpoint of the final bracket.
+\end{frame}
+
+\begin{frame}{Implied Volatility in Practice}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{One answer}: the BSM premium rises with $\sigma$, so exactly
+      one $\sigma$ matches the market premium, and each step halves the bracket
+      around it.
+    \item \hilite{Why the formula}: the Monte Carlo premium changes with the
+      random draws and costs $M$ simulated paths at every step.
+    \item \hilite{One per contract}: each strike and expiration has its own
+      implied volatility, although the BSM model assumes one constant $\sigma$. To price a contract without a quote, or on a future
+      date, we can predict it from a surface fitted to today's quotes
+      (\href{https://arxiv.org/abs/2605.13998}{Sun et al., 2026}).
+  \end{itemize}
+  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook} applies this bisection to a chain of S\&P 500 index options.}
+\end{frame}
+
+\begin{frame}{Put–Call Parity for European Contracts}
+  For a European call and put with the same strike and expiration, the payoffs
+  differ by $\ST-K$ at every share price. Subtracting the put premium from the
+  call premium gives:
+  {\small
   \[
-    V_{c}(K,\ST)-V_{p}(K,\ST)=\bigl(\ST-K\bigr)^{+}-\bigl(K-\ST\bigr)^{+}=\ST-K
+    \begin{aligned}
+      \Pc-\Pp&=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)-V_{p}(K,\ST)\bigr] &&\text{\footnotesize premium formula}\\
+      &=\Dinv\cdot\E_{\Q}\bigl[\ST-K\bigr] &&\text{\footnotesize payoff identity}\\
+      &=\Dinv\cdot\bigl(S(0)\,e^{g_{y}T}-K\bigr) &&\text{\footnotesize expected share price grows at }g_{y}\\
+      &=S(0)-K\cdot\Dinv &&\Dinv=e^{-g_{y}T}
+    \end{aligned}
   \]
-  Subtracting the put premium condition from the call premium condition, and
-  using $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$, gives:
-  \[
-    \boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}
-  \]
-  Parity uses only the payoff identity and the share's zero expected NPV, so it
-  holds whatever model describes the share price under $\Q$.
+  }%
+  This is \hilite{put--call parity}: $\boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}$
+
+  \vspace{0.5em}
+  \textbf{\ink{Parity holds only for European contracts.}} An American holder can
+  exercise before expiration, so the difference between the call and put
+  premiums is bounded, not fixed.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -391,7 +482,7 @@
   information available at that time. The premium is the largest expected
   payoff, discounted from $\tau$ back to today, over all such exercise times:
   \[
-    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\mathcal{P}^{\text{EU}}
+    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr]\geq\mathcal{P}^{\text{EU}}
   \]
   The American put has no closed-form formula like BSM, so its premium is
   usually computed on a binomial lattice.
@@ -403,35 +494,38 @@
   \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
 
   \vspace{0.4em}
-  Where do the BSM premiums come from? Replication on a one-step lattice gives
-  the risk-neutral probability and the state prices that price event contracts.
-  A continuous hedge gives the BSM equation, whose solution is the risk-neutral
-  expectation. The call is an asset-or-nothing claim minus $K$ digital claims. Marginal
-  utility then shows where the bet's risk premium goes.
+  We derive where the BSM premiums come from: the risk-neutral probability on a
+  one-step lattice, state prices for event contracts, the BSM equation and its
+  solution, and the call built from a digital claim and an asset-or-nothing
+  claim. We also compare a client's certainty equivalent for the bet with its
+  market price.
 
   \vspace{0.5em}
   {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par
   \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
 
   \vspace{0.4em}
-  Does one volatility price every strike? We invert a synthetic SPXW-style chain
-  of European, cash-settled index options for implied volatility.
+  We apply the implied-volatility bisection to a synthetic chain of SPXW options
+  and compare the implied volatility with the realized volatility of the index.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9a/advanced}{lectures/week-9/L9a/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
 \begin{frame}{Summary}
-  Today we introduced derivatives, read the payoff and profit of call and put
-  contracts, and priced European contracts.
+  In this lecture, we explored derivatives, a fundamental asset class used for
+  risk management, hedging, and speculation.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{Derivatives derive their value from underlying assets}:
-      common types are futures, forwards, swaps, and options.
-    \item \hilite{Option payoffs are set by the strike and the position}: the
-      premium turns payoff into profit and sets the breakeven.
-    \item \hilite{The premium makes the expected NPV zero under $\Q$}: the BSM
-      formulas compute it for European contracts, and parity links calls and
+      common types are futures, forwards, swaps, and options, each with
+      different characteristics, maturities, and uses.
+    \item \hilite{Option payoffs are determined by strike prices and contract
+      orientation}: payoff diagrams at expiration show profitability and risk
+      exposure.
+    \item \hilite{The premium makes the expected NPV zero under the
+      risk-neutral pricing rule}: Monte Carlo simulation or the BSM formulas
+      compute it for European contracts, and put--call parity links calls and
       puts.
   \end{itemize}
 \end{frame}

@@ -11,6 +11,80 @@
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
 
+**Exclude from the diff (October 16, during his pass).** His pass began at
+11:03 with the new heading "Pricing Put and Call Options Contracts" and "There
+are three common exercise styles". Those are his. Claude then turned the
+section's four short bullet lists into prose at his request ("I hate small
+choppy bullets"), applied from a preview he approved. That edit is Claude's:
+the exercise-style paragraph, the "If the premium were lower…" sentences, the
+"What does ℚ mean?" paragraph and the event-contract paragraph with its
+displayed price, and the hedge paragraph with "Solving the equation backward…".
+The preview is in `build/notebook-previews/L9a-pricing-bullets-2026-10-16/`.
+Also Claude's, at his request: "European" in "For a European call and put
+with the same strike and expiration" (put–call parity).
+Then, at his request ("needs to be super explicit"), Claude's: the heading
+"Put–Call Parity for European Contracts" and the paragraph opening
+"__Put–call parity holds only for European contracts.__", which absorbed the
+old "Parity uses only the payoff identity…" sentence.
+Then, at his request, Claude's rewrite of `### The European Premium` and the
+BSM part of cell `ae59290f`, applied at 13:15 from a preview he approved
+(`build/notebook-previews/L9a-mc-premium-2026-10-16/`): his replicating-portfolio
+paragraphs replaced by the call-as-a-bet expected-NPV derivation, "Whose
+probabilities?" (ℙ ours, ℚ the market's), the Monte Carlo pseudocode and example,
+the deleted "What does ℚ mean?" paragraph and "Why is the bet so cheap?" callout,
+the "alternative way to think about the premium" pointer, the BSM equation
+paragraph without the hedge, "Which σ?" with the bisection pseudocode, the SPXW
+link and the Sun et al. reference, the paragraph naming SPX, XSP, NDX, and RUT,
+and "share price" wording fixes. In cell `35eb5c02`, the contingent-claims
+sentences without replication and the rewritten SPXW description are Claude's.
+Then, at his request (a polish pass, approved from a preview, applied about
+14:00; `build/notebook-previews/L9a-polish-2026-10-16/`), Claude's word-level
+edits: "risk-neutral pricing rule" and "by Monte Carlo simulation" in LO 3 and
+"pricing rule" and "Monte Carlo simulation or" in takeaway 3; the Example 2
+description "In this example, we compute European call and put premiums by
+Monte Carlo simulation and with the Black–Scholes–Merton formulas." in both
+places; "(Cboe)"; "market price" without "$S$" in the long-put bullet. In cell
+`ae59290f`: the period replacing his semicolon after "only at expiration"; the
+cut "Here, denote the payoff for a call contract by…"; "if $S(T)>K$ and
+$-\mathcal{P}$ otherwise"; the path count $M$ (was $N$) in the Monte Carlo
+pseudocode and the bisection paragraph; "the average payoff over all paths is
+the fraction that finish above the strike times the average payoff of those
+paths"; "0.4934\times29.01"; "If we replace $g_{y}-\sigma^{2}/2$ in step b
+with…"; en dashes in "Black–Scholes–Merton"; "Subtracting the put premium from
+the call premium gives:"; "Let's look at an example of European option
+pricing."; and paragraph breaks before "Under $\mathbb{Q}$, the expected share
+price", "If we replace", and "The [SPXW volatility skew notebook]".
+His 14:29 edits after that pass (cutting "For the bet, $\bar{V}=1$ USD.", the
+lattice-$q$ clause, and the numeric Monte Carlo example) are his. Then, at his
+request ("Why are we not making an expression for $\mathbb{E}_{Q}[NPV_{0}]$ …
+and then we set … = 0"), applied about 15:00 from previews he approved
+(`build/notebook-previews/L9a-npv-under-q-2026-10-16/`), Claude's: in cell
+`ae59290f`, "For geometric Brownian motion with no dividends, $\mathbb{Q}$
+replaces the drift with $g_{y}$. Repeating the expected NPV calculation with
+$\mathbb{Q}$ in place of $\mathbb{P}$ gives:", the $\mathbb{E}_{\mathbb{Q}}$
+derivation (the $\mathbb{P}$ lines with $\mathbb{Q}$, the second bracket
+underbraced as $\mathbb{E}_{\mathbb{Q}}[V_{c}(K,S(T))]$), the paragraph "where
+$\bar{V}$ is now … market premium of the call", the paragraph "Repeating these
+steps for a put …", and the box $\mathcal{P}^{\text{EU}}=\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\mathbb{E}_{\mathbb{Q}}[V(K,S(T))]$.
+These replace the $\mathbb{E}_{\mathbb{Q}}(\mathcal{D}^{-1}S(T))=S(0)$ display,
+the "In general, the premium…" box after the pseudocode, and the call sentence
+there. Also Claude's: "estimate the market premium"; the event-contract
+display $p=\mathcal{D}^{-1}\cdot\mathbb{E}_{\mathbb{Q}}[\mathbb{1}\{\text{event}\}]$;
+the four-line put–call parity derivation from the box (reason column "premium
+formula, expectation is linear", "payoff identity", "expected share price grows
+at $g_{y}$ under $\mathbb{Q}$", "$\mathcal{D}^{-1}_{T,0}(g_{y})=e^{-g_{y}T}$"); and
+"the rule that the expected share price grows at $g_{y}$ under $\mathbb{Q}$" in
+the paragraph after parity.
+Then, after a re-score of 8.9 and at his request (preview approved, applied about
+16:00; `build/notebook-previews/L9a-rescore-2026-10-16/`), Claude's: the event
+contract block moved from after the Monte Carlo pseudocode to directly under the
+$\mathcal{P}^{\text{EU}}$ box (wording unchanged); "This is a share purchase
+with the premium and the payoff in place of the purchase and sale prices";
+"the call pays $S(T)-K$ instead of 1 USD when $S(T)>K$"; "the most we would
+pay. A buyer with different beliefs computes a different premium."; "although
+the BSM model assumes one constant $\sigma$"; and square brackets in the
+American teaser's $\mathbb{E}_{\mathbb{Q}}[\cdot]$.
+
 ## Before the October 16 refresh
 
 His first hand edits are already inside this copy: `de73d36` (cells 0 and
