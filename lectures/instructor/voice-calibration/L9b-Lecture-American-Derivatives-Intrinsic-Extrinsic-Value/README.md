@@ -1,9 +1,10 @@
 # L9b lecture, before the instructor's hand edits
 
 - Source: `lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb`
-- Copied from commit `8fc45b3` on October 16, 2026, after the implied-volatility
-  blockquote. That replaces the `91262bb` copy, which replaced `13be3a1`, the
-  version the instructor rated 4/10.
+- Copied from commit `c68c2f6` on October 16, 2026, after the CRR and
+  Longstaff–Schwartz pseudocode. Earlier copies: `8fc45b3` (implied-volatility
+  blockquote), `91262bb` (voice pass), and `13be3a1`, the version the instructor
+  rated 4/10.
 - One hand edit of his is already in this copy, so the diff will not show it:
   he joined the $R_f$ sentence to the next paragraph with "However, unlike the
   data-driven binomial model we discussed earlier, ...". Count it as his.
@@ -27,5 +28,10 @@
   implied ...", "represents a one-standard-deviation movement ... over the next
   year", and "often equal to or larger than the historical volatility".
   The "implied-volatility gloss" listed above is gone.
+- New with the pseudocode (c68c2f6): both pseudocode blocks and the lead "Let's
+  outline some pseudocode for pricing an option contract on the CRR lattice."
+  The Longstaff–Schwartz bullets became steps 1, 3b, and 3c, keeping their
+  labels and some of their wording. "The premium is the average discounted cash
+  flow." was cut, since step 4 now does it.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
