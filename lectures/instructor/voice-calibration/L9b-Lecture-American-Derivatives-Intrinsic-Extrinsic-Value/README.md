@@ -1,9 +1,9 @@
 # L9b lecture, before the instructor's hand edits
 
 - Source: `lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb`
-- Copied from commit `c68c2f6` on October 16, 2026, after the CRR and
-  Longstaff–Schwartz pseudocode. Earlier copies: `8fc45b3` (implied-volatility
-  blockquote), `91262bb` (voice pass), and `13be3a1`, the version the instructor
+- Copied from commit `ec10c27` on October 16, 2026, after intrinsic and
+  extrinsic value moved to L10a. Earlier copies: `c68c2f6` (pseudocode),
+  `8fc45b3` (implied-volatility blockquote), `91262bb` (voice pass), and `13be3a1`, the version the instructor
   rated 4/10.
 - One hand edit of his is already in this copy, so the diff will not show it:
   he joined the $R_f$ sentence to the next paragraph with "However, unlike the
@@ -33,5 +33,12 @@
   The Longstaff–Schwartz bullets became steps 1, 3b, and 3c, keeping their
   labels and some of their wording. "The premium is the average discounted cash
   flow." was cut, since step 4 now does it.
+- New with the move to L10a (ec10c27): the Longstaff–Schwartz learning
+  objective ("Estimate the premium of American options by simulation: ..."),
+  the takeaway labels "Binomial trees price American options", "Early exercise
+  adds value only when it can pay", and "Simulation estimates the same
+  premium" (each takeaway is his sentence), and the closer "The early-exercise premium is
+  what the right to exercise before expiration is worth, and the lattice and
+  simulation give two ways to compute it."
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
