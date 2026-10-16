@@ -2657,11 +2657,6 @@
 <td>Continuation value fitted by regression on the in-the-money paths, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>S</mi><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><msup><mi>S</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\beta_0+\beta_1S+\beta_2S^2</annotation></semantics></math>, and its coefficients.</td>
 <td>USD/share; USD/share, 1, (USD/share)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_V(t)</annotation></semantics></math></td>
-<td>Extrinsic value at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: the option price minus its intrinsic value.</td>
-<td>USD/share</td>
-</tr>
 </tbody>
 </table>
 </div></div></section><section class="notation-section" id="L10a" data-lecture="L10a"><div class="notation-section-heading"><h2>L10a</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>The Greeks of American Options</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="The Greeks of American Options"><table>
@@ -2694,66 +2689,71 @@
 <td>yr</td>
 </tr>
 <tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_V(t)</annotation></semantics></math></td>
+<td>Extrinsic value at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: the option price minus its intrinsic value.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Δ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\Delta_\star</annotation></semantics></math></td>
 <td>Delta, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>𝒫</mi><mo>⋆</mo></msub><mi>/</mi><mi>∂</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P_\star/\partial S</annotation></semantics></math>: the premium change per USD/share move in the share price. It is also the hedge ratio.</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Γ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\Gamma_\star</annotation></semantics></math></td>
 <td>Gamma, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∂</mi><mn>2</mn></msup><msub><mi>𝒫</mi><mo>⋆</mo></msub><mi>/</mi><mi>∂</mi><msup><mi>S</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\partial^2\mathcal P_\star/\partial S^2</annotation></semantics></math>: the change in Delta per USD/share move in the share price.</td>
 <td>(USD/share)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Θ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\Theta_\star</annotation></semantics></math></td>
 <td>Theta, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>𝒫</mi><mo>⋆</mo></msub><mi>/</mi><mi>∂</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P_\star/\partial t</annotation></semantics></math>: the premium change as calendar time passes. Platforms quote <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Θ</mi><mo>⋆</mo></msub><mi>/</mi><mn>365</mn></mrow><annotation encoding="application/x-tex">\Theta_\star/365</annotation></semantics></math> per day.</td>
 <td>USD/share/yr</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\nu_\star</annotation></semantics></math></td>
 <td>Vega, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>𝒫</mi><mo>⋆</mo></msub><mi>/</mi><mi>∂</mi><mi>σ</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P_\star/\partial\sigma</annotation></semantics></math>, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math> as a decimal. Platforms quote <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mo>⋆</mo></msub><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">\nu_\star/100</annotation></semantics></math> per percentage point.</td>
 <td>USD/share<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋅</mo><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>yr<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">^{1/2}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\rho_\star</annotation></semantics></math></td>
 <td>Rho, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>𝒫</mi><mo>⋆</mo></msub><mi>/</mi><mi>∂</mi><msub><mi>g</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">\partial\mathcal P_\star/\partial g_y</annotation></semantics></math>, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_y</annotation></semantics></math> as a decimal. Platforms quote <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mo>⋆</mo></msub><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">\rho_\star/100</annotation></semantics></math> per percentage point.</td>
 <td>USD/share<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋅</mo><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>yr</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\Delta S</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>σ</mi></mrow><annotation encoding="application/x-tex">\Delta\sigma</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><msub><mi>g</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">\Delta g_y</annotation></semantics></math></td>
 <td>Small changes in the inputs of the Taylor expansion. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\Delta S</annotation></semantics></math> is a share-price change, not Delta.</td>
 <td>USD/share; yr<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">^{-1/2}</annotation></semantics></math>; yr; yr<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><msub><mi>𝒫</mi><mo>⋆</mo></msub></mrow><annotation encoding="application/x-tex">\Delta\mathcal P_\star</annotation></semantics></math></td>
 <td>Premium change estimated by the Taylor expansion.</td>
 <td>USD/share</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></td>
 <td>Step for a central difference: one input moves up and down by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math> and the CRR tree is repriced.</td>
 <td>Units of that input</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>+</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_+)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>−</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_-)</annotation></semantics></math></td>
 <td>L9a’s standard normal CDF values. A European call has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>c</mi></msub><mo>=</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>+</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_c=N(d_+)</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>−</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_-)</annotation></semantics></math> is its risk-neutral probability of finishing in the money.</td>
 <td>1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math></td>
 <td>Number of contracts held, negative if sold. The delta-neutral hedge holds <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>100</mn><mo>⋅</mo><mi>n</mi><mo>⋅</mo><mi>Δ</mi></mrow><annotation encoding="application/x-tex">-100\cdot n\cdot\Delta</annotation></semantics></math> shares.</td>
 <td>Contracts</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>T</mi></msub><annotation encoding="application/x-tex">S_T</annotation></semantics></math></td>
 <td>Share price at expiration.</td>
 <td>USD/share</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>POE</td>
 <td>Probability of exercise: the probability that the option finishes in the money, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&gt;</mo><mi>K</mi><mo>+</mo><mn>0.01</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(S_T&gt;K+0.01)</annotation></semantics></math> for a call and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&lt;</mo><mi>K</mi><mo>−</mo><mn>0.01</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(S_T&lt;K-0.01)</annotation></semantics></math> for a put.</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>POP, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><annotation encoding="application/x-tex">\hat P_{\mathcal C}</annotation></semantics></math></td>
 <td>Probability of profit, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mo>&gt;</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(\hat P_{\mathcal C}&gt;0)</annotation></semantics></math>, and the contract’s profit at expiration.</td>
 <td>1; USD/share</td>

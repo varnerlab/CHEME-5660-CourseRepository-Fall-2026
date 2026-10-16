@@ -1,14 +1,15 @@
-% L9b student companion deck: pricing American options with the CRR binomial model,
-% and intrinsic and extrinsic value.
+% L9b student companion deck: pricing American options with the CRR binomial model
+% and Longstaff-Schwartz Monte Carlo.
 %
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
 % instructor preference. Notation follows the lecture: payoff V(K,S) as in L9a,
 % premiums \mathcal{P}, \mathcal{P}^{AM}, and \mathcal{P}^{EU}, lattice node value
 % \hat{V}_{t,k}, risk-neutral up probability q, risk-free rate g_y, accumulation factor
-% \mathcal{D}, continuation value \hat{C}(S) (Longstaff-Schwartz), and extrinsic value E_V(t). Rebuilt October 2026 from the instructor's
+% \mathcal{D}, and continuation value \hat{C}(S) (Longstaff-Schwartz). Rebuilt October 2026 from the instructor's
 % Fall-2025 American-options lectures (see lectures/instructor/L9b-REBUILD-SPEC.md).
 % October 16, 2026: re-synced after the lecture voice pass (OCC profile, CRR taught as
 % new material, market section before Monte Carlo, no lecture-number references).
+% Intrinsic and extrinsic value moved to L10a the same day.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -57,9 +58,9 @@
       only at expiration, or at any time before expiration.
     \item \hilite{Apply the binomial model to price American options}: build
       CRR trees and compute premiums with the decision rule for early exercise.
-      Estimate the same premium by Monte Carlo simulation.
-    \item \hilite{Decompose option premiums into components}: intrinsic value
-      (immediate exercise value) and extrinsic value (time value).
+    \item \hilite{Estimate the premium of American options by simulation}:
+      Longstaff--Schwartz Monte Carlo, regressing the value of holding on the
+      share price.
   \end{itemize}
 \end{frame}
 
@@ -75,10 +76,6 @@
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Example 2:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
-
-  \vspace{0.45em}
-  {\normalsize\textbf{\ink{Example 3:}}\par\small
-  \href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Review on your own:}}\par\small
@@ -353,51 +350,6 @@
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Extrinsic versus Intrinsic Value of American Options}
-  The premium (price) of an American option can be broken down into two
-  components: intrinsic value and extrinsic value.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Intrinsic value}: the immediate exercise value,
-      $\max(0, S(t) - K)$ for a call and $\max(0, K - S(t))$ for a put, where
-      $S(t)$ is the current share price.
-    \item \hilite{Extrinsic value}: also known as time value, the additional
-      value from the potential for future price movements before expiration.
-  \end{itemize}
-  The extrinsic value $E_{V}(t)$ can be expressed mathematically as:
-  \begin{equation*}
-    \boxed{
-    \begin{aligned}
-      E_{V}(t) = \text{Option Price} - \text{Intrinsic Value}\quad\blacksquare
-    \end{aligned}}
-  \end{equation*}
-\end{frame}
-
-\begin{frame}{Extrinsic Value}
-  In expanded form, the extrinsic value $E_{V}(t)$ is:
-  \begin{equation*}
-    \boxed{
-    \begin{aligned}
-      E_{V}(t) &= \begin{cases}
-      \mathcal{P}_{c}(K,S(t)) - \max(0, S(t) - K) & \text{(for Call Options)} \\
-      \mathcal{P}_{p}(K,S(t)) - \max(0, K - S(t)) & \text{(for Put Options)}
-      \end{cases}
-    \end{aligned}}
-  \end{equation*}
-  When the option is \hilite{out of the money}, it has no intrinsic value, and
-  the entire option price is extrinsic value.
-
-  \vspace{0.4em}
-  \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
-  There is still a chance that the share price moves favorably before
-  expiration.
-
-  \vspace{0.4em}
-  As time moves towards expiration, the extrinsic value tends to decrease
-  (\hilite{time decay}), because there is less time for the share price to
-  move favorably.
-  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
-\end{frame}
-
 \begin{frame}{Optional Advanced Material}
   \vspace{0.3em}
   {\normalsize\textbf{\ink{CRR factors:}} \dimmed{advanced/crr\_factors/}\par
@@ -414,23 +366,23 @@
 
 \begin{frame}{Summary}
   Today we priced American options with the CRR binomial model and Monte Carlo
-  simulation, and split option prices into intrinsic and extrinsic components.
+  simulation.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Binomial trees and simulation price American options}: at
-      each node, the holder exercises or holds, so backward induction computes
-      the premium. The American premium exceeds the European premium only when
-      exercising early can pay at some node, as it can for puts.
-      Longstaff--Schwartz simulation estimates the same premium by regression.
-    \item \hilite{Intrinsic and extrinsic value tell different stories}:
-      intrinsic value is the immediate exercise value, and extrinsic value is
-      the potential for favorable price movement before expiration.
-    \item \hilite{Extrinsic value depends on multiple factors}: time to
-      expiration, volatility, and moneyness. Longer-dated options typically carry
-      more extrinsic value.
+    \item \hilite{Binomial trees price American options}: at each node, the
+      holder exercises or holds, so backward induction computes the premium.
+    \item \hilite{Early exercise adds value only when it can pay}: the American
+      premium exceeds the European premium only when exercising early can pay
+      at some node, as it can for puts.
+    \item \hilite{Simulation estimates the same premium}: Longstaff--Schwartz
+      regresses the value of holding on the share price.
   \end{itemize}
+
+  \vspace{0.4em}
+  The early-exercise premium is what the right to exercise before expiration is
+  worth, and the lattice and simulation give two ways to compute it.
 \end{frame}
 
 \end{document}

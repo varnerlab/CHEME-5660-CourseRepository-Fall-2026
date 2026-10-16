@@ -21,6 +21,13 @@
   keeps its name, so the link to L10b holds.
 - The package code from the Codex session (`binomial_premium`,
   `binomial_greeks` in `code/src/BinomialSensitivities.jl`) is kept.
+- October 16: at his request, L9b's intrinsic and extrinsic value section moved
+  here. It replaces the Concept Review and now follows the company profile, so
+  L10a teaches the section instead of reviewing it. The example is now
+  `CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb` (its figure was
+  renamed to match, and its outputs are unchanged). To keep three objectives and three
+  takeaways, the Delta and POP/POE items were merged, since both come from the
+  Delta section. The $E_V(t)$ notation row moved to the L10a table.
 
 ## Completed L8b review — October 12, 2026
 
@@ -113,6 +120,17 @@
   package. The deck has a CRR pseudocode frame and a Longstaff–Schwartz frame
   (Initialize on the intro frame), for 24 pages. In vnslides, a `{\small ...}`
   group around an enumerate blanks the frame body, so split the frame instead.
+- Later on October 16, at his request ("just move this"), the intrinsic and
+  extrinsic value section, its example, and its deck frames moved to L10a. L10a
+  had repeated the section as a Concept Review. L9b keeps three learning
+  objectives (CRR and Longstaff–Schwartz are now separate) and three takeaways
+  (the first one was split into three). The new closer answers the opening question: "The
+  early-exercise premium is what the right to exercise before expiration is
+  worth, and the lattice and simulation give two ways to compute it." The cut
+  handoff was "With both methods in hand, let's now explore what drives the
+  value of American options." The file name still says
+  Intrinsic-Extrinsic-Value. The Hull example still defines $E_V$ at the root
+  on its own.
 
 ## L8b build — October 10, 2026
 

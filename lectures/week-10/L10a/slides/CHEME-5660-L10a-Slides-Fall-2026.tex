@@ -1,4 +1,5 @@
-% L10a student companion deck: the Greeks of American options, Delta as a hedge
+% L10a student companion deck: intrinsic and extrinsic value, the Greeks of
+% American options, Delta as a hedge
 % ratio and a probability estimate, and the probabilities of exercise and profit.
 %
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
@@ -6,8 +7,9 @@
 % \star\in\{c,p\}, premium \mathcal{P}_\star(S,\sigma,t,g_y), Greeks \Delta_\star,
 % \Gamma_\star, \Theta_\star, \nu_\star, \rho_\star, signed contract count n, and
 % extrinsic value E_V(t). Built October 2026 from the rebuilt lecture (see
-% lectures/instructor/L10a-REBUILD-HANDOFF.md). The Concept Review figure is the
-% L9b extrinsic-value SVG converted to PDF with rsvg-convert.
+% lectures/instructor/L10a-REBUILD-HANDOFF.md). The extrinsic-value figure is the
+% extrinsic-value example's SVG converted to PDF with rsvg-convert. October 16,
+% 2026: intrinsic and extrinsic value moved here from L9b, after the profile.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -49,14 +51,14 @@
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Decompose option premiums into components}: intrinsic value
+      (immediate exercise value) and extrinsic value (time value).
     \item \hilite{Compute the Greeks for American options}: Delta, Theta, Vega,
       Rho, and Gamma from a local Taylor expansion of the options premium.
-    \item \hilite{Interpret Delta as a hedge ratio and a probability estimate}:
-      the shares needed to hedge an option position, compared with the
-      probability of expiring in-the-money.
-    \item \hilite{Calculate probability of profit and probability of exercise}:
-      from projected share price distributions, at the breakeven and at the
-      strike price.
+    \item \hilite{Interpret Delta and compute the probabilities of exercise and
+      profit}: the shares needed to hedge an option position, and the
+      probabilities from projected share price distributions at the strike
+      price and at the breakeven.
   \end{itemize}
 \end{frame}
 
@@ -67,47 +69,21 @@
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Example 1:}}\par\small
+  \href{\repo/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 2:}}\par\small
   \href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 
-  \vspace{0.6em}
-  {\normalsize\textbf{\ink{Example 2:}}\par\small
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 3:}}\par\small
   \href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 
   \vspace{0.5em}
-  The first example computes the Greeks for call and put options from market
-  data. The second computes the probability of profit and the probability of
-  exercise for a short call, and compares them with Delta.
-\end{frame}
-
-\begin{frame}{Concept Review: Intrinsic and Extrinsic Value}
-  In the last lecture, we split the American premium into two components:
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Intrinsic value}: the immediate exercise value,
-      $\max(0, S_{t} - K)$ for a call and $\max(0, K - S_{t})$ for a put.
-    \item \hilite{Extrinsic value}: also known as time value, the difference
-      between the option price and its intrinsic value.
-  \end{itemize}
-  \begin{equation*}
-    \boxed{
-    \begin{aligned}
-      E_{V}(t) &= \begin{cases}
-      \mathcal{P}_{c} - \max(0, S_{t} - K) & \text{(for Call Options)} \\
-      \mathcal{P}_{p} - \max(0, K - S_{t}) & \text{(for Put Options)}
-      \end{cases}
-    \end{aligned}}
-  \end{equation*}
-  When the option is \hilite{out of the money}, it has no intrinsic value, and
-  the entire option price is extrinsic value.
-\end{frame}
-
-\begin{frame}{Call Premium across Strikes and Expirations}
-  \vspace{-0.6em}
-  \begin{center}
-    \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{../figs/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.pdf}
-  \end{center}
-  \vspace{-0.4em}
-  \textbf{\ink{Hmmmm:}} the premium changes with time to expiration and the
-  strike price. How does it change with other factors?
+  The first example splits a call premium into intrinsic and extrinsic value.
+  The second computes the Greeks for call and put options from market data. The
+  third computes the probability of profit and the probability of exercise for
+  a short call, and compares them with Delta.
 \end{frame}
 
 \begin{frame}{Company Profile: Susquehanna}
@@ -127,6 +103,61 @@
   \vspace{0.3em}
   \textbf{\ink{Connection to today's lecture:}} when a customer buys a call, the
   firm hedges with $100\,\Delta_{c}$ shares and rebalances as Gamma moves $\Delta_{c}$.
+\end{frame}
+
+\begin{frame}{Extrinsic versus Intrinsic Value of American Options}
+  The premium (price) of an American option can be broken down into two
+  components: intrinsic value and extrinsic value.
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Intrinsic value}: the immediate exercise value,
+      $\max(0, S(t) - K)$ for a call and $\max(0, K - S(t))$ for a put, where
+      $S(t)$ is the current share price.
+    \item \hilite{Extrinsic value}: also known as time value, the additional
+      value from the potential for future price movements before expiration.
+  \end{itemize}
+  The extrinsic value $E_{V}(t)$ can be expressed mathematically as:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      E_{V}(t) = \text{Option Price} - \text{Intrinsic Value}\quad\blacksquare
+    \end{aligned}}
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Extrinsic Value}
+  In expanded form, the extrinsic value $E_{V}(t)$ is:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      E_{V}(t) &= \begin{cases}
+      \mathcal{P}_{c}(K,S(t)) - \max(0, S(t) - K) & \text{(for Call Options)} \\
+      \mathcal{P}_{p}(K,S(t)) - \max(0, K - S(t)) & \text{(for Put Options)}
+      \end{cases}
+    \end{aligned}}
+  \end{equation*}
+  When the option is \hilite{out of the money}, it has no intrinsic value, and
+  the entire option price is extrinsic value.
+
+  \vspace{0.4em}
+  \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
+  There is still a chance that the share price moves favorably before
+  expiration.
+
+  \vspace{0.4em}
+  As time moves towards expiration, the extrinsic value tends to decrease
+  (\hilite{time decay}), because there is less time for the share price to
+  move favorably.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Call Premium across Strikes and Expirations}
+  \vspace{-0.6em}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.70\textheight,keepaspectratio]{../figs/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.pdf}
+  \end{center}
+  \vspace{-0.4em}
+  \textbf{\ink{Hmmmm:}} the premium changes with time to expiration and the
+  strike price. How does it change with other factors?
 \end{frame}
 
 \begin{frame}{The Greeks}
@@ -198,7 +229,7 @@
   With no dividends, a call's American and European premiums are equal (L9b),
   so the L9a Black--Scholes--Merton formulas give Greeks to check against,
   e.g., $\Delta_{c}=N(d_{+})$.
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{The Secret Lives of Delta}
@@ -247,7 +278,7 @@
   \vspace{0.5em}
   POE reads the projected distribution at the strike price, POP at the
   breakeven.
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Optional Advanced Material}
@@ -266,21 +297,22 @@
 \end{frame}
 
 \begin{frame}{Summary}
-  Today we introduced the Greeks, which measure how American options premiums
-  respond to changes in market conditions.
+  Today we split the premium into intrinsic and extrinsic value, and introduced
+  the Greeks, which measure how the premium responds to market conditions.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Intrinsic and extrinsic value tell different stories}:
+      intrinsic value is the immediate exercise value, and extrinsic value is
+      the potential for favorable price movement before expiration.
     \item \hilite{The Greeks quantify option price sensitivity}: they are the
       partial derivatives in a local Taylor expansion of the premium, which we
       estimate for American options by repricing the CRR tree.
     \item \hilite{Delta serves three purposes}: the rate of change in the
       premium, the hedge ratio for delta-neutral positions, and an
-      approximation of the probability of exercise.
-    \item \hilite{Probability of profit differs from probability of exercise}:
-      POE reads the projected distribution at the strike price, and POP reads
-      it at the breakeven.
+      approximation of the probability of exercise. POE reads the projected
+      distribution at the strike price, and POP reads it at the breakeven.
   \end{itemize}
 \end{frame}
 
