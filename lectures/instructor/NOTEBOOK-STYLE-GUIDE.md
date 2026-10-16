@@ -61,21 +61,39 @@ Each weekly student bundle ships one week's folder, so a relative link into
 another week's notebook does not work for students. The instructor set this for
 CHEME 5800 lectures and confirmed it for CHEME 5660 during the L6a MAGBM example
 polish: "this will be in the Week-06 bundle, so links to week-5 will NOT work."
-Refer to other weeks' notebooks in words ("the L4b trade rule", "the
-out-of-sample example in L5a") and link only files in the same week's folder.
+Refer to other weeks' notebooks by their content ("the trade rule", "the
+out-of-sample example"), without lecture numbers (see the October 15 rule
+below), and link only files in the same week's folder.
 This applies to lecture and example notebooks. An earlier Week 5 release note
 describes cross-week links rewritten to the tagged GitHub repository; follow
 this rule rather than relying on that rewrite.
+
+## No references to other lectures by number — all course materials, October 15, 2026
+
+While polishing the L9a Cboe profile, the instructor said back references to
+particular lectures "drive me crazy" and set a rule for lectures, examples,
+advanced notebooks, and slides. Student-facing text does not name another
+lecture or week, backward or forward. Cut phrasings such as "In L4b, we
+estimated volatility...", "the share purchase from L4a and L5a", "in L2a its
+price made the NPV zero", and "from L5a's terminal target formula", and avoid
+"Lecture 7" or "Week 6" for the same purpose. State the concept directly ("the
+terminal target formula"). When the change from an earlier approach matters,
+use "Previously" ("Previously, we estimated volatility from historical growth
+rates."). Never promise a topic in a future lecture. Labels for the current
+lecture itself (its title, filenames, figure names, and the notation link
+`notation.html#L9a`) are not references to another lecture. Apply this when
+drafting or editing, and report each instance during reviews. This supersedes
+the October 14 allowance below for naming an earlier lecture.
 
 ## Lecture callbacks — October 14, 2026
 
 While manually polishing L8b, the instructor approved removing generic callbacks
 such as "Recall from L7b..." when the passage already states the needed concept.
 State the concept directly and preserve the explanation. Use "Previously" when
-the change from an earlier approach to the current one matters. Name an earlier
-lecture when it helps students locate a specific derivation, example, or input,
-such as the L6b client interview or the L5a terminal target probability.
-Do not mechanically replace every callback with "Previously".
+the change from an earlier approach to the current one matters. (The original
+allowance to name an earlier lecture, such as "the L5a terminal target
+probability", was withdrawn on October 15; see above.) Do not mechanically
+replace every callback with "Previously".
 
 In prose references to numbered problems, use a complete noun phrase such as
 "the SIM-2 problem" as the link label. Use the appropriate noun for the cited

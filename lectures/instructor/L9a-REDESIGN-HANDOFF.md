@@ -463,3 +463,37 @@ Previews are in `build/notebook-previews/L9a-risk-premium-section-2026-10-15/`.
   "discounted expected payoff" in the insurance bullet, $\sigma$ named as
   volatility, $H$ defined, one sentence split, "approximately" on the client's
   maximum price, and the assumptions stated.
+
+## Pricing Options pass (October 16)
+
+The instructor called the `## Pricing Options` section "a bit of a mess",
+noting that the BSM equation was never shown and that no advanced notebook
+sketched its solution. The section scored 5 before the pass. Three fresh QA
+reviewers took it to 9.1, and he approved it on October 16 ("much better"),
+with a manual pass of his own to follow. The work folder is
+`build/notebook-previews/L9a-pricing-pass-2026-10-16/`, with the QA brief,
+the builders, and the previews.
+
+- **Lecture order:** exercise styles, then the option as an abstract asset,
+  then `### The European Premium` (replication before ℚ before the boxed
+  premium), "What does ℚ mean?", the "Why is the bet so cheap?" callout, the
+  BSM equation (boxed, with hedge, no-arbitrage, and solution bullets), the
+  BSM premiums, `### Put–Call Parity`, and an American teaser blockquote with
+  the $\sup_\tau$ formula.
+- **His decisions:** keep the American premium as "a little teaser at the
+  end", and cut his 2025 sentence "European options can only be exercised at
+  expiration, which simplifies their pricing." The callout uses the notebook's
+  0.557 and 0.474 USD, so the gap reads 8 cents.
+- **Contingent-claims notebook:** two new `###` cells, "The Black–Scholes–Merton
+  Equation" (the delta hedge) and "From the Equation to an Expectation"
+  (Feynman–Kac). `adv/verify_pde.py` checks both with sympy. LO2, KT2, the
+  Summary, and the Assumptions were updated, and its references to other
+  lectures by number were removed. `advanced/README.md` was updated.
+- **Notation page:** $\mathcal{P}(S,t)$ and $\Delta$ were added, $\rho_T$ was
+  dropped, and the L9a block lost its lecture numbers.
+- **Deck:** synced to the new order, with a BSM-equation frame and an American
+  frame. Rebuilt: 26 pages, zero overfull boxes.
+- **Still open:** the payoff example still computes profit as $V-\mathcal{P}$
+  and asserts breakeven at $K\pm\mathcal{P}$, with no
+  $\mathcal{D}_{T,0}(g_y)$ factor. The triple-witching sentence still cites
+  December 2024.

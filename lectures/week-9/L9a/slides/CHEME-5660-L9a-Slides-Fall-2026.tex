@@ -2,7 +2,8 @@
 %
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
 % instructor preference. Notation follows the lecture: premiums \mathcal{P}_c and
-% \mathcal{P}_p, payoffs V_c and V_p, buyer and seller profit, terminal price S(T),
+% \mathcal{P}_p, payoffs V_c and V_p, buyer profit with the premium's future value
+% \mathcal{D}_{T,0}(g_y)\mathcal{P}, orientation \theta, terminal price S(T),
 % risk-free rate g_y, and BSM's d_+, d_-, and N. Rebuilt October 2026 from the
 % archived L8b deck and the pre-redesign L9a deck (see lectures/archive/).
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -12,6 +13,7 @@
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\Pc}{\mathcal{P}_{c}}
 \newcommand{\Pp}{\mathcal{P}_{p}}
+\newcommand{\Dfv}{\mathcal{D}_{T,0}(g_{y})}
 \newcommand{\Dinv}{\mathcal{D}^{-1}_{T,0}(g_{y})}
 \newcommand{\ST}{S(T)}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a}
@@ -116,15 +118,13 @@
 
 \begin{frame}{Company Profile: Cboe Global Markets}
   \href{https://www.cboe.com/}{\hilite{Cboe}} opened on April 26, 1973, as the Chicago Board Options Exchange,
-  the world's first exchange for listed options. Black and Scholes published
-  their pricing formula the same year.
+  the world's first exchange for listed options.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Listed options}: standard strikes, expirations, and contract
       sizes, cleared by the Options Clearing Corporation (OCC).
-    \item \hilite{SPX options}: European-style and cash-settled. Standard stock
-      and ETF options are American-style.
-    \item \hilite{VIX}: the market's expected 30-day volatility of the S\&P 500,
-      read from SPX option premiums.
+    \item \hilite{Index options and volatility}: SPX options are European-style
+      and cash-settled. The VIX reads the market's expected 30-day volatility of
+      the S\&P 500 from their premiums.
     \item \hilite{Event contracts}: since June 2026, binary options on the
       Mini-S\&P 500 that pay 100 USD or nothing.
   \end{itemize}
@@ -134,14 +134,14 @@
 
 \begin{frame}{What Is a Derivative?}
   A \hilite{derivative} is a contract between a buyer and a seller to transact an
-  asset at a set price on a future date. In L1b's language, it is an abstract
-  asset whose cash flows depend on the underlying asset.
+  asset at a set price on a future date. It is an abstract asset whose cash
+  flows depend on an underlying asset or event.
   \vspace{0.3em}
   \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item \hilite{Futures and forwards}: agreements to buy or sell later at a set
-      price. Futures are exchange-traded, and forwards trade over the counter.
-    \item \hilite{Swaps}: one party exchanges an asset's value or cash flows for
-      another's, over the counter.
+    \item \hilite{Futures, forwards, and swaps}: obligate both parties to
+      transact. Futures trade on exchanges with standard terms. Forwards trade
+      over the counter, where each party bears the other's default risk. Swaps
+      exchange one asset's cash flows for another's, also over the counter.
     \item \hilite{Options}: the buyer holds the right, but not the obligation, to
       buy (call) or sell (put) at a set price. Options are exchange-traded.
     \item \hilite{Event contracts}: pay a fixed amount, usually one dollar, if an
@@ -151,15 +151,13 @@
 
 \begin{frame}{How Big Is the US Options Market?}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{2025}: a record of about 15.2 billion listed contracts, up about
-      24\% from the 2024 record of 12.2 billion (OCC).
-    \item \hilite{Busiest day}: about 110 million contracts on October 10, 2025
-      (Cboe).
-    \item \hilite{2026}: through September, about 70.6 million contracts per
-      day, against 60.6 million for all of 2025, and about 13.2 billion
-      contracts in total (OCC).
-    \item \hilite{Notional}: option flow topped 3 trillion USD per day in January
-      2025, about 5 times the 2024 daily notional of U.S. cash equities (Cboe).
+    \item \hilite{2025}: a record of about 15.2 billion contracts, or about 60.6
+      million per day (OCC).
+    \item \hilite{2026}: through September, about 13.2 billion contracts, or
+      about 70.6 million per day (OCC).
+    \item \hilite{Notional}: about 4 trillion USD per day in 2025, more than
+      three times the 1.1 trillion USD per day traded in U.S. cash equities
+      (Traders Magazine, Cboe).
   \end{itemize}
   \slidenote{Sources:}{the lecture notebook's market table, with dates and links.}
 \end{frame}
@@ -171,60 +169,100 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{The Business Case: Who Risks What}
-  Per share, at expiration:
-  \vspace{0.3em}
-  \begin{center}\small
-  \begin{tabular}{@{}lll@{}}
-    \textbf{\ink{Position}} & \textbf{\ink{Maximum profit}} & \textbf{\ink{Maximum loss}}\\[2pt]
-    \hline\\[-7pt]
-    Long call  & unbounded & the premium $\Pc$\\
-    Short call & the premium $\Pc$ & unbounded\\
-    Long put   & $K-\Pp$, if the share price falls to zero & the premium $\Pp$\\
-    Short put  & the premium $\Pp$ & $K-\Pp$, if the share price falls to zero\\
-  \end{tabular}
-  \end{center}
-  \vspace{0.4em}
-  Only the uncovered short call can lose without bound. A short put's loss is
-  large but bounded, because the share price cannot fall below zero. Covered
-  calls and cash-secured puts hold the shares or cash for 100 shares per
-  contract.
+\begin{frame}{The Business Case for Long and Short Calls}
+  A \hilite{call} option gives the owner the right, but not the obligation, to
+  buy 100 shares of an underlying asset (per contract) at the strike price $K$
+  by the expiration date.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Buyer (long)}: benefits from upside price movement without
+      purchasing the asset directly. Long calls have defined risk: the maximum
+      loss is the premium paid. If the owner exercises, they buy shares at $K$
+      instead of the market price.
+    \item \hilite{Seller (short)}: receives the premium. Short calls have
+      unlimited upside risk, so calls are often sold only by investors who
+      already own the shares, as a covered call (100 shares per contract).
+      Short calls obligate the seller to sell shares at $K$ if the option is
+      exercised.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Business Case for Long and Short Puts}
+  A \hilite{put} option gives the owner the right, but not the obligation, to
+  sell 100 shares at the strike price $K$ by the expiration date.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Buyer (long)}: benefits from downside price movement without
+      selling the asset directly. Long puts have defined risk: the maximum loss
+      is the premium paid. The owner can sell shares at $K$ instead of the
+      market price.
+    \item \hilite{Seller (short)}: receives the premium. Short puts have large
+      but bounded downside risk: if the share price falls to zero, the seller
+      loses the strike price minus the premium's future value per share. Puts
+      are often sold only by investors with the cash to buy the shares (100 per
+      contract), a cash-secured put. Short puts obligate the seller to buy shares at $K$ if
+      the option is exercised.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Call and Put Payoffs}
-  A \hilite{call} gives the owner the right, but not the obligation, to buy 100
-  shares at the strike price $K$ by the expiration date. A \hilite{put} gives
-  the right to sell them. With share price $\ST$ at expiration, the payoffs per
-  share are:
+  The payoff per share of a single call or put contract at expiration (or when
+  the contract is exercised) is:
   \begin{equation*}
     \boxed{
     \begin{aligned}
-      V_{c}(K,\ST) & = \max\bigl(\ST-K,~0\bigr)\\
-      V_{p}(K,\ST) & = \max\bigl(K-\ST,~0\bigr)
+      V_{c}(K,\ST) & = \max\bigl(\ST-K,~0\bigr) = \bigl(\ST-K\bigr)^{+}\\
+      V_{p}(K,\ST) & = \max\bigl(K-\ST,~0\bigr) = \bigl(K-\ST\bigr)^{+}
     \end{aligned}}
   \end{equation*}
-  The call is exercised only when $\ST>K$, and the put only when $\ST<K$. Both
-  payoffs are nonnegative because the buyer may decline. The seller charges a
-  premium, $\Pc$ for a call and $\Pp$ for a put.
+  where $K$ is the strike price and $\ST$ is the share price at expiration
+  (time $t=T$). The seller charges the buyer a premium per share, $\Pc$ for a
+  call and $\Pp$ for a put.
 \end{frame}
 
-\begin{frame}{Profit and Breakeven}
-  The buyer's profit per share is the payoff minus the premium, and the
-  seller's is the premium minus the payoff:
+\begin{frame}{Profit at Expiration}
+  The premium is paid at $t=0$ and the payoff arrives at $t=T$, so we compare
+  them at expiration using the premium's future value, $\Dfv\cdot\mathcal{P}$,
+  where $\Dfv=e^{g_{y}T}$. The buyer's profit per share for a single contract
+  is:
   \begin{align*}
-    P_{c}^{\text{buyer}} & = V_{c}(K,\ST)-\Pc & P_{c}^{\text{seller}} & = \Pc-V_{c}(K,\ST)\\
-    P_{p}^{\text{buyer}} & = V_{p}(K,\ST)-\Pp & P_{p}^{\text{seller}} & = \Pp-V_{p}(K,\ST)
+    P_{c}^{\text{buyer}}(K,\ST) & = V_{c}(K,\ST)-\Dfv\cdot\Pc\\
+    P_{p}^{\text{buyer}}(K,\ST) & = V_{p}(K,\ST)-\Dfv\cdot\Pp
   \end{align*}
+  A position's \hilite{orientation} $\theta$ is $+1$ for the buyer (long) and
+  $-1$ for the seller (short). Its profit per share is
+  $\theta\cdot P^{\text{buyer}}$, so the seller's profit is
+  $P^{\text{seller}}=(-1)\cdot P^{\text{buyer}}$, and
+  $P^{\text{buyer}}+P^{\text{seller}}=0$ at every share price.
+
+  \vspace{0.6em}
+  \textbf{\ink{Options are a zero-sum game:}} one party's gain is the other's
+  loss.
+\end{frame}
+
+\begin{frame}{Breakeven}
   Setting the buyer's profit to zero gives the breakeven share price at
   expiration:
-  \[
-    S_{\text{BE}}=K+\Pc\ \text{(call)},
-    \qquad
-    S_{\text{BE}}=K-\Pp\ \text{(put)}
-  \]
+  \begin{align*}
+    S_{\text{BE}} & = K+\Dfv\cdot\Pc && \text{call}\\
+    S_{\text{BE}} & = K-\Dfv\cdot\Pp && \text{put}
+  \end{align*}
   Above the call breakeven, and below the put breakeven, the buyer profits and
-  the seller loses.
+  the seller loses. Listed contracts often expire within weeks, so $\Dfv$ is
+  close to one (about 1.003 for 30 days at $g_{y}=4\%$).
   \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Exercise Styles}
+  What is an option's payoff worth today? The answer depends on when the holder
+  can exercise:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{European}: exercise only on the expiration date.
+    \item \hilite{American}: exercise at any time before or on the expiration
+      date. This creates extra risk for the seller, so American-style options
+      cost at least as much as otherwise identical European-style options.
+    \item \hilite{Bermudan}: a less common hybrid, exercised only on specified
+      dates up to the expiration date.
+  \end{itemize}
+  Let's start with European-style options and compute their net present value.
 \end{frame}
 
 \begin{frame}{Options as Abstract Assets}
@@ -238,48 +276,46 @@
   \[
     \operatorname{NPV}_{0}=-\mathcal{P}+\Dinv\cdot V(K,\ST)
   \]
-  The profit $V-\mathcal{P}$ adds dollars from different dates. In today's
-  dollars, the call buyer breaks even at $K+\Pc\cdot\mathcal{D}_{T,0}(g_{y})$
-  rather than $K+\Pc$.
+  Factoring out $\Dinv$ gives $\operatorname{NPV}_{0}=\Dinv\cdot P^{\text{buyer}}$:
+  the NPV is the buyer's profit at expiration discounted to today, so it is
+  zero at the breakeven share price.
 \end{frame}
 
 \begin{frame}{The European Premium}
-  When trading shares and the risk-free asset can replicate an option's
-  payoff, no arbitrage fixes its premium as the portfolio's cost. Under the
-  corresponding risk-neutral measure $\Q$, this gives zero
-  \hilite{expected} NPV:
+  A Treasury's cash flows are known, so its price makes the NPV zero. An
+  option's payoff is random. Suppose a \hilite{replicating portfolio} of shares
+  and the risk-free asset pays the option's payoff in every outcome. With no
+  transaction costs, any premium other than its cost creates a risk-free profit:
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Too low}: traders buy the option and sell the portfolio.
+    \item \hilite{Too high}: traders sell the option and buy the portfolio.
+    \item \hilite{At cost}: neither trade earns a risk-free profit.
+  \end{itemize}
+  Under the \hilite{risk-neutral measure} $\Q$, the share's expected price grows
+  at $g_{y}$ and the option's expected NPV is zero:
   \[
     \E_{\Q}\bigl(\operatorname{NPV}_{0}\bigr)=0
     \;\Longrightarrow\;
     \boxed{\mathcal{P}^{\text{EU}}=\E_{\Q}\bigl(\Dinv\cdot V(K,\ST)\bigr)}
   \]
-  With frictionless replication, any other premium creates a risk-free profit:
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Too low}: buy the option and sell a portfolio with the same
-      payoff, built from shares and the risk-free asset.
-    \item \hilite{Too high}: sell the option and buy the portfolio.
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{What \texorpdfstring{$\Q$}{Q} Means}
-  $\Q$ is a pricing rule, while the real-world measure $\mathbb{P}$ still
-  describes how often outcomes occur:
+  $\Q$ is a pricing rule, while the real-world probabilities $\mathbb{P}$ still
+  describe how often outcomes occur:
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{The share}: under $\Q$, the expected share price grows at the
-      risk-free rate $g_{y}$ (no dividends), so
-      $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$ and the share also has zero
-      expected NPV.
-    \item \hilite{The option}: one that expires worthless has scaled NPV
-      $\rho_{T}=-1$. For a call, that happens with real-world probability
-      $\mathbb{P}(\ST\leq K)$ (L5a).
+    \item \hilite{The share}: with no dividends, $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$,
+      so the share also has zero expected NPV under $\Q$.
+    \item \hilite{The option}: under $\mathbb{P}$, a call expires worthless with
+      probability $\mathbb{P}(\ST\leq K)$, from the terminal target formula, and
+      the buyer then loses the whole premium.
     \item \hilite{The event contract}: a one-dollar contract costs
-      $p=\Dinv\cdot\Q(\text{event})$, a discounted $\Q$-probability that can
-      differ from $\mathbb{P}(\text{event})$.
+      $p=\Dinv\cdot\Q(\text{event})$. The pricing probability $\Q(\text{event})$
+      can differ from $\mathbb{P}(\text{event})$.
   \end{itemize}
-  A stock-price event, such as the bet in the Concept Review, takes its $\Q$
-  from the replicating model, but a general
-  Kalshi event has no replicating portfolio, so choosing its pricing
-  probability requires additional assumptions.
+  The Concept Review bet is the event contract on $\ST\geq K$, so
+  $p=\Dinv\cdot\Q(\ST\geq K)$. A general Kalshi event has no replicating
+  portfolio, so choosing its pricing probability requires additional assumptions.
 \end{frame}
 
 \begin{frame}{Why Is the Bet So Cheap?}
@@ -288,8 +324,8 @@
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Real world}: the bet pays off 58\% of the time.
     \item \hilite{A client} with 50{,}000 USD and relative risk aversion 3 would
-      pay 0.56 USD for it.
-    \item \hilite{The market} charges only 0.47 USD.
+      pay 0.557 USD for it.
+    \item \hilite{The market} charges only 0.474 USD.
   \end{itemize}
   \vspace{0.6em}
   \textbf{\ink{Where did the other 8 cents go?}} The answer depends on when the
@@ -297,24 +333,27 @@
   \slidenote{Optional:}{\href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}, last section.}
 \end{frame}
 
-\begin{frame}{Exercise Styles}
-  The exercise style changes the premium:
-  \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item \hilite{European}: exercise only on the expiration date $T$.
-    \item \hilite{American}: exercise at any time up to $T$.
-    \item \hilite{Bermudan}: exercise only on specified dates up to $T$.
-  \end{itemize}
-  The American holder exercises at a time $\tau\leq T$ chosen using only the
-  information available at that time (a stopping time):
+\begin{frame}{The Black–Scholes–Merton Equation}
+  Assume GBM with constant $\sigma$ and $g_{y}$, no dividends, and frictionless
+  continuous trading. Write the premium at time $t$, when the share price is $S$,
+  as $\mathcal{P}(S,t)$, with $\mathcal{P}(S,T)=V(K,S)$. It satisfies:
   \[
-    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\mathcal{P}^{\text{EU}}
+    \boxed{\frac{\partial\mathcal{P}}{\partial t}+g_{y}\,S\,\frac{\partial\mathcal{P}}{\partial S}+\frac{1}{2}\,\sigma^{2}S^{2}\,\frac{\partial^{2}\mathcal{P}}{\partial S^{2}}=g_{y}\,\mathcal{P}}
   \]
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Hedge}: hold one option and sell $\Delta=\partial\mathcal{P}/\partial S$
+      shares. The random changes cancel, so the portfolio is risk-free.
+    \item \hilite{No arbitrage}: a risk-free portfolio grows at $g_{y}$, which
+      gives the equation. The real-world expected growth cancels.
+    \item \hilite{Solution}: solving backward from the payoff gives
+      $\mathcal{P}(S(0),0)=\mathcal{P}^{\text{EU}}$.
+  \end{itemize}
+  \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}
-  Assume a non-dividend-paying share follows GBM with constant volatility
-  $\sigma$ and risk-free rate $g_y$, and frictionless continuous trading in the
-  share and risk-free asset. The European call and put premiums are:
+  To compute the expectation under $\Q$, we can simulate GBM with drift $g_{y}$,
+  or use the closed-form European call and put premiums:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -335,7 +374,7 @@
   For a call and a put with the same strike and expiration, the payoffs differ
   by $\ST-K$ at every share price:
   \[
-    V_{c}(K,\ST)-V_{p}(K,\ST)=\ST-K
+    V_{c}(K,\ST)-V_{p}(K,\ST)=\bigl(\ST-K\bigr)^{+}-\bigl(K-\ST\bigr)^{+}=\ST-K
   \]
   Subtracting the put premium condition from the call premium condition, and
   using $\E_{\Q}\bigl(\Dinv\cdot\ST\bigr)=S(0)$, gives:
@@ -347,6 +386,17 @@
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
+\begin{frame}{What About American-Style Options?}
+  The holder can exercise at any time $\tau\leq T$, chosen using only the
+  information available at that time. The premium is the largest expected
+  payoff, discounted from $\tau$ back to today, over all such exercise times:
+  \[
+    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\mathcal{P}^{\text{EU}}
+  \]
+  The American put has no closed-form formula like BSM, so its premium is
+  usually computed on a binomial lattice.
+\end{frame}
+
 \begin{frame}{Optional Advanced Material}
   \vspace{0.3em}
   {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{advanced/contingent\_claims/}\par
@@ -355,10 +405,11 @@
   \vspace{0.4em}
   Where do the BSM premiums come from? Replication on a one-step lattice gives
   the risk-neutral probability and the state prices that price event contracts.
-  The call is an asset-or-nothing claim minus $K$ digital claims. Marginal
+  A continuous hedge gives the BSM equation, whose solution is the risk-neutral
+  expectation. The call is an asset-or-nothing claim minus $K$ digital claims. Marginal
   utility then shows where the bet's risk premium goes.
 
-  \vspace{0.7em}
+  \vspace{0.5em}
   {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par
   \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
 

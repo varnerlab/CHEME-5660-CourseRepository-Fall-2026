@@ -3,11 +3,14 @@
 This material extends the lecture's European pricing. It is optional.
 
 - [`contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb`](contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb)
-  derives the Black–Scholes–Merton premiums that the lecture states. A
+  derives the Black–Scholes–Merton equation and premiums that the lecture states. A
   one-step replicating portfolio gives the risk-neutral probability
   $q=(R_f-d)/(u-d)$, and state prices write any claim's price as an inner
-  product over states, with event contracts as the simplest claims. Under
-  geometric Brownian motion, a digital claim costs the discounted
+  product over states, with event contracts as the simplest claims. In
+  continuous time, hedging the option with $\Delta=\partial\mathcal{P}/\partial S$
+  shares gives the equation, and the Feynman–Kac argument
+  shows that its solution is the discounted risk-neutral expectation of the
+  payoff. Under geometric Brownian motion, a digital claim costs the discounted
   $N(d_{-})$ and an asset-or-nothing claim costs $S(0)N(d_{+})$. The call is
   one asset-or-nothing claim minus $K$ digitals, and put–call parity gives the put.
   The last section compares a client's certainty equivalent for the lecture's

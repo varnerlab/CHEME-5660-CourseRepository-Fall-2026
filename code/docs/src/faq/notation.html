@@ -2423,7 +2423,7 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(0)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(T)</annotation></semantics></math></td>
-<td>Share price today and at expiration. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(T)</annotation></semantics></math> is the terminal price that L4a–L5a write as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>T</mi></msub><annotation encoding="application/x-tex">S_T</annotation></semantics></math>.</td>
+<td>Share price today and at expiration. Earlier lectures write <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(T)</annotation></semantics></math> as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>T</mi></msub><annotation encoding="application/x-tex">S_T</annotation></semantics></math>.</td>
 <td>USD/share</td>
 </tr>
 <tr class="even">
@@ -2433,7 +2433,7 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>c</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_c(K,S(T))</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_p(K,S(T))</annotation></semantics></math></td>
-<td>Call and put payoffs per share at expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\max(S(T)-K,0)</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\max(K-S(T),0)</annotation></semantics></math>.</td>
+<td>Call and put payoffs per share at expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><annotation encoding="application/x-tex">(S(T)-K)^{+}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><annotation encoding="application/x-tex">(K-S(T))^{+}</annotation></semantics></math>, where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><mo>=</mo><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(x)^{+}=\max(x,0)</annotation></semantics></math>.</td>
 <td>USD/share</td>
 </tr>
 <tr class="even">
@@ -2443,68 +2443,83 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>P</mi><mi>c</mi><mtext mathvariant="normal">buyer</mtext></msubsup><annotation encoding="application/x-tex">P_c^{\text{buyer}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>P</mi><mi>c</mi><mtext mathvariant="normal">seller</mtext></msubsup><annotation encoding="application/x-tex">P_c^{\text{seller}}</annotation></semantics></math></td>
-<td>Buyer’s and seller’s profit per share at expiration. Subscript <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> for a put.</td>
+<td>Buyer’s (long) profit per share for a single contract at expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>c</mi></msub><mo>−</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">V_c-\mathcal D_{T,0}(g_y)\,\mathcal P_c</annotation></semantics></math>, and the seller’s, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msubsup><mi>P</mi><mi>c</mi><mtext mathvariant="normal">buyer</mtext></msubsup></mrow><annotation encoding="application/x-tex">-P_c^{\text{buyer}}</annotation></semantics></math>. Subscript <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> for a put.</td>
 <td>USD/share</td>
 </tr>
 <tr class="even">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mtext mathvariant="normal">BE</mtext></msub><annotation encoding="application/x-tex">S_{\text{BE}}</annotation></semantics></math></td>
-<td>Breakeven share price at expiration: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>+</mo><msub><mi>𝒫</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">K+\mathcal P_c</annotation></semantics></math> for a call and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><msub><mi>𝒫</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">K-\mathcal P_p</annotation></semantics></math> for a put.</td>
-<td>USD/share</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math></td>
+<td>Orientation of a position: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">+1</annotation></semantics></math> for the buyer (long), <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math> for the seller (short). The position’s profit per share is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mspace width="0.167em"></mspace><msup><mi>P</mi><mtext mathvariant="normal">buyer</mtext></msup></mrow><annotation encoding="application/x-tex">\theta\,P^{\text{buyer}}</annotation></semantics></math>.</td>
+<td>1</td>
 </tr>
 <tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mtext mathvariant="normal">BE</mtext></msub><annotation encoding="application/x-tex">S_{\text{BE}}</annotation></semantics></math></td>
+<td>Breakeven share price at expiration: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>+</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">K+\mathcal D_{T,0}(g_y)\,\mathcal P_c</annotation></semantics></math> for a call and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">K-\mathcal D_{T,0}(g_y)\,\mathcal P_p</annotation></semantics></math> for a put.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
 <td>Exercise time of an American contract, a stopping time that uses only information available at that time.</td>
 <td>yr</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_y</annotation></semantics></math></td>
 <td>Continuously compounded risk-free rate.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal D_{T,0}(g_y)</annotation></semantics></math></td>
-<td>Accumulation factor from date 0 to expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_yT}</annotation></semantics></math> (L1b). Its inverse is the discount factor.</td>
+<td>Accumulation factor from date 0 to expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup><annotation encoding="application/x-tex">e^{g_yT}</annotation></semantics></math>. Its inverse is the discount factor.</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb P</annotation></semantics></math></td>
 <td>Risk-neutral pricing measure, under which every traded asset has zero expected NPV at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_y</annotation></semantics></math>, and the real-world measure.</td>
 <td>Probabilities: 1</td>
 </tr>
-<tr class="odd">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>NPV</mo><mn>0</mn></msub><annotation encoding="application/x-tex">\operatorname{NPV}_0</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>T</mi></msub><annotation encoding="application/x-tex">\rho_T</annotation></semantics></math></td>
-<td>An option’s NPV at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math> and its scaled NPV, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>V</mi><mi>/</mi><mi>𝒫</mi><mo>−</mo><mn>1</mn><mo>≥</mo><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mathcal D^{-1}_{T,0}(g_y)\,V/\mathcal P-1\geq-1</annotation></semantics></math>.</td>
-<td>Time-0 USD/share; 1</td>
-</tr>
 <tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>NPV</mo><mn>0</mn></msub><annotation encoding="application/x-tex">\operatorname{NPV}_0</annotation></semantics></math></td>
+<td>An option’s NPV at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>.</td>
+<td>Time-0 USD/share</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mo>NPV</mo><mn>0</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb E[\operatorname{NPV}_0]</annotation></semantics></math></td>
 <td>Expected NPV of the Concept Review bet under our beliefs, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>p</mi><mo>+</mo><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">-p+\mathcal D^{-1}_{T,0}(g_y)\,\mathbb P(S(T)\geq K)</annotation></semantics></math>.</td>
 <td>USD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math></td>
 <td>Price paid today for the Concept Review bet or a one-dollar event contract. Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>, it is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">event</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal D^{-1}_{T,0}(g_y)\,\mathbb Q(\text{event})</annotation></semantics></math>.</td>
 <td>USD</td>
 </tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal P(S,t)</annotation></semantics></math></td>
+<td>Premium at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> when the share price is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>. At expiration it equals the payoff, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal P(S,T)=V(K,S)</annotation></semantics></math>. Before expiration it satisfies the Black–Scholes–Merton equation.</td>
+<td>USD/share</td>
+</tr>
 <tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math></td>
+<td>Shares sold per option in the Black–Scholes–Merton hedge, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>𝒫</mi><mi>/</mi><mi>∂</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P/\partial S</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></td>
 <td>GBM diffusion volatility.</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1/2}</annotation></semantics></math></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mo>+</mo></msub><annotation encoding="application/x-tex">d_+</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mo>−</mo></msub><annotation encoding="application/x-tex">d_-</annotation></semantics></math></td>
 <td>Black–Scholes–Merton arguments, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mo>−</mo></msub><mo>=</mo><msub><mi>d</mi><mo>+</mo></msub><mo>−</mo><mi>σ</mi><msqrt><mi>T</mi></msqrt></mrow><annotation encoding="application/x-tex">d_-=d_+-\sigma\sqrt T</annotation></semantics></math>.</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(\cdot)</annotation></semantics></math></td>
-<td>Standard normal cumulative distribution function, L5a’s <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>.</td>
+<td>Standard normal cumulative distribution function, written <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math> in the terminal target formula.</td>
 <td>Probability: 1</td>
 </tr>
-<tr class="odd">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math></td>
-<td>Example 1: position direction (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">+1</annotation></semantics></math> long, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math> short) and shares per contract.</td>
-<td>1; shares/contract</td>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math></td>
+<td>Example 1: shares per contract.</td>
+<td>shares/contract</td>
 </tr>
 </tbody>
 </table>
