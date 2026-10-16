@@ -1,8 +1,9 @@
 # L9b lecture, before the instructor's hand edits
 
 - Source: `lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb`
-- Copied from commit `ec10c27` on October 16, 2026, after intrinsic and
-  extrinsic value moved to L10a. Earlier copies: `c68c2f6` (pseudocode),
+- Copied from commit `5568311` on October 16, 2026, after the polish pass.
+  Earlier copies: `ec10c27` (intrinsic and extrinsic value moved to L10a),
+  `c68c2f6` (pseudocode),
   `8fc45b3` (implied-volatility blockquote), `91262bb` (voice pass), and `13be3a1`, the version the instructor
   rated 4/10.
 - One hand edit of his is already in this copy, so the diff will not show it:
@@ -40,5 +41,20 @@
   premium" (each takeaway is his sentence), and the closer "The early-exercise premium is
   what the right to exercise before expiration is worth, and the lattice and
   simulation give two ways to compute it."
+- New with the polish pass (5568311): "of a contract with strike price $K$
+  and expiration $T$ ... back to today at the risk-free rate $g_{y}$" in the
+  first where-clause; "the risk-neutral pricing rule" before $\mathbb{Q}$;
+  the "factor out $S_0$" and "expand $(1-q)d$" lines; "Let's use this lattice
+  to price American contracts."; "but each path has only one future" and
+  "across paths"; "The fitted curve estimates the value of holding."; "The
+  following example computes every node of this lattice:"; "and measure each
+  contract's early-exercise premium." in both CRR example descriptions; "the
+  archived contracts"; the takeaway label "Early exercise can pay for puts",
+  "That never happens for a call on a share with no dividend.", "works
+  backward along simulated paths," and "Holding on every path gives the
+  European premium." These changes reuse his words: his Hull handoff and the
+  Longstaff–Schwartz holding sentence moved after the example links, his two
+  market-data sentences were merged, and "Models compute" now starts a new
+  sentence.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
