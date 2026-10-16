@@ -81,6 +81,17 @@
   is rewritten in `code/src/Longstaff.jl`. `code/test/test_longstaff.jl` pins
   the paper's 0.1144 and its GBM benchmark of 4.478. He kept the Hull example
   as the hand way into CRR.
+- October 16 voice pass, approved ("This looks great! Agree"). He had rated the
+  lecture 4: CRR was framed as a Concept Review although this lecture first
+  teaches it, there was no company profile, the risk-neutral probability came
+  from nowhere, and the text was choppy with too many bullet-only sections.
+  The fix follows his 2025 L10a outline: one H2, "American Style Options
+  Contracts", with H3s for the CRR lattice (q derived from the risk-neutral
+  expectation and tied to the no-arbitrage q of the lattice lecture), the
+  decision rule and Hull, the market chain, then Longstaff–Schwartz. The
+  market section now precedes Monte Carlo. The calls/puts bullets became prose,
+  and the company profile is the Options Clearing Corporation. A Concept Review
+  is only for material a previous lecture actually taught.
 
 ## L8b build — October 10, 2026
 

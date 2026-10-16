@@ -4,9 +4,11 @@
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
 % instructor preference. Notation follows the lecture: payoff V(K,S) as in L9a,
 % premiums \mathcal{P}, \mathcal{P}^{AM}, and \mathcal{P}^{EU}, lattice node value
-% \hat{V}_{t,k}, risk-neutral up probability q, risk-free rate g_y, discount factor
+% \hat{V}_{t,k}, risk-neutral up probability q, risk-free rate g_y, accumulation factor
 % \mathcal{D}, continuation value \hat{C}(S) (Longstaff-Schwartz), and extrinsic value E_V(t). Rebuilt October 2026 from the instructor's
 % Fall-2025 American-options lectures (see lectures/instructor/L9b-REBUILD-SPEC.md).
+% October 16, 2026: re-synced after the lecture voice pass (OCC profile, CRR taught as
+% new material, market section before Monte Carlo, no lecture-number references).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -44,7 +46,7 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  In L9a, we priced European options, which can be exercised only at
+  Previously, we priced European options, which can be exercised only at
   expiration. Standard options on stocks and ETFs are American-style and can be
   exercised at any time. What is the right to exercise early worth?
 
@@ -68,11 +70,11 @@
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Example 1:}}\par\small
-  \href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
+  \href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Example 2:}}\par\small
-  \href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
+  \href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Example 3:}}\par\small
@@ -83,16 +85,35 @@
   \href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Concept Review: CRR Binomial Pricing Model}
-  American style options contracts allow the holder to exercise the option
-  \hilite{at any time} before or on the expiration date. In L9a, we wrote the
-  premium of an American-style contract as:
+\begin{frame}{Company Profile: The Options Clearing Corporation}
+  \href{https://www.theocc.com/}{\hilite{OCC}} stands between the buyer and the
+  seller of every U.S. listed option. It opened in 1973 as CBOE Clearing
+  Corporation and became OCC in 1975.
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Exercise and assignment}: OCC assigns each early exercise at
+      random to a clearing member with a short position in the same contract.
+    \item \hilite{Automatic exercise at expiration}: since 1977, an expiring
+      equity option in the money by 0.01 USD/share or more is exercised unless
+      the holder instructs otherwise.
+    \item \hilite{Monte Carlo margin and binomial trees}: since 2006, STANS
+      simulates 10,000 two-day scenarios and reprices American options on a
+      binomial tree.
+  \end{itemize}
+  \textbf{\ink{Connection to today's lecture:}} a seller of an American put can be
+  assigned once exercising now beats holding, so a European-premium margin
+  would leave out the early-exercise premium.
+\end{frame}
+
+\begin{frame}{American Style Options Contracts}
+  American-style options contracts allow the holder to exercise the option
+  \hilite{at any time} before or on the expiration date. Previously, we wrote
+  the premium of an American-style contract as:
   \[
     \PAM=\sup_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\PEU
   \]
   The exercise time $\tau$ is chosen using only the information available at
-  that time (a \hilite{stopping time}). The American premium is at least the European
-  one because the holder can choose when to exercise.
+  that time (a \hilite{stopping time}). The American premium is at least the
+  European one because the American holder can always wait until expiration.
 
   \vspace{0.5em}
   The standard method to price American options is the Cox, Ross, Rubinstein
@@ -100,30 +121,41 @@
   \slidenote{Reference:}{Cox, J. C., Ross, S. A., and Rubinstein, M. (1979). Option pricing: A simplified approach. \href{https://www.sciencedirect.com/science/article/pii/0304405X79900151}{Journal of Financial Economics 7(3): 229}.}
 \end{frame}
 
-\begin{frame}{Concept Review: The CRR Lattice}
+\begin{frame}{CRR Binomial Lattice Model}
   At each time step, the share price moves up by a factor $u$ with the
   \hilite{risk-neutral probability} $q$, or down by a factor $d$ with
-  probability $(1-q)$:
+  probability $(1-q)$. The CRR parameters are no longer data driven: $q$ makes
+  the expected return of the underlying asset match the risk-free rate $g_{y}$.
+  {\small
   \begin{equation*}
-    \boxed{
     \begin{aligned}
-      q = \frac{\mathcal{D}_{1,0}\left(g_{y}\right) - d}{u - d}\quad\blacksquare
-    \end{aligned}}
-    \qquad\qquad
+      \mathcal{D}_{1,0}(g_{y})\cdot S_{0} & = \E_{\Q}\left(S_{1}\right) && \text{grow at the risk-free rate under }\Q\\
+      & = q\cdot(u\cdot S_{0}) + (1-q)\cdot(d\cdot S_{0}) && \text{up with probability } q\text{, down with } (1-q)\\
+      & = S_{0}\bigl(qu + d - qd\bigr) && \text{factor out } S_{0}\text{ and expand } (1-q)d\\
+      & = S_{0}\bigl(d + q(u - d)\bigr) && \text{collect the } q \text{ terms}\\[0.3em]
+      \Longrightarrow\quad & \boxed{q = \frac{\mathcal{D}_{1,0}\left(g_{y}\right) - d}{u - d}} && \text{divide by } S_{0}\text{ and solve for } q
+    \end{aligned}
+  \end{equation*}}%
+  Here $\mathcal{D}_{1,0}(g_{y})=e^{g_{y}\Delta t}$ is the risk-free accumulation
+  factor for one time step. This is the risk-neutral probability we found by
+  ruling out arbitrage when we introduced lattice models, with
+  $R_{f}=\mathcal{D}_{1,0}(g_{y})$.
+\end{frame}
+
+\begin{frame}{CRR Up and Down Factors}
+  Unlike the data-driven binomial model we discussed earlier, the CRR model
+  derives $u$ and $d$ based on the volatility $\sigma$ of the underlying asset,
+  the time step $\Delta t$, and the symmetric condition $ud = 1$:
+  \begin{equation*}
     \boxed{
     \begin{aligned}
       u &= e^{\sigma \sqrt{\Delta t}} \\
       d &= e^{-\sigma \sqrt{\Delta t}}
     \end{aligned}}
   \end{equation*}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Discount factor}: $\mathcal{D}_{1,0}\left(g_{y}\right)=e^{g_{y}\Delta t}$
-      for one time step at the risk-free rate $g_{y}$.
-    \item \hilite{L3b's risk-neutral probability}: $q=(R_{f}-d)/(u-d)$ with
-      $R_{f}=\mathcal{D}_{1,0}(g_{y})$.
-    \item \hilite{Up and down factors}: set by the implied volatility
-      $\sigma$ of the underlying asset and the time step size $\Delta t$.
-  \end{itemize}
+  Here $\sigma$ is the implied volatility of the growth rate (return) of the
+  underlying asset, the volatility at which a pricing model reproduces the
+  contract's market price.
   \slidenote{Where do $u$ and $d$ come from?}{\href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{advanced/crr\_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -147,9 +179,10 @@
     \end{aligned}}
   \end{equation*}}%
   Here $\hat{V}_{t,k}$ is the contract's value at the node with $k$ up moves in
-  $t$ steps, and $S_{t,k}=S_{0}u^{k}d^{t-k}$ is the share price there (L3b). The
-  premium is the value at the root, $\mathcal{P}=\hat{V}_{0,0}$. The difference
-  $\PAM-\PEU\geq 0$ is the value of the right to exercise early, the
+  $t$ steps, $S_{t,k}=S_{0}u^{k}d^{t-k}$ is the share price there, and
+  $\Dstep=e^{-g_{y}\Delta t}$ discounts one time step. The hold term is the
+  European premium formula applied over one step. The premium is
+  $\mathcal{P}=\hat{V}_{0,0}$, and $\PAM-\PEU\geq 0$ is the
   \hilite{early-exercise premium}.
 \end{frame}
 
@@ -159,10 +192,10 @@
     \item \hilite{Contract}: the strike price is $K=52$ USD/share on a stock
       whose current price is $S_{0}=50$ USD/share.
     \item \hilite{Lattice}: two time steps of 1 year each. In each period, the
-      stock price moves up by $u=1.2$ or down by $d=0.8$.
-    \item \hilite{Pricing inputs}: the risk-neutral probability of an up move
-      is $q=0.6282$, and the continuously compounded risk-free rate is
-      $g_{y}=5\%$.
+      stock price moves up by a factor of $u=1.2$ or down by a factor of $d=0.8$.
+    \item \hilite{Pricing inputs}: the continuously compounded risk-free rate is
+      $g_{y}=5\%$, so the risk-neutral probability of an up move is
+      $q=(e^{0.05}-0.8)/(1.2-0.8)=0.6282$.
   \end{itemize}
   \vspace{0.6em}
   {\large\textbf{\ink{What is the price of the American and European put option contracts?}}}
@@ -186,10 +219,29 @@
   \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
 \end{frame}
 
+\begin{frame}{Compute the Price of an American Call and Put Option Contract}
+  Now that we've explored the decision rule through the Hull example, let's
+  apply these concepts to real market data: CRR prices for American calls and
+  puts from the course's options archive, compared with market prices across
+  strike.
+
+  \vspace{0.6em}
+  \textbf{\ink{When does early exercise pay?}} For a call on a share that pays no
+  dividend, exercising early never helps. Exercising early means paying the
+  strike sooner and owning the shares if the price then falls below the
+  strike, so $\PAM_{c}=\PEU_{c}$.
+
+  \vspace{0.6em}
+  For a put, exercising early can pay when the put is deep in the money. The
+  holder receives the strike now and earns the risk-free rate on it, so
+  $\PAM_{p}>\PEU_{p}$ is possible.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
+\end{frame}
+
 \begin{frame}{Monte Carlo Pricing of American Options}
-  In L9a, we priced European contracts by simulating share prices under $\Q$.
-  Longstaff and Schwartz extended this approach to American contracts. The
-  decision rule needs the expected value of holding, which they estimate by
+  Previously, we priced European contracts by simulating share prices under
+  $\Q$. Longstaff and Schwartz extended this approach to American contracts.
+  The decision rule needs the expected value of holding, which they estimate by
   regression, working backward from expiration:
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Simulate}: $M$ share price paths under $\Q$ on the exercise
@@ -207,41 +259,20 @@
   The premium is the average discounted cash flow over the paths.
 
   \vspace{0.6em}
-  Holding on every path gives L9a's European Monte Carlo premium, so the
+  Holding on every path gives the European Monte Carlo premium, so the
   difference estimates the early-exercise premium.
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
-\end{frame}
-
-\begin{frame}{Compute the Price of an American Call and Put Option Contract}
-  Now that we've explored the decision rule through the Hull example, let's
-  apply these concepts to real market data.
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Model versus market}: CRR prices for American calls and puts
-      from the course's options archive, compared with market prices across
-      strike.
-    \item \hilite{Calls}: on a share that pays no dividend, exercising early
-      never helps. Exercising early means paying the strike sooner and owning
-      the shares if the price then falls below the strike. Holding is always
-      worth at least as much, so $\PAM_{c}=\PEU_{c}$.
-    \item \hilite{Puts}: exercising early can pay when the put is deep in the
-      money. The holder receives the strike now and earns the risk-free rate on
-      it,\newline so $\PAM_{p}>\PEU_{p}$ is possible.
-  \end{itemize}
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Extrinsic versus Intrinsic Value of American Options}
   The premium (price) of an American option can be broken down into two
   components: intrinsic value and extrinsic value.
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Intrinsic value}: the immediate exercise value, $\max(0, S - K)$
-      for a call and $\max(0, K - S)$ for a put, where $S$ is the current stock
-      price.
+    \item \hilite{Intrinsic value}: the immediate exercise value,
+      $\max(0, S(t) - K)$ for a call and $\max(0, K - S(t))$ for a put, where
+      $S(t)$ is the current share price.
     \item \hilite{Extrinsic value}: also known as time value, the additional
       value from the potential for future price movements before expiration.
-    \item \hilite{Time decay}: as time moves towards expiration, the extrinsic
-      value tends to decrease, because there is less time for the share price
-      to move favorably.
   \end{itemize}
   The extrinsic value $E_{V}(t)$ can be expressed mathematically as:
   \begin{equation*}
@@ -266,10 +297,15 @@
   When the option is \hilite{out of the money}, it has no intrinsic value, and
   the entire option price is extrinsic value.
 
-  \vspace{0.5em}
+  \vspace{0.4em}
   \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
   There is still a chance that the share price moves favorably before
   expiration.
+
+  \vspace{0.4em}
+  As time moves towards expiration, the extrinsic value tends to decrease
+  (\hilite{time decay}), because there is less time for the share price to
+  move favorably.
   \slidenote{Example 3:}{\href{\repo/CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -279,12 +315,11 @@
   \href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 
   \vspace{0.5em}
-  Why does the CRR model use $u=e^{\sigma\sqrt{\Delta t}}$ and
-  $d=e^{-\sigma\sqrt{\Delta t}}$? We match the variance of the lattice's
-  one-step log return to the variance of geometric Brownian motion, which sets
-  the size of the up and down moves. We then check the match on the lattice
-  priced with $q$, and find how small the time step must be to keep $q$ between
-  zero and one.
+  In this notebook, we derive the up and down factors of the CRR model by
+  matching the variance of the lattice's one-step log return to the variance
+  of geometric Brownian motion. We then check the match on the lattice priced
+  with the risk-neutral probability, and find how small the time step must be
+  to keep that probability between zero and one.
   \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9b/advanced}{lectures/week-9/L9b/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
@@ -295,10 +330,11 @@
   \vspace{0.5em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Binomial trees enable American option pricing}: at each node,
-      the holder exercises or holds, so backward induction computes the
-      premium. The American premium exceeds the European premium only when early
-      exercise pays, as for deep in-the-money puts.
+    \item \hilite{Binomial trees and simulation price American options}: at
+      each node, the holder exercises or holds, so backward induction computes
+      the premium. The American premium exceeds the European premium only when
+      exercising early can pay at some node, as it can for puts.
+      Longstaff--Schwartz simulation estimates the same premium by regression.
     \item \hilite{Intrinsic and extrinsic value tell different stories}:
       intrinsic value is the immediate exercise value, and extrinsic value is
       the potential for favorable price movement before expiration.
