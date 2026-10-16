@@ -243,11 +243,11 @@
 \end{frame}
 
 \begin{frame}{Breakeven}
-  Setting the buyer's profit to zero gives the breakeven share price at
-  expiration:
+  Setting the buyer's profit to zero gives the breakeven share price
+  $S^{\ddagger}$ at expiration:
   \begin{align*}
-    S_{\text{BE}} & = K+\Dfv\cdot\Pc && \text{call}\\
-    S_{\text{BE}} & = K-\Dfv\cdot\Pp && \text{put}
+    S^{\ddagger} & = K+\Dfv\cdot\Pc && \text{call}\\
+    S^{\ddagger} & = K-\Dfv\cdot\Pp && \text{put}
   \end{align*}
   Above the call breakeven, and below the put breakeven, the buyer profits and
   the seller loses. Listed contracts often expire within weeks, so $\Dfv$ is
@@ -345,16 +345,15 @@
 \end{frame}
 
 \begin{frame}{Event Contracts}
-  An \hilite{event contract} pays 1 USD if the event occurs and nothing
-  otherwise. Its price is:
+  The Concept Review bet is an \hilite{event contract} on $\ST\geq K$, which
+  pays 1 USD if the event occurs and nothing otherwise. Its market price is:
   \[
     p=\Dinv\cdot\E_{\Q}\bigl[\mathbb{1}\{\text{event}\}\bigr]=\Dinv\cdot\Q(\text{event})
   \]
   The pricing probability $\Q(\text{event})$ can differ from the real-world
-  probability $\mathbb{P}(\text{event})$. The Concept Review bet is the event
-  contract on $\ST\geq K$. A general Kalshi event, such as an election, is not
-  tied to a share price, so choosing its pricing probability requires additional
-  assumptions.
+  probability $\mathbb{P}(\text{event})$. A general Kalshi event, such as an
+  election, is not tied to a share price, so choosing its pricing probability
+  requires additional assumptions.
 \end{frame}
 
 \begin{frame}{A Monte Carlo Premium}
@@ -398,8 +397,8 @@
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}
-  Instead of simulating, we can compute the expectation with the closed-form
-  European call and put premiums:
+  Instead of simulating, we can compute this premium with the closed-form
+  European call and put formulas:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -482,7 +481,7 @@
   information available at that time. The premium is the largest expected
   payoff, discounted from $\tau$ back to today, over all such exercise times:
   \[
-    \mathcal{P}^{\text{AM}}=\sup_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr]\geq\mathcal{P}^{\text{EU}}
+    \mathcal{P}^{\text{AM}}=\max_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr]\geq\mathcal{P}^{\text{EU}}
   \]
   The American put has no closed-form formula like BSM, so its premium is
   usually computed on a binomial lattice.

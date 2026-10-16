@@ -134,6 +134,17 @@ using Distributions
         @test isapprox(P[end - 1], 1000.0; atol = 1e-10)
     end
 
+    @testset "profit with the premium's future value" begin
+        # profit = sense * (payoff - 𝒟 * premium), with 𝒟 = 1 by default -
+        long_call  = build(MyAmericanCallContractModel, (K = 100.0, sense =  1, premium = 5.0, copy = 1))
+        short_call = build(MyAmericanCallContractModel, (K = 100.0, sense = -1, premium = 5.0, copy = 1))
+        S = [90.0, 100.0, 120.0]
+        𝒟 = exp(0.04 * 1.0)
+        @test profit([long_call], S)[:, 2] ≈ [-5.0, -5.0, 15.0]
+        @test profit([long_call], S; 𝒟 = 𝒟)[:, 2] ≈ [0.0, 0.0, 20.0] .- 𝒟 * 5.0
+        @test profit([short_call], S; 𝒟 = 𝒟)[:, 2] ≈ -(profit([long_call], S; 𝒟 = 𝒟)[:, 2])
+    end
+
     @testset "HMM jumps: small state space" begin
         # test that HMM with jump generates valid states for N < 10
         Random.seed!(20260803)

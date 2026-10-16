@@ -84,6 +84,24 @@ with the premium and the payoff in place of the purchase and sale prices";
 pay. A buyer with different beliefs computes a different premium."; "although
 the BSM model assumes one constant $\sigma$"; and square brackets in the
 American teaser's $\mathbb{E}_{\mathbb{Q}}[\cdot]$.
+Then, at his request (about 16:45), Claude's: "we can compute this premium with
+the [Black–Scholes pricing formula]" (was "the expectation"), and the market
+table labels "U.S. equities average daily notional value, ADNV (USD/day)" and
+"Options average daily volume, ADV (contracts/day)".
+Then, at his request (about 17:15, his choice of symbol), Claude's: the
+breakeven symbol $S^{\ddagger}$ replaces $S_{\text{BE}}$ in the breakeven
+display, and "gives the __breakeven__ share price $S^{\ddagger}$ at
+expiration:".
+Then, at his request (about 17:10), Claude's: $\max_{\tau\leq T}$ replaces
+$\sup_{\tau\leq T}$ in the American premium, and the sentence "Many texts
+write $\sup$, the least upper bound, in place of $\max$ to cover contracts
+with no best exercise time."
+Then, at his request (about 17:25, preview approved,
+`build/notebook-previews/L9a-event-contract-2026-10-16/`), Claude's: the
+event-contract paragraph now opens "The bet in the Concept Review is an
+__event contract__ on $S(T)\geq K$, which pays …" and "Its market price is:",
+and the later sentence "The bet in the Concept Review is the event contract on
+$S(T)\geq K$." is cut.
 
 ## Before the October 16 refresh
 

@@ -814,21 +814,24 @@ function payoff(contracts::Array{T,1}, S::Array{Float64,1})::Array{Float64,2} wh
 end
 
 """
-    profit(contracts::Array{T,1}, S::Array{Float64,1}) -> Array{Float64,2} where T <: AbstractContractModel
+    profit(contracts::Array{T,1}, S::Array{Float64,1}; 𝒟::Float64 = 1.0) -> Array{Float64,2} where T <: AbstractContractModel
 
 The `profit` function computes the profit for a set of option contracts at expiration given the underlying prices contained in the `S::Array{Float64,1}` array.
 This function requires the contracts to have the `premium` field set on each contract model.
-    
+The premium is paid today and the payoff arrives at expiration, so the profit compares the payoff with the premium's future value, `𝒟*premium`,
+where `𝒟 = exp(g*T)` is the accumulation factor from today to expiration for the risk-free rate `g` (units: 1/year) and the time to expiration `T` (units: years).
+
 ### Arguments
 - `contracts::Array{T,1}`: An array of option contracts where `T` is a subtype of the `AbstractContractModel` type. Each contract must have the `premium` field set.
 - `S::Array{Float64,1}`: An array of underlying prices at expiration.
+- `𝒟::Float64 = 1.0`: The accumulation factor applied to each premium (dimensionless). The default, `1.0`, ignores the time value of money.
 
 ### Returns
 - `Array{Float64,2}`: A matrix of size `(number_of_underlying_prices, number_of_contracts + 2)` where each row represents an underlying price and each column containts the profit for a contract.
 The first column contains the underlying price, the second column contains the profit for the first contract, the third column contains the profit for the second contract, and so on.
 The last column contains the sum of the profits for all contracts.
 """
-function profit(contracts::Array{T,1}, S::Array{Float64,1})::Array{Float64,2} where T <: AbstractContractModel
+function profit(contracts::Array{T,1}, S::Array{Float64,1}; 𝒟::Float64 = 1.0)::Array{Float64,2} where T <: AbstractContractModel
 
     # initialize - 
     number_of_underlying_prices = length(S);
@@ -853,8 +856,8 @@ function profit(contracts::Array{T,1}, S::Array{Float64,1})::Array{Float64,2} wh
             copy = contract.copy |> Float64;
             premium = contract.premium;
 
-            # compute the payoff -
-            profit_array[i,j+1] = (copy*sense)*(_payoff(contract, Sᵢ) - premium)
+            # compute the profit: payoff minus the premium's future value at expiration -
+            profit_array[i,j+1] = (copy*sense)*(_payoff(contract, Sᵢ) - 𝒟*premium)
         end
     end
 
