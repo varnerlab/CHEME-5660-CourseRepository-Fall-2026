@@ -156,47 +156,6 @@
   \slidenote{Where do $u$ and $d$ come from?}{\href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{advanced/crr\_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Historical or Implied Volatility?}
-  There are two ways to put a number on $\sigma$, and the second also gives a
-  quick range for the share price:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Historical volatility}: previously, we estimated $\sigma$ from
-      past share prices as
-      $\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}$, where
-      $\sigma_{g}$ is the standard deviation of the growth rates and $\Delta t$
-      is the time between price observations. This estimate looks backward.
-    \item \hilite{Implied volatility}: the
-      \href{https://en.wikipedia.org/wiki/Implied_volatility}{implied volatility}
-      (IV) is the market's forecast of a likely movement in the share price,
-      the volatility ``implied'' by an option's market price through a pricing
-      model such as Black--Scholes--Merton or CRR. It is often equal to or
-      larger than the historical volatility.
-    \item \hilite{How can we use it?} IV represents a one-standard-deviation
-      movement in the share price over the next year. Over a horizon of $T$
-      years, the size of that move scales with $\sqrt{T}$.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{A Back-of-the-Envelope Range from IV}
-  Moving one standard deviation up or down in the solution of geometric
-  Brownian motion gives a back-of-the-envelope range for the share price:
-  {\small
-  \begin{equation*}
-    \begin{aligned}
-      S(T) & = S_{0}\exp\left[\mu_{g}T + \sigma\sqrt{T}\,Z\right] && \text{solution of geometric Brownian motion}\\
-      S_{\pm} & = S_{0}\exp\left[\mu_{g}T \pm \text{IV}\sqrt{T}\right] && \text{set } \sigma=\text{IV} \text{ and } Z=\pm 1\\
-      & \approx S_{0}\exp\left[\pm\,\text{IV}\sqrt{T}\right] && \mu_{g}T \text{ is small next to } \text{IV}\sqrt{T} \text{ for short } T\\
-      & \approx S_{0}\left(1 \pm \text{IV}\sqrt{T}\right) && e^{x}\approx 1+x \text{ for small } x
-    \end{aligned}
-  \end{equation*}}%
-  Here $\mu_{g}$ is the mean growth rate, $Z$ is a standard normal random
-  variable, and $S_{\pm}$ is the share price one standard deviation above or
-  below $S_{0}$. For example, a share at $S_{0}$ = 100 USD/share with IV = 40\%
-  and 30 days to expiration ($T$ = 30/365 years) has $\text{IV}\sqrt{T}$ =
-  0.115, so the range is about 88.5 to 111.5 USD/share. Under the model, the
-  share price ends inside this range about 68\% of the time.
-\end{frame}
-
 \begin{frame}{Decision-Rule for American Options}
   At each node, the American holder decides to exercise now or hold for the future.
   \begin{center}

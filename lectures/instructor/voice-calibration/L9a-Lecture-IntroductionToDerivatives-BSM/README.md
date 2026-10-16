@@ -102,6 +102,12 @@ event-contract paragraph now opens "The bet in the Concept Review is an
 __event contract__ on $S(T)\geq K$, which pays …" and "Its market price is:",
 and the later sentence "The bet in the Concept Review is the event contract on
 $S(T)\geq K$." is cut.
+Then, at his request (about 17:35, "should we move the IV blockquote to L9a?"),
+Claude's: the "Historical or implied volatility?" blockquote moved in from L9b,
+between the "Which volatility $\sigma$ should we use?" paragraph and the
+bisection pseudocode. Its wording is the approved L9b text, with $S(0)$ in place
+of $S_{0}$ and the sentence "In other words, it is the volatility "implied" by
+the market price of an option … such as Black–Scholes–Merton or CRR." cut.
 
 ## Before the October 16 refresh
 

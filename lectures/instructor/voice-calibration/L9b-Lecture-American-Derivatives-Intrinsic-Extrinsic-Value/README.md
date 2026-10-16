@@ -59,5 +59,8 @@
 - After the backup, at his request (October 16, about 17:10), Claude's:
   $\max_{\tau\leq T}$ replaces $\sup_{\tau\leq T}$ in the American premium
   display. Exclude it from the diff.
+- Then, at his request (about 17:35), Claude's: the "Historical or implied
+  volatility?" blockquote after the $u$/$d$ box moved to L9a. Exclude its
+  removal from the diff.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.

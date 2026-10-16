@@ -151,6 +151,13 @@
   Simulate/Regress/Decide labels and the "How can we use it?" bullet go (both
   approved), $\Delta t$ in $\sigma_{\mathrm{ann}}$ is renamed (he asked for
   it), and the title changes.
+- Later on October 16, at his request, the "Historical or implied volatility?"
+  blockquote, its two deck frames, and its FAQ notation rows moved to L9a,
+  which defines implied volatility. In L9a it sits between "Which volatility
+  $\sigma$ should we use?" and the bisection pseudocode, with $S(0)$ for
+  $S_{0}$. The sentence naming CRR is cut. L9b keeps "$\sigma$ is the same
+  volatility as in geometric Brownian motion and the Black–Scholes–Merton
+  formula". The L9a deck is now 32 pages and the L9b deck 20.
 
 ## L8b build — October 10, 2026
 
