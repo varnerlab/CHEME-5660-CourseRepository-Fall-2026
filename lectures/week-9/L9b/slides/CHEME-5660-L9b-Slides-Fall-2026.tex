@@ -226,6 +226,30 @@
   \hilite{early-exercise premium}.
 \end{frame}
 
+\begin{frame}{Pseudocode: Pricing on the CRR Lattice}
+  \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
+  call or put, $T$, $\sigma$, $g_{y}$, and the number of time steps $h$. Compute
+  $\Delta t=T/h$, $u$ and $d$, $q$, and $\Dstep=e^{-g_{y}\Delta t}$.
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item Build the share price lattice: $S_{t,k}\gets S_{0}u^{k}d^{t-k}$ for
+      each level $t=0,1,\dots,h$ and node $k=0,1,\dots,t$.
+    \item At expiration, set each node value to the payoff:
+      $\hat{V}_{h,k}\gets V(K,S_{h,k})$ for $k=0,1,\dots,h$.
+    \item For each level $t=h-1,h-2,\dots,0$ \textbf{do}:
+      \begin{itemize}
+        \item For each node $k=0,1,\dots,t$ \textbf{do}:
+          \begin{itemize}
+            \item[a.] Compute the value of holding for the future:
+              $H_{t,k}\gets\Dstep\cdot\bigl(q\,\hat{V}_{t+1,k+1}+(1-q)\,\hat{V}_{t+1,k}\bigr)$.
+            \item[b.] If the contract is American, \textbf{then}:
+              $\hat{V}_{t,k}\gets\max\bigl\{V(K,S_{t,k}),~H_{t,k}\bigr\}$.
+              Otherwise, $\hat{V}_{t,k}\gets H_{t,k}$.
+          \end{itemize}
+      \end{itemize}
+    \item The premium is the value at the root: $\mathcal{P}\gets\hat{V}_{0,0}$.
+  \end{enumerate}
+\end{frame}
+
 \begin{frame}{A Hypothetical Example from Hull}
   Consider a put contract.
   \begin{itemize}\setlength{\itemsep}{0.4em}
@@ -280,27 +304,52 @@
 
 \begin{frame}{Monte Carlo Pricing of American Options}
   Previously, we priced European contracts by simulating share prices under
-  $\Q$. Longstaff and Schwartz extended this approach to American contracts.
-  The decision rule needs the expected value of holding, which they estimate by
-  regression, working backward from expiration:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Simulate}: $M$ share price paths under $\Q$ on the exercise
-      dates. At expiration, each path's cash flow is its payoff.
-    \item \hilite{Regress}: the discounted later cash flows of the in-the-money
-      paths on their share prices, giving the continuation value
-      $\hat{C}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$.
-    \item \hilite{Decide}: exercise if $V(K,S(t))>\hat{C}(S(t))$. The payoff now
-      replaces that path's later cash flow.
-  \end{itemize}
+  $\Q$ and averaging the discounted payoffs. Longstaff and Schwartz extended
+  this approach to American contracts.
+
+  \vspace{0.6em}
+  On every path, the decision rule needs the expected value of holding.
+  Longstaff and Schwartz estimate it by regression, working backward from
+  expiration:
+
+  \vspace{0.6em}
+  \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
+  call or put, $T$, $\sigma$, $g_{y}$, the number of exercise dates $N$ after
+  today, and the number of paths $M$. Compute $\Delta t=T/N$ and
+  $\Dstep=e^{-g_{y}\Delta t}$.
   \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
 \end{frame}
 
-\begin{frame}{The Early-Exercise Premium by Simulation}
-  The premium is the average discounted cash flow over the paths.
+\begin{frame}{Pseudocode: Longstaff–Schwartz}
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item \hilite{Simulate}: generate $M$ share price paths under $\Q$ on the
+      exercise dates $t=0,1,\dots,N$, where $S_{i}(t)$ is the share price on
+      path $i$ at date $t$.
+    \item At expiration, set each path's cash flow to its payoff:
+      $Y_{i}\gets V(K,S_{i}(N))$ for $i=1,2,\dots,M$.
+    \item For each date $t=N-1,N-2,\dots,1$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Discount each cash flow back one date: $Y_{i}\gets\Dstep\cdot Y_{i}$.
+        \item[b.] \hilite{Regress}: on the in-the-money paths, fit
+          $\hat{C}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
+          $\bigl(S_{i}(t),Y_{i}\bigr)$ by least squares.
+        \item[c.] \hilite{Decide}: for each in-the-money path, if
+          $V(K,S_{i}(t))>\hat{C}(S_{i}(t))$, \textbf{then}: exercise, so
+          $Y_{i}\gets V(K,S_{i}(t))$.
+      \end{itemize}
+    \item Discount the cash flows to today and average them:
+      $\bar{Y}\gets\mathcal{D}^{-1}_{1,0}(g_{y})\cdot\frac{1}{M}\sum_{i=1}^{M}Y_{i}$.
+    \item The premium is $\PAM\gets\max\bigl\{V(K,S_{0}),~\bar{Y}\bigr\}$.
+  \end{enumerate}
+\end{frame}
 
-  \vspace{0.6em}
+\begin{frame}{The Early-Exercise Premium by Simulation}
   Holding on every path gives the European Monte Carlo premium, so the
   difference estimates the early-exercise premium.
+
+  \vspace{0.6em}
+  Let's price an American put by simulation and compare it with the lattice and
+  the European premium.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 

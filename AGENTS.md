@@ -102,6 +102,17 @@
   text, and it closes with the back-of-the-envelope range
   $S_{\pm}\approx S_0(1\pm\text{IV}\sqrt{T})$. The deck has two matching
   frames, for 22 pages.
+- Same day, at his request ("super picky about formatting"), the lecture gained
+  pseudocode for CRR (after the boxed recursion, before Hull) and
+  Longstaff–Schwartz (in place of the Simulate/Regress/Decide bullets, whose
+  labels moved into steps 1, 3b, and 3c). The format copies the 5800 Fall-2025
+  Jacobi notebook, 5820 K-means/Perceptron/Hopfield, and L3b/L4b:
+  `__Initialize__: Given ... Compute ...`, numbered steps, explicit
+  `For ... __do__:` lines, `- a.` sub-steps, `If ..., __then__:`, and `\gets`.
+  The LSM steps discount cash flows one date at a time, like the example and the
+  package. The deck has a CRR pseudocode frame and a Longstaff–Schwartz frame
+  (Initialize on the intro frame), for 24 pages. In vnslides, a `{\small ...}`
+  group around an enumerate blanks the frame body, so split the frame instead.
 
 ## L8b build — October 10, 2026
 

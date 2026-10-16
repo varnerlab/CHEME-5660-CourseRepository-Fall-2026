@@ -2549,7 +2549,7 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math></td>
-<td>Length of one lattice step.</td>
+<td>Length of one lattice step, or the time between exercise dates in Longstaff–Schwartz pricing.</td>
 <td>yr</td>
 </tr>
 <tr class="even">
@@ -2618,6 +2618,16 @@
 <td>USD/share</td>
 </tr>
 <tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math></td>
+<td>Number of time steps in the CRR lattice, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mi>T</mi><mi>/</mi><mi>h</mi></mrow><annotation encoding="application/x-tex">\Delta t=T/h</annotation></semantics></math>.</td>
+<td>Count</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">H_{t,k}</annotation></semantics></math></td>
+<td>Value of holding for the future at node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t,k)</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>t</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>q</mi><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>k</mi></mrow></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal D^{-1}_{t+1,t}(g_y)\bigl(q\hat V_{t+1,k+1}+(1-q)\hat V_{t+1,k}\bigr)</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒫</mi><mtext mathvariant="normal">AM</mtext></msup><annotation encoding="application/x-tex">\mathcal P^{\text{AM}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒫</mi><mtext mathvariant="normal">EU</mtext></msup><annotation encoding="application/x-tex">\mathcal P^{\text{EU}}</annotation></semantics></math></td>
 <td>American and European premiums. Their difference <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝒫</mi><mtext mathvariant="normal">AM</mtext></msup><mo>−</mo><msup><mi>𝒫</mi><mtext mathvariant="normal">EU</mtext></msup><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathcal P^{\text{AM}}-\mathcal P^{\text{EU}}\geq0</annotation></semantics></math> is the early-exercise premium.</td>
 <td>USD/share</td>
@@ -2628,11 +2638,26 @@
 <td>Paths</td>
 </tr>
 <tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math></td>
+<td>Number of exercise dates after today in Longstaff–Schwartz pricing, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mi>T</mi><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">\Delta t=T/N</annotation></semantics></math>.</td>
+<td>Count</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_i(t)</annotation></semantics></math></td>
+<td>Share price on simulated path <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> at exercise date <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Y_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>Y</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar Y</annotation></semantics></math></td>
+<td>Cash flow on path <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, discounted to the current date, and the average cash flow discounted to today.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>C</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat C(S)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\beta_1</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>2</mn></msub><annotation encoding="application/x-tex">\beta_2</annotation></semantics></math></td>
 <td>Continuation value fitted by regression on the in-the-money paths, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>S</mi><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><msup><mi>S</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\beta_0+\beta_1S+\beta_2S^2</annotation></semantics></math>, and its coefficients.</td>
 <td>USD/share; USD/share, 1, (USD/share)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">^{-1}</annotation></semantics></math></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_V(t)</annotation></semantics></math></td>
 <td>Extrinsic value at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: the option price minus its intrinsic value.</td>
 <td>USD/share</td>
