@@ -42,9 +42,12 @@
   \node[above,vn annotation] at (6.0,1.05) {cash received};
 
   % Transport every dated flow to the common valuation date
-  \draw[vn transport] (6.0,-0.94) -- (0.50,-0.94)
-    node[midway,fill=white,inner sep=3pt,text=vnlink]
+  % The arrow stops at the label instead of running under a white fill, so the
+  % notebook's background shows through in any editor theme.
+  \node[inner sep=3pt,text=vnlink] (disc) at (3.25,-0.94)
     {$\bar c_j\mapsto\mathcal{D}_{j,0}^{-1}(y;n)\,\bar c_j$};
+  \draw[vn transport,-] (6.0,-0.94) -- (disc.east);
+  \draw[vn transport] (disc.west) -- (0.50,-0.94);
   \node[vn callout,anchor=north west] at (0.35,-1.27)
     {common units: time-0 dollars};
   \node[vn annotation,anchor=west] at (3.35,-1.57)
