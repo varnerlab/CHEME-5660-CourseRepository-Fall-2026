@@ -15,6 +15,7 @@ SVGS := $(addsuffix .svg,$(FIGURES))
 
 XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg
+PYTHON ?= python3
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 STYLE := vnfigure.sty
 SHARED := abstract-asset-timeline.tex
@@ -33,8 +34,11 @@ svg: $(SVGS)
 # Convert from the PDF rather than XeLaTeX's .xdv: dvisvgm cannot interpret the
 # xdvipdfmx graphics specials that PGF emits under XeLaTeX, and silently drops
 # every TikZ path. pdf2svg traces glyphs to paths, so the SVG needs no fonts.
-%.svg: %.pdf
+# theme_svg.py then adds the dark screen palette the lecture notebook relies on.
+# The PDF keeps the light palette for the notes and slides.
+%.svg: %.pdf theme_svg.py
 	$(PDF2SVG) $< $@
+	$(PYTHON) theme_svg.py $@
 
 clean:
 	$(RM) *.aux *.log *.xdv *.fls *.fdb_latexmk *.out
@@ -43,3 +47,5 @@ distclean: clean
 	$(RM) $(PDFS) $(SVGS)
 
 .PRECIOUS: %.pdf
+# A failed theme step must not leave an unthemed SVG that later looks current.
+.DELETE_ON_ERROR:
