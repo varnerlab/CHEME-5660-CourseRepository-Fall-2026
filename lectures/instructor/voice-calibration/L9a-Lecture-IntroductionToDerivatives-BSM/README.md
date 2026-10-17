@@ -108,6 +108,11 @@ between the "Which volatility $\sigma$ should we use?" paragraph and the
 bisection pseudocode. Its wording is the approved L9b text, with $S(0)$ in place
 of $S_{0}$ and the sentence "In other words, it is the volatility "implied" by
 the market price of an option … such as Black–Scholes–Merton or CRR." cut.
+Then (about 18:30), Claude's, after the SPXW advanced notebook was rebuilt on a
+real Alpaca snapshot: in cell `35eb5c02`, the SPXW bullet now reads "an
+end-of-day chain", drops "check the quotes," and the settlement and "synthetic"
+sentences, and ends "We then compare the resulting skew with the realized
+volatility of SPY, the exchange-traded fund that tracks the index."
 
 ## Before the October 16 refresh
 

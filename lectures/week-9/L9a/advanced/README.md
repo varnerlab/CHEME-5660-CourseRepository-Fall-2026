@@ -18,19 +18,14 @@ This material extends the lecture's European pricing. It is optional.
   probability reweighted by marginal utility. The lecture links here as an
   alternative way to think about the premium.
 - [`spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb`](spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb)
-  treats an SPXW-style chain as a cross-section of European, cash-settled index
-  claims. It pairs calls and puts, estimates the discount factor and forward
-  index level from put–call parity, reprices the chain in forward BSM form,
-  inverts quote midpoints for implied volatility, and checks parity, price
-  bounds, strike monotonicity, and discrete convexity. It also attempts to load
-  free Yahoo Finance `^GSPC` history for realized-volatility context and uses a
-  deterministic synthetic price path if that optional request is unavailable.
-  The bundled option quote fixture is explicitly synthetic and reproducible.
-  The notebook documents the schema required to replace it with a timestamp-
-  aligned, properly licensed market snapshot.
-
-The SPXW notebook uses SPXW contract conventions to make European exercise and
-cash settlement concrete. It does not scrape Cboe quote pages or claim that the
-bundled fixture is observed market data. Yahoo history, when available, is used
-only for backward-looking percentage volatility and is never combined with the
-synthetic chain's price level or parity calculation.
+  applies the lecture's implied-volatility bisection to an end-of-day chain of
+  SPXW options, the European, cash-settled S&P 500 index options with weekly
+  expirations. It fits put–call parity across strikes to estimate the discount
+  factor and the forward index level, so it needs no index level. It then backs
+  out the implied volatility of the out-of-the-money quote at every strike in
+  the forward (Black) form of the BSM formula, checks each result by repricing,
+  and compares the skew with the realized volatility of SPY. The quotes were
+  captured from Alpaca Markets after the close on October 16, 2026, for the
+  expirations nearest 30, 45, 60, and 90 days. The functions and their
+  docstrings are in `spxw_volatility_skew/src/`, and the capture scripts in
+  `spxw_volatility_skew/data/` record how the data were collected.
