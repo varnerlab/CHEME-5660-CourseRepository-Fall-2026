@@ -36,9 +36,12 @@
   \node[above,vn annotation] at (3.40,1.35) {payoff received, may be zero};
 
   % Discount the payoff to today --------------------------------
-  \draw[vn transport] (3.40,-0.94) -- (0.60,-0.94)
-    node[midway,fill=white,inner sep=3pt,text=vnlink]
+  % The arrow stops at the label instead of running under a white fill, so the
+  % notebook's background shows through in any editor theme.
+  \node[inner sep=3pt,text=vnlink] (disc) at (2.00,-0.94)
     {discount to today: $\times\,\mathcal{D}^{-1}_{T,0}(g_{y})$};
+  \draw[vn transport,-] (3.40,-0.94) -- (disc.east);
+  \draw[vn transport] (disc.west) -- (0.60,-0.94);
 
 \end{tikzpicture}
 \end{document}

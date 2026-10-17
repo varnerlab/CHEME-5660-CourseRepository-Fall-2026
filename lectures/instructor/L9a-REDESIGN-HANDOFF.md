@@ -497,3 +497,38 @@ the builders, and the previews.
   and asserts breakeven at $K\pm\mathcal{P}$, with no
   $\mathcal{D}_{T,0}(g_y)$ factor. The triple-witching sentence still cites
   December 2024.
+
+## October 17 round: BSM premium example language pass
+
+At the instructor's request ("simple, direct and concise English, not jargon"),
+the BSM premium example's prose was tightened. Scores: Claude 7.5 before;
+Codex 6.8 pre-review (8.0 on its own rescore of the pre-edit copy), 8.6 after the edit,
+before the audit fixes below.
+
+- Task 1 and 2 introductions, the Monte Carlo loop lead-in, and the Task 3
+  introduction were cut by 35 to 45 percent. The repeated "Approach 1/2"
+  bullets were removed.
+- Jargon replaced: "risk-neutral dynamics/measure" (now the lecture's
+  "risk-neutral pricing rule"), "governed by", "near the money", `DTE`/`IV`
+  in prose, "backs out", "reference premium". Inaccuracies fixed: "solve the
+  GBM model", "accuracy" (now sampling error), "about equal" at `K_cross`
+  (now closest), `argmin` returning a row, the `target_dte` selection.
+- Code-facing text: plain column labels on both Monte Carlo tables, shorter
+  printed lines, `S(0)` in the plot legend, assertion messages without double
+  negatives. The notebook was re-executed; every number is unchanged.
+- Takeaways rewritten in the retrospective "We..." voice.
+- Codex post-audit fixes applied: restored four function links (`pretty_table`,
+  `filter`, `fmt__printf`, `vline!`), "five strikes" instead of "50 to 70",
+  "generally" on the sample-size claim, $T$ = 1 year stated, the implied
+  volatility sentence split, the volatility code comment restored.
+- Declined: removing function links and typed variable names, setup-cell and
+  Discussion rewrites, "So what do we get?" removal, and all disclaimer edits
+  (the instructor confirmed the disclaimer wording is fine).
+- Follow-up the same day: the Monte Carlo lead-in, the Task 3 introduction, and
+  the SPXW pairing cell were reorganized as sentence, labeled step bullets,
+  sentence. The "What do we see?" cell now separates the model share
+  ($S(0)$ = 60, crossing at 63.1 USD/share) from the S&P 500 index (crossing at
+  `K_cross` = 7,680). The loading cell now prints the S&P 500 closing level on
+  October 16, 2026, 7,659.44 (Yahoo Finance ^GSPC, fetched October 17), since
+  the Alpaca snapshot has no index level. `K_cross` sits about 0.27% above it,
+  consistent with the advanced notebook's parity forward of 7,681.3.

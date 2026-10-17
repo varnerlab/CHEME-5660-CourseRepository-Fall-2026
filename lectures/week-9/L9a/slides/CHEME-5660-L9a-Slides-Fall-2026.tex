@@ -330,15 +330,13 @@
 \end{frame}
 
 \begin{frame}{Event Contracts}
-  The Concept Review bet is an \hilite{event contract} on $\ST\geq K$, which
-  pays 1 USD if the event occurs and nothing otherwise. Its market price is:
+  The Concept Review bet is an \hilite{event contract} that pays 1 USD if
+  $\ST\geq K$. Its market price is the break-even price from the Concept
+  Review, with the pricing probability $\Q$ in place of our beliefs
+  $\mathbb{P}$:
   \[
-    p=\Dinv\cdot\E_{\Q}\bigl[\mathbb{1}\{\text{event}\}\bigr]=\Dinv\cdot\Q(\text{event})
+    p=\Dinv\cdot\Q(\ST\geq K)
   \]
-  The pricing probability $\Q(\text{event})$ can differ from the real-world
-  probability $\mathbb{P}(\text{event})$. A general Kalshi event, such as an
-  election, is not tied to a share price, so choosing its pricing probability
-  requires additional assumptions.
 \end{frame}
 
 \begin{frame}{A Monte Carlo Premium}
