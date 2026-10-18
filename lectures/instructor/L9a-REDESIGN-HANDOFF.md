@@ -532,3 +532,25 @@ before the audit fixes below.
   October 16, 2026, 7,659.44 (Yahoo Finance ^GSPC, fetched October 17), since
   the Alpaca snapshot has no index level. `K_cross` sits about 0.27% above it,
   consistent with the advanced notebook's parity forward of 7,681.3.
+
+## October 17 round: payoff/profit example language pass
+
+Same standard as the BSM example. Scores: Claude 8 before; Codex 7.0 pre-review,
+8.6 (pre-edit rescore) and 8.9 (edited) in the post-audit, before the audit fixes.
+
+- Reorganized as sentence, labeled step bullets, sentence: the Data cell, the
+  Task 1 construction paragraph, the call bounds, and the Task 3 introduction.
+  The one-line table reading became a "What do we see?" cell (calls, puts,
+  breakevens) that quotes no numbers, so it holds when the ticker changes.
+- "direction" became "orientation" (the lecture's term for θ). Negative values
+  labeled "maximum loss" in the check tables became "minimum profit", matching
+  the positive "maximum loss" in Task 3. The "no upper bound" rows now give
+  the formula behind the value printed at S(T) = 2K.
+- Jargon removed: "sweep the same window", "permissible values", "uncovered",
+  "carried forward", "mid", "ladder values". Accuracy: the 45-day target
+  selects an expiration 43 days out; the archive covers 115 sessions; the
+  payoff is computed for the long call only; the premium is paid by the long
+  position and received by the short one.
+- Re-executed; every number unchanged. Declined: replacing the conversational
+  lead-in questions, reordering task headings, rewording the math annotations,
+  and qualifying the first takeaway's payoff sentence.
