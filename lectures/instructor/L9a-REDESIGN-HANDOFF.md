@@ -554,3 +554,26 @@ Same standard as the BSM example. Scores: Claude 8 before; Codex 7.0 pre-review,
 - Re-executed; every number unchanged. Declined: replacing the conversational
   lead-in questions, reordering task headings, rewording the math annotations,
   and qualifying the first takeaway's payoff sentence.
+
+## October 18 round: BSM premium example, Task 3 rework and code comments
+
+Instructor feedback on the week-09.0 draft: Task 3 was confusing (the two plots' dashed lines meant
+different things, the purpose and the put–call parity link were unclear, the first plot used strike
+instead of moneyness, the SPXW plot was hard to follow), and code commenting was weak.
+
+- Task 3 now opens by defining moneyness $K/S(0)$ with in/at/out-of-the-money bullets for calls and puts,
+  and says up front that parity explains where the call and put premiums are equal.
+- Both plots use $K/S(0)$ on the x-axis, and both dashed lines mark $K/S(0)=1$ (at the money).
+- Model "What do we see?": Calls / Puts / Where the curves cross. The crossing comes from Task 2's
+  boxed parity: $K/S(0)=e^{g_yT}\approx 1.05$ (replaces the earlier $\mathbb{E}_{\mathbb{Q}}[S(T)]$ step).
+- SPXW: the `K_cross` search is removed; the table shows strikes nearest $K/S(0)$ = 0.90…1.10; the plot
+  shows $0.85\le K/S(0)\le 1.15$; the code prints the expiration and its days to expiration. The crossing
+  bullet notes that index dividends also move the crossing, and that a 31-day expiration keeps it near 1.
+- Every code cell commented (`# initialize -`/step comments); `copy` comments say "one contract".
+- LO 3 and takeaway 3 use "moneyness, the strike price divided by the current share price" (no math).
+- Codex audit: Task 3 8.3, notebook 8.8 before its fixes; applied all except renaming
+  `df_BSM_simulation` (code churn) and rewording the Discussion questions (instructor's text).
+- The lecture and deck still say "how the premium changes with strike price"; left alone (hand-edited).
+- Deck synced to the hand-edited lecture (October 18): removed the Event Contracts frame (lecture paragraph
+  is commented out), the Bermudan bullet, the "real-world growth rate" line, the 88.5–111.5 IV worked
+  example, the yield-to-maturity analogy, and the "Why the formula" bullet. 31 pages, 0 overfull boxes.

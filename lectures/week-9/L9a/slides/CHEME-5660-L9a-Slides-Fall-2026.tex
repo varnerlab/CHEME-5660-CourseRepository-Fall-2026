@@ -251,7 +251,6 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{European-style}: exercise only at expiration.
     \item \hilite{American-style}: exercise any time through expiration.
-    \item \hilite{Bermudan-style}: less common, exercise on specified dates.
   \end{itemize}
   The American option's added flexibility makes it worth at least as much as an
   otherwise identical European option.
@@ -329,16 +328,6 @@
   \]
 \end{frame}
 
-\begin{frame}{Event Contracts}
-  The Concept Review bet is an \hilite{event contract} that pays 1 USD if
-  $\ST\geq K$. Its market price is the break-even price from the Concept
-  Review, with the pricing probability $\Q$ in place of our beliefs
-  $\mathbb{P}$:
-  \[
-    p=\Dinv\cdot\Q(\ST\geq K)
-  \]
-\end{frame}
-
 \begin{frame}{A Monte Carlo Premium}
   Simulation estimates the market premium directly. The payoff depends only on
   $\ST$, so we draw it from the GBM solution with drift $g_{y}$.
@@ -370,8 +359,7 @@
   \[
     \boxed{\frac{\partial\mathcal{P}}{\partial t}+g_{y}\,S\,\frac{\partial\mathcal{P}}{\partial S}+\frac{1}{2}\,\sigma^{2}S^{2}\,\frac{\partial^{2}\mathcal{P}}{\partial S^{2}}=g_{y}\,\mathcal{P}}
   \]
-  Only $g_{y}$ and $\sigma$ appear, not the real-world growth rate of the share
-  price. Solving backward from the payoff gives $\mathcal{P}^{\text{EU}}$, the
+  Solving backward from the payoff gives $\mathcal{P}^{\text{EU}}$, the
   premium Monte Carlo estimates.
   \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
@@ -421,19 +409,18 @@
       & \approx S(0)\left(1 \pm \text{IV}\sqrt{T}\right) && e^{x}\approx 1+x \text{ for small } x
     \end{aligned}
   \end{equation*}}%
-  where $\mu_{g}$ is the mean growth rate and $Z$ is standard normal.
+  where $\mu_{g}$ is the mean growth rate, $Z$ is standard normal, and $S_{\pm}$
+  is the share price one standard deviation above or below $S(0)$.
 
   \vspace{0.5em}
-  \hilite{Example}: $S(0)=100$ USD/share, IV $=40\%$, and $T=30/365$ years
-  give $\text{IV}\sqrt{T}=0.115$, a range of about 88.5 to 111.5 USD/share. Under
-  the model, the share price ends inside it about 68\% of the time.
+  Under the model, the share price ends inside this range about 68\% of the
+  time.
 \end{frame}
 
 \begin{frame}{Which \texorpdfstring{$\sigma$}{Sigma}?}
   If we knew $\sigma$, the formula would return the market premium. In practice,
-  we run it backward. Like a bond's yield to maturity, the \hilite{implied
-  volatility} $\hat{\sigma}$ is the $\sigma$ at which the BSM premium matches
-  $\mathcal{P}^{\text{market}}$.
+  we run it backward. The \hilite{implied volatility} $\hat{\sigma}$ is the
+  $\sigma$ at which the BSM premium matches $\mathcal{P}^{\text{market}}$.
 
   \vspace{0.5em}
   \hilite{Initialize}: given $\mathcal{P}^{\text{market}}$, $S(0)$, $K$, $T$
@@ -458,8 +445,6 @@
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{One answer}: the BSM premium rises with $\sigma$, so exactly
       one $\sigma$ matches the market premium, and each step halves the bracket.
-    \item \hilite{Why the formula}: the Monte Carlo premium changes with the
-      random draws and costs $M$ paths at every step.
     \item \hilite{One per contract}: each strike and expiration has its own
       implied volatility, although BSM assumes one constant $\sigma$. A surface
       fitted to today's quotes predicts it for unquoted contracts or future
