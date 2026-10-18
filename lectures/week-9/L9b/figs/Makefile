@@ -6,7 +6,7 @@
 #   make clean      remove LaTeX intermediates
 #   make distclean  also remove the generated PDF/SVG
 
-FIGURES := Fig-L9b-American-Decision-Rule
+FIGURES := Fig-L9b-American-Decision-Rule Fig-HullExample-American-v-European-Schematic
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))

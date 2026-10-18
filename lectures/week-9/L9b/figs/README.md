@@ -9,8 +9,14 @@ risk-neutral up probability, `V̂_{t,k}` is the value at node `(t,k)`, and `V(K,
 is the payoff, as in L9a. The two boxed terms are "exercise now" (gray) and "hold
 for the future" (salmon), the instructor's two colors.
 
-`Fig-HullExample-American-v-European-Schematic.png` is the instructor's 2025 Hull
-Examples 13.4 and 13.5 raster. It is kept as is.
+`Fig-HullExample-American-v-European-Schematic` is a TikZ redraw (October 18, 2026)
+of the instructor's 2025 Hull Examples 13.4 and 13.5 raster, which stays in this
+folder as `Fig-HullExample-American-v-European-Schematic.png` but is no longer used.
+It keeps the 2025 layout and colors on the same 2000 x 1125 grid: the American and
+European put trees side by side, the gold root-premium boxes, and the gray exercise
+shading at the American down node. The raster's slide header, reference footer, and
+logo are left out, because the lecture and the deck cite Hull in their text. The gold
+root boxes add one color to `theme_svg.py`.
 
 `make` builds each TikZ figure's PDF with XeLaTeX and converts it to SVG with
 `pdf2svg`. The SVG build also runs `theme_svg.py`, which adds a dark screen

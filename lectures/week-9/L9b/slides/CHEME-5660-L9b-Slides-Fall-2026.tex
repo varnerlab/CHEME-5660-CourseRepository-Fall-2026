@@ -247,15 +247,7 @@
   strike.
 
   \vspace{0.6em}
-  \textbf{\ink{When does early exercise pay?}} For a call on a share that pays no
-  dividend, exercising early never helps. Exercising early means paying the
-  strike sooner and owning the shares if the price then falls below the
-  strike, so $\PAM_{c}=\PEU_{c}$.
-
-  \vspace{0.6em}
-  For a put, exercising early can pay when the put is deep in the money. The
-  holder receives the strike now and earns the risk-free rate on it, so
-  $\PAM_{p}>\PEU_{p}$ is possible.
+  Let's compute the American and European premiums of the archived contracts.
   \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -333,9 +325,9 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{Binomial trees price American options}: at each node, the
       holder exercises or holds, so backward induction computes the premium.
-    \item \hilite{Early exercise can pay for puts}: the American premium
-      exceeds the European premium only when exercising early pays at some
-      node. That never happens for a call on a share with no dividend.
+    \item \hilite{The decision rule sets the early-exercise premium}: in
+      Hull's put, exercising at the one node where it beats holding accounts
+      for the whole gap between the American and European premiums.
     \item \hilite{Simulation estimates the same premium}: Longstaff--Schwartz
       works backward along simulated paths, regressing the value of holding on
       the share price. Holding on every path gives the European premium.

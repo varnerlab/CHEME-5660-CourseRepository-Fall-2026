@@ -1,0 +1,90 @@
+% L9b Hull Examples 13.4 and 13.5: an American and a European put on the same two-step lattice.
+% TikZ redraw of the instructor's 2025 raster Fig-HullExample-American-v-European-Schematic.png.
+% Coordinates are the PNG's positions on a 2000 x 1125 grid (x = 0.12 mm per unit, y pointing down),
+% with the same palette as Fig-L9b-American-Decision-Rule. The PNG's slide header ("Example: Hull
+% 13.4 and 13.5"), reference footer, and logo are left out: the lecture and the deck cite Hull.
+% Inputs: K = 52, S0 = 50, u = 1.2, d = 0.8, g_y = 5%, q = 0.6282; values in USD/share.
+% No background fill, so the notebook SVG can follow a dark theme (theme_svg.py).
+% color=vnink replaces TikZ's default black, which theme_svg.py cannot map.
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{vnfigure}
+\definecolor{f25sky}{HTML}{9FCBE0}      % today line, today label, root node
+\definecolor{f25red}{HTML}{CF4238}      % future arrow, future time lines, nodes
+\definecolor{f25edge}{HTML}{555659}     % lattice edges
+\definecolor{f25exercise}{HTML}{DCDDDF} % American exercise node shading
+\definecolor{f25label}{HTML}{5F5F5F}    % share price / value key
+\definecolor{f25gold}{HTML}{EAAC28}     % root premium box
+
+\begin{document}
+\begin{tikzpicture}[x=0.12mm,y=-0.12mm,font=\sffamily,color=vnink,
+    lnode/.style={circle,draw=f25red,fill=white,line width=1.3pt,minimum size=5.4mm,inner sep=0pt},
+    rnode/.style={lnode,draw=f25sky},
+    edge/.style={f25edge,line width=1.1pt},
+    todayline/.style={f25sky,line width=0.8pt,dash pattern=on 4pt off 3pt},
+    futureline/.style={f25red,line width=0.8pt,dash pattern=on 4pt off 3pt},
+    val/.style={font=\sffamily\Large,align=center,inner sep=1pt},
+    tlabel/.style={font=\sffamily\large},
+    elabel/.style={font=\sffamily\small,sloped}]
+
+  % share price over value, two lines on a fixed baseline grid so a side key can line up:
+  % \vpair{name}{x}{y}{top}{bottom}, with (x,y) the center of the pair
+  \newcommand{\vpair}[5]{
+    \node[val,anchor=base] (#1t) at (#2,{#3-12}) {#4};
+    \node[val,anchor=base] (#1b) at ([yshift=-18pt]#1t.base) {#5};
+  }
+
+  % one panel: \hullpanel{x offset}{title}{root premium}{down-node value}{exercise shading?}{name prefix}
+  \newcommand{\hullpanel}[6]{
+    \begin{scope}[xshift=#1*0.12mm]
+      \node[font=\sffamily\LARGE,anchor=base] at (790,80) {#2};
+      \draw[f25red,line width=1.2pt,-{Latex[length=3mm]}] (842,185) -- (1025,185)
+        node[midway,above=4pt,font=\sffamily\LARGE,text=f25red,text depth=0pt] {future};
+
+      % the node the lecture discusses: exercise at the down node at t = 1 (American panel only), outlined
+      % so it stays visible on a dark editor background
+      \ifnum#5=1 \filldraw[fill=f25exercise,draw=f25edge,line width=1.1pt] (805,665) rectangle (905,765); \fi
+
+      \draw[todayline] (630,225) -- (630,930);
+      \draw[futureline] (855,225) -- (855,930);
+      \draw[futureline] (1020,225) -- (1020,930);
+      \node[rotate=90,anchor=east,font=\sffamily\LARGE,text=f25sky] at (595,240) {today};
+      \node[tlabel,anchor=north] at (630,950) {t = 0 (now)};
+      \node[tlabel,anchor=north] at (855,950) {t = 1};
+      \node[tlabel,anchor=north] at (1020,950) {t = 2};
+
+      \draw[edge] (630,615) -- (855,500) -- (1020,392);
+      \draw[edge] (855,500) -- (1020,605);
+      \draw[edge] (630,615) -- (855,715) -- (1020,605);
+      \draw[edge] (855,715) -- (1020,830);
+
+      \node[rnode] at (630,615) {};
+      \foreach \x/\y in {855/500,855/715,1020/392,1020/605,1020/830}{\node[lnode] at (\x,\y) {};}
+
+      % root: share price and premium (the American panel's key sits to its left)
+      \fill[f25gold] (475,551) rectangle (595,679);
+      \vpair{#6r}{535}{615}{50}{#3}
+      % t = 1 and t = 2: share price over value
+      \vpair{#6u1}{790}{415}{60}{1.41}
+      \vpair{#6d1}{790}{830}{40}{#4}
+      \vpair{#6uu}{1080}{392}{72}{0}
+      \vpair{#6ud}{1080}{605}{48}{4}
+      \vpair{#6dd}{1080}{830}{32}{20}
+    \end{scope}
+  }
+
+  \hullpanel{0}{\textbf{American} Put contract}{5.09}{12}{1}{am}
+  \hullpanel{790}{\textbf{European} Put contract}{4.19}{9.46}{0}{eu}
+
+  % American panel: the exercise decision, and the key on the same baselines as 72 and 0
+  \node[font=\sffamily\normalsize,anchor=east] at (797,715) {exercise};
+  \node[anchor=base west,font=\sffamily\large,text=f25label] at ([xshift=10pt]amuut.base east) {share price};
+  \node[anchor=base west,font=\sffamily\large,text=f25label] at ([xshift=10pt]amuub.base east) {value};
+  \node[anchor=base east,font=\sffamily\large,text=f25label] at ([xshift=-10pt]475,0 |- amrt.base) {share price};
+  \node[anchor=base east,font=\sffamily\large,text=f25label] at ([xshift=-10pt]475,0 |- amrb.base) {premium};
+
+  % European panel: (u, q) and (d, 1 - q) on the first step
+  \path (1420,615) -- (1645,500) node[elabel,above=1pt,pos=0.5] {(1.2, 0.6282)};
+  \path (1420,615) -- (1645,715) node[elabel,below=1pt,pos=0.5] {(0.8, 0.3718)};
+
+\end{tikzpicture}
+\end{document}

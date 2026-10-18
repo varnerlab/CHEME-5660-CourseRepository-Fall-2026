@@ -32,6 +32,7 @@ DARK_COLORS = {
     (95, 95, 95): "#aeb4ba",     # f25label: today, box captions
     (220, 221, 223): "#3a3d41",  # f25exercise: exercise-now box
     (236, 176, 143): "#5c3a26",  # f25hold: hold-for-the-future box (2025 peach)
+    (234, 172, 40): "#6b5418",   # f25gold: Hull root premium boxes (2025 gold)
     (255, 255, 255): "#1f1f1f",  # white: node fill, matched to VS Code's dark editor
 }
 TOLERANCE = 2
