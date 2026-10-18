@@ -581,3 +581,11 @@ instead of moneyness, the SPXW plot was hard to follow), and code commenting was
   $\mathcal{P}^{\text{EU}}_{c}$, the general premium as $\mathcal{P}_{\star}^{\text{EU}}$ with $V_{\star}$ and
   $\star\in\{c,p\}$, the American premium as $\mathcal{P}_{\star}^{\text{AM}}$ with $V_{\star}$, and premiums written
   $\mathcal{P}_{c}(K,S(0))$, $\mathcal{P}_{p}(K,S(0))$ as in the lecture. Parity frame re-set with alignedat to fit.
+- Deck re-paced and polished (October 18, interactive with the instructor; 31 → 35 frames). Standard: every
+  frame has a short lead-in, one content block (display, figure, or about three labeled bullets), and a
+  closing sentence. Split the bet (setup / expected NPV / derivative contract), Cboe (profile / event
+  contracts), the Q material (whose probabilities / expected NPV under Q / market premium, the last
+  merging the call and general boxes), parity (payoff identity / premium derivation). Rebuilt the market
+  size, business-case, and contracts frames with lead and closing sentences. Codex final pass 8.3:
+  applied fixes that fill gaps; declined suggestions that would contradict the hand-edited lecture
+  (derivative definition, IV "forecast", stopping time, zero-sum wording, where-clause placement).

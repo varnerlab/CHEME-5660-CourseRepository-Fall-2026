@@ -87,19 +87,21 @@
 
 % ==== concept review: a bet on the future (ported from L8b) ====
 \begin{frame}{Concept Review: A Bet on the Future}
-  Suppose we pay $p$ today for a contract that pays 1 USD in $T$ years if
-  $\ST\ge K$, and nothing otherwise.
+  Suppose we pay $p$ today for a contract that pays 1 USD in $T$ years if the
+  share price $\ST$ finishes at or above a target share price $K$, and nothing
+  otherwise.
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{../figs/Fig-L9a-Bet-CashFlows.pdf}
+    \includegraphics[width=\textwidth,height=0.34\textheight,keepaspectratio]{../figs/Fig-L9a-Bet-CashFlows.pdf}
   \end{center}
-  Discounting the payoff at the benchmark growth rate $g_y$ gives a random NPV:
+  Discounting the payoff $V(\ST)$ at the benchmark growth rate $g_y$, with
+  $\Dinv=e^{-g_yT}$, gives a random NPV:
   \[
     \operatorname{NPV}_0=-p+\Dinv\,V(\ST)=\begin{cases}-p+e^{-g_yT}&\text{if }\ST\ge K\text{ (true)}\\-p&\text{if }\ST<K\text{ (false)}\end{cases}
   \]
 \end{frame}
 
 \begin{frame}{Expected NPV of the Bet}
-  Under our beliefs about $\ST$, the expected NPV is:
+  Under our beliefs $\mathbb{P}$ about $\ST$, the expected NPV is:
   {\small
   \[
     \begin{aligned}
@@ -109,96 +111,145 @@
     \end{aligned}
   \]
   }%
-  The bet has a non-negative expected NPV when $p\le e^{-g_yT}\,\mathbb{P}(\ST\ge K)$.
+  The expected NPV is the discounted expected payoff minus the price paid
+  today.
+\end{frame}
 
-  \vspace{0.8em}
-  The bet is a \hilite{derivative contract}: its payoff depends on the future price
-  of another asset (or event). Every buyer pays one market price, yet buyers with different
-  beliefs value the same contract differently.
+\begin{frame}{The Bet Is a Derivative Contract}
+  The bet has a non-negative expected NPV when its price is at or below its
+  discounted expected payoff:
+  \[
+    p\le e^{-g_yT}\,\mathbb{P}(\ST\ge K)
+  \]
+  The bet is a \hilite{derivative contract}: its price and payoff depend on the
+  future price of another underlying asset (or event).
 
-  \vspace{0.8em}
+  \vspace{0.6em}
+  Each contract trades at a market price that every buyer pays, yet buyers with
+  different beliefs $\mathbb{P}$ value the same contract differently.
+
+  \vspace{0.6em}
   \textbf{\ink{How is the market price set?}}
 \end{frame}
 
 \begin{frame}{Company Profile: Cboe Global Markets}
-  \href{https://www.cboe.com/}{\hilite{Cboe}} operates markets for options, equities, futures, and
-  foreign exchange. It opened on April 26, 1973, as the Chicago Board Options
-  Exchange, the world's first exchange for listed options.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Listed options}: standard strikes, expirations, and contract
-      sizes, so the same contract can trade many times a day. The Options
-      Clearing Corporation (OCC) stands between the buyer and the seller.
+  \href{https://www.cboe.com/}{\hilite{Cboe}} operates markets for options,
+  equities, futures, and foreign exchange. It opened on April 26, 1973, as the
+  Chicago Board Options Exchange, the world's first exchange for listed options.
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Listed options}: standardized strike prices, expiration dates,
+      and contract sizes, so the same contract can trade many times a day. The
+      Options Clearing Corporation (OCC) stands between the buyer and the seller,
+      so if one side cannot pay, the other is still paid.
     \item \hilite{Index options and volatility}: SPX options are European-style
       and cash-settled. The VIX reads the market's expected 30-day volatility of
       the S\&P 500 from their premiums.
-    \item \hilite{Event contracts}: since June 2026, binary options on the
-      Mini-S\&P 500 that pay 100 USD or nothing, cleared by OCC.
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Today's question:}} where does a listed premium come from?
+  European-style index options such as SPX are the contracts we price later in
+  this lecture.
+\end{frame}
+
+\begin{frame}{Company Profile: Cboe Event Contracts}
+  In June 2026, Cboe began listing \hilite{event contracts}, binary options on
+  the Mini-S\&P 500 index:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Payoff}: a yes contract pays 100 USD if the index settles at or
+      above a set level, and nothing otherwise.
+    \item \hilite{Clearing}: OCC clears it like any other listed option.
+    \item \hilite{Connection to today}: it is the bet from the Concept Review,
+      paying 100 USD instead of 1 USD.
+  \end{itemize}
+  \vspace{0.4em}
+  Cboe is the largest options exchange operator in the United States, and most
+  contracts traded on it are calls and puts. Whatever the type of contract, each
+  trades at a single premium that all buyers pay today.
+  \textbf{\ink{Where does that number come from?}}
 \end{frame}
 
 \begin{frame}{What Is a Derivative?}
   A \hilite{derivative} is a contract between a buyer and a seller to transact an
   asset at a set price on a future date. It is an abstract asset whose cash
   flows depend on an underlying asset or event.
-  \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.25em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Futures, forwards, and swaps}: obligate both parties to
       transact. Futures trade on exchanges with standard terms. Forwards trade
-      over the counter, so if one party cannot pay, the other takes the loss. Swaps
-      exchange one asset's cash flows for another's, also over the counter.
+      over the counter, where the two parties negotiate the terms, and if one
+      party cannot pay, the other takes the loss. Swaps exchange one asset's cash
+      flows for another's, also over the counter.
     \item \hilite{Options}: the buyer holds the right, but not the obligation, to
       buy (call) or sell (put) at a set price. Stock, index, and ETF options are
       exchange-traded.
     \item \hilite{Event contracts}: pay a fixed amount, usually one dollar, if an
       event occurs and nothing otherwise. Kalshi lists them.
   \end{itemize}
+  We focus on options in this lecture.
 \end{frame}
 
 \begin{frame}{How Big Is the US Options Market?}
+  The U.S. options market is large, and it is still growing. Measured by
+  \hilite{notional value}, the value of the underlying assets the contracts cover, more
+  value trades each day in options than in stocks:
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{2025}: a record of about 15.2 billion contracts, or about 60.6
-      million per day (OCC).
-    \item \hilite{2026}: through September, about 13.2 billion contracts, or
-      about 70.6 million per day (OCC).
-    \item \hilite{Notional}: about 4 trillion USD per day in 2025, more than
-      three times the 1.1 trillion USD per day traded in U.S. equities
-      (Traders Magazine, Cboe).
+    \item \hilite{Contracts traded}: a record 15.2 billion in 2025, about 60.6
+      million per day. Through September 2026, the daily average rose to about
+      70.6 million contracts.
+    \item \hilite{Notional traded}: about 4 trillion USD per day in 2025, more
+      than three times the 1.1 trillion USD per day traded in U.S. equities.
+    \item \hilite{Notional value at one expiration}: a record 6.6 trillion USD of options
+      were set to expire on December 20, 2024, a quarterly expiration when stock
+      options, index options, and index futures all expire.
   \end{itemize}
-  \slidenote{Sources:}{the lecture notebook's market table, with dates and links.}
+  \vspace{0.3em}
+  Most of this volume is calls and puts, the contracts we price in this
+  lecture.
+  \slidenote{Sources:}{OCC, Traders Magazine, Cboe, and MarketWatch; the lecture notebook's market table has the dates and links.}
 \end{frame}
 
 \begin{frame}{Call and Put Options Contracts}
-  \vspace{-0.6em}
+  The two types of options contracts are \hilite{calls} and \hilite{puts}. In
+  each, the buyer holds the right and the seller holds the obligation:
   \begin{center}
-    \includegraphics[width=0.86\textwidth,height=0.80\textheight,keepaspectratio]{../figs/Fig-L9a-Contract-Right-Obligation.pdf}
+    \includegraphics[width=0.78\textwidth,height=0.54\textheight,keepaspectratio]{../figs/Fig-L9a-Contract-Right-Obligation.pdf}
   \end{center}
+  The buyer always pays the premium. The shares move at the strike price only if
+  the buyer exercises.
 \end{frame}
 
 \begin{frame}{The Business Case for Long and Short Calls}
   A \hilite{call} gives the owner the right, but not the obligation, to buy 100
-  shares at the strike price $K$ by the expiration date.
+  shares (per contract) from the seller at the strike price $K$ by the
+  expiration date. What is the business case for each side?
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Buyer (long)}: gains from a rising share price without buying
-      the shares. The most the buyer can lose is the premium.
+    \item \hilite{Buyer (long)}: can benefit from upside price movement without
+      buying the shares. If the buyer exercises, they buy shares at $K$ instead
+      of the market price. The most the buyer can lose is the premium.
     \item \hilite{Seller (short)}: receives the premium and must sell shares at
-      $K$ if the call is exercised. The possible loss has no limit, so calls are
-      often sold by investors who own the shares (a covered call).
+      $K$ if the call is exercised. Calls are often sold by investors who
+      already own the shares, 100 per contract (a covered call).
   \end{itemize}
+  \vspace{0.3em}
+  The buyer's risk is limited to the premium. The seller's risk has no upper
+  limit, because the share price can rise without bound.
 \end{frame}
 
 \begin{frame}{The Business Case for Long and Short Puts}
   A \hilite{put} gives the owner the right, but not the obligation, to sell 100
-  shares at the strike price $K$ by the expiration date.
+  shares (per contract) to the seller at the strike price $K$ by the expiration
+  date. What is the business case for each side?
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Buyer (long)}: gains from a falling share price without selling
-      the shares. The most the buyer can lose is the premium.
+    \item \hilite{Buyer (long)}: can benefit from downside price movement
+      without selling the shares. If the buyer exercises, they sell shares at
+      $K$ instead of the market price. The most the buyer can lose is the
+      premium.
     \item \hilite{Seller (short)}: receives the premium and must buy shares at
-      $K$ if the put is exercised. At a share price of zero, the seller loses $K$
-      minus the premium's future value per share, so puts are often sold by
-      investors with the cash to buy the shares (a cash-secured put).
+      $K$ if the put is exercised. Puts are often sold by investors with the
+      cash to buy the shares, 100 per contract (a cash-secured put).
   \end{itemize}
+  \vspace{0.3em}
+  The buyer's risk is limited to the premium. The seller's risk is large but
+  bounded: at a share price of zero, the seller loses $K$ minus the premium's
+  future value per share.
 \end{frame}
 
 \begin{frame}{Call and Put Payoffs}
@@ -214,18 +265,23 @@
   where $K$ is the strike price and $\ST$ is the share price at expiration
   (time $t=T$). The seller charges the buyer a premium per share, $\Pc$ for a
   call and $\Pp$ for a put.
+
+  \vspace{0.6em}
+  The premium is paid at $t=0$ and the payoff arrives at $t=T$, so we compare
+  them at expiration using the premium's future value $\Dfv\cdot\mathcal{P}$,
+  where $\Dfv=e^{g_{y}T}$.
 \end{frame}
 
 \begin{frame}{Profit at Expiration}
-  The premium is paid at $t=0$ and the payoff arrives at $t=T$, so we compare
-  them at expiration with the premium's future value $\Dfv\cdot\mathcal{P}$,
-  where $\Dfv=e^{g_{y}T}$. The buyer's profit per share is:
+  The buyer's profit per share for a single contract at expiration is the
+  payoff minus the premium's future value:
   \begin{align*}
     P_{c}^{\text{buyer}}(K,\ST) & = V_{c}(K,\ST)-\Dfv\cdot\Pc\\
     P_{p}^{\text{buyer}}(K,\ST) & = V_{p}(K,\ST)-\Dfv\cdot\Pp
   \end{align*}
-  With \hilite{orientation} $\theta=+1$ (long) or $-1$ (short), a position's
-  profit is $\theta\cdot P^{\text{buyer}}$, so
+  A position's \hilite{orientation} $\theta$ is $+1$ for the buyer (long) and
+  $-1$ for the seller (short). Its profit per share is $\theta\cdot
+  P^{\text{buyer}}$, so $P^{\text{seller}}=(-1)\cdot P^{\text{buyer}}$ and
   $P^{\text{buyer}}+P^{\text{seller}}=0$ at every share price.
 
   \vspace{0.6em}
@@ -241,8 +297,13 @@
     S^{\ddagger} & = K-\Dfv\cdot\Pp && \text{put}
   \end{align*}
   Above the call breakeven, and below the put breakeven, the buyer profits and
-  the seller loses. Listed contracts often expire within weeks, so $\Dfv$ is
-  close to one (about 1.003 for 30 days at $g_{y}=4\%$).
+  the seller loses.
+
+  \vspace{0.6em}
+  Listed contracts often expire within weeks, so $\Dfv$ is close to one (about
+  1.003 for 30 days at $g_{y}=4\%$). For longer-dated contracts it matters: a
+  1-year contract at $g_{y}=4\%$ has $\Dfv=e^{0.04}\approx 1.041$, which moves
+  the breakeven farther from the strike.
   \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-SingleContractPayoffProfit-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -281,8 +342,8 @@
   zero at the breakeven share price.
 \end{frame}
 
-\begin{frame}{The European Premium}
-  \textbf{\ink{How is the market price set?}} A call pays $\ST-K$ when $\ST>K$
+\begin{frame}{The European Call Contract Premium}
+  \textbf{\ink{How is the market price set?}} A call pays $\ST-K$ when $\ST>K$,
   and nothing otherwise. Following the same steps as for the bet:
   {\small
   \[
@@ -293,46 +354,75 @@
     \end{alignedat}
   \]
   }%
-  where $\bar{V}$ is the average payoff when $\ST>K$. The expected NPV is
-  non-negative when $\mathcal{P}\leq\Dinv\,\mathbb{P}(\ST>K)\,\bar{V}$.
+  where $\bar{V}$ is the average payoff $\ST-K$ over the outcomes with $\ST>K$.
+
+  \vspace{0.5em}
+  The expected NPV is non-negative when
+  $\mathcal{P}\leq\Dinv\,\mathbb{P}(\ST>K)\,\bar{V}$: the discounted chance of
+  exercise times the average payoff when exercised.
 \end{frame}
 
 \begin{frame}{Whose Probabilities?}
-  $\mathbb{P}$ holds our own beliefs about $\ST$, so this is the most we would
-  pay. The market prices every option with one shared \hilite{risk-neutral
-  pricing rule} $\Q$, under which GBM has drift $g_{y}$. Repeating the
-  calculation under $\Q$:
+  The bound on the premium from the last slide depends on whose probabilities
+  we use:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Our beliefs $\mathbb{P}$}: the probabilities are our own
+      beliefs about $\ST$, so this premium is the most we would pay. A buyer
+      with different beliefs computes a different premium.
+    \item \hilite{The market's rule $\Q$}: the market prices every option with
+      one shared set of probabilities, the \hilite{risk-neutral pricing rule}
+      $\Q$, so there is one price.
+    \item \hilite{Growth under $\Q$}: the expected share price grows at the
+      risk-free rate $g_{y}$. For geometric Brownian motion with no dividends,
+      $\Q$ replaces the drift with $g_{y}$.
+  \end{itemize}
+  \vspace{0.4em}
+  Pricing with $\Q$ gives one market premium that does not depend on who buys
+  the contract.
+\end{frame}
+
+\begin{frame}{Expected NPV Under \texorpdfstring{$\Q$}{Q}}
+  Repeating the expected NPV calculation with $\Q$ in place of $\mathbb{P}$
+  gives:
   {\small
   \[
-    \begin{aligned}
-      \E_{\Q}[\operatorname{NPV}_0]&=\left(-\mathcal{P}+\Dinv\,\bar{V}\right)\Q(\ST>K)+(-\mathcal{P})\,\Q(\ST\le K)\\
-      &=-\mathcal{P}\,\underbrace{\left[\Q(\ST>K)+\Q(\ST\le K)\right]}_{=1}\\
-      &\qquad+\Dinv\,\underbrace{\left[\bar{V}\,\Q(\ST>K)+0\cdot\Q(\ST\le K)\right]}_{=\E_{\Q}[V_{c}(K,\ST)]}\\
+    \begin{alignedat}{2}
+      \E_{\Q}[\operatorname{NPV}_0]&=\left(-\mathcal{P}+\Dinv\,\bar{V}\right)\Q(\ST>K)+(-\mathcal{P})\,\Q(\ST\le K) &\enspace&\text{\footnotesize weighted sum}\\
+      &=-\mathcal{P}\,\underbrace{\left[\Q(\ST>K)+\Q(\ST\le K)\right]}_{=1} &&\text{\footnotesize collect terms}\\
+      &\qquad+\Dinv\,\underbrace{\left[\bar{V}\,\Q(\ST>K)+0\cdot\Q(\ST\le K)\right]}_{=\E_{\Q}[V_{c}(K,\ST)]} &&\text{\footnotesize call pays 0 if }\ST\le K\\
       &=-\mathcal{P}+\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]
-    \end{aligned}
+    \end{alignedat}
   \]
   }%
-  where $\bar{V}$ is now the average payoff when $\ST>K$ under $\Q$.
+  where $\bar{V}$ is now the average payoff $\ST-K$ over the outcomes with
+  $\ST>K$ under $\Q$.
+
+  \vspace{0.5em}
+  The second bracket is the expected payoff of the call under $\Q$: the payoff
+  in each outcome, weighted by its probability.
 \end{frame}
 
 \begin{frame}{The Market Premium}
-  The second bracket is the call's expected payoff under $\Q$. The seller's NPV
-  is the negative of the buyer's, so the only premium that gives neither side a
-  positive expected NPV under $\Q$ sets $\E_{\Q}[\operatorname{NPV}_0]=0$:
+  The seller's NPV is the negative of the buyer's. The only premium that gives
+  neither side a positive expected NPV under $\Q$ sets
+  $\E_{\Q}[\operatorname{NPV}_0]=0$:
   \[
     \boxed{\mathcal{P}^{\text{EU}}_{c}=\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]}
   \]
-  A put gives the same result with $V_{p}$ in place of $V_{c}$. For either
-  contract, with payoff $V_{\star}(K,\ST)$, the premium is the discounted
-  expected payoff under $\Q$:
+  A put, which pays $K-\ST$ when $\ST<K$, gives the same result with $V_{p}$ in
+  place of $V_{c}$. For either contract, with payoff $V_{\star}(K,\ST)$:
   \[
     \boxed{\mathcal{P}_{\star}^{\text{EU}}=\Dinv\cdot\E_{\Q}\bigl[V_{\star}(K,\ST)\bigr]\quad\text{where }\star\in\{c,p\}}
   \]
+  The European premium is the discounted expected payoff under $\Q$, one price
+  for all buyers. Monte Carlo simulation and the Black--Scholes--Merton formulas
+  are two ways to compute it.
 \end{frame}
 
 \begin{frame}{A Monte Carlo Premium}
   Simulation estimates the market premium directly. The payoff depends only on
-  $\ST$, so we draw it from the GBM solution with drift $g_{y}$.
+  $\ST$, so we draw it from the solution of geometric Brownian motion (GBM) with
+  drift $g_{y}$ and volatility $\sigma$.
 
   \vspace{0.5em}
   \hilite{Initialize}: given $S(0)$, $K$, the payoff $V(K,S)$, $T$ (years),
@@ -347,6 +437,8 @@
     \item Discount the average payoff:
       $\mathcal{P}\gets\Dinv\cdot\frac{1}{M}\sum_{i=1}^{M}V_{i}$.
   \end{enumerate}
+  The result is an estimate: it changes with the random draws, and it becomes
+  more precise as $M$ grows.
   \slidenote{Optional:}{an alternative way to think about the premium, in the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
@@ -356,13 +448,14 @@
 
   \vspace{0.5em}
   Assume the price of a non-dividend-paying share follows GBM with constant
-  $\sigma$ and a constant risk-free rate $g_{y}$. The premium $\mathcal{P}(S,t)$, with
+  $\sigma$ and a constant, continuously compounded risk-free rate $g_{y}$. The premium $\mathcal{P}(S,t)$, with
   $\mathcal{P}(S,T)=V(K,S)$, satisfies:
   \[
     \boxed{\frac{\partial\mathcal{P}}{\partial t}+g_{y}\,S\,\frac{\partial\mathcal{P}}{\partial S}+\frac{1}{2}\,\sigma^{2}S^{2}\,\frac{\partial^{2}\mathcal{P}}{\partial S^{2}}=g_{y}\,\mathcal{P}}
   \]
-  Solving backward from the payoff gives $\mathcal{P}^{\text{EU}}$, the
-  premium Monte Carlo estimates.
+  Solving it backward in time from the payoff gives today's premium,
+  $\mathcal{P}(S(0),0)$, and this solution equals the risk-neutral premium
+  $\mathcal{P}^{\text{EU}}$ that the Monte Carlo simulation estimates.
   \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
@@ -378,30 +471,40 @@
   \end{equation*}
   where $N$ is the standard normal CDF, $T$ is in years, and:
   \[
-    d_{+}=\frac{1}{\sigma\sqrt{T}}\left[\ln\frac{S(0)}{K}+\Bigl(g_{y}+\frac{\sigma^{2}}{2}\Bigr)T\right],
+    d_{+}=\frac{1}{\sigma\sqrt{T}}\left[\ln\left(\frac{S(0)}{K}\right)+\Bigl(g_{y}+\frac{\sigma^{2}}{2}\Bigr)T\right],
     \qquad d_{-}=d_{+}-\sigma\sqrt{T}
   \]
+  We know $S(0)$, $K$, $T$, and $g_{y}$ when we price the contract. The
+  volatility $\sigma$ is the one input we must choose.
 \end{frame}
 
-\begin{frame}{Historical or Implied Volatility?}
-  \begin{itemize}\setlength{\itemsep}{0.7em}
+\begin{frame}{Which Volatility Should We Use?}
+  If we knew the right volatility, the BSM model (or the Monte Carlo model)
+  would compute the observed market premium. In practice, we observe the market
+  premium and back out the volatility that makes the model match it.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Historical volatility}:
       $\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}$, where $\sigma_{g}$
-      is the standard deviation of past growth rates and $\Delta t$ is the time
-      between observations. It looks backward.
+      is the standard deviation of past growth rates (units: $\mathrm{yr}^{-1}$)
+      and $\Delta t$ is the time between observations (units: years). It looks
+      backward.
     \item \hilite{Implied volatility}
       (\href{https://en.wikipedia.org/wiki/Implied_volatility}{IV}): the
-      $\sigma$ ``implied'' by an option's market price through a model such as
-      BSM, the market's forecast of share price moves. It is often at or above
-      the historical volatility.
-    \item \hilite{How can we use it?} IV is a one-standard-deviation move in the
-      share price over one year. Over $T$ years, the move scales with
-      $\sqrt{T}$.
+      market's forecast of a likely future movement in the share price. It looks
+      forward, and it is often at or above the historical volatility.
+    \item \hilite{How can we use it?} IV represents a one-standard-deviation
+      movement in the share price over the next year. Over $T$ years, the move
+      scales with $\sqrt{T}$.
   \end{itemize}
+  \vspace{0.3em}
+  This $\sqrt{T}$ scaling gives a quick range for the share price on the next
+  slide.
 \end{frame}
 
 \begin{frame}{A Back-of-the-Envelope Range from IV}
-  Setting $Z=\pm1$ in the GBM solution gives a quick range for the share price:
+  Moving one standard deviation up or down in the solution of geometric
+  Brownian motion, $Z=\pm1$, gives a back-of-the-envelope range for the share
+  price:
   {\small
   \begin{equation*}
     \begin{aligned}
@@ -412,19 +515,14 @@
     \end{aligned}
   \end{equation*}}%
   where $\mu_{g}$ is the mean growth rate, $Z$ is standard normal, and $S_{\pm}$
-  is the share price one standard deviation above or below $S(0)$.
-
-  \vspace{0.5em}
-  Under the model, the share price ends inside this range about 68\% of the
-  time.
+  is the share price one standard deviation above or below $S(0)$. Under the
+  model, the share price ends inside this range about 68\% of the time.
 \end{frame}
 
-\begin{frame}{Which \texorpdfstring{$\sigma$}{Sigma}?}
-  If we knew $\sigma$, the formula would return the market premium. In practice,
-  we run it backward. The \hilite{implied volatility} $\hat{\sigma}$ is the
-  $\sigma$ at which the BSM premium matches $\mathcal{P}^{\text{market}}$.
+\begin{frame}{Implied Volatility by Bisection}
+  We back out the implied volatility $\hat{\sigma}$ by bisection.
 
-  \vspace{0.5em}
+  \vspace{0.3em}
   \hilite{Initialize}: given $\mathcal{P}^{\text{market}}$, $S(0)$, $K$, $T$
   (years), $g_{y}$, a bracket $\sigma_{\text{lo}}<\sigma_{\text{hi}}$ with
   $\mathcal{P}(\sigma_{\text{lo}})\leq\mathcal{P}^{\text{market}}\leq\mathcal{P}(\sigma_{\text{hi}})$,
@@ -440,25 +538,52 @@
       $\sigma_{\text{hi}}\gets\sigma_{\text{mid}}$.
     \item $i\gets i+1$.
   \end{enumerate}
-  The implied volatility is the midpoint of the final bracket.
+  The implied volatility is the midpoint of the final bracket,
+  $\hat{\sigma}\gets(\sigma_{\text{lo}}+\sigma_{\text{hi}})/2$. The BSM premium
+  rises with $\sigma$, so exactly one $\sigma$ matches the market premium, and
+  each step halves the bracket around it.
 \end{frame}
 
 \begin{frame}{Implied Volatility in Practice}
+  Three points about using implied volatility with real quotes:
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{One answer}: the BSM premium rises with $\sigma$, so exactly
-      one $\sigma$ matches the market premium, and each step halves the bracket.
+    \item \hilite{Market quotes}: the SPXW volatility skew notebook applies this
+      bisection to a chain of S\&P 500 index options.
     \item \hilite{One per contract}: each strike and expiration has its own
-      implied volatility, although BSM assumes one constant $\sigma$. A surface
-      fitted to today's quotes predicts it for unquoted contracts or future
-      dates (\href{https://arxiv.org/abs/2605.13998}{Sun et al., 2026}).
+      implied volatility, although the BSM model assumes one constant $\sigma$.
+      This pattern is known as the volatility smile or volatility skew.
+    \item \hilite{Pricing without a quote}: to price a contract without a quote,
+      or on a future date, we can predict its implied volatility from a surface
+      fitted to today's quotes, which gives implied volatility as a function of
+      strike and expiration
+      (\href{https://arxiv.org/abs/2605.13998}{Sun et al., 2026}).
   \end{itemize}
-  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook} applies this bisection to a chain of S\&P 500 index options.}
+  \vspace{0.3em}
+  Next, we link the call and put premiums with the same strike and
+  expiration.
+  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.}
+\end{frame}
+
+\begin{frame}{Put–Call Parity: The Payoff Identity}
+  The call and put premiums are linked. For a European call and put with the
+  same strike and expiration, the payoffs differ by $\ST-K$ at every share
+  price:
+  {\small
+  \[
+    \begin{alignedat}{2}
+      V_{c}(K,\ST)-V_{p}(K,\ST)&=\max\bigl(\ST-K,~0\bigr)-\max\bigl(K-\ST,~0\bigr) &\enspace&\text{\footnotesize payoff definitions}\\
+      &=\begin{cases}\bigl(\ST-K\bigr)-0&\text{if }\ST>K\text{: put pays 0}\\0-\bigl(K-\ST\bigr)&\text{if }\ST\le K\text{: call pays 0}\end{cases} &&\text{\footnotesize split at }K\\
+      &=\ST-K &&\text{\footnotesize simplify both cases}
+    \end{alignedat}
+  \]
+  }%
+  Because the payoffs differ by $\ST-K$ in every outcome, the premiums differ
+  by the discounted expected value of $\ST-K$ under $\Q$.
 \end{frame}
 
 \begin{frame}{Put–Call Parity for European Contracts}
-  A European call and put with the same strike and expiration have payoffs that
-  differ by $\ST-K$. Subtracting the premiums:
-  {\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\jot}{1.5pt}
+  Subtracting the put premium from the call premium gives:
+  {\small
   \[
     \begin{alignedat}{2}
       &\Pc-\Pp\\
@@ -472,15 +597,21 @@
   }%
   This is \hilite{put--call parity}: $\boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}$
 
-  \vspace{0.2em}
-  \textbf{\ink{Parity holds only for European contracts.}} An American holder can
-  exercise early, so the call--put difference is bounded, not fixed.
+  \vspace{0.1em}
+  The call--put difference does not depend on $\sigma$. It depends only on
+  $S(0)$, $K$, and the discount factor.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{What About American-Style Options?}
-  The holder can exercise at any time $\tau\leq T$, chosen using only the
-  information available at that time. The premium is the largest expected
+  \textbf{\ink{Put--call parity holds only for European contracts.}} The
+  derivation compares the two payoffs on the expiration date, but an American
+  holder can exercise before then. For American contracts, the difference
+  between the call and put premiums is bounded, not fixed.
+
+  \vspace{0.6em}
+  The American holder can exercise at any time $\tau\leq T$, chosen using only
+  the information available at that time. The premium is the largest expected
   payoff, discounted from $\tau$ back to today, over all such exercise times:
   \[
     \mathcal{P}_{\star}^{\text{AM}}=\max_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V_{\star}(K,S(\tau))\Bigr]\geq\mathcal{P}_{\star}^{\text{EU}}\quad\text{where }\star\in\{c,p\}
@@ -490,7 +621,9 @@
 \end{frame}
 
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.3em}
+  Two optional notebooks extend this lecture:
+
+  \vspace{0.4em}
   {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{advanced/contingent\_claims/}\par
   \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
 
@@ -529,6 +662,9 @@
       compute it for European contracts, and put--call parity links calls and
       puts.
   \end{itemize}
+  \vspace{0.3em}
+  Understanding derivative mechanics, payoff structures, and pricing is
+  important for financial decision-making.
 \end{frame}
 
 \end{document}
