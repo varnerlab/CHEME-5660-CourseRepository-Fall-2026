@@ -11,8 +11,8 @@
 
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Pc}{\mathcal{P}_{c}}
-\newcommand{\Pp}{\mathcal{P}_{p}}
+\newcommand{\Pc}{\mathcal{P}_{c}(K,S(0))}
+\newcommand{\Pp}{\mathcal{P}_{p}(K,S(0))}
 \newcommand{\Dfv}{\mathcal{D}_{T,0}(g_{y})}
 \newcommand{\Dinv}{\mathcal{D}^{-1}_{T,0}(g_{y})}
 \newcommand{\ST}{S(T)}
@@ -319,12 +319,13 @@
   is the negative of the buyer's, so the only premium that gives neither side a
   positive expected NPV under $\Q$ sets $\E_{\Q}[\operatorname{NPV}_0]=0$:
   \[
-    \Pc=\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]
+    \boxed{\mathcal{P}^{\text{EU}}_{c}=\Dinv\,\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]}
   \]
   A put gives the same result with $V_{p}$ in place of $V_{c}$. For either
-  contract, the premium is the discounted expected payoff under $\Q$:
+  contract, with payoff $V_{\star}(K,\ST)$, the premium is the discounted
+  expected payoff under $\Q$:
   \[
-    \boxed{\mathcal{P}^{\text{EU}}=\Dinv\cdot\E_{\Q}\bigl[V(K,\ST)\bigr]}
+    \boxed{\mathcal{P}_{\star}^{\text{EU}}=\Dinv\cdot\E_{\Q}\bigl[V_{\star}(K,\ST)\bigr]\quad\text{where }\star\in\{c,p\}}
   \]
 \end{frame}
 
@@ -458,14 +459,14 @@
   differ by $\ST-K$. Subtracting the premiums:
   {\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\jot}{1.5pt}
   \[
-    \begin{aligned}
-      \Pc-\Pp&=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)\bigr] &&\text{\footnotesize premium formula}\\
-      &\qquad-\Dinv\cdot\E_{\Q}\bigl[V_{p}(K,\ST)\bigr]\\
-      &=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)-V_{p}(K,\ST)\bigr] &&\text{\footnotesize expectation is linear}\\
-      &=\Dinv\cdot\E_{\Q}\bigl[\ST-K\bigr] &&\text{\footnotesize payoff identity}\\
-      &=\Dinv\cdot\bigl(S(0)\,e^{g_{y}T}-K\bigr) &&\text{\footnotesize expected share price grows at }g_{y}\\
-      &=S(0)-K\cdot\Dinv &&\Dinv=e^{-g_{y}T}
-    \end{aligned}
+    \begin{alignedat}{2}
+      &\Pc-\Pp\\
+      &\quad=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)\bigr]-\Dinv\cdot\E_{\Q}\bigl[V_{p}(K,\ST)\bigr] &\enspace&\text{\footnotesize premium formula}\\
+      &\quad=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)-V_{p}(K,\ST)\bigr] &\enspace&\text{\footnotesize expectation is linear}\\
+      &\quad=\Dinv\cdot\E_{\Q}\bigl[\ST-K\bigr] &\enspace&\text{\footnotesize payoff identity}\\
+      &\quad=\Dinv\cdot\bigl(S(0)\,e^{g_{y}T}-K\bigr) &\enspace&\text{\footnotesize expected share price grows at }g_{y}\\
+      &\quad=S(0)-K\cdot\Dinv &\enspace&\Dinv=e^{-g_{y}T}
+    \end{alignedat}
   \]
   }%
   This is \hilite{put--call parity}: $\boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}$
@@ -481,7 +482,7 @@
   information available at that time. The premium is the largest expected
   payoff, discounted from $\tau$ back to today, over all such exercise times:
   \[
-    \mathcal{P}^{\text{AM}}=\max_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr]\geq\mathcal{P}^{\text{EU}}
+    \mathcal{P}_{\star}^{\text{AM}}=\max_{\tau\leq T}\E_{\Q}\Bigl[\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V_{\star}(K,S(\tau))\Bigr]\geq\mathcal{P}_{\star}^{\text{EU}}\quad\text{where }\star\in\{c,p\}
   \]
   The American put has no closed-form formula like BSM, so its premium is
   usually computed on a binomial lattice.

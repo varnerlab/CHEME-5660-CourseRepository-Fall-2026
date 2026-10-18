@@ -577,3 +577,7 @@ instead of moneyness, the SPXW plot was hard to follow), and code commenting was
 - Deck synced to the hand-edited lecture (October 18): removed the Event Contracts frame (lecture paragraph
   is commented out), the Bermudan bullet, the "real-world growth rate" line, the 88.5–111.5 IV worked
   example, the yield-to-maturity analogy, and the "Why the formula" bullet. 31 pages, 0 overfull boxes.
+- Deck notation synced symbol-for-symbol (October 18, after the instructor caught it): boxed
+  $\mathcal{P}^{\text{EU}}_{c}$, the general premium as $\mathcal{P}_{\star}^{\text{EU}}$ with $V_{\star}$ and
+  $\star\in\{c,p\}$, the American premium as $\mathcal{P}_{\star}^{\text{AM}}$ with $V_{\star}$, and premiums written
+  $\mathcal{P}_{c}(K,S(0))$, $\mathcal{P}_{p}(K,S(0))$ as in the lecture. Parity frame re-set with alignedat to fit.
