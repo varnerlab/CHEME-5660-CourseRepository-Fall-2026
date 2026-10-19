@@ -250,31 +250,32 @@
 
   \vspace{0.6em}
   \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
-  call or put, $T$, $\sigma$, $g_{y}$, the number of exercise dates $N$ after
-  today, and the number of paths $M$. Compute $\Delta t=T/N$ and
+  call or put, $T$, $\sigma$, $g_{y}$, the number of exercise dates $h$ after
+  today, and the number of paths $M$. Compute $\Delta t=T/h$ and
   $\Dstep=e^{-g_{y}\Delta t}$.
   \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
 \end{frame}
 
 \begin{frame}{Pseudocode: Longstaff–Schwartz}
   \begin{enumerate}\setlength{\itemsep}{0.3em}
-    \item \hilite{Simulate}: generate $M$ share price paths under $\Q$ on the
-      exercise dates $t=0,1,\dots,N$, where $S_{i}(t)$ is the share price on
-      path $i$ at date $t$.
+    \item \hilite{Simulate}: generate $M$ share price paths under $\Q$ from $S_{0}$
+      on the dates $t=0,1,\dots,h$ (expiration), where $S_{i}(t)$ is the share
+      price on path $i$ at date $t$.
     \item At expiration, set each path's cash flow to its payoff:
-      $Y_{i}\gets V(K,S_{i}(N))$ for $i=1,2,\dots,M$.
-    \item For each date $t=N-1,N-2,\dots,1$ \textbf{do}:
+      $Y_{i}(h)\gets V(K,S_{i}(h))$ for $i=1,2,\dots,M$, where $Y_{i}(t)$ is
+      path $i$'s cash flow valued at date $t$.
+    \item For each date $t=h-1,h-2,\dots,1$ \textbf{do}:
       \begin{itemize}
-        \item[a.] Discount each cash flow back one date: $Y_{i}\gets\Dstep\cdot Y_{i}$.
+        \item[a.] Discount each cash flow back one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
         \item[b.] \hilite{Regress}: on the in-the-money paths, fit
-          $\hat{C}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
-          $\bigl(S_{i}(t),Y_{i}\bigr)$ by least squares.
+          $\hat{C}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
+          $\bigl(S_{i}(t),Y_{i}(t)\bigr)$ by least squares.
         \item[c.] \hilite{Decide}: for each in-the-money path, if
-          $V(K,S_{i}(t))>\hat{C}(S_{i}(t))$, \textbf{then}: exercise, so
-          $Y_{i}\gets V(K,S_{i}(t))$.
+          $V(K,S_{i}(t))>\hat{C}_{t}(S_{i}(t))$, \textbf{then}: exercise, so
+          $Y_{i}(t)\gets V(K,S_{i}(t))$.
       \end{itemize}
     \item Discount the cash flows to today and average them:
-      $\bar{Y}\gets\mathcal{D}^{-1}_{1,0}(g_{y})\cdot\frac{1}{M}\sum_{i=1}^{M}Y_{i}$.
+      $\bar{Y}\gets\mathcal{D}^{-1}_{1,0}(g_{y})\cdot\frac{1}{M}\sum_{i=1}^{M}Y_{i}(1)$.
     \item The premium is $\PAM\gets\max\bigl\{V(K,S_{0}),~\bar{Y}\bigr\}$.
   \end{enumerate}
 \end{frame}
