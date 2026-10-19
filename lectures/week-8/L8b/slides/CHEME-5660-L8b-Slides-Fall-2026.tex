@@ -365,8 +365,8 @@ Both examples use the default firms unless you uncomment the ticker-file lines.
   \[
     \begin{aligned}
       \E[\NPV_0]&=\left(-p+e^{-g_yT}\right)\underbrace{\mathbb{P}(S_T\ge K)}_{\text{true}}+(-p)\,\underbrace{\mathbb{P}(S_T<K)}_{\text{false}} &&\text{weight by probability}\\
-      &=-p\,\underbrace{\left[\mathbb{P}(S_T\ge K)+\mathbb{P}(S_T<K)\right]}_{=1}+e^{-g_yT}\,\mathbb{P}(S_T\ge K) &&\text{collect the }p\text{ terms}\\
-      &=-p+e^{-g_yT}\,\underbrace{\mathbb{P}(S_T\ge K)}_{\text{true}} &&\text{probabilities sum to one}
+      &=-p\,\underbrace{\left[\mathbb{P}(S_T\ge K)+\mathbb{P}(S_T<K)\right]}_{=1}+e^{-g_yT}\,\mathbb{P}(S_T\ge K) &&\begin{tabular}[t]{@{}l@{}}collect the $p$ terms,\\ probabilities sum to one\end{tabular}\\
+      &=-p+e^{-g_yT}\,\underbrace{\mathbb{P}(S_T\ge K)}_{\text{true}}
     \end{aligned}
   \]
   }%

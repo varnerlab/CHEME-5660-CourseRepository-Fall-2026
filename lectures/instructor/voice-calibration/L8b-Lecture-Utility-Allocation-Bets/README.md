@@ -8,3 +8,9 @@
   passages, and the re-score are in `lectures/instructor/L8b-BUILD-HANDOFF.md`.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
+
+**Exclude from the diff (October 17).** Claude's, at his request ("it is
+always on the wrong line"): in the expected-NPV derivation of the bet (cell
+`8b0de001`), "the two probabilities sum to one" moved up to the line with the
+$=1$ underbrace, shortened at his request to "collect the $p$ terms,
+probabilities sum to 1", and the result line lost its reason.
