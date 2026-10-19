@@ -82,7 +82,7 @@
   \href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Company Profile: The Options Clearing Corporation}
+\begin{frame}{Company Profile: Options Clearing Corporation}
   \href{https://www.theocc.com/}{\hilite{OCC}} stands between the buyer and the
   seller of every U.S. listed option. It opened in 1973 as CBOE Clearing
   Corporation and became OCC in 1975.
@@ -96,6 +96,7 @@
       simulates 10,000 two-day scenarios and reprices American options on a
       binomial tree.
   \end{itemize}
+  \vspace{0.3em}
   \textbf{\ink{Connection to today's lecture:}} a seller of an American put can be
   assigned once exercising now beats holding, so a European-premium margin
   would leave out the early-exercise premium.
@@ -103,7 +104,7 @@
 
 \begin{frame}{American Style Options Contracts}
   American-style contracts can be exercised \hilite{at any time} before or on
-  the expiration date $T$. Previously, we wrote the American premium as:
+  the expiration date~$T$. Previously, we wrote the American premium as:
   \begin{equation*}
     \PAM_{\star}=\max_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V_{\star}(K,S(\tau))\Bigr)\geq\PEU_{\star}\qquad\text{for }\star\in\{c,p\}
   \end{equation*}
@@ -133,19 +134,17 @@
 \end{frame}
 
 \begin{frame}{CRR Up and Down Factors}
-  With $ud=1$, let $a=\ln u=-\ln d$. The one-step growth rate $g=\pm a/\Delta t$
-  has real-world probabilities $p$ and $1-p$. Match its mean and variance to GBM:
-  \setlength{\jot}{1pt}
+  With $ud=1$, let $a=\ln u=-\ln d$. Match the growth rate $g=\pm a/\Delta t$ to GBM:
   \begin{equation*}
     \begin{aligned}
       \frac{(2p-1)\,a}{\Delta t} & = \mu_{g} && \text{match the mean growth rate}\\
       \frac{4p(1-p)\,a^{2}}{\Delta t^{2}} & = \frac{\sigma^{2}}{\Delta t} && \text{match the variance}\\
       \frac{a^{2}}{\Delta t^{2}} - \mu_{g}^{2} & = \frac{\sigma^{2}}{\Delta t} && \text{use } 4p(1-p) = 1-(2p-1)^{2}\text{ and the mean}\\
       a^{2} & = \sigma^{2}\Delta t + \mu_{g}^{2}\Delta t^{2} && \text{solve for } a^{2}\\[0.3em]
-      \Longrightarrow\quad & \boxed{u = e^{\sigma\sqrt{\Delta t}},\quad d = e^{-\sigma\sqrt{\Delta t}}} && \text{CRR keep the first term, so } a=\sigma\sqrt{\Delta t}
+      \Longrightarrow\quad & \boxed{u = e^{\sigma\sqrt{\Delta t}},\quad d = e^{-\sigma\sqrt{\Delta t}}} && \text{keep the first term, so } a=\sigma\sqrt{\Delta t}
     \end{aligned}
   \end{equation*}
-  where $\mu_{g}$ is the mean growth rate and $\sigma$ is the volatility.
+  where $p$ is the real-world up probability, $\mu_{g}$ the mean growth rate, and $\sigma$ the volatility.
   \slidenote{Where do $u$ and $d$ come from?}{\href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{advanced/crr\_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -167,13 +166,16 @@
       \hat{V}^{\text{EU}}_{t,k} & = \Dstep\cdot\overbrace{\bigl(q\,\hat{V}^{\text{EU}}_{t+1,k+1} + (1-q)\,\hat{V}^{\text{EU}}_{t+1,k}\bigr)}^{\textstyle\mathbb{E}_{\mathbb{Q}}}
     \end{aligned}}
   \end{equation*}}%
-  Here $\hat{V}_{t,k}$ is the contract's value with $k$ up moves in $t$ steps,
+  where $\hat{V}_{t,k}$ is the contract's value with $k$ up moves in $t$ steps,
   $S_{t,k}=S_{0}u^{k}d^{t-k}$, and $\Dstep=e^{-g_{y}\Delta t}$. The premium is
-  $\mathcal{P}=\hat{V}_{0,0}$, and $\PAM-\PEU\geq 0$ is the
-  \hilite{early-exercise premium}.
+  $\mathcal{P}=\hat{V}_{0,0}$.
+
+  \vspace{0.5em}
+  \hilite{Early-exercise premium}: $\PAM-\PEU\geq 0$.
 \end{frame}
 
 \begin{frame}{Pseudocode: Pricing on the CRR Lattice}
+  \setbeamerfont{itemize/enumerate subsubbody}{size=\small}
   \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
   call or put, $T$, $\sigma$, $g_{y}$, and the number of time steps $h$. Compute
   $\Delta t=T/h$, $u$ and $d$, $q$, and $\Dstep=e^{-g_{y}\Delta t}$.
@@ -221,14 +223,16 @@
 \end{frame}
 
 \begin{frame}{Early Exercise in the Hull Example}
-  At the down node at $t=1$, exercising pays 12 USD/share, while holding is
-  worth 9.46 USD/share, so the American holder exercises.
-
-  \vspace{0.6em}
-  That one decision raises the premium from 4.19 to 5.09 USD/share, an
-  early-exercise premium of about 0.90 USD/share.
-
-  \vspace{0.6em}
+  At the down node at $t=1$, where $S_{1,0}=40$ (all values in USD/share):
+  \begin{equation*}
+    \underbrace{V(K,S_{1,0}) = 52-40 = 12}_{\text{exercise now}}
+    \;>\;
+    \underbrace{\mathcal{D}^{-1}_{2,1}(g_{y})\bigl(q\cdot 4+(1-q)\cdot 20\bigr) = 9.46}_{\text{hold for the future}}
+  \end{equation*}
+  so the American holder exercises. That one decision raises the premium:
+  \begin{equation*}
+    \boxed{\PAM-\PEU = 5.09-4.19 \approx 0.90}
+  \end{equation*}
   Let's compute every node of this lattice, then apply the same method to
   contracts from the course's options archive.
   \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}\newline
@@ -236,10 +240,10 @@
 \end{frame}
 
 \begin{frame}{Monte Carlo Pricing of American Options}
-  We simulate many share price paths under $\Q$, then estimate the expected
-  value of holding at each date by regressing the discounted cash flows from
-  holding on the current share price across paths. Like the lattice,
-  Longstaff and Schwartz work backward from expiration:
+  We simulate share price paths under $\Q$, then estimate the value of holding
+  at each date by regressing the discounted cash flows from holding on the
+  current share price across paths. Like the lattice, Longstaff and Schwartz
+  work backward from expiration:
 
   \vspace{0.6em}
   \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
@@ -260,7 +264,7 @@
     \item For each date $t=h-1,h-2,\dots,1$ \textbf{do}:
       \begin{itemize}
         \item[a.] Discount each cash flow back one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
-        \item[b.] \hilite{Regress}: on the in-the-money paths, those with $V(K,S_{i}(t))>0$, fit
+        \item[b.] \hilite{Regress}: on the in-the-money paths, those with $V(K,S_{i}(t))>0$, fit the value of holding
           $\hat{C}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
           $\bigl(S_{i}(t),Y_{i}(t)\bigr)$ by least squares.
         \item[c.] \hilite{Decide}: for each in-the-money path, if
@@ -275,11 +279,22 @@
 
 \begin{frame}{The Early-Exercise Premium by Simulation}
   Let's price an American put by simulation and compare it with the lattice and
-  the European premium.
+  the European premium. We apply two rules to the same simulated paths:
 
-  \vspace{0.6em}
-  Holding on every path gives the European Monte Carlo premium, so the
-  difference estimates the early-exercise premium.
+  \vspace{0.8em}
+  \begin{center}
+    \begin{tabular}{l@{\hspace{2.5em}}c}
+      \toprule
+      Rule at each date & Estimates \\
+      \midrule
+      Longstaff--Schwartz: exercise when $V(K,S_{i}(t))>\hat{C}_{t}(S_{i}(t))$ & $\PAM$ \\[0.2em]
+      Hold on every path & $\PEU$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{equation*}
+    \boxed{\text{early-exercise premium}\approx\PAM-\PEU}
+  \end{equation*}
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 

@@ -244,6 +244,25 @@
   - **Advanced:** the drift $\mu=\mu_g+\sigma^2/2$ is defined.
   - **AmericanContractsPremium:** the table label is "beyond 15%".
 
+  He then asked for the deck changes that would reach 9. A fresh reviewer
+  scored it 8.8, with design, density and legibility at 8.4. He approved
+  ("Agree") from `previews/deck-9plus-{1,2}.png`, which predict about 9.2:
+  - **Slides 14 and 17**, his density rule applied:
+    - slide 14 shows exercise versus hold as math, then the boxed
+      $\mathcal{P}^{\text{AM}}-\mathcal{P}^{\text{EU}}=5.09-4.19$
+    - slide 17 has a two-rule table on the same paths and a boxed relation
+  - **Slides 8, 10, 15:**
+    - slide 8 has a one-line lead, with $p$ in the where-line
+    - slide 10 ends on a labeled early-exercise line
+    - slide 15's lead is three lines
+  - **Small fixes:**
+    - slide 11's decision steps are at 10 pt
+    - slide 5's title fits on one line ("Options Clearing Corporation")
+    - slide 16 says "fit the value of holding"
+    - slide 6 has a tie
+  - **Unchanged:** the reviewer's optional "Example 1:" label on slide 14.
+    The notebook's "We'll work through in lecture" stays.
+
   The three examples held another session's uncommitted code-comment pass
   (re-run at 12:54, session closed). It was committed as found in 5c64318,
   before the fixes. The Hull and LSM notebooks declare the uninstalled
