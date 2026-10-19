@@ -1,8 +1,14 @@
 # L9b advanced CRR-factors notebook, before the instructor's pass
 
 - Source: `lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb`
-- Copied from commit `6eed771` on October 19, 2026, right after the rebuild.
-  The version he rated 2 or 3 is at `91caf69`.
+- Copied from commit `6eed771` on October 19, 2026, right after the rebuild,
+  then refreshed the same day after the scoring round he approved ("Agree"):
+  takeaways in the "We" voice, the duplicate "carry over unchanged" sentence
+  cut, "which replaces the drift with $g_{y}$", the "divide the top and bottom
+  by $2a$" step, "through order $\Delta t$", "the first term times", "the mean
+  growth rate tilts" in LO2, "symmetric" for "symmetry" in his sentence, two
+  fuller reason labels, a paragraph break, and the drift $\mu = \mu_{g} + \sigma^{2}/2$ defined. The version he rated 2 or 3 is
+  at `91caf69`.
 - State: rebuilt on the one-step growth rate $g$, approved from previews
   ("Looks correct"). He said he will work through the math himself. AGENTS.md
   (L9b entry, October 19) lists the changes.

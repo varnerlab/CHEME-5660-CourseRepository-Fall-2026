@@ -63,4 +63,14 @@
   volatility?" blockquote after the $u$/$d$ box moved to L9a. Exclude its
   removal from the diff.
 
+- After his October 18–19 edits, at his request (October 19 scoring round,
+  approved "Agree"), Claude's: "on binomial lattices" in place of "on the CRR
+  lattice" in the handoff before the Monte Carlo section (Hull's tree has
+  $ud=0.96$); "across strike prices" at the end of both Longstaff–Schwartz
+  example descriptions; and the summary of how CRR get $u$ and $d$ before the
+  $u$/$d$ box (the sentences defining $a$, $g$, and $p$, the four-row display,
+  the $\mu_{g}$ where-clause, and "Cox, Ross, and Rubinstein keep only the
+  first term, so $a=\sigma\sqrt{\Delta t}$ and:"), plus a paragraph break
+  before "However, unlike". Exclude them from the diff.
+
 When the round is done, the edited notebook is compared with `before.ipynb`.
