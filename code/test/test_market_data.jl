@@ -52,17 +52,17 @@ end
     underlying = MyOptionsEODUnderlyingDataSet()
     @test names(underlying) == ["ticker", "date", "capture_ts", "open", "high", "low", "close", "iex_volume", "iex_vwap"]
     @test length(unique(underlying.ticker)) == 31
-    @test length(unique(underlying.date)) == 115
-    @test extrema(underlying.date) == (Date(2026, 4, 13), Date(2026, 10, 8))
+    @test length(unique(underlying.date)) == 121
+    @test extrema(underlying.date) == (Date(2026, 4, 13), Date(2026, 10, 16))
     @test !any(nonunique(underlying, [:ticker, :date]))
     @test all(p -> isfinite(p) && p > 0, underlying.close)
-    @test nrow(MyOptionsEODUnderlyingDataSet(ticker = "pfe")) == 113
+    @test nrow(MyOptionsEODUnderlyingDataSet(ticker = "pfe")) == 119
     @test_throws ArgumentError MyOptionsEODUnderlyingDataSet(ticker = "TSLA")
 
     pfe = MyOptionsEODDataSet(ticker = "PFE")
     @test names(pfe) == ["date", "expiration", "dte", "target_dte", "type", "strike", "bid", "ask", "mid",
         "bid_size", "ask_size", "last_price", "last_size", "implied_vol", "delta", "gamma", "theta", "vega", "rho"]
-    @test nrow(pfe) == 34_961
+    @test nrow(pfe) == 37_083
     @test issorted(pfe, [:date, :expiration, :type, :strike])
     @test !any(nonunique(pfe, [:date, :expiration, :type, :strike]))
     @test all(pfe.dte .== Dates.value.(pfe.expiration .- pfe.date))

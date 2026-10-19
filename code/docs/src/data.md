@@ -38,14 +38,14 @@ VLQuantitativeFinancePackage.MyOptionsChainDataSet
 ### End-of-day options archive
 
 A second options dataset holds end-of-day chains for 31 tickers (large-cap
-stocks plus SPY, QQQ, and IWM) over 115 trading sessions from April 13 to
-October 8, 2026, captured from the [Alpaca Markets](https://alpaca.markets/)
+stocks plus SPY, QQQ, and IWM) over 121 trading sessions from April 13 to
+October 16, 2026, captured from the [Alpaca Markets](https://alpaca.markets/)
 options snapshot after each close. Each row is one contract on one session, with
 the closing bid and ask, the last trade, and Alpaca's implied volatility and
 Greeks. Each session keeps the expirations nearest to 2, 7, 14, 30, 45, 60, and
 90 days out, so a contract can be followed from listing to expiration.
 
-The archive is about 112 MB compressed, so it ships as a lazy artifact. The first
+The archive is about 119 MB compressed, so it ships as a lazy artifact. The first
 call to one of these loaders downloads it into the Julia depot, and later calls
 reuse that copy.
 

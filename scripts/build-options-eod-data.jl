@@ -14,6 +14,8 @@
 #     and keeps sessions on or before <through>,
 #   - keeps the latest capture when a folder holds two for one ticker
 #     (2026-08-21 has an extra 14:43 UTC intraday pull),
+#   - keeps only standard contracts, whose OCC root is the ticker itself; adjusted
+#     contracts with a non-standard deliverable (CVX1, from 2026-10-14) are dropped,
 #   - writes one gzipped chain panel per ticker, with the repeated underlying
 #     columns factored out into `underlying.csv`. The underlying bars come from
 #     Alpaca's IEX feed, so `volume` and `vwap` are renamed `iex_volume` and
@@ -58,8 +60,10 @@ staging = mktempdir()
 underlying = DataFrame()
 for tk in sort(collect(keys(captures)))
     parts = DataFrame[]
+    standard = Regex("^$(tk)\\d{6}[CP]\\d{8}\$")   # an adjusted contract's root carries a digit, e.g. CVX1
     for path in captures[tk]
         df = CSV.read(path, DataFrame; types = Dict(c => Union{Missing,Float64} for c in FLOAT_COLS))
+        filter!(:symbol => s -> occursin(standard, s), df)
         nrow(df) == 0 && continue
         length(unique(df.und_session_date)) == 1 || error("$(path): more than one session date")
         first(df.und_session_date) <= THROUGH && push!(parts, df)
