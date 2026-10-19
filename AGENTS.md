@@ -158,6 +158,22 @@
   $S_{0}$. The sentence naming CRR is cut. L9b keeps "$\sigma$ is the same
   volatility as in geometric Brownian motion and the Black–Scholes–Merton
   formula". The L9a deck is now 32 pages and the L9b deck 20.
+- October 19: he rated the advanced CRR-factors notebook 2 or 3. Its 2025
+  derivation set the up probability to one half and credited that choice to
+  CRR. In fact, CRR (1979, Section 5) keep $ud=1$, choose the up probability to
+  match the mean, and accept a variance shortfall that vanishes as the step
+  shrinks. The $q$ section stated its expansions without deriving them. The
+  rebuild, approved from the previews in
+  `build/notebook-previews/L9b-crr-factors-rebuild-2026-10-19/` ("Looks
+  correct"; he will work through the math himself), matches both the mean and
+  the variance. It keeps the leading term to get $u$, $d$, and
+  $p=\tfrac12(1+(\mu_g/\sigma)\sqrt{\Delta t})$, the formula in the L4b
+  lattice-limit notebook. It derives the $q$ expansion and the moments under
+  $\mathbb{Q}$ one step per line. At his request, it works with the one-step
+  growth rate $g$ of L3b and L4b instead of the log return, with
+  $\mathrm{Var}(g)=\sigma_g^2=\sigma^2/\Delta t$. The lecture's advanced
+  bullet, the advanced README, and the deck frame match. Codex scored the
+  rebuild 9/10, against 6 for the old version.
 
 ## L8b build — October 10, 2026
 
