@@ -243,14 +243,10 @@
 \end{frame}
 
 \begin{frame}{Monte Carlo Pricing of American Options}
-  Previously, we priced European contracts by simulating share prices under
-  $\Q$ and averaging the discounted payoffs. Longstaff and Schwartz extended
-  this approach to American contracts.
-
-  \vspace{0.6em}
-  The decision rule needs the expected value of holding, but each path has
-  only one future. Longstaff and Schwartz estimate it by regression across
-  paths, working backward from expiration:
+  We simulate many share price paths under $\Q$, then estimate the expected
+  value of holding at each date by regressing the discounted cash flows from
+  holding on the current share price across paths. Like the lattice,
+  Longstaff and Schwartz work backward from expiration:
 
   \vspace{0.6em}
   \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
