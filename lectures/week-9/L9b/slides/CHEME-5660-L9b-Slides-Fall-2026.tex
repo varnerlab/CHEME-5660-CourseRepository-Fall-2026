@@ -164,21 +164,18 @@
 \end{frame}
 
 \begin{frame}{The Early-Exercise Premium}
-  At expiration, each node's value is the contract's payoff. Working backward,
-  the American holder takes the larger of exercising now and holding for the
-  future, while the European holder can only hold:
+  Working backward from the payoffs at expiration, the American holder takes
+  the larger branch, while the European holder can only hold:
   {\small
   \begin{equation*}
     \boxed{
     \begin{aligned}
-      \hat{V}^{\text{AM}}_{t,k} & = \max\Bigl\{\underbrace{V(K,S_{t,k})}_{\text{exercise now}},~\underbrace{\Dstep\cdot\bigl(q\,\hat{V}^{\text{AM}}_{t+1,k+1} + (1-q)\,\hat{V}^{\text{AM}}_{t+1,k}\bigr)}_{\text{hold for the future}}\Bigr\}\\
-      \hat{V}^{\text{EU}}_{t,k} & = \Dstep\cdot\bigl(q\,\hat{V}^{\text{EU}}_{t+1,k+1} + (1-q)\,\hat{V}^{\text{EU}}_{t+1,k}\bigr)
+      \hat{V}^{\text{AM}}_{t,k} & = \max\Bigl\{\underbrace{V(K,S_{t,k})}_{\text{exercise now}},~\underbrace{\Dstep\cdot\overbrace{\bigl(q\,\hat{V}^{\text{AM}}_{t+1,k+1} + (1-q)\,\hat{V}^{\text{AM}}_{t+1,k}\bigr)}^{\textstyle\mathbb{E}_{\mathbb{Q}}}}_{\text{hold for the future}}\Bigr\}\\
+      \hat{V}^{\text{EU}}_{t,k} & = \Dstep\cdot\overbrace{\bigl(q\,\hat{V}^{\text{EU}}_{t+1,k+1} + (1-q)\,\hat{V}^{\text{EU}}_{t+1,k}\bigr)}^{\textstyle\mathbb{E}_{\mathbb{Q}}}
     \end{aligned}}
   \end{equation*}}%
-  Here $\hat{V}_{t,k}$ is the contract's value at the node with $k$ up moves in
-  $t$ steps, $S_{t,k}=S_{0}u^{k}d^{t-k}$ is the share price there, and
-  $\Dstep=e^{-g_{y}\Delta t}$ discounts one time step. The hold term is the
-  European premium formula applied over one step. The premium is
+  Here $\hat{V}_{t,k}$ is the contract's value with $k$ up moves in $t$ steps,
+  $S_{t,k}=S_{0}u^{k}d^{t-k}$, and $\Dstep=e^{-g_{y}\Delta t}$. The premium is
   $\mathcal{P}=\hat{V}_{0,0}$, and $\PAM-\PEU\geq 0$ is the
   \hilite{early-exercise premium}.
 \end{frame}
@@ -237,18 +234,12 @@
   \vspace{0.6em}
   That one decision raises the premium from 4.19 to 5.09 USD/share, an
   early-exercise premium of about 0.90 USD/share.
-  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
-\end{frame}
-
-\begin{frame}{Compute the Price of an American Call and Put Option Contract}
-  Now that we've explored the decision rule through the Hull example, let's
-  apply these concepts to real market data: CRR prices for American calls and
-  puts from the course's options archive, compared with market prices across
-  strike.
 
   \vspace{0.6em}
-  Let's compute the American and European premiums of the archived contracts.
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
+  Let's compute every node of this lattice, then apply the same method to
+  contracts from the course's options archive.
+  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}\newline
+  {\vnmedium We'll work through in lecture:}\hspace{0.65em}\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Monte Carlo Pricing of American Options}
