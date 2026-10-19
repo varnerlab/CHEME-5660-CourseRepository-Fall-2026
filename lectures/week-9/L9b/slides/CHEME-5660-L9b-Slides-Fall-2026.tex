@@ -48,14 +48,14 @@
 
 \begin{frame}{Objectives for Today}
   Previously, we priced European options, which can be exercised only at
-  expiration. Standard options on stocks and ETFs are American-style and can be
+  expiration. However, standard options on stocks and ETFs are American-style and can be
   exercised at any time. What is the right to exercise early worth?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Distinguish between European and American options}: exercise
-      only at expiration, or at any time before expiration.
+      only at expiration, or at any time before or on expiration.
     \item \hilite{Apply the binomial model to price American options}: build
       CRR trees and compute premiums with the decision rule for early exercise.
     \item \hilite{Estimate the premium of American options by simulation}:
@@ -90,7 +90,7 @@
     \item \hilite{Exercise and assignment}: OCC assigns each early exercise at
       random to a clearing member with a short position in the same contract.
     \item \hilite{Automatic exercise at expiration}: since 1977, an expiring
-      equity option in the money by 0.01 USD/share or more is exercised unless
+      equity option at least 0.01 USD/share in the money is exercised unless
       the holder instructs otherwise.
     \item \hilite{Monte Carlo margin and binomial trees}: since 2006, STANS
       simulates 10,000 two-day scenarios and reprices American options on a
@@ -102,57 +102,50 @@
 \end{frame}
 
 \begin{frame}{American Style Options Contracts}
-  American-style options contracts allow the holder to exercise the option
-  \hilite{at any time} before or on the expiration date. Previously, we wrote
-  the premium of an American-style contract as:
-  \[
-    \PAM=\max_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V(K,S(\tau))\Bigr)\geq\PEU
-  \]
-  The exercise time $\tau$ is chosen using only the information available at
-  that time (a \hilite{stopping time}). The American premium is at least the
-  European one because the American holder can always wait until expiration.
-
-  \vspace{0.5em}
-  The standard method to price American options is the Cox, Ross, Rubinstein
-  (CRR) binomial model.
-  \slidenote{Reference:}{Cox, J. C., Ross, S. A., and Rubinstein, M. (1979). Option pricing: A simplified approach. \href{https://www.sciencedirect.com/science/article/pii/0304405X79900151}{Journal of Financial Economics 7(3): 229}.}
+  American-style contracts can be exercised \hilite{at any time} before or on
+  the expiration date $T$. Previously, we wrote the American premium as:
+  \begin{equation*}
+    \PAM_{\star}=\max_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V_{\star}(K,S(\tau))\Bigr)\geq\PEU_{\star}\qquad\text{for }\star\in\{c,p\}
+  \end{equation*}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Stopping time}: $\tau$ uses only the information available at that time.
+    \item \hilite{Discounting}: $\mathcal{D}^{-1}_{\tau,0}(g_{y})$ brings the payoff at strike price $K$ back to today.
+    \item \hilite{At least the European premium}: the holder can always wait.
+  \end{itemize}
+  \vspace{0.2em}
+  The standard pricing method is the Cox, Ross, Rubinstein (CRR) binomial model.
+  \slidenote{Reference:}{Cox, Ross, and Rubinstein (1979). Option pricing: A simplified approach. \href{https://www.sciencedirect.com/science/article/pii/0304405X79900151}{J. Financial Economics 7(3): 229}.}
 \end{frame}
 
 \begin{frame}{CRR Binomial Lattice Model}
-  At each time step, the share price moves up by a factor $u$ with the
-  \hilite{risk-neutral probability} $q$, or down by a factor $d$ with
-  probability $(1-q)$. The CRR parameters are no longer data driven: $q$ makes
-  the expected return of the underlying asset match the risk-free rate $g_{y}$.
-  {\small\setlength{\jot}{0pt}
+  The share price moves up by $u$ with \hilite{risk-neutral probability} $q$, or down by $d$:
   \begin{equation*}
     \begin{aligned}
-      \mathcal{D}_{1,0}(g_{y})\cdot S_{0} & = \E_{\Q}\left(S_{1}\right) && \text{grow at the risk-free rate under }\Q\\
+      \mathcal{D}_{1,0}(g_{y})\cdot S_{0} & = \E_{\Q}\left(S_{1}\right) && \text{grow at the risk-free rate } g_{y} \text{ under }\Q\\
       & = q\cdot(u\cdot S_{0}) + (1-q)\cdot(d\cdot S_{0}) && \text{up with probability } q\text{, down with } (1-q)\\
       & = S_{0}\bigl(qu + (1-q)d\bigr) && \text{factor out } S_{0}\\
       & = S_{0}\bigl(qu + d - qd\bigr) && \text{expand } (1-q)d\\
-      & = S_{0}\bigl(d + q(u - d)\bigr) && \text{collect the } q \text{ terms}\\[0.2em]
-      \Longrightarrow\quad & \boxed{q = \frac{\mathcal{D}_{1,0}\left(g_{y}\right) - d}{u - d}} && \text{divide by } S_{0}\text{ and solve for } q
+      & = S_{0}\bigl(d + q(u - d)\bigr) && \text{collect the } q \text{ terms}\\[0.3em]
+      \Longrightarrow\quad & \boxed{q = \frac{\mathcal{D}_{1,0}(g_{y}) - d}{u - d}} && \text{divide by } S_{0}\text{ and solve for } q
     \end{aligned}
-  \end{equation*}}%
-  Here $\mathcal{D}_{1,0}(g_{y})=e^{g_{y}\Delta t}$ is the risk-free accumulation
-  factor for one time step. This is the risk-neutral probability we found by
-  ruling out arbitrage when we introduced lattice models, with
-  $R_{f}=\mathcal{D}_{1,0}(g_{y})$.
+  \end{equation*}
+  where $S_{0}$ is today's share price and $R_{f}=\mathcal{D}_{1,0}(g_{y})=e^{g_{y}\Delta t}$ for one step $\Delta t$.
 \end{frame}
 
 \begin{frame}{CRR Up and Down Factors}
-  Unlike the data-driven binomial model we discussed earlier, the CRR model
-  derives $u$ and $d$ based on the volatility $\sigma$ of the underlying asset,
-  the time step $\Delta t$, and the symmetric condition $ud = 1$:
+  With $ud=1$, let $a=\ln u=-\ln d$. The one-step growth rate $g=\pm a/\Delta t$
+  has real-world probabilities $p$ and $1-p$. Match its mean and variance to GBM:
+  \setlength{\jot}{1pt}
   \begin{equation*}
-    \boxed{
     \begin{aligned}
-      u &= e^{\sigma \sqrt{\Delta t}} \\
-      d &= e^{-\sigma \sqrt{\Delta t}}
-    \end{aligned}}
+      \frac{(2p-1)\,a}{\Delta t} & = \mu_{g} && \text{match the mean growth rate}\\
+      \frac{4p(1-p)\,a^{2}}{\Delta t^{2}} & = \frac{\sigma^{2}}{\Delta t} && \text{match the variance}\\
+      \frac{a^{2}}{\Delta t^{2}} - \mu_{g}^{2} & = \frac{\sigma^{2}}{\Delta t} && \text{use } 4p(1-p) = 1-(2p-1)^{2}\text{ and the mean}\\
+      a^{2} & = \sigma^{2}\Delta t + \mu_{g}^{2}\Delta t^{2} && \text{solve for } a^{2}\\[0.3em]
+      \Longrightarrow\quad & \boxed{u = e^{\sigma\sqrt{\Delta t}},\quad d = e^{-\sigma\sqrt{\Delta t}}} && \text{CRR keep the first term, so } a=\sigma\sqrt{\Delta t}
+    \end{aligned}
   \end{equation*}
-  Here $\sigma$ is the same volatility as in geometric Brownian motion and the
-  Black--Scholes--Merton formula (units: $\mathrm{yr}^{-1/2}$).
+  where $\mu_{g}$ is the mean growth rate and $\sigma$ is the volatility.
   \slidenote{Where do $u$ and $d$ come from?}{\href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{advanced/crr\_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -164,8 +157,8 @@
 \end{frame}
 
 \begin{frame}{The Early-Exercise Premium}
-  Working backward from the payoffs at expiration, the American holder takes
-  the larger branch, while the European holder can only hold:
+  Working backward from expiration, the American holder takes the larger of
+  exercising and holding, while the European holder can only hold:
   {\small
   \begin{equation*}
     \boxed{
@@ -267,7 +260,7 @@
     \item For each date $t=h-1,h-2,\dots,1$ \textbf{do}:
       \begin{itemize}
         \item[a.] Discount each cash flow back one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
-        \item[b.] \hilite{Regress}: on the in-the-money paths, fit
+        \item[b.] \hilite{Regress}: on the in-the-money paths, those with $V(K,S_{i}(t))>0$, fit
           $\hat{C}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
           $\bigl(S_{i}(t),Y_{i}(t)\bigr)$ by least squares.
         \item[c.] \hilite{Decide}: for each in-the-money path, if

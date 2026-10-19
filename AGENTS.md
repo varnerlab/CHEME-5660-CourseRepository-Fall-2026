@@ -174,6 +174,81 @@
   $\mathrm{Var}(g)=\sigma_g^2=\sigma^2/\Delta t$. The lecture's advanced
   bullet, the advanced README, and the deck frame match. Codex scored the
   rebuild 9/10, against 6 for the old version.
+- October 19, later: he asked for every L9b artifact below 9 to be fixed.
+  Six fresh reviewers scored rendered pages:
+  - lecture 8.8, deck 8.6, advanced notebook 8.7
+  - AmericanContractsPremium 8.4, Hull 8.8, LSM 8.7
+  - advanced README 9.2, figures 9.2
+
+  He approved the fixes from the previews in
+  `build/notebook-previews/L9b-score-2026-10-19/previews/` ("Agree"). The
+  reports, the fix script (`apply_fixes.py`), and the updated checker are in
+  the same folder. The fixes:
+  - **Lecture:** "on binomial lattices" replaces "on the CRR lattice" in his
+    Oct 19 handoff, since Hull's tree has $ud=0.96$. Both Longstaff–Schwartz
+    descriptions now mention the strike sweep. At his request, a short summary
+    of how CRR get $u$ and $d$ sits before the box: the two-point growth rate
+    $\pm a/\Delta t$, the mean and variance matched to GBM,
+    $a^2=\sigma^2\Delta t+\mu_g^2\Delta t^2$, and the first term kept.
+  - **Notation page:** the Longstaff–Schwartz rows now use his renames ($h$,
+    $Y_i(t)$, $\hat C_t(S)$). New rows for $a$, $g$, $p$, $\mu_g$.
+  - **AmericanContractsPremium:**
+    - one name, `early_ex`, for the unrounded early-exercise premium (calls
+      used to say `raw_gap`)
+    - the `println` removed
+    - near-the-money results as `pretty_table`
+    - the archive date is October 16
+    - the rounding bullet under "Why allow a 15% gap?" is replaced by the
+      rate and dividend assumptions (rounding moves a premium at most 0.05%)
+    - takeaway 2 no longer says "most puts" (the table shows 57 of 57)
+    - sibling LO and Summary format, and $\mathcal{P}^{\text{EU}}$ defined
+  - **Hull:**
+    - `μ` and `T` explained, the `u`/`d` names corrected, and $e^{g_y\Delta t}$
+    - the node fields named, and the node decision as a `pretty_table`
+    - the closer warns that the Hull checks must go before parameters change
+  - **LSM:**
+    - the convergence table is read: European and early-exercise columns move
+      by about one SE
+    - two doc links, the Task 3 bullets turned into prose, $\sigma$ defined
+    - the lecture's $\hat C_t$, $Y_i(t)$, and $M$
+    - "log return" removed from a comment, and a closer that no longer claims
+      an unmeasured error
+  - **Advanced:**
+    - "We" takeaways, the duplicate sentence cut, and the source of the mean
+      under $\mathbb{Q}$
+    - the "divide the top and bottom by $2a$" step and "through order $\Delta t$"
+  - **Deck:**
+    - synced with his Oct 18 edits; the deck-only "same volatility as GBM and
+      BSM" clause is gone
+    - slides 6–8 redesigned at his direction ("way too dense", "too dense",
+      "not dense enough"; then "cut text, not math", "show the q expression in
+      a box", and borrow the $u$, $d$ derivation from the advanced notebook)
+    - slide 6 has three one-line items, slide 7 is the $q$ derivation ending in
+      the boxed $q$, and slide 8 is the $u$, $d$ summary ending in the boxed
+      factors
+
+  Fresh reviewers then re-scored the applied versions (round 1):
+  - lecture 9.2, deck 8.8, AmericanContractsPremium 9.1
+  - Hull 9.2, LSM 8.9, advanced 9.2, README 9.2
+
+  The remaining items were fixed in the same round, and their reviewers
+  predict 9.2–9.4. These fixes were not scored again.
+  - **Deck:** the redesign had dropped the only definitions of $\sigma$ and
+    $g_y$. Slide 8 now has a where-clause, and slide 7's first reason names
+    $g_y$.
+  - **Lecture and deck:** the reason label is "solve for $a^2$", and the CRR
+    sentence reads "so $a=\sigma\sqrt{\Delta t}$".
+  - **LSM:** the closer now warns that changing $\sigma$ or the rate trips the
+    checks, the leftover $\hat C(X)$ is $\hat C_t(X)$, and the early-exercise
+    column "moves the opposite way".
+  - **Advanced:** the drift $\mu=\mu_g+\sigma^2/2$ is defined.
+  - **AmericanContractsPremium:** the table label is "beyond 15%".
+
+  The three examples held another session's uncommitted code-comment pass
+  (re-run at 12:54, session closed). It was committed as found in 5c64318,
+  before the fixes. The Hull and LSM notebooks declare the uninstalled
+  `julia-cheme5660` kernel, so re-run them with
+  `--ExecutePreprocessor.kernel_name=julia-1.12`.
 
 ## L8b build — October 10, 2026
 
