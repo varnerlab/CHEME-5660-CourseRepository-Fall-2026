@@ -20,3 +20,22 @@ moneyness. The merged label "Interpret Delta and compute the probabilities of
 exercise and profit", its last sentence, the POP sentence in the Delta
 takeaway, and the Summary opener's "splits the premium of an American option
 into intrinsic and extrinsic value" are new.
+
+October 20, 2026, Claude's (his "Agree" to moving Longstaff–Schwartz here from
+L9b): the new cell `l10a-lsm` (his approved L9b section, with "risk-neutral
+measure" changed to "risk-neutral pricing rule"), the Longstaff–Schwartz example
+entry, the merged first objective and first takeaway, the title's "Monte Carlo
+Pricing and", the Summary opener's "prices American options by Monte Carlo
+simulation,", and the lecture-number fixes in the opener and three body
+sentences. Exclude them from the diff.
+
+Same day, Claude's, after a scoring round and at his request: the opener ("Previously,
+we priced American options on a CRR tree, and duration and convexity measured how a
+bond's price moves with its yield. Can simulation price them, and how much ..."),
+the first takeaway label "Estimating and decomposing the American premium", "We
+compute the American premium" in the Greeks section, and the extrinsic-value example
+moved to "review on your own". Exclude them from the diff.
+Round 2 (same day, Claude's): the opener split into two questions ("Previously, we
+priced American options on a CRR tree. Can simulation price them? Duration and
+convexity measured ...") and "Let's look at some option contracts in the market ..."
+moved below the review-on-your-own box. Exclude them from the diff.

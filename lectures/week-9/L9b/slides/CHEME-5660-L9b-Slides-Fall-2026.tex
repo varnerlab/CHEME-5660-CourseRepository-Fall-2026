@@ -1,5 +1,5 @@
-% L9b student companion deck: pricing American options with the CRR binomial model
-% and Longstaff-Schwartz Monte Carlo.
+% L9b student companion deck: Black-Scholes-Merton premiums, and pricing American
+% options with the CRR binomial model.
 %
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
 % instructor preference. Notation follows the lecture: payoff V(K,S) as in L9a,
@@ -14,6 +14,7 @@
 % (European premium and Monte Carlo pseudocode) and the BSM, implied-volatility, and
 % put-call parity frames are ported from the L9a deck; the BSM example stays in L9a.
 % Same day: put-call parity moved to the InterestingFact notebook; one frame states it.
+% Same day: Longstaff-Schwartz (three frames and the example) moved to L10a.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -29,7 +30,7 @@
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b}
 \newcommand{\repoprev}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a}
 
-\title{\texorpdfstring{{\vnheavy L9b}}{L9b}: Black–Scholes–Merton Premiums and Pricing American Style Options Contracts using the CRR Binomial Model}
+\title{\texorpdfstring{{\vnheavy L9b}}{L9b}: Black–Scholes–Merton Premiums and Pricing American Options using the CRR Binomial Model}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -56,20 +57,20 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Previously, we priced European options, which can be exercised only at
-  expiration. However, standard options on stocks and ETFs are American-style and can be
-  exercised at any time. What is the right to exercise early worth?
+  Previously, we priced European options by Monte Carlo simulation. Today, we
+  price them with the Black--Scholes--Merton formulas. However, standard options on
+  stocks and ETFs are American-style and can be exercised at any time. What is the
+  right to exercise early worth?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Price European options with the Black--Scholes--Merton model}:
       closed-form call and put premiums and implied volatility.
+    \item \hilite{Distinguish between European and American options}: exercise
+      only at expiration, or at any time before or on expiration.
     \item \hilite{Apply the binomial model to price American options}: build
       CRR trees and compute premiums with the decision rule for early exercise.
-    \item \hilite{Estimate the premium of American options by simulation}:
-      Longstaff--Schwartz Monte Carlo, regressing the value of holding on the
-      share price.
   \end{itemize}
 \end{frame}
 
@@ -87,29 +88,29 @@
   \href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 
   \vspace{0.45em}
-  {\normalsize\textbf{\ink{Example 2:}}\par\small
-  \href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
-
-  \vspace{0.45em}
   {\normalsize\textbf{\ink{Review on your own:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Concept Review: The European Premium}
-  How do we compute the premium of a European option? Previously, we set the
-  contract's expected NPV to zero under the risk-neutral pricing rule $\Q$, under
-  which the expected share price grows at the risk-free rate $g_{y}$. For a call or
-  a put with payoff $V_{\star}(K,\ST)$:
+  \vspace{0.3em}
+  {\large\textbf{\ink{How do we compute the premium of a European option?}}}
+
+  \vspace{0.5em}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Previously}: we set the contract's expected NPV to zero under
+      the risk-neutral pricing rule $\Q$.
+    \item \hilite{Under $\Q$}: the expected share price grows at the risk-free
+      rate $g_{y}$.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The premium is the discounted expected payoff under $\Q$:
   \[
     \boxed{\PEU_{\star}=\Dinv\cdot\E_{\Q}\bigl[V_{\star}(K,\ST)\bigr]\quad\text{where }\star\in\{c,p\}}
   \]
-  where $K$ is the strike price, $\ST$ is the share price at expiration $T$
-  (years), and $\Dinv=e^{-g_{y}T}$ discounts the payoff back to today.
-
-  \vspace{0.5em}
-  The European premium is the discounted expected payoff under $\Q$, one price
-  for all buyers. Monte Carlo simulation and the Black--Scholes--Merton formulas
-  are two ways to compute it.
+  where $V_{\star}(K,\ST)$ is the call or put payoff, $K$ is the strike price,
+  $\ST$ is the share price at expiration $T$ (years), and $\Dinv=e^{-g_{y}T}$.
 \end{frame}
 
 \begin{frame}{Concept Review: A Monte Carlo Premium}
@@ -132,7 +133,7 @@
   \end{enumerate}
   The result is an estimate: it changes with the random draws, and it becomes
   more precise as $M$ grows.
-  \slidenote{Example:}{\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}\newline
+  \slidenote{Example (Approach 1 in Tasks 1 and 2):}{\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}\newline
   {\vnmedium Optional:}\hspace{0.65em}an alternative way to think about the premium, in the \href{\repo/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
@@ -143,9 +144,8 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item \hilite{Exercise and assignment}: OCC assigns each early exercise at
       random to a clearing member with a short position in the same contract.
-    \item \hilite{Automatic exercise at expiration}: since 1977, an expiring
-      equity option at least 0.01 USD/share in the money is exercised unless
-      the holder instructs otherwise.
+    \item \hilite{Automatic exercise at expiration}: an expiring equity option at least 0.01~USD/share in the money is
+      exercised unless the holder instructs otherwise.
     \item \hilite{Monte Carlo margin and binomial trees}: since 2006, STANS
       simulates 10,000 two-day scenarios and reprices American options on a
       binomial tree.
@@ -190,7 +190,6 @@
   \]
   We know $S(0)$, $K$, $T$, and $g_{y}$ when we price the contract. The
   volatility $\sigma$ is the one input we must choose.
-  \slidenote{Example:}{\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Which Volatility Should We Use?}
@@ -276,7 +275,8 @@
   \vspace{0.3em}
   Next, we link the call and put premiums with the same strike and
   expiration.
-  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.}
+  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.\newline
+  {\vnmedium Review on your own (Approach 2 and Task 3):}\hspace{0.65em}\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Interesting Fact: Put–Call Parity}
@@ -311,7 +311,7 @@
   \end{equation*}
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Stopping time}: $\tau$ uses only the information available at that time.
-    \item \hilite{Discounting}: $\mathcal{D}^{-1}_{\tau,0}(g_{y})$ brings the payoff at strike price $K$ back to today.
+    \item \hilite{Discounting}: $\mathcal{D}^{-1}_{\tau,0}(g_{y})$ brings the payoff at exercise time $\tau$ back to today.
     \item \hilite{At least the European premium}: the holder can always wait.
   \end{itemize}
   \vspace{0.2em}
@@ -331,7 +331,7 @@
       \Longrightarrow\quad & \boxed{q = \frac{\mathcal{D}_{1,0}(g_{y}) - d}{u - d}} && \text{divide by } S_{0}\text{ and solve for } q
     \end{aligned}
   \end{equation*}
-  where $S_{0}$ is today's share price and $R_{f}=\mathcal{D}_{1,0}(g_{y})=e^{g_{y}\Delta t}$ for one step $\Delta t$.
+  where $S_{0}=S(0)$ is today's share price and $R_{f}=\mathcal{D}_{1,0}(g_{y})=e^{g_{y}\Delta t}$ for one step $\Delta t$.
 \end{frame}
 
 \begin{frame}{CRR Up and Down Factors}
@@ -440,65 +440,6 @@
   {\vnmedium We'll work through in lecture:}\hspace{0.65em}\href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 \end{frame}
 
-\begin{frame}{Monte Carlo Pricing of American Options}
-  We simulate share price paths under $\Q$, then estimate the value of holding
-  at each date by regressing the discounted cash flows from holding on the
-  current share price across paths. Like the lattice, Longstaff and Schwartz
-  work backward from expiration:
-
-  \vspace{0.6em}
-  \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
-  call or put, $T$, $\sigma$, $g_{y}$, the number of exercise dates $h$ after
-  today, and the number of paths $M$. Compute $\Delta t=T/h$ and
-  $\Dstep=e^{-g_{y}\Delta t}$.
-  \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
-\end{frame}
-
-\begin{frame}{Pseudocode: Longstaff–Schwartz}
-  \begin{enumerate}\setlength{\itemsep}{0.3em}
-    \item \hilite{Simulate}: generate $M$ share price paths under $\Q$ from $S_{0}$
-      on the dates $t=0,1,\dots,h$ (expiration), where $S_{i}(t)$ is the share
-      price on path $i$ at date $t$.
-    \item At expiration, set each path's cash flow to its payoff:
-      $Y_{i}(h)\gets V(K,S_{i}(h))$ for $i=1,2,\dots,M$, where $Y_{i}(t)$ is
-      path $i$'s cash flow valued at date $t$.
-    \item For each date $t=h-1,h-2,\dots,1$ \textbf{do}:
-      \begin{itemize}
-        \item[a.] Discount each cash flow back one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
-        \item[b.] \hilite{Regress}: on the in-the-money paths, those with $V(K,S_{i}(t))>0$, fit the value of holding
-          $\hat{C}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
-          $\bigl(S_{i}(t),Y_{i}(t)\bigr)$ by least squares.
-        \item[c.] \hilite{Decide}: for each in-the-money path, if
-          $V(K,S_{i}(t))>\hat{C}_{t}(S_{i}(t))$, \textbf{then}: exercise, so
-          $Y_{i}(t)\gets V(K,S_{i}(t))$.
-      \end{itemize}
-    \item Discount the cash flows to today and average them:
-      $\bar{Y}\gets\mathcal{D}^{-1}_{1,0}(g_{y})\cdot\frac{1}{M}\sum_{i=1}^{M}Y_{i}(1)$.
-    \item The premium is $\PAM\gets\max\bigl\{V(K,S_{0}),~\bar{Y}\bigr\}$.
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}{The Early-Exercise Premium by Simulation}
-  Let's price an American put by simulation and compare it with the lattice and
-  the European premium. We apply two rules to the same simulated paths:
-
-  \vspace{0.8em}
-  \begin{center}
-    \begin{tabular}{l@{\hspace{2.5em}}c}
-      \toprule
-      Rule at each date & Estimates \\
-      \midrule
-      Longstaff--Schwartz: exercise when $V(K,S_{i}(t))>\hat{C}_{t}(S_{i}(t))$ & $\PAM$ \\[0.2em]
-      Hold on every path & $\PEU$ \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-  \begin{equation*}
-    \boxed{\text{early-exercise premium}\approx\PAM-\PEU}
-  \end{equation*}
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-LSM-Premium-Fall-2026.ipynb}}}
-\end{frame}
-
 \begin{frame}{Optional Advanced Material}
   Three optional notebooks extend this lecture:
 
@@ -528,7 +469,7 @@
   \href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
 
   \vspace{0.5em}
-  In this notebook, we derive the up and down factors of the CRR model by
+  We derive the up and down factors of the CRR model by
   matching the mean and variance of the lattice's one-step growth rate to
   those of geometric Brownian motion. We then show that the lattice still
   matches geometric Brownian motion when we price with the risk-neutral
@@ -539,25 +480,24 @@
 
 \begin{frame}{Summary}
   Today we priced European options with the BSM formulas, and American options
-  with the CRR binomial model and Monte Carlo simulation.
+  with the CRR binomial model.
 
   \vspace{0.3em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.15em}
     \item \hilite{The Black--Scholes--Merton formulas price European options}:
-      they match the Monte Carlo premium, and run backward from a market
-      premium they give the implied volatility.
-    \item \hilite{Binomial trees price American options}: backward induction
-      compares exercising with holding at each node. In Hull's put, one early
-      exercise accounts for the whole American--European gap.
-    \item \hilite{Simulation estimates the same premium}: Longstaff--Schwartz
-      works backward along simulated paths, regressing the value of holding on
-      the share price. Holding on every path gives the European premium.
+      they match the Monte Carlo premium, and we backed out the implied
+      volatility from a market premium by bisection.
+    \item \hilite{Binomial trees price American options}: at each node, the
+      holder exercises or holds, so backward induction computes the premium.
+    \item \hilite{The decision rule sets the early-exercise premium}: in
+      Hull's put, exercising at the one node where it beats holding accounts
+      for the whole gap between the American and European premiums.
   \end{itemize}
 
   \vspace{0.1em}
   The early-exercise premium is what the right to exercise before expiration is
-  worth, and the lattice and simulation give two ways to compute it.
+  worth, and the binomial lattice computes it.
 \end{frame}
 
 \end{document}

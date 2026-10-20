@@ -54,6 +54,54 @@
   little bit more meat there") it carries the payoff identity, the parity
   derivation, the boxed result, and the European-only line: 29 pages, 0 overfull. The
   L9a deck changed only in its links (35 pages).
+- Longstaff–Schwartz moved to L10a (same day, his "Agree" after he asked whether
+  L9b was excellent and the answer was "not yet": L9b had 3,859 words, four
+  pseudocode blocks, and five example stops, against L9a's 4,056 words, which
+  did not fit in one class). The section, its example (now
+  `CHEME-5660-L10a-Example-LSM-Premium-Fall-2026.ipynb`), and its three slides
+  now open L10a, right after the Susquehanna profile, as
+  `## Monte Carlo Pricing of American Options`. In L10a, `Distributions` also
+  exports `sample`, so the example calls `VLQuantitativeFinancePackage.sample`,
+  as the POE/POP example does. It re-runs from L10a with identical outputs.
+  - L9b: objectives are BSM, his "Distinguish between European and American
+    options", and CRR. Takeaways are BSM and his original lattice and
+    decision-rule takeaways. The opener now says European options were priced
+    by Monte Carlo simulation and are priced today with the BSM formulas. The
+    title drops "Style" and "Contracts". The second BSM-example stop is one
+    sentence with a plain link, and the American where-clause no longer
+    re-defines $K$, $T$, and $g_y$. L9b deck: 26 pages, 0 overfull.
+  - L10a: the first objective and takeaway merge Longstaff–Schwartz with
+    intrinsic and extrinsic value. The title gains "Monte Carlo Pricing and".
+    The opener and three body sentences lose their lecture-number references
+    ("In L2b", "In L9b", "(L9b)", "the L9a ... formulas"). Deck: three
+    slides added, examples renumbered (and "Example 2 checks it" now points to
+    the POE/POP example, Example 4), 20 pages, 0 overfull.
+  - L10a timing (reviewers estimated about 80 minutes): at his request, the
+    extrinsic-value example is "review on your own" in the Examples list, its
+    in-lecture stop, and the deck (Examples 1–3 are now Longstaff–Schwartz,
+    Greeks, and POE/POP). Its figure stays in the lecture.
+  - FAQ: the Longstaff–Schwartz rows moved to a new L10a table, "Monte Carlo
+    Pricing of American Options". $M$ moved to the L9b European table.
+- Scoring (fresh reviewers, reports in
+  `build/notebook-previews/L9b-carryover-2026-10-20/score/` and `score2/`). Round 1:
+  L9b lecture 8.8, L9b deck 8.8, L10a lecture 8.8, L10a deck 8.6, with fixes applied.
+  One fix was declined: cutting the Concept Review's "alternative way"
+  contingent-claims pointer, which he kept on purpose in L9a. His timing
+  decisions came next. L9b opens the BSM example once (Approach 1 in class,
+  Approach 2 and Task 3 review-on-your-own), and L10a's extrinsic example is
+  review-on-your-own. Round 2:
+  - L9b lecture with the parity notebook: 9.1, about 75 minutes.
+  - L9b deck: 8.9. Slide 7 wrongly dated the 0.01 USD auto-exercise threshold to
+    1977, and that is fixed, along with the Approach labels on the example notes.
+  - L10a lecture and deck: 8.9 each, about 70 minutes. The fixes were the review
+    box above its lead-in, the opener split into two questions, a shorter slide
+    title, and $S_T$ defined on the POE slide.
+  The round-2 fixes are applied and were not scored again (predicted 9.2).
+- After going through the L9b slides, he called slide 5 (the Concept Review lead)
+  "too dense". It is now a bold question, two labeled one-line items
+  ("Previously", "Under ℚ"), a one-line lead, the box, and a where-line. He
+  approved it ("Agree") and said the rest of the deck "looks pretty good". The
+  BSM example stays in L9a and runs from there.
 - FAQ: L9b has a second notation table, "European Premiums by Monte Carlo and
   Black–Scholes–Merton". The American table gains $\tau$, and its $M$ row
   covers both Monte Carlo methods. Built with the pinned Pandoc 3.1.11.1.

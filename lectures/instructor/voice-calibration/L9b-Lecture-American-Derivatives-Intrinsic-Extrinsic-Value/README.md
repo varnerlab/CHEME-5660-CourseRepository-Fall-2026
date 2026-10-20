@@ -82,6 +82,20 @@
   his, so compare it with the L9a calibration copy instead. Same day: the
   put–call parity subsection moved to the InterestingFact notebook, leaving one
   "__Interesting fact:__" sentence, and "put–call parity" left objective 1
-  and takeaway 1. These are Claude's too.
+  and takeaway 1. These are Claude's too. Later the same day (his "Agree"),
+  Claude's: the Longstaff–Schwartz section, example entry, objective,
+  takeaway, and handoff sentence moved to L10a; his earlier objective
+  "Distinguish ..." and his two lattice takeaways came back; the opener's first
+  sentence, the title, the closer ("and the binomial lattice computes it"), the
+  one-sentence return to the BSM example, and the shorter American
+  where-clause.
+
+- October 20, scoring round and timing (Claude's, applied with his OK): the
+  reviewer fixes (box period, split Concept Review sentence, the run-in label
+  "A Monte Carlo premium." cut, the BSM-to-American handoff "The BSM formulas
+  cannot value early exercise, so let's look at how to price American
+  options.", $S_{0}=S(0)$, takeaway 1's bisection sentence) and the BSM example
+  opened once ("(Approach 1 in Tasks 1 and 2)" and the "__Review on your own:__"
+  sentence). Exclude them from the diff.
 
 When the round is done, the edited notebook is compared with `before.ipynb`.
