@@ -18,6 +18,7 @@
 \newcommand{\Dinv}{\mathcal{D}^{-1}_{T,0}(g_{y})}
 \newcommand{\ST}{S(T)}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a}
+\newcommand{\advrepo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced}
 
 \title{\texorpdfstring{{\vnheavy L9a}}{L9a}: Introduction to Derivatives and European Option Pricing}
 \subtitle{CHEME 5660 Cornell University}
@@ -439,7 +440,7 @@
   \end{enumerate}
   The result is an estimate: it changes with the random draws, and it becomes
   more precise as $M$ grows.
-  \slidenote{Optional:}{an alternative way to think about the premium, in the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
+  \slidenote{Optional:}{an alternative way to think about the premium, in the \href{\advrepo/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{The Black–Scholes–Merton Equation}
@@ -456,7 +457,7 @@
   Solving it backward in time from the payoff gives today's premium,
   $\mathcal{P}(S(0),0)$, and this solution equals the risk-neutral premium
   $\mathcal{P}^{\text{EU}}$ that the Monte Carlo simulation estimates.
-  \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
+  \slidenote{Derivation:}{the \href{\advrepo/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{Black–Scholes–Merton Premiums}
@@ -561,7 +562,7 @@
   \vspace{0.3em}
   Next, we link the call and put premiums with the same strike and
   expiration.
-  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.}
+  \slidenote{Optional:}{the \href{\advrepo/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.}
 \end{frame}
 
 \begin{frame}{Put–Call Parity: The Payoff Identity}
@@ -624,8 +625,8 @@
   Two optional notebooks extend this lecture:
 
   \vspace{0.4em}
-  {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{advanced/contingent\_claims/}\par
-  \href{\repo/advanced/contingent_claims/CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
+  {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{L9b/advanced/contingent\_claims/}\par
+  \href{\advrepo/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
 
   \vspace{0.4em}
   We derive where the BSM premiums come from: the risk-neutral probability on a
@@ -635,13 +636,13 @@
   market price.
 
   \vspace{0.5em}
-  {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par
-  \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
+  {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{L9b/advanced/spxw\_volatility\_skew/}\par
+  \href{\advrepo/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
 
   \vspace{0.4em}
   We apply the implied-volatility bisection to an end-of-day chain of SPXW options
   and compare the skew with the realized volatility of SPY, which tracks the index.
-  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9a/advanced}{lectures/week-9/L9a/advanced}, also linked from the lecture notebook.}
+  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-9/L9b/advanced}{lectures/week-9/L9b/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
 \begin{frame}{Summary}

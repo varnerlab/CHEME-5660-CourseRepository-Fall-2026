@@ -73,4 +73,15 @@
   first term, so $a=\sigma\sqrt{\Delta t}$ and:"), plus a paragraph break
   before "However, unlike". Exclude them from the diff.
 
+- October 20, at his request (L9a class stopped at the Monte Carlo premium),
+  Claude's: the title, objective 1, the BSM example in the Examples list, the
+  new cells `l9b-cr` (Concept Review: A Monte Carlo Premium) and `l9b-bsm`
+  (ported from L9a), "We write" for "Previously, we wrote" in the American
+  section, the two advanced bullets and "notebooks", the Summary opener, and
+  the first two takeaways. Exclude them from the diff. The ported L9a text is
+  his, so compare it with the L9a calibration copy instead. Same day: the
+  put–call parity subsection moved to the InterestingFact notebook, leaving one
+  "__Interesting fact:__" sentence, and "put–call parity" left objective 1
+  and takeaway 1. These are Claude's too.
+
 When the round is done, the edited notebook is compared with `before.ipynb`.

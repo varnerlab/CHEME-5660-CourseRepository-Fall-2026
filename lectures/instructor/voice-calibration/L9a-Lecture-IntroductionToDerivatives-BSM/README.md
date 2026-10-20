@@ -276,3 +276,8 @@ are not his hand edits:
 
 His own hand edits in this window are "Here, denote the payoff for a call
 contract by $V_c$…" and "for a single contract" in the profit lead-in.
+
+October 20, Claude's: the advanced notebooks moved to `L9b/advanced/`, so the
+lecture's five advanced links (three in the pricing section, two in Optional
+Advanced Material) and the advanced-index link now point to `../L9b/advanced/`.
+Exclude them from the diff.

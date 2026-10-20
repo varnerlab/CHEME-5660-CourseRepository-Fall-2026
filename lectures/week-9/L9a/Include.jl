@@ -2,7 +2,7 @@
 # The options chains and the pricing models ship with VLQuantitativeFinancePackage
 # (the end-of-day options archive downloads on first use). The BSM premium example
 # also reads an SPXW snapshot from data/, a copy of the file captured by
-# advanced/spxw_volatility_skew/data/capture_spxw_ladder.jl. The figures are
+# ../L9b/advanced/spxw_volatility_skew/data/capture_spxw_ladder.jl. The figures are
 # prebuilt in figs/.
 const _ROOT = @__DIR__;
 const _PATH_TO_DATA = joinpath(_ROOT, "data");

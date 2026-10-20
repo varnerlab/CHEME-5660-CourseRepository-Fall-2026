@@ -10,6 +10,10 @@
 % October 16, 2026: re-synced after the lecture voice pass (OCC profile, CRR taught as
 % new material, market section before Monte Carlo, no lecture-number references).
 % Intrinsic and extrinsic value moved to L10a the same day.
+% October 20, 2026: L9a class stopped at the Monte Carlo premium. The Concept Review
+% (European premium and Monte Carlo pseudocode) and the BSM, implied-volatility, and
+% put-call parity frames are ported from the L9a deck; the BSM example stays in L9a.
+% Same day: put-call parity moved to the InterestingFact notebook; one frame states it.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -18,9 +22,14 @@
 \newcommand{\PAM}{\mathcal{P}^{\text{AM}}}
 \newcommand{\PEU}{\mathcal{P}^{\text{EU}}}
 \newcommand{\Dstep}{\mathcal{D}^{-1}_{t+1,t}(g_{y})}
+\newcommand{\Pc}{\mathcal{P}_{c}(K,S(0))}
+\newcommand{\Pp}{\mathcal{P}_{p}(K,S(0))}
+\newcommand{\Dinv}{\mathcal{D}^{-1}_{T,0}(g_{y})}
+\newcommand{\ST}{S(T)}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b}
+\newcommand{\repoprev}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a}
 
-\title{\texorpdfstring{{\vnheavy L9b}}{L9b}: Pricing American Style Options Contracts using the Cox, Ross, Rubinstein (CRR) Binomial Model}
+\title{\texorpdfstring{{\vnheavy L9b}}{L9b}: Black–Scholes–Merton Premiums and Pricing American Style Options Contracts using the CRR Binomial Model}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -54,8 +63,8 @@
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Distinguish between European and American options}: exercise
-      only at expiration, or at any time before or on expiration.
+    \item \hilite{Price European options with the Black--Scholes--Merton model}:
+      closed-form call and put premiums and implied volatility.
     \item \hilite{Apply the binomial model to price American options}: build
       CRR trees and compute premiums with the decision rule for early exercise.
     \item \hilite{Estimate the premium of American options by simulation}:
@@ -70,6 +79,10 @@
   \href{\repo/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
+  {\normalsize\textbf{\ink{Concept Review example:}}\par\small
+  \href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
   {\normalsize\textbf{\ink{Example 1:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-AmericanContractsPremium-Fall-2026.ipynb}}}
 
@@ -80,6 +93,47 @@
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Review on your own:}}\par\small
   \href{\repo/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Concept Review: The European Premium}
+  How do we compute the premium of a European option? Previously, we set the
+  contract's expected NPV to zero under the risk-neutral pricing rule $\Q$, under
+  which the expected share price grows at the risk-free rate $g_{y}$. For a call or
+  a put with payoff $V_{\star}(K,\ST)$:
+  \[
+    \boxed{\PEU_{\star}=\Dinv\cdot\E_{\Q}\bigl[V_{\star}(K,\ST)\bigr]\quad\text{where }\star\in\{c,p\}}
+  \]
+  where $K$ is the strike price, $\ST$ is the share price at expiration $T$
+  (years), and $\Dinv=e^{-g_{y}T}$ discounts the payoff back to today.
+
+  \vspace{0.5em}
+  The European premium is the discounted expected payoff under $\Q$, one price
+  for all buyers. Monte Carlo simulation and the Black--Scholes--Merton formulas
+  are two ways to compute it.
+\end{frame}
+
+\begin{frame}{Concept Review: A Monte Carlo Premium}
+  Simulation estimates the market premium directly. The payoff depends only on
+  $\ST$, so we draw it from the solution of geometric Brownian motion (GBM) with
+  drift $g_{y}$ and volatility $\sigma$.
+
+  \vspace{0.5em}
+  \hilite{Initialize}: given $S(0)$, $K$, the payoff $V(K,S)$, $T$ (years),
+  $\sigma$, $g_{y}$, and $M$ paths.
+  \begin{enumerate}\setlength{\itemsep}{0.15em}
+    \item For each path $i=1,2,\dots,M$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Draw a standard normal random number $Z_{i}$.
+        \item[b.] $S_{i}(T)\gets S(0)\cdot\exp\bigl[(g_{y}-\sigma^{2}/2)\,T+\sigma\sqrt{T}\,Z_{i}\bigr]$.
+        \item[c.] $V_{i}\gets V(K,S_{i}(T))$.
+      \end{itemize}
+    \item Discount the average payoff:
+      $\mathcal{P}\gets\Dinv\cdot\frac{1}{M}\sum_{i=1}^{M}V_{i}$.
+  \end{enumerate}
+  The result is an estimate: it changes with the random draws, and it becomes
+  more precise as $M$ grows.
+  \slidenote{Example:}{\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}\newline
+  {\vnmedium Optional:}\hspace{0.65em}an alternative way to think about the premium, in the \href{\repo/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
 \end{frame}
 
 \begin{frame}{Company Profile: Options Clearing Corporation}
@@ -102,9 +156,156 @@
   would leave out the early-exercise premium.
 \end{frame}
 
+\begin{frame}{The Black–Scholes–Merton Equation}
+  Merton and Scholes received the 1997 Nobel Prize in Economic Sciences for this
+  model. Fischer Black had passed away before the award.
+
+  \vspace{0.5em}
+  Assume the price of a non-dividend-paying share follows GBM with constant
+  $\sigma$ and a constant, continuously compounded risk-free rate $g_{y}$. The premium $\mathcal{P}(S,t)$, with
+  $\mathcal{P}(S,T)=V(K,S)$, satisfies:
+  \[
+    \boxed{\frac{\partial\mathcal{P}}{\partial t}+g_{y}\,S\,\frac{\partial\mathcal{P}}{\partial S}+\frac{1}{2}\,\sigma^{2}S^{2}\,\frac{\partial^{2}\mathcal{P}}{\partial S^{2}}=g_{y}\,\mathcal{P}}
+  \]
+  Solving it backward in time from the payoff gives today's premium,
+  $\mathcal{P}(S(0),0)$, and this solution equals the risk-neutral premium
+  $\mathcal{P}^{\text{EU}}$ that the Monte Carlo simulation estimates.
+  \slidenote{Derivation:}{the \href{\repo/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{contingent claims notebook}.}
+\end{frame}
+
+\begin{frame}{Black–Scholes–Merton Premiums}
+  Instead of simulating, we can compute this premium with the closed-form
+  European call and put formulas:
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \Pc & = N(d_{+})\cdot S(0)-N(d_{-})\cdot K\cdot\Dinv\\
+      \Pp & = N(-d_{-})\cdot K\cdot\Dinv-N(-d_{+})\cdot S(0)
+    \end{aligned}}
+  \end{equation*}
+  where $N$ is the standard normal CDF, $T$ is in years, and:
+  \[
+    d_{+}=\frac{1}{\sigma\sqrt{T}}\left[\ln\left(\frac{S(0)}{K}\right)+\Bigl(g_{y}+\frac{\sigma^{2}}{2}\Bigr)T\right],
+    \qquad d_{-}=d_{+}-\sigma\sqrt{T}
+  \]
+  We know $S(0)$, $K$, $T$, and $g_{y}$ when we price the contract. The
+  volatility $\sigma$ is the one input we must choose.
+  \slidenote{Example:}{\href{\repoprev/CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9a-Example-BSM-Premium-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Which Volatility Should We Use?}
+  If we knew the right volatility, the BSM model (or the Monte Carlo model)
+  would compute the observed market premium. In practice, we observe the market
+  premium and back out the volatility that makes the model match it.
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Historical volatility}:
+      $\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}$, where $\sigma_{g}$
+      is the standard deviation of past growth rates (units: $\mathrm{yr}^{-1}$)
+      and $\Delta t$ is the time between observations (units: years). It looks
+      backward.
+    \item \hilite{Implied volatility}
+      (\href{https://en.wikipedia.org/wiki/Implied_volatility}{IV}): the
+      market's forecast of a likely future movement in the share price. It looks
+      forward, and it is often at or above the historical volatility.
+    \item \hilite{How can we use it?} IV represents a one-standard-deviation
+      movement in the share price over the next year. Over $T$ years, the move
+      scales with $\sqrt{T}$.
+  \end{itemize}
+  \vspace{0.3em}
+  This $\sqrt{T}$ scaling gives a quick range for the share price on the next
+  slide.
+\end{frame}
+
+\begin{frame}{A Back-of-the-Envelope Range from IV}
+  Moving one standard deviation up or down in the solution of geometric
+  Brownian motion, $Z=\pm1$, gives a back-of-the-envelope range for the share
+  price:
+  {\small
+  \begin{equation*}
+    \begin{aligned}
+      S(T) & = S(0)\exp\left[\mu_{g}T + \sigma\sqrt{T}\,Z\right] && \text{solution of geometric Brownian motion}\\
+      S_{\pm} & = S(0)\exp\left[\mu_{g}T \pm \text{IV}\sqrt{T}\right] && \text{set } \sigma=\text{IV} \text{ and } Z=\pm 1\\
+      & \approx S(0)\exp\left[\pm\,\text{IV}\sqrt{T}\right] && \mu_{g}T \text{ is small next to } \text{IV}\sqrt{T} \text{ for short } T\\
+      & \approx S(0)\left(1 \pm \text{IV}\sqrt{T}\right) && e^{x}\approx 1+x \text{ for small } x
+    \end{aligned}
+  \end{equation*}}%
+  where $\mu_{g}$ is the mean growth rate, $Z$ is standard normal, and $S_{\pm}$
+  is the share price one standard deviation above or below $S(0)$. Under the
+  model, the share price ends inside this range about 68\% of the time.
+\end{frame}
+
+\begin{frame}{Implied Volatility by Bisection}
+  We back out the implied volatility $\hat{\sigma}$ by bisection.
+
+  \vspace{0.3em}
+  \hilite{Initialize}: given $\mathcal{P}^{\text{market}}$, $S(0)$, $K$, $T$
+  (years), $g_{y}$, a bracket $\sigma_{\text{lo}}<\sigma_{\text{hi}}$ with
+  $\mathcal{P}(\sigma_{\text{lo}})\leq\mathcal{P}^{\text{market}}\leq\mathcal{P}(\sigma_{\text{hi}})$,
+  a tolerance $\epsilon>0$, $\texttt{maxiter}$, and $i\gets 1$.
+
+  \vspace{0.3em}
+  While $\sigma_{\text{hi}}-\sigma_{\text{lo}}>\epsilon$ and $i\leq\texttt{maxiter}$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.2em}
+    \item $\sigma_{\text{mid}}\gets(\sigma_{\text{lo}}+\sigma_{\text{hi}})/2$
+      and compute its BSM premium $\mathcal{P}(\sigma_{\text{mid}})$.
+    \item If $\mathcal{P}(\sigma_{\text{mid}})<\mathcal{P}^{\text{market}}$,
+      \textbf{then} $\sigma_{\text{lo}}\gets\sigma_{\text{mid}}$. Otherwise,
+      $\sigma_{\text{hi}}\gets\sigma_{\text{mid}}$.
+    \item $i\gets i+1$.
+  \end{enumerate}
+  The implied volatility is the midpoint of the final bracket,
+  $\hat{\sigma}\gets(\sigma_{\text{lo}}+\sigma_{\text{hi}})/2$. The BSM premium
+  rises with $\sigma$, so exactly one $\sigma$ matches the market premium, and
+  each step halves the bracket around it.
+\end{frame}
+
+\begin{frame}{Implied Volatility in Practice}
+  Three points about using implied volatility with real quotes:
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Market quotes}: the SPXW volatility skew notebook applies this
+      bisection to a chain of S\&P 500 index options.
+    \item \hilite{One per contract}: each strike and expiration has its own
+      implied volatility, although the BSM model assumes one constant $\sigma$.
+      This pattern is known as the volatility smile or volatility skew.
+    \item \hilite{Pricing without a quote}: to price a contract without a quote,
+      or on a future date, we can predict its implied volatility from a surface
+      fitted to today's quotes, which gives implied volatility as a function of
+      strike and expiration
+      (\href{https://arxiv.org/abs/2605.13998}{Sun et al., 2026}).
+  \end{itemize}
+  \vspace{0.3em}
+  Next, we link the call and put premiums with the same strike and
+  expiration.
+  \slidenote{Optional:}{the \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{SPXW volatility skew notebook}.}
+\end{frame}
+
+\begin{frame}{Interesting Fact: Put–Call Parity}
+  For a European call and put with the same strike and expiration, the payoffs differ by:
+  {\small\setlength{\jot}{1pt}%
+  \setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}%
+  \[
+    V_{c}(K,\ST)-V_{p}(K,\ST)=\max\bigl(\ST-K,~0\bigr)-\max\bigl(K-\ST,~0\bigr)=\ST-K
+  \]
+  \vspace{-0.6em}
+  \[
+    \begin{alignedat}{2}
+      \Pc-\Pp&=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)\bigr] &\enspace&\text{\footnotesize premium formula}\\
+      &\qquad-\Dinv\cdot\E_{\Q}\bigl[V_{p}(K,\ST)\bigr] &&\\
+      &=\Dinv\cdot\E_{\Q}\bigl[V_{c}(K,\ST)-V_{p}(K,\ST)\bigr] &&\text{\footnotesize expectation is linear}\\
+      &=\Dinv\cdot\E_{\Q}\bigl[\ST-K\bigr] &&\text{\footnotesize payoff identity}\\
+      &=\Dinv\cdot\bigl(S(0)\,e^{g_{y}T}-K\bigr) &&\text{\footnotesize grows at }g_{y}\text{\footnotesize\ under }\Q\\
+      &=S(0)-K\cdot\Dinv &&\Dinv=e^{-g_{y}T}
+    \end{alignedat}
+  \]
+  }%
+  This is \hilite{put--call parity}: $\boxed{\Pc-\Pp=S(0)-K\cdot\Dinv}$\par
+  It holds only for European contracts: an American holder can exercise early.
+  \slidenote{Interesting fact:}{\href{\repo/CHEME-5660-L9b-InterestingFact-PutCallParity-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-InterestingFact-PutCallParity-Fall-2026.ipynb}}}
+\end{frame}
+
 \begin{frame}{American Style Options Contracts}
   American-style contracts can be exercised \hilite{at any time} before or on
-  the expiration date~$T$. Previously, we wrote the American premium as:
+  the expiration date~$T$. We write the American premium as:
   \begin{equation*}
     \PAM_{\star}=\max_{\tau\leq T}\E_{\Q}\Bigl(\mathcal{D}^{-1}_{\tau,0}(g_{y})\cdot V_{\star}(K,S(\tau))\Bigr)\geq\PEU_{\star}\qquad\text{for }\star\in\{c,p\}
   \end{equation*}
@@ -299,6 +500,29 @@
 \end{frame}
 
 \begin{frame}{Optional Advanced Material}
+  Three optional notebooks extend this lecture:
+
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Contingent claims:}} \dimmed{advanced/contingent\_claims/}\par
+  \href{\repo/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb}}}
+
+  \vspace{0.4em}
+  We derive where the BSM premiums come from: the risk-neutral probability on a
+  one-step lattice, state prices for event contracts, the BSM equation and its
+  solution, and the call built from a digital claim and an asset-or-nothing
+  claim. We also compare a client's certainty equivalent for a one-dollar
+  bet with its market price.
+
+  \vspace{0.5em}
+  {\normalsize\textbf{\ink{Volatility skew:}} \dimmed{advanced/spxw\_volatility\_skew/}\par
+  \href{\repo/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb}}}
+
+  \vspace{0.4em}
+  We apply the implied-volatility bisection to an end-of-day chain of SPXW options
+  and compare the skew with the realized volatility of SPY, which tracks the index.
+  \end{frame}
+
+\begin{frame}{Optional Advanced Material}
   \vspace{0.3em}
   {\normalsize\textbf{\ink{CRR factors:}} \dimmed{advanced/crr\_factors/}\par
   \href{\repo/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}{\dimmed{CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb}}}
@@ -314,23 +538,24 @@
 \end{frame}
 
 \begin{frame}{Summary}
-  Today we priced American options with the CRR binomial model and Monte Carlo
-  simulation.
+  Today we priced European options with the BSM formulas, and American options
+  with the CRR binomial model and Monte Carlo simulation.
 
-  \vspace{0.5em}
+  \vspace{0.3em}
   {\large\textbf{\ink{Key takeaways}}}
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Binomial trees price American options}: at each node, the
-      holder exercises or holds, so backward induction computes the premium.
-    \item \hilite{The decision rule sets the early-exercise premium}: in
-      Hull's put, exercising at the one node where it beats holding accounts
-      for the whole gap between the American and European premiums.
+  \begin{itemize}\setlength{\itemsep}{0.15em}
+    \item \hilite{The Black--Scholes--Merton formulas price European options}:
+      they match the Monte Carlo premium, and run backward from a market
+      premium they give the implied volatility.
+    \item \hilite{Binomial trees price American options}: backward induction
+      compares exercising with holding at each node. In Hull's put, one early
+      exercise accounts for the whole American--European gap.
     \item \hilite{Simulation estimates the same premium}: Longstaff--Schwartz
       works backward along simulated paths, regressing the value of holding on
       the share price. Holding on every path gives the European premium.
   \end{itemize}
 
-  \vspace{0.4em}
+  \vspace{0.1em}
   The early-exercise premium is what the right to exercise before expiration is
   worth, and the lattice and simulation give two ways to compute it.
 \end{frame}

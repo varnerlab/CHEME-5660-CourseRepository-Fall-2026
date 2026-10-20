@@ -1,5 +1,63 @@
 # Repository Working Agreements
 
+## L9a carryover into L9b — October 20, 2026
+
+- L9a class (October 20) stopped at the Monte Carlo premium. At the
+  instructor's request, L9b (October 22) opens with the Monte Carlo material as
+  a Concept Review, then teaches the Black–Scholes–Merton material, then the
+  existing American-options lecture. As in the earlier carryovers (L6a into
+  L6b, L8b into L9a), L9a's text is ported nearly verbatim, and L9a itself is
+  unchanged apart from links.
+- Lecture, in order:
+  - The BSM example stays in L9a. L9b links it as `../L9a/...` first in the
+    Examples list, in the Concept Review, and at the end of the BSM section.
+  - `## Concept Review: A Monte Carlo Premium` (cell `l9b-cr`, before the OCC
+    profile): a new opener question and two sentences, L9a's boxed European
+    premium with a where-clause, the Monte Carlo paragraph, pseudocode, and
+    contingent-claims pointer verbatim, the example stop, and the L9a deck's
+    "estimate" sentence as the closer.
+  - `## Black–Scholes–Merton (BSM) Premiums` (cell `l9b-bsm`, after the
+    profile): L9a's BSM, implied-volatility, bisection, and SPXW callout text
+    verbatim, with the H3 promoted to H2. The second
+    example stop reads "Let's return to the example of European option
+    pricing." L9a's American teaser blockquote is not ported, so the American
+    section now says "We write the premium of an American-style contract as:"
+    instead of "Previously, we wrote".
+  - Put–call parity is not taught in the lecture (his call, the same day: the
+    lecture is pressed for time, and parity holds only for European contracts,
+    which the class will not trade). L9a's parity text moved verbatim to
+    `CHEME-5660-L9b-InterestingFact-PutCallParity-Fall-2026.ipynb` in the L9b
+    folder, a two-cell notebook in the shape of his 2025 OriginStory notebook
+    (question cell, then `## Derivation`). It is not in the Examples list. The
+    lecture links it in one "__Interesting fact:__" sentence that states the
+    relation, and he points it out in class. The contingent-claims and SPXW
+    notebooks now link it instead of "the lecture's put–call parity". It was
+    not folded into the contingent-claims notebook, which is already long.
+  - Three objectives and takeaways: LO1 ("Distinguish between European and
+    American options") is replaced by "Price European options with the
+    Black–Scholes–Merton model". The BSM takeaway is new, and the old lattice
+    and Hull-decision takeaways are merged. The title gains "Black–Scholes–Merton
+    Premiums and" and shortens "Cox, Ross, Rubinstein (CRR)" to "CRR". The text
+    above the objectives is unchanged.
+- Advanced: `contingent_claims/` and `spxw_volatility_skew/` moved from
+  `L9a/advanced/` to `L9b/advanced/`, and the notebooks were renamed
+  `CHEME-5660-L9b-Advanced-*`. Their lecture links point to L9b. In the
+  contingent-claims notebook, "The bet in the lecture's Concept Review" became
+  "Previously, we priced a bet that pays one dollar", and "(the Concept Review
+  bet)" became "(the bet above)". The SPXW notebook re-runs from its new folder
+  with the same outputs. `L9a/advanced/` is gone. L9a's lecture, BSM example,
+  `Include.jl` comment, and deck now link to `../L9b/advanced/`.
+- Deck: L9b has two Concept Review frames and the eight BSM, implied-volatility,
+  and parity frames from the L9a deck. The parity frame's deck-only σ sentence
+  and the advanced material is split over two frames. The two parity frames
+  became one "Interesting Fact: Put–Call Parity" frame. At his request ("put a
+  little bit more meat there") it carries the payoff identity, the parity
+  derivation, the boxed result, and the European-only line: 29 pages, 0 overfull. The
+  L9a deck changed only in its links (35 pages).
+- FAQ: L9b has a second notation table, "European Premiums by Monte Carlo and
+  Black–Scholes–Merton". The American table gains $\tau$, and its $M$ row
+  covers both Monte Carlo methods. Built with the pinned Pandoc 3.1.11.1.
+
 ## L10a rebuild — October 12, 2026
 
 - On October 12, the instructor found the uncommitted October 11 Codex update of
