@@ -12,11 +12,25 @@
   Task 3 overlays BSM curves on an American put. The lecture's link paragraph
   and its "Optional Advanced Material" section are removed, as are the matching
   sentence and frame in the deck. Do not restore the notebook.
-- Still open: the BSM sentence in the lecture's POE box and its deck frame, and
-  the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz examples. On the
-  tree, a call's Delta is exactly the probability of finishing in the money with
-  up probability $q^{*}=q\,u\,e^{-g_{y}\Delta t}$, which can replace the
-  $N(d_{+})$ versus $N(d_{-})$ comparison.
+- Same day, at his request, the lecture gained three subsections, all without
+  BSM. He accepted $d_{\pm}$ for Leisen–Reimer, introduced as the GBM
+  probability $\mathbb{Q}(S_T>K)=N(d_{-})$, derived step by step:
+  - `### The Leisen–Reimer Tree` (Greeks section): why repricing the CRR tree
+    fails (corners in the premium), the construction, and pseudocode for the
+    Greeks in his 2025 format (Initialize, loop line with __do__, Output).
+  - `### Computing POE and POP by Simulation`: GBM under ℙ (our forecast),
+    the sample CDF, POE at $K\pm0.01$, POP at $S^{\ddagger}$, in the same format.
+    With $\mu=g_y$ and the implied volatility, the same steps give ℚ.
+  - `### Why Is Delta Close to the POE?`: on the CRR tree, a call's Delta is
+    exactly the POE with up probability $q^{*}=q\,u\,e^{-g_{y}\Delta t}$
+    (checked to 6 decimals), and Leisen–Reimer's $q'$ equals $q^{*}$.
+  The POE box is back to his 2025 wording. He asked for a figure showing why
+  CRR Greeks fail and Leisen–Reimer Greeks do not, because the text alone did
+  not explain it.
+- Still open: the deck (the POE frame's BSM sentence, and frames for the three
+  subsections), the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz
+  examples, a Leisen–Reimer switch in the Greeks example, and notation rows for
+  $q^{*}$, $q'$, $H$, and $\hat{F}$.
 
 ## L9a carryover into L9b — October 20, 2026
 
