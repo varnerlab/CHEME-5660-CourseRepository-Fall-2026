@@ -988,6 +988,14 @@ When a table is followed by a figure, also place connective prose between the
 outputs: interpret the table and introduce what the figure will show. The
 instructor confirmed this preference on September 15, 2026.
 
+Never move from a blockquote directly into a code cell. On October 22, 2026,
+reviewing the CHEME 5800 L10b lab, the instructor said: "never transition from a
+blockquote directly into a code cell, always some connective tissue." When a
+markdown cell ends with a blockquote (a definition, a theorem, or a "What do we
+expect?" box) and a code cell follows, add a short lead-in sentence after the
+box that says what the code does, for example "Let's see whether that is what
+happens:".
+
 ## Key takeaway voice — all courses
 
 On September 10, 2026, the instructor explicitly approved this preference for
