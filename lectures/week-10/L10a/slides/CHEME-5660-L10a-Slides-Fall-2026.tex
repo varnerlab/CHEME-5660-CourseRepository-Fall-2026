@@ -12,6 +12,11 @@
 % 2026: intrinsic and extrinsic value moved here from L9b, after the profile.
 % October 20, 2026: Longstaff-Schwartz Monte Carlo (three frames and the example)
 % moved here from L9b, right after the profile; lecture-number references removed.
+% October 22, 2026: synced to the lecture's three new subsections, with no
+% Black-Scholes-Merton material (American contracts): the Leisen-Reimer tree (the
+% CRR-vs-LR figure, its construction, and the Greeks pseudocode, now followed by
+% Example 2), POE and POP by simulation, and why Delta is close to the POE (now
+% followed by Example 3). The POE frame's BSM sentence is removed.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -291,6 +296,131 @@
       \Gamma_{\star} & \approx \frac{\Pst(S+\epsilon)-2\,\Pst(S)+\Pst(S-\epsilon)}{\epsilon^{2}}
     \end{aligned}}
   \end{equation*}
+\end{frame}
+
+\begin{frame}{What Goes Wrong on the CRR Tree?}
+  \vspace{-0.2em}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.53\textwidth}
+      \includegraphics[width=\linewidth,height=0.86\textheight,keepaspectratio]{../figs/Fig-L10a-CRR-vs-LR-Delta.pdf}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \small
+      \vspace{0.2em}
+      \hilite{Corners}: the CRR factors do not depend on $S_{0}$, so the
+      premium is straight pieces joined where a terminal node crosses the
+      strike (top).
+
+      \vspace{0.5em}
+      \hilite{One piece}: a step $\epsilon$ between two corners sees one
+      piece (open circles). Delta is its slope, and Gamma is zero.
+
+      \vspace{0.5em}
+      \hilite{Jumps}: Delta jumps at each corner (bottom). More tree steps
+      move the corners closer but never remove them.
+
+      \vspace{0.5em}
+      Leisen and Reimer remove the corners with a tree built around the strike.
+
+      \vspace{0.5em}
+      {\color{vnrule}\rule{0.5\linewidth}{0.35pt}}\par\vspace{0.3em}
+      {\fontsize{7.2}{8.6}\selectfont{\vnmedium Reference:} Leisen and Reimer
+      (1996). \href{https://doi.org/10.1080/13504869600000015}{Applied Mathematical Finance 3(4): 319--346}.\par}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Leisen–Reimer Tree}
+  \vspace{0.3em}
+  Leisen and Reimer choose $q$ so the tree finishes above the strike as often
+  as GBM does under $\Q$:
+  {\small\setlength{\jot}{1pt}%
+  \setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}%
+  \[
+    \begin{alignedat}{2}
+      S_{T} & = S_{0}\exp\left[\left(g_{y}-\tfrac{\sigma^{2}}{2}\right)T+\sigma\sqrt{T}\,Z\right] &\quad&\text{\footnotesize GBM under }\Q\text{\footnotesize, with }Z\sim\mathcal{N}(0,1)\\
+      \ln S_{T} & = \ln S_{0}+\left(g_{y}-\tfrac{\sigma^{2}}{2}\right)T+\sigma\sqrt{T}\,Z &&\text{\footnotesize take the logarithm}\\
+      \Q\left(S_{T}>K\right) & = \Q\left(\ln S_{T}>\ln K\right) &&\text{\footnotesize $\ln$ is increasing}\\
+      & = \Q\left(\ln S_{0}+\left(g_{y}-\tfrac{\sigma^{2}}{2}\right)T+\sigma\sqrt{T}\,Z>\ln K\right) &&\text{\footnotesize substitute $\ln S_{T}$}\\
+      & = \Q\left(Z>\frac{\ln K-\ln S_{0}-\left(g_{y}-\sigma^{2}/2\right)T}{\sigma\sqrt{T}}\right) &&\text{\footnotesize subtract, then divide by $\sigma\sqrt{T}>0$}\\
+      & = \Q\left(Z>-d_{-}\right) &&\text{\footnotesize $\ln K-\ln S_{0}=-\ln(S_{0}/K)$}\\
+      & = 1-N(-d_{-}) &&\text{\footnotesize $N$ is the standard normal CDF}\\
+      \Longrightarrow\quad & \boxed{\Q\left(S_{T}>K\right)=N(d_{-})} &&\text{\footnotesize $N(-z)=1-N(z)$}
+    \end{alignedat}
+  \]}%
+  where $d_{-}=\left[\ln(S_{0}/K)+\left(g_{y}-\sigma^{2}/2\right)T\right]/(\sigma\sqrt{T})$.
+  This probability depends only on the share price, so it holds for American contracts too.
+\end{frame}
+
+\begin{frame}{Leisen–Reimer Probabilities and Factors}
+  \vspace{0.3em}
+  With an odd number of steps $h$, the tree is centered on the strike and
+  finishes above it when more than half of its moves are up. The Peizer--Pratt
+  inversion $H(z;h)$ gives the up probability that makes this happen with
+  probability close to $N(z)$:
+  {\small\setlength{\jot}{1.5pt}%
+  \setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}%
+  \[
+    H(z;h)=\frac{1}{2}+\frac{\operatorname{sgn}(z)}{2}\sqrt{1-\exp\left[-\left(\frac{z}{h+1/3+0.1/(h+1)}\right)^{2}\left(h+\frac{1}{6}\right)\right]}
+  \]
+  \[
+    \begin{alignedat}{2}
+      q & = H(d_{-};h)\qquad q'=H(d_{+};h) &\quad&\text{\footnotesize risk-neutral and second probabilities}\\
+      u & = e^{g_{y}\Delta t}\,\frac{q'}{q}\qquad d=e^{g_{y}\Delta t}\,\frac{1-q'}{1-q} &&\text{\footnotesize up and down factors}
+    \end{alignedat}
+  \]
+  where $d_{+}=d_{-}+\sigma\sqrt{T}$ and $\Delta t=T/h$. Like the CRR factors, they grow the expected share price at the risk-free rate:
+  \[
+    qu+(1-q)d=q\,e^{g_{y}\Delta t}\frac{q'}{q}+(1-q)\,e^{g_{y}\Delta t}\frac{1-q'}{1-q}=e^{g_{y}\Delta t}\left(q'+1-q'\right)=e^{g_{y}\Delta t}
+  \]}%
+  \hilite{No corners}: $d_{\pm}$ depend on $S_{0}$, and so do the factors. The
+  strike stays between the two middle terminal nodes as $S_{0}$ moves.
+\end{frame}
+
+\begin{frame}{Greeks on the Leisen–Reimer Tree}
+  \vspace{0.3em}
+  \hilite{Initialize}: given $S_{0}$, $K$, the payoff function $V(K,S)$ of the
+  call or put, $T$ (years), $\sigma$, $g_{y}$, an odd number of time steps $h$,
+  and a step $\epsilon_{x}$ for each input $x\in\{S_{0},\sigma,T,g_{y}\}$, in
+  the units of that input. Let $\mathcal{P}(S_{0},\sigma,T,g_{y})$ be the
+  premium that steps 1--4 compute from a set of inputs.
+  \begin{enumerate}\setlength{\itemsep}{0.35em}
+    \item Compute $\Delta t\gets T/h$, then
+      $d_{-}\gets\left[\ln(S_{0}/K)+\left(g_{y}-\sigma^{2}/2\right)T\right]/(\sigma\sqrt{T})$
+      and $d_{+}\gets d_{-}+\sigma\sqrt{T}$.
+    \item Compute the probabilities $q\gets H(d_{-};h)$ and $q'\gets H(d_{+};h)$.
+    \item Compute the factors $u\gets e^{g_{y}\Delta t}\,q'/q$ and
+      $d\gets e^{g_{y}\Delta t}\,(1-q')/(1-q)$.
+    \item Compute the premium with the CRR pricing pseudocode, using these $u$,
+      $d$, and $q$: $\mathcal{P}(S_{0},\sigma,T,g_{y})\gets\hat{V}_{0,0}$.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Pseudocode: Leisen–Reimer Greeks}
+  \begin{enumerate}\setlength{\itemsep}{0.35em}
+    \setcounter{enumi}{4}
+    \item For each input $x\in\{S_{0},\sigma,T,g_{y}\}$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Compute $\mathcal{P}(x+\epsilon_{x})$ and $\mathcal{P}(x-\epsilon_{x})$
+          with steps 1--4, moving only $x$. The factors depend on every input,
+          so each evaluation rebuilds the tree.
+        \item[b.] Compute the central difference:
+          $\partial\mathcal{P}/\partial x\gets\left[\mathcal{P}(x+\epsilon_{x})-\mathcal{P}(x-\epsilon_{x})\right]/(2\epsilon_{x})$.
+      \end{itemize}
+    \item Compute $\Delta\gets\partial\mathcal{P}/\partial S_{0}$,
+      $\nu\gets\partial\mathcal{P}/\partial\sigma$,
+      $\rho\gets\partial\mathcal{P}/\partial g_{y}$, and
+      $\Theta\gets-\partial\mathcal{P}/\partial T$, because calendar time moves
+      forward as the time to expiration falls.
+    \item Compute Gamma from the three share price evaluations:
+      $\Gamma\gets\left[\mathcal{P}(S_{0}+\epsilon_{S_{0}})-2\,\mathcal{P}(S_{0})+\mathcal{P}(S_{0}-\epsilon_{S_{0}})\right]/\epsilon_{S_{0}}^{2}$.
+  \end{enumerate}
+  \hilite{Output}: the premium $\mathcal{P}(S_{0},\sigma,T,g_{y})$ and the Greeks
+  $\Delta$, $\Gamma$, $\Theta$, $\nu$, and $\rho$.
+
+  \vspace{0.5em}
+  Before reporting a Greek, recompute it with about twice as many time steps,
+  still odd, and smaller steps $\epsilon_{x}$. Report it once it stops changing.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -307,8 +437,10 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Probability of Exercise (POE)}
-  The probability that the contract finishes in-the-money at expiration $t=T$:
+\begin{frame}{Probabilities of Exercise and Profit}
+  \vspace{0.3em}
+  \hilite{Probability of exercise (POE)}: the probability that the contract
+  finishes in-the-money at expiration $t=T$:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -318,29 +450,114 @@
       \end{cases}
     \end{aligned}}
   \end{equation*}
-  where $S_{T}$ is the share price at expiration. In the Black--Scholes--Merton
-  model, a European call has
-  $\Delta_{c}=N(d_{+})$, while the risk-neutral probability that it finishes
-  in-the-money is $N(d_{-})$, which is smaller.
-
-  \vspace{0.5em}
+  where $S_{T}$ is the share price at expiration and $K$ is the strike price.\par
   \textbf{\ink{Conjecture:}} $\Delta\approx\text{POE}$. Example 3 checks it.
-\end{frame}
 
-\begin{frame}{Probability of Profit (POP)}
-  The probability that the contract's profit at expiration is positive:
+  \vspace{0.6em}
+  \hilite{Probability of profit (POP)}: the probability that the contract's
+  profit at expiration is positive:
   \begin{equation*}
-    \boxed{
-    \begin{aligned}
-      \text{POP} & = \mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)
-    \end{aligned}}
+    \boxed{\text{POP}=\mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)}
   \end{equation*}
   where $\hat{P}_{\mathcal{C}}$ is the profit of the (single or composite)
   contract at expiration.
+\end{frame}
+
+\begin{frame}{Computing POE and POP by Simulation}
+  \vspace{0.3em}
+  POE and POP are forecasts, so we compute them under our belief $\mathbb{P}$:
+  GBM with our estimates of the drift $\mu$ and the volatility $\sigma$.
 
   \vspace{0.5em}
-  POE reads the projected distribution at the strike price, POP at the
-  breakeven.
+  \hilite{Initialize}: given $S_{0}$, $K$, the premium $\mathcal{P}$ of the call
+  or put, $T$ (years), $\mu$ and $\sigma$ under $\mathbb{P}$, $g_{y}$, and the
+  number of samples $M$. Compute the breakeven share price
+  $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a call, or
+  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a put, where
+  $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$.
+  \begin{enumerate}\setlength{\itemsep}{0.35em}
+    \item For each sample $i=1,2,\dots,M$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Draw a sample from the standard normal distribution: $Z_{i}\sim\mathcal{N}(0,1)$.
+        \item[b.] Compute the share price at expiration:
+          $S_{i}(T)\gets S_{0}\exp\left[\left(\mu-\sigma^{2}/2\right)T+\sigma\sqrt{T}\,Z_{i}\right]$.
+      \end{itemize}
+    \item Compute the cumulative distribution function, the fraction of samples
+      at or below each share price $x$:
+      $\hat{F}(x)\gets\frac{1}{M}\cdot\#\left\{i:S_{i}(T)\leq x\right\}$.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Pseudocode: POE and POP}
+  \vspace{0.3em}
+  \begin{enumerate}\setlength{\itemsep}{0.45em}
+    \setcounter{enumi}{2}
+    \item Compute the probability of exercise. If the contract is a call,
+      \textbf{then} $\text{POE}\gets1-\hat{F}(K+0.01)$. Otherwise,
+      $\text{POE}\gets\hat{F}(K-0.01)$.
+    \item Compute the probability of profit:
+      \begin{itemize}\setlength{\itemsep}{0.25em}
+        \item If we bought a call or sold a put, \textbf{then} the profit is
+          positive above the breakeven: $\text{POP}\gets1-\hat{F}(S^{\ddagger})$.
+        \item If we sold a call or bought a put, \textbf{then} the profit is
+          positive below the breakeven: $\text{POP}\gets\hat{F}(S^{\ddagger})$.
+        \item If the contract is composite and its profit changes sign at more
+          than one share price, \textbf{then} count the profitable samples:
+          $\text{POP}\gets\frac{1}{M}\cdot\#\left\{i:\hat{P}_{\mathcal{C}}\left(S_{i}(T)\right)>0\right\}$.
+      \end{itemize}
+  \end{enumerate}
+  \hilite{Output}: the probability of exercise $\text{POE}$ and the probability
+  of profit $\text{POP}$.
+
+  \vspace{0.6em}
+  With $\mu=g_{y}$ and $\sigma$ set to the implied volatility, the same steps
+  give the probabilities under $\Q$. These are the probabilities inside the
+  market price, not our forecast.
+\end{frame}
+
+\begin{frame}{Why Is Delta Close to the POE?}
+  \vspace{0.1em}
+  With no dividends, a call's American and European premiums are equal.
+  Unrolling the European backward induction on the CRR tree:
+  {\small\setlength{\jot}{1pt}%
+  \setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{2pt}%
+  \[
+    \mathcal{P}_{c}=\mathcal{D}^{-1}_{T,0}(g_{y})\sum_{k=0}^{h}\binom{h}{k}q^{k}(1-q)^{h-k}\max\left(S_{0}u^{k}d^{h-k}-K,~0\right)
+  \]
+  The factors do not depend on $S_{0}$, so a payoff has slope $u^{k}d^{h-k}$ in
+  $S_{0}$ if its node is in the money, and zero otherwise. Define
+  $q^{*}=q\,u\,e^{-g_{y}\Delta t}$. Dividing $qu+(1-q)d=e^{g_{y}\Delta t}$ by
+  $e^{g_{y}\Delta t}$ gives $(1-q)\,d\,e^{-g_{y}\Delta t}=1-q^{*}$, so $q^{*}$
+  is also a probability. Then Delta is:
+  \[
+    \begin{alignedat}{2}
+      \Delta_{c} & = \frac{\partial\mathcal{P}_{c}}{\partial S_{0}}=\mathcal{D}^{-1}_{T,0}(g_{y})\sum_{k\,\in\,\text{ITM}}\binom{h}{k}q^{k}(1-q)^{h-k}\,u^{k}d^{h-k} &\quad&\text{\footnotesize only ITM payoffs have a slope}\\
+      & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\left(q\,u\,e^{-g_{y}\Delta t}\right)^{k}\left((1-q)\,d\,e^{-g_{y}\Delta t}\right)^{h-k} &&\text{\footnotesize $\mathcal{D}^{-1}_{T,0}(g_{y})=e^{-g_{y}h\Delta t}$, split over $h$ steps}\\
+      & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\left(q^{*}\right)^{k}\left(1-q^{*}\right)^{h-k} &&\text{\footnotesize substitute $q^{*}$ and $1-q^{*}$}
+    \end{alignedat}
+  \]}%
+  where ITM is the set of in-the-money terminal nodes.
+\end{frame}
+
+\begin{frame}{Delta Is a Probability of Exercise}
+  \vspace{0.1em}
+  The risk-neutral POE of the call is the same sum with $q$ in place of $q^{*}$:
+  \begin{equation*}
+    \boxed{
+    \Delta_{c}=\sum_{k\,\in\,\text{ITM}}\binom{h}{k}\left(q^{*}\right)^{k}\left(1-q^{*}\right)^{h-k}
+    \qquad
+    \Q\left(S_{T}>K\right)=\sum_{k\,\in\,\text{ITM}}\binom{h}{k}q^{k}(1-q)^{h-k}}
+  \end{equation*}
+  \begin{itemize}\setlength{\itemsep}{0.1em}
+    \item \hilite{Delta is larger than the risk-neutral POE}: $u>e^{g_{y}\Delta t}$,
+      so $q^{*}>q$. On the Leisen–Reimer tree, $q^{*}$ is the second probability $q'$.
+    \item \hilite{When is Delta close?} Each step adds about
+      $\frac{1}{2}\sigma\sqrt{\Delta t}$ to the up probability, so the gap
+      grows with $\sigma\sqrt{T}$. Delta is close for short-dated contracts.
+    \item \hilite{Our forecast and American puts}: under $\mathbb{P}$, the up
+      probability is the real-world $p$, so the forecast POE can sit above or
+      below Delta. Early exercise adds to $|\Delta_{p}|$, so the match is approximate.
+  \end{itemize}
   \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -357,11 +574,13 @@
       potential for favorable price movement.
     \item \hilite{The Greeks quantify option price sensitivity}: they are the
       partial derivatives in a local Taylor expansion of the premium, which we
-      estimate for American options by repricing the CRR tree.
+      estimate for American options by repricing a binomial tree. The
+      Leisen--Reimer tree avoids the corners of the CRR premium.
     \item \hilite{Delta serves three purposes}: the rate of change in the
       premium, the hedge ratio for delta-neutral positions, and an
-      approximation of the probability of exercise. POE reads the projected
-      distribution at the strike price, and POP reads it at the breakeven.
+      approximation of the POE. On the tree, a call's Delta is exactly a POE
+      computed with a slightly larger up probability. POP reads the projected
+      share price distribution at the breakeven.
   \end{itemize}
 \end{frame}
 
