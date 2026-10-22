@@ -26,9 +26,14 @@
     (checked to 6 decimals), and Leisen–Reimer's $q'$ equals $q^{*}$.
   The POE box is back to his 2025 wording. He asked for a figure showing why
   CRR Greeks fail and Leisen–Reimer Greeks do not, because the text alone did
-  not explain it.
-- Still open: the deck (the POE frame's BSM sentence, and frames for the three
-  subsections), the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz
+  not explain it. `figs/Fig-L10a-CRR-vs-LR-Delta` (rebuilt by
+  `figs/generate-crr-vs-lr-delta.jl`) now sits in "What goes wrong on the CRR
+  tree?": the premium against $S_0$ (CRR straight pieces joined at corners,
+  three central-difference points on one piece), and Delta below it (CRR flat
+  steps). He did not understand a first version with terminal-node panels.
+  The premium-and-Delta version was "Better".
+- Still open: the deck (the POE frame's BSM sentence, frames for the three
+  subsections, and the figure's PDF), the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz
   examples, a Leisen–Reimer switch in the Greeks example, and notation rows for
   $q^{*}$, $q'$, $H$, and $\hat{F}$.
 
