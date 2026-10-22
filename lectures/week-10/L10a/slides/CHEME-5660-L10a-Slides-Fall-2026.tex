@@ -291,9 +291,6 @@
       \Gamma_{\star} & \approx \frac{\Pst(S+\epsilon)-2\,\Pst(S)+\Pst(S-\epsilon)}{\epsilon^{2}}
     \end{aligned}}
   \end{equation*}
-  With no dividends, a call's American and European premiums are equal,
-  so the Black--Scholes--Merton formulas give Greeks to check against,
-  e.g., $\Delta_{c}=N(d_{+})$.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -345,21 +342,6 @@
   POE reads the projected distribution at the strike price, POP at the
   breakeven.
   \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
-\end{frame}
-
-\begin{frame}{Optional Advanced Material}
-  \vspace{0.3em}
-  {\normalsize\textbf{\ink{Numerical Greeks:}} \dimmed{advanced/numerical\_greeks/}\par
-  \href{\repo/advanced/numerical_greeks/CHEME-5660-L10a-Advanced-Numerical-Greeks-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Advanced-Numerical-Greeks-Fall-2026.ipynb}}}
-
-  \vspace{0.5em}
-  How accurate are Greeks computed by repricing a binomial tree? The CRR
-  premium bends only where a terminal node crosses the strike, so a step that
-  stays between two bends gives a Gamma of zero. The Leisen--Reimer tree keeps
-  the call Greeks close to the Black--Scholes--Merton values at every number of
-  tree steps we try. We then plot an American put's Delta and Gamma around the
-  early-exercise boundary.
-  \slidenote{Notebooks:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-10/L10a/advanced}{lectures/week-10/L10a/advanced}, also linked from the lecture notebook.}
 \end{frame}
 
 \begin{frame}{Summary}

@@ -1,5 +1,23 @@
 # Repository Working Agreements
 
+## L10a: no BSM with American contracts — October 22, 2026
+
+- The instructor's rule: Black–Scholes–Merton is for European contracts only.
+  "If we are using american contracts, then BSM has no place." Material about
+  American contracts uses the tree or simulation, with no $N(d_{\pm})$, BSM
+  Greeks, or BSM curves for comparison.
+- The L10a advanced notebook, Numerical Greeks on binomial trees, is archived in
+  `lectures/archive/week-10-L10a-advanced-cut-2026-10-22/`, and L10a has no
+  advanced material. Its Leisen–Reimer tree is built from $d_{\pm}$, and its
+  Task 3 overlays BSM curves on an American put. The lecture's link paragraph
+  and its "Optional Advanced Material" section are removed, as are the matching
+  sentence and frame in the deck. Do not restore the notebook.
+- Still open: the BSM sentence in the lecture's POE box and its deck frame, and
+  the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz examples. On the
+  tree, a call's Delta is exactly the probability of finishing in the money with
+  up probability $q^{*}=q\,u\,e^{-g_{y}\Delta t}$, which can replace the
+  $N(d_{+})$ versus $N(d_{-})$ comparison.
+
 ## L9a carryover into L9b — October 20, 2026
 
 - L9a class (October 20) stopped at the Monte Carlo premium. At the
