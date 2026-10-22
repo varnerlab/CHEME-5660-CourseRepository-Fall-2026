@@ -29,3 +29,6 @@ using HypothesisTests
 using StatsPlots
 using Random # reproducible simulations
 using Dates # the end-of-day options archive
+
+# load the functions written for these examples -
+include(joinpath(_PATH_TO_SRC, "Helper.jl"));
