@@ -32,10 +32,48 @@
   three central-difference points on one piece), and Delta below it (CRR flat
   steps). He did not understand a first version with terminal-node panels.
   The premium-and-Delta version was "Better".
-- Still open: the deck (the POE frame's BSM sentence, frames for the three
-  subsections, and the figure's PDF), the BSM checks in the POE/POP, Greeks, and Longstaff–Schwartz
-  examples, a Leisen–Reimer switch in the Greeks example, and notation rows for
-  $q^{*}$, $q'$, $H$, and $\hat{F}$.
+- Follow-up the same afternoon, committed and pushed the same day in four
+  commits (deck, examples, notation, notes deletion). The record is in `build/notebook-previews/L10a-open-items-2026-10-22/`, which holds
+  the score brief, the reviewer reports, and the page renders.
+  - Deck: 27 pages, 0 overfull. The BSM sentence is gone. New frames cover the
+    figure (stacked PDF), the Leisen–Reimer construction (two frames), the Greeks
+    pseudocode (two), the POE/POP pseudocode (two), and Delta as a POE (two). The
+    POE and POP frames are merged. Example 2 and Example 3 now sit where the
+    lecture stops for them.
+  - Greeks example: `method = :leisen_reimer` with odd $h=20\cdot\text{DTE}+1$
+    and $\epsilon_S=0.01S_o$. The BSM check is now "Check: Do the Greeks stop
+    changing?" ($2h+1$ levels, steps halved, 0.5%). Types and library links are
+    added.
+  - POE/POP example: the tree sums with $q^{*}$ and $q$ (CRR, $h=10{,}000$)
+    replace $N(d_{\pm})$. At $h=1000$ the sums swing by about 0.012 with the
+    parity of $h$. At $h=10{,}000$ the swing is about 0.003. The breakeven is now
+    $S^{\ddagger}$ with $\mathcal{D}$.
+  - Longstaff–Schwartz example: the European premium comes from the same CRR
+    lattice instead of BSM.
+  - Notation: L10a gains $d_{\pm}/N$ (with no BSM), $H(z;h)$, $q'$, $\hat F$,
+    $S^{\ddagger}$, $q^{*}$, and $\epsilon_x$. A context row covers the
+    meanings of $H$. Built with Pandoc 3.1.11.1.
+  - Fresh-reviewer scores, before → predicted after the applied fixes (the
+    predictions were not re-scored):
+    - deck: 8.3 → 8.8
+    - Greeks: 8.7 → 9.2
+    - POE/POP: 8.6 → 9.2
+    - Longstaff–Schwartz: 9.1 → 9.4
+- His decisions on the follow-up (same day):
+  - Slide 16 keeps the stacked figure and its three labeled items. He was shown
+    the side-by-side deck copy, which moved the text into one paragraph under
+    the figure, and said "I actually like the before => the prose is bad on the
+    proposed slide". Do not re-propose it.
+  - Helper functions: "If 𝒫 and backward_step! are more than one line, they need
+    to go into a ..../src/Helper.jl file." `lectures/week-10/L10a/src/Helper.jl`
+    now holds `𝒫`, `show_value`, and `compare_greek` (Greeks example) and
+    `backward_step!` (Longstaff–Schwartz example). They are written in beginner
+    syntax, with docstrings and with every input passed explicitly (the old
+    versions read notebook globals). `Include.jl` loads the file. One-line
+    definitions such as `𝒟`, `V`, `exposure`, and the `hold` rule stay in the
+    notebooks.
+  - The legacy `docs/` notes (`Notes.tex`, `Notes.pdf`, `Makefile`,
+    `varnernotes.sty`) are deleted: "Delete notes => yes".
 
 ## L9a carryover into L9b — October 20, 2026
 
