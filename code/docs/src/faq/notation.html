@@ -3118,16 +3118,21 @@
 <td>1</td>
 </tr>
 <tr class="even">
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{opts}}(S,t)</annotation></semantics></math></td>
-<td>Delta of the options position, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>Δ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m\sum_i\theta_in_i\Delta_i(S,t)</annotation></semantics></math>.</td>
-<td>Shares</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\mathcal C}(S,t)</annotation></semantics></math></td>
+<td>Delta of the composite contract per share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>Δ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sum_i\theta_in_i\Delta_i(S,t)</annotation></semantics></math>: what the position gains per share when the share price rises 1 USD/share. At entry, its sign matches the contract’s outlook.</td>
+<td>1</td>
 </tr>
 <tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{opts}}(S,t)</annotation></semantics></math></td>
+<td>Delta of the options position, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>Δ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>m</mi><mspace width="0.167em"></mspace><msub><mi>Δ</mi><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m\sum_i\theta_in_i\Delta_i(S,t)=m\,\Delta_{\mathcal C}(S,t)</annotation></semantics></math>.</td>
+<td>Shares</td>
+</tr>
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{net}}(S,t)</annotation></semantics></math></td>
 <td>Net Delta of the portfolio, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>S</mi></msub><mo>+</mo><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_S+\Delta_{\text{opts}}(S,t)</annotation></semantics></math>. A delta-neutral position has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta_{\text{net}}=0</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>S</mi></msub><mo>=</mo><mo>−</mo><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub></mrow><annotation encoding="application/x-tex">N_S=-\Delta_{\text{opts}}</annotation></semantics></math>.</td>
 <td>Shares</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
 <td>Time at which a leg is exercised or assigned, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>≤</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">\tau\le T</annotation></semantics></math>.</td>
 <td>yr</td>

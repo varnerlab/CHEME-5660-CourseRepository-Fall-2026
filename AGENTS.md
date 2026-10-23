@@ -45,6 +45,18 @@
   $i=1,\dots,|\mathcal{C}|$. Delta-neutral means $\Delta_{\text{net}}(S,t)=0$
   at the current share price and time, and the closing sentence says to update
   $N_{S}$ as they move. The "for all $t\in[0,T]$ and $S>0$" wording was dropped.
+- Delta of the composite contract:
+  $\Delta_{\mathcal{C}}=\sum_{i\in\mathcal{C}}\theta_{i}n_{i}\Delta_{i}$ per
+  share, so $\Delta_{\text{opts}}=m\,\Delta_{\mathcal{C}}$, and
+  $\Delta_{\text{net}}=N_{S}+\Delta_{\text{opts}}$ stays the portfolio with
+  shares. `### Delta of the Common Composite Contracts` tabulates each
+  structure's $\Delta_{\mathcal{C}}$ at the ±0.25 short and ±0.10 wing
+  strikes, with the shares that hedge one contract. Its sign matches the
+  outlook, and a zero Delta is not zero risk. The opener now says Delta was
+  already the hedge ratio of one contract, and the new step is adding up the
+  legs. The PS4 companion's exposure slide wrote this per-share sum as
+  $\Delta_{\text{net}}$. It is renamed $\Delta_{\mathcal{C}}$ in the PS4 repo,
+  on disk, waiting for his approval to commit.
 - Notation: two L10b tables (NPV, Delta) and updated Context rows in
   `code/docs/faq-src/content.json`. `notation.html` was rebuilt with the pinned
   Pandoc 3.1.11.1.
