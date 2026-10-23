@@ -1,0 +1,59 @@
+% L10b protected strangle and iron condor, two panels. Schematic: the payoff
+% (blue) and the profit (ink) at expiration, per share, for one copy of each leg.
+% Strikes are numbered from low to high in each panel, 2.0 apart so the leg
+% names under the axis do not touch.
+%
+% Left, protected strangle: sell a put at K1 = 3.0 and a call at K2 = 5.0, and
+% buy a call at K3 = 7.0, for a credit of 0.8.
+%   profit = 0.8 - (K1 - S)^+ - (S - K2)^+ + (S - K3)^+: 0.8 between K1 and K2,
+%   0.8 - (K3 - K2) = -1.2 above K3, breakevens K1 - 0.8 = 2.2 and K2 + 0.8 = 5.8.
+%   The put side has no protection, so the loss grows as S(T) falls.
+% Right, iron condor: buy a put at K1 = 1.6, sell a put at K2 = 3.6, sell a call
+% at K3 = 5.6, and buy a call at K4 = 7.6, for a credit of 0.7.
+%   profit = 0.7 + (K1 - S)^+ - (K2 - S)^+ - (S - K3)^+ + (S - K4)^+: 0.7 between
+%   K2 and K3, 0.7 - 2.0 = -1.3 below K1 and above K4, breakevens 2.9 and 6.3.
+% The payoff is the profit shifted down by the credit.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ---------------- left panel: protected strangle ----------------
+  \begin{scope}
+    \panelframe{\textbf{Protected strangle:} buy a call above $K_{2}$}
+    \begin{profitdata}
+      \strike{3.0}{0.8}{$K_{1}$}{short put}
+      \strike{5.0}{0.8}{$K_{2}$}{short call}
+      \strike{7.0}{-1.2}{$K_{3}$}{long call}
+      \draw[payoff] (0, -3.0) -- (3.0, 0) -- (5.0, 0) -- (7.0, -2.0) -- (9.0, -2.0);
+      \draw[profit] (0, -2.2) -- (3.0, 0.8) -- (5.0, 0.8) -- (7.0, -1.2) -- (9.0, -1.2);
+      \maxprofit{4.0}{0.8}
+      \maxloss{7.4}{-1.2}{west}
+      \node[anchor=south east] at (1.2, -1.0) {profit};
+      \node[anchor=north west, text=gdblue] at (1.3, -1.8) {payoff};
+      \breakeven{2.2}{$S^{\ddagger}_{-}$}{above left}
+      \breakeven{5.8}{$S^{\ddagger}_{+}$}{above right}
+    \end{profitdata}
+  \end{scope}
+
+  % ---------------- right panel: iron condor ----------------
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \panelframe{\textbf{Iron condor:} two credit spreads}
+    \begin{profitdata}
+      \strike{1.6}{-1.3}{$K_{1}$}{long put}
+      \strike{3.6}{0.7}{$K_{2}$}{short put}
+      \strike{5.6}{0.7}{$K_{3}$}{short call}
+      \strike{7.6}{-1.3}{$K_{4}$}{long call}
+      \draw[payoff] (0, -2.0) -- (1.6, -2.0) -- (3.6, 0) -- (5.6, 0) -- (7.6, -2.0) -- (9.0, -2.0);
+      \draw[profit] (0, -1.3) -- (1.6, -1.3) -- (3.6, 0.7) -- (5.6, 0.7) -- (7.6, -1.3) -- (9.0, -1.3);
+      \maxprofit{4.6}{0.7}
+      \maxloss{7.85}{-1.3}{west}
+      \node[anchor=south west] at (0.12, -1.25) {profit};
+      \node[anchor=north west, text=gdblue] at (0.12, -2.05) {payoff};
+      \breakeven{2.9}{$S^{\ddagger}_{-}$}{above left}
+      \breakeven{6.3}{$S^{\ddagger}_{+}$}{above right}
+    \end{profitdata}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

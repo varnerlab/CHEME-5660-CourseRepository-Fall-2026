@@ -1,5 +1,62 @@
 # Repository Working Agreements
 
+## L10b: composite contracts rebuilt — October 23, 2026
+
+- His request: introduce composite contracts, then their NPV (not the P/L) in
+  general, and cover every PS4 structure in the lecture: short put, short call,
+  put and call credit spreads, short straddle, short strangle, protected
+  strangle (jade lizard), and iron condor. Composite contracts were never
+  taught in 2026, so the text is adapted from his 2025 L9b. The duplicate
+  Concept Review is cut because L10a already teaches POE and POP.
+- Order: `## Composite Contracts` (payoff with $\theta_{i}$, $n_{i}$) →
+  `### The Net Present Value of a Composite Contract` (one step per line,
+  underbraces naming $\mathcal{P}_{\mathcal{C}}$, $\hat{V}_{\mathcal{C}}$, and
+  $\hat{P}_{\mathcal{C}}$, so $\operatorname{NPV}_{0}=\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\hat{P}_{\mathcal{C}}$),
+  credit or debit, POP, POE, and "Why expiration?" →
+  `## Common Composite Contracts` → the Delta section.
+- "Why expiration?" uses one short-strangle figure to show the profit if we
+  close early rising to the profit at expiration as extrinsic value decays. The
+  legs are priced on a CRR American tree, with no BSM. He found the first
+  right panel confusing ("so right panel shows if I open the position, then
+  immediately close it?"). The redraw shows the credit, the buy-back cost, and
+  the gap between them, and he praised it. Do not add a decay figure for every
+  structure ("I don't want to do all of them").
+- Catalog: each structure is a put side plus a call side, and each side is
+  empty, a naked short contract, or a credit spread. "Naked" is defined
+  because PS4's margin rule uses it. The overview table links each row to its
+  subsection with `[..](#Heading-Text)`, which resolves in both VS Code and
+  JupyterLab. Its Outlook column follows Fidelity and tastylive: neutral to
+  bullish, neutral to bearish, or neutral, with the protected strangle
+  "neutral, leaning bullish". Each subsection runs figure → definitions →
+  profit display → a five-row table (maximum profit, then the breakeven and
+  the maximum loss on each side) → a one- to three-sentence close.
+- Figures: TikZ schematics in `lectures/week-10/L10b/figs/`, copying the
+  5800 L9c convexity and GD/SA style. He rejected the look of the PS4
+  companion's `\profitpanel` diagrams. Labels clear every line by at least
+  2 pt, checked by measurement, and the strikes carry their leg labels (short
+  put, long call, and so on). The decay generator is self-contained, and its
+  CRR pricer was checked against the package. `figs/README.md` has the build.
+- Projection rule: "we are projecting this onto a screen so the text has to be
+  concise, simple and direct". After the tables went in, the catalog prose
+  was cut about 27% and the intro, NPV, and Delta prose about 21%. He agreed
+  to trims of his 2025 text: the intro, "Why is this interesting?", the Delta
+  opener, and the hedging blockquote.
+- Delta: the sums run over $i\in\mathcal{C}$, as in the NPV derivation, not
+  $i=1,\dots,|\mathcal{C}|$. Delta-neutral means $\Delta_{\text{net}}(S,t)=0$
+  at the current share price and time, and the closing sentence says to update
+  $N_{S}$ as they move. The "for all $t\in[0,T]$ and $S>0$" wording was dropped.
+- Notation: two L10b tables (NPV, Delta) and updated Context rows in
+  `code/docs/faq-src/content.json`. `notation.html` was rebuilt with the pinned
+  Pandoc 3.1.11.1.
+- Open: rebuild the two AMD examples on the EOD archive (they are still 2025
+  data), build an L10b deck, and finish the tightening pass on the title and
+  learning objectives, Examples, and Summary cells. Replacing the PS4
+  companion's diagrams with these PDFs was offered, not done.
+- Same day, outside L10b: the L10a "Before we do the math" callout was removed
+  and its questions folded into the intrinsic and extrinsic definitions (cell
+  `l10a-03`, and the deck frame deleted). That edit sits inside another
+  session's uncommitted L10a work, so that session commits it.
+
 ## L10a: no BSM with American contracts — October 22, 2026
 
 - The instructor's rule: Black–Scholes–Merton is for European contracts only.

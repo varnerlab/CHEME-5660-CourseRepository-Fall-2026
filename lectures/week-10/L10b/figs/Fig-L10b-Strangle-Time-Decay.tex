@@ -1,0 +1,110 @@
+% L10b short strangle before expiration, two panels. Why the composite-contract
+% diagrams are drawn at expiration.
+%
+% A short strangle is opened 30 days before expiration (sell a put at K1 = 90 and a
+% call at K2 = 110 USD/share with S(0) = 100). If we buy both legs back early, the
+% profit is the credit, grown to that day, minus what the legs cost then; each leg
+% still carries extrinsic (time) value, so the curve sits below the profit at
+% expiration and rises onto it as the time value decays.
+% Left: the profit against the share price on the day we close, with 30 (entry),
+% 20, and 10 days left (orange, darker closer to expiration) and at expiration (ink).
+% Right: if the share price is still S(0), the credit collected at entry (dashed,
+% grown with interest) and the cost to buy both legs back (orange), against the days
+% to expiration. The gap is the profit if we close: zero at entry, where the cost
+% equals the credit, and the whole credit at expiration, where both legs expire
+% worthless. The four days are marked in the left panel's colors.
+%
+% The curves are computed, not sketched: generate-strangle-time-decay.jl prices the
+% American legs on CRR trees and writes Fig-L10b-Strangle-Time-Decay-coords.tex.
+% Left panel x = 0.28125 (S - 84), so S = 84 ... 116 USD/share spans 0 ... 9.0;
+% left panel 0.6 units per USD/share. Right panel x = 0.5 + 0.273 (days since
+% entry) and 1.9 units per USD/share above a zero line at 0.55.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+\input{Fig-L10b-Strangle-Time-Decay-coords.tex}
+\def\yscale{0.6}
+\def\yzero{4.3}
+
+\tikzset{
+  early/.style={line width=1.2pt, line join=round},
+  day30/.style={early, draw=saorange!50},
+  day20/.style={early, draw=saorange!70},
+  day10/.style={early, draw=saorange},
+  key/.style={anchor=west, font=\sffamily\footnotesize, inner sep=2pt},
+  credit/.style={draw=vnink, line width=1.2pt, dash pattern=on 5pt off 3pt},
+  cost/.style={draw=saorange, line width=1.6pt, line join=round},
+}
+
+% A day on the right panel's axis: a short tick at day #1 with the days to
+% expiration #2 and, below it, #3.
+\newcommand{\daytick}[3]{%
+  \draw[draw=vnink, line width=0.8pt] (#1, -\yzero/\yscale) -- (#1, -\yzero/\yscale + 0.12/\yscale);
+  \node[anchor=north, align=center, inner sep=1.5pt, text=gdgray]
+    at (#1, -\yzero/\yscale - 0.08/\yscale) {#2\\[-1.5pt]{\footnotesize\color{vnink}#3}};}
+
+% Scope in which (share price, profit) are the coordinates.
+\newenvironment{sharedata}{\begin{scope}[shift={(-23.625, \yzero)}, xscale=0.28125, yscale=\yscale]}{\end{scope}}
+% Scope in which (days since entry, profit) are the coordinates.
+\newenvironment{daydata}{\begin{scope}[shift={(0.5, \yzero)}, xscale=0.273, yscale=\yscale]}{\end{scope}}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ---------------- left panel: profit if we close early ----------------
+  \begin{scope}
+    \panelaxes{\textbf{Before expiration:} the profit if we close early}
+      {Share price when we close, $S(t)$}{Profit (USD/share)}
+    \begin{sharedata}
+      \strike{90}{\atExpiration}{$K_{1}$}{short put}
+      \strike{110}{\atExpiration}{$K_{2}$}{short call}
+      % S(0): an axis tick, so the dashed line does not cross the key -
+      \draw[draw=vnink, line width=0.8pt] (100, -\yzero/\yscale) -- (100, -\yzero/\yscale + 0.12/\yscale);
+      \node[anchor=north, align=center, inner sep=1.5pt, text=gdgray]
+        at (100, -\yzero/\yscale - 0.08/\yscale) {$S(0)$\\[-1.5pt]{\footnotesize\color{vnink}entry price}};
+      \draw[day30] \curveThirty;
+      \draw[day20] \curveTwenty;
+      \draw[day10] \curveTen;
+      \draw[profit] \curveExpiration;
+    \end{sharedata}
+    % key, under the curves -
+    \begin{scope}[shift={(2.45, 2.2)}]
+      \draw[day30] (0, 0) -- (0.55, 0);
+      \node[key] at (0.6, 0) {30 days left (entry)};
+      \draw[day20] (0, -0.45) -- (0.55, -0.45);
+      \node[key] at (0.6, -0.45) {20 days left};
+      \draw[day10] (0, -0.9) -- (0.55, -0.9);
+      \node[key] at (0.6, -0.9) {10 days left};
+      \draw[profit] (0, -1.35) -- (0.55, -1.35);
+      \node[key] at (0.6, -1.35) {at expiration};
+    \end{scope}
+  \end{scope}
+
+  % ---------------- right panel: closing at S(0), day by day ----------------
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \def\yzero{0.55}
+    \def\yscale{1.9}
+    \panelaxes{\textbf{Time decay:} closing at $S(0)$, day by day}
+      {Days to expiration}{USD/share}
+    \begin{daydata}
+      \daytick{0}{$30$}{entry}
+      \daytick{10}{$20$}{}
+      \daytick{20}{$10$}{}
+      \daytick{30}{$0$}{expiration}
+      \draw[credit] \curveCredit;
+      \draw[cost] \curveCost;
+      % the profit if we close: the credit minus the cost -
+      \draw[gap] (10, \costTwenty + 0.09) -- (10, \creditTwenty - 0.03);
+      \draw[gap] (20, \costTen + 0.09) -- (20, \creditTen - 0.03);
+      \draw[gap] (30, \costExpiration + 0.09) -- (30, \creditExpiration - 0.03);
+      \node[pt, draw=saorange!50] at (0, \costThirty) {};
+      \node[pt, draw=saorange!70] at (10, \costTwenty) {};
+      \node[pt, draw=saorange] at (20, \costTen) {};
+      \node[pt, draw=vnink] at (30, \costExpiration) {};
+      \node[anchor=south west, inner sep=4pt] at (1.5, \creditThirty) {credit collected at entry};
+      \node[anchor=north west, align=left, text=saorange, inner sep=2pt] at (0.8, 1.05) {cost to buy back\\both legs};
+      \node[anchor=west, align=left, inner sep=4pt] at (10, {(\costTwenty + \creditTwenty)/2}) {profit if\\we close};
+      \node[anchor=east, align=right, inner sep=4pt] at (30, {\creditExpiration/2}) {max profit\\$=$ credit};
+    \end{daydata}
+  \end{scope}
+\end{tikzpicture}
+\end{document}
