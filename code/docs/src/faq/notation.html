@@ -54,7 +54,7 @@
     <!-- LECTURE_NAV slot: a complete ul of li items, each a link to a section id on this page. -->
     <nav class='lecture-nav' aria-labelledby='lecture-nav-title'>
       <h2 id='lecture-nav-title' class='section-label'>Lectures</h2>
-      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="Context">Context</option></select></div>
+      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="L10b">L10b</option><option value="Context">Context</option></select></div>
     </nav>
 
     <!-- NOTATION_SECTIONS slot: one section per lecture with class notation-section, data-lecture and an id, containing
@@ -2972,6 +2972,168 @@
 </tr>
 </tbody>
 </table>
+</div></div></section><section class="notation-section" id="L10b" data-lecture="L10b"><div class="notation-section-heading"><h2>L10b</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>The NPV of Composite Contracts</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="The NPV of Composite Contracts"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒞</mi><annotation encoding="application/x-tex">\mathcal C</annotation></semantics></math></td>
+<td>Composite contract: a set of legs, long or short calls and puts, on one underlying asset with one expiration date.</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math></td>
+<td>Number of legs in a composite contract.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math></td>
+<td>Orientation of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> if it is long (bought), <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math> if it is short (sold).</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math></td>
+<td>Copy number of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>. The sign of the position is in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>.</td>
+<td>Contracts</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>i</mi></msub><annotation encoding="application/x-tex">K_i</annotation></semantics></math></td>
+<td>Strike price of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>. In the structure diagrams, the strikes are numbered from low to high.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(T)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(0)</annotation></semantics></math></td>
+<td>Share price at expiration and at entry.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>K</mi><mi>i</mi></msub><mo>,</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_i(K_i,S(T))</annotation></semantics></math></td>
+<td>Payoff of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> at expiration: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>c</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>K</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">V_c=(S(T)-K_i)^+</annotation></semantics></math> for a call and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>p</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>K</mi><mi>i</mi></msub><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">V_p=(K_i-S(T))^+</annotation></semantics></math> for a put.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat V_{\mathcal C}(S(T))</annotation></semantics></math></td>
+<td>Payoff of the composite contract, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>V</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>K</mi><mi>i</mi></msub><mo>,</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sum_i\theta_in_iV_i(K_i,S(T))</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal P_i</annotation></semantics></math></td>
+<td>Premium of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> at entry.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>p</mi></msub><annotation encoding="application/x-tex">\mathcal P_p</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\mathcal P_c</annotation></semantics></math></td>
+<td>Premiums of the put and the call in a short put, a short call, or a straddle.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>𝒞</mi></msub><annotation encoding="application/x-tex">\mathcal P_{\mathcal C}</annotation></semantics></math></td>
+<td>Net premium, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>𝒫</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_i\theta_in_i\mathcal P_i</annotation></semantics></math>. The contract opens for a debit if it is positive and for a credit of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>𝒫</mi><mi>𝒞</mi></msub></mrow><annotation encoding="application/x-tex">-\mathcal P_{\mathcal C}</annotation></semantics></math> if it is negative.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>NPV</mo><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒞</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{NPV}_0(\mathcal C)</annotation></semantics></math></td>
+<td>Net present value of the composite contract at entry, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>𝒫</mi><mi>𝒞</mi></msub><mo>+</mo><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">-\mathcal P_{\mathcal C}+\mathcal D^{-1}_{T,0}(g_y)\,\hat V_{\mathcal C}(S(T))=\mathcal D^{-1}_{T,0}(g_y)\,\hat P_{\mathcal C}(S(T))</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat P_{\mathcal C}(S(T))</annotation></semantics></math></td>
+<td>Profit at expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>𝒞</mi></msub></mrow><annotation encoding="application/x-tex">\hat V_{\mathcal C}(S(T))-\mathcal D_{T,0}(g_y)\,\mathcal P_{\mathcal C}</annotation></semantics></math>: the legs’ profits weighted by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\theta_in_i</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒟</mi><annotation encoding="application/x-tex">\mathcal D</annotation></semantics></math></td>
+<td>Shorthand for the accumulation factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>T</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathcal D_{T,0}(g_y)=e^{g_yT}</annotation></semantics></math> in the structure formulas.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">POP</mtext><mi>𝒞</mi></msub><annotation encoding="application/x-tex">\text{POP}_{\mathcal C}</annotation></semantics></math></td>
+<td>Probability of profit, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>NPV</mo><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒞</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(\operatorname{NPV}_0(\mathcal C)&gt;0)=\mathbb P(\hat P_{\mathcal C}(S(T))&gt;0)</annotation></semantics></math>, under our belief <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb P</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">POE</mtext><mi>i</mi></msub><annotation encoding="application/x-tex">\text{POE}_i</annotation></semantics></math></td>
+<td>Probability of exercise of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><msub><mi>K</mi><mi>i</mi></msub><mo>+</mo><mn>0.01</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(S(T)&gt;K_i+0.01)</annotation></semantics></math> for a call and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><msub><mi>K</mi><mi>i</mi></msub><mo>−</mo><mn>0.01</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(S(T)&lt;K_i-0.01)</annotation></semantics></math> for a put.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mo>‡</mo></msup><annotation encoding="application/x-tex">S^{\ddagger}</annotation></semantics></math>; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>S</mi><mo>−</mo><mo>‡</mo></msubsup><annotation encoding="application/x-tex">S^{\ddagger}_{-}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>S</mi><mo>+</mo><mo>‡</mo></msubsup><annotation encoding="application/x-tex">S^{\ddagger}_{+}</annotation></semantics></math></td>
+<td>Breakeven share price at expiration. A short put, a short call, and a credit spread have one. Straddles, strangles, protected strangles, and iron condors have two, one below and one above the short strikes.</td>
+<td>USD/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_V(t)</annotation></semantics></math></td>
+<td>Extrinsic value of a leg at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, its premium minus its intrinsic value. Closing a short leg before expiration pays it on top of the intrinsic value.</td>
+<td>USD/share</td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="notation-group"><h3>Delta of a Composite Contract</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Delta of a Composite Contract"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Pi(S,t)</annotation></semantics></math></td>
+<td>Value of a portfolio of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>S</mi></msub><annotation encoding="application/x-tex">N_S</annotation></semantics></math> shares and the legs of a composite contract, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>S</mi></msub><mi>S</mi><mo>+</mo><mi>m</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>𝒫</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_SS+m\sum_i\theta_in_i\mathcal P_i(S,t)</annotation></semantics></math>.</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal P_i(S,t)</annotation></semantics></math></td>
+<td>Premium of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> when the share price is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math> at time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>USD/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math></td>
+<td>Contract multiplier, 100 shares per contract for listed options.</td>
+<td>Shares/contract</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>S</mi></msub><annotation encoding="application/x-tex">N_S</annotation></semantics></math></td>
+<td>Shares of the underlying asset held.</td>
+<td>Shares</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_i(S,t)</annotation></semantics></math></td>
+<td>Delta of leg <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><msub><mi>𝒫</mi><mi>i</mi></msub><mi>/</mi><mi>∂</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P_i/\partial S</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{opts}}(S,t)</annotation></semantics></math></td>
+<td>Delta of the options position, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>θ</mi><mi>i</mi></msub><msub><mi>n</mi><mi>i</mi></msub><msub><mi>Δ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m\sum_i\theta_in_i\Delta_i(S,t)</annotation></semantics></math>.</td>
+<td>Shares</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{net}}(S,t)</annotation></semantics></math></td>
+<td>Net Delta of the portfolio, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>S</mi></msub><mo>+</mo><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_S+\Delta_{\text{opts}}(S,t)</annotation></semantics></math>. A delta-neutral position has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta_{\text{net}}=0</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>S</mi></msub><mo>=</mo><mo>−</mo><msub><mi>Δ</mi><mtext mathvariant="normal">opts</mtext></msub></mrow><annotation encoding="application/x-tex">N_S=-\Delta_{\text{opts}}</annotation></semantics></math>.</td>
+<td>Shares</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
+<td>Time at which a leg is exercised or assigned, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>≤</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">\tau\le T</annotation></semantics></math>.</td>
+<td>yr</td>
+</tr>
+</tbody>
+</table>
 </div></div></section><section class="notation-section" id="Context" data-lecture="Context"><div class="notation-section-heading"><h2>Context</h2></div><div class="notation-group"><h3>Symbols Whose Meaning Changes with Context</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Symbols Whose Meaning Changes with Context"><table>
 <colgroup>
 <col style="width: 33%" />
@@ -3038,13 +3200,13 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math></td>
-<td>Compounding periods per year; tail-analysis sample size; simulated path count; share count <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>; number of option contracts held, negative if sold.</td>
-<td>L1b-L2a; L3a; L6a; L10a</td>
+<td>Compounding periods per year; tail-analysis sample size; simulated path count; share count <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>; number of option contracts held, negative if sold; copy number <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math> of a composite-contract leg.</td>
+<td>L1b-L2a; L3a; L6a; L10a; L10b</td>
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math></td>
-<td>Bill discount quote; lattice down factor; frontier coefficient <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>c</mi><mo>−</mo><msup><mi>b</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">ac-b^2</annotation></semantics></math>.</td>
-<td>L2a; L3b; L6a</td>
+<td>Bill discount quote; lattice down factor; frontier coefficient <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>c</mi><mo>−</mo><msup><mi>b</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">ac-b^2</annotation></semantics></math>; number of legs in a composite contract.</td>
+<td>L2a; L3b; L6a; L10b</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>N</mi></msub><annotation encoding="application/x-tex">K_N</annotation></semantics></math></td>
@@ -3104,7 +3266,7 @@
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
 <td>Lattice lag; real-valued up-count threshold; reference year for annualizing a Sharpe ratio; power-utility exponent; American exercise time, a stopping time.</td>
-<td>L3b; L4a; L6b-L7a; L7b; L9a</td>
+<td>L3b; L4a; L6b-L7a; L7b; L9a, L10b</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\nu_{j,k}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\nu_\star</annotation></semantics></math></td>
@@ -3158,13 +3320,13 @@
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>V</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat V</annotation></semantics></math></td>
-<td>Payoff of a bet or an option at expiration or exercise; option value at a lattice node, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\hat V_{t,k}</annotation></semantics></math>.</td>
-<td>L8b, L9a, L9b; L9b</td>
+<td>Payoff of a bet or an option at expiration or exercise; option value at a lattice node, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\hat V_{t,k}</annotation></semantics></math>; payoff of a composite contract, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><annotation encoding="application/x-tex">\hat V_{\mathcal C}</annotation></semantics></math>.</td>
+<td>L8b, L9a, L9b; L9b; L10b</td>
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\Delta x</annotation></semantics></math></td>
 <td>Option Delta, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>𝒫</mi><mi>/</mi><mi>∂</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\partial\mathcal P/\partial S</annotation></semantics></math>; a change in a quantity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>, such as the time step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> or the share-price change <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\Delta S</annotation></semantics></math>.</td>
-<td>L10a; throughout</td>
+<td>L10a, L10b; throughout</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋆</mo><annotation encoding="application/x-tex">\star</annotation></semantics></math></td>
