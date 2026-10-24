@@ -1671,5 +1671,10 @@ handoffs and regenerate previews from the current notebooks when needed.
   question into the first sentence. L7b reuses the L8b CES description. The
   L5b Itô entry lost its math and its lecture-number reference (text-only
   rule), and the L4a, L4b, L5a, and L5b list introductions lost their
-  semicolons and "not prerequisites for L…" clauses. The L2a–L3b lists
-  ("This example…", imperatives, "In this optional … notebook") are unchanged.
+  semicolons and "not prerequisites for L…" clauses.
+- Same day, the 11 L2a–L3b entries ("This example…", imperatives, "In this
+  optional … notebook") were converted too. The two L2b entries that link a
+  folder of notebooks (yield curves, STRIPS) open with "In these notebooks,".
+  The L3b entries spell out their symbols, and the two markdown-only
+  derivations end with "It is a derivation notebook with no code." Every
+  Optional Advanced Material entry outside week 13 now opens this way.
