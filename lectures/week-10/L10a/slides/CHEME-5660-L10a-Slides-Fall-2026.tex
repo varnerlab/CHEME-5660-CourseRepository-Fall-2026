@@ -65,6 +65,8 @@
 % Same day: the Delta-POE proposition defines ITM in set-builder form, as the lecture does.
 % Same day: the POP frame expands the profit condition to the breakeven, and a new
 % frame boxes the POP for the four positions and compares it with the POE.
+% Same day: Summary mirrors the tightened Key Takeaways (share equivalent, POP at the
+% breakeven), and slide 22 takes his "The same steps apply for a put, except" wording.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -465,7 +467,7 @@
 \end{frame}
 
 \begin{frame}{Probability of Profit and the Breakeven}
-  The same steps for a put give $S_{T}<S^{\ddagger}$ with
+  The same steps apply for a put, except $S_{T}<S^{\ddagger}$ with
   $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$, and the seller
   profits exactly when the buyer does not:
   \begin{equation*}
@@ -563,10 +565,11 @@
     \item \hilite{The Greeks quantify option price sensitivity}: they are the
       coefficients of a local Taylor expansion of the premium, which we
       estimate by finite differences on a binomial tree.
-    \item \hilite{Delta serves three purposes}: the change in the premium per
-      USD/share move, the hedge ratio, and an estimate of the POE. On the tree,
-      a call's Delta is a POE computed with a slightly larger up probability.
-      We simulate share prices at expiration to compute the POE and POP.
+    \item \hilite{Delta serves three purposes}: the premium change per
+      USD/share move, the number of shares the option is equivalent to, and an
+      estimate of the POE. A call's Delta is a POE with a slightly larger up
+      probability. The POP has the POE's form, with the breakeven in place of
+      the strike price.
   \end{itemize}
 \end{frame}
 
