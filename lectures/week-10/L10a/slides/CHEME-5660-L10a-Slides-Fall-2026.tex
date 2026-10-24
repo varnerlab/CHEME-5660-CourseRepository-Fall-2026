@@ -70,6 +70,7 @@
 % Same day: the Delta-POE box stacks the two sums with labels (it read as one equality),
 % and says why the larger up probability makes Delta larger. The gap and the P/American-put
 % bullets move to a new "When Is Delta Close to the POE?" frame so slide 20 fits.
+% Same day: objectives and Summary mirror the trimmed LOs and Key Takeaways.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -115,14 +116,15 @@
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Estimate and decompose the premium of American options}:
-      Longstaff--Schwartz Monte Carlo, then intrinsic value (immediate exercise
-      value) and extrinsic value (time value).
-    \item \hilite{Compute the Greeks for American options}: Delta, Theta, Vega,
-      Rho, and Gamma from a local Taylor expansion of the options premium.
+      Longstaff--Schwartz Monte Carlo, then intrinsic value (what exercising now
+      would pay) and extrinsic value (the rest).
+    \item \hilite{Compute the Greeks for American options}: Delta, Gamma, Theta,
+      Vega, and Rho by finite differences on a binomial tree, as coefficients of
+      a local Taylor expansion of the premium.
     \item \hilite{Interpret Delta and compute the probabilities of exercise and
-      profit}: the share equivalent of an option position, and the
-      probabilities from projected share price distributions at the strike
-      price and at the breakeven.
+      profit}: Delta as the number of shares an option is equivalent to,
+      compared with the probability of exercise, and both probabilities from
+      simulated share prices at expiration.
   \end{itemize}
 \end{frame}
 
@@ -566,18 +568,17 @@
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.15em}
     \item \hilite{Estimating and decomposing the American premium}:
-      Longstaff--Schwartz regresses the value of holding on the share price.
-      Extrinsic value is largest at the money and grows with the time to
-      expiration. Without dividends, exercising a call early never pays, but
-      exercising a deep in-the-money put can.
-    \item \hilite{The Greeks quantify option price sensitivity}: they are the
-      coefficients of a local Taylor expansion of the premium, which we
-      estimate by finite differences on a binomial tree.
+      Longstaff--Schwartz regresses the value of holding on the share price
+      along simulated paths. Extrinsic value is largest at the money and grows
+      with the time to expiration, and without dividends only a deep
+      in-the-money put is worth exercising early.
+    \item \hilite{The Greeks quantify option price sensitivity}: Delta, Gamma,
+      Theta, Vega, and Rho are the coefficients of a local Taylor expansion of
+      the premium, estimated by finite differences on a binomial tree.
     \item \hilite{Delta serves three purposes}: the premium change per
-      USD/share move, the number of shares the option is equivalent to, and an
-      estimate of the POE. A call's Delta is a POE with a slightly larger up
-      probability. The POP has the POE's form, with the breakeven in place of
-      the strike price.
+      USD/share move, the number of shares the option is equivalent to, and a
+      call's POE computed with a slightly larger up probability. The POP has
+      the POE's form, with the breakeven in place of the strike price.
   \end{itemize}
 \end{frame}
 
