@@ -1666,3 +1666,10 @@ handoffs and regenerate previews from the current notebooks when needed.
   for readers of the repository. The released week bundles will be updated
   later. The decks were not changed, because their derivation slides already
   link the companions.
+- Same day, at his request, the 15 older entries in the L4a–L7b lists that
+  opened with a question now open with "In this notebook," and fold the
+  question into the first sentence. L7b reuses the L8b CES description. The
+  L5b Itô entry lost its math and its lecture-number reference (text-only
+  rule), and the L4a, L4b, L5a, and L5b list introductions lost their
+  semicolons and "not prerequisites for L…" clauses. The L2a–L3b lists
+  ("This example…", imperatives, "In this optional … notebook") are unchanged.
