@@ -1096,6 +1096,12 @@ inline symbols, as in the learning objectives and takeaways. Write "the
 risk-aversion coefficient", not "$A$", and "the up and down factors of the CRR
 model", not their formulas.
 
+List every derivation companion in the lecture's Optional Advanced Material
+section too, not only in the box that links it (October 24, 2026: "that hurts
+discoverability"). Use the L8b and L9b entry format: a topic title, "In this
+notebook, …", and "It is a derivation notebook with no code." Companions do
+not count against the two-to-three notebook cap on optional advanced notebooks.
+
 ## Optional example descriptions — all courses
 
 Approved September 10, 2026 after reviewing and lightly tightening the L4a

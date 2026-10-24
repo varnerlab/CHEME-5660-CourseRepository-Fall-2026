@@ -1460,3 +1460,15 @@ single maintained copy; CHEME 5800 links to it.
 The instructor requested cleanup of `build/notebook-previews` on September 13,
 2026. Historical preview links may no longer resolve; use the saved review
 handoffs and regenerate previews from the current notebooks when needed.
+
+## Derivation companions listed in Optional Advanced Material — October 24, 2026
+
+- The instructor reversed the L6a/L6b practice of linking derivation companions
+  only from their lecture box ("that hurts discoverability"). The Optional
+  Advanced Material sections of L5a (EMA), L6a (GMV, target growth), L6b
+  (tangent), L7a (tangent), and L10a (Delta–POE) now list them in the L8b/L9b
+  entry format, and the rule is in the shared style guide. Companions still do
+  not count against the two-to-three notebook cap. The L5a–L7a edits go to main
+  for readers of the repository. The released week bundles will be updated
+  later. The decks were not changed, because their derivation slides already
+  link the companions.
