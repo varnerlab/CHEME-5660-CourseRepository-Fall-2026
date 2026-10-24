@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.pdf ../figs/Fig-L10a-CRR-vs-LR-Delta.pdf
+FIGURES := ../figs/Fig-L10a-Premium-vs-Moneyness.pdf
 
 .DEFAULT_GOAL := slides
 

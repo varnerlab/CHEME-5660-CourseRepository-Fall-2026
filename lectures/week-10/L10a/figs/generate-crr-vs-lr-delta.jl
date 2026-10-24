@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-# Rebuild Fig-L10a-CRR-vs-LR-Delta, the L10a lecture figure that shows why Greeks
+# Rebuild Fig-L10a-CRR-vs-LR-Delta, the L10a Leisen–Reimer advanced notebook figure that shows why Greeks
 # computed by repricing the CRR tree jump, and why the Leisen–Reimer tree's do not.
 # Top: the call premium against today's share price. The CRR premium is made of
 # straight pieces joined at corners; the Leisen–Reimer premium is smooth.

@@ -69,6 +69,200 @@
   `l10a-03`, and the deck frame deleted). That edit sits inside another
   session's uncommitted L10a work, so that session commits it.
 
+## L10a: Leisen–Reimer moved to an advanced notebook — October 23, 2026
+
+- His decision: cut `### The Leisen–Reimer Tree` from the lecture and put it in
+  an advanced notebook linked from the lecture, because "there is just too much
+  in the L10a lecture". The subsection (CRR-vs-LR figure,
+  reference, construction from $\mathbb{Q}(S_T>K)=N(d_{-})$, Peizer–Pratt
+  factors, Greeks pseudocode, convergence advice) moved verbatim, about 920
+  words, to
+  `lectures/week-10/L10a/advanced/leisen_reimer/CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb`,
+  a derivation notebook with no code and no BSM. It is not the archived
+  numerical-Greeks notebook. The only additions are the opener, objectives,
+  summary, a recap of the central differences, first-use definitions of
+  $k$, $h$, $\sigma$, $g_y$, $T$, $K$, and the three-line $q^{*}=q'$ step, which
+  replaces the lecture's Delta-section sentence "On the Leisen–Reimer tree,
+  $q^{*}$ is the second probability $q'$." The figure stays in `figs/` and is
+  linked as `../../figs/`.
+- Lecture: after the central differences, one sentence in his words: "For
+  technical reasons, the CRR tree does not estimate $\Gamma_{\star}$ or the
+  other Greeks well, so we use the [Leisen–Reimer tree](…), a modification of
+  the CRR tree that gives better estimates of the Greeks." A first draft
+  explained the corners and was rejected: "a bunch of bullshit that won't make
+  sense to students". Lecture pointers to advanced material give the reason in
+  plain words, not the mechanism. The Taylor-expansion lead-in was also
+  tightened (73 → 54 words, two paragraphs). An "Optional Advanced Material" section (cell `l10a-09`)
+  precedes the Summary. The second takeaway's Leisen–Reimer sentence is cut.
+  `advanced/README.md` describes the notebook.
+- Greeks example: the opener says "a binomial tree", and the first prose mention
+  of Leisen–Reimer links to the notebook. No code changed.
+- Deck: the five Leisen–Reimer frames are removed (27 → 23 pages, 0 overfull).
+  The Greeks frame carries the same one-sentence pointer and the Example 2 note,
+  the $q'$ sentence and the takeaway sentence are cut, and an Optional Advanced
+  Material frame precedes the Summary. The Makefile no longer lists the
+  CRR-vs-LR figure.
+- Same day, "Why Is Delta Close to the POE?": "Could we make this more theorem
+  like, and then link to an adv notebook with the full derivation - some
+  students are lost in the math". The lecture now has a plain lead sentence, a
+  `> __Proposition: Delta as a Probability of Exercise__` block in the L5a EMA
+  format (conditions, the boxed $\Delta_c$/$\mathbb{Q}(S_T>K)$ pair, $q^{*}>q$,
+  then "Where is this coming from?" with the derivation link), one sentence on
+  when the gap is small, and the unchanged ℙ/American-put note. Three displays
+  became one. The derivation is
+  `advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb`:
+  premium as a sum over terminal nodes (two-step unrolling), Delta via
+  $q^{*}$ and $1-q^{*}$, why $q^{*}>q$, and the gap
+  $q^{*}-q\approx\tfrac12\sigma\sqrt{\Delta t}$, which shifts the up-move count
+  by about $\sigma\sqrt{T}$ standard deviations. No BSM. Checked on a 1001-step
+  tree: the $q^{*}$ sum matches a finite-difference Delta to 6 decimals, and the
+  gap is 0.034, 0.060, 0.118 at $\sigma\sqrt{T}$ = 0.09, 0.15, 0.30. Like the L5a
+  companion, it is linked from the proposition and listed in the README, not in
+  Optional Advanced Material. The deck's two frames became one proposition
+  frame (22 pages, 0 overfull).
+- **Longstaff–Schwartz symbol:** the fitted value of holding is
+  $\hat{H}_{t}(S)$, not $\hat{C}_{t}(S)$, so it matches the value of holding
+  $H_{t,k}$ in the L9b lattice pseudocode (lecture, deck, LSM example prose and
+  table labels, `src/Helper.jl` variable and column `Ĥ`). The helper still
+  reproduces the paper's fits and the 0.1144 premium. The notation FAQ has no
+  Longstaff–Schwartz rows yet.
+- **Extrinsic-value figure first, then the math (his request):** the section opens
+  with `figs/Fig-L10a-Premium-vs-Moneyness.svg` (generator
+  `figs/generate-premium-vs-moneyness.jl`): premium against moneyness $S/K$ from
+  0.5 to 1.5 (his range) for an American call (left) and put (right), K = 100
+  USD/share, σ = 0.30, g_y = 0.04, CRR tree h = 501, DTE 7/30/90/180/365, his gray
+  shades and red dashed intrinsic value. He wants all of a figure's source in
+  `figs/`: the generator has its own CRR pricer (`payoff`, `crr_premium`) and needs
+  only Plots and Colors. It matches the package's `binomial_premium` to 3e-12. Points a (ATM, S/K = 1), b (ITM: 1.15 call, 0.85 put), c (OTM: 0.85 call,
+  1.15 put) sit on every DTE curve. He introduces intrinsic and extrinsic value by
+  reading a, b, c live, then the definitions follow. A hypothetical contract
+  replaces the example's NVDA call-premium-across-strikes figure, so the lecture no
+  longer re-plots an example's data. The math text is his, plus three short ties to
+  the figure (red dashed line, point c, points drop as DTE shrinks). "Let's look at
+  some option contracts in the market…" was cut. The deck mirrors this (slides
+  9–11). The old figure frame and its deck-only "Hmmmm" line are gone. The old
+  `CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.{svg,pdf}` files are unused but
+  kept.
+- **"Would you ever exercise a call early?" (his point, from the figure):** after his
+  "too dense, need to trim and reorg" (139 → 92 words), it is a bold-question prose
+  paragraph, not a blockquote, because it sat directly on the "Review on your own"
+  blockquote. The order is claim, reason, what the figure shows, then the put
+  contrast. Slide 13 matches. Then reworded in plain buy/sell terms after "pays the
+  strike K seems wrong … weired jargon": exercising a call means buying the shares
+  at K USD/share. Sell right away and you get the intrinsic value, but the call
+  curves stay above it, so selling the contract pays more. Keep the shares and you
+  paid early and lost the interest, with no dividends to make up for it. The put
+  (selling at K USD/share) gets its own short paragraph, and slide 13 shows the
+  two call choices as bullets. A third paragraph follows (his request): "What if the
+  share pays a dividend?" Exercise the trading day before the ex-dividend date (the
+  T+1 cutoff, checked), receive the dividend, then keep or sell the shares. It pays
+  only when the dividend is larger than the extrinsic value given up. Linked to the
+  investor.gov ex-dividend glossary. Slide 14 is a three-step timeline (25 pages, 0
+  overfull). Before the early-exercise paragraph, "Why do the call curves stay above
+  the red dashed line?" (his question) gives two reasons against exercising today:
+  pay K at expiration and earn interest on it, or walk away if the share price falls
+  below K. Even far in the money, the gap is at least the interest on K (3.9
+  USD/share for 365 days at 4%). Checked on the tree: the gap is never below
+  K(1−e^{−g_yT}) for any S/K in [1, 1.5] at any of the five DTEs. Slide 13 is "Why the
+  Call Stays Above the Red Line" (26 pages, 0 overfull). Then tightened for
+  projection ("make sure the text is *tight*"): every sentence added today, 552 → 408
+  words, with short sentences and numbers in parentheses. His own sentences
+  (definitions, "worthless" callout, time decay) are unchanged, and the deck matches.
+  His hand reorg (saved in the session scratchpad as L10a-lecture-jeff-reorg.ipynb):
+  time decay, then three bullets ("worthless", why above, call early), then a loose
+  put paragraph and a bold dividend question. He said "still not quite right". Fix:
+  three question bullets, each answered once: "worthless" (his text), "Would you
+  ever exercise a call early?" (absorbs the why-above reasons and the ≥ interest
+  floor), and "Would you ever exercise a put early?". The close is "A dividend
+  changes the answer for a call…" (239 → 207 words). Deck: slide 12 puts time decay
+  before "worthless", and the why-above and call frames merged into "Would You Ever
+  Exercise Early?" (call and put above the figure, takeaway below). 25 pages, 0
+  overfull. History:
+  after the time-decay paragraph. Without dividends the call curves stay above the
+  intrinsic value deep in the money (exercising pays $K$ early and gives up its
+  interest, the framing of his L9b OCC paragraph), so an American call has the
+  European premium. Deep ITM puts meet the intrinsic value and are exercised early.
+  This also sets up the Delta proposition's "a call on a share that pays no
+  dividends". Checked on the tree: American call = European call to 0.0 at all five
+  DTEs, the gap at S/K = 1.5 is at least the interest on K (0.08 at 7 days, 5.0 vs
+  3.9 at 365), and puts sit on the intrinsic value for S/K ≤ 0.91 (7 days) down to
+  0.67 (365 days). The deck has a matching slide 12 with the figure repeated (23
+  pages, 0 overfull).
+- **Never start a sentence with a bare symbol (his hard rule):** "Delta $\Delta_{\star}$ and
+  Gamma $\Gamma_{\star}$ play the roles…" in the lecture and deck. Two more deck
+  lines followed his own lecture wording: "Delta is often used…" and "because
+  $u>e^{g_{y}\Delta t}$, $q^{*}>q$". The platform-units sentence was still unclear
+  ("what?"), so it now plugs the units into the expansion: one day is
+  $\Delta t=1/365$ years, so the premium changes by $\Theta_{\star}/365$, and one
+  percentage point is $\Delta\sigma=0.01$, so it changes by $\nu_{\star}/100$
+  (or $\rho_{\star}/100$). Platforms quote these as Theta, Vega, and Rho. Acronyms count
+  too: "The POE and POP are forecasts…" (lecture and deck) and "The POP reads…" (deck
+  summary). A scan of the whole L10a folder
+  (lecture, examples, advanced, deck) is clean. The rest of the course has 166 hits
+  (not fixed).
+- **Secret Lives of Delta reordered (moves only, his question):** the section now runs
+  POE definition (with the $\Delta\approx$ POE conjecture) → "Why Is Delta Close to the
+  POE?" → "Computing POE and POP by Simulation", which now opens with the POP
+  sentence and definition → Example. Before, POP and the simulation sat between the
+  conjecture and its answer. "The last example notebook" now links the Greeks example.
+  The deck mirrors this: a POE frame, then Why, then a new POP frame, then the two
+  pseudocode frames. The Example 3 link moved to the last one. 25 pages, 0 overfull.
+  He then agreed to cut "(composite or single)" from the POE and POP definitions and
+  the composite-contract POP case from pseudocode step 4 (lecture and deck). Composite
+  contracts are taught in the next lecture, which defines their POP itself.
+- **Key Takeaways tightened (his request):** 253 to 195 words, "We…" voice, no symbols.
+  The early-exercise result (no early call exercise without dividends, deep in-the-money
+  puts) was added. The volatility claim was dropped because the extrinsic section never
+  shows it. Delta is now "close to the risk-neutral POE for short-dated contracts",
+  matching the Proposition. The deck Summary mirrors it.
+- **LSM example prose tightened (his request, after approving the step-2/step-1 lead-ins):**
+  33 word-level cuts across 12 markdown cells (prose 1747 to 1635 words), code untouched.
+  The step lead-ins now read "At $t=2$, paths … are in the money". The premium sentence
+  now says the premium is the larger of the average and the payoff today. The early-
+  exercise takeaway now uses plain buy/sell wording ("selling the shares at the strike
+  price early pays").
+- **POE-POP call example prose tightened (his request, after approving the LSM pass):**
+  19 markdown cells, prose 2674 to 2181 words. Code, displays and links are unchanged (verified).
+  The sample(...) bullets became prose, the POP callout is two one-line cases, and
+  display lead-ins stand alone. A "≥ K+ε" vs "> K+ε" mismatch is fixed. The
+  `d_gbm::LogNormal{Float64}`, `d_IV::Normal{Float64}`, `POE::Float64` and
+  `P_OTM::Float64` types are now named. Summary closer de-jargoned.
+  Second pass ("still some long text"): 2181 to 2083 words. The sample(...) cell is now 4 short
+  sentences, and the Data, Scenario, Constants, build and POE/P_OTM lead-ins are trimmed.
+- **Tightening pass on the remaining L10a notebooks (his request):** code, displays and links
+  unchanged, verified against the backups.
+  - Greeks example: 3319 to 2707 words (−18%). Put Greeks now name `name::Float64`, and
+    takeaway 1 says the tree matched the archive except the American put's Rho (−0.114 vs −0.134).
+  - ExtrinsicValue example: 1227 to 1056 (−14%). Takeaway 3 says deep-ITM calls keep at
+    least the interest on the strike price, not "little extrinsic value".
+  - Delta-POE derivation: 1079 to 961 (−11%). The reused $k$ in $\mathcal{O}(\Delta t^{k})$
+    is gone.
+  - Leisen–Reimer advanced: 1335 to 1261 (−6%), with $u$ and $d$ now defined before use.
+  - Both advanced notebooks kept every step and its reason, so they stayed short of the
+    22% target.
+- **Taylor expansion, Delta and Gamma collected (his question):** the derivation align
+  gains a third line, $=\bigl(\Delta_{\star}+\tfrac{1}{2}\Gamma_{\star}\Delta S\bigr)\Delta S+\nu\Delta\sigma+\Theta\Delta t+\rho\Delta g_{y}$,
+  with underbraces labeling each term by its input: share price, volatility, time,
+  rate. "Risk-free rate" was too wide and left a gap, so it became "rate". He wrote $\Gamma\Delta S$, and the
+  ½ is required. One added sentence says the factor is about the Delta halfway
+  through the move ($S+\Delta S/2$). The 0.50/0.02 example now uses the collected
+  form (0.55×5 = 2.75, 0.45×(−5) = −2.25), and the deck's slides 16–17 match. The
+  Greeks example's hedging cell keeps the two-term form, because its argument
+  ("the hedge cancels the Delta term") needs the terms apart.
+- **Think-pair-share on points a, b, c (his request):** a `> __Before we do the
+  math:__` callout right after the figure: "Take a minute on your own, compare
+  answers with a neighbor, and then we'll share", then three titled questions.
+  Each one is answered by text that follows, so the notebook still reads alone.
+  *Exercise now* leads to the intrinsic value (red dashed line). *The rest of the
+  premium* leads to the extrinsic value, largest at a, and time decay. *Far from the
+  strike* leads to the early-exercise callout. One new answer sentence after the
+  OTM edge case: "At the money (point a), the intrinsic value is also zero, and the
+  extrinsic value is the largest of the three points." The plain label replaces
+  "think, pair, share". Deck: slide 10 "Before We Do the Math" holds one-line
+  questions and the figure. Slide 12 folds point a into the OTM sentence to fit (24
+  pages, 0 overfull). No earlier course lecture has an in-class activity format,
+  so this is the first one.
+
 ## L10a: no BSM with American contracts — October 22, 2026
 
 - The instructor's rule: Black–Scholes–Merton is for European contracts only.
@@ -76,8 +270,8 @@
   American contracts uses the tree or simulation, with no $N(d_{\pm})$, BSM
   Greeks, or BSM curves for comparison.
 - The L10a advanced notebook, Numerical Greeks on binomial trees, is archived in
-  `lectures/archive/week-10-L10a-advanced-cut-2026-10-22/`, and L10a has no
-  advanced material. Its Leisen–Reimer tree is built from $d_{\pm}$, and its
+  `lectures/archive/week-10-L10a-advanced-cut-2026-10-22/`, and L10a had no
+  advanced material until October 23 (see above). Its Leisen–Reimer tree is built from $d_{\pm}$, and its
   Task 3 overlays BSM curves on an American put. The lecture's link paragraph
   and its "Optional Advanced Material" section are removed, as are the matching
   sentence and frame in the deck. Do not restore the notebook.

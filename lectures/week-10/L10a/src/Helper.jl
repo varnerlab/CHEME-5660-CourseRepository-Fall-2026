@@ -123,10 +123,10 @@ exercise date `t`. The step has three parts:
 1. Discount: every path's later cash flow is multiplied by `exp(-gᵧ*Δt)`, so it is
    valued at date `t`.
 2. Regress: on the in-the-money paths only, fit the value of holding
-   `Ĉ(X) = β₀ + β₁X + β₂X²` to the discounted cash flows by least squares, where `X`
+   `Ĥ(X) = β₀ + β₁X + β₂X²` to the discounted cash flows by least squares, where `X`
    is the share price at date `t`.
 3. Decide: an in-the-money path exercises when its payoff now, `max(K - X, 0)`, is
-   larger than `Ĉ(X)`. Exercising replaces the path's later cash flow with the payoff.
+   larger than `Ĥ(X)`. Exercising replaces the path's later cash flow with the payoff.
 
 The `!` in the name means the function changes `cash_flow` in place: after the call,
 it holds each path's cash flow valued at date `t`, ready for the next step back.
@@ -145,7 +145,7 @@ it holds each path's cash flow valued at date `t`, ready for the next step back.
 - `Tuple` with two entries:
     - `β::Vector{Float64}`: the least-squares coefficients `[β₀, β₁, β₂]`.
     - `step::DataFrame`: one row per in-the-money path, with the columns `path`,
-      `X` (share price at date `t`), `Y` (discounted later cash flow), `Ĉ` (fitted
+      `X` (share price at date `t`), `Y` (discounted later cash flow), `Ĥ` (fitted
       value of holding), `exercise` (payoff now), and `decision` (`"exercise"` or
       `"hold"`).
 
@@ -187,14 +187,14 @@ function backward_step!(cash_flow::Vector{Float64}, S::Matrix{Float64}, t::Int64
     Y = cash_flow[itm]; # discounted later cash flow (USD/share), a copy taken before any exercise
     A = hcat(ones(length(X)), X, X.^2); # basis 1, X, X²: one row per path
     β = A \ Y; # least-squares coefficients β₀, β₁, β₂ (the backslash solves the least-squares problem)
-    Ĉ = A*β; # fitted value of holding (USD/share)
+    Ĥ = A*β; # fitted value of holding (USD/share)
 
     # decide: exercise where the payoff now beats the value of holding -
     exercise = zeros(length(itm)); # payoff now on each in-the-money path (USD/share)
     decision = String[]; # "exercise" or "hold" for each in-the-money path
     for j ∈ 1:length(itm)
         exercise[j] = max(K - X[j], 0.0); # (USD/share)
-        if exercise[j] > Ĉ[j]
+        if exercise[j] > Ĥ[j]
             cash_flow[itm[j]] = exercise[j]; # exercising replaces the later cash flow
             push!(decision, "exercise");
         else
@@ -203,7 +203,7 @@ function backward_step!(cash_flow::Vector{Float64}, S::Matrix{Float64}, t::Int64
     end
 
     # record the step for the table -
-    step = DataFrame(path = itm, X = X, Y = Y, Ĉ = Ĉ, exercise = exercise, decision = decision);
+    step = DataFrame(path = itm, X = X, Y = Y, Ĥ = Ĥ, exercise = exercise, decision = decision);
 
     # return -
     return (β, step);
