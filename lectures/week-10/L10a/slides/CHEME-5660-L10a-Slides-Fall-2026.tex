@@ -67,6 +67,9 @@
 % frame boxes the POP for the four positions and compares it with the POE.
 % Same day: Summary mirrors the tightened Key Takeaways (share equivalent, POP at the
 % breakeven), and slide 22 takes his "The same steps apply for a put, except" wording.
+% Same day: the Delta-POE box stacks the two sums with labels (it read as one equality),
+% and says why the larger up probability makes Delta larger. The gap and the P/American-put
+% bullets move to a new "When Is Delta Close to the POE?" frame so slide 20 fits.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -432,21 +435,26 @@
   $q^{*}=q\,u\,e^{-g_{y}\Delta t}$ replaces $q$:
   \begin{equation*}
     \boxed{
-    \Delta_{c}=\sum_{k\,\in\,\text{ITM}}\binom{h}{k}\left(q^{*}\right)^{k}\left(1-q^{*}\right)^{h-k}
-    \qquad
-    \Q\left(S_{T}>K\right)=\sum_{k\,\in\,\text{ITM}}\binom{h}{k}q^{k}(1-q)^{h-k}}
+    \begin{aligned}
+    \Delta_{c} & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\left(q^{*}\right)^{k}\left(1-q^{*}\right)^{h-k} && \text{Delta: up probability } q^{*}\\
+    \Q\left(S_{T}>K\right) & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\,q^{k}\left(1-q\right)^{h-k} && \text{risk-neutral POE: up probability } q
+    \end{aligned}}
   \end{equation*}
-  \vspace{-0.8em}
-  \begin{itemize}\setlength{\itemsep}{0.1em}
-    \item \hilite{Delta is larger than the risk-neutral POE}: because
-      $u>e^{g_{y}\Delta t}$, $q^{*}>q$.
-    \item \hilite{When is Delta close?} The gap grows with the volatility and the
-      time to expiration. Delta is close for short-dated contracts.
+  \hilite{Delta is larger than the risk-neutral POE}: because
+  $u>e^{g_{y}\Delta t}$, $q^{*}>q$. The in-the-money nodes are the ones with
+  the most up moves, so the larger up probability puts more weight on them.
+  \slidenote{Derivation:}{\href{\repo/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}{\dimmed{advanced/delta\_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{When Is Delta Close to the POE?}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Volatility and time to expiration}: the gap grows with both,
+      so Delta is close for short-dated contracts and further off for
+      long-dated or volatile ones.
     \item \hilite{Our forecast and American puts}: under $\mathbb{P}$, the up
       probability is $p$, so the POE can sit above or below Delta. Early
-      exercise adds to $|\Delta_{p}|$.
+      exercise adds to $|\Delta_{p}|$, so the match is approximate.
   \end{itemize}
-  \slidenote{Derivation:}{\href{\repo/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}{\dimmed{advanced/delta\_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Probability of Profit}
