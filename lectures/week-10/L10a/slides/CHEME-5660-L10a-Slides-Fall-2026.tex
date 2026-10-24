@@ -63,7 +63,8 @@
 % Same day: the POE frame says where the 0.01 comes from (OCC exercise by exception).
 % Same day: the dividend frame links the OIC exercise FAQ instead of investor.gov.
 % Same day: the Delta-POE proposition defines ITM in set-builder form, as the lecture does.
-% Same day: the POP frame states how the POP relates to the POE for buyer and seller.
+% Same day: the POP frame expands the profit condition to the breakeven, and a new
+% frame boxes the POP for the four positions and compares it with the POE.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -454,12 +455,31 @@
     \boxed{\text{POP}=\mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)}
   \end{equation*}
   where $\hat{P}_{\mathcal{C}}$ is the profit of the contract at expiration.
-  The buyer profits only past the breakeven share price, so every profitable
-  contract is exercised, but an exercised contract can still lose money:
+  For the buyer of a call, the profit is positive when:
+  \begin{align*}
+    \hat{P}_{\mathcal{C}} > 0 & \iff \left(S_{T}-K\right)^{+} - \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} > 0 && \text{profit of a long call}\\
+    & \iff \left(S_{T}-K\right)^{+} > \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} && \text{add the premium's future value}\\
+    & \iff S_{T}-K > \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} && \text{a positive payoff needs } S_{T}>K\\
+    & \iff S_{T} > \underbrace{K + \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}}_{=\,S^{\ddagger}} && \text{the breakeven share price}
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Probability of Profit and the Breakeven}
+  The same steps for a put give $S_{T}<S^{\ddagger}$ with
+  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$, and the seller
+  profits exactly when the buyer does not:
   \begin{equation*}
-    \boxed{\text{POP}_{\text{buyer}} < \text{POE}\qquad\qquad
-    \text{POP}_{\text{seller}} = 1-\text{POP}_{\text{buyer}} > 1-\text{POE}}
+    \boxed{
+    \text{POP} = \begin{cases}
+    \mathbb{P}\left(S_{T} > S^{\ddagger}\right) & \text{(bought a call or sold a put)} \\
+    \mathbb{P}\left(S_{T} < S^{\ddagger}\right) & \text{(sold a call or bought a put)}
+    \end{cases}}
   \end{equation*}
+  The POP has the same form as the POE, with the breakeven share price in place
+  of the strike price. For the buyer, the breakeven lies beyond the strike
+  price, so the POP is smaller than the POE.
+
+  \vspace{0.4em}
   The POE and POP are forecasts, so we compute them under our belief $\mathbb{P}$:
   GBM with our estimates of the drift $\mu$ and the volatility $\sigma$.
 \end{frame}
