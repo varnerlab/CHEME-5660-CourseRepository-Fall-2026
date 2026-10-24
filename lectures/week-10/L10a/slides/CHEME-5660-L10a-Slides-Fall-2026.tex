@@ -63,6 +63,7 @@
 % Same day: the POE frame says where the 0.01 comes from (OCC exercise by exception).
 % Same day: the dividend frame links the OIC exercise FAQ instead of investor.gov.
 % Same day: the Delta-POE proposition defines ITM in set-builder form, as the lecture does.
+% Same day: the POP frame states how the POP relates to the POE for buyer and seller.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -453,8 +454,12 @@
     \boxed{\text{POP}=\mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)}
   \end{equation*}
   where $\hat{P}_{\mathcal{C}}$ is the profit of the contract at expiration.
-
-  \vspace{0.4em}
+  The buyer profits only past the breakeven share price, so every profitable
+  contract is exercised, but an exercised contract can still lose money:
+  \begin{equation*}
+    \boxed{\text{POP}_{\text{buyer}} < \text{POE}\qquad\qquad
+    \text{POP}_{\text{seller}} = 1-\text{POP}_{\text{buyer}} > 1-\text{POE}}
+  \end{equation*}
   The POE and POP are forecasts, so we compute them under our belief $\mathbb{P}$:
   GBM with our estimates of the drift $\mu$ and the volatility $\sigma$.
 \end{frame}
