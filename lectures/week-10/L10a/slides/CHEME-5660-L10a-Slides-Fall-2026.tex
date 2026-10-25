@@ -27,7 +27,7 @@
 % Same day: the Longstaff-Schwartz fitted value of holding is \hat{H}_{t}(S), not
 % \hat{C}_{t}(S), to match the value of holding H_{t,k} in the L9b lattice pseudocode.
 % Same day: the extrinsic-value section opens with a new figure (premium against
-% moneyness S/K for a call and a put, points a, b, c, five DTEs), then the math.
+% moneyness K/S(0) for a call and a put, points a, b, c, five DTEs), then the math.
 % It replaces the example's call-premium-across-strikes figure frame.
 % Same day: a frame after Extrinsic Value mirrors the lecture's "Would you ever
 % exercise a call early?" callout (no dividends: the American call is never
@@ -230,9 +230,9 @@
 \end{frame}
 
 \begin{frame}{Extrinsic versus Intrinsic Value}
-  The premium of an American call (left) and put (right) with $K$ = 100
+  The premium of an American call (left) and put (right) with $S(0)$ = 100
   USD/share, priced on the CRR tree for several days to expiration (DTE),
-  against the moneyness $S/K$. Point \hilite{a} is at the money, \hilite{b} is
+  against the moneyness $K/S(0)$. Point \hilite{a} is at the money, \hilite{b} is
   in the money, and \hilite{c} is out of the money.
   \begin{center}
     \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
@@ -355,10 +355,10 @@
     \rho_{\star}=\frac{\partial\Pst}{\partial g_{y}}\qquad
     \Gamma_{\star}=\frac{\partial^{2}\Pst}{\partial S^{2}}
   \end{equation*}
-  Derivatives are taken at the current inputs. One day is $\Delta t=1/365$ years, so the
-  premium changes by $\Theta_{\star}/365$. One percentage point is $\Delta\sigma=0.01$, so it
-  changes by $\nu_{\star}/100$ (or $\rho_{\star}/100$ for the rate). Trading platforms quote
-  these values as Theta, Vega, and Rho.
+  Derivatives are taken at the current inputs. One day is $\Delta t=1/365$ years and one
+  percentage point is $0.01$, so over one day the premium changes by $\Theta_{\star}/365$, and a
+  one-point rise in the volatility or the rate changes it by $\nu_{\star}/100$ or $\rho_{\star}/100$.
+  Trading platforms quote these values as Theta, Vega, and Rho.
 \end{frame}
 
 \begin{frame}{Delta and Gamma}
