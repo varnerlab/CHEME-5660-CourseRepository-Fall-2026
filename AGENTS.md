@@ -1,5 +1,35 @@
 # Repository Working Agreements
 
+## L10a POE/POP example: probabilities under our belief — October 25, 2026
+
+- His request: the lecture says the POE and POP are forecasts under ℙ, but the
+  example computed only ℚ. He chose four drift and volatility pairs in one
+  table: (μ̂, σ̂) ℙ, (μ̂, IV), (g_y, IV) ℚ, and (g_y, σ̂). The new subsection
+  `### Probabilities under our belief` ends Task 3. The lecture is unchanged
+  ("I really don't want to change the lecture notes").
+- The CSV `drift` column is the mean growth rate μ̂_g. The GBM drift is
+  μ̂ = μ̂_g + σ̂²/2. The mixed pair holds μ̂ fixed, so each pair changes one
+  model input.
+- The ℚ simulation, KS check, Normal-IV comparison, ℚ POP table, and Delta
+  tree-sum table and checks are untouched. Their outputs were identical after
+  re-execution.
+- `data/SAGBM-Parameters-Fall-2025.csv` in L10a was the copy from before the split
+  repair (12 tickers wrong, including GOOG, which is in the options archive). It is now
+  a copy of the L4b file. IWM, META, and MRNA have no row, and the data cell
+  asserts that a row exists.
+- Codex pre-review and audit. Rejected: relabeling ℚ as a "no-dividend
+  benchmark" everywhere, and removing "the probabilities inside the market
+  price" (his lecture wording). Checked against XOM (μ̂ < g_y) and GOOG
+  (σ̂ far below IV). The prose holds for both.
+- 252 vs 365: he asked whether to build a 365-day parameter file for options
+  work. It is not needed. The training data has 251.45 trading days per calendar
+  year (2,767 days over 11.0 years). Re-estimating all 424 tickers on calendar
+  time changes μ̂_g by at most 0.00096/yr and σ̂ by −0.108% (the same for every
+  ticker), so the file already applies to T = DTE/365. Scaling the daily standard
+  deviation by √365 would overstate σ̂ by about 20%. Weekend returns are not 3
+  days of variance: their median standard deviation is 1.02 times the one-day value,
+  not √3. The comment in cell `l10a-pop-11` says this.
+
 ## L10b: composite contracts rebuilt — October 23, 2026
 
 - His request: introduce composite contracts, then their NPV (not the P/L) in
