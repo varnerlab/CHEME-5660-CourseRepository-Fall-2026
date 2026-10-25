@@ -8,7 +8,7 @@ This folder holds two notebooks. Both are derivations with no code.
   on the share price today, so the premium is straight pieces joined at corners
   where a terminal node crosses the strike. A central difference between two
   corners gives the slope of one piece as Delta and a Gamma of zero. The
-  notebook then derives the probability that geometric Brownian motion finishes
+  notebook then derives the probability that the share price finishes
   above the strike under the risk-neutral pricing rule, and uses the
   Peizer–Pratt inversion to give the tree an up probability that matches it.
   Its factors depend on the share price today, so the strike stays between the

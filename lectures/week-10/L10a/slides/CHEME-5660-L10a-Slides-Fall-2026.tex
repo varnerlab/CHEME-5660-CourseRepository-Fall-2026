@@ -152,7 +152,7 @@
 
 \begin{frame}{Company Profile: Susquehanna}
   \href{https://sig.com/about/}{\hilite{Susquehanna (SIG)}} is a privately held
-  trading firm whose core business is options trading. Friends who traded
+  trading firm whose core business is derivatives trading. Friends who traded
   options on the floor of the Philadelphia Stock Exchange started it in 1987.
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{Options market making}: it posts prices to buy and sell, so it
@@ -179,8 +179,8 @@
   \hilite{Initialize}: given the share price $S_{0}$, the strike price $K$, the
   payoff function $V(K,S)$ of the call or put, the time to expiration $T$ (years),
   the volatility $\sigma$, the risk-free rate $g_{y}$, the number of exercise dates $h$ after
-  today, and the number of paths $M$. Compute $\Delta t=T/h$ and
-  $\Dstep=e^{-g_{y}\Delta t}$.
+  today, and the number of paths $M$. Compute the time between exercise dates
+  $\Delta t=T/h$ and the one-step discount factor $\Dstep=e^{-g_{y}\Delta t}$.
   \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
 \end{frame}
 
@@ -243,10 +243,10 @@
   The premium (price) of an American option can be broken down into two
   components: intrinsic value and extrinsic value.
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Intrinsic value}: the immediate exercise value, what we
-      would collect by exercising today, $\max(0, S(t) - K)$ for a call and
-      $\max(0, K - S(t))$ for a put, where
-      $S(t)$ is the current share price (the red dashed line).
+    \item \hilite{Intrinsic value}: the immediate exercise value (the red
+      dashed line), what we would collect by exercising today, $\max(0, S(t) - K)$
+      for a call and $\max(0, K - S(t))$ for a put, where $S(t)$ is the current
+      share price and $K$ is the strike price.
     \item \hilite{Extrinsic value}: also known as time value, the rest of the
       premium (the gap above the red dashed line), from the potential for
       future price movements before expiration.
@@ -261,7 +261,8 @@
 \end{frame}
 
 \begin{frame}{Extrinsic Value}
-  In expanded form, the extrinsic value $E_{V}(t)$ is:
+  In expanded form, with call and put premiums $\mathcal{P}_{c}$ and
+  $\mathcal{P}_{p}$, the extrinsic value is:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -284,7 +285,6 @@
   \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
   There is still a chance that the share price moves favorably before
   expiration.
-  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Would You Ever Exercise Early?}
@@ -313,6 +313,7 @@
   So if the dividend is larger than the extrinsic value we give up by exercising
   early, which is small far in the money, we exercise the trading day before the
   ex-dividend date and collect the dividend.
+  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{The Greeks}
@@ -397,7 +398,7 @@
   Besides measuring the premium change for a \texttt{+1~USD/share} move in the
   share price, $\Delta$ has two other interpretations:
   \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Share equivalent}: $n$ contracts ($n<0$ if sold) gain or
+    \item \hilite{Share equivalent}: for small share price moves, $n$ contracts ($n<0$ if sold) gain or
       lose as much as $100\cdot n\cdot\Delta$ shares. Holding
       $-100\cdot n\cdot\Delta$ shares makes the position
       \hilite{delta-neutral}, so Delta is also the \hilite{hedge ratio}.
@@ -422,19 +423,20 @@
   \end{equation*}
   where $S_{T}$ is the share price at expiration and $K$ is the strike price.\par
   \medskip
-  \textbf{\ink{Why the extra 0.01~USD/share?}} OCC automatically exercises an
-  expiring equity option
+  \textbf{\ink{Why the extra 0.01~USD/share?}} At expiration, OCC automatically
+  exercises an equity option
   \href{https://www.optionseducation.org/referencelibrary/faq/options-exercise}{\hilite{in the money by 0.01~USD/share or more}}.
   The POE uses the same threshold.\par
   \medskip
-  \textbf{\ink{Conjecture:}} $\Delta\approx\text{POE}$. Example 3 checks it.
+  We'll check the conjecture that $\Delta\approx\text{POE}$ in Example 3.
 \end{frame}
 
 \begin{frame}{Why Is Delta Close to the POE?}
   \textbf{\ink{Proposition:}} for a call on a share with no dividends, on an
-  $h$-step CRR tree, Delta and the POE are sums over the same in-the-money
-  terminal nodes $\text{ITM}=\left\{k : S_{0}u^{k}d^{h-k}>K\right\}$. Only the up probability differs,
-  $q^{*}=q\,u\,e^{-g_{y}\Delta t}$ replaces $q$:
+  $h$-step CRR tree (step $\Delta t$, up and down factors $u$ and $d$, up
+  probability $q$), Delta and the POE are sums over the same in-the-money
+  terminal nodes $\text{ITM}=\left\{k : S_{0}u^{k}d^{h-k}>K\right\}$, where $k$
+  counts the up moves. With $q^{*}=q\,u\,e^{-g_{y}\Delta t}$, they are:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -443,19 +445,20 @@
     \end{aligned}}
   \end{equation*}
   \hilite{Delta is larger than the risk-neutral POE}: because
-  $u>e^{g_{y}\Delta t}$, $q^{*}>q$. The in-the-money nodes are the ones with
-  the most up moves, so the larger up probability puts more weight on them.
+  $u>e^{g_{y}\Delta t}$, $q^{*}>q$. The in-the-money nodes have the most up
+  moves, so the larger up probability puts more weight on them.
   \slidenote{Derivation:}{\href{\repo/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}{\dimmed{advanced/delta\_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{When Is Delta Close to the POE?}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Volatility and time to expiration}: the gap grows with both,
-      so Delta is close for short-dated contracts and further off for
-      long-dated or volatile ones.
+      so Delta is close to the risk-neutral POE for short-dated contracts and
+      further off for long-dated or volatile ones.
     \item \hilite{Our forecast and American puts}: under $\mathbb{P}$, the up
-      probability is $p$, so the POE can sit above or below Delta. Early
-      exercise adds to $|\Delta_{p}|$, so the match is approximate.
+      probability is the real-world probability $p$, so the POE can sit above or
+      below Delta. Early exercise adds to an American put's $|\Delta_{p}|$, so the
+      match is approximate.
   \end{itemize}
 \end{frame}
 
@@ -467,7 +470,8 @@
     \boxed{\text{POP}=\mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)}
   \end{equation*}
   where $\hat{P}_{\mathcal{C}}$ is the profit of the contract at expiration.
-  For the buyer of a call, the profit is positive when:
+  For the buyer of a call, the profit is the payoff minus the premium's future
+  value, so it is positive when:
   \begin{align*}
     \hat{P}_{\mathcal{C}} > 0 & \iff \left(S_{T}-K\right)^{+} - \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} > 0 && \text{profit of a long call}\\
     & \iff \left(S_{T}-K\right)^{+} > \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} && \text{add the premium's future value}\\
@@ -498,9 +502,10 @@
 
 \begin{frame}{Computing POE and POP by Simulation}
   \vspace{0.3em}
-  \hilite{Initialize}: given $S_{0}$, $K$, the premium $\mathcal{P}$ of the call
-  or put, $T$ (years), $\mu$ and $\sigma$ under $\mathbb{P}$, $g_{y}$, and the
-  number of samples $M$. Compute the breakeven share price
+  \hilite{Initialize}: given the share price $S_{0}$, the strike price $K$, the
+  premium $\mathcal{P}$ of the call or put, the time to expiration $T$ (years),
+  the drift $\mu$ and the volatility $\sigma$ under $\mathbb{P}$, the risk-free
+  rate~$g_{y}$, and the number of samples $M$. Compute the breakeven share price
   $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a call, or
   $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a put, where
   $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$.
