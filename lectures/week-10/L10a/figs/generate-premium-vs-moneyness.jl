@@ -3,11 +3,11 @@
 # Rebuild Fig-L10a-Premium-vs-Moneyness, the L10a lecture figure that opens the intrinsic
 # and extrinsic value section.
 # Left: an American call. Right: an American put. Each panel plots the premium against
-# the moneyness S/K for five days to expiration (DTE), with the intrinsic value as a red
+# the moneyness K/S(0) for five days to expiration (DTE), with the intrinsic value as a red
 # dashed line. Points a (at the money), b (in the money), and c (out of the money) are
 # marked on every DTE curve, so the gap above the intrinsic value can be read at each.
-# The contracts are hypothetical (no course data): K = 100 USD/share, σ = 0.30,
-# g_y = 0.04, priced on CRR trees with h = 501 steps.
+# The contracts are hypothetical (no course data): S(0) = 100 USD/share, strike prices from
+# 50 to 150 USD/share, σ = 0.30, g_y = 0.04, priced on CRR trees with h = 501 steps.
 # Self-contained: the CRR pricing is below, so the figure needs only Plots and Colors.
 # Run from anywhere: julia generate-premium-vs-moneyness.jl
 
@@ -80,17 +80,17 @@ function crr_premium(type::Symbol, S::Float64, K::Float64, T::Float64, σ::Float
 end
 
 # contracts and trees -
-K = 100.0; # strike price (USD/share)
+Sₒ = 100.0; # share price today (USD/share)
 σ = 0.30; # volatility (1/sqrt(yr))
 g = 0.04; # risk-free rate (1/yr)
 h = 501; # number of tree steps
 DTE = [7, 30, 90, 180, 365]; # days to expiration (days)
-S_range = collect(range(50.0, 150.0, length = 401)); # share prices today (USD/share)
+K_range = collect(range(50.0, 150.0, length = 401)); # strike prices (USD/share)
 
-# points a (at the money), b (in the money), c (out of the money), as moneyness S/K -
+# points a (at the money), b (in the money), c (out of the money), as moneyness K/S(0) -
 points = Dict(
-    :call => [("a", 1.00), ("b", 1.15), ("c", 0.85)],
-    :put => [("a", 1.00), ("b", 0.85), ("c", 1.15)],
+    :call => [("a", 1.00), ("b", 0.85), ("c", 1.15)],
+    :put => [("a", 1.00), ("b", 1.15), ("c", 0.85)],
 );
 
 # shades of gray: the shortest DTE is darkest, as in the earlier figure -
@@ -100,7 +100,7 @@ shades = [RGB(v, v, v) for v ∈ range(0.2, 0.8, length = length(DTE))];
 style = (bg = "gray95", background_color_outside = "white", framestyle = :box, fg_legend = :transparent,
     xminorticks = true, yminorticks = true, grid = :both, gridstyle = :dash, titlefontsize = 15,
     guidefontsize = 14, tickfontsize = 12, legendfontsize = 12, xlims = (0.5, 1.5), ylims = (0.0, 60.0),
-    xlabel = "Moneyness S/K", ylabel = "Premium (USD/share)");
+    xlabel = "Moneyness K/S(0)", ylabel = "Premium (USD/share)");
 
 function panel(type::Symbol, title::String, legend_position::Symbol)
     p = plot(; style..., title = title, legend = legend_position);
@@ -108,25 +108,25 @@ function panel(type::Symbol, title::String, legend_position::Symbol)
     # premium for each DTE -
     for i ∈ eachindex(DTE)
         T = DTE[i]/365; # time to expiration (years)
-        P = [crr_premium(type, S, K, T, σ, g, h) for S ∈ S_range];
-        plot!(p, S_range ./ K, P, c = shades[i], lw = 2, label = "DTE = $(DTE[i]) days");
+        P = [crr_premium(type, Sₒ, K, T, σ, g, h) for K ∈ K_range];
+        plot!(p, K_range ./ Sₒ, P, c = shades[i], lw = 2, label = "DTE = $(DTE[i]) days");
     end
 
     # intrinsic value -
-    intrinsic = [payoff(type, S, K) for S ∈ S_range];
-    plot!(p, S_range ./ K, intrinsic, c = :red, lw = 2, ls = :dash, label = "Intrinsic value");
+    intrinsic = [payoff(type, Sₒ, K) for K ∈ K_range];
+    plot!(p, K_range ./ Sₒ, intrinsic, c = :red, lw = 2, ls = :dash, label = "Intrinsic value");
 
     # points a, b, c on every DTE curve, with the letter above the longest-dated one -
     for (letter, m) ∈ points[type]
-        P = [crr_premium(type, m*K, K, days/365, σ, g, h) for days ∈ DTE];
+        P = [crr_premium(type, Sₒ, m*Sₒ, days/365, σ, g, h) for days ∈ DTE];
         scatter!(p, fill(m, length(DTE)), P, c = shades, msc = :black, msw = 0.75, ms = 4, label = "");
         annotate!(p, m, maximum(P) + 3.5, text(letter, 18, :black, :center));
     end
     return p
 end
 
-pc = panel(:call, "American call, K = $(Int(K)) USD/share", :topleft);
-pp = panel(:put, "American put, K = $(Int(K)) USD/share", :topright);
+pc = panel(:call, "American call, S(0) = $(Int(Sₒ)) USD/share", :topright);
+pp = panel(:put, "American put, S(0) = $(Int(Sₒ)) USD/share", :topleft);
 
 fig = plot(pc, pp, layout = (1, 2), size = (1200, 480), left_margin = 6Plots.mm, right_margin = 4Plots.mm,
     bottom_margin = 6Plots.mm);
@@ -137,9 +137,9 @@ end
 # the values at the points, for the lecture text -
 for type ∈ (:call, :put)
     for (letter, m) ∈ points[type]
-        S = m*K; # share price at the point (USD/share)
-        P = [crr_premium(type, S, K, days/365, σ, g, h) for days ∈ DTE];
-        println(type, " ", letter, " (S/K = ", m, "): intrinsic = ", payoff(type, S, K), ", premium = ",
-            round.(P, digits = 2), ", extrinsic = ", round.(P .- payoff(type, S, K), digits = 2));
+        K = m*Sₒ; # strike price at the point (USD/share)
+        P = [crr_premium(type, Sₒ, K, days/365, σ, g, h) for days ∈ DTE];
+        println(type, " ", letter, " (K/S(0) = ", m, "): intrinsic = ", payoff(type, Sₒ, K), ", premium = ",
+            round.(P, digits = 2), ", extrinsic = ", round.(P .- payoff(type, Sₒ, K), digits = 2));
     end
 end

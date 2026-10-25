@@ -1,5 +1,33 @@
 # Repository Working Agreements
 
+## Moneyness is K/S(0), course-wide — October 25, 2026
+
+- His decision: moneyness is $K/S(0)$, the strike price divided by the share
+  price, in every lecture, example, figure, and deck. He asked why the course
+  had two definitions. There is no universal one: S/K, K/S, K/F, ln(K/F), and
+  standardized forms are all in use. K/S(0) won because the L9a, L9b, and L10a
+  Longstaff–Schwartz examples already used it, and it is how option chains and
+  volatility smiles are read.
+- `Fig-L10a-Premium-vs-Moneyness` was on S/K with K = 100. It now fixes
+  S(0) = 100 USD/share and sweeps the strike from 50 to 150, so each panel stays
+  within 0–60 USD/share. Point b is K/S(0) = 0.85 for the call and 1.15 for the put; c is the
+  reverse. The lecture cell `l10a-03` (lead-in, alt text, and "about 3.9 USD/share
+  at K = 100") and deck page 9 were updated. The deck was rebuilt with 0 overfull boxes,
+  and pages 9 and 12 were rendered and checked.
+- Greeks example, the Delta and Gamma sweep: x axis is K/S(0) with a dashed line
+  "at the money, K/S(0) = 1". The heading is now "How do Delta and Gamma change
+  with the moneyness?".
+- ExtrinsicValue example (his yes, same day): the Task 3 plot is on K/S(0) with
+  the at-the-money line at 1. Its table gained a K/S(0) column, and the Task 1
+  moneyness box now gives the ratio (a call is in the money when K/S(0) < 1).
+  Payoff and profit plots against the share price at expiration are not
+  moneyness sweeps and keep their axis.
+- L9b check: the lecture, deck, Hull, parity, CRR-factors, and contingent-claims
+  notebooks use no moneyness ratio. The American premium example already uses
+  K/S(0). The advanced SPXW skew notebook filters strikes by |ln(K/F̂)| ≤ 0.20 in
+  a variable named `moneyness_band`, and plots against the strike (index
+  points). It deliberately works from the forward, not the index level.
+
 ## L10a POE/POP example: probabilities under our belief — October 25, 2026
 
 - His request: the lecture says the POE and POP are forecasts under ℙ, but the
