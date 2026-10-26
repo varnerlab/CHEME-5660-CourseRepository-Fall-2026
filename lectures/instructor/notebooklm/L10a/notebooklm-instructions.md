@@ -2,13 +2,13 @@
 
 ## 1. Sources to upload
 
-Upload these four files as the notebook's sources. The three Markdown files are in this
-folder; the deck is in the lecture folder.
+Upload these four files from this folder as the notebook's sources. Do not upload this
+instructions file; its prompts go in the "Customize" boxes.
 
 - `CHEME-5660-L10a-Lecture-American-Derivatives-Greeks.md` (the lecture)
 - `CHEME-5660-L10a-Example-Greeks-PutCall.md` (Example 2, in class)
 - `CHEME-5660-L10a-Example-POE-POP-Call.md` (Example 3, in class)
-- `lectures/week-10/L10a/slides/CHEME-5660-L10a-Slides-Fall-2026.pdf` (the deck)
+- `CHEME-5660-L10a-Slides-Fall-2026.pdf` (a copy of the deck)
 
 Left out on purpose: the Longstaff–Schwartz example and the extrinsic-value example
 (review on your own), and the two advanced notebooks. The audio stays on the core results.

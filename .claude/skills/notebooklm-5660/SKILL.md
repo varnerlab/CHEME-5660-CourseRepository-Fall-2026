@@ -1,6 +1,6 @@
 ---
 name: notebooklm-5660
-description: Prepare a CHEME 5660 lecture for NotebookLM (podcast-style Audio Overview, quiz, flashcards). Exports the lecture and its in-class examples to Markdown and writes the Customize prompts into lectures/instructor/notebooklm/<id>/ (tracked, public, not in the release zip). Invoke when the user asks for NotebookLM materials, a podcast, or a quiz for a CHEME 5660 lecture (L10a onward). For CHEME 5820 use notebooklm-instructions instead.
+description: Prepare a CHEME 5660 lecture for NotebookLM (podcast-style Audio Overview, quiz, flashcards). Exports the lecture and its in-class examples to Markdown, copies the deck, and writes the Customize prompts into lectures/instructor/notebooklm/<id>/ (tracked, public, not in the release zip). Invoke when the user asks for NotebookLM materials, a podcast, or a quiz for a CHEME 5660 lecture (L10a onward). For CHEME 5820 use notebooklm-instructions instead.
 ---
 
 # NotebookLM materials for CHEME 5660
@@ -19,8 +19,9 @@ Everything lives in the repo because the instructor works on several machines.
 3. **Export** each notebook into `lectures/instructor/notebooklm/<id>/` (tracked, and not in
    the release zip, which bundles only the week folder):
    `python3 scripts/notebooklm-export.py <notebook.ipynb> lectures/instructor/notebooklm/<id>/<stem>.md`.
-   Do not copy the deck; the instructions point at `slides/`. Skim each export: no raw
-   sample vectors, no setup noise. Re-export after any notebook edit.
+   Copy the deck PDF from `slides/` into the same folder, so the user uploads one folder
+   (everything except `notebooklm-instructions.md`). Skim each export: no raw sample
+   vectors, no setup noise. Re-export and re-copy after any notebook or deck edit.
 4. **Read the sources** and the lecture's "What you need to know" box. The box's three
    core points are the outline for every prompt.
 5. **Write `notebooklm-instructions.md`** in that folder with four sections:
