@@ -1,0 +1,13 @@
+L10a Self-Check: Greeks, POE, and POP
+
+This is an ungraded self-check on the three things you need to know from L10a:
+
+1. An American option's premium is its intrinsic value plus its extrinsic value.
+2. What each Greek measures. The quoted Theta is per day, and the quoted Vega and Rho are per percentage point.
+3. How to compute the probabilities of exercise (POE) and profit (POP), and how Delta compares with the POE.
+
+There are 10 multiple-choice questions, and most use the NVDA examples from class. Each answer comes with a one-sentence explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the examples open while you work. If a question says ℙ, it means our belief (our forecast). If it says ℚ, it means the risk-neutral probabilities inside the market price.
+
+The questions were drafted with NotebookLM from the course materials and checked by the teaching team. If you think an answer is wrong, post it on the course discussion board.
