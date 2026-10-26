@@ -122,3 +122,7 @@ The instructor approved, for L10a and all later lectures:
   - The before/after comparison is in `build/notebook-previews/L10a-tighten-2026-10-26/`.
   - All 11 findings were verified and applied. Among them: the restored definitions of Y_i(t), P^EU, and calendar time t; "by at least the interest on K"; "the probabilities inside the market price, not our forecast"; the call qualifier on Δ = 0.7; and the short-dated, no-dividend qualifier.
 - The examples are unchanged.
+- **Instructor review, same day.** Three changes to the deck:
+  - "Extrinsic versus Intrinsic Value": the lead-in is shorter.
+  - "Why Is Delta Close to the POE?": the top section is shorter. The tree symbols are now defined under the box.
+  - "Would You Ever Exercise Early?": rewritten. His comment was "the prose doesn't make sense". Each bullet now says what exercising does (buy or sell at K today) before saying why holding beats it.

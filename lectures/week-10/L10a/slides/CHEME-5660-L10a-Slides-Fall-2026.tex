@@ -246,10 +246,9 @@
 \end{frame}
 
 \begin{frame}{Extrinsic versus Intrinsic Value}
-  Premium of an American call (left) and put (right), $S(0)$ = 100 USD/share,
-  for several days to expiration (DTE), against the moneyness $K/S(0)$. Point
-  \hilite{a} is at the money, \hilite{b} in the money, \hilite{c} out of the
-  money.
+  American call (left) and put (right) premiums against the moneyness $K/S(0)$
+  for several days to expiration (DTE). Point \hilite{a} is at the money,
+  \hilite{b} in the money, \hilite{c} out of the money.
   \begin{center}
     \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
   \end{center}
@@ -295,16 +294,18 @@
 
 \begin{frame}{Would You Ever Exercise Early?}
   \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{A call}: not without dividends. Holding is better: we pay $K$
-      later, earn interest on it, and don't buy if the price falls below $K$.
-    \item \hilite{A put}: yes, far in the money. Collecting $K$ now beats
-      waiting.
+    \item \hilite{A call}: no, not without dividends. Exercising buys the shares
+      at $K$ today. Holding, we pay $K$ later (earning interest on it) and skip
+      buying if the share price falls below $K$.
+    \item \hilite{A put}: yes, far in the money. Exercising sells the shares at
+      $K$ today, and that cash earns interest.
   \end{itemize}
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
+    \includegraphics[width=\textwidth,height=0.32\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
   \end{center}
   The call curves stay above the red dashed line by at least the interest on
-  $K$, so an American call has the same premium as a European call.
+  $K$, so an American call has the European premium. The put curves meet the
+  line far in the money.
 \end{frame}
 
 \begin{frame}{What If the Share Pays a Dividend?}
@@ -425,11 +426,9 @@
 \end{frame}
 
 \begin{frame}{Why Is Delta Close to the POE?}
-  \textbf{\ink{Proposition:}} for a call on a share with no dividends, on an
-  $h$-step CRR tree (step $\Delta t$, up and down factors $u$ and $d$, up
-  probability $q$), Delta and the POE are sums over the same in-the-money
-  terminal nodes $\text{ITM}=\left\{k : S_{0}u^{k}d^{h-k}>K\right\}$, where $k$
-  counts the up moves. With $q^{*}=q\,u\,e^{-g_{y}\Delta t}$:
+  \textbf{\ink{Proposition:}} for a call (no dividends) on an $h$-step CRR tree,
+  Delta and the POE sum over the same in-the-money nodes,
+  $\text{ITM}=\left\{k : S_{0}u^{k}d^{h-k}>K\right\}$ with $k$ up moves:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -437,6 +436,8 @@
     \Q\left(S_{T}>K\right) & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\,q^{k}\left(1-q\right)^{h-k} && \text{risk-neutral POE: up probability } q
     \end{aligned}}
   \end{equation*}
+  Here $u$, $d$, $q$, and $\Delta t$ are the tree's up and down factors, up
+  probability, and step, and $q^{*}=q\,u\,e^{-g_{y}\Delta t}$.
   \hilite{Delta is larger than the risk-neutral POE}: $u>e^{g_{y}\Delta t}$, so
   $q^{*}>q$, which puts more weight on the in-the-money nodes.
   \slidenote{Derivation:}{\href{\repo/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}{\dimmed{advanced/delta\_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}}}
