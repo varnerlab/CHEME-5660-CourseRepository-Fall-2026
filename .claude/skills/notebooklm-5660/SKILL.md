@@ -31,6 +31,9 @@ Everything lives in the repo because the instructor works on several machines.
 
 ## The Audio Overview prompt
 
+Tell the user to choose Format: Deep Dive and Length: Shorter. The default length
+produced a 25-minute episode for L10a, too long given the density feedback.
+
 In this order, in one fenced block, about 2,000 characters:
 
 - **Audience:** engineering students in a quantitative finance course; say what they

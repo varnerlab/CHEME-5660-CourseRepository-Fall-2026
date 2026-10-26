@@ -15,7 +15,8 @@ Left out on purpose: the Longstaff–Schwartz example and the extrinsic-value ex
 
 ## 2. Audio Overview prompt
 
-Paste this into the Audio Overview "Customize" box.
+In the Audio Overview "Customize" dialog, choose Format: Deep Dive and Length: Shorter
+(the default length gave a 25-minute episode for L10a), then paste this prompt.
 
 ```
 Audience: engineering students in a quantitative finance course who already price European and American options on a binomial (CRR) tree and by Monte Carlo under the risk-neutral probabilities Q, but are new to the Greeks, the probability of exercise (POE), and the probability of profit (POP).
