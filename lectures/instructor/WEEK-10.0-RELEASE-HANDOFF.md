@@ -126,3 +126,8 @@ The instructor approved, for L10a and all later lectures:
   - "Extrinsic versus Intrinsic Value": the lead-in is shorter.
   - "Why Is Delta Close to the POE?": the top section is shorter. The tree symbols are now defined under the box.
   - "Would You Ever Exercise Early?": rewritten. His comment was "the prose doesn't make sense". Each bullet now says what exercising does (buy or sell at K today) before saying why holding beats it.
+
+Re-released October 26, 2026 from 20777f3 (run 40400777522). The release zip matches its
+own .sha256 file, and its contents match the local bundle file for file (99 files). The
+only difference was an empty `L10a/docs/` folder, which exists locally from old LaTeX
+build files and is untracked. Published as a full release.
