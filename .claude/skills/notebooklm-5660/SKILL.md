@@ -55,6 +55,23 @@ Questions only on the three core results; concept questions plus short calculati
 from the example numbers; exclude the "for understanding" items; P or Q stated in
 every question and answer.
 
+## After the user generates the quiz
+
+NotebookLM's flashcards have no download, so the user asks NotebookLM's chat for the
+quiz and flashcards (the quiz prompt plus "10 questions with four choices, the answer,
+and a one-sentence explanation; then 15 flashcards as Q:/A: lines") and pastes the answer
+into `quiz.md`. Then:
+
+1. Check every number against the example outputs and every answer against the lecture.
+   NotebookLM's known faults (L10a): mixed quoted and per-year Greeks, "physical measure"
+   (the course says "our belief P"), "the risk-neutral measure" (say "the risk-neutral
+   probabilities Q"), and a plain mu where the examples use mu-hat.
+2. Report the fixes, apply them once the user agrees, and have Codex check the result.
+3. Build the Canvas package:
+   `python3 scripts/notebooklm-quiz-to-qti.py quiz.md <id>-quiz-canvas-qti.zip "<id> Self-Check: <topic>"`.
+   The user imports it (Settings > Import Course Content > QTI .zip file), sets it as an
+   ungraded practice quiz, and previews the math.
+
 ## Guardrails
 
 - Do not invent content; every claim must trace to the sources.
