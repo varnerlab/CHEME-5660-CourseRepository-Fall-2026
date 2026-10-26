@@ -384,8 +384,8 @@
       \Gamma_{\star} & \approx \frac{\Pst(S+\epsilon)-2\,\Pst(S)+\Pst(S-\epsilon)}{\epsilon^{2}}
     \end{aligned}}
   \end{equation*}
-  The CRR tree estimates the Greeks poorly, so we use the
-  \hilite{Leisen--Reimer tree}, a modified CRR tree.
+  The CRR tree estimates Delta well, but its Gamma can be zero or erratic for a
+  small step $\epsilon$, so we use the \hilite{Leisen--Reimer tree}, a modified CRR tree.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -533,7 +533,7 @@
   \href{\repo/advanced/leisen_reimer/CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
-  Why can repricing the CRR tree give a Gamma of zero, and how does a tree
+  When can repricing the CRR tree give a Gamma of zero, and how does a tree
   built around the strike avoid it? We derive the Leisen--Reimer tree and
   compute the Greeks on it.
 \end{frame}

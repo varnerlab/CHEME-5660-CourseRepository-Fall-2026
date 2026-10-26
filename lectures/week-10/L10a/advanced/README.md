@@ -3,20 +3,19 @@
 This folder holds two notebooks. Both are derivations with no code.
 
 - [`leisen_reimer/CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb`](leisen_reimer/CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb)
-  asks why repricing the Cox, Ross, Rubinstein (CRR) tree can give a Gamma of
+  asks when repricing the Cox, Ross, Rubinstein (CRR) tree can give a Gamma of
   zero, and how the Leisen–Reimer tree avoids it. The CRR factors do not depend
   on the share price today, so the premium is straight pieces joined at corners
-  where a terminal node crosses the strike. A central difference between two
-  corners gives the slope of one piece as Delta and a Gamma of zero. The
+  where a terminal node crosses the strike. A central difference with a step
+  smaller than the spacing between corners can give a Gamma of zero, although
+  Delta stays accurate on a tree with enough steps. The
   notebook then derives the probability that the share price finishes
   above the strike under the risk-neutral pricing rule, and uses the
   Peizer–Pratt inversion to give the tree an up probability that matches it.
   Its factors depend on the share price today, so the strike stays between the
   middle terminal nodes and the premium has no corners. It closes with
   pseudocode that computes the Greeks by rebuilding the tree for each moved
-  input. The Greeks example uses this tree. The figure is
-  `../figs/Fig-L10a-CRR-vs-LR-Delta.svg`, rebuilt by
-  `../figs/generate-crr-vs-lr-delta.jl`.
+  input. The Greeks example uses this tree.
 - [`delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb`](delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb)
   is the derivation companion to the lecture's proposition that a call's Delta
   on the CRR tree is a probability of exercise. It unrolls the European backward
