@@ -19,7 +19,7 @@ earnings on November 3 after the close.
 4. **Eight credit structures, one idea.** Each has a put side and a call side: empty,
    naked, or a credit spread. The sides give the outlook and the maximum loss. The
    formula tables are reference material, not something to memorize.
-5. **Delta adds up.** Net Delta = shares + m Σ θᵢnᵢΔᵢ. Hold N_S = −Δ_opts shares to be
+5. **Delta adds up.** The composite Delta Δ_𝒞 = Σ θᵢnᵢΔᵢ; net Delta = shares + m Σ θᵢnᵢΔᵢ. Hold N_S = −Δ_opts shares to be
    delta-neutral. A zero Delta is not zero risk.
 
 ## What students must know (on slide 4 and in the notebook box)
@@ -40,7 +40,7 @@ earnings on November 3 after the close.
   long put (500) and K₂ the short put (520), so the credit is 𝒫₂ − 𝒫₁.
 - **Two breakevens.** A short straddle profits between them, a long straddle outside
   them.
-- **The sign of the hedge.** The put credit spread's Delta is Δ₁ − Δ₂ = +0.069 per
+- **The sign of the hedge.** The put credit spread's composite Delta is Δ₁ − Δ₂ = +0.069 per
   share, so N_S = −6.9: we *sell* shares to hedge it.
 - **ℙ versus ℚ again.** The straddle seller's POP is higher under our belief ℙ than
   under ℚ. That is because AMD's historical volatility (0.474) is below the implied
@@ -66,7 +66,7 @@ earnings on November 3 after the close.
 - POP 0.714 under ℙ against 0.540 under ℚ. The short put's POE under ℚ is 0.492.
 - Leg Deltas on the Leisen–Reimer tree: −0.3405 and −0.4097. The quotes are −0.3406 and
   −0.4099; the two CRR depths sit on either side.
-- Spread Delta +0.069 per share, so sell about 7 shares per spread.
+- Composite Delta +0.069 per share, so sell about 7 shares per spread.
 
 ## In-class discussion prompts
 
