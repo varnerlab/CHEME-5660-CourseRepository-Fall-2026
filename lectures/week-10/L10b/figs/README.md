@@ -83,9 +83,3 @@ no Julia. On October 23, 2026 the pricer was checked against the course package'
 `binomial_premium(...; method = :crr)`: the entry premiums (put 1.0016, call
 1.4359, credit 2.4375 USD/share) and the profit at $S=92$ with 20 days left
 (−0.0833 USD/share) match to four decimals.
-
-## Older files
-
-`Fig-Options-Summary-Schematic` and
-`CHEME-5660-L11a-VerticalSpread-ProfitDiagram-Fall-2025.svg` come from the
-Fall 2025 material.

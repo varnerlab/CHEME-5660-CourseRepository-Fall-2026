@@ -1,0 +1,525 @@
+% L10b student companion deck: composite contracts, their net present value and
+% profit at expiration, the common credit structures (short puts and calls, credit
+% spreads, short straddles and strangles, protected strangles and iron condors),
+% and Delta as a hedging tool for composite positions.
+%
+% The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
+% instructor preference. Notation follows the lecture: composite contract
+% \mathcal{C} with legs i, orientation \theta_i, copy number n_i, strike K_i, leg
+% payoff V_i(K_i,S(T)), composite payoff \hat{V}_{\mathcal{C}}(S(T)), net premium
+% \mathcal{P}_{\mathcal{C}}, profit at expiration \hat{P}_{\mathcal{C}}(S(T)),
+% discount factor \mathcal{D}^{-1}_{T,0}(g_y), accumulation factor
+% \mathcal{D}_{T,0}(g_y) (written \mathcal{D} in the structure sections),
+% breakevens S^{\ddagger}, S^{\ddagger}_{\pm}, portfolio value \Pi(S,t), shares
+% N_S, contract multiplier m, and Deltas \Delta_i, \Delta_{\mathcal{C}},
+% \Delta_{\text{opts}}, \Delta_{\text{net}}.
+% October 26, 2026: first build, from the lecture after the October 26 scoring-round
+% fixes. Figures are the light PDFs in ../figs (see ../figs/README.md).
+% Same day, after the midterm feedback: a "What You Need to Know" frame (core results
+% vs for understanding, mirroring the lecture's new box) follows the objectives, and
+% every frame is tightened toward 60-80 words: closing sentences kept only when they
+% state a result.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b}
+
+\title{\texorpdfstring{{\vnheavy L10b}}{L10b}: The NPV of Composite Contracts and A New Role for Delta}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today, we combine calls and puts into composite contracts. What is a composite
+  contract worth, and when does it make money?
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{The NPV and the probability of profit of a composite contract}:
+      sums over its legs.
+    \item \hilite{Common composite contracts at expiration}: outlook, breakevens,
+      maximum profit and loss, and the cost of closing early.
+    \item \hilite{Delta-neutral positions}: the net Delta of options and shares,
+      and the shares that make it zero.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What You Need to Know}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Core results}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Profit at expiration: the legs' payoffs, weighted by $\theta_{i}n_{i}$,
+      minus the net premium grown to expiration. POP: the probability it is
+      positive.
+    \item Read a profit diagram: the breakevens, the maximum profit (the credit
+      grown to expiration), and the maximum loss (from the put or call side).
+    \item Net Delta: $N_{S}+\Delta_{\text{opts}}$, with
+      $\Delta_{\text{opts}}=m\sum_{i}\theta_{i}n_{i}\Delta_{i}$. Holding
+      $N_{S}=-\Delta_{\text{opts}}$ shares makes it delta-neutral.
+  \end{itemize}
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item The NPV derivation, and the formula tables for the eight composite
+      contracts (reference).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par\small
+  \href{\repo/CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Example 1:}}\par\small
+  \href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 2:}}\par\small
+  \href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== Composite Contracts
+\begin{frame}{Composite Contracts}
+  A composite contract $\Cc$ combines long and short puts and calls on one
+  underlying asset with one expiration date $T$. Its payoff per share at
+  expiration is:
+  \begin{equation*}
+    \hat{V}_{\Cc}(S(T)) = \sum_{i\in\Cc}\theta_{i}\;n_{i}\;\underbrace{V_{i}(K_{i},S(T))}_{\textstyle\text{payoff of leg } i}
+  \end{equation*}
+  Here $S(T)$ is the share price at expiration, $K_{i}$ the strike price of leg
+  $i$, $V_{i}$ its payoff, $(S(T)-K_{i})^{+}$ for a call or $(K_{i}-S(T))^{+}$ for
+  a put, $n_{i}$ its number of contracts, and $\theta_{i}=-1$ if short or $1$ if
+  long.
+\end{frame}
+
+\begin{frame}{The Net Present Value of a Composite Contract}
+  For one contract, $\operatorname{NPV}_{0}=-\Pc+\Dc^{-1}_{T,0}(g_{y})\cdot V(K,S(T))$,
+  with $\Dc^{-1}_{T,0}(g_{y})=e^{-g_{y}T}$ at the benchmark growth rate $g_{y}$. Summing over the legs:
+  \begin{align*}
+    \operatorname{NPV}_{0}(\Cc) &= \sum_{i\in\Cc}\theta_{i}\,n_{i}\Bigl(-\Pc_{i}+\Dc^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))\Bigr) && \text{weighted leg NPVs}\\
+    &= -\underbrace{\sum_{i\in\Cc}\theta_{i}\,n_{i}\,\Pc_{i}}_{\textstyle=\,\Pc_{\Cc}}+\Dc^{-1}_{T,0}(g_{y})\cdot\underbrace{\sum_{i\in\Cc}\theta_{i}\,n_{i}\,V_{i}(K_{i},S(T))}_{\textstyle=\,\hat{V}_{\Cc}(S(T))} && \text{split the sum}\\
+    &= -\Pc_{\Cc}+\Dc^{-1}_{T,0}(g_{y})\cdot\hat{V}_{\Cc}(S(T))
+  \end{align*}
+  where $\Pc_{i}$ is the premium of leg $i$ (USD/share) and $\Pc_{\Cc}$ is the
+  \hilite{net premium} of the composite contract.
+\end{frame}
+
+\begin{frame}{Profit at Expiration}
+  Factoring out $\Dc^{-1}_{T,0}(g_{y})$ writes the NPV as a profit at expiration
+  discounted to today:
+  \begin{align*}
+    \operatorname{NPV}_{0}(\Cc) &= \Dc^{-1}_{T,0}(g_{y})\cdot\underbrace{\Bigl(\hat{V}_{\Cc}(S(T))-\Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}\Bigr)}_{\textstyle=\,\hat{P}_{\Cc}(S(T))} && \text{factor out }\Dc^{-1}_{T,0}(g_{y})\\
+    &= \Dc^{-1}_{T,0}(g_{y})\cdot\hat{P}_{\Cc}(S(T))
+  \end{align*}
+  where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and:
+  \begin{equation*}
+    \boxed{\hat{P}_{\Cc}(S(T)) = \hat{V}_{\Cc}(S(T)) - \Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}}
+  \end{equation*}
+  is the \hilite{profit at expiration} (USD/share). $\Pc_{\Cc}>0$ opens for a
+  \hilite{debit}; $\Pc_{\Cc}<0$ opens for a \hilite{credit} of $-\Pc_{\Cc}$.
+\end{frame}
+
+\begin{frame}{Probability of Profit and Probability of Exercise}
+  The NPV and the profit at expiration have the same sign, so with $\mathbb{P}$
+  our belief, the \hilite{probability of profit} is:
+  \begin{equation*}
+    \boxed{\text{POP}_{\Cc} = \mathbb{P}\Bigl(\operatorname{NPV}_{0}(\Cc)>0\Bigr) = \mathbb{P}\Bigl(\hat{P}_{\Cc}(S(T))>0\Bigr)}
+  \end{equation*}
+  Each leg has its own \hilite{probability of exercise}:
+  \begin{equation*}
+    \text{POE}_{i} = \begin{cases}
+      \mathbb{P}\left(S(T)>K_{i}+0.01\right) & \text{if leg } i \text{ is a call}\\
+      \mathbb{P}\left(S(T)<K_{i}-0.01\right) & \text{if leg } i \text{ is a put}
+    \end{cases}
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Why Expiration?}
+  Closing a short leg early means buying it back: intrinsic plus extrinsic value
+  $E_{V}(t)$. A short strangle (put $K_{1}=90$, call $K_{2}=110$, $S(0)=100$
+  USD/share, 30 days, CRR tree, $\sigma=0.40$, $g_{y}=4\%$):
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{../figs/Fig-L10b-Strangle-Time-Decay.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Why Expiration? What Do We See?}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Before expiration (left)}: closing earns the credit grown to
+      that day minus the cost to buy the legs back. Every earlier curve lies
+      below the profit at expiration.
+    \item \hilite{At the entry share price (right)}: closing at once costs
+      exactly the credit, all of it extrinsic value.
+    \item \hilite{Time decay}: as the extrinsic value decays, the profit if we
+      close rises, up to the whole credit at expiration.
+  \end{itemize}
+  \vspace{0.4em}
+  An early exit falls short of the profit at expiration by roughly the extrinsic
+  value left in the legs.
+\end{frame}
+
+% ========== Common Composite Contracts
+\begin{frame}{Common Composite Contracts}
+  Each contract below opens for a credit and has a \hilite{put side} and a
+  \hilite{call side}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Sides}: empty, a \hilite{naked} short contract, or a
+      \hilite{credit spread} (a short contract protected by a long one farther
+      out).
+    \item \hilite{Outlook}: losing only if the share price falls is neutral to
+      bullish, only if it rises neutral to bearish, either way neutral.
+    \item \hilite{Maximum loss}: empty, none; credit spread, strike width minus
+      the credit; naked put, strike minus the credit; naked call, unlimited.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Common Composite Contracts: Sides and Outlook}
+  The eight structures, by side:
+  \begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{llll}
+      \toprule
+      Composite contract & Put side & Call side & Outlook \\
+      \midrule
+      Short put & naked short put & none & neutral to bullish \\
+      Short call & none & naked short call & neutral to bearish \\
+      Put credit spread & put credit spread & none & neutral to bullish \\
+      Call credit spread & none & call credit spread & neutral to bearish \\
+      Short straddle & naked short put & naked short call at the same strike & neutral \\
+      Short strangle & naked short put & naked short call at a higher strike & neutral \\
+      Protected strangle & naked short put & call credit spread & neutral, leaning bullish \\
+      Iron condor & put credit spread & call credit spread & neutral \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Strikes are numbered low to high, $\Pc_{i}$ is the premium of the leg at
+  $K_{i}$, and $\Dc=\Dc_{T,0}(g_{y})$. Figures: payoff (blue), profit (black).
+\end{frame}
+
+\begin{frame}{Short Puts and Short Calls}
+  Selling one put, a
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered}{\hilite{short put}},
+  or one call, a
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered}{\hilite{short call}},
+  is the building block of every structure below:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{../figs/Fig-L10b-Short-Put-Call.pdf}
+  \end{center}
+  Each keeps the whole premium if it expires out of the money.
+\end{frame}
+
+\begin{frame}{Short Puts and Short Calls: Profit at Expiration}
+  With premiums $\Pc_{p}$ (put) and $\Pc_{c}$ (call) at strike $K$, the profits
+  at expiration, and the breakevens $S^{\ddagger}$, are:
+  \begin{align*}
+    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot\Pc_{p}-(K-S(T))^{+} && \text{short put}\\
+    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot\Pc_{c}-(S(T)-K)^{+} && \text{short call}
+  \end{align*}
+  \begin{center}\small
+    \begin{tabular}{lll}
+      \toprule
+      & Short put & Short call \\
+      \midrule
+      Maximum profit & $\Dc\cdot\Pc_{p}$ for $S(T)\geq K$ & $\Dc\cdot\Pc_{c}$ for $S(T)\leq K$ \\
+      Breakeven, put side & $S^{\ddagger}=K-\Dc\cdot\Pc_{p}$ & none \\
+      Maximum loss, put side & $K-\Dc\cdot\Pc_{p}$ at $S(T)=0$ & none \\
+      Breakeven, call side & none & $S^{\ddagger}=K+\Dc\cdot\Pc_{c}$ \\
+      Maximum loss, call side & none & unlimited \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  The short put's loss is bounded ($S(T)\geq0$); the short call's is not.
+\end{frame}
+
+\begin{frame}{Credit Spreads}
+  A \hilite{credit spread} sells the contract closer to the share price and buys
+  one farther away, same type and expiration (a
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bull-put-spread}{\hilite{bull put}}
+  or
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bear-call-spread}{\hilite{bear call}}
+  spread):
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{../figs/Fig-L10b-Credit-Spreads.pdf}
+  \end{center}
+  The short leg collects the credit; the long leg caps the loss.
+\end{frame}
+
+\begin{frame}{Put Credit Spread}
+  A long put at $K_{1}$ and a short put at $K_{2}$: the credit grown to
+  expiration, minus and plus the leg payoffs:
+  \begin{equation*}
+    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{2}-\Pc_{1})-(K_{2}-S(T))^{+}+(K_{1}-S(T))^{+}
+  \end{equation*}
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\geq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}=K_{2}-\Dc\cdot(\Pc_{2}-\Pc_{1})$ \\
+      Maximum loss, put side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\leq K_{1}$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Call Credit Spread}
+  A short call at $K_{1}$ and a long call at $K_{2}$ give the profit at
+  expiration:
+  \begin{equation*}
+    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{1}-\Pc_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+}
+  \end{equation*}
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\leq K_{1}$ \\
+      Breakeven, call side & $S^{\ddagger}=K_{1}+\Dc\cdot(\Pc_{1}-\Pc_{2})$ \\
+      Maximum loss, call side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\geq K_{2}$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Beyond the long strike, the long leg gains what the short leg loses, so the
+  loss stops at the strike width minus the credit.
+\end{frame}
+
+\begin{frame}{Short Straddles and Strangles}
+  A \href{https://www.investopedia.com/terms/s/straddle.asp}{\hilite{straddle}}:
+  a put and a call at one strike $K$. A
+  \href{https://www.investopedia.com/terms/s/strangle.asp}{\hilite{strangle}}: a
+  put at $K_{1}$ below a call at $K_{2}$. Same expiration:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{../figs/Fig-L10b-Straddle-Strangle.pdf}
+  \end{center}
+  Sold, each profits only between its breakevens:
+  $\text{POP}=\mathbb{P}(S^{\ddagger}_{-}<S(T)<S^{\ddagger}_{+})$.
+\end{frame}
+
+\begin{frame}{Short Straddle}
+  Selling a put and a call at the strike $K$ gives the profit at expiration:
+  \begin{equation*}
+    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{p}+\Pc_{c})-(K-S(T))^{+}-(S(T)-K)^{+}
+  \end{equation*}
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=K$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K-\Dc\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum loss, put side & $K-\Dc\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K+\Dc\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum loss, call side & unlimited \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  The straddle collects more credit, but the strangle keeps its credit over a
+  wider range of share prices.
+\end{frame}
+
+\begin{frame}{Short Strangle}
+  Selling a put at $K_{1}$ and a call at $K_{2}$ gives the profit at expiration:
+  \begin{equation*}
+    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{1}+\Pc_{2})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}
+  \end{equation*}
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{1}+\Pc_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum loss, put side & $K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum loss, call side & unlimited \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Buying both legs ($\theta_{i}=1$) flips either diagram: the loss is capped at
+  the premium paid, and a large move either way pays.
+  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Protected Strangles and Iron Condors}
+  A \hilite{protected strangle}
+  (\href{https://www.tastylive.com/concepts-strategies/jade-lizard}{\hilite{jade lizard}})
+  adds a long call at $K_{3}$ to a short strangle; an
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-iron-condor-spread}{\hilite{iron condor}}
+  also adds a long put:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{../figs/Fig-L10b-Protected-Condor.pdf}
+  \end{center}
+  Each long leg caps the loss on its side but lowers the credit.
+\end{frame}
+
+\begin{frame}{Protected Strangle}
+  A short put at $K_{1}$, a short call at $K_{2}$, and a long call at $K_{3}$
+  give the profit at expiration:
+  \begin{align*}
+    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3}) && \text{protected strangle}\\
+    &\qquad-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}+(S(T)-K_{3})^{+}
+  \end{align*}
+  \begin{center}\footnotesize
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ \\
+      Maximum loss, put side & $K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$${}^{a}$ \\
+      Maximum loss, call side & $(K_{3}-K_{2})-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $S(T)\geq K_{3}$${}^{b}$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  {\footnotesize ${}^{a}$If $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})\leq K_{3}-K_{2}$; otherwise none. ${}^{b}$If $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})<K_{3}-K_{2}$; otherwise none.\par}
+  \vspace{0.3em}
+  A credit, grown to expiration, of at least $K_{3}-K_{2}$ removes the
+  call-side loss.
+\end{frame}
+
+\begin{frame}{Iron Condor}
+  A long put at $K_{1}$, a short put at $K_{2}$, a short call at $K_{3}$, and a
+  long call at $K_{4}$ give the profit at expiration:
+  \begin{align*}
+    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})\\
+    &\qquad+(K_{1}-S(T))^{+}-(K_{2}-S(T))^{+}-(S(T)-K_{3})^{+}+(S(T)-K_{4})^{+}
+  \end{align*}
+  \begin{center}\footnotesize
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{2}-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss, put side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\leq K_{1}$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{3}+\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss, call side & $(K_{4}-K_{3})-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\geq K_{4}$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  The share price finishes beyond at most one side, so the maximum loss is the
+  wider strike width minus the credit.
+\end{frame}
+
+\begin{frame}{Delta as a Hedging Tool for Composite Contracts}
+  Delta is also the number of shares that hedges one contract. A composite
+  position's Delta is the sum of its legs' Deltas, so the same idea hedges the
+  whole position.
+
+  \vspace{0.6em}
+  \textbf{\ink{What is hedging?}} Offsetting potential losses with an opposite
+  position in a related \hilite{counter asset}, often the underlying shares.
+
+  \vspace{0.6em}
+  A position with zero Delta is insensitive to small changes in the share price.
+\end{frame}
+
+\begin{frame}{What Is the Delta of a Composite Contract?}
+  We hold $\theta_{i}n_{i}$ American contracts of leg $i$, each for $m$ shares,
+  and $N_{S}$ shares. With $\Pc_{i}(S,t)$ the premium of leg $i$ at share price
+  $S$ and time $t$, the portfolio is worth
+  $\Pi(S,t)=N_{S}S+m\sum_{i\in\Cc}\theta_{i}n_{i}\Pc_{i}(S,t)$, and the
+  \hilite{net Delta} is its sensitivity to the share price:
+  \begin{align*}
+    \Delta_{\text{net}}(S,t)&=\frac{\partial \Pi}{\partial S}
+    = \underbrace{\frac{\partial (N_{S} S)}{\partial S}}_{\textstyle=N_{S}} + m\sum_{i\in\Cc} \theta_{i} n_{i} \underbrace{\frac{\partial \Pc_{i}}{\partial S}}_{\textstyle=\Delta_{i}(S,t)}\\
+    &= N_{S} + \underbrace{m\sum_{i\in\Cc} \theta_{i} n_{i} \Delta_{i}(S,t)}_{\textstyle= \Delta_{\text{opts}}(S,t)}
+  \end{align*}
+  The options contribute $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$, where
+  $\Delta_{\Cc}(S,t)=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}(S,t)$ is the \hilite{Delta of
+  the composite contract} per share.
+\end{frame}
+
+\begin{frame}{Delta-Neutral Position}
+  A position is \hilite{delta-neutral} if $\Delta_{\text{net}}(S,t)=0$. We get
+  there by choosing $N_{S}$ to offset the Delta of the options:
+  \begin{equation*}
+    \Delta_{\text{net}}(S,t)= N_{S} + \Delta_{\text{opts}}(S,t) = 0
+    \quad\Rightarrow\quad
+    N_{S} = - \Delta_{\text{opts}}(S,t)
+  \end{equation*}
+  \textbf{\ink{Quick gut-check example:}} short $10$ calls at $\Delta=0.6$ with
+  $m=100$ shares/contract, so $\Delta_{\text{opts}}=10\times(-1)\times0.6\times100=-600$.
+  Holding $N_{S}=+600$ shares gives $\Delta_{\text{net}}=600-600=0$.
+
+  \vspace{0.5em}
+  If leg $i$ is exercised or assigned at time $\tau\leq T$, set $\Delta_{i}=0$
+  for $t\geq\tau$ and update the shares:
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Call leg $i$}: $N_{S}\gets N_{S}+\theta_{i}\cdot m\cdot n_{i}$.
+    \item \hilite{Put leg $i$}: $N_{S}\gets N_{S}-\theta_{i}\cdot m\cdot n_{i}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Delta of the Common Composite Contracts}
+  Short legs at Deltas $\mp0.25$, long legs at $\mp0.10$ beyond them, and a
+  straddle at $\mp0.5$. At entry, one copy of each leg ($m=100$):
+  \begin{center}\small
+    \begin{tabular}{lll}
+      \toprule
+      Composite contract & Delta per share, $\Delta_{\Cc}$ & Shares to hedge, $N_{S}$ \\
+      \midrule
+      Short put & $-(-0.25)=0.25$ & $-25$ \\
+      Short call & $-0.25$ & $+25$ \\
+      Put credit spread & $-0.10-(-0.25)=0.15$ & $-15$ \\
+      Call credit spread & $-0.25+0.10=-0.15$ & $+15$ \\
+      Short straddle & $-(-0.5)-0.5\approx0$ & $\approx0$ \\
+      Short strangle & $-(-0.25)-0.25=0$ & $0$ \\
+      Protected strangle & $-(-0.25)-0.25+0.10=0.10$ & $-10$ \\
+      Iron condor & $-0.10-(-0.25)-0.25+0.10=0$ & $0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  At these strikes, the sign of $\Delta_{\Cc}$ matches the outlook.
+\end{frame}
+
+\begin{frame}{Reading the Delta Table}
+  $\Delta_{\Cc}$ is the position's gain per share when the share price rises 1
+  USD/share:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{The rule of thumb}: a Delta of $\pm0.25$ is roughly a
+      one-in-four chance of finishing in the money under $\Q$.
+    \item \hilite{The protected strangle}: its long call leaves $+0.10$, so it
+      leans bullish.
+    \item \hilite{Zero is not zero risk}: Gamma pulls the Delta away from zero as
+      the share price moves.
+  \end{itemize}
+  \vspace{0.4em}
+  Staying delta-neutral means updating $N_{S}$ as the Deltas change.
+  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Summary}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{The NPV of a composite contract is the sum of its legs' NPVs}:
+      it is the profit at expiration discounted to today, so the POP is the
+      probability that the NPV is positive.
+    \item \hilite{Common composite contracts have a put side and a call side}:
+      each side is empty, naked, or a credit spread, and sets the outlook and the
+      maximum loss. Closing early pays the extrinsic value left in the legs.
+    \item \hilite{Delta builds hedged positions}: the net Delta is the shares
+      plus the weighted leg Deltas, and holding $N_{S}=-\Delta_{\text{opts}}$
+      shares makes it zero.
+  \end{itemize}
+\end{frame}
+
+\end{document}

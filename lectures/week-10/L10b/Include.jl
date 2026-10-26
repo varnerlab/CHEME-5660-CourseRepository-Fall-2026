@@ -27,3 +27,8 @@ using FileIO
 using JLD2
 using HypothesisTests
 using StatsPlots
+using Random # reproducible simulations
+using Dates # dates of the options chains
+
+# load the functions written for these examples -
+include(joinpath(_PATH_TO_SRC, "Helper.jl"));
