@@ -79,9 +79,10 @@
       positive.
     \item Read a profit diagram: the breakevens, the maximum profit (the credit
       grown to expiration), and the maximum loss (from the put or call side).
-    \item Net Delta: $N_{S}+\Delta_{\text{opts}}$, with
-      $\Delta_{\text{opts}}=m\sum_{i}\theta_{i}n_{i}\Delta_{i}$. Holding
-      $N_{S}=-\Delta_{\text{opts}}$ shares makes it delta-neutral.
+    \item Composite Delta: $\Delta_{\Cc}=\sum_{i}\theta_{i}n_{i}\Delta_{i}$ (per
+      share). Net Delta: $N_{S}+\Delta_{\text{opts}}$, with
+      $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$. Holding $N_{S}=-\Delta_{\text{opts}}$
+      shares makes it delta-neutral.
   \end{itemize}
 
   \vspace{0.5em}
