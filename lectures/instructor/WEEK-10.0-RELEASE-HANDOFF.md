@@ -96,3 +96,29 @@ Six fresh reviewers scored every artifact against
 - Both L10b examples save the "Activating project" setup output.
 - The L10b lecture lacks a `___` before `## Common Composite Contracts`, and both
   L10b examples lack the closing `___` after the Disclaimer.
+
+## Re-release after the midterm feedback — October 26, 2026
+
+The midterm reviews asked what students must know and called the materials dense.
+The instructor approved, for L10a and all later lectures:
+- a "What you need to know" box under the learning objectives, with a matching deck frame;
+- decks at 60–80 words per slide;
+- closing sentences only when they state a result.
+
+- **Lecture.**
+  - The box sits under the learning objectives. **Core:**
+    - premium = intrinsic + extrinsic value
+    - reading the Greeks per day and per point
+    - Delta close to a short-dated call's in-the-money probability under ℚ
+    - POE and POP from simulated prices
+
+    **For understanding**, which students won't have to reproduce: the Longstaff–Schwartz regression, the Taylor expansion, and the Delta–POE proposition.
+  - The Greeks paragraph ends "…using the implied volatility under ℚ."
+- **Deck.**
+  - 28 pages (27 before), 0 overfull boxes.
+  - The new frame 4 is "What You Need to Know".
+  - Prose fell from 75 to 52 words per slide on average. This counts words of two or more letters, so math does not count. Counting every pdftotext token, it fell from 116 to 91.
+- **Codex audit.**
+  - The before/after comparison is in `build/notebook-previews/L10a-tighten-2026-10-26/`.
+  - All 11 findings were verified and applied. Among them: the restored definitions of Y_i(t), P^EU, and calendar time t; "by at least the interest on K"; "the probabilities inside the market price, not our forecast"; the call qualifier on Δ = 0.7; and the short-dated, no-dividend qualifier.
+- The examples are unchanged.

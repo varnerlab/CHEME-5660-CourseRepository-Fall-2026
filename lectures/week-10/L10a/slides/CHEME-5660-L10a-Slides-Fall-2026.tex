@@ -71,6 +71,10 @@
 % and says why the larger up probability makes Delta larger. The gap and the P/American-put
 % bullets move to a new "When Is Delta Close to the POE?" frame so slide 20 fits.
 % Same day: objectives and Summary mirror the trimmed LOs and Key Takeaways.
+% October 26, 2026: after the midterm feedback, a "What You Need to Know" frame
+% (core results vs for understanding, mirroring the lecture's new box) follows the
+% objectives, and every frame is tightened toward 60-80 words: closing sentences
+% kept only when they state a result.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -108,23 +112,39 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Previously, we priced American options on a CRR tree. Can simulation price
-  them? How much does the premium change when the share price,
-  volatility, time to expiration, or interest rate changes?
+  Previously, we priced American options on a CRR tree. Today, we:
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
+  \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Estimate and decompose the premium of American options}:
-      Longstaff--Schwartz Monte Carlo, then intrinsic value (what exercising now
-      would pay) and extrinsic value (the rest).
-    \item \hilite{Compute the Greeks for American options}: Delta, Gamma, Theta,
-      Vega, and Rho by finite differences on a binomial tree, as coefficients of
-      a local Taylor expansion of the premium.
+      Longstaff--Schwartz Monte Carlo, then intrinsic and extrinsic value.
+    \item \hilite{Compute the Greeks for American options}: finite differences
+      on a binomial tree.
     \item \hilite{Interpret Delta and compute the probabilities of exercise and
-      profit}: Delta as the number of shares an option is equivalent to,
-      compared with the probability of exercise, and both probabilities from
+      profit}: Delta as a share equivalent, compared with the POE, and both
+      probabilities from simulated share prices.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What You Need to Know}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Core results}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Premium $=$ intrinsic value $+$ extrinsic value.
+    \item What each Greek measures. Per day: Theta$/365$. Per percentage
+      point: Vega$/100$ and Rho$/100$.
+    \item For a short-dated call (no dividends), Delta is close to the
+      probability it finishes in the money under the risk-neutral $\Q$.
+    \item The probabilities of exercise (POE) and profit (POP) come from
       simulated share prices at expiration.
+  \end{itemize}
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{For understanding}}} \dimmed{(you won't reproduce these)}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item The Longstaff--Schwartz regression, the Taylor expansion, and the
+      Delta--POE proposition.
   \end{itemize}
 \end{frame}
 
@@ -151,66 +171,62 @@
 \end{frame}
 
 \begin{frame}{Company Profile: Susquehanna}
-  \href{https://sig.com/about/}{\hilite{Susquehanna (SIG)}} is a privately held
-  trading firm whose core business is derivatives trading. Friends who traded
-  options on the floor of the Philadelphia Stock Exchange started it in 1987.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Options market making}: it posts prices to buy and sell, so it
-      takes the other side of its customers' contracts. In October 2026, it was
-      the Designated Primary Market Maker for 1,359 of 5,370 Cboe option
-      classes, the most of any firm.
-    \item \hilite{Managing the Greeks}: its book is exposed to Delta, Vega,
-      Theta, and Rho at once, and the goal is to net these across products.
-    \item \hilite{Training}: interns learn options theory, and poker teaches
-      new traders to decide under uncertainty.
+  \href{https://sig.com/about/}{\hilite{Susquehanna (SIG)}}: a privately held
+  derivatives trading firm, started in 1987 by options floor traders in
+  Philadelphia.
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Options market making}: it takes the other side of its
+      customers' contracts. In October 2026, it was the Designated Primary Market Maker
+      for 1,359 of 5,370 Cboe option classes, the most of any firm.
+    \item \hilite{Managing the Greeks}: it nets Delta, Vega, Theta, and Rho
+      across its book.
+    \item \hilite{Training}: options theory and poker for deciding under
+      uncertainty.
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Connection to today's lecture:}} when a customer buys a call, the
-  firm hedges with $100\,\Delta_{c}$ shares and rebalances as Gamma moves $\Delta_{c}$.
+  \textbf{\ink{Connection:}} when a customer buys a call, SIG hedges with
+  $100\,\Delta_{c}$ shares and rebalances as Gamma moves $\Delta_{c}$.
 \end{frame}
 
 \begin{frame}{Monte Carlo Pricing of American Options}
-  We simulate share price paths under the risk-neutral pricing rule $\Q$, then estimate the value of holding
-  at each date by regressing the discounted cash flows from holding on the
-  current share price across paths. Like the lattice, Longstaff and Schwartz
-  work backward from expiration:
+  We simulate share price paths under $\Q$ and, like the lattice, work backward
+  from expiration. At each date, a regression on the share price estimates the
+  value of holding.
 
   \vspace{0.6em}
-  \hilite{Initialize}: given the share price $S_{0}$, the strike price $K$, the
-  payoff function $V(K,S)$ of the call or put, the time to expiration $T$ (years),
-  the volatility $\sigma$, the risk-free rate $g_{y}$, the number of exercise dates $h$ after
-  today, and the number of paths $M$. Compute the time between exercise dates
-  $\Delta t=T/h$ and the one-step discount factor $\Dstep=e^{-g_{y}\Delta t}$.
+  \hilite{Initialize}: given the share price $S_{0}$, strike price $K$, payoff
+  $V(K,S)$ of the call or put, time to expiration $T$ (years), volatility
+  $\sigma$, risk-free rate $g_{y}$, number of exercise dates $h$ after today,
+  and number of paths $M$. Compute $\Delta t=T/h$ and the one-step discount
+  factor $\Dstep=e^{-g_{y}\Delta t}$.
   \slidenote{Reference:}{Longstaff, F. A., and Schwartz, E. S. (2001). Valuing American options by simulation: a simple least-squares approach. \href{https://doi.org/10.1093/rfs/14.1.113}{Review of Financial Studies 14(1): 113–147}.}
 \end{frame}
 
 \begin{frame}{Pseudocode: Longstaff–Schwartz}
   \begin{enumerate}\setlength{\itemsep}{0.3em}
-    \item \hilite{Simulate}: generate $M$ share price paths under $\Q$ from $S_{0}$
-      on the dates $t=0,1,\dots,h$ (expiration), where $S_{i}(t)$ is the share
-      price on path $i$ at date $t$.
-    \item At expiration, set each path's cash flow to its payoff:
+    \item \hilite{Simulate} $M$ paths under $\Q$ from $S_{0}$ on the dates
+      $t=0,1,\dots,h$; $S_{i}(t)$ is the share price on path $i$ at date $t$.
+    \item At expiration, each path's cash flow is its payoff:
       $Y_{i}(h)\gets V(K,S_{i}(h))$ for $i=1,2,\dots,M$, where $Y_{i}(t)$ is
       path $i$'s cash flow valued at date $t$.
     \item For each date $t=h-1,h-2,\dots,1$ \textbf{do}:
       \begin{itemize}
-        \item[a.] Discount each cash flow back one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
-        \item[b.] \hilite{Regress}: on the in-the-money paths, those with $V(K,S_{i}(t))>0$, fit the value of holding
+        \item[a.] Discount one date: $Y_{i}(t)\gets\Dstep\cdot Y_{i}(t+1)$.
+        \item[b.] \hilite{Regress}: on the in-the-money paths ($V(K,S_{i}(t))>0$), fit
           $\hat{H}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}$ to the pairs
           $\bigl(S_{i}(t),Y_{i}(t)\bigr)$ by least squares.
-        \item[c.] \hilite{Decide}: for each in-the-money path, if
-          $V(K,S_{i}(t))>\hat{H}_{t}(S_{i}(t))$, \textbf{then}: exercise, so
+        \item[c.] \hilite{Decide}: on each in-the-money path, if
+          $V(K,S_{i}(t))>\hat{H}_{t}(S_{i}(t))$, \textbf{then} exercise:
           $Y_{i}(t)\gets V(K,S_{i}(t))$.
       \end{itemize}
-    \item Discount the cash flows to today and average them:
+    \item Discount to today and average:
       $\bar{Y}\gets\mathcal{D}^{-1}_{1,0}(g_{y})\cdot\frac{1}{M}\sum_{i=1}^{M}Y_{i}(1)$.
     \item The premium is $\PAM\gets\max\bigl\{V(K,S_{0}),~\bar{Y}\bigr\}$.
   \end{enumerate}
 \end{frame}
 
 \begin{frame}{The Early-Exercise Premium by Simulation}
-  Let's price an American put by simulation and compare it with the lattice and
-  the European premium. We apply two rules to the same simulated paths:
+  We price an American put by applying two rules to the same simulated paths:
 
   \vspace{0.8em}
   \begin{center}
@@ -219,7 +235,7 @@
       Rule at each date & Estimates \\
       \midrule
       Longstaff--Schwartz: exercise when $V(K,S_{i}(t))>\hat{H}_{t}(S_{i}(t))$ & $\PAM$ \\[0.2em]
-      Hold on every path & $\PEU$ \\
+      Hold on every path (European) & $\PEU$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -230,28 +246,24 @@
 \end{frame}
 
 \begin{frame}{Extrinsic versus Intrinsic Value}
-  The premium of an American call (left) and put (right) with $S(0)$ = 100
-  USD/share, priced on the CRR tree for several days to expiration (DTE),
-  against the moneyness $K/S(0)$. Point \hilite{a} is at the money, \hilite{b} is
-  in the money, and \hilite{c} is out of the money.
+  Premium of an American call (left) and put (right), $S(0)$ = 100 USD/share,
+  for several days to expiration (DTE), against the moneyness $K/S(0)$. Point
+  \hilite{a} is at the money, \hilite{b} in the money, \hilite{c} out of the
+  money.
   \begin{center}
     \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
   \end{center}
 \end{frame}
 
 \begin{frame}{Intrinsic and Extrinsic Value}
-  The premium (price) of an American option can be broken down into two
-  components: intrinsic value and extrinsic value.
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Intrinsic value}: the immediate exercise value (the red
-      dashed line), what we would collect by exercising today, $\max(0, S(t) - K)$
-      for a call and $\max(0, K - S(t))$ for a put, where $S(t)$ is the current
-      share price and $K$ is the strike price.
-    \item \hilite{Extrinsic value}: also known as time value, the rest of the
-      premium (the gap above the red dashed line), from the potential for
-      future price movements before expiration.
+  The premium of an American option has two parts:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Intrinsic value}: what exercising today pays (red dashed
+      line), $\max(0, S(t) - K)$ for a call and $\max(0, K - S(t))$ for a put,
+      with share price $S(t)$ and strike price $K$.
+    \item \hilite{Extrinsic value} (time value): the rest of the premium, the
+      gap above the red dashed line.
   \end{itemize}
-  The extrinsic value $E_{V}(t)$ can be expressed mathematically as:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -261,8 +273,8 @@
 \end{frame}
 
 \begin{frame}{Extrinsic Value}
-  In expanded form, with call and put premiums $\mathcal{P}_{c}$ and
-  $\mathcal{P}_{p}$, the extrinsic value is:
+  With call and put premiums $\mathcal{P}_{c}$ and $\mathcal{P}_{p}$, the
+  extrinsic value is:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -272,71 +284,60 @@
       \end{cases}
     \end{aligned}}
   \end{equation*}
-  \hilite{Out of the money} (point c) or at the money (point a), there is no
-  intrinsic value, so the entire option price is extrinsic value, largest at a.
-
-  \vspace{0.3em}
-  As time moves towards expiration, the extrinsic value tends to decrease
-  (\hilite{time decay}), because there is less time for the share price to
-  move favorably. The points drop toward the red dashed line as the DTE
-  shrinks.
-
-  \vspace{0.3em}
-  \textbf{\ink{Why do people pay money for something that is ``worthless''?}}
-  There is still a chance that the share price moves favorably before
-  expiration.
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{At or out of the money} (points a, c): no intrinsic value, so
+      the whole premium is extrinsic, largest at a.
+    \item \hilite{Time decay}: extrinsic value shrinks as expiration nears.
+    \item \hilite{Why pay for ``worthless''?} The share price can still move
+      favorably before expiration.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Would You Ever Exercise Early?}
   \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{A call}: not without dividends. Exercising buys the shares at
-      $K$~USD/share. Holding is better: we pay $K$ later and earn interest on
-      it, and we don't buy if the share price falls below $K$.
-    \item \hilite{A put}: yes, far in the money. Exercising sells the shares at
-      $K$~USD/share, and collecting that cash now beats waiting.
+    \item \hilite{A call}: not without dividends. Holding is better: we pay $K$
+      later, earn interest on it, and don't buy if the price falls below $K$.
+    \item \hilite{A put}: yes, far in the money. Collecting $K$ now beats
+      waiting.
   \end{itemize}
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.37\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
+    \includegraphics[width=\textwidth,height=0.40\textheight,keepaspectratio]{../figs/Fig-L10a-Premium-vs-Moneyness.pdf}
   \end{center}
-  So the call curves stay above the red dashed line (by at least the interest
-  on $K$) and the put curves meet it. An American call has the same premium as
-  a European call.
+  The call curves stay above the red dashed line by at least the interest on
+  $K$, so an American call has the same premium as a European call.
 \end{frame}
 
 \begin{frame}{What If the Share Pays a Dividend?}
-  A dividend changes the answer for a call. The dividend goes to those who own
-  the shares before the
+  The dividend goes to those who own the shares before the
   \href{https://www.optionseducation.org/referencelibrary/faq/options-exercise}{\hilite{ex-dividend date}},
   not to call holders.
 
   \medskip
-  So if the dividend is larger than the extrinsic value we give up by exercising
-  early, which is small far in the money, we exercise the trading day before the
-  ex-dividend date and collect the dividend.
+  If the dividend is larger than the extrinsic value we give up, which is small
+  far in the money, we exercise the trading day before the ex-dividend date.
   \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{The Greeks}
-  The \hilite{Greeks} are local sensitivity coefficients that measure how
-  American options premiums change with market conditions:
+  The \hilite{Greeks} measure how the premium changes with market conditions:
   \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Delta $\Delta$}: the change in premium for a
-      \texttt{+1~USD/share} change in the share price.
-    \item \hilite{Theta $\Theta$}: the change in premium for a
-      \texttt{1-day decrease} in the lifetime of the contract (time decay).
-    \item \hilite{Vega $\nu$}: the change in premium for a \texttt{+1\%} change
-      in volatility.
-    \item \hilite{Gamma $\Gamma$}: the change in $\Delta$ for a
-      \texttt{+1~USD/share} change in the share price.
-    \item \hilite{Rho $\rho$}: the change in premium for a \texttt{+1\%} change
-      in the risk-free rate, usually minor except for longer-term options.
+    \item \hilite{Delta $\Delta$}: premium change per \texttt{+1~USD/share} in
+      the share price.
+    \item \hilite{Theta $\Theta$}: premium change per \texttt{1-day decrease}
+      in the contract's lifetime (time decay).
+    \item \hilite{Vega $\nu$}: premium change per \texttt{+1\%} in volatility.
+    \item \hilite{Gamma $\Gamma$}: change in $\Delta$ per \texttt{+1~USD/share}
+      in the share price.
+    \item \hilite{Rho $\rho$}: premium change per \texttt{+1\%} in the
+      risk-free rate, minor except for long-dated options.
   \end{itemize}
-  Most trading platforms compute these for you!
+  Trading platforms compute these using the implied volatility under $\Q$.
 \end{frame}
 
 \begin{frame}{A Local Taylor Expansion of the Premium}
   Expanding the premium $\Pst(S,\sigma,t,g_{y})$ of a contract of type
-  $\star\in\{c,p\}$ at calendar time $t$ to second order in $S$ and first order in the other inputs:
+  $\star\in\{c,p\}$ at calendar time $t$ to second order in $S$ and first
+  order in the other inputs gives:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -356,31 +357,29 @@
     \rho_{\star}=\frac{\partial\Pst}{\partial g_{y}}\qquad
     \Gamma_{\star}=\frac{\partial^{2}\Pst}{\partial S^{2}}
   \end{equation*}
-  Derivatives are taken at the current inputs. One day is $\Delta t=1/365$ years and one
-  percentage point is $0.01$, so over one day the premium changes by $\Theta_{\star}/365$, and a
-  one-point rise in the volatility or the rate changes it by $\nu_{\star}/100$ or $\rho_{\star}/100$.
-  Trading platforms quote these values as Theta, Vega, and Rho.
+  One day changes the premium by $\Theta_{\star}/365$; a one-point rise in the
+  volatility or the rate changes it by $\nu_{\star}/100$ or $\rho_{\star}/100$.
 \end{frame}
 
 \begin{frame}{Delta and Gamma}
-  Delta $\Delta_{\star}$ and Gamma $\Gamma_{\star}$ are the slope and the curvature
-  of the premium as a function of the share price.
+  Delta $\Delta_{\star}$ and Gamma $\Gamma_{\star}$ are the slope and curvature
+  of the premium against the share price.
 
   \vspace{0.5em}
-  \textbf{\ink{Example:}} a long call has $\Delta_{c}=0.50$ and
-  $\Gamma_{c}=0.02$ per USD/share.
+  \textbf{\ink{Example:}} a long call with $\Delta_{c}=0.50$ and
+  $\Gamma_{c}=0.02$ per USD/share:
   \begin{align*}
     \Delta S=+5:\quad \Delta\mathcal{P}_{c} &\approx \bigl(0.50+\tfrac{1}{2}(0.02)(5)\bigr)\times5=0.55\times5=2.75~\text{USD/share}\\
     \Delta S=-5:\quad \Delta\mathcal{P}_{c} &\approx (0.50-0.05)\times(-5)=-2.25~\text{USD/share}
   \end{align*}
   Gamma adds $\tfrac{1}{2}\Gamma_{c}(\Delta S)^{2}=0.25$~USD/share to the
-  Delta-only $\pm2.50$, so the call gains more going up and loses less going down.
+  Delta-only $\pm2.50$: the call gains more going up and loses less going down.
 \end{frame}
 
 \begin{frame}{Computing the Greeks of American Options}
-  Backward induction on the CRR tree gives no formula to differentiate, so we
-  use a \href{https://en.wikipedia.org/wiki/Finite_difference\#Basic_types}{\hilite{central finite difference}}, repricing the tree with
-  one input moved up and down by $\epsilon$:
+  The tree gives no formula to differentiate, so we reprice it with one input
+  moved up and down by $\epsilon$, a
+  \href{https://en.wikipedia.org/wiki/Finite_difference\#Basic_types}{\hilite{central finite difference}}:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -388,30 +387,28 @@
       \Gamma_{\star} & \approx \frac{\Pst(S+\epsilon)-2\,\Pst(S)+\Pst(S-\epsilon)}{\epsilon^{2}}
     \end{aligned}}
   \end{equation*}
-  For technical reasons, the CRR tree does not estimate $\Gamma_{\star}$ or the
-  other Greeks well, so we use the \hilite{Leisen--Reimer tree}, a modification
-  of the CRR tree that gives better estimates of the Greeks.
+  The CRR tree estimates the Greeks poorly, so we use the
+  \hilite{Leisen--Reimer tree}, a modified CRR tree.
   \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{The Secret Lives of Delta}
-  Besides measuring the premium change for a \texttt{+1~USD/share} move in the
-  share price, $\Delta$ has two other interpretations:
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Share equivalent}: for small share price moves, $n$ contracts ($n<0$ if sold) gain or
-      lose as much as $100\cdot n\cdot\Delta$ shares. Holding
+  Besides the premium change per \texttt{+1~USD/share}, $\Delta$ has two other
+  meanings:
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Share equivalent}: $n$ contracts ($n<0$ if sold) gain or lose
+      as much as $100\cdot n\cdot\Delta$ shares for small moves. Holding
       $-100\cdot n\cdot\Delta$ shares makes the position
-      \hilite{delta-neutral}, so Delta is also the \hilite{hedge ratio}.
-    \item \hilite{Probability of exercise}: Delta is often used as an
-      estimate of the probability that the option expires in-the-money. A call
-      with $\Delta=0.7$ suggests a 70\% chance.
+      \hilite{delta-neutral}, so Delta is the \hilite{hedge ratio}.
+    \item \hilite{Probability of exercise}: Delta estimates the probability of
+      expiring in the money; a call with $\Delta=0.7$ suggests about 70\%.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Probability of Exercise}
   \vspace{0.3em}
   \hilite{Probability of exercise (POE)}: the probability that the contract
-  finishes in-the-money at expiration $t=T$:
+  finishes in the money at expiration $t=T$:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -423,12 +420,8 @@
   \end{equation*}
   where $S_{T}$ is the share price at expiration and $K$ is the strike price.\par
   \medskip
-  \textbf{\ink{Why the extra 0.01~USD/share?}} At expiration, OCC automatically
-  exercises an equity option
+  \textbf{\ink{Why 0.01~USD/share?}} OCC automatically exercises equity options
   \href{https://www.optionseducation.org/referencelibrary/faq/options-exercise}{\hilite{in the money by 0.01~USD/share or more}}.
-  The POE uses the same threshold.\par
-  \medskip
-  We'll check the conjecture that $\Delta\approx\text{POE}$ in Example 3.
 \end{frame}
 
 \begin{frame}{Why Is Delta Close to the POE?}
@@ -436,7 +429,7 @@
   $h$-step CRR tree (step $\Delta t$, up and down factors $u$ and $d$, up
   probability $q$), Delta and the POE are sums over the same in-the-money
   terminal nodes $\text{ITM}=\left\{k : S_{0}u^{k}d^{h-k}>K\right\}$, where $k$
-  counts the up moves. With $q^{*}=q\,u\,e^{-g_{y}\Delta t}$, they are:
+  counts the up moves. With $q^{*}=q\,u\,e^{-g_{y}\Delta t}$:
   \begin{equation*}
     \boxed{
     \begin{aligned}
@@ -444,34 +437,30 @@
     \Q\left(S_{T}>K\right) & = \sum_{k\,\in\,\text{ITM}}\binom{h}{k}\,q^{k}\left(1-q\right)^{h-k} && \text{risk-neutral POE: up probability } q
     \end{aligned}}
   \end{equation*}
-  \hilite{Delta is larger than the risk-neutral POE}: because
-  $u>e^{g_{y}\Delta t}$, $q^{*}>q$. The in-the-money nodes have the most up
-  moves, so the larger up probability puts more weight on them.
+  \hilite{Delta is larger than the risk-neutral POE}: $u>e^{g_{y}\Delta t}$, so
+  $q^{*}>q$, which puts more weight on the in-the-money nodes.
   \slidenote{Derivation:}{\href{\repo/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}{\dimmed{advanced/delta\_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{When Is Delta Close to the POE?}
   \begin{itemize}\setlength{\itemsep}{0.6em}
     \item \hilite{Volatility and time to expiration}: the gap grows with both,
-      so Delta is close to the risk-neutral POE for short-dated contracts and
-      further off for long-dated or volatile ones.
+      so Delta is close to the risk-neutral POE for short-dated contracts.
     \item \hilite{Our forecast and American puts}: under $\mathbb{P}$, the up
-      probability is the real-world probability $p$, so the POE can sit above or
-      below Delta. Early exercise adds to an American put's $|\Delta_{p}|$, so the
+      probability is the real-world probability $p$, so the POE can sit above or below
+      Delta. Early exercise adds to an American put's $|\Delta_{p}|$, so the
       match is approximate.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Probability of Profit}
   \vspace{0.3em}
-  \hilite{Probability of profit (POP)}: the probability that the contract's
-  profit at expiration is positive:
+  \hilite{Probability of profit (POP)}: the probability that the profit at
+  expiration $\hat{P}_{\mathcal{C}}$ is positive:
   \begin{equation*}
     \boxed{\text{POP}=\mathbb{P}\left(\hat{P}_{\mathcal{C}} > 0\right)}
   \end{equation*}
-  where $\hat{P}_{\mathcal{C}}$ is the profit of the contract at expiration.
-  For the buyer of a call, the profit is the payoff minus the premium's future
-  value, so it is positive when:
+  For a long call, the profit is the payoff minus the premium's future value:
   \begin{align*}
     \hat{P}_{\mathcal{C}} > 0 & \iff \left(S_{T}-K\right)^{+} - \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} > 0 && \text{profit of a long call}\\
     & \iff \left(S_{T}-K\right)^{+} > \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c} && \text{add the premium's future value}\\
@@ -481,8 +470,8 @@
 \end{frame}
 
 \begin{frame}{Probability of Profit and the Breakeven}
-  The same steps apply for a put, except $S_{T}<S^{\ddagger}$ with
-  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$, and the seller
+  For a put, $S_{T}<S^{\ddagger}$ with
+  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$. The seller
   profits exactly when the buyer does not:
   \begin{equation*}
     \boxed{
@@ -491,33 +480,27 @@
     \mathbb{P}\left(S_{T} < S^{\ddagger}\right) & \text{(sold a call or bought a put)}
     \end{cases}}
   \end{equation*}
-  The POP has the same form as the POE, with the breakeven share price in place
-  of the strike price. For the buyer, the breakeven lies beyond the strike
-  price, so the POP is smaller than the POE.
-
-  \vspace{0.4em}
-  The POE and POP are forecasts, so we compute them under our belief $\mathbb{P}$:
-  GBM with our estimates of the drift $\mu$ and the volatility $\sigma$.
+  The POP is the POE with the breakeven in place of the strike, so the buyer's
+  POP is smaller than the POE. We compute both under our belief $\mathbb{P}$:
+  GBM with our estimates of $\mu$ and $\sigma$.
 \end{frame}
 
 \begin{frame}{Computing POE and POP by Simulation}
   \vspace{0.3em}
-  \hilite{Initialize}: given the share price $S_{0}$, the strike price $K$, the
-  premium $\mathcal{P}$ of the call or put, the time to expiration $T$ (years),
-  the drift $\mu$ and the volatility $\sigma$ under $\mathbb{P}$, the risk-free
-  rate~$g_{y}$, and the number of samples $M$. Compute the breakeven share price
-  $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a call, or
-  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a put, where
+  \hilite{Initialize}: given $S_{0}$, $K$, the premium $\mathcal{P}$ of the
+  call or put, $T$ (years), the drift $\mu$ and volatility $\sigma$ under
+  $\mathbb{P}$, $g_{y}$, and the number of samples $M$. The breakeven is
+  $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a call or
+  $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}$ for a put, with
   $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$.
   \begin{enumerate}\setlength{\itemsep}{0.35em}
     \item For each sample $i=1,2,\dots,M$ \textbf{do}:
       \begin{itemize}
-        \item[a.] Draw a sample from the standard normal distribution: $Z_{i}\sim\mathcal{N}(0,1)$.
-        \item[b.] Compute the share price at expiration:
+        \item[a.] Draw $Z_{i}\sim\mathcal{N}(0,1)$.
+        \item[b.] Compute
           $S_{i}(T)\gets S_{0}\exp\left[\left(\mu-\sigma^{2}/2\right)T+\sigma\sqrt{T}\,Z_{i}\right]$.
       \end{itemize}
-    \item Compute the cumulative distribution function, the fraction of samples
-      at or below each share price $x$:
+    \item Compute the fraction of samples at or below each share price $x$:
       $\hat{F}(x)\gets\frac{1}{M}\cdot\#\left\{i:S_{i}(T)\leq x\right\}$.
   \end{enumerate}
 \end{frame}
@@ -526,19 +509,17 @@
   \vspace{0.3em}
   \begin{enumerate}\setlength{\itemsep}{0.45em}
     \setcounter{enumi}{2}
-    \item Compute the probability of exercise. If the contract is a call,
-      \textbf{then} $\text{POE}\gets1-\hat{F}(K+0.01)$. Otherwise,
+    \item If the contract is a call, \textbf{then}
+      $\text{POE}\gets1-\hat{F}(K+0.01)$. Otherwise,
       $\text{POE}\gets\hat{F}(K-0.01)$.
     \item Compute the probability of profit:
       \begin{itemize}\setlength{\itemsep}{0.25em}
-        \item If we bought a call or sold a put, \textbf{then} the profit is
-          positive above the breakeven: $\text{POP}\gets1-\hat{F}(S^{\ddagger})$.
-        \item If we sold a call or bought a put, \textbf{then} the profit is
-          positive below the breakeven: $\text{POP}\gets\hat{F}(S^{\ddagger})$.
+        \item If we bought a call or sold a put, \textbf{then}
+          $\text{POP}\gets1-\hat{F}(S^{\ddagger})$.
+        \item If we sold a call or bought a put, \textbf{then}
+          $\text{POP}\gets\hat{F}(S^{\ddagger})$.
       \end{itemize}
   \end{enumerate}
-  \hilite{Output}: the probability of exercise $\text{POE}$ and the probability
-  of profit $\text{POP}$.
 
   \vspace{0.6em}
   With $\mu=g_{y}$ and $\sigma$ set to the implied volatility, the same steps
@@ -547,43 +528,31 @@
   \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 \end{frame}
 
-
-
 \begin{frame}{Optional Advanced Material}
-  One optional notebook extends this lecture:
-
   \vspace{0.4em}
   {\normalsize\textbf{\ink{Leisen--Reimer tree:}} \dimmed{advanced/leisen\_reimer/}\par
   \href{\repo/advanced/leisen_reimer/CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Advanced-LeisenReimer-Greeks-Fall-2026.ipynb}}}
 
-  \vspace{0.4em}
-  We ask why repricing the CRR tree can give a Gamma of zero, and how a tree
-  built around the strike avoids it. We look at the CRR premium and its Delta
-  against the share price, derive the up probability and the up and down
-  factors of the Leisen--Reimer tree, and write pseudocode that computes the
-  Greeks on it.
-  \slidenote{Notebook:}{\href{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/tree/main/lectures/week-10/L10a/advanced}{lectures/week-10/L10a/advanced}, also linked from the lecture notebook.}
+  \vspace{0.6em}
+  Why can repricing the CRR tree give a Gamma of zero, and how does a tree
+  built around the strike avoid it? We derive the Leisen--Reimer tree and
+  compute the Greeks on it.
 \end{frame}
 
 \begin{frame}{Summary}
-  Today we priced American options by simulation, split the premium into
-  intrinsic and extrinsic value, and introduced the Greeks.
-
   \vspace{0.3em}
   {\large\textbf{\ink{Key takeaways}}}
-  \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{Estimating and decomposing the American premium}:
-      Longstaff--Schwartz regresses the value of holding on the share price
-      along simulated paths. Extrinsic value is largest at the money and grows
-      with the time to expiration, and without dividends only a deep
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Estimating and decomposing the American premium}: we
+      regressed the value of holding on the share price along simulated paths.
+      Extrinsic value is largest at the money; without dividends, only a deep
       in-the-money put is worth exercising early.
-    \item \hilite{The Greeks quantify option price sensitivity}: Delta, Gamma,
-      Theta, Vega, and Rho are the coefficients of a local Taylor expansion of
-      the premium, estimated by finite differences on a binomial tree.
-    \item \hilite{Delta serves three purposes}: the premium change per
-      USD/share move, the number of shares the option is equivalent to, and a
-      call's POE computed with a slightly larger up probability. The POP has
-      the POE's form, with the breakeven in place of the strike price.
+    \item \hilite{The Greeks quantify option price sensitivity}: we estimated
+      them by finite differences on a binomial tree, as coefficients of a local
+      Taylor expansion of the premium.
+    \item \hilite{Delta serves three purposes}: premium change per USD/share,
+      share equivalent, and an estimate of a call's POE. The POP is the POE
+      with the breakeven in place of the strike.
   \end{itemize}
 \end{frame}
 
