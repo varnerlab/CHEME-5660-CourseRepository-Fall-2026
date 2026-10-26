@@ -321,12 +321,13 @@
     \item \hilite{Delta $\Delta$}: premium change per \texttt{+1~USD/share} in
       the share price.
     \item \hilite{Theta $\Theta$}: premium change per \texttt{1-day decrease}
-      in the contract's lifetime (time decay).
-    \item \hilite{Vega $\nu$}: premium change per \texttt{+1\%} in volatility.
+      in the contract's lifetime (time decay), quoted as $\Theta_{\star}/365$.
+    \item \hilite{Vega $\nu$}: premium change per \texttt{+1 point} in volatility,
+      quoted as $\nu_{\star}/100$.
     \item \hilite{Gamma $\Gamma$}: change in $\Delta$ per \texttt{+1~USD/share}
       in the share price.
-    \item \hilite{Rho $\rho$}: premium change per \texttt{+1\%} in the
-      risk-free rate, minor except for long-dated options.
+    \item \hilite{Rho $\rho$}: premium change per \texttt{+1 point} in the
+      risk-free rate, quoted as $\rho_{\star}/100$; minor except for long-dated options.
   \end{itemize}
   Trading platforms compute these using the implied volatility under $\Q$.
 \end{frame}
