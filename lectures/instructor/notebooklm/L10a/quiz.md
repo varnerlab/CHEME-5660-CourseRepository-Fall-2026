@@ -25,7 +25,7 @@ Under what conditions does early exercise make economic sense for American optio
 ---
 
 #### **Question 3**
-The annual Theta for the NVDA 230 call option is quoted as \\(\Theta_c = -51.56\text{ USD/share/year}\\). What is the estimated 1-day time decay for 1 contract (100 shares)?
+On the tree, the derivative of the NVDA 230 call premium with respect to calendar time is \\(\Theta_c = -51.56\text{ USD/share per year}\\). What is the estimated 1-day time decay for 1 contract (100 shares)?
 - **A)** \\(-\$0.1413\\) per contract per day
 - **B)** \\(-\$5.156\\) per contract per day
 - **C)** \\(-\$14.13\\) per contract per day
@@ -37,14 +37,14 @@ The annual Theta for the NVDA 230 call option is quoted as \\(\Theta_c = -51.56\
 ---
 
 #### **Question 4**
-For the NVDA 230 call contract, Vega is \\(31.34\text{ USD/share}\\) and Rho is \\(13.49\text{ USD/share}\\). What are the expected premium changes per share for a \\(+1\text{ percentage point}\\) increase in implied volatility and a \\(+1\text{ percentage point}\\) increase in the risk-free rate, respectively?
+For the NVDA 230 call contract, the derivatives of the premium with respect to the volatility and the rate are \\(\nu_c = 31.34\\) and \\(\rho_c = 13.49\\) USD/share per unit change (a change of 1.00, or 100 percentage points). What are the expected premium changes per share for a \\(+1\text{ percentage point}\\) increase in implied volatility and a \\(+1\text{ percentage point}\\) increase in the risk-free rate, respectively?
 - **A)** \\(+\$31.34\\) per share for volatility; \\(+\$13.49\\) per share for rate.
 - **B)** \\(+\$0.3134\\) per share for volatility; \\(+\$0.1349\\) per share for rate.
 - **C)** \\(+\$3.134\\) per share for volatility; \\(+\$1.349\\) per share for rate.
 - **D)** \\(+\$0.0313\\) per share for volatility; \\(+\$0.0135\\) per share for rate.
 
 **Answer:** **B) \\(+\$0.3134\\) per share for volatility; \\(+\$0.1349\\) per share for rate.**
-**Explanation:** Quoted platform Vega and Rho for a 1-percentage-point change are computed by dividing annual Vega and Rho by \\(100\\), giving \\(\nu_c / 100 = \$0.3134\\) and \\(\rho_c / 100 = \$0.1349\\) per share.
+**Explanation:** One percentage point is a change of \\(0.01\\), so the quoted Vega and Rho are the derivatives divided by \\(100\\): \\(\nu_c / 100 = \$0.3134\\) and \\(\rho_c / 100 = \$0.1349\\) per share.
 
 ---
 
@@ -74,18 +74,18 @@ Consider the short NVDA call with strike \\(K = \$235.00\\), premium \\(\mathcal
 
 #### **Question 7**
 How do the Probability of Exercise (POE) and Probability of Profit (POP) differ for a long call contract at expiration?
-- **A)** POE evaluates \\(\mathbb{P}(S_T > K + 0.01)\\), while POP evaluates \\(\mathbb{P}(S_T > S^\ddagger)\\), where \\(S^\ddagger\\) is the breakeven price (under either our belief \\(\mathbb{P}\\) or \\(\mathbb{Q}\\)).
+- **A)** POE is the probability that \\(S_T > K + 0.01\\), while POP is the probability that \\(S_T > S^\ddagger\\), where \\(S^\ddagger\\) is the breakeven price; either can be computed under our belief \\(\mathbb{P}\\) or under \\(\mathbb{Q}\\).
 - **B)** POE is always calculated under our belief \\(\mathbb{P}\\), while POP is always calculated under the risk-neutral probabilities \\(\mathbb{Q}\\).
 - **C)** POE evaluates \\(\mathbb{P}(S_T > S^\ddagger)\\), while POP evaluates \\(\mathbb{P}(S_T > K + 0.01)\\) under our belief \\(\mathbb{P}\\).
 - **D)** POE and POP are identical thresholds under the risk-neutral probabilities \\(\mathbb{Q}\\).
 
-**Answer:** **A) POE evaluates \\(\mathbb{P}(S_T > K + 0.01)\\), while POP evaluates \\(\mathbb{P}(S_T > S^\ddagger)\\), where \\(S^\ddagger\\) is the breakeven price (under either our belief \\(\mathbb{P}\\) or \\(\mathbb{Q}\\)).**
+**Answer:** **A) POE is the probability that \\(S_T > K + 0.01\\), while POP is the probability that \\(S_T > S^\ddagger\\), where \\(S^\ddagger\\) is the breakeven price; either can be computed under our belief \\(\mathbb{P}\\) or under \\(\mathbb{Q}\\).**
 **Explanation:** POE checks whether the option finishes in the money above strike \\(K + 0.01\\), whereas POP checks whether expiration price \\(S_T\\) exceeds the higher breakeven price \\(S^\ddagger\\) under the chosen probabilities (\\(\mathbb{P}\\) or \\(\mathbb{Q}\\)).
 
 ---
 
 #### **Question 8**
-For the NVDA 235 call, quoted Delta is \\(0.4833\\), whereas the POE under the risk-neutral probabilities \\(\mathbb{Q}\\) is \\(0.4295\\). Why is Delta close to, but slightly larger than, the POE under the risk-neutral probabilities \\(\mathbb{Q}\\)?
+For the NVDA 235 call, quoted Delta is \\(0.4833\\), whereas the POE under the risk-neutral probabilities \\(\mathbb{Q}\\) is \\(0.4295\\). For a call on a share with no dividends, why is Delta close to, but slightly larger than, the POE under the risk-neutral probabilities \\(\mathbb{Q}\\)?
 - **A)** Delta is evaluated under our belief \\(\mathbb{P}\\), which increases its value relative to \\(\mathbb{Q}\\).
 - **B)** On a binomial tree, Delta uses up-probability \\(q^* = q \cdot u \cdot e^{-g_y \Delta t}\\), which is strictly greater than the risk-neutral up-probability \\(q\\) under \\(\mathbb{Q}\\) because \\(u > e^{g_y \Delta t}\\).
 - **C)** Delta includes the expected profit above breakeven price \\(S^\ddagger\\) under \\(\mathbb{Q}\\).
@@ -137,14 +137,14 @@ For a seller of the NVDA 235 call contract (\\(S^\ddagger = \$244.93\\)), the se
 **Q: What does Delta (\\(\Delta\\)) measure for an option contract?**  
 **A:** Delta measures the sensitivity of the option premium to a \\(+\$1.00\text{ USD/share}\\) change in the underlying stock price.
 
-**Q: How do you convert annual Theta (\\(\Theta\\)) into a 1-day price change per share?**  
-**A:** Divide annual Theta by \\(365\\) (e.g., for the NVDA 230 call, \\(-51.56 / 365 = -\$0.1413\text{ USD/share/day}\\)).
+**Q: How do you convert the per-year derivative \\(\Theta_{\star}\\) into the quoted 1-day Theta per share?**  
+**A:** Divide \\(\Theta_{\star}\\) by \\(365\\) (e.g., for the NVDA 230 call, \\(-51.56 / 365 = -\$0.1413\text{ USD/share/day}\\)).
 
-**Q: How do you convert Vega (\\(\nu\\)) and Rho (\\(\rho\\)) into price changes for a 1-percentage-point move in volatility or interest rates?**  
-**A:** Divide annual Vega by \\(100\\) for a \\(+1\%\\) change in volatility, and divide annual Rho by \\(100\\) for a \\(+1\%\\) change in the risk-free rate.
+**Q: How do you convert the derivatives \\(\nu_{\star}\\) and \\(\rho_{\star}\\) into the quoted Vega and Rho, the price changes for a 1-percentage-point move in volatility or interest rates?**  
+**A:** Divide \\(\nu_{\star}\\) by \\(100\\) for a one-point rise in volatility, and divide \\(\rho_{\star}\\) by \\(100\\) for a one-point rise in the risk-free rate.
 
 **Q: What do Gamma (\\(\Gamma\\)) and Vega (\\(\nu\\)) measure?**  
-**A:** Gamma measures the change in Delta per \\(+\$1.00\text{ USD/share}\\) move in stock price (curvature), while Vega measures the premium change per unit change in volatility, so Vega divided by \\(100\\) is the change for a one-point rise (for example, 35% to 36%).
+**A:** Gamma measures the change in Delta per \\(+\$1.00\text{ USD/share}\\) move in stock price (curvature), while quoted Vega measures the premium change for a one-point rise in volatility (for example, 35% to 36%), which is \\(\nu_{\star}/100\\).
 
 **Q: How is the breakeven share price \\(S^\ddagger\\) defined for a call option at expiration?**  
 **A:** \\(S^\ddagger = K + \mathcal{D}_{T,0}(g_y) \cdot \mathcal{P}_c = K + e^{g_y T} \cdot \mathcal{P}_c\\), which adds the future value of the premium to the strike price.
@@ -158,7 +158,7 @@ For a seller of the NVDA 235 call contract (\\(S^\ddagger = \$244.93\\)), the se
 **Q: How is the Probability of Profit (POP) defined for a long call option under the risk-neutral probabilities \\(\mathbb{Q}\\) versus our belief \\(\mathbb{P}\\)?**  
 **A:** For a long call, \\(\text{POP} = \mathbb{Q}(S_T > S^\ddagger)\\) under the risk-neutral probabilities \\(\mathbb{Q}\\) and \\(\text{POP} = \mathbb{P}(S_T > S^\ddagger)\\) under our belief \\(\mathbb{P}\\), evaluating simulated prices against breakeven price \\(S^\ddagger\\).
 
-**Q: Why is quoted Delta close to, but slightly larger than, the POE under the risk-neutral probabilities \\(\mathbb{Q}\\) for a call option?**  
+**Q: Why is quoted Delta close to, but slightly larger than, the POE under the risk-neutral probabilities \\(\mathbb{Q}\\) for a call on a share with no dividends?**  
 **A:** On a binomial tree, Delta uses up-probability \\(q^* = q \cdot u \cdot e^{-g_y \Delta t} > q\\), placing slightly more weight on the in-the-money terminal nodes than the risk-neutral up probability \\(q\\) does.
 
 **Q: Why is Delta under the risk-neutral probabilities \\(\mathbb{Q}\\) not our forecast of exercise probability under our belief \\(\mathbb{P}\\)?**  
