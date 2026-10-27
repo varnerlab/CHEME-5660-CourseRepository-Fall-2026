@@ -1,7 +1,7 @@
-% L10b student companion deck: composite contracts, their net present value and
-% profit at expiration, the common credit structures (short puts and calls, credit
-% spreads, short straddles and strangles, protected strangles and iron condors),
-% and Delta as a hedging tool for composite positions.
+% L10b student companion deck: a review of the Greeks, the POE, and the POP; then
+% composite contracts, their net present value and profit at expiration, the common
+% credit structures (short puts and calls, credit spreads, short straddles and
+% strangles, protected strangles and iron condors), and why we wait to expiration.
 %
 % The frame order mirrors the lecture notebook. The disclaimer is slide 2, by
 % instructor preference. Notation follows the lecture: composite contract
@@ -9,10 +9,8 @@
 % payoff V_i(K_i,S(T)), composite payoff \hat{V}_{\mathcal{C}}(S(T)), composite premium
 % \mathcal{P}_{\mathcal{C}}, profit at expiration \hat{P}_{\mathcal{C}}(S(T)),
 % discount factor \mathcal{D}^{-1}_{T,0}(g_y), accumulation factor
-% \mathcal{D}_{T,0}(g_y) (written \mathcal{D} in the structure sections),
-% breakevens S^{\ddagger}, S^{\ddagger}_{\pm}, portfolio value \Pi(S,t), shares
-% N_S, contract multiplier m, and Deltas \Delta_i, \Delta_{\mathcal{C}},
-% \Delta_{\text{opts}}, \Delta_{\text{net}}.
+% \mathcal{D}_{T,0}(g_y) (always written in full), and breakevens S^{\ddagger},
+% S^{\ddagger}_{\pm}. October 27, 2026: Delta hedging moved to L11a.
 % October 26, 2026: first build, from the lecture after the October 26 scoring-round
 % fixes. Figures are the light PDFs in ../figs (see ../figs/README.md).
 % Same day, after the midterm feedback: a "What You Need to Know" frame (core results
@@ -29,7 +27,7 @@
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b}
 \newcommand{\repoa}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a}
 
-\title{\texorpdfstring{{\vnheavy L10b}}{L10b}: The NPV of Composite Contracts and A New Role for Delta}
+\title{\texorpdfstring{{\vnheavy L10b}}{L10b}: The NPV and Probability of Profit of Composite Contracts}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -62,12 +60,11 @@
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{The NPV and the probability of profit of a composite contract}:
-      sums over its legs.
-    \item \hilite{Common composite contracts at expiration}: outlook, breakevens,
-      maximum profit and loss, and the cost of closing early.
-    \item \hilite{Delta-neutral positions}: the net Delta of options and shares,
-      and the shares that make it zero.
+    \item \hilite{The POE and POP of a single contract}: from simulated share
+      prices, compared with Delta.
+    \item \hilite{The NPV and POP of a composite contract}: sums over its legs.
+    \item \hilite{Common composite contracts}: outlook, breakevens, maximum profit
+      and loss, and why closing early earns less.
   \end{itemize}
 \end{frame}
 
@@ -75,23 +72,22 @@
   \vspace{0.3em}
   {\large\textbf{\ink{Core results}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item POE: the probability a contract finishes in the money. POP: the
+      probability its profit at expiration is positive. Both come from simulated
+      share prices, and the POE $\sim|\Delta_{\star}|$.
     \item Profit at expiration: the legs' payoffs, weighted by $\theta_{i}n_{i}$,
       minus the composite premium grown to expiration. POP: the probability it is
       positive.
-    \item Read a profit diagram: the breakevens, the maximum profit (for the
-      eight credit contracts, the credit grown to expiration), and the maximum
-      loss (from the put or call side).
-    \item Composite Delta: $\Delta_{\Cc}=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}$ (per
-      share). Options' Delta: $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$.
-      Holding $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta,
-      $N_{S}+\Delta_{\text{opts}}$, zero.
+    \item Read a profit diagram: the breakevens, the maximum profit (the credit
+      grown to expiration), and the maximum loss. Closing early earns less, by
+      roughly the extrinsic value left in the legs.
   \end{itemize}
 
   \vspace{0.5em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The NPV derivation, and the formula tables for the eight composite
-      contracts (reference).
+    \item The NPV derivation and the formula tables for the eight composite
+      contracts.
   \end{itemize}
 \end{frame}
 
@@ -319,6 +315,7 @@
       \bottomrule
     \end{tabular}
   \end{center}
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Call Credit Spread}
@@ -474,105 +471,16 @@
   by roughly the extrinsic value left in the legs.
 \end{frame}
 
-\begin{frame}{Delta as a Hedging Tool for Composite Contracts}
-  Delta is also the number of shares that hedges one contract. A composite
-  position's Delta is the sum of its legs' Deltas, so the same idea hedges the
-  whole position.
-
-  \vspace{0.6em}
-  \textbf{\ink{What is hedging?}} Offsetting potential losses with an opposite
-  position in a related \hilite{counter asset}, often the underlying shares.
-
-  \vspace{0.6em}
-  A position with zero Delta is insensitive to small changes in the share price.
-\end{frame}
-
-\begin{frame}{What Is the Delta of a Composite Contract?}
-  We hold $\theta_{i}n_{i}$ American contracts of leg $i$, each for $m$ shares,
-  and $N_{S}$ shares. With $\Pc_{i}(S,t)$ the premium of leg $i$ at share price
-  $S$ and time $t$, the portfolio is worth
-  $\Pi(S,t)=N_{S}S+m\sum_{i\in\Cc}\theta_{i}n_{i}\Pc_{i}(S,t)$, and the
-  \hilite{net Delta} is its sensitivity to the share price:
-  \begin{align*}
-    \Delta_{\text{net}}(S,t)&=\frac{\partial \Pi}{\partial S}
-    = \underbrace{\frac{\partial (N_{S} S)}{\partial S}}_{\textstyle=N_{S}} + m\sum_{i\in\Cc} \theta_{i} n_{i} \underbrace{\frac{\partial \Pc_{i}}{\partial S}}_{\textstyle=\Delta_{i}(S,t)}\\
-    &= N_{S} + \underbrace{m\sum_{i\in\Cc} \theta_{i} n_{i} \Delta_{i}(S,t)}_{\textstyle= \Delta_{\text{opts}}(S,t)}
-  \end{align*}
-  The options contribute $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$, where
-  $\Delta_{\Cc}(S,t)=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}(S,t)$ is the \hilite{composite
-  Delta}, per share.
-\end{frame}
-
-\begin{frame}{Delta-Neutral Position}
-  A position is \hilite{delta-neutral} if $\Delta_{\text{net}}(S,t)=0$. We get
-  there by choosing $N_{S}$ to offset the Delta of the options:
-  \begin{equation*}
-    \Delta_{\text{net}}(S,t)= N_{S} + \Delta_{\text{opts}}(S,t) = 0
-    \quad\Rightarrow\quad
-    N_{S} = - \Delta_{\text{opts}}(S,t)
-  \end{equation*}
-  \textbf{\ink{Quick gut-check example:}} short $10$ calls at $\Delta=0.6$ with
-  $m=100$ shares/contract, so $\Delta_{\text{opts}}=10\times(-1)\times0.6\times100=-600$.
-  Holding $N_{S}=+600$ shares gives $\Delta_{\text{net}}=600-600=0$.
-
-  \vspace{0.5em}
-  If leg $i$ is exercised or assigned at time $\tau\leq T$, set $\Delta_{i}=0$
-  for $t\geq\tau$ and update the shares:
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{Call leg $i$}: $N_{S}\gets N_{S}+\theta_{i}\cdot m\cdot n_{i}$.
-    \item \hilite{Put leg $i$}: $N_{S}\gets N_{S}-\theta_{i}\cdot m\cdot n_{i}$.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Delta of the Common Composite Contracts}
-  Short legs at Deltas $\mp0.25$, long legs at $\mp0.10$ beyond them, and a
-  straddle at $\mp0.5$. At entry, one copy of each leg ($m=100$):
-  \begin{center}\small
-    \begin{tabular}{lll}
-      \toprule
-      Composite contract & Composite Delta, $\Delta_{\Cc}$ & Shares to hedge, $N_{S}$ \\
-      \midrule
-      Short put & $-(-0.25)=0.25$ & $-25$ \\
-      Short call & $-0.25$ & $+25$ \\
-      Put credit spread & $-0.10-(-0.25)=0.15$ & $-15$ \\
-      Call credit spread & $-0.25+0.10=-0.15$ & $+15$ \\
-      Short straddle & $-(-0.5)-0.5\approx0$ & $\approx0$ \\
-      Short strangle & $-(-0.25)-0.25=0$ & $0$ \\
-      Protected strangle & $-(-0.25)-0.25+0.10=0.10$ & $-10$ \\
-      Iron condor & $-0.10-(-0.25)-0.25+0.10=0$ & $0$ \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-  At these strikes, the sign of $\Delta_{\Cc}$ matches the outlook.
-\end{frame}
-
-\begin{frame}{Reading the Delta Table}
-  $\Delta_{\Cc}$ is the position's gain per share when the share price rises 1
-  USD/share:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{The rule of thumb}: a Delta of $\pm0.25$ is roughly a
-      one-in-four chance of finishing in the money under $\Q$.
-    \item \hilite{The protected strangle}: its long call leaves $+0.10$, so it
-      leans bullish.
-    \item \hilite{Zero is not zero risk}: Gamma pulls the Delta away from zero as
-      the share price moves.
-  \end{itemize}
-  \vspace{0.4em}
-  Staying delta-neutral means updating $N_{S}$ as the Deltas change.
-  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
-\end{frame}
-
 \begin{frame}{Summary}
   \vspace{0.3em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{The NPV of a composite contract is the sum of its legs' NPVs}:
-      the POP is the probability that it is positive.
+    \item \hilite{POE, POP, and Delta}: both probabilities come from simulated
+      share prices, and the size of Delta approximates the POE under $\Q$.
+    \item \hilite{The NPV of a composite contract is a sum over its legs}: the POP
+      is the probability that the profit at expiration is positive.
     \item \hilite{Common composite contracts have a put side and a call side}:
-      each side is empty, naked, or a credit spread, which sets the outlook and
-      the maximum loss.
-    \item \hilite{Delta builds hedged positions}: holding
-      $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta zero.
+      the sides set the outlook and the maximum loss; closing early earns less.
   \end{itemize}
 \end{frame}
 

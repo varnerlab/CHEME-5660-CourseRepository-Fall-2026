@@ -4,9 +4,9 @@ In this example, we will analyze vertical bullish credit spreads. These are dire
 > __Learning Objectives:__
 > 
 > By the end of this example, you will be able to:
-> * __Construct profit diagrams for put vertical spreads:__ Build profit and loss profiles for put credit spreads by combining short and long put contracts with different strike prices, and compute the breakeven point where the position transitions from profit to loss.
-> * __Calculate probability of profit and probability of exercise for vertical spreads:__ Use cumulative distribution functions of projected share price distributions to determine the likelihood of profit at the breakeven point, and each leg's probability of exercise, under our belief $\mathbb{P}$ and the risk-neutral probabilities $\mathbb{Q}$.
-> * __Compute Delta for composite positions to assess hedging requirements:__ Calculate the composite Delta of a put vertical spread by summing the weighted Deltas of its legs on the Leisen–Reimer tree, compare the leg Deltas with the CRR tree and the quoted Deltas, and find the number of shares that makes the position delta-neutral.
+> * __Compute the profit of a put credit spread:__ Build its profit at expiration and compute its maximum profit, maximum loss, and breakeven.
+> * __Estimate the probability of profit:__ Compute the POP from projected share prices at expiration under our belief $\mathbb{P}$ and under the risk-neutral probabilities $\mathbb{Q}$.
+> * __Estimate each leg's probability of exercise:__ Compute the POE of the short and the long put under $\mathbb{P}$ and $\mathbb{Q}$, and compare them.
 
 Let's get started!
 ___
@@ -137,7 +137,7 @@ $$
 \hat{P}_{\mathcal{C}} = \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right) - \left(K_{2} - S(T)\right)^{+} + \left(K_{1} - S(T)\right)^{+}
 $$
 
-where $V_{p}(K,S(T)) = (K-S(T))^{+}=\max(K-S(T),0)$ is the payoff function for a put contract. The first term is the net premium received, grown to expiration, and the others are the leg payoffs. The maximum possible profit, loss, and breakeven conditions are given by:
+where $V_{p}(K,S(T)) = (K-S(T))^{+}=\max(K-S(T),0)$ is the payoff function for a put contract. The first term is the credit received, grown to expiration, and the others are the leg payoffs. The maximum possible profit, loss, and breakeven conditions are given by:
 
 * The maximum possible profit of $\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\geq{K_{2}}$.
 * The maximum possible loss of $\left(K_{2} - K_{1}\right) - \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\leq{K_{1}}$.
@@ -277,51 +277,14 @@ risk-neutral ℚ: gᵧ = 0.0413 (1/yr), ATM IV = 0.5617
 
 ___
 
-## Task 3: Is this trade Delta-neutral?
-In this task, we compute the composite Delta of the put credit spread when we open it, and the number of shares that would make the position delta-neutral.
-
-With one copy of each leg, the composite Delta of the spread, per share, is the sum of the legs' Deltas weighted by their orientation:
-$$
-\Delta_{\mathcal{C}} = \theta_{1}\Delta_{1} + \theta_{2}\Delta_{2} = \Delta_{1} - \Delta_{2}
-$$
-where $\Delta_{i}$ is the Delta of a long put at strike $K_{i}$. A positive $\Delta_{\mathcal{C}}$ means the position gains when the share price rises. The shares that make one spread delta-neutral are $N_{S} = -m\,\Delta_{\mathcal{C}}$, with $m = 100$ shares per contract.
-
-We estimate each leg's Delta by a central difference on the Leisen–Reimer tree, repricing with the share price moved up and down by $\epsilon_{S}=0.01\,S_{0}$, using [the `𝒫(...)` function](src/Helper.jl) on a tree with $h=20\cdot\text{DTE}+1$ levels (odd, about twenty per day). For comparison, we also compute it on the CRR tree with $h$ and $h+1$ levels, because CRR estimates move back and forth between odd and even numbers of levels, and we show the archive's quoted Delta. Every Delta in the table is the Delta of a long put, before the orientation is applied. So what do we get?
-
-Output:
-```
- --------------------------- --------------- --------------- --------------- --------------- ---------------
-  leg (Delta of a long put)   K (USD/share)   Leisen–Reimer   CRR, h = 1061   CRR, h = 1062   archive quote 
- --------------------------- --------------- --------------- --------------- --------------- ---------------
-  put at K₁ (long leg)                500.0         -0.3405         -0.3410         -0.3401         -0.3406
-  put at K₂ (short leg)               520.0         -0.4097         -0.4107         -0.4089         -0.4099
- --------------------------- --------------- --------------- --------------- --------------- ---------------
-```
-
-Now let's compute the composite Delta of the spread and the shares that make it delta-neutral, using the Leisen–Reimer Deltas:
-
-Output:
-```
-Composite Delta of the spread (per share), Δ_𝒞 = Δ₁ - Δ₂ = 0.0692
-Shares that make one spread delta-neutral, N_S = -100⋅Δ_𝒞 = -6.92
-The spread gains when the share price rises, so we would sell (short) 6.9 shares to hedge it.
-```
-
-> __What do we see?__
->
-> * __Leisen–Reimer and the quotes:__ The Leisen–Reimer Deltas match the archive's quoted Deltas to about three decimal places. The CRR Deltas with $h$ and $h+1$ levels sit on either side of them.
-> * __The spread is nearly delta-neutral:__ The two legs' Deltas nearly cancel, so the spread's composite Delta is small and positive. It gains a little when the share price rises, as a bullish position should, and hedging one spread takes selling only a few shares.
-
-___
-
 ## Summary
-In this example, we built a put credit spread on AMD, computed its profit at expiration and breakeven, its probability of profit and each leg's probability of exercise under our belief and under the risk-neutral probabilities, and its composite Delta.
+In this example, we built a put credit spread on AMD and computed its profit at expiration and breakeven, its probability of profit, and each leg's probability of exercise, under our belief and under the risk-neutral probabilities.
 
 > __Key Takeaways:__
 >
-> * __Put vertical spreads have defined risk and reward boundaries:__ We computed the maximum profit as the net credit grown to expiration, earned when the share price stays above the higher strike, and the maximum loss as the difference between the strike prices minus that credit, reached when the share price falls below the lower strike.
-> * __Probability measures assess position risk from different perspectives:__ We computed the probability of profit above the breakeven and each leg's probability of exercise under our belief $\mathbb{P}$ and under the risk-neutral probabilities $\mathbb{Q}$. Our belief's large drift and lower volatility gave a much higher probability of profit than $\mathbb{Q}$, and in every case the short put was more likely to be exercised than the long put.
-> * __Delta indicates directional exposure and hedging requirements:__ We computed each leg's Delta on the Leisen–Reimer tree, which matched the quoted Deltas, and summed them with their orientations. The spread's composite Delta was small and positive, so it gains a little when the share price rises, and selling a few shares per spread makes it delta-neutral.
+> * __Put vertical spreads have defined risk and reward boundaries:__ We computed the maximum profit as the credit grown to expiration, earned when the share price stays above the higher strike, and the maximum loss as the difference between the strike prices minus that credit, reached when the share price falls below the lower strike.
+> * __Our belief gives a higher probability of profit than $\mathbb{Q}$:__ We computed the probability of profit above the breakeven under our belief $\mathbb{P}$ and under the risk-neutral probabilities $\mathbb{Q}$. Our belief's large drift and lower volatility gave a much higher probability of profit.
+> * __The short put is more likely to be exercised:__ We computed each leg's probability of exercise under $\mathbb{P}$ and $\mathbb{Q}$. In every case, the short put, with the higher strike, was more likely to be exercised than the long put.
 
 Understanding put vertical spreads enables traders to generate income while limiting downside risk in bullish market conditions.
 ___

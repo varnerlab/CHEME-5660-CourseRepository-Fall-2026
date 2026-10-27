@@ -1,0 +1,88 @@
+\begin{frame}{Delta as a Hedging Tool for Composite Contracts}
+  Delta is also the number of shares that hedges one contract. A composite
+  position's Delta is the sum of its legs' Deltas, so the same idea hedges the
+  whole position.
+
+  \vspace{0.6em}
+  \textbf{\ink{What is hedging?}} Offsetting potential losses with an opposite
+  position in a related \hilite{counter asset}, often the underlying shares.
+
+  \vspace{0.6em}
+  A position with zero Delta is insensitive to small changes in the share price.
+\end{frame}
+
+\begin{frame}{What Is the Delta of a Composite Contract?}
+  We hold $\theta_{i}n_{i}$ American contracts of leg $i$, each for $m$ shares,
+  and $N_{S}$ shares. With $\Pc_{i}(S,t)$ the premium of leg $i$ at share price
+  $S$ and time $t$, the portfolio is worth
+  $\Pi(S,t)=N_{S}S+m\sum_{i\in\Cc}\theta_{i}n_{i}\Pc_{i}(S,t)$, and the
+  \hilite{net Delta} is its sensitivity to the share price:
+  \begin{align*}
+    \Delta_{\text{net}}(S,t)&=\frac{\partial \Pi}{\partial S}
+    = \underbrace{\frac{\partial (N_{S} S)}{\partial S}}_{\textstyle=N_{S}} + m\sum_{i\in\Cc} \theta_{i} n_{i} \underbrace{\frac{\partial \Pc_{i}}{\partial S}}_{\textstyle=\Delta_{i}(S,t)}\\
+    &= N_{S} + \underbrace{m\sum_{i\in\Cc} \theta_{i} n_{i} \Delta_{i}(S,t)}_{\textstyle= \Delta_{\text{opts}}(S,t)}
+  \end{align*}
+  The options contribute $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$, where
+  $\Delta_{\Cc}(S,t)=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}(S,t)$ is the \hilite{composite
+  Delta}, per share.
+\end{frame}
+
+\begin{frame}{Delta-Neutral Position}
+  A position is \hilite{delta-neutral} if $\Delta_{\text{net}}(S,t)=0$. We get
+  there by choosing $N_{S}$ to offset the Delta of the options:
+  \begin{equation*}
+    \Delta_{\text{net}}(S,t)= N_{S} + \Delta_{\text{opts}}(S,t) = 0
+    \quad\Rightarrow\quad
+    N_{S} = - \Delta_{\text{opts}}(S,t)
+  \end{equation*}
+  \textbf{\ink{Quick gut-check example:}} short $10$ calls at $\Delta=0.6$ with
+  $m=100$ shares/contract, so $\Delta_{\text{opts}}=10\times(-1)\times0.6\times100=-600$.
+  Holding $N_{S}=+600$ shares gives $\Delta_{\text{net}}=600-600=0$.
+
+  \vspace{0.5em}
+  If leg $i$ is exercised or assigned at time $\tau\leq T$, set $\Delta_{i}=0$
+  for $t\geq\tau$ and update the shares:
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Call leg $i$}: $N_{S}\gets N_{S}+\theta_{i}\cdot m\cdot n_{i}$.
+    \item \hilite{Put leg $i$}: $N_{S}\gets N_{S}-\theta_{i}\cdot m\cdot n_{i}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Delta of the Common Composite Contracts}
+  Short legs at Deltas $\mp0.25$, long legs at $\mp0.10$ beyond them, and a
+  straddle at $\mp0.5$. At entry, one copy of each leg ($m=100$):
+  \begin{center}\small
+    \begin{tabular}{lll}
+      \toprule
+      Composite contract & Composite Delta, $\Delta_{\Cc}$ & Shares to hedge, $N_{S}$ \\
+      \midrule
+      Short put & $-(-0.25)=0.25$ & $-25$ \\
+      Short call & $-0.25$ & $+25$ \\
+      Put credit spread & $-0.10-(-0.25)=0.15$ & $-15$ \\
+      Call credit spread & $-0.25+0.10=-0.15$ & $+15$ \\
+      Short straddle & $-(-0.5)-0.5\approx0$ & $\approx0$ \\
+      Short strangle & $-(-0.25)-0.25=0$ & $0$ \\
+      Protected strangle & $-(-0.25)-0.25+0.10=0.10$ & $-10$ \\
+      Iron condor & $-0.10-(-0.25)-0.25+0.10=0$ & $0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  At these strikes, the sign of $\Delta_{\Cc}$ matches the outlook.
+\end{frame}
+
+\begin{frame}{Reading the Delta Table}
+  $\Delta_{\Cc}$ is the position's gain per share when the share price rises 1
+  USD/share:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{The rule of thumb}: a Delta of $\pm0.25$ is roughly a
+      one-in-four chance of finishing in the money under $\Q$.
+    \item \hilite{The protected strangle}: its long call leaves $+0.10$, so it
+      leans bullish.
+    \item \hilite{Zero is not zero risk}: Gamma pulls the Delta away from zero as
+      the share price moves.
+  \end{itemize}
+  \vspace{0.4em}
+  Staying delta-neutral means updating $N_{S}$ as the Deltas change.
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
+\end{frame}
+
