@@ -45,7 +45,8 @@ Write questions only on these three core results: (1) the profit at expiration o
 ## 4. Before sharing
 
 - **Listen** to the audio once. Stop on any of these: P and Q mixed up, the strikes swapped (K1 is the long put), "replicating portfolio", a re-teach of the Greeks, or a preview of a later lecture.
-- **Copy the quiz and flashcards** as text into `quiz.md` in this folder, and ask Claude to check each item against the lecture. Only checked text belongs in the repo; this repository is public.
+- **Get the quiz and flashcards as text.** NotebookLM's Quiz and Flashcards cannot be downloaded, so paste the section 3 prompt into the notebook's chat, followed by: "Give me 10 questions with four choices, the answer, and a one-sentence explanation; then 15 flashcards as Q:/A: lines." Copy the answer into `quiz.md` in this folder and ask Claude to check each item against the lecture. Only checked text belongs in the repo; this repository is public.
+- **Build the Canvas quiz.** After the check, Claude builds `L10b-quiz-canvas-qti.zip` and `quiz-instructions.txt`. Import the zip in Canvas (Settings > Import Course Content > QTI .zip file), set Points to 0, check "Do not count this assignment towards the final grade", and preview the math.
 - **Post** the audio on Canvas. Keep the audio and video out of git and the release zip.
 
 ## What was emphasized
