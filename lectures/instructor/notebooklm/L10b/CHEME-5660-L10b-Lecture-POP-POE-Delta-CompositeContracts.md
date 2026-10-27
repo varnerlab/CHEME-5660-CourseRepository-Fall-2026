@@ -104,7 +104,7 @@ The put side can lose only if the share price falls, and the call side only if i
 | [Protected strangle](#Protected-Strangles-and-Iron-Condors) | naked short put | call credit spread | neutral, leaning bullish |
 | [Iron condor](#Protected-Strangles-and-Iron-Condors) | put credit spread | call credit spread | neutral |
 
-Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high. 
+Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high and a tick at $S(0)$, the share price when we open the trade. 
 
 ### Short Puts and Short Calls
 
@@ -120,7 +120,7 @@ Each figure shows the payoff (blue) and the profit (black) at expiration, per sh
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration against the share price at expiration. Left, a short put at strike K: the profit is the credit above K and falls one for one below K, crossing zero at the breakeven, with the largest loss at a share price of zero. Right, a short call at K: the profit is the credit below K and falls without limit above K, crossing zero at the breakeven.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration against the share price at expiration. Left, a short put at strike K: the profit is the credit above K and falls one for one below K, crossing zero at the breakeven, with the largest loss at a share price of zero. Right, a short call at K: the profit is the credit below K and falls without limit above K, crossing zero at the breakeven. A tick labeled S(0) marks the share price when the trade opens: above K for the put and below K for the call, so each starts out of the money.*
 
 Selling one put, a [short put](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered), or one call, a [short call](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered), is the building block of every structure below. With premiums $\mathcal{P}_{p}$ (put) and $\mathcal{P}_{c}$ (call) at strike $K$, the profits at expiration are:
 $$
@@ -156,7 +156,7 @@ Each keeps the whole premium if it expires out of the money. The share price can
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a put credit spread: a long put at K1 and a short put at K2. The profit is the credit above K2, falls between the strikes, crosses zero at the breakeven, and stays at the maximum loss below K1. Right, a call credit spread, its mirror image: a short call at K1 and a long call at K2, with the credit below K1 and the maximum loss above K2.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a put credit spread: a long put at K1 and a short put at K2. The profit is the credit above K2, falls between the strikes, crosses zero at the breakeven, and stays at the maximum loss below K1. Right, a call credit spread, its mirror image: a short call at K1 and a long call at K2, with the credit below K1 and the maximum loss above K2. A tick labeled S(0) marks the share price when the trade opens, between the two spreads, so both start out of the money.*
 
 A __vertical spread__ pairs two contracts of the same type and expiration at different strikes. A __credit spread__ sells the one closer to the share price and buys the one farther away. The short leg collects the credit, and the long leg caps the loss. The two are also called a [bull put spread](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bull-put-spread) and a [bear call spread](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bear-call-spread).
 
@@ -201,7 +201,7 @@ Let's compute the POP and POE for a put credit spread on AMD.
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a short straddle: a short put and a short call at one strike K. The profit peaks at the credit at K and falls on both sides, crossing zero at two breakevens, with an unlimited loss as the share price rises. Right, a short strangle: a short put at K1 and a short call at K2. The profit is the credit between the strikes, with two breakevens outside them.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a short straddle: a short put and a short call at one strike K. The profit peaks at the credit at K and falls on both sides, crossing zero at two breakevens, with an unlimited loss as the share price rises. Right, a short strangle: a short put at K1 and a short call at K2. The profit is the credit between the strikes, with two breakevens outside them. The straddle's strike is labeled K = S(0), at the share price when the trade opens, and a tick labeled S(0) sits between the strangle's strikes.*
 
 A [straddle](https://www.investopedia.com/terms/s/straddle.asp) buys (or sells) a put and a call with the _same expiration_ and the _same strike price_ $K$. A [strangle](https://www.investopedia.com/terms/s/strangle.asp) uses _different strike prices_, a put at $K_{1}$ below a call at $K_{2}$. Selling both legs gives the profit at expiration:
 $$
@@ -242,7 +242,7 @@ Next, we buy long legs to protect the naked sides of the short strangle.
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a protected strangle: a short put at K1, a short call at K2, and a long call at K3. The profit is the credit between K1 and K2, stops at a maximum loss above K3, and keeps falling below K1. Right, an iron condor: a long put at K1, a short put at K2, a short call at K3, and a long call at K4. The profit is the credit between K2 and K3 and stops at a maximum loss on both sides.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a protected strangle: a short put at K1, a short call at K2, and a long call at K3. The profit is the credit between K1 and K2, stops at a maximum loss above K3, and keeps falling below K1. Right, an iron condor: a long put at K1, a short put at K2, a short call at K3, and a long call at K4. The profit is the credit between K2 and K3 and stops at a maximum loss on both sides. In both panels, a tick labeled S(0) marks the share price when the trade opens, between the short put and the short call.*
 
 A __protected strangle__, or [jade lizard](https://www.tastylive.com/concepts-strategies/jade-lizard), adds a long call at $K_{3}$ to a short strangle, so its call side becomes a credit spread and its put side stays naked. An [iron condor](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-iron-condor-spread) also adds a long put, so both sides are credit spreads. Each long leg caps the loss on its side but lowers the credit.
 

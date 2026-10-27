@@ -22,7 +22,10 @@ breakevens are open red circles, labeled $S^{\ddagger}$ for one breakeven and
 $S^{\ddagger}_{-}$, $S^{\ddagger}_{+}$ for two. A capped loss has a "max loss"
 arrow, and an uncapped call side ends in an arrowhead labeled "unlimited
 loss". The y-axis sits at $S(T)=0$, where the short put reaches its largest
-loss. The panels are schematics with no axis numbers. Each `.tex` header
+loss. A short tick labeled $S(0)$ just above the axis (`\entryprice`, added
+October 27, 2026) marks the share price when the trade opens, so students can see
+that the short legs start out of the money; the straddle's strike is labeled
+$K=S(0)$. The panels are schematics with no axis numbers. Each `.tex` header
 records the strikes, credit, and breakevens used to draw it.
 
 They were drawn in TikZ on October 23, 2026 in the style of the CHEME 5800 L9c
@@ -32,7 +35,7 @@ are in `profit-diagram.tex`, which each figure `\input`s.
 
 | File | Role |
 |---|---|
-| `profit-diagram.tex` | Shared palette, panel frame, and macros (`\strike`, `\breakeven`, `\maxprofit`, `\maxloss`, `\unlimited`) |
+| `profit-diagram.tex` | Shared palette, panel frame, and macros (`\strike`, `\entryprice`, `\breakeven`, `\maxprofit`, `\maxloss`, `\unlimited`) |
 | `Fig-L10b-*.tex` | Standalone TikZ sources (XeLaTeX) |
 | `Makefile` | Builds each PDF, then its themed SVG |
 | `theme_svg.py` | Adds the dark screen palette to each SVG |

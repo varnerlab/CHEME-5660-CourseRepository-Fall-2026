@@ -17,7 +17,7 @@
   \begin{scope}
     \panelframe{\textbf{Short straddle:} sell a call and a put at one strike}
     \begin{profitdata}
-      \strike{4.4}{0}{$K$}{short put, short call}
+      \strike{4.4}{0}{$K=S(0)$}{short put, short call}
       \draw[payoff, more] (0, -4.4) -- (4.4, 0) -- (8.6, -4.2);
       \draw[profit, more] (0, -2.9) -- (4.4, 1.5) -- (8.6, -2.7);
       \maxprofit{4.4}{1.5}
@@ -35,6 +35,7 @@
     \begin{profitdata}
       \strike{3.4}{0.8}{$K_{1}$}{short put}
       \strike{5.4}{0.8}{$K_{2}$}{short call}
+      \entryprice{4.4}
       \draw[payoff, more] (0, -3.4) -- (3.4, 0) -- (5.4, 0) -- (8.6, -3.2);
       \draw[profit, more] (0, -2.6) -- (3.4, 0.8) -- (5.4, 0.8) -- (8.6, -2.4);
       \maxprofit{4.4}{0.8}

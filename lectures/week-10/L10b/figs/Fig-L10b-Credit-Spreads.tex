@@ -22,6 +22,7 @@
     \begin{profitdata}
       \strike{2.2}{-1.1}{$K_{1}$}{long put}
       \strike{4.0}{0.7}{$K_{2}$}{short put}
+      \entryprice{4.5}
       \draw[payoff] (0, -1.8) -- (2.2, -1.8) -- (4.0, 0) -- (9.0, 0);
       \draw[profit] (0, -1.1) -- (2.2, -1.1) -- (4.0, 0.7) -- (9.0, 0.7);
       \maxprofit{7.25}{0.7}
@@ -38,6 +39,7 @@
     \begin{profitdata}
       \strike{5.0}{0.7}{$K_{1}$}{short call}
       \strike{6.8}{-1.1}{$K_{2}$}{long call}
+      \entryprice{4.5}
       \draw[payoff] (0, 0) -- (5.0, 0) -- (6.8, -1.8) -- (9.0, -1.8);
       \draw[profit] (0, 0.7) -- (5.0, 0.7) -- (6.8, -1.1) -- (9.0, -1.1);
       \maxprofit{1.85}{0.7}

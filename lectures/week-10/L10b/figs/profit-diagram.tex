@@ -79,6 +79,14 @@
     at (#1, -\yzero/\yscale - 0.08/\yscale)
     {#3\\[-1.5pt]{\footnotesize\color{vnink}#4}};}
 
+% The share price when the trade opens, S(0): a short tick on the S(T) axis at
+% #1, labeled just above the axis so it clears the strike labels below it. Added
+% October 27, 2026, so students can see where the strikes sit relative to today's
+% price (the time-decay figure marks S(0) the same way).
+\newcommand{\entryprice}[1]{%
+  \draw[draw=vnink, line width=0.8pt] (#1, -\yzero/\yscale) -- (#1, -\yzero/\yscale + 0.2/\yscale);
+  \node[anchor=south, inner sep=1.5pt, text=gdgray] at (#1, -\yzero/\yscale + 0.2/\yscale) {$S(0)$};}
+
 % A breakeven: open red circle on the zero line at #1, label #2 placed #3 of
 % the circle (above left or above right), clear of the circle's outline.
 \newcommand{\breakeven}[3]{%
