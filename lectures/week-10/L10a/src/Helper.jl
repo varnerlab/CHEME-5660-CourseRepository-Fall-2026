@@ -145,9 +145,9 @@ it holds each path's cash flow valued at date `t`, ready for the next step back.
 - `Tuple` with two entries:
     - `β::Vector{Float64}`: the least-squares coefficients `[β₀, β₁, β₂]`.
     - `step::DataFrame`: one row per in-the-money path, with the columns `path`,
-      `X` (share price at date `t`), `Y` (discounted later cash flow), `Ĥ` (fitted
-      value of holding), `exercise` (payoff now), and `decision` (`"exercise"` or
-      `"hold"`).
+      `X` (share price at date `t`), `exercise` (payoff now), `later` (cash flow valued
+      at date `t + 1`), `Y` (that cash flow discounted to date `t`), `Ĥ` (fitted value
+      of holding), and `decision` (`"exercise"` or `"hold"`).
 
 The regression needs at least three in-the-money paths. With fewer, the fit is not
 unique.
@@ -164,6 +164,7 @@ function backward_step!(cash_flow::Vector{Float64}, S::Matrix{Float64}, t::Int64
     number_of_paths = length(cash_flow); # how many simulated paths
     column = t + 1; # column of S that holds date t (column 1 holds t = 0)
     discount = exp(-gᵧ*Δt); # one-step discount factor
+    later = copy(cash_flow); # cash flows valued at date t + 1, kept for the table (USD/share)
 
     # discount: the later cash flows, seen from date t -
     for i ∈ 1:number_of_paths
@@ -203,7 +204,7 @@ function backward_step!(cash_flow::Vector{Float64}, S::Matrix{Float64}, t::Int64
     end
 
     # record the step for the table -
-    step = DataFrame(path = itm, X = X, Y = Y, Ĥ = Ĥ, exercise = exercise, decision = decision);
+    step = DataFrame(path = itm, X = X, exercise = exercise, later = later[itm], Y = Y, Ĥ = Ĥ, decision = decision);
 
     # return -
     return (β, step);

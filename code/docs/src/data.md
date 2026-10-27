@@ -45,11 +45,21 @@ the closing bid and ask, the last trade, and Alpaca's implied volatility and
 Greeks. Each session keeps the expirations nearest to 2, 7, 14, 30, 45, 60, and
 90 days out, so a contract can be followed from listing to expiration.
 
+| Group | Tickers |
+| --- | --- |
+| Technology | AAPL, AMD, AVGO, GOOG, INTC, META, MSFT, MU, NVDA, QCOM |
+| Healthcare | ABBV, AMGN, BMY, JNJ, LLY, MRNA, PFE, UNH |
+| Financials | BAC, GS, JPM, WFC |
+| Energy | CVX, OXY, XOM |
+| Retail and transport | TGT, UPS, WMT |
+| Exchange-traded funds | IWM, QQQ, SPY |
+
 The archive is about 119 MB compressed, so it ships as a lazy artifact. The first
 call to one of these loaders downloads it into the Julia depot, and later calls
 reuse that copy.
 
 ```julia
+tickers = unique(MyOptionsEODUnderlyingDataSet().ticker)    # the tickers in the archive
 nvda = MyOptionsEODDataSet(ticker = "NVDA")                 # every NVDA contract, every session
 prices = MyOptionsEODUnderlyingDataSet(ticker = "NVDA")     # the share price on each session
 chain = MyOptionsEODChainDataSet(ticker = "NVDA", date = Date(2026, 10, 8),
