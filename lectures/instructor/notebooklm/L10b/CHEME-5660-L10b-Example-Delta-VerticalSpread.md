@@ -74,25 +74,13 @@ Output:
 ```
 
 ### Constants
-Let's set the constants. The share price $S_{0}$ is AMD's close on the quote date. The step size `Δt::Float64` is one day in units of years (a `365-day` year), and `T::Float64` is the time to expiration. The risk-free rate $g_{y}$ is the 13-week Treasury bill yield on the quote date, converted to continuous compounding, and `𝒟::Float64` is the accumulation factor $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ from today to expiration.
-
-Other constants:
+Next, let's set the constants. See the comments next to the constants for definitions, units, permissible values, etc. 
 
 In this example, we'll need to do a projection of the future share price distribution at the contract's expiration date. We'll use a Geometric Brownian Motion (GBM) model to project the future share price distribution at expiration.
 
 Let's load the single asset geometric Brownian motion (SAGBM) parameters which we estimated a few lectures ago, which include the drift and diffusion coefficients for each ticker. We'll store this data in the `parameters_df::DataFrame` variable:
 
 We are looking at `AMD`, so let's see what the parameters for this ticker are:
-
-Output:
-```
-1×6 DataFrame
- Row │ ticker   drift     t        lower_bound_drift  upper_bound_drift  volat ⋯
-     │ String7  Float64   Float64  Float64            Float64            Float ⋯
-─────┼──────────────────────────────────────────────────────────────────────────
-   1 │ AMD      0.439658  1.96082            0.43459           0.444725    0.4 ⋯
-                                                                1 column omitted
-```
 
 ### Contract models
 Next, we construct contract models for the options in this example. We begin by building an instance of the [MyAmericanPutContractModel type](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/derivatives/#VLQuantitativeFinancePackage.MyAmericanPutContractModel) using the [custom build(...) method](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/derivatives/#VLQuantitativeFinancePackage.build-Tuple{Type{MyAmericanPutContractModel},%20NamedTuple}). 
@@ -209,7 +197,10 @@ Details:
 ```
 
 `Unhide` the code block below to see how we plotted the future share price of `AMD` generated using a risk-neutral single asset geometric Brownian motion model parameterized using the implied volatility.
+
 > __What do we see?__ The geometric Brownian motion generates future share prices that are [log-normally distributed](https://en.wikipedia.org/wiki/Log-normal_distribution) (blue line), and the log-normal distribution `d_gbm` (red line) describes them, consistent with the check above.
+
+What do the simulated share prices at expiration look like?
 
 ### Alternative: Future share price projection using implied volatility
 Alternatively, we could use the __implied volatility__ to estimate the expected share price move over the time to expiration $T$ (years).
@@ -274,6 +265,12 @@ risk-neutral ℚ: gᵧ = 0.0413 (1/yr), ATM IV = 0.5617
 > * __The POP:__ Our belief $\mathbb{P}$ gives the spread a much higher POP than $\mathbb{Q}$. Its drift $\hat{\mu}$ is much larger than $g_{y}$, and its volatility $\hat{\sigma}$ is lower than the implied volatility, so $\mathbb{P}$ puts less probability below the breakeven.
 > * __The POE:__ In every row, the short put is more likely to be exercised than the long put, because its strike price is higher. Under $\mathbb{Q}$, the short put finishes in the money about half the time.
 > * __POP and POE:__ In every row, the POP is larger than one minus the short put's POE. The breakeven sits below $K_{2}$, so the spread still makes money when the share price finishes just below $K_{2}$.
+
+`Unhide` the code block below to see how we plotted the cumulative distribution function $F_{S}(x)$ of each distribution in the table. The POP is one minus the height of a curve at the breakeven $S^{\ddagger}$, and each leg's POE is the height of a curve at its strike price. The dashed lines read the heights of $\mathbb{P}$ and $\mathbb{Q}$ across to the probability axis.
+
+> __What do we see?__ Around the strikes (purple lines), our belief $\mathbb{P}$ (navy line) lies to the right of the other two curves, so it puts less probability below the breakeven $S^{\ddagger}$ (green line) and gives the higher POP in the table. The risk-neutral $\mathbb{Q}$ (blue line) and Normal IV (red line) curves stay close, and the Normal IV curve is higher at the lowest share prices because a Normal distribution is symmetric about its mean.
+
+How do the cumulative distributions compare?
 
 ___
 
