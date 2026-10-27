@@ -75,3 +75,12 @@ L10b materials").
 The L10b NotebookLM sources, prompts, and checked self-check quiz (Canvas QTI) are
 in `lectures/instructor/notebooklm/L10b/`. They are tracked in the repository and
 not shipped to students.
+
+## CI build — October 27, 2026
+
+Tagged `week-10.1` at 983e426. Release workflow run 40587108645 passed and opened
+a draft release. The downloaded zip matches its `.sha256` file (GitHub digest
+`6e28a9942d4d5b7923e6a9c46003877649d86c78f6572b671a5496c020f166d7`). Its 165
+entries match the local bundle file for file. The only listing difference is how
+the two unzip tools print the narrow no-break space in one MU screenshot filename
+under `code/src/data/options/original/`.
