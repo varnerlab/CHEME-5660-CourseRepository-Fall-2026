@@ -14,8 +14,8 @@ Some results in this lecture are core, and some are here to build understanding:
 >
 > __Core results:__
 > * Profit at expiration $=$ the sum of the legs' payoffs, weighted by orientation and copy number, minus the net premium grown to expiration. The probability of profit (POP) is the probability that this profit is positive.
-> * A profit diagram shows the breakevens, the maximum profit, and the maximum loss. For the eight credit contracts in this lecture, the maximum profit is the credit grown to expiration, and the maximum loss comes from the put side or the call side.
-> * Composite Delta: $\Delta_{\mathcal{C}}=\sum_{i\in\mathcal{C}}\theta_{i}n_{i}\Delta_{i}$ (per share). The net Delta of a position is the number of shares plus the Delta of the options, $\Delta_{\text{opts}}=m\,\Delta_{\mathcal{C}}$, and holding $N_{S}=-\Delta_{\text{opts}}$ shares makes it delta-neutral.
+> * A profit diagram shows the breakevens, the maximum profit (for the eight credit contracts in this lecture, the credit grown to expiration), and the maximum loss (from the put side or the call side).
+> * Composite Delta: $\Delta_{\mathcal{C}}=\sum_{i\in\mathcal{C}}\theta_{i}n_{i}\Delta_{i}$ (per share). The options' Delta is $\Delta_{\text{opts}}=m\,\Delta_{\mathcal{C}}$, and holding $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta, $N_{S}+\Delta_{\text{opts}}$, zero.
 >
 > __For understanding__ (you will not need to reproduce or memorize these):
 > * The derivation of the net present value, and the formula tables for the eight composite contracts (for reference).
@@ -36,9 +36,7 @@ __Review these examples on your own.__
 ___
 
 ## Composite Contracts
-We can combine calls and puts, and options with shares, into composite contracts. Let's look at the payoff and the net present value in general, then at specific examples.
-
-Let $\mathcal{C}$ be a composite contract with $d$ legs, long or short puts and calls, all on the same underlying asset XYZ with the same expiration date $T$.
+A composite contract $\mathcal{C}$ combines $d$ legs, long or short puts and calls, on the same underlying asset with the same expiration date $T$.
 
 Its payoff per share at expiration, $\hat{V}_{\mathcal{C}}(S(T))$, is:
 $$
@@ -53,9 +51,9 @@ $$
 $$
 The payoff of a composite contract is the sum of its legs' payoffs, weighted by orientation and copy number.
 
-> __Why is this interesting?__ Combining options with different strikes, orientations, and quantities creates __non-linear profit structures__ that no single contract can, matched to a market view and a risk tolerance.
+> __Why is this interesting?__ Different strikes, orientations, and quantities give profit shapes that no single contract can, matched to a bullish, bearish, or neutral outlook.
 
-A composite contract can fit a bullish, bearish, or neutral outlook, or hedge an existing position. Let's start with what it is worth today.
+Let's start with what a composite contract is worth today.
 
 ### The Net Present Value of a Composite Contract
 Previously, we wrote the net present value (NPV) of a single contract. The buyer pays the premium $\mathcal{P}$ (USD/share) today and receives the payoff at expiration, so $\operatorname{NPV}_{0}=-\mathcal{P}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V(K,S(T))$, where $\mathcal{D}^{-1}_{T,0}(g_{y})=e^{-g_{y}T}$ discounts at the benchmark growth rate $g_{y}$. The seller's NPV is the buyer's times $\theta=-1$.
@@ -82,7 +80,7 @@ $$
 \boxed{
 \text{POP}_{\mathcal{C}} = \mathbb{P}\Bigl(\operatorname{NPV}_{0}(\mathcal{C})>0\Bigr) = \mathbb{P}\Bigl(\hat{P}_{\mathcal{C}}(S(T))>0\Bigr)}
 $$
-where $\mathbb{P}$ is our belief about the share price at expiration. Previously, we counted the samples on the profitable side of the breakeven. Counting the samples with a positive profit gives the same answer for one contract and also works with two breakevens.
+where $\mathbb{P}$ is our belief about the share price at expiration. We count the simulated samples whose profit is positive. This works for any number of breakevens.
 
 __Probability of exercise:__ Each leg has its own probability of exercise, the probability that it finishes in the money:
 $$
@@ -112,15 +110,21 @@ The legs are American contracts, priced on the CRR tree with volatility $\sigma=
 
 __What do we see?__
 
-* __Before expiration (left):__ Closing early earns the credit, grown to that day, minus the cost to buy both legs back. The legs still carry extrinsic value, so every earlier curve lies below the profit at expiration.
-* __At the entry share price (right):__ If the share price stays at $S(0)$, buying both legs back right away costs exactly the credit, so closing at once earns nothing. Both legs are out of the money, so that cost is all extrinsic value.
-* __Time decay:__ As the days pass, the extrinsic value decays and the profit if we close rises. At expiration, both legs expire worthless, and we keep the whole credit.
+* __Before expiration (left):__ Closing early earns the credit, grown to that day, minus the cost to buy both legs back. That cost still includes extrinsic value, so every earlier curve lies below the profit at expiration.
+* __At the entry share price (right):__ Both legs are out of the money, so buying them back right away costs exactly the credit, all of it extrinsic value. Closing at once earns nothing.
+* __Time decay:__ As the extrinsic value decays, the profit if we close rises, up to the whole credit at expiration.
 
-So the profit at expiration is the most the strangle can earn at each share price, and an early exit falls short by roughly the extrinsic value left in its legs. From here on, every diagram is the profit at expiration.
+So an early exit earns less than the profit at expiration, by roughly the extrinsic value left in the legs. From here on, every diagram is the profit at expiration.
 ___
 
 ## Common Composite Contracts
-Each contract below collects more premium than it pays, so it opens for a credit. Each has a __put side__ and a __call side__. A side is empty, a __naked__ short contract (no protection), or a __credit spread__ (a short contract protected by a long one farther from the share price). The __outlook__ follows from which side can lose. A contract that loses only if the share price falls is __neutral to bullish__. One that loses only if it rises is __neutral to bearish__, and one that loses either way is __neutral__:
+Each contract below opens for a credit: it collects more premium than it pays. Each has a __put side__ and a __call side__, and each side is:
+
+* __empty:__ no contract on that side, so that side cannot lose;
+* __naked:__ a short contract with no protection;
+* __a credit spread:__ a short contract protected by a long one farther from the share price.
+
+The put side can lose only if the share price falls, and the call side only if it rises. So the __outlook__ follows from which side can lose: only the put side, __neutral to bullish__; only the call side, __neutral to bearish__; both, __neutral__:
 
 | Composite contract | Put side | Call side | Outlook |
 |:--|:--|:--|:--|
@@ -133,9 +137,7 @@ Each contract below collects more premium than it pays, so it opens for a credit
 | [Protected strangle](#Protected-Strangles-and-Iron-Condors) | naked short put | call credit spread | neutral, leaning bullish |
 | [Iron condor](#Protected-Strangles-and-Iron-Condors) | put credit spread | call credit spread | neutral |
 
-The sides also set the maximum loss. Only the put side can lose when the share price falls, and only the call side when it rises. An empty side loses nothing, a credit spread at most its strike width minus the credit, a naked put at most its strike minus the credit, and a naked call without limit.
-
-Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high. The profit is the payoff shifted up by the credit grown to expiration, so the maximum profit is the credit grown to expiration. In each formula, $\mathcal{P}_{i}$ is the premium of the leg at strike $K_{i}$, a put on the put side and a call on the call side. We write $\mathcal{D}$ for the accumulation factor $\mathcal{D}_{T,0}(g_{y})$, which is close to one for contracts that expire within weeks.
+Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high. 
 
 ### Short Puts and Short Calls
 
@@ -291,7 +293,7 @@ Their maximum profit, breakevens, and maximum losses are:
 | Breakeven, call side | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
 | Maximum loss, call side | $(K_{3}-K_{2})-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
 
-The protected strangle's call-side loss is capped but its put is naked, so its outlook leans bullish. A credit, grown to expiration, of at least $K_{3}-K_{2}$ removes the call-side loss, as jade lizard guides recommend. The share price finishes beyond at most one side of the iron condor, so its maximum loss is its wider strike width minus the credit.
+The protected strangle's call side is capped but its put side is naked, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
 ___
 
 ## Delta as a Hedging Tool for Composite Contracts
@@ -339,7 +341,11 @@ If leg $i$ is exercised or assigned at time $\tau\le T$, set $\Delta_{i}=0$ for 
 * Put leg $i$: $N_S \leftarrow N_S - \theta_i \cdot m \cdot n_i$.
 
 ### Delta of the Common Composite Contracts
-Without shares, $\Delta_{\mathcal{C}}$ is how much the position gains per share when the share price rises 1 USD/share. A common rule sells the put and the call with Deltas of $-0.25$ and $0.25$, each with roughly a one-in-four chance of finishing in the money under the risk-neutral probabilities $\mathbb{Q}$, and buys the legs with Deltas of $-0.10$ and $0.10$ beyond them. A straddle sells the at-the-money put and call, with Deltas near $-0.5$ and $0.5$.
+Without shares, $\Delta_{\mathcal{C}}$ is how much the position gains per share when the share price rises 1 USD/share. The table uses a common rule for choosing strikes:
+
+* __Short legs:__ sell the put and the call with Deltas of $-0.25$ and $0.25$, each about a one-in-four chance of finishing in the money under the risk-neutral probabilities $\mathbb{Q}$.
+* __Long legs:__ buy the protecting put and call with Deltas of $-0.10$ and $0.10$, farther from the share price.
+* __Straddle:__ sell the at-the-money put and call, with Deltas near $-0.5$ and $0.5$.
 
 For one copy of each leg, the composite Delta at entry and the shares that hedge one contract ($m=100$) are:
 

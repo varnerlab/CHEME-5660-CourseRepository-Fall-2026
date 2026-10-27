@@ -56,9 +56,8 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today, we work two examples with the Greeks, the POE, and the POP, then combine
-  calls and puts into composite contracts. What is a composite contract worth, and
-  when does it make money?
+  First, two examples on the Greeks, the POE, and the POP. Then: what is a
+  composite contract worth, and when does it make money?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
@@ -79,14 +78,13 @@
     \item Profit at expiration: the legs' payoffs, weighted by $\theta_{i}n_{i}$,
       minus the net premium grown to expiration. POP: the probability it is
       positive.
-    \item Read a profit diagram: the breakevens, the maximum profit, and the
-      maximum loss. For the eight credit contracts: the maximum profit is the
-      credit grown to expiration, and the maximum loss comes from the put or
-      call side.
+    \item Read a profit diagram: the breakevens, the maximum profit (for the
+      eight credit contracts, the credit grown to expiration), and the maximum
+      loss (from the put or call side).
     \item Composite Delta: $\Delta_{\Cc}=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}$ (per
-      share). Net Delta: $N_{S}+\Delta_{\text{opts}}$, with
-      $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$. Holding $N_{S}=-\Delta_{\text{opts}}$
-      shares makes it delta-neutral.
+      share). Options' Delta: $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$.
+      Holding $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta,
+      $N_{S}+\Delta_{\text{opts}}$, zero.
   \end{itemize}
 
   \vspace{0.5em}
@@ -229,17 +227,16 @@
 
 \begin{frame}{Why Expiration? What Do We See?}
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Before expiration (left)}: closing earns the credit grown to
-      that day minus the cost to buy the legs back. Every earlier curve lies
-      below the profit at expiration.
-    \item \hilite{At the entry share price (right)}: closing at once costs
-      exactly the credit, all of it extrinsic value.
+    \item \hilite{Before expiration (left)}: the buyback price still includes
+      extrinsic value, so earlier curves lie below the profit at expiration.
+    \item \hilite{At the entry share price (right)}: both legs are out of the
+      money, so closing at once costs exactly the credit and earns nothing.
     \item \hilite{Time decay}: as the extrinsic value decays, the profit if we
-      close rises, up to the whole credit at expiration.
+      close at $S(0)$ rises to the whole credit.
   \end{itemize}
   \vspace{0.4em}
-  An early exit falls short of the profit at expiration by roughly the extrinsic
-  value left in the legs.
+  An early exit earns less than the profit at expiration, by roughly the
+  extrinsic value left in the legs.
 \end{frame}
 
 % ========== Common Composite Contracts
@@ -250,10 +247,12 @@
     \item \hilite{Sides}: empty, a \hilite{naked} short contract, or a
       \hilite{credit spread} (a short contract protected by a long one farther
       out).
-    \item \hilite{Outlook}: losing only if the share price falls is neutral to
-      bullish, only if it rises neutral to bearish, either way neutral.
-    \item \hilite{Maximum loss}: empty, none; credit spread, strike width minus
-      the credit; naked put, strike minus the credit; naked call, unlimited.
+    \item \hilite{Outlook}: the put side loses if the price falls, the call side
+      if it rises. Only the put side: neutral to bullish; only the call side:
+      neutral to bearish; both: neutral.
+    \item \hilite{Maximum loss}: empty, none; credit spread, at most the strike
+      width minus the credit; naked put, at most the strike minus the credit;
+      naked call, unlimited.
   \end{itemize}
 \end{frame}
 
@@ -567,14 +566,12 @@
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{The NPV of a composite contract is the sum of its legs' NPVs}:
-      it is the profit at expiration discounted to today, so the POP is the
-      probability that the NPV is positive.
+      the POP is the probability that it is positive.
     \item \hilite{Common composite contracts have a put side and a call side}:
-      each side is empty, naked, or a credit spread, and sets the outlook and the
-      maximum loss. Closing early pays the extrinsic value left in the legs.
-    \item \hilite{Delta builds hedged positions}: the net Delta is the shares
-      plus the weighted leg Deltas, and holding $N_{S}=-\Delta_{\text{opts}}$
-      shares makes it zero.
+      each side is empty, naked, or a credit spread, which sets the outlook and
+      the maximum loss.
+    \item \hilite{Delta builds hedged positions}: holding
+      $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta zero.
   \end{itemize}
 \end{frame}
 
