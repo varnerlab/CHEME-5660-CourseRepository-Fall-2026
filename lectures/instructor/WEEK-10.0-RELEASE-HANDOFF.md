@@ -131,3 +131,11 @@ Re-released October 26, 2026 from 20777f3 (run 40400777522). The release zip mat
 own .sha256 file, and its contents match the local bundle file for file (99 files). The
 only difference was an empty `L10a/docs/` folder, which exists locally from old LaTeX
 build files and is untracked. Published as a full release.
+
+Re-released October 27, 2026 from 35caefd (run 40491566684). The instructor's edits split
+the L10a must-know box into core results and material for understanding, in the lecture
+and the deck. The setup cells of the ExtrinsicValue and LSM examples had saved an
+"Activating project" line with an author path; that output was cleared. The bundle
+contains L10a only, its checksum matches GitHub's digest, and the local bundle passed
+the setup and Include.jl tests. Published as a full release. The L10b edits of the same
+day were left uncommitted for week-10.1.
