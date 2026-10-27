@@ -36,6 +36,7 @@ function 𝒫(model::AbstractContractModel; S::Float64, σ::Float64, T::Float64,
     @assert isodd(h) "the Leisen–Reimer tree needs an odd number of levels, but h = $(h)"
 
     # price the contract on the Leisen–Reimer tree (μ is the package's name for the risk-free rate) -
+    # default method is: :crr, but we want :leisen_reimer for this lecture
     premium = binomial_premium(model; method = :leisen_reimer, h = h, Sₒ = S, σ = σ, T = T, μ = g); # (USD/share)
 
     # return -

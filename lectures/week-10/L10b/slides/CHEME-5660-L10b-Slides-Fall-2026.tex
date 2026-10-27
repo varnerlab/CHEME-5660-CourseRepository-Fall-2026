@@ -77,9 +77,11 @@
     \item Profit at expiration: the legs' payoffs, weighted by $\theta_{i}n_{i}$,
       minus the net premium grown to expiration. POP: the probability it is
       positive.
-    \item Read a profit diagram: the breakevens, the maximum profit (the credit
-      grown to expiration), and the maximum loss (from the put or call side).
-    \item Composite Delta: $\Delta_{\Cc}=\sum_{i}\theta_{i}n_{i}\Delta_{i}$ (per
+    \item Read a profit diagram: the breakevens, the maximum profit, and the
+      maximum loss. For the eight credit contracts: the maximum profit is the
+      credit grown to expiration, and the maximum loss comes from the put or
+      call side.
+    \item Composite Delta: $\Delta_{\Cc}=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}$ (per
       share). Net Delta: $N_{S}+\Delta_{\text{opts}}$, with
       $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$. Holding $N_{S}=-\Delta_{\text{opts}}$
       shares makes it delta-neutral.
