@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Where do the CRR up and down factors come from? · CHEME 5660</title>
+  <meta name="description" content="We match the mean and variance of one lattice step to geometric Brownian motion. For a small time step, the size of a move depends only on the volatility, so the same up and down factors serve forecasting and pricing.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>Where do the CRR up and down factors come from?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>We match the mean and variance of one lattice step to geometric Brownian motion. For a small time step, the size of a move depends only on the volatility, so the same up and down factors serve forecasting and pricing.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What must one step of the tree reproduce?</strong> The CRR model makes a down move undo an up move, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>d</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">ud=1</annotation></semantics></math>. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo>ln</mo><mi>u</mi></mrow><annotation encoding="application/x-tex">a=\ln u</annotation></semantics></math>, the growth rate over one step of length <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mi>a</mi><mi>/</mi><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">+a/\Delta t</annotation></semantics></math> with the real-world probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>a</mi><mi>/</mi><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">-a/\Delta t</annotation></semantics></math> with probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">1-p</annotation></semantics></math>. Under geometric Brownian motion, the growth rate over <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> has mean <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_{g}</annotation></semantics></math> and variance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>σ</mi><mn>2</mn></msup><mi>/</mi><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\sigma^{2}/\Delta t</annotation></semantics></math>. Matching the two moments gives (L9b):</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>a</mi></mrow><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>μ</mi><mi>g</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mrow><mn>4</mn><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mi>a</mi><mn>2</mn></msup></mrow><mrow><mi>Δ</mi><msup><mi>t</mi><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mfrac><msup><mi>σ</mi><mn>2</mn></msup><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><msup><mi>a</mi><mn>2</mn></msup><mo>=</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>Δ</mi><mi>t</mi><mo>+</mo><msubsup><mi>μ</mi><mi>g</mi><mn>2</mn></msubsup><mi>Δ</mi><msup><mi>t</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{(2p-1)\,a}{\Delta t}=\mu_{g},
+\qquad
+\frac{4p(1-p)\,a^{2}}{\Delta t^{2}}=\frac{\sigma^{2}}{\Delta t}
+\quad\Longrightarrow\quad
+a^{2}=\sigma^{2}\Delta t+\mu_{g}^{2}\Delta t^{2}.
+</annotation></semantics></math></div>
+<p><strong>When can we drop the second term?</strong> The second term equals the first times <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>g</mi></msub><mi>/</mi><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">(\mu_{g}/\sigma)^{2}\Delta t</annotation></semantics></math>. Take <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>g</mi></msub><mo>=</mo><mn>0.10</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mu_{g}=0.10\,\mathrm{yr}^{-1}</annotation></semantics></math>. With daily steps, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>365</mn></mrow><annotation encoding="application/x-tex">\Delta t=1/365</annotation></semantics></math> year, the ratio is 0.0003, and keeping the term would change <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> by about 0.015%. With a single one-year step, the ratio is 0.11, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> would change by 5.4%. Lattice pricing uses many small steps, so Cox, Ross, and Rubinstein keep only the first term, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow><annotation encoding="application/x-tex">a=\sigma\sqrt{\Delta t}</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msup><mi>e</mi><mrow><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>d</mi><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>σ</mi><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u=e^{\sigma\sqrt{\Delta t}},\qquad d=e^{-\sigma\sqrt{\Delta t}}.
+</annotation></semantics></math></div>
+<p>For the daily step, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.01583</mn></mrow><annotation encoding="application/x-tex">u=1.01583</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.98442</mn></mrow><annotation encoding="application/x-tex">d=0.98442</annotation></semantics></math>.</p>
+<p><strong>Why match real-world moments when we price with q?</strong> After the second term is dropped, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> depends on neither <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_{g}</annotation></semantics></math> nor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>: the size of a move is set by the volatility alone, and the volatility is the same under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> (L9b). One tree therefore serves both questions, and only the up probability changes. For forecasting, the mean condition gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>g</mi></msub><mi>/</mi><mi>σ</mi><mo stretchy="true" form="postfix">)</mo></mrow><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.5087</mn></mrow><annotation encoding="application/x-tex">p=\tfrac{1}{2}\bigl(1+(\mu_{g}/\sigma)\sqrt{\Delta t}\bigr)=0.5087</annotation></semantics></math> for the daily step. For pricing, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo>−</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">q=(e^{g_{y}\Delta t}-d)/(u-d)</annotation></semantics></math>, which is 0.4996 with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>. For a small step, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>≈</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mo>+</mo><mfrac><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>−</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn></mrow><mrow><mn>2</mn><mi>σ</mi></mrow></mfrac><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mrow><annotation encoding="application/x-tex">q\approx\tfrac{1}{2}+\frac{g_{y}-\sigma^{2}/2}{2\sigma}\sqrt{\Delta t}</annotation></semantics></math>, the formula for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>−</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">g_{y}-\sigma^{2}/2</annotation></semantics></math> in place of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_{g}</annotation></semantics></math>. The <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb">advanced notebook</a> shows that with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> the tree’s mean and variance approach those of geometric Brownian motion under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> as the step shrinks.</p>
+<p><strong>Does q stay between zero and one?</strong> We need <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>&lt;</mo><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo>&lt;</mo><mi>u</mi></mrow><annotation encoding="application/x-tex">d&lt;e^{g_{y}\Delta t}&lt;u</annotation></semantics></math>, which for the CRR factors becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="false" form="postfix">|</mo><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mo>&lt;</mo><mi>σ</mi></mrow><annotation encoding="application/x-tex">\lvert g_{y}\rvert\sqrt{\Delta t}&lt;\sigma</annotation></semantics></math>. With daily steps and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>, the volatility must exceed <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.04</mn><msqrt><mrow><mn>1</mn><mi>/</mi><mn>365</mn></mrow></msqrt><mo>=</mo><mn>0.0021</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.04\sqrt{1/365}=0.0021\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, far below the volatilities in an options chain. The L9b pricing example checks this floor for every contract.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Halve the volatility to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.15</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.15\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, with daily steps and the same <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_{g}</annotation></semantics></math>. What happens to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> and to the dropped term? </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msup><mi>e</mi><mrow><mn>0.15</mn><mi>/</mi><msqrt><mn>365</mn></msqrt></mrow></msup><mo>=</mo><mn>1.00788</mn></mrow><annotation encoding="application/x-tex">u=e^{0.15/\sqrt{365}}=1.00788</annotation></semantics></math>. The ratio of the dropped term to the kept term becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.10</mn><mi>/</mi><mn>0.15</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>/</mi><mn>365</mn><mo>=</mo><mn>0.0012</mn></mrow><annotation encoding="application/x-tex">(0.10/0.15)^{2}/365=0.0012</annotation></semantics></math>, still small, so dropping it changes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> by about 0.06%.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb">L9b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb">L9b advanced: deriving the CRR factors</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L9b">L9b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
