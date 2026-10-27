@@ -35,6 +35,25 @@ __Review these examples on your own.__
 > [▶ Compute the POP and POE for a straddle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a straddle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss.
 ___
 
+## Company Profile: tastytrade
+
+[tastytrade](https://tastytrade.com/about-us), formerly tastyworks, is a U.S. online brokerage for stocks, options, futures, and crypto. Its parent, [tastylive](https://www.tastylive.com/about-us), is a free online financial network that launched in 2011 with "an emphasis on options trading," and the brokerage followed in 2017. The founders, [Tom Sosnoff](https://en.wikipedia.org/wiki/Tom_Sosnoff) and Scott Sheridan, were options market makers at the Chicago Board Options Exchange in the 1980s and started the online broker thinkorswim in 1999, which [TD Ameritrade bought in 2009](https://www.finextra.com/newsarticle/19495/td-ameritrade-agrees-606m-deal-to-buy-thinkorswim) for about 606 million USD. In 2021, the U.K. broker IG Group [bought tastytrade](https://investegate.co.uk/announcement/rns/ig-group-holdings--igg/acquisition/6468003) for 300 million USD in cash and 61 million IG shares.
+
+> __What does the firm do?__
+>
+> * __Options brokerage:__ IG describes tastytrade as "an online brokerage and investor education platform with a leading position in the U.S. listed options and futures market."
+> * __Teaching traders to sell options:__ tastylive's guides teach the composite contracts in this lecture. Its [strangle guide](https://www.tastylive.com/concepts-strategies/strangle) suggests selling strangles when implied volatility is high, at around 45 days to expiration.
+> * __Managing winners:__ The same guide sets the first profit target at "50% of the maximum profit," reached by buying the strangle back for half of the credit received.
+
+__Explore further:__
+
+* __Strategy guides:__ Read tastylive's guides to the [iron condor](https://www.tastylive.com/concepts-strategies/iron-condor) and the [jade lizard](https://www.tastylive.com/concepts-strategies/jade-lizard), our protected strangle.
+* __Videos:__ Watch [Market Measures](https://www.tastylive.com/shows/market-measures), a tastylive show on options probabilities, volatility, and trading strategies.
+
+__Connection to today's lecture:__ Buying a strangle back at half of its credit closes it before expiration. The cost to close is the premium still left in the legs, so the trade gives up the rest of the credit to end sooner. We look at this tradeoff in *Why Wait to Expiration?*
+
+___
+
 ## Composite Contracts
 A composite contract $\mathcal{C}$ combines $d$ legs, long or short puts and calls, on the same underlying asset with the same expiration date $T$. Its payoff per share at expiration, $\hat{V}_{\mathcal{C}}(S(T))$, is given by:
 $$

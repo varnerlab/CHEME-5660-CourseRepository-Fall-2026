@@ -2,7 +2,7 @@
 
 Instructor notes. Public in the repository, not in the student release zip.
 
-Thursday, October 29, 2026. Deck: 27 slides. Delta hedging moved to L11a (October 27). In class: the two L10a examples we did not
+Thursday, October 29, 2026. Deck: 28 slides. Delta hedging moved to L11a (October 27). In class: the two L10a examples we did not
 reach on Tuesday (Example 1, Greeks; Example 2, POE/POP; both NVDA, numbers in the L10a
 brief, where they are Examples 2 and 3), then Example 3, the put credit spread. The straddle example is review on your own:
 it has naked legs on both sides, so it is the harder trade to start with. Both L10b
@@ -15,6 +15,9 @@ expiration, 53 days). AMD reports earnings on November 3 after the close.
    the premium, the quoted units (Θ/365, ν/100, ρ/100), one contract = 100·Δ shares, and
    the POE and POP formulas. No finite differences and no Delta–POE proposition; the
    examples carry those.
+   Then the **tastytrade profile** (one slide): a broker built on teaching people to sell
+   strangles and iron condors at ~45 DTE and buy them back at 50% of max profit. Its
+   connection is the early-exit section: closing early gives up the premium left in the legs.
 1. Last time: one contract. Today: put several together. What is the combination
    worth, and when does it make money?
 2. **The profit at expiration is a sum over the legs.** Payoffs weighted by θᵢnᵢ, minus
