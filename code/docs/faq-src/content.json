@@ -1,7 +1,7 @@
 {
   "course": "CHEME 5660",
   "semester": "Fall 2026",
-  "updated": "2026-10-05",
+  "updated": "2026-10-27",
   "themes": [
     {
       "id": "models",
@@ -37,6 +37,11 @@
       "id": "cashflows",
       "name": "Cash flows & bonds",
       "description": "Discount dated payments and measure how a bond price responds to yield."
+    },
+    {
+      "id": "options",
+      "name": "Options & premiums",
+      "description": "Price European and American options, and read what the premium and its inputs tell us."
     }
   ],
   "articles": [
@@ -768,6 +773,194 @@
           "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-2/L2b/CHEME-5660-L2b-Lecture-Yield-Duration-Convexity-Curve-Fall-2026.ipynb"
         }
       ]
+    },
+    {
+      "id": "risk-neutral-probability",
+      "theme": "options",
+      "title": "Why do we price options with q instead of our own probability?",
+      "answer": "Our own probability tells us the most we would pay, and buyers with different beliefs get different numbers. The market quotes one premium, so it prices with one shared rule, under which the expected share price grows at the risk-free rate.",
+      "body": "**What does our own probability give us?** Suppose a share trades at $S_{0}=100$ USD/share and, one year from now, will be worth either $uS_{0}=120$ or $dS_{0}=90$ USD/share, so $u=1.2$ and $d=0.9$. A call with strike $K=100$ USD/share pays 20 USD/share after an up move and nothing after a down move. With the risk-free rate $g_{y}=0.04\\,\\mathrm{yr}^{-1}$, the one-year discount factor is $\\mathcal{D}^{-1}_{1,0}(g_{y})=e^{-0.04}=0.9608$. As in L9a, a buyer whose real-world up probability is $p$ has the expected NPV:\n\n$$\n\\mathbb{E}\\left[\\operatorname{NPV}_{0}\\right]=-\\mathcal{P}_{c}+\\mathcal{D}^{-1}_{1,0}(g_{y})\\,(20)\\,p.\n$$\n\nA buyer with $p=0.7$ has a non-negative expected NPV for any premium up to $0.9608(20)(0.7)=13.45$ USD/share. A buyer with $p=0.4$ stops at 7.69 USD/share. Each number is the most that buyer would pay, and every belief gives a different one.\n\n**Which probability gives one market price?** The market quotes one premium that every buyer pays, so it prices with one shared rule, the risk-neutral pricing rule $\\mathbb{Q}$. That rule must also agree with the prices the market already quotes for the share and for risk-free lending. For a share with no dividends, this means that under $\\mathbb{Q}$ the expected share price grows at the risk-free rate. On the tree, that condition fixes the up probability:\n\n$$\nq\\,uS_{0}+(1-q)\\,dS_{0}=S_{0}\\,e^{g_{y}\\Delta t}\n\\quad\\Longrightarrow\\quad\nq=\\frac{e^{g_{y}\\Delta t}-d}{u-d}=\\frac{1.04081-0.9}{1.2-0.9}=0.4694.\n$$\n\nSetting the expected NPV under $\\mathbb{Q}$ to zero gives the premium:\n\n$$\n\\mathcal{P}_{c}=\\mathcal{D}^{-1}_{1,0}(g_{y})\\,\\mathbb{E}_{\\mathbb{Q}}\\left[V_{c}\\right]=0.9608\\,(20)(0.4694)=9.02\\ \\mathrm{USD/share}.\n$$\n\n**Why should the share grow at the risk-free rate?** Apply the rule to the share itself. Buying the share for 100 USD and selling it after one year has the expected NPV $-100+\\mathcal{D}^{-1}_{1,0}(g_{y})\\,\\mathbb{E}_{\\mathbb{Q}}[S_{1}]$ under $\\mathbb{Q}$. This is zero only when $\\mathbb{E}_{\\mathbb{Q}}[S_{1}]=100\\,e^{g_{y}\\Delta t}$, which is the condition we used to find $q$. So $q$ is the one up probability that gives the share's market price an expected NPV of zero, and the option premium uses the same probability. Under a buyer's own beliefs, the share's expected NPV is usually not zero. With $p=0.7$, it is $-100+0.9608\\,(0.7\\cdot120+0.3\\cdot90)=6.65$ USD/share, because this buyer expects the share to grow faster than the risk-free rate.\n\n**Why doesn't the real chance of an up move change the premium?** The drift enters only through $p$. In the CRR model, $u$ and $d$ come from the volatility and the time step (L9b), and $q$ comes from $u$, $d$, $g_{y}$, and $\\Delta t$. A buyer's forecast does not move the premium, but it decides whether the premium is a good deal for that buyer. With $p=0.7$, paying 9.02 USD/share gives an expected NPV of $13.45-9.02=4.43$ USD/share under that buyer's beliefs. The value $q=0.4694$ is not a forecast that 47% of moves will be up. When we forecast how likely a trade is to make money, as with the probability of profit in L10a, we return to our own beliefs $\\mathbb{P}$.\n\n**Check.** Change $p$ from 0.7 to 0.5. What changes, and what stays the same? **Answer:** The most this buyer would pay falls to $0.9608(20)(0.5)=9.61$ USD/share, and the share's expected NPV under this buyer's beliefs falls to 0.88 USD/share. The market premium stays at 9.02 USD/share, because $q$ depends only on $u$, $d$, $g_{y}$, and $\\Delta t$.",
+      "lectures": [
+        "L9a",
+        "L9b",
+        "L10a"
+      ],
+      "keywords": "risk neutral probability q real world p beliefs premium expected NPV pricing rule drift",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "continuation-value",
+      "theme": "options",
+      "title": "How do we compute the continuation value at a lattice node?",
+      "answer": "Weight the option values at the two next nodes by the risk-neutral probabilities, add them, and discount one step. The American node value is the larger of this continuation value and the payoff from exercising now.",
+      "body": "**What are the two values at a node?** At node $(t,k)$ of the lattice, with share price $S_{t,k}$, the American holder compares exercising now, which pays $V(K,S_{t,k})$, with holding for one more step. The value of holding is the continuation value:\n\n$$\nH_{t,k}=\\mathcal{D}^{-1}_{t+1,t}(g_{y})\\cdot\\bigl(q\\,\\hat{V}_{t+1,k+1}+(1-q)\\,\\hat{V}_{t+1,k}\\bigr).\n$$\n\nThe node value is the larger of the two:\n\n$$\n\\hat{V}_{t,k}=\\max\\bigl\\{V(K,S_{t,k}),~H_{t,k}\\bigr\\}.\n$$\n\nWe weight the values at the up and down nodes by $q$ and $1-q$, add them, and discount one step with $\\mathcal{D}^{-1}_{t+1,t}(g_{y})=e^{-g_{y}\\Delta t}$. The values at the next nodes must already be known, so we start at expiration, where each node value is the payoff, and work backward to the root.\n\n**Hull's two-step put, node by node.** The L9b example has $S_{0}=50$ USD/share, $K=52$ USD/share, $u=1.2$, $d=0.8$, $\\Delta t=1$ year, and $g_{y}=0.05\\,\\mathrm{yr}^{-1}$, so $q=0.6282$, $1-q=0.3718$, and $e^{-0.05}=0.9512$. At expiration the share prices are 72, 48, and 32 USD/share, and the put pays 0, 4, and 20 USD/share. Working backward:\n\n| Node | Exercise | Continuation value | Value |\n|---|---:|---|---:|\n| Up, $S_{1,1}=60$ | 0 | $0.9512\\,(0.6282\\cdot0+0.3718\\cdot4)=1.41$ | 1.41 |\n| Down, $S_{1,0}=40$ | 12 | $0.9512\\,(0.6282\\cdot4+0.3718\\cdot20)=9.46$ | 12 |\n| Root, $S_{0}=50$ | 2 | $0.9512\\,(0.6282\\cdot1.41+0.3718\\cdot12)=5.09$ | 5.09 |\n\nThe holder holds at the up node and at the root, and exercises at the down node.\n\nAt the root, the down branch uses the node value 12, not the continuation value 9.46: each earlier node uses the values after the decision at the later nodes. That is how one early exercise at $t=1$ raises the root value. The European put must hold at the down node, so its root value is $0.9512\\,(0.6282\\cdot1.41+0.3718\\cdot9.46)=4.19$ USD/share.\n\n**How do extrinsic value and the early-exercise premium differ?** Both are differences, but they compare different things. Extrinsic value compares the American contract's value at a node with exercising now at that node, $E_{V}=\\hat{V}_{t,k}-V(K,S_{t,k})$. At the root, $E_{V}=5.09-2=3.09$ USD/share. At the down node, $E_{V}=12-12=0$, because the holder exercises there. The early-exercise premium compares two contracts at the root, $\\mathcal{P}^{\\text{AM}}-\\mathcal{P}^{\\text{EU}}=5.09-4.19=0.90$ USD/share. A contract can have a large extrinsic value and no early-exercise premium: an at-the-money call on a share with no dividends is an example (L10a).\n\n**Check.** What is the extrinsic value at the up node at $t=1$? **Answer:** Exercising pays nothing there, because the share price of 60 USD/share is above the strike, and the node value is 1.41 USD/share. The whole value, $E_{V}=1.41-0=1.41$ USD/share, is extrinsic.",
+      "lectures": [
+        "L9b",
+        "L10a"
+      ],
+      "keywords": "continuation value hold exercise backward induction binomial lattice American put Hull extrinsic early exercise premium node",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b Hull American put example",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "early-exercise",
+      "theme": "options",
+      "title": "Why can early exercise pay for a put but not for a call?",
+      "answer": "Exercising a put early collects the strike price sooner, and the interest on it can outweigh what we give up by not waiting. Exercising a call early pays the strike price sooner, so without dividends and with a non-negative rate, holding is never worse.",
+      "body": "**What does a put holder gain by exercising early?** Take the down node at $t=1$ in Hull's two-step put (L9b): $S_{1,0}=40$ USD/share, $K=52$ USD/share, one step of $\\Delta t=1$ year remains, and $g_{y}=0.05\\,\\mathrm{yr}^{-1}$. Both possible share prices at expiration, 48 and 32 USD/share, are below the strike, so the put pays $K-S_{2}$ either way. The share pays no dividends, so under $\\mathbb{Q}$ the expected share price grows at the risk-free rate, $\\mathbb{E}_{\\mathbb{Q}}[S_{2}]=S_{1,0}\\,e^{g_{y}\\Delta t}$, so the continuation value is:\n\n$$\nH_{1,0}=e^{-g_{y}\\Delta t}\\,\\mathbb{E}_{\\mathbb{Q}}\\left[K-S_{2}\\right]=K\\,e^{-g_{y}\\Delta t}-S_{1,0}=52(0.9512)-40=9.46\\ \\mathrm{USD/share}.\n$$\n\nExercising now pays $K-S_{1,0}=12$ USD/share. The difference, $K\\bigl(1-e^{-g_{y}\\Delta t}\\bigr)=52(1-0.9512)=2.54$ USD/share, is the interest on the strike price: exercising collects the 52 USD/share one year sooner. Here waiting adds no value of its own: the put finishes in the money in both outcomes, so the choice not to sell at $K$ is never used.\n\n**What does the holder give up in general?** The put payoff splits as $(K-S)^{+}=(K-S)+(S-K)^{+}$, where $x^{+}=\\max(x,0)$. At a node one step before expiration, this gives:\n\n$$\nH_{t,k}=\\underbrace{K\\,e^{-g_{y}\\Delta t}-S_{t,k}}_{\\text{sell at }K\\text{ one step later}}+\\underbrace{e^{-g_{y}\\Delta t}\\,\\mathbb{E}_{\\mathbb{Q}}\\left[(S_{t+1}-K)^{+}\\right]}_{\\text{value of not selling if }S_{t+1}>K}.\n$$\n\nThe second term is what holding is worth when the share price rises above the strike: the holder does not have to sell at $K$. Exercising beats holding when the interest on the strike, $K\\bigl(1-e^{-g_{y}\\Delta t}\\bigr)$, is larger than that second term. Deep in the money, the share price is unlikely to rise above $K$, so the second term is small, and with a positive risk-free rate, early exercise pays. Closer to the strike, the second term is larger and holding wins. Being in the money is not enough by itself.\n\n**Why is a call different?** Exercising a call pays $(S_{t,k}-K)^{+}$. The value at each next node is at least that node's payoff, which is at least both $S_{t+1}-K$ and zero, so the continuation value is at least zero and:\n\n$$\nH_{t,k}\\geq e^{-g_{y}\\Delta t}\\,\\mathbb{E}_{\\mathbb{Q}}\\left[S_{t+1}-K\\right]=S_{t,k}-K\\,e^{-g_{y}\\Delta t}\\geq S_{t,k}-K\\quad\\text{when }g_{y}\\geq0.\n$$\n\nTogether, $H_{t,k}\\geq(S_{t,k}-K)^{+}$.\n\nExercising a call pays the strike sooner, which loses interest, and it gives up the choice not to buy if the share price falls below $K$. For a share with no dividends and a non-negative risk-free rate, exercising early is never strictly better, so the American call has the same premium as the European call (L10a). A dividend changes this: the holder must own the shares before the ex-dividend date to collect it, so exercising just before that date can pay (L10a).\n\n**Why do European contracts exist?** For the buyer, the American right is worth at least as much as the European one (L9a). European-style contracts are the convention for cash-settled index options such as SPX (L9a). The seller of a European contract cannot be assigned before expiration.\n\n**Check.** At Hull's down node, set $g_{y}=0$. Would the American holder still exercise? **Answer:** No longer strictly. With $g_{y}=0$, the interest on the strike is zero and $H_{1,0}=52-40=12$ USD/share, the same as exercising. The holder is indifferent, and this node adds nothing to the early-exercise premium.",
+      "lectures": [
+        "L9a",
+        "L9b",
+        "L10a"
+      ],
+      "keywords": "early exercise American put call dividends interest strike optimal exercise European index options",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "crr-factors",
+      "theme": "options",
+      "title": "Where do the CRR up and down factors come from?",
+      "answer": "We match the mean and variance of one lattice step to geometric Brownian motion. For a small time step, the size of a move depends only on the volatility, so the same up and down factors serve forecasting and pricing.",
+      "body": "**What must one step of the tree reproduce?** The CRR model makes a down move undo an up move, $ud=1$. With $a=\\ln u$, the growth rate over one step of length $\\Delta t$ is $+a/\\Delta t$ with the real-world probability $p$ and $-a/\\Delta t$ with probability $1-p$. Under geometric Brownian motion, the growth rate over $\\Delta t$ has mean $\\mu_{g}$ and variance $\\sigma^{2}/\\Delta t$. Matching the two moments gives (L9b):\n\n$$\n\\frac{(2p-1)\\,a}{\\Delta t}=\\mu_{g},\n\\qquad\n\\frac{4p(1-p)\\,a^{2}}{\\Delta t^{2}}=\\frac{\\sigma^{2}}{\\Delta t}\n\\quad\\Longrightarrow\\quad\na^{2}=\\sigma^{2}\\Delta t+\\mu_{g}^{2}\\Delta t^{2}.\n$$\n\n**When can we drop the second term?** The second term equals the first times $(\\mu_{g}/\\sigma)^{2}\\Delta t$. Take $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$ and $\\mu_{g}=0.10\\,\\mathrm{yr}^{-1}$. With daily steps, $\\Delta t=1/365$ year, the ratio is 0.0003, and keeping the term would change $a$ by about 0.015%. With a single one-year step, the ratio is 0.11, and $a$ would change by 5.4%. Lattice pricing uses many small steps, so Cox, Ross, and Rubinstein keep only the first term, $a=\\sigma\\sqrt{\\Delta t}$:\n\n$$\nu=e^{\\sigma\\sqrt{\\Delta t}},\\qquad d=e^{-\\sigma\\sqrt{\\Delta t}}.\n$$\n\nFor the daily step, $u=1.01583$ and $d=0.98442$.\n\n**Why match real-world moments when we price with q?** After the second term is dropped, $a$ depends on neither $\\mu_{g}$ nor $p$: the size of a move is set by the volatility alone, and the volatility is the same under $\\mathbb{P}$ and $\\mathbb{Q}$ (L9b). One tree therefore serves both questions, and only the up probability changes. For forecasting, the mean condition gives $p=\\tfrac{1}{2}\\bigl(1+(\\mu_{g}/\\sigma)\\sqrt{\\Delta t}\\bigr)=0.5087$ for the daily step. For pricing, $q=(e^{g_{y}\\Delta t}-d)/(u-d)$, which is 0.4996 with $g_{y}=0.04\\,\\mathrm{yr}^{-1}$. For a small step, $q\\approx\\tfrac{1}{2}+\\frac{g_{y}-\\sigma^{2}/2}{2\\sigma}\\sqrt{\\Delta t}$, the formula for $p$ with $g_{y}-\\sigma^{2}/2$ in place of $\\mu_{g}$. The [advanced notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb) shows that with $q$ the tree's mean and variance approach those of geometric Brownian motion under $\\mathbb{Q}$ as the step shrinks.\n\n**Does q stay between zero and one?** We need $d<e^{g_{y}\\Delta t}<u$, which for the CRR factors becomes $\\lvert g_{y}\\rvert\\sqrt{\\Delta t}<\\sigma$. With daily steps and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$, the volatility must exceed $0.04\\sqrt{1/365}=0.0021\\,\\mathrm{yr}^{-1/2}$, far below the volatilities in an options chain. The L9b pricing example checks this floor for every contract.\n\n**Check.** Halve the volatility to $\\sigma=0.15\\,\\mathrm{yr}^{-1/2}$, with daily steps and the same $\\mu_{g}$. What happens to $u$ and to the dropped term? **Answer:** $u=e^{0.15/\\sqrt{365}}=1.00788$. The ratio of the dropped term to the kept term becomes $(0.10/0.15)^{2}/365=0.0012$, still small, so dropping it changes $a$ by about 0.06%.",
+      "lectures": [
+        "L9b"
+      ],
+      "keywords": "CRR up down factors u d volatility moment matching binomial lattice time step Cox Ross Rubinstein",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b advanced: deriving the CRR factors",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/crr_factors/CHEME-5660-L9b-Advanced-CRR-Factors-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "bsm-formula",
+      "theme": "options",
+      "title": "What does each term in the BSM call formula mean?",
+      "answer": "The BSM call premium is the discounted expected payoff under the risk-neutral pricing rule. One term values the share received at exercise, the other values the strike paid, and N of d-minus is the risk-neutral probability that the call finishes in the money.",
+      "body": "**What does the formula compute?** The Black–Scholes–Merton (BSM) formula gives the same premium that the Monte Carlo simulation estimates in L9a: the discounted expected payoff under $\\mathbb{Q}$ of a European call on a share with no dividends. When the call is exercised, the holder receives a share worth $S(T)$ and pays $K$. Let $\\mathbb{1}\\{S(T)>K\\}$ equal 1 when the call finishes in the money and 0 otherwise. Splitting the payoff into the two cash flows gives:\n\n$$\n\\mathcal{P}_{c}=\\underbrace{\\mathcal{D}^{-1}_{T,0}(g_{y})\\,\\mathbb{E}_{\\mathbb{Q}}\\left[S(T)\\,\\mathbb{1}\\{S(T)>K\\}\\right]}_{S(0)\\,N(d_{+})\\text{: value today of the share received}}-\\underbrace{K\\,\\mathcal{D}^{-1}_{T,0}(g_{y})\\,\\mathbb{Q}\\bigl(S(T)>K\\bigr)}_{K\\,\\mathcal{D}^{-1}_{T,0}(g_{y})\\,N(d_{-})\\text{: value today of the strike paid}}.\n$$\n\n**Where does $N(d_{-})$ come from?** Under $\\mathbb{Q}$, geometric Brownian motion with drift $g_{y}$ gives $\\ln S(T)=\\ln S(0)+\\bigl(g_{y}-\\tfrac{\\sigma^{2}}{2}\\bigr)T+\\sigma\\sqrt{T}\\,Z$, where $Z$ is a standard normal random variable. The call finishes in the money when:\n\n$$\nS(T)>K\n\\quad\\Longleftrightarrow\\quad\nZ>-\\frac{\\ln\\bigl(S(0)/K\\bigr)+\\bigl(g_{y}-\\tfrac{\\sigma^{2}}{2}\\bigr)T}{\\sigma\\sqrt{T}}=-d_{-}.\n$$\n\nThe normal distribution is symmetric, so $\\mathbb{Q}(Z>-d_{-})=N(d_{-})$, the risk-neutral probability that the call finishes in the money. The first term uses the same event but weights each exercised outcome by its share price, so $N(d_{+})$ is not a probability of exercise. Higher share prices get more weight, so $N(d_{+})>N(d_{-})$. The [contingent claims notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb) builds the call premium from these two pieces.\n\n**A worked call.** Take $S(0)=100$ USD/share, $K=105$ USD/share, $T=0.25$ year, $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$, and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$. Then $d_{+}=-0.1836$, $d_{-}=d_{+}-\\sigma\\sqrt{T}=-0.3336$, $N(d_{+})=0.42716$, and $N(d_{-})=0.36934$. The discounted strike is $105\\,e^{-0.01}=103.955$ USD/share, so:\n\n$$\n\\mathcal{P}_{c}=100(0.42716)-103.955(0.36934)=42.716-38.395=4.32\\ \\mathrm{USD/share}.\n$$\n\nUnder $\\mathbb{Q}$, this call finishes in the money with probability 0.37. The BSM put formula gives $\\mathcal{P}_{p}=8.28$ USD/share, and put–call parity checks both: $4.32-8.28=-3.96=100-103.96$.\n\n**How do the BSM equation and the lattice fit in?** The BSM equation is a partial differential equation for the premium. We do not solve it in this course; L9a states that its solution, worked backward from the payoff, equals the risk-neutral premium, and the contingent claims notebook derives it. A European premium computed on a CRR lattice, where the holder always holds, approaches the BSM premium as the time step shrinks: with 91 steps, about one per day, the lattice gives 4.31 USD/share for this call. The BSM formula has no early exercise, so an American contract whose early exercise can pay, such as a put, needs a method that models it: the CRR lattice (L9b) or Longstaff–Schwartz simulation (L10a).\n\n**Check.** Lower the strike to $K=100$ USD/share with everything else unchanged. What is the risk-neutral probability that the call finishes in the money? **Answer:** $d_{-}=\\bigl(0+(0.04-0.045)(0.25)\\bigr)/0.15=-0.0083$, so $N(d_{-})=0.4967$. A lower strike makes exercise more likely, and the premium rises to 6.46 USD/share.",
+      "lectures": [
+        "L9a",
+        "L9b"
+      ],
+      "keywords": "Black Scholes Merton BSM formula d+ d- N(d) normal CDF probability of exercise call put premium",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b advanced: contingent claims and BSM",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/contingent_claims/CHEME-5660-L9b-Advanced-ContingentClaims-BSM-Fall-2026.ipynb"
+        }
+      ]
+    },
+    {
+      "id": "implied-volatility",
+      "theme": "options",
+      "title": "Which volatility goes into the premium, and how do we find implied volatility?",
+      "answer": "Historical volatility is estimated from past share prices. Implied volatility is the value that makes the BSM premium of a European contract equal its market premium, and bisection finds it because the premium rises with volatility.",
+      "body": "**Why does volatility matter to the premium?** A call pays $(S(T)-K)^{+}$, and a put pays $(K-S(T))^{+}$. Neither payoff falls below zero. In the BSM model, with the other inputs fixed, a larger volatility spreads out the share price at expiration, which adds outcomes with large payoffs and costs the holder nothing in the outcomes where the payoff is already zero. So the premium rises with $\\sigma$.\n\n**Which volatility?** L9a gives two ways to put a number on $\\sigma$:\n\n| | Historical volatility | Implied volatility |\n|---|---|---|\n| Source | Past share prices: $\\sigma_{\\mathrm{ann}}=\\sqrt{\\Delta t}\\cdot\\sigma_{g}$ | The market premium of an option |\n| Direction | Looks backward | Looks forward |\n| Use | Our forecast under $\\mathbb{P}$ | Comparing a model premium with market quotes |\n\nHere $\\sigma_{g}$ is the standard deviation of the growth rates (units: $\\mathrm{yr}^{-1}$) and $\\Delta t$ is the time between observations (units: years). Trading platforms compute the Greeks with the implied volatility (L10a).\n\n**How does bisection find the implied volatility?** We look for the $\\sigma$ whose BSM premium equals the market premium. Take a European call with $S(0)=100$ USD/share, $K=105$ USD/share, $T=0.25$ year, and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$, quoted at 6.00 USD/share. The bracket $\\sigma_{\\text{lo}}=0.05$ and $\\sigma_{\\text{hi}}=1.00$ gives BSM premiums of 0.07 and 18.21 USD/share, which bracket 6.00. Each step prices the midpoint. A premium above 6.00 USD/share moves the upper end down, and one below moves the lower end up:\n\n| Step | $\\sigma_{\\text{lo}}$ | $\\sigma_{\\text{hi}}$ | $\\sigma_{\\text{mid}}$ | $\\mathcal{P}(\\sigma_{\\text{mid}})$ | Update |\n|---:|---:|---:|---:|---:|---|\n| 1 | 0.0500 | 1.0000 | 0.5250 | 8.79 | $\\sigma_{\\text{hi}}\\gets\\sigma_{\\text{mid}}$ |\n| 2 | 0.0500 | 0.5250 | 0.2875 | 4.08 | $\\sigma_{\\text{lo}}\\gets\\sigma_{\\text{mid}}$ |\n| 3 | 0.2875 | 0.5250 | 0.4063 | 6.42 | $\\sigma_{\\text{hi}}\\gets\\sigma_{\\text{mid}}$ |\n| 4 | 0.2875 | 0.4063 | 0.3469 | 5.24 | $\\sigma_{\\text{lo}}\\gets\\sigma_{\\text{mid}}$ |\n| 5 | 0.3469 | 0.4063 | 0.3766 | 5.83 | $\\sigma_{\\text{lo}}\\gets\\sigma_{\\text{mid}}$ |\n\nEach step halves the bracket. After 14 steps, the bracket is narrower than $10^{-4}$, and the implied volatility is $\\hat{\\sigma}=0.385\\,\\mathrm{yr}^{-1/2}$.\n\n**What does the implied volatility tell us?** L9a uses it for a back-of-the-envelope one-standard-deviation range for the share price, $S(0)\\bigl(1\\pm\\text{IV}\\sqrt{T}\\bigr)=100\\,(1\\pm0.385\\cdot0.5)$, or about 80.75 to 119.25 USD/share over the next three months. Under the model, the share price ends inside this range about 68% of the time.\n\n**Why does each strike have its own implied volatility?** The BSM model assumes one constant $\\sigma$ for every strike and expiration. Backing out $\\sigma$ strike by strike from market quotes gives a different value at each strike, the volatility smile or skew. The market's premiums are not consistent with a single constant volatility. The [SPXW volatility skew notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb) measures this skew for S&P 500 index options.\n\n**Check.** If the same call were quoted at 4.32 USD/share, what implied volatility would bisection return? **Answer:** About 0.30, because 4.32 USD/share is the BSM premium of this call at $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$.",
+      "lectures": [
+        "L9a",
+        "L9b",
+        "L10a"
+      ],
+      "keywords": "implied volatility historical volatility bisection IV smile skew one standard deviation range sigma",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L9a/L9b",
+        "date": "2026-10-27"
+      },
+      "sources": [
+        {
+          "label": "L9a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L9b advanced: SPXW volatility skew",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb"
+        }
+      ]
     }
   ],
   "notation": [
@@ -1039,8 +1232,9 @@
       "L3a",
       "L3b",
       "L4b",
-      "L5b"
+      "L5b",
+      "L9a/L9b"
     ],
-    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks."
+    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks. The six options answers (October 27, 2026) follow the themes of the L9a/L9b engagement survey and the L9a, L9b, and L10a lecture notebooks."
   }
 }

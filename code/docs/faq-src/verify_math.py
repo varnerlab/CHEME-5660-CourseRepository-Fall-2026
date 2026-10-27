@@ -191,6 +191,102 @@ for excess in [.01,.02]:
     assert optimum.success,optimum.message
     check('Long-only tangent direction at excess '+str(excess),optimum.x/optimum.x.sum(),tangent,1e-6)
 
+# Options (L9a/L9b survey, October 27, 2026): one pricing rule, lattices, BSM, and implied volatility.
+D1=math.exp(-.04);q=(math.exp(.04)-.9)/(1.2-.9)
+check('One-step risk-neutral probability',q,.4694,.00005)
+check('One-step call premium under Q',D1*20*q,9.02,.005)
+check('Most a p=.7 buyer would pay',D1*20*.7,13.45,.005)
+check('Most a p=.4 buyer would pay',D1*20*.4,7.69,.005)
+check('Most a p=.5 buyer would pay',D1*20*.5,9.61,.005)
+check('Share expected NPV under Q is zero',-100+D1*(q*120+(1-q)*90),0)
+check('Share expected NPV at p=.7',-100+D1*(.7*120+.3*90),6.65,.005)
+check('Share expected NPV at p=.5',-100+D1*(.5*120+.5*90),.88,.005)
+check('Expected NPV of the Q premium at p=.7',D1*20*.7-D1*20*q,4.43,.005)
+# Hull's two-step put, computed with the exact q rather than the rounded table entries.
+q=(math.exp(.05)-.8)/.4;D1=math.exp(-.05);K=52
+check('Hull risk-neutral probability',q,.6282,.00005)
+Hu=D1*(q*0+(1-q)*4);Hd=D1*(q*4+(1-q)*20)
+check('Hull up-node continuation value',Hu,1.41,.005)
+check('Hull down-node continuation value',Hd,9.46,.005)
+american=D1*(q*max(0,Hu)+(1-q)*max(12,Hd));european=D1*(q*Hu+(1-q)*Hd)
+check('Hull American put premium',american,5.0896324742,1e-9)
+check('Hull European put premium',european,4.1926542806,1e-9)
+check('Hull early-exercise premium',american-european,.90,.005)
+check('Hull root extrinsic value',american-2,3.09,.005)
+check('Down-node continuation equals discounted strike minus share price',Hd,K*D1-40)
+check('Interest on the strike at the down node',K*(1-D1),2.54,.005)
+check('Exercise minus hold equals the interest on the strike',12-Hd,K*(1-D1))
+check('Up-node put equals forward put plus one-step call',Hu,K*D1-60+D1*q*(72-K))
+check('Down node is indifferent when the rate is zero',.5*4+.5*20,12)
+# CRR factors and the dropped mean-growth term.
+dt=1/365
+check('Dropped-term ratio, daily step',(.10/.30)**2*dt,.0003,.00005)
+check('Change in a, daily step',math.sqrt(1+(.10/.30)**2*dt)-1,.00015,.000005)
+check('Dropped-term ratio, one-year step',(.10/.30)**2,.11,.005)
+check('Change in a, one-year step',math.sqrt(1+(.10/.30)**2)-1,.054,.0005)
+u=math.exp(.30*math.sqrt(dt));d=1/u;q=(math.exp(.04*dt)-d)/(u-d)
+check('Daily CRR factors',[u,d],[1.01583,.98442],.000005)
+check('Daily real-world probability',.5*(1+.10/.30*math.sqrt(dt)),.5087,.00005)
+check('Daily risk-neutral probability',q,.4996,.00005)
+check('Small-step expansion of q',.5+(.04-.045)/.6*math.sqrt(dt),q,.000001)
+check('Volatility floor for daily steps',.04*math.sqrt(dt),.0021,.00005)
+check('Daily up factor at half the volatility',math.exp(.15/math.sqrt(365)),1.00788,.000005)
+check('Dropped-term ratio at half the volatility',(.10/.15)**2*dt,.0012,.00005)
+check('Change in a at half the volatility',math.sqrt(1+(.10/.15)**2*dt)-1,.0006,.00005)
+# BSM call, put, parity, the probability of exercise, and the lattice limit.
+def bsm(sigma,S=100,K=105,T=.25,g=.04):
+    dp=(math.log(S/K)+(g+sigma**2/2)*T)/(sigma*math.sqrt(T));dm=dp-sigma*math.sqrt(T)
+    return S*norm.cdf(dp)-K*math.exp(-g*T)*norm.cdf(dm),K*math.exp(-g*T)*norm.cdf(-dm)-S*norm.cdf(-dp),dp,dm
+call,put,dp,dm=bsm(.30)
+check('BSM d+ and d-',[dp,dm],[-.1836,-.3336],.00005)
+check('BSM N(d+) and N(d-)',norm.cdf([dp,dm]),[.42716,.36934],.000005)
+check('Discounted strike',105*math.exp(-.01),103.955,.0005)
+check('BSM call terms',[100*norm.cdf(dp),105*math.exp(-.01)*norm.cdf(dm)],[42.716,38.395],.0005)
+check('BSM call from the displayed terms',42.716-38.395,4.32,.005)
+check('BSM call and put',[call,put],[4.32,8.28],.005)
+check('Put-call parity',call-put,100-105*math.exp(-.01))
+check('Probability of exercise from the GBM event',norm.sf(-dm),norm.cdf(dm))
+def crr_european_call(h,S=100,K=105,T=.25,g=.04,sigma=.30):
+    dt=T/h;u=math.exp(sigma*math.sqrt(dt));d=1/u;q=(math.exp(g*dt)-d)/(u-d)
+    V=[max(S*u**k*d**(h-k)-K,0) for k in range(h+1)]
+    for t in range(h-1,-1,-1):
+        V=[math.exp(-g*dt)*(q*V[k+1]+(1-q)*V[k]) for k in range(t+1)]
+    return V[0]
+check('CRR European call with 91 steps',crr_european_call(91),4.31,.005)
+call100,_,_,dm100=bsm(.30,K=100)
+check('Probability of exercise at K=100',[dm100,norm.cdf(dm100)],[-.0083,.4967],.00005)
+check('BSM call at K=100',call100,6.46,.005)
+# Bisection for the implied volatility of a 6.00 quote.
+check('Initial bracket premiums',[bsm(.05)[0],bsm(1.0)[0]],[.07,18.21],.005)
+lo,hi,steps=.05,1.0,[]
+while hi-lo>1e-4:
+    mid=(lo+hi)/2;premium=bsm(mid)[0];steps.append((lo,hi,mid,premium))
+    if premium<6.00: lo=mid
+    else: hi=mid
+check('First five bisection steps',np.round(steps[:5],4),[[.05,1,.525,8.7865],[.05,.525,.2875,4.0766],[.2875,.525,.4062,6.4214],[.2875,.4062,.3469,5.2446],[.3469,.4062,.3766,5.8322]],.0001)
+check('Bisection steps to a 1e-4 bracket',len(steps),14)
+iv=(lo+hi)/2
+check('Implied volatility',iv,.385,.0005)
+check('One-standard-deviation range',[100*(1-.385*.5),100*(1+.385*.5)],[80.75,119.25],.005)
+lo,hi=.05,1.0
+while hi-lo>1e-4:
+    mid=(lo+hi)/2
+    if bsm(mid)[0]<bsm(.30)[0]: lo=mid
+    else: hi=mid
+check('Bisection recovers sigma from its own premium',(lo+hi)/2,.30,.0001)
+# Equation chains written with rounded inputs must still give the written results.
+check('Rounded one-step risk-neutral probability chain',(1.04081-.9)/(1.2-.9),.4694,.00005)
+check('Rounded one-step premium chain',.9608*20*.4694,9.02,.005)
+check('Hull share prices',[50*1.2,50*.8,50*1.2**2,50*1.2*.8,50*.8**2],[60,40,72,48,32])
+check('Rounded put-call parity chain',[4.32-8.28,100-103.96],[-3.96,-3.96])
+check('Daily CRR step for a three-month call',.25/91*365,1.0027,.00005)
+check('Third bisection midpoint, rounded half up',float(Decimal('0.40625').quantize(Decimal('0.0001'),rounding='ROUND_HALF_UP')),.4063)
+check('Rounded p=.7 chains',[.9608*20*.7,-100+.9608*(.7*120+.3*90)],[13.45,6.65],.005)
+check('Rounded Hull table',[.9512*(.6282*0+.3718*4),.9512*(.6282*4+.3718*20),.9512*(.6282*1.41+.3718*12),
+    .9512*(.6282*1.41+.3718*9.46)],[1.41,9.46,5.09,4.19],.005)
+check('Rounded down-node chains',[52*.9512-40,52*(1-.9512)],[9.46,2.54],.005)
+check('Rounded early-exercise and extrinsic differences',[5.09-4.19,5.09-2],[.90,3.09])
+
 assert all(c['status']=='passed' for c in checks), 'Correct the reported discrepancies before publishing.'
 report={'status':'passed','checks':len(checks),'results':checks}
 (ROOT/'qa').mkdir(exist_ok=True)

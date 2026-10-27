@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do we compute the continuation value at a lattice node? · CHEME 5660</title>
+  <meta name="description" content="Weight the option values at the two next nodes by the risk-neutral probabilities, add them, and discount one step. The American node value is the larger of this continuation value and the payoff from exercising now.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>How do we compute the continuation value at a lattice node?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Weight the option values at the two next nodes by the risk-neutral probabilities, add them, and discount one step. The American node value is the larger of this continuation value and the payoff from exercising now.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What are the two values at a node?</strong> At node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t,k)</annotation></semantics></math> of the lattice, with share price <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">S_{t,k}</annotation></semantics></math>, the American holder compares exercising now, which pays <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(K,S_{t,k})</annotation></semantics></math>, with holding for one more step. The value of holding is the continuation value:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>=</mo><msubsup><mi>𝒟</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>t</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>q</mi><mspace width="0.167em"></mspace><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>k</mi></mrow></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H_{t,k}=\mathcal{D}^{-1}_{t+1,t}(g_{y})\cdot\bigl(q\,\hat{V}_{t+1,k+1}+(1-q)\,\hat{V}_{t+1,k}\bigr).
+</annotation></semantics></math></div>
+<p>The node value is the larger of the two:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>=</mo><mo>max</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">{</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>H</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\hat{V}_{t,k}=\max\bigl\{V(K,S_{t,k}),~H_{t,k}\bigr\}.
+</annotation></semantics></math></div>
+<p>We weight the values at the up and down nodes by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">1-q</annotation></semantics></math>, add them, and discount one step with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>t</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathcal{D}^{-1}_{t+1,t}(g_{y})=e^{-g_{y}\Delta t}</annotation></semantics></math>. The values at the next nodes must already be known, so we start at expiration, where each node value is the payoff, and work backward to the root.</p>
+<p><strong>Hull’s two-step put, node by node.</strong> The L9b example has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>50</mn></mrow><annotation encoding="application/x-tex">S_{0}=50</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>52</mn></mrow><annotation encoding="application/x-tex">K=52</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">u=1.2</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">d=0.8</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\Delta t=1</annotation></semantics></math> year, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.05</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.05\,\mathrm{yr}^{-1}</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>0.6282</mn></mrow><annotation encoding="application/x-tex">q=0.6282</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>q</mi><mo>=</mo><mn>0.3718</mn></mrow><annotation encoding="application/x-tex">1-q=0.3718</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>e</mi><mrow><mo>−</mo><mn>0.05</mn></mrow></msup><mo>=</mo><mn>0.9512</mn></mrow><annotation encoding="application/x-tex">e^{-0.05}=0.9512</annotation></semantics></math>. At expiration the share prices are 72, 48, and 32 USD/share, and the put pays 0, 4, and 20 USD/share. Working backward:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 28%" />
+<col style="width: 21%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Node</th>
+<th style="text-align: right;">Exercise</th>
+<th>Continuation value</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Up, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mn>1</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">S_{1,1}=60</annotation></semantics></math></td>
+<td style="text-align: right;">0</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9512</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.6282</mn><mo>⋅</mo><mn>0</mn><mo>+</mo><mn>0.3718</mn><mo>⋅</mo><mn>4</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1.41</mn></mrow><annotation encoding="application/x-tex">0.9512\,(0.6282\cdot0+0.3718\cdot4)=1.41</annotation></semantics></math></td>
+<td style="text-align: right;">1.41</td>
+</tr>
+<tr class="even">
+<td>Down, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msub><mo>=</mo><mn>40</mn></mrow><annotation encoding="application/x-tex">S_{1,0}=40</annotation></semantics></math></td>
+<td style="text-align: right;">12</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9512</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.6282</mn><mo>⋅</mo><mn>4</mn><mo>+</mo><mn>0.3718</mn><mo>⋅</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>9.46</mn></mrow><annotation encoding="application/x-tex">0.9512\,(0.6282\cdot4+0.3718\cdot20)=9.46</annotation></semantics></math></td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td>Root, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>50</mn></mrow><annotation encoding="application/x-tex">S_{0}=50</annotation></semantics></math></td>
+<td style="text-align: right;">2</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9512</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.6282</mn><mo>⋅</mo><mn>1.41</mn><mo>+</mo><mn>0.3718</mn><mo>⋅</mo><mn>12</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>5.09</mn></mrow><annotation encoding="application/x-tex">0.9512\,(0.6282\cdot1.41+0.3718\cdot12)=5.09</annotation></semantics></math></td>
+<td style="text-align: right;">5.09</td>
+</tr>
+</tbody>
+</table></div>
+<p>The holder holds at the up node and at the root, and exercises at the down node.</p>
+<p>At the root, the down branch uses the node value 12, not the continuation value 9.46: each earlier node uses the values after the decision at the later nodes. That is how one early exercise at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math> raises the root value. The European put must hold at the down node, so its root value is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9512</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.6282</mn><mo>⋅</mo><mn>1.41</mn><mo>+</mo><mn>0.3718</mn><mo>⋅</mo><mn>9.46</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>4.19</mn></mrow><annotation encoding="application/x-tex">0.9512\,(0.6282\cdot1.41+0.3718\cdot9.46)=4.19</annotation></semantics></math> USD/share.</p>
+<p><strong>How do extrinsic value and the early-exercise premium differ?</strong> Both are differences, but they compare different things. Extrinsic value compares the American contract’s value at a node with exercising now at that node, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mo>=</mo><msub><mover><mi>V</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>−</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E_{V}=\hat{V}_{t,k}-V(K,S_{t,k})</annotation></semantics></math>. At the root, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mo>=</mo><mn>5.09</mn><mo>−</mo><mn>2</mn><mo>=</mo><mn>3.09</mn></mrow><annotation encoding="application/x-tex">E_{V}=5.09-2=3.09</annotation></semantics></math> USD/share. At the down node, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mo>=</mo><mn>12</mn><mo>−</mo><mn>12</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E_{V}=12-12=0</annotation></semantics></math>, because the holder exercises there. The early-exercise premium compares two contracts at the root, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝒫</mi><mtext mathvariant="normal">AM</mtext></msup><mo>−</mo><msup><mi>𝒫</mi><mtext mathvariant="normal">EU</mtext></msup><mo>=</mo><mn>5.09</mn><mo>−</mo><mn>4.19</mn><mo>=</mo><mn>0.90</mn></mrow><annotation encoding="application/x-tex">\mathcal{P}^{\text{AM}}-\mathcal{P}^{\text{EU}}=5.09-4.19=0.90</annotation></semantics></math> USD/share. A contract can have a large extrinsic value and no early-exercise premium: an at-the-money call on a share with no dividends is an example (L10a).</p>
+<div class="answer-check"><p><strong>Try it.</strong> What is the extrinsic value at the up node at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> Exercising pays nothing there, because the share price of 60 USD/share is above the strike, and the node value is 1.41 USD/share. The whole value, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>V</mi></msub><mo>=</mo><mn>1.41</mn><mo>−</mo><mn>0</mn><mo>=</mo><mn>1.41</mn></mrow><annotation encoding="application/x-tex">E_{V}=1.41-0=1.41</annotation></semantics></math> USD/share, is extrinsic.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb">L9b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Example-Hull-American-Put-Fall-2026.ipynb">L9b Hull American put example</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L9b">L9b symbols and units</a></li><li><a href="../notation.html#L10a">L10a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li><li><a href="crr-factors.html">Where do the CRR up and down factors come from?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

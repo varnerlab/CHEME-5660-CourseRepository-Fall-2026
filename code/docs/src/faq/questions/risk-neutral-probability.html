@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why do we price options with q instead of our own probability? · CHEME 5660</title>
+  <meta name="description" content="Our own probability tells us the most we would pay, and buyers with different beliefs get different numbers. The market quotes one premium, so it prices with one shared rule, under which the expected share price grows at the risk-free rate.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>Why do we price options with q instead of our own probability?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Our own probability tells us the most we would pay, and buyers with different beliefs get different numbers. The market quotes one premium, so it prices with one shared rule, under which the expected share price grows at the risk-free rate.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What does our own probability give us?</strong> Suppose a share trades at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S_{0}=100</annotation></semantics></math> USD/share and, one year from now, will be worth either <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>120</mn></mrow><annotation encoding="application/x-tex">uS_{0}=120</annotation></semantics></math> or <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>90</mn></mrow><annotation encoding="application/x-tex">dS_{0}=90</annotation></semantics></math> USD/share, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.2</mn></mrow><annotation encoding="application/x-tex">u=1.2</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.9</mn></mrow><annotation encoding="application/x-tex">d=0.9</annotation></semantics></math>. A call with strike <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">K=100</annotation></semantics></math> USD/share pays 20 USD/share after an up move and nothing after a down move. With the risk-free rate <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>, the one-year discount factor is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>0.04</mn></mrow></msup><mo>=</mo><mn>0.9608</mn></mrow><annotation encoding="application/x-tex">\mathcal{D}^{-1}_{1,0}(g_{y})=e^{-0.04}=0.9608</annotation></semantics></math>. As in L9a, a buyer whose real-world up probability is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> has the expected NPV:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mo>NPV</mo><mn>0</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mo>−</mo><msub><mi>𝒫</mi><mi>c</mi></msub><mo>+</mo><msubsup><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb{E}\left[\operatorname{NPV}_{0}\right]=-\mathcal{P}_{c}+\mathcal{D}^{-1}_{1,0}(g_{y})\,(20)\,p.
+</annotation></semantics></math></div>
+<p>A buyer with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">p=0.7</annotation></semantics></math> has a non-negative expected NPV for any premium up to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9608</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.7</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>13.45</mn></mrow><annotation encoding="application/x-tex">0.9608(20)(0.7)=13.45</annotation></semantics></math> USD/share. A buyer with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">p=0.4</annotation></semantics></math> stops at 7.69 USD/share. Each number is the most that buyer would pay, and every belief gives a different one.</p>
+<p><strong>Which probability gives one market price?</strong> The market quotes one premium that every buyer pays, so it prices with one shared rule, the risk-neutral pricing rule <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>. That rule must also agree with the prices the market already quotes for the share and for risk-free lending. For a share with no dividends, this means that under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> the expected share price grows at the risk-free rate. On the tree, that condition fixes the up probability:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mspace width="0.167em"></mspace><mi>u</mi><msub><mi>S</mi><mn>0</mn></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><msub><mi>S</mi><mn>0</mn></msub><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><mi>q</mi><mo>=</mo><mfrac><mrow><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo>−</mo><mi>d</mi></mrow><mrow><mi>u</mi><mo>−</mo><mi>d</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>1.04081</mn><mo>−</mo><mn>0.9</mn></mrow><mrow><mn>1.2</mn><mo>−</mo><mn>0.9</mn></mrow></mfrac><mo>=</mo><mn>0.4694</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+q\,uS_{0}+(1-q)\,dS_{0}=S_{0}\,e^{g_{y}\Delta t}
+\quad\Longrightarrow\quad
+q=\frac{e^{g_{y}\Delta t}-d}{u-d}=\frac{1.04081-0.9}{1.2-0.9}=0.4694.
+</annotation></semantics></math></div>
+<p>Setting the expected NPV under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> to zero gives the premium:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mi>c</mi></msub><mo>=</mo><msubsup><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝔼</mi><mi>ℚ</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>V</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>0.9608</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.4694</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>9.02</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal{P}_{c}=\mathcal{D}^{-1}_{1,0}(g_{y})\,\mathbb{E}_{\mathbb{Q}}\left[V_{c}\right]=0.9608\,(20)(0.4694)=9.02\ \mathrm{USD/share}.
+</annotation></semantics></math></div>
+<p><strong>Why should the share grow at the risk-free rate?</strong> Apply the rule to the share itself. Buying the share for 100 USD and selling it after one year has the expected NPV <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>100</mn><mo>+</mo><msubsup><mi>𝒟</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mi>𝔼</mi><mi>ℚ</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">-100+\mathcal{D}^{-1}_{1,0}(g_{y})\,\mathbb{E}_{\mathbb{Q}}[S_{1}]</annotation></semantics></math> under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>. This is zero only when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔼</mi><mi>ℚ</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>100</mn><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbb{E}_{\mathbb{Q}}[S_{1}]=100\,e^{g_{y}\Delta t}</annotation></semantics></math>, which is the condition we used to find <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>. So <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> is the one up probability that gives the share’s market price an expected NPV of zero, and the option premium uses the same probability. Under a buyer’s own beliefs, the share’s expected NPV is usually not zero. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">p=0.7</annotation></semantics></math>, it is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>100</mn><mo>+</mo><mn>0.9608</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.7</mn><mo>⋅</mo><mn>120</mn><mo>+</mo><mn>0.3</mn><mo>⋅</mo><mn>90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>6.65</mn></mrow><annotation encoding="application/x-tex">-100+0.9608\,(0.7\cdot120+0.3\cdot90)=6.65</annotation></semantics></math> USD/share, because this buyer expects the share to grow faster than the risk-free rate.</p>
+<p><strong>Why doesn’t the real chance of an up move change the premium?</strong> The drift enters only through <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>. In the CRR model, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math> come from the volatility and the time step (L9b), and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> comes from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_{y}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math>. A buyer’s forecast does not move the premium, but it decides whether the premium is a good deal for that buyer. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">p=0.7</annotation></semantics></math>, paying 9.02 USD/share gives an expected NPV of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>13.45</mn><mo>−</mo><mn>9.02</mn><mo>=</mo><mn>4.43</mn></mrow><annotation encoding="application/x-tex">13.45-9.02=4.43</annotation></semantics></math> USD/share under that buyer’s beliefs. The value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>0.4694</mn></mrow><annotation encoding="application/x-tex">q=0.4694</annotation></semantics></math> is not a forecast that 47% of moves will be up. When we forecast how likely a trade is to make money, as with the probability of profit in L10a, we return to our own beliefs <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Change <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math> from 0.7 to 0.5. What changes, and what stays the same? </p><details><summary>Show the answer</summary><div> The most this buyer would pay falls to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.9608</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>9.61</mn></mrow><annotation encoding="application/x-tex">0.9608(20)(0.5)=9.61</annotation></semantics></math> USD/share, and the share’s expected NPV under this buyer’s beliefs falls to 0.88 USD/share. The market premium stays at 9.02 USD/share, because <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> depends only on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_{y}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb">L9a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb">L9b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L9a">L9a symbols and units</a></li><li><a href="../notation.html#L9b">L9b symbols and units</a></li><li><a href="../notation.html#L10a">L10a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li><li><a href="crr-factors.html">Where do the CRR up and down factors come from?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

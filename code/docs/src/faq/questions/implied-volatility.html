@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Which volatility goes into the premium, and how do we find implied volatility? · CHEME 5660</title>
+  <meta name="description" content="Historical volatility is estimated from past share prices. Implied volatility is the value that makes the BSM premium of a European contract equal its market premium, and bisection finds it because the premium rises with volatility.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>Which volatility goes into the premium, and how do we find implied volatility?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Historical volatility is estimated from past share prices. Implied volatility is the value that makes the BSM premium of a European contract equal its market premium, and bisection finds it because the premium rises with volatility.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Why does volatility matter to the premium?</strong> A call pays <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><annotation encoding="application/x-tex">(S(T)-K)^{+}</annotation></semantics></math>, and a put pays <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><annotation encoding="application/x-tex">(K-S(T))^{+}</annotation></semantics></math>. Neither payoff falls below zero. In the BSM model, with the other inputs fixed, a larger volatility spreads out the share price at expiration, which adds outcomes with large payoffs and costs the holder nothing in the outcomes where the payoff is already zero. So the premium rises with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>.</p>
+<p><strong>Which volatility?</strong> L9a gives two ways to put a number on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Historical volatility</th>
+<th>Implied volatility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Source</td>
+<td>Past share prices: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">n</mi></mrow></msub><mo>=</mo><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mo>⋅</mo><msub><mi>σ</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">\sigma_{\mathrm{ann}}=\sqrt{\Delta t}\cdot\sigma_{g}</annotation></semantics></math></td>
+<td>The market premium of an option</td>
+</tr>
+<tr class="even">
+<td>Direction</td>
+<td>Looks backward</td>
+<td>Looks forward</td>
+</tr>
+<tr class="odd">
+<td>Use</td>
+<td>Our forecast under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math></td>
+<td>Comparing a model premium with market quotes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Here <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\sigma_{g}</annotation></semantics></math> is the standard deviation of the growth rates (units: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>) and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> is the time between observations (units: years). Trading platforms compute the Greeks with the implied volatility (L10a).</p>
+<p><strong>How does bisection find the implied volatility?</strong> We look for the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math> whose BSM premium equals the market premium. Take a European call with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S(0)=100</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>105</mn></mrow><annotation encoding="application/x-tex">K=105</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0.25</mn></mrow><annotation encoding="application/x-tex">T=0.25</annotation></semantics></math> year, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>, quoted at 6.00 USD/share. The bracket <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">lo</mtext></msub><mo>=</mo><mn>0.05</mn></mrow><annotation encoding="application/x-tex">\sigma_{\text{lo}}=0.05</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">hi</mtext></msub><mo>=</mo><mn>1.00</mn></mrow><annotation encoding="application/x-tex">\sigma_{\text{hi}}=1.00</annotation></semantics></math> gives BSM premiums of 0.07 and 18.21 USD/share, which bracket 6.00. Each step prices the midpoint. A premium above 6.00 USD/share moves the upper end down, and one below moves the lower end up:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Step</th>
+<th style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">lo</mtext></msub><annotation encoding="application/x-tex">\sigma_{\text{lo}}</annotation></semantics></math></th>
+<th style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">hi</mtext></msub><annotation encoding="application/x-tex">\sigma_{\text{hi}}</annotation></semantics></math></th>
+<th style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub><annotation encoding="application/x-tex">\sigma_{\text{mid}}</annotation></semantics></math></th>
+<th style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{P}(\sigma_{\text{mid}})</annotation></semantics></math></th>
+<th>Update</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.5250</td>
+<td style="text-align: right;">8.79</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">hi</mtext></msub><mo>←</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub></mrow><annotation encoding="application/x-tex">\sigma_{\text{hi}}\gets\sigma_{\text{mid}}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.5250</td>
+<td style="text-align: right;">0.2875</td>
+<td style="text-align: right;">4.08</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">lo</mtext></msub><mo>←</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub></mrow><annotation encoding="application/x-tex">\sigma_{\text{lo}}\gets\sigma_{\text{mid}}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.2875</td>
+<td style="text-align: right;">0.5250</td>
+<td style="text-align: right;">0.4063</td>
+<td style="text-align: right;">6.42</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">hi</mtext></msub><mo>←</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub></mrow><annotation encoding="application/x-tex">\sigma_{\text{hi}}\gets\sigma_{\text{mid}}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.2875</td>
+<td style="text-align: right;">0.4063</td>
+<td style="text-align: right;">0.3469</td>
+<td style="text-align: right;">5.24</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">lo</mtext></msub><mo>←</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub></mrow><annotation encoding="application/x-tex">\sigma_{\text{lo}}\gets\sigma_{\text{mid}}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.3469</td>
+<td style="text-align: right;">0.4063</td>
+<td style="text-align: right;">0.3766</td>
+<td style="text-align: right;">5.83</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mtext mathvariant="normal">lo</mtext></msub><mo>←</mo><msub><mi>σ</mi><mtext mathvariant="normal">mid</mtext></msub></mrow><annotation encoding="application/x-tex">\sigma_{\text{lo}}\gets\sigma_{\text{mid}}</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table></div>
+<p>Each step halves the bracket. After 14 steps, the bracket is narrower than <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mo>−</mo><mn>4</mn></mrow></msup><annotation encoding="application/x-tex">10^{-4}</annotation></semantics></math>, and the implied volatility is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0.385</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat{\sigma}=0.385\,\mathrm{yr}^{-1/2}</annotation></semantics></math>.</p>
+<p><strong>What does the implied volatility tell us?</strong> L9a uses it for a back-of-the-envelope one-standard-deviation range for the share price, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mn>1</mn><mo>±</mo><mtext mathvariant="normal">IV</mtext><msqrt><mi>T</mi></msqrt><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><mn>100</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>±</mo><mn>0.385</mn><mo>⋅</mo><mn>0.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(0)\bigl(1\pm\text{IV}\sqrt{T}\bigr)=100\,(1\pm0.385\cdot0.5)</annotation></semantics></math>, or about 80.75 to 119.25 USD/share over the next three months. Under the model, the share price ends inside this range about 68% of the time.</p>
+<p><strong>Why does each strike have its own implied volatility?</strong> The BSM model assumes one constant <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math> for every strike and expiration. Backing out <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math> strike by strike from market quotes gives a different value at each strike, the volatility smile or skew. The market’s premiums are not consistent with a single constant volatility. The <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb">SPXW volatility skew notebook</a> measures this skew for S&amp;P 500 index options.</p>
+<div class="answer-check"><p><strong>Try it.</strong> If the same call were quoted at 4.32 USD/share, what implied volatility would bisection return? </p><details><summary>Show the answer</summary><div> About 0.30, because 4.32 USD/share is the BSM premium of this call at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9a/CHEME-5660-L9a-Lecture-IntroductionToDerivatives-BSM-Fall-2026.ipynb">L9a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/CHEME-5660-L9b-Lecture-American-Derivatives-Intrinsic-Extrinsic-Value-Fall-2026.ipynb">L9b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb">L9b advanced: SPXW volatility skew</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L9a">L9a symbols and units</a></li><li><a href="../notation.html#L9b">L9b symbols and units</a></li><li><a href="../notation.html#L10a">L10a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
