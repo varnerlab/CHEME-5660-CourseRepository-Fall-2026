@@ -275,7 +275,7 @@
     \end{tabular}
   \end{center}
   Strikes are numbered low to high, $\Pc_{i}$ is the premium of the leg at
-  $K_{i}$, and $\Dc=\Dc_{T,0}(g_{y})$. Figures: payoff (blue), profit (black).
+  $K_{i}$. Figures: payoff (blue), profit (black).
 \end{frame}
 
 \begin{frame}{Short Puts and Short Calls}
@@ -294,18 +294,18 @@
   With premiums $\Pc_{p}$ (put) and $\Pc_{c}$ (call) at strike $K$, the profits
   at expiration, and the breakevens $S^{\ddagger}$, are:
   \begin{align*}
-    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot\Pc_{p}-(K-S(T))^{+} && \text{short put}\\
-    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot\Pc_{c}-(S(T)-K)^{+} && \text{short call}
+    \hat{P}_{\Cc}(S(T)) &= \Dc_{T,0}(g_{y})\cdot\Pc_{p}-(K-S(T))^{+} && \text{short put}\\
+    \hat{P}_{\Cc}(S(T)) &= \Dc_{T,0}(g_{y})\cdot\Pc_{c}-(S(T)-K)^{+} && \text{short call}
   \end{align*}
   \begin{center}\small
     \begin{tabular}{lll}
       \toprule
       & Short put & Short call \\
       \midrule
-      Maximum profit & $\Dc\cdot\Pc_{p}$ for $S(T)\geq K$ & $\Dc\cdot\Pc_{c}$ for $S(T)\leq K$ \\
-      Breakeven, put side & $S^{\ddagger}=K-\Dc\cdot\Pc_{p}$ & none \\
-      Maximum loss, put side & $K-\Dc\cdot\Pc_{p}$ at $S(T)=0$ & none \\
-      Breakeven, call side & none & $S^{\ddagger}=K+\Dc\cdot\Pc_{c}$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ for $S(T)\geq K$ & $\Dc_{T,0}(g_{y})\cdot\Pc_{c}$ for $S(T)\leq K$ \\
+      Breakeven, put side & $S^{\ddagger}=K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ & none \\
+      Maximum loss, put side & $K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ at $S(T)=0$ & none \\
+      Breakeven, call side & none & $S^{\ddagger}=K+\Dc_{T,0}(g_{y})\cdot\Pc_{c}$ \\
       Maximum loss, call side & none & unlimited \\
       \bottomrule
     \end{tabular}
@@ -330,14 +330,14 @@
   A long put at $K_{1}$ and a short put at $K_{2}$: the credit grown to
   expiration, minus and plus the leg payoffs:
   \begin{equation*}
-    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{2}-\Pc_{1})-(K_{2}-S(T))^{+}+(K_{1}-S(T))^{+}
+    \hat{P}_{\Cc}(S(T)) = \Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})-(K_{2}-S(T))^{+}+(K_{1}-S(T))^{+}
   \end{equation*}
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\geq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}=K_{2}-\Dc\cdot(\Pc_{2}-\Pc_{1})$ \\
-      Maximum loss, put side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\leq K_{1}$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\geq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ \\
+      Maximum loss, put side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\leq K_{1}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -347,14 +347,14 @@
   A short call at $K_{1}$ and a long call at $K_{2}$ give the profit at
   expiration:
   \begin{equation*}
-    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{1}-\Pc_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+}
+    \hat{P}_{\Cc}(S(T)) = \Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+}
   \end{equation*}
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\leq K_{1}$ \\
-      Breakeven, call side & $S^{\ddagger}=K_{1}+\Dc\cdot(\Pc_{1}-\Pc_{2})$ \\
-      Maximum loss, call side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\geq K_{2}$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\leq K_{1}$ \\
+      Breakeven, call side & $S^{\ddagger}=K_{1}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ \\
+      Maximum loss, call side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\geq K_{2}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -377,15 +377,15 @@
 \begin{frame}{Short Straddle}
   Selling a put and a call at the strike $K$ gives the profit at expiration:
   \begin{equation*}
-    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{p}+\Pc_{c})-(K-S(T))^{+}-(S(T)-K)^{+}
+    \hat{P}_{\Cc}(S(T)) = \Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})-(K-S(T))^{+}-(S(T)-K)^{+}
   \end{equation*}
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=K$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K-\Dc\cdot(\Pc_{p}+\Pc_{c})$ \\
-      Maximum loss, put side & $K-\Dc\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K+\Dc\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=K$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum loss, put side & $K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K+\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
       Maximum loss, call side & unlimited \\
       \bottomrule
     \end{tabular}
@@ -397,15 +397,15 @@
 \begin{frame}{Short Strangle}
   Selling a put at $K_{1}$ and a call at $K_{2}$ gives the profit at expiration:
   \begin{equation*}
-    \hat{P}_{\Cc}(S(T)) = \Dc\cdot(\Pc_{1}+\Pc_{2})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}
+    \hat{P}_{\Cc}(S(T)) = \Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}
   \end{equation*}
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{1}+\Pc_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2})$ \\
-      Maximum loss, put side & $K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum loss, put side & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
       Maximum loss, call side & unlimited \\
       \bottomrule
     \end{tabular}
@@ -431,46 +431,46 @@
   A short put at $K_{1}$, a short call at $K_{2}$, and a long call at $K_{3}$
   give the profit at expiration:
   \begin{align*}
-    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3}) && \text{protected strangle}\\
+    \hat{P}_{\Cc}(S(T)) &= \Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3}) && \text{protected strangle}\\
     &\qquad-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}+(S(T)-K_{3})^{+}
   \end{align*}
   \begin{center}\footnotesize
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ \\
-      Maximum loss, put side & $K_{1}-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$${}^{a}$ \\
-      Maximum loss, call side & $(K_{3}-K_{2})-\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $S(T)\geq K_{3}$${}^{b}$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ \\
+      Maximum loss, put side & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ at $S(T)=0$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$${}^{a}$ \\
+      Maximum loss, call side & $(K_{3}-K_{2})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $S(T)\geq K_{3}$${}^{b}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
-  {\footnotesize ${}^{a}$If $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})\leq K_{3}-K_{2}$; otherwise none. ${}^{b}$If $\Dc\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})<K_{3}-K_{2}$; otherwise none.\par}
+  {\footnotesize ${}^{a}$If $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})\leq K_{3}-K_{2}$; otherwise none. ${}^{b}$If $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})<K_{3}-K_{2}$; otherwise none.\par}
   \vspace{0.3em}
-  A credit, grown to expiration, of at least $K_{3}-K_{2}$ removes the
-  call-side loss.
+  If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side
+  cannot lose.
 \end{frame}
 
 \begin{frame}{Iron Condor}
   A long put at $K_{1}$, a short put at $K_{2}$, a short call at $K_{3}$, and a
   long call at $K_{4}$ give the profit at expiration:
   \begin{align*}
-    \hat{P}_{\Cc}(S(T)) &= \Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})\\
+    \hat{P}_{\Cc}(S(T)) &= \Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})\\
     &\qquad+(K_{1}-S(T))^{+}-(K_{2}-S(T))^{+}-(S(T)-K_{3})^{+}+(S(T)-K_{4})^{+}
   \end{align*}
   \begin{center}\footnotesize
     \begin{tabular}{ll}
       \toprule
-      Maximum profit & $\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{2}-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
-      Maximum loss, put side & $(K_{2}-K_{1})-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\leq K_{1}$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{3}+\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
-      Maximum loss, call side & $(K_{4}-K_{3})-\Dc\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\geq K_{4}$ \\
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ \\
+      Breakeven, put side & $S^{\ddagger}_{-}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss, put side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\leq K_{1}$ \\
+      Breakeven, call side & $S^{\ddagger}_{+}=K_{3}+\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss, call side & $(K_{4}-K_{3})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\geq K_{4}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
-  The share price finishes beyond at most one side, so the maximum loss is the
-  wider strike width minus the credit.
+  At any share price at expiration, at most one side can lose, so the maximum
+  loss is the wider strike width minus the credit.
 \end{frame}
 
 \begin{frame}{Delta as a Hedging Tool for Composite Contracts}

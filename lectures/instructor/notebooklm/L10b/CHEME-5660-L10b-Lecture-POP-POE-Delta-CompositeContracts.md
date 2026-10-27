@@ -158,8 +158,8 @@ Each figure shows the payoff (blue) and the profit (black) at expiration, per sh
 Selling one put, a [short put](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered), or one call, a [short call](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered), is the building block of every structure below. With premiums $\mathcal{P}_{p}$ (put) and $\mathcal{P}_{c}$ (call) at strike $K$, the profits at expiration are:
 $$
 \begin{align*}
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot\mathcal{P}_{p}-(K-S(T))^{+} && \text{short put}\\
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot\mathcal{P}_{c}-(S(T)-K)^{+} && \text{short call}
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}-(K-S(T))^{+} && \text{short put}\\
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}-(S(T)-K)^{+} && \text{short call}
 \end{align*}
 $$
 
@@ -167,10 +167,10 @@ Their maximum profit, breakevens $S^{\ddagger}$, and maximum losses are:
 
 | | Short put | Short call |
 |:--|:--|:--|
-| Maximum profit | $\mathcal{D}\cdot\mathcal{P}_{p}$ for $S(T)\geq K$ | $\mathcal{D}\cdot\mathcal{P}_{c}$ for $S(T)\leq K$ |
-| Breakeven, put side | $S^{\ddagger}=K-\mathcal{D}\cdot\mathcal{P}_{p}$ | none |
-| Maximum loss, put side | $K-\mathcal{D}\cdot\mathcal{P}_{p}$ at $S(T)=0$ | none |
-| Breakeven, call side | none | $S^{\ddagger}=K+\mathcal{D}\cdot\mathcal{P}_{c}$ |
+| Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ for $S(T)\geq K$ | $\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}$ for $S(T)\leq K$ |
+| Breakeven, put side | $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ | none |
+| Maximum loss, put side | $K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ at $S(T)=0$ | none |
+| Breakeven, call side | none | $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}$ |
 | Maximum loss, call side | none | unlimited |
 
 Each keeps the whole premium if it expires out of the money. The share price cannot fall below zero, so the short put's loss is bounded, but the short call's loss is not.
@@ -196,8 +196,8 @@ A __vertical spread__ pairs two contracts of the same type and expiration at dif
 With $\mathcal{P}_{i}$ the premium of the leg at strike $K_{i}$, their profits at expiration are:
 $$
 \begin{align*}
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})-(K_{2}-S(T))^{+}+(K_{1}-S(T))^{+} && \text{put credit spread}\\
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+} && \text{call credit spread}
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})-(K_{2}-S(T))^{+}+(K_{1}-S(T))^{+} && \text{put credit spread}\\
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+} && \text{call credit spread}
 \end{align*}
 $$
 The first term is the credit grown to expiration, and the others are the leg payoffs.
@@ -206,11 +206,11 @@ Their maximum profit, breakevens, and maximum losses are:
 
 | | Put credit spread | Call credit spread |
 |:--|:--|:--|
-| Maximum profit | $\mathcal{D}\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\geq K_{2}$ | $\mathcal{D}\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\leq K_{1}$ |
-| Breakeven, put side | $S^{\ddagger}=K_{2}-\mathcal{D}\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ | none |
-| Maximum loss, put side | $(K_{2}-K_{1})-\mathcal{D}\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\leq K_{1}$ | none |
-| Breakeven, call side | none | $S^{\ddagger}=K_{1}+\mathcal{D}\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ |
-| Maximum loss, call side | none | $(K_{2}-K_{1})-\mathcal{D}\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\geq K_{2}$ |
+| Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\geq K_{2}$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\leq K_{1}$ |
+| Breakeven, put side | $S^{\ddagger}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ | none |
+| Maximum loss, put side | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\leq K_{1}$ | none |
+| Breakeven, call side | none | $S^{\ddagger}=K_{1}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ |
+| Maximum loss, call side | none | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\geq K_{2}$ |
 
 Beyond the long strike, the long leg gains every dollar the short leg loses, so the loss stops at the strike width minus the credit. The spread gives up part of the credit for this known maximum loss.
 
@@ -233,18 +233,18 @@ Beyond the long strike, the long leg gains every dollar the short leg loses, so 
 A [straddle](https://www.investopedia.com/terms/s/straddle.asp) buys (or sells) a put and a call with the _same expiration_ and the _same strike price_ $K$. A [strangle](https://www.investopedia.com/terms/s/strangle.asp) uses _different strike prices_, a put at $K_{1}$ below a call at $K_{2}$. Selling both legs gives the profit at expiration:
 $$
 \begin{align*}
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})-(K-S(T))^{+}-(S(T)-K)^{+} && \text{short straddle}\\
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+} && \text{short strangle}
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})-(K-S(T))^{+}-(S(T)-K)^{+} && \text{short straddle}\\
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+} && \text{short strangle}
 \end{align*}
 $$
 Their maximum profit, breakevens $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$, and maximum losses are:
 
 | | Short straddle | Short strangle |
 |:--|:--|:--|
-| Maximum profit | $\mathcal{D}\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=K$ | $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ |
-| Breakeven, put side | $S^{\ddagger}_{-}=K-\mathcal{D}\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
-| Maximum loss, put side | $K-\mathcal{D}\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=0$ | $K_{1}-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ at $S(T)=0$ |
-| Breakeven, call side | $S^{\ddagger}_{+}=K+\mathcal{D}\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
+| Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=K$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ |
+| Breakeven, put side | $S^{\ddagger}_{-}=K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
+| Maximum loss, put side | $K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=0$ | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ at $S(T)=0$ |
+| Breakeven, call side | $S^{\ddagger}_{+}=K+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
 | Maximum loss, call side | unlimited | unlimited |
 
 Each profits only between its breakevens, so its probability of profit is $\mathbb{P}(S^{\ddagger}_{-}<S(T)<S^{\ddagger}_{+})$. The straddle collects more credit, but the strangle keeps its credit over a wider range of share prices. Buying both legs ($\theta_{i}=1$) flips the diagram about the zero line: the loss is capped at the premium paid, and the profit grows with a large move either way. Let's compute the POP and POE for a short straddle on AMD.
@@ -276,9 +276,9 @@ A __protected strangle__, or [jade lizard](https://www.tastylive.com/concepts-st
 The profits at expiration are:
 $$
 \begin{align*}
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3}) && \text{protected strangle}\\
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3}) && \text{protected strangle}\\
 &\qquad-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}+(S(T)-K_{3})^{+}\\
-\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4}) && \text{iron condor}\\
+\hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4}) && \text{iron condor}\\
 &\qquad+(K_{1}-S(T))^{+}-(K_{2}-S(T))^{+}-(S(T)-K_{3})^{+}+(S(T)-K_{4})^{+}
 \end{align*}
 $$
@@ -287,11 +287,11 @@ Their maximum profit, breakevens, and maximum losses are:
 
 | | Protected strangle | Iron condor |
 |:--|:--|:--|
-| Maximum profit | $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ | $\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ |
-| Breakeven, put side | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ | $S^{\ddagger}_{-}=K_{2}-\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
-| Maximum loss, put side | $K_{1}-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ at $S(T)=0$ | $(K_{2}-K_{1})-\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\leq K_{1}$ |
-| Breakeven, call side | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
-| Maximum loss, call side | $(K_{3}-K_{2})-\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
+| Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ |
+| Breakeven, put side | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ | $S^{\ddagger}_{-}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
+| Maximum loss, put side | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ at $S(T)=0$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\leq K_{1}$ |
+| Breakeven, call side | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
+| Maximum loss, call side | $(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
 
 The protected strangle's call side is capped but its put side is naked, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
 ___
