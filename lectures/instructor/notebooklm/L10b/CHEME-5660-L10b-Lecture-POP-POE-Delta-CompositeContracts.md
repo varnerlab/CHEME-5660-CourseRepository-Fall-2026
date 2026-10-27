@@ -13,7 +13,7 @@ Some results in this lecture are core, and some are here to build understanding:
 > __What you need to know:__
 >
 > __Core results:__
-> * Profit at expiration $=$ the sum of the legs' payoffs, weighted by orientation and copy number, minus the net premium grown to expiration. The probability of profit (POP) is the probability that this profit is positive.
+> * Profit at expiration $=$ the sum of the legs' payoffs, weighted by orientation and copy number, minus the composite premium grown to expiration. The probability of profit (POP) is the probability that this profit is positive.
 > * A profit diagram shows the breakevens, the maximum profit (for the eight credit contracts in this lecture, the credit grown to expiration), and the maximum loss (from the put side or the call side).
 > * Composite Delta: $\Delta_{\mathcal{C}}=\sum_{i\in\mathcal{C}}\theta_{i}n_{i}\Delta_{i}$ (per share). The options' Delta is $\Delta_{\text{opts}}=m\,\Delta_{\mathcal{C}}$, and holding $N_{S}=-\Delta_{\text{opts}}$ shares makes the net Delta, $N_{S}+\Delta_{\text{opts}}$, zero.
 >
@@ -36,12 +36,10 @@ __Review these examples on your own.__
 ___
 
 ## Composite Contracts
-A composite contract $\mathcal{C}$ combines $d$ legs, long or short puts and calls, on the same underlying asset with the same expiration date $T$.
-
-Its payoff per share at expiration, $\hat{V}_{\mathcal{C}}(S(T))$, is:
+A composite contract $\mathcal{C}$ combines $d$ legs, long or short puts and calls, on the same underlying asset with the same expiration date $T$. Its payoff per share at expiration, $\hat{V}_{\mathcal{C}}(S(T))$, is given by:
 $$
 \begin{align*}
-\hat{V}_{\mathcal{C}}(S(T)) &= \sum_{i\in\mathcal{C}}\theta_{i}\;n_{i}\;\underbrace{V_{i}(K_{i},S(T))}_{\text{payoff of leg } i}
+\hat{V}_{\mathcal{C}}(S(T)) &= \underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\;n_{i}\;\overbrace{V_{i}(K_{i},S(T))}^{\text{payoff of leg } i}}_{\text{sum of all legs}}
 \end{align*}
 $$
 where $S(T)$ is the share price at expiration, $K_{i}$ is the strike price of leg $i$, and $V_{i}(K_{i},S(T))$ is its payoff, $V_{c}=(S(T)-K_{i})^{+}$ for a call or $V_{p}=(K_{i}-S(T))^{+}$ for a put. The copy number $n_{i}$ counts the contracts of leg $i$, and $\theta_{i}$ is its orientation:
@@ -51,29 +49,24 @@ $$
 $$
 The payoff of a composite contract is the sum of its legs' payoffs, weighted by orientation and copy number.
 
-> __Why is this interesting?__ Different strikes, orientations, and quantities give profit shapes that no single contract can, matched to a bullish, bearish, or neutral outlook.
+> __Why is this interesting?__ Different strikes, orientations, and quantities give profit shapes that no single contract can, with bullish, bearish, or neutral outlooks.
 
 Let's start with what a composite contract is worth today.
 
 ### The Net Present Value of a Composite Contract
-Previously, we wrote the net present value (NPV) of a single contract. The buyer pays the premium $\mathcal{P}$ (USD/share) today and receives the payoff at expiration, so $\operatorname{NPV}_{0}=-\mathcal{P}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V(K,S(T))$, where $\mathcal{D}^{-1}_{T,0}(g_{y})=e^{-g_{y}T}$ discounts at the benchmark growth rate $g_{y}$. The seller's NPV is the buyer's times $\theta=-1$.
-
 A composite contract is a sum of legs, so its NPV is the sum of the legs' NPVs, weighted by $\theta_{i}n_{i}$:
 $$
 \begin{align*}
-\operatorname{NPV}_{0}(\mathcal{C}) &= \sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\Bigl(-\mathcal{P}_{i}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))\Bigr) && \text{NPV of each leg, weighted by }\theta_{i}n_{i}\\
-&= -\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,\mathcal{P}_{i}}_{=\,\mathcal{P}_{\mathcal{C}}}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,V_{i}(K_{i},S(T))}_{=\,\hat{V}_{\mathcal{C}}(S(T))} && \text{split the sum: net premium and composite payoff}\\
+\operatorname{NPV}_{0}(\mathcal{C}) &= \sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\underbrace{\Bigl(-\mathcal{P}_{i}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))\Bigr)}_{\text{NPV of buying leg } i} && \text{NPV of each leg, weighted by }\theta_{i}n_{i}\\
+&= -\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,\mathcal{P}_{i}}_{=\,\mathcal{P}_{\mathcal{C}}}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,V_{i}(K_{i},S(T))}_{=\,\hat{V}_{\mathcal{C}}(S(T))} && \text{split the sum: composite premium and composite payoff}\\
 &= -\mathcal{P}_{\mathcal{C}}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\hat{V}_{\mathcal{C}}(S(T)) && \\
 &= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\Bigl(\hat{V}_{\mathcal{C}}(S(T))-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}\Bigr)}_{=\,\hat{P}_{\mathcal{C}}(S(T))} && \text{factor out }\mathcal{D}^{-1}_{T,0}(g_{y})\text{: profit at expiration}\\
 &= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\hat{P}_{\mathcal{C}}(S(T)) &&
 \end{align*}
 $$
-where $\mathcal{P}_{i}$ is the premium of leg $i$ (USD/share), $\mathcal{P}_{\mathcal{C}}$ is the __net premium__ of the composite contract, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and:
-$$
-\boxed{
-\hat{P}_{\mathcal{C}}(S(T)) = \hat{V}_{\mathcal{C}}(S(T)) - \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}}
-$$
-is the __profit at expiration__ (USD/share). As for a single contract, the NPV is the profit at expiration discounted to today. If $\mathcal{P}_{\mathcal{C}}>0$, we pay more premium than we collect, and the contract opens for a __debit__. If $\mathcal{P}_{\mathcal{C}}<0$, we collect more than we pay, and it opens for a __credit__ of $-\mathcal{P}_{\mathcal{C}}$ USD/share.
+where $\mathcal{P}_{i}$ is the premium of leg $i$ (USD/share), $\mathcal{P}_{\mathcal{C}}$ is the __composite premium__, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and $\hat{P}_{\mathcal{C}}(S(T))$ is the __profit at expiration__ (USD/share). 
+
+As for a single contract, the NPV is the profit at expiration discounted to today. If $\mathcal{P}_{\mathcal{C}}>0$, we pay more premium than we collect, and the contract opens for a __debit__. If $\mathcal{P}_{\mathcal{C}}<0$, we collect more than we pay, and it opens for a __credit__ of $-\mathcal{P}_{\mathcal{C}}$ USD/share.
 
 __Probability of profit:__ Because $\mathcal{D}^{-1}_{T,0}(g_{y})>0$, the NPV and the profit at expiration always have the same sign, so the probability of profit of a composite contract is:
 $$
@@ -89,32 +82,6 @@ $$
 \mathbb{P}\left(S(T)<K_{i}-0.01\right) & \text{if leg } i \text{ is a put}
 \end{cases}
 $$
-
-__Why expiration?__ Our profit diagrams are drawn at expiration. What if we close earlier? Closing a short leg means buying it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. Consider a short strangle on a share at $S(0)=100$ USD/share, a put sold at $K_{1}=90$ USD/share and a call sold at $K_{2}=110$ USD/share, opened 30 days before expiration:
-
-<style>
-  .course-diagram { color-scheme: light dark; }
-  :host-context(body[data-vscode-theme-kind="vscode-light"]) .course-diagram,
-  :host-context(body[data-vscode-theme-kind="vscode-high-contrast-light"]) .course-diagram,
-  body[data-vscode-theme-kind="vscode-light"] .course-diagram,
-  body[data-vscode-theme-kind="vscode-high-contrast-light"] .course-diagram { color-scheme: light; }
-  :host-context(body[data-vscode-theme-kind="vscode-dark"]) .course-diagram,
-  :host-context(body[data-vscode-theme-kind="vscode-high-contrast"]) .course-diagram,
-  body[data-vscode-theme-kind="vscode-dark"] .course-diagram,
-  body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
-  @media print { .course-diagram { color-scheme: only light !important; } }
-</style>
-*Figure: Two panels for a short strangle with a put at K1 = 90 and a call at K2 = 110 USD/share, opened 30 days before expiration with the share price at S(0) = 100 USD/share. Left: the profit if both legs are bought back with 30 (entry), 20, and 10 days left, in orange that darkens toward expiration, and at expiration in black, against the share price on that day. Every earlier curve lies below the profit at expiration and rises toward it. Right: at the share price S(0), the credit collected at entry (dashed) and the cost to buy both legs back (orange) against the days to expiration. The cost starts equal to the credit and decays to zero, so the gap between them, the profit if we close, grows from zero at entry to the whole credit at expiration.*
-
-The legs are American contracts, priced on the CRR tree with volatility $\sigma=0.40$ and $g_{y}=4\%$.
-
-__What do we see?__
-
-* __Before expiration (left):__ Closing early earns the credit, grown to that day, minus the cost to buy both legs back. That cost still includes extrinsic value, so every earlier curve lies below the profit at expiration.
-* __At the entry share price (right):__ Both legs are out of the money, so buying them back right away costs exactly the credit, all of it extrinsic value. Closing at once earns nothing.
-* __Time decay:__ As the extrinsic value decays, the profit if we close rises, up to the whole credit at expiration.
-
-So an early exit earns less than the profit at expiration, by roughly the extrinsic value left in the legs. From here on, every diagram is the profit at expiration.
 ___
 
 ## Common Composite Contracts
@@ -294,6 +261,33 @@ Their maximum profit, breakevens, and maximum losses are:
 | Maximum loss, call side | $(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
 
 The protected strangle's call side is capped but its put side is naked, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
+
+### Why Wait to Expiration?
+Our profit diagrams are drawn at expiration. What if we close earlier? Closing a short leg means buying it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. Consider a short strangle on a share at $S(0)=100$ USD/share, a put sold at $K_{1}=90$ USD/share and a call sold at $K_{2}=110$ USD/share, opened 30 days before expiration:
+
+<style>
+  .course-diagram { color-scheme: light dark; }
+  :host-context(body[data-vscode-theme-kind="vscode-light"]) .course-diagram,
+  :host-context(body[data-vscode-theme-kind="vscode-high-contrast-light"]) .course-diagram,
+  body[data-vscode-theme-kind="vscode-light"] .course-diagram,
+  body[data-vscode-theme-kind="vscode-high-contrast-light"] .course-diagram { color-scheme: light; }
+  :host-context(body[data-vscode-theme-kind="vscode-dark"]) .course-diagram,
+  :host-context(body[data-vscode-theme-kind="vscode-high-contrast"]) .course-diagram,
+  body[data-vscode-theme-kind="vscode-dark"] .course-diagram,
+  body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
+  @media print { .course-diagram { color-scheme: only light !important; } }
+</style>
+*Figure: Two panels for a short strangle with a put at K1 = 90 and a call at K2 = 110 USD/share, opened 30 days before expiration with the share price at S(0) = 100 USD/share. Left: the profit if both legs are bought back with 30 (entry), 20, and 10 days left, in orange that darkens toward expiration, and at expiration in black, against the share price on that day. Every earlier curve lies below the profit at expiration and rises toward it. Right: at the share price S(0), the credit collected at entry (dashed) and the cost to buy both legs back (orange) against the days to expiration. The cost starts equal to the credit and decays to zero, so the gap between them, the profit if we close, grows from zero at entry to the whole credit at expiration.*
+
+The legs are American contracts, priced on the CRR tree with volatility $\sigma=0.40$ and $g_{y}=4\%$.
+
+__What do we see?__
+
+* __Before expiration (left):__ Closing early earns the credit, grown to that day, minus the cost to buy both legs back. That cost still includes extrinsic value, so every earlier curve lies below the profit at expiration.
+* __At the entry share price (right):__ Both legs are out of the money, so buying them back right away costs exactly the credit, all of it extrinsic value. Closing at once earns nothing.
+* __Time decay:__ As the extrinsic value decays, the profit if we close rises, up to the whole credit at expiration.
+
+So the diagrams above show the most each contract can earn at each share price. An early exit earns less, by roughly the extrinsic value left in the legs.
 ___
 
 ## Delta as a Hedging Tool for Composite Contracts
@@ -376,7 +370,7 @@ This lecture combines single options contracts into composite contracts and comp
 
 > __Key Takeaways:__
 >
-> * __The NPV of a composite contract is the sum of its legs' NPVs:__ We weighted each leg's NPV by its orientation and copy number, which gave the same form as a single contract: a net premium today and a composite payoff at expiration. The NPV is the profit at expiration discounted to today, so the probability of profit is the probability that the NPV is positive.
+> * __The NPV of a composite contract is the sum of its legs' NPVs:__ We weighted each leg's NPV by its orientation and copy number, which gave the same form as a single contract: a composite premium today and a composite payoff at expiration. The NPV is the profit at expiration discounted to today, so the probability of profit is the probability that the NPV is positive.
 > * __Common composite contracts are built from a put side and a call side:__ We classified each side as empty, naked, or a credit spread and used the sides to read the outlook and the maximum loss. Each contract's maximum profit is its credit grown to expiration, and each long leg lowers the credit but caps the loss on its side. Closing early also pays the extrinsic value left in the legs, so the profit reaches the profit at expiration only as that value decays.
 > * __Delta enables construction of hedged positions:__ We wrote the net Delta of a portfolio as the number of shares held plus the weighted Deltas of the legs, and found that holding shares equal to minus the options Delta makes the position delta-neutral. At entry, the sign of the composite contract's Delta matches the outlook, and a zero Delta is not zero risk because Deltas change as the share price moves.
 

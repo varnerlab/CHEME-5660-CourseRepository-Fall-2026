@@ -18,21 +18,21 @@ expiration, 53 days). AMD reports earnings on November 3 after the close.
 1. Last time: one contract. Today: put several together. What is the combination
    worth, and when does it make money?
 2. **The profit at expiration is a sum over the legs.** Payoffs weighted by θᵢnᵢ, minus
-   the net premium grown to expiration (𝒟). The NPV is that profit discounted to today,
+   the composite premium grown to expiration (𝒟). The NPV is that profit discounted to today,
    so the POP is the chance the profit is positive. The same counting works with two
    breakevens.
-3. **Why we draw everything at expiration.** Closing early means buying the legs back,
-   and their price still includes extrinsic value. Use the strangle time-decay figure.
-4. **Eight credit structures, one idea.** Each has a put side and a call side: empty,
+3. **Eight credit structures, one idea.** Each has a put side and a call side: empty,
    naked, or a credit spread. The sides give the outlook and the maximum loss. The
    formula tables are reference material, not something to memorize.
+4. **Why we wait to expiration (after the diagrams).** Closing early means buying the legs back,
+   and their price still includes extrinsic value. Use the strangle time-decay figure.
 5. **Delta adds up.** The composite Delta Δ_𝒞 = Σ θᵢnᵢΔᵢ; net Delta = shares + m Σ θᵢnᵢΔᵢ. Hold N_S = −Δ_opts shares to be
    delta-neutral. A zero Delta is not zero risk.
 
 ## What students must know (on slide 4 and in the notebook box)
 
 - **Core:**
-  - profit at expiration = legs' payoffs − net premium grown to expiration; POP = P(profit > 0)
+  - profit at expiration = legs' payoffs − composite premium grown to expiration; POP = P(profit > 0)
   - read a profit diagram: breakevens, max profit (credit grown to expiration), max loss
   - net Delta and the hedge shares N_S = −Δ_opts
 - **For understanding only:** the NPV derivation and the eight formula tables. Say out
