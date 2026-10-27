@@ -131,17 +131,17 @@ A put vertical spread is constructed by combining 2 $\times$ put contracts, a sh
 
 
 ### Profit and Breakeven Analysis for Put Vertical Spread
-Let contract $i$ have a strike price of $K_{i}$ and premium $\mathcal{P}_{i}$, numbered from low to high: contract 1 is the long leg ($\theta_{1} = 1$) and contract 2 the short leg ($\theta_{2} = -1$), where $K_{1} < K_{2} < S_{0}$. The share price at expiration is given by $S(T)$, and $\mathcal{D}=\mathcal{D}_{T,0}(g_{y})$ is the accumulation factor from today to expiration. Then, the profit for a single put vertical spread at expiration is given by:
+Let contract $i$ have a strike price of $K_{i}$ and premium $\mathcal{P}_{i}$, numbered from low to high: contract 1 is the long leg ($\theta_{1} = 1$) and contract 2 the short leg ($\theta_{2} = -1$), where $K_{1} < K_{2} < S_{0}$. The share price at expiration is given by $S(T)$, and $\mathcal{D}_{T,0}(g_{y})$ is the accumulation factor from today to expiration. Then, the profit for a single put vertical spread at expiration is given by:
 
 $$
-\hat{P}_{\mathcal{C}} = \mathcal{D}\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right) - \left(K_{2} - S(T)\right)^{+} + \left(K_{1} - S(T)\right)^{+}
+\hat{P}_{\mathcal{C}} = \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right) - \left(K_{2} - S(T)\right)^{+} + \left(K_{1} - S(T)\right)^{+}
 $$
 
 where $V_{p}(K,S(T)) = (K-S(T))^{+}=\max(K-S(T),0)$ is the payoff function for a put contract. The first term is the net premium received, grown to expiration, and the others are the leg payoffs. The maximum possible profit, loss, and breakeven conditions are given by:
 
-* The maximum possible profit of $\mathcal{D}\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\geq{K_{2}}$.
-* The maximum possible loss of $\left(K_{2} - K_{1}\right) - \mathcal{D}\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\leq{K_{1}}$.
-* The put credit spread will breakeven when $S(T) = S^{\ddagger} = K_{2}-\mathcal{D}\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$.
+* The maximum possible profit of $\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\geq{K_{2}}$.
+* The maximum possible loss of $\left(K_{2} - K_{1}\right) - \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$ will occur when $S(T)\leq{K_{1}}$.
+* The put credit spread will breakeven when $S(T) = S^{\ddagger} = K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{2} - \mathcal{P}_{1}\right)$.
 
 Let's visualize the profit at expiration:
 
