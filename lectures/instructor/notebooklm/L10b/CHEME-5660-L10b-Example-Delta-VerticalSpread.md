@@ -4,9 +4,9 @@ In this example, we will analyze vertical bullish credit spreads. These are dire
 > __Learning Objectives:__
 > 
 > By the end of this example, you will be able to:
-> * __Compute the profit of a put credit spread:__ Build its profit at expiration and compute its maximum profit, maximum loss, and breakeven.
-> * __Estimate the probability of profit:__ Compute the POP from projected share prices at expiration under our belief $\mathbb{P}$ and under the risk-neutral probabilities $\mathbb{Q}$.
-> * __Estimate each leg's probability of exercise:__ Compute the POE of the short and the long put under $\mathbb{P}$ and $\mathbb{Q}$, and compare them.
+> * __Compute the profit of a put credit spread:__ Combine a short put at the higher strike and a long put at the lower strike into one profit at expiration, and compute the spread's maximum profit, maximum loss, and breakeven share price.
+> * __Estimate the probability of profit:__ Project the share price at expiration with geometric Brownian motion, and compute the probability that the spread finishes above its breakeven, under our belief $\mathbb{P}$ and under the risk-neutral probabilities $\mathbb{Q}$.
+> * __Estimate each leg's probability of exercise:__ Compute the probability that each put finishes in the money under $\mathbb{P}$ and $\mathbb{Q}$, and explain why the short put is more likely to be exercised than the long put.
 
 Let's get started!
 ___
