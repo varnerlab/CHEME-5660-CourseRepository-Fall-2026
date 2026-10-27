@@ -2,12 +2,19 @@
 
 Instructor notes. Public in the repository, not in the student release zip.
 
-Thursday, October 29, 2026. Deck: 30 slides. Both examples use the AMD chain of
-October 26, 2026 (close 531.26 USD/share, December 18 expiration, 53 days). AMD reports
-earnings on November 3 after the close.
+Thursday, October 29, 2026. Deck: 32 slides. In class: the two L10a examples we did not
+reach on Tuesday (Example 1, Greeks; Example 2, POE/POP; both NVDA, numbers in the L10a
+brief, where they are Examples 2 and 3), then Example 3, the put credit spread. The straddle example is review on your own:
+it has naked legs on both sides, so it is the harder trade to start with. Both L10b
+examples use the AMD chain of October 26, 2026 (close 531.26 USD/share, December 18
+expiration, 53 days). AMD reports earnings on November 3 after the close.
 
-## The story in five steps
+## The story in six steps
 
+0. **Catch-up (two review slides, then Examples 1 and 2).** The Taylor expansion of
+   the premium, the quoted units (Θ/365, ν/100, ρ/100), one contract = 100·Δ shares, and
+   the POE and POP formulas. No finite differences and no Delta–POE proposition; the
+   examples carry those.
 1. Last time: one contract. Today: put several together. What is the combination
    worth, and when does it make money?
 2. **The profit at expiration is a sum over the legs.** Payoffs weighted by θᵢnᵢ, minus
@@ -48,7 +55,7 @@ earnings on November 3 after the close.
 
 ## Numbers to point at
 
-**Example 1 (short straddle, K = 530):**
+**Straddle example (review on your own; short straddle, K = 530):**
 - Premiums: put 43.00, call 47.83, credit 90.83 USD/share (91.38 grown to expiration).
 - Breakevens: 438.62 and 621.38 USD/share.
 
@@ -60,7 +67,7 @@ earnings on November 3 after the close.
 
 - Task 3 waits for the release (below).
 
-**Example 2 (put credit spread, long 500 / short 520):**
+**Example 3 (put credit spread, long 500 / short 520):**
 - Premiums: 29.35 (long) and 38.10 (short), credit 8.75 USD/share.
 - Breakeven 511.20; max profit 8.80; max loss 11.20 USD/share.
 - POP 0.714 under ℙ against 0.540 under ℚ. The short put's POE under ℚ is 0.492.

@@ -27,6 +27,7 @@
 \newcommand{\Dc}{\mathcal{D}}
 \newcommand{\Pc}{\mathcal{P}}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b}
+\newcommand{\repoa}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a}
 
 \title{\texorpdfstring{{\vnheavy L10b}}{L10b}: The NPV of Composite Contracts and A New Role for Delta}
 \subtitle{CHEME 5660 Cornell University}
@@ -55,8 +56,9 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today, we combine calls and puts into composite contracts. What is a composite
-  contract worth, and when does it make money?
+  Today, we work two examples with the Greeks, the POE, and the POP, then combine
+  calls and puts into composite contracts. What is a composite contract worth, and
+  when does it make money?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
@@ -102,11 +104,62 @@
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Example 1:}}\par\small
-  \href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
+  \href{\repoa/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
 
   \vspace{0.45em}
   {\normalsize\textbf{\ink{Example 2:}}\par\small
+  \href{\repoa/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Example 3:}}\par\small
   \href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Review on your own:}}\par\small
+  \href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== Review: The Greeks, POE, and POP
+\begin{frame}{Review: The Greeks}
+  For small changes in the share price, the volatility, the calendar time
+  (years), and the rate, the premium $\Pc_{\star}$ of a call ($\star=c$) or put
+  ($\star=p$) changes by:
+  \begin{equation*}
+    \Delta\Pc_{\star}\approx\Delta_{\star}\,\Delta S+\tfrac{1}{2}\,\Gamma_{\star}\,(\Delta S)^{2}
+    +\nu_{\star}\,\Delta\sigma+\Theta_{\star}\,\Delta t+\rho_{\star}\,\Delta g_{y}
+  \end{equation*}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Delta and Gamma}: the slope and curvature of the premium in $S$.
+    \item \hilite{Vega, Theta, and Rho}: sensitivities to the volatility $\sigma$,
+      the calendar time $t$, and the risk-free rate $g_{y}$, quoted as
+      $\Theta_{\star}/365$ per day and $\nu_{\star}/100$, $\rho_{\star}/100$ per point.
+    \item \hilite{Hedge ratio}: one contract covers 100 shares, so it is
+      equivalent to $100\cdot\Delta_{\star}$ shares.
+  \end{itemize}
+  \slidenote{Example 1:}{\href{\repoa/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb}}}
+\end{frame}
+
+\begin{frame}{Review: POE and POP}
+  \vspace{0.3em}
+  The \hilite{POE} is the probability of finishing in the money by more than 0.01~USD/share;
+  the \hilite{POP} is the probability of a positive profit at expiration, beyond
+  the breakeven $S^{\ddagger}=K\pm\Dc_{T,0}(g_{y})\cdot\Pc_{\star}$ ($+$ call, $-$ put):
+  \begin{equation*}
+    \boxed{
+    \begin{aligned}
+      \text{POE} &= \begin{cases}
+      \mathbb{P}\left(S(T)>K+0.01\right) & \text{call}\\
+      \mathbb{P}\left(S(T)<K-0.01\right) & \text{put}
+      \end{cases}\\[0.3em]
+      \text{POP} &= \begin{cases}
+      \mathbb{P}\left(S(T)>S^{\ddagger}\right) & \text{bought a call or sold a put}\\
+      \mathbb{P}\left(S(T)<S^{\ddagger}\right) & \text{sold a call or bought a put}
+      \end{cases}
+    \end{aligned}}
+  \end{equation*}
+  where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$; we simulate $S(T)$ under $\mathbb{P}$ or $\Q$.
+  With no dividends, a short-dated call's Delta is slightly above its POE under $\Q$.
+  \slidenote{Example 2:}{\href{\repoa/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 \end{frame}
 
 % ========== Composite Contracts
@@ -360,7 +413,7 @@
   \end{center}
   Buying both legs ($\theta_{i}=1$) flips either diagram: the loss is capped at
   the premium paid, and a large move either way pays.
-  \slidenote{Example 1:}{\href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
+  \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Protected Strangles and Iron Condors}
@@ -506,7 +559,7 @@
   \end{itemize}
   \vspace{0.4em}
   Staying delta-neutral means updating $N_{S}$ as the Deltas change.
-  \slidenote{Example 2:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
+  \slidenote{Example 3:}{\href{\repo/CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb}}}
 \end{frame}
 
 \begin{frame}{Summary}
