@@ -1,18 +1,18 @@
 # L10b: The NPV and Probability of Profit of Composite Contracts
-Previously, we introduced the Greeks and the probabilities of exercise and profit. Today, we combine single contracts into composite contracts. What is a composite contract worth, and when does it make money?
+Previously, we introduced the Greeks and the probabilities of exercise and profit. Today, we work two examples with them, then combine single contracts into composite contracts. What is a composite contract worth, and when does it make money?
 
 > __Learning Objectives:__
 >
 > By the end of this lecture, you should be able to:
-> * __Compute the POE and POP of a single contract:__ Estimate both from simulated share prices at expiration, and compare the POE with Delta.
-> * __Compute the NPV and POP of a composite contract:__ Write its payoff, profit, and NPV as sums over its legs, and estimate the POP from simulated share prices.
-> * __Analyze common composite contracts:__ Read each profit diagram for the outlook, breakevens, maximum profit, and maximum loss, and explain why closing early earns less.
+> * __Compute the POE and POP of a single contract:__ Estimate the probability of exercise (POE) and the probability of profit (POP) of a call or put from simulated share prices at expiration, under our forecast and under the risk-neutral probabilities. Compare the POE with the size of the contract's Delta.
+> * __Compute the NPV and POP of a composite contract:__ Write its payoff, profit at expiration, and NPV as sums over its legs, weighted by each leg's orientation and copy number. Decide whether it opens for a debit or a credit, and estimate its POP and each leg's POE from simulated share prices.
+> * __Analyze common composite contracts:__ Describe each common composite contract, from the short put to the iron condor, and read its profit diagram for the outlook, breakevens, maximum profit, and maximum loss. Explain why closing before expiration earns less: buying the legs back still pays for their extrinsic value.
 
 Some results in this lecture are core, and some are here to build understanding:
 
 > __What you need to know:__
 >
-> __Core results:__
+> __Core concepts:__
 > * POE: the probability a contract finishes in the money. POP: the probability its profit at expiration is positive. Both come from simulated share prices, and the POE $\sim|\Delta_{\star}|$.
 > * Profit at expiration $=$ the legs' payoffs, weighted by orientation and copy number, minus the composite premium grown to expiration. The POP is the probability that this profit is positive.
 > * A profit diagram shows the breakevens, the maximum profit (the credit grown to expiration), and the maximum loss. Closing early earns less, by roughly the extrinsic value left in the legs.
@@ -28,6 +28,10 @@ ___
 ## Examples
 __We will work through these examples in lecture:__
 
+> [▶ Let's compute the Greeks for call and put options](../L10a/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb). In this example, we compute the five Greeks of an American call and put on the Leisen–Reimer tree, compare them with the quoted values, and see how they change with the strike price and the time to expiration. We then convert them to short contracts and size a Delta hedge.
+
+> [▶ Compute the POP and POE for a short call contract](../L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb). In this example, we compute the probability of profit (POP) and the probability of exercise (POE) of a short call under the risk-neutral probabilities and under our forecast, and compare the POE with Delta.
+
 > [▶ Compute the POP and POE for a put credit spread on AMD](CHEME-5660-L10b-Example-Delta-VerticalSpread-Fall-2026.ipynb). In this example, we build a put credit spread on AMD and compute its maximum profit, maximum loss, and breakeven. We then compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities.
 
 __Review these examples on your own.__
@@ -35,24 +39,76 @@ __Review these examples on your own.__
 > [▶ Compute the POP and POE for a straddle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a straddle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss.
 ___
 
-## Company Profile: tastytrade
+## Review: The Greeks, POE, and POP
+Let's review the results we need for the first two examples.
 
-[tastytrade](https://tastytrade.com/about-us), formerly tastyworks, is a U.S. online brokerage for stocks, options, futures, and crypto. Its parent, [tastylive](https://www.tastylive.com/about-us), is a free online financial network that launched in 2011 with "an emphasis on options trading," and the brokerage followed in 2017. The founders, [Tom Sosnoff](https://en.wikipedia.org/wiki/Tom_Sosnoff) and Scott Sheridan, were options market makers at the Chicago Board Options Exchange in the 1980s and started the online broker thinkorswim in 1999, which [TD Ameritrade bought in 2009](https://www.finextra.com/newsarticle/19495/td-ameritrade-agrees-606m-deal-to-buy-thinkorswim) for about 606 million USD. 
+__The Greeks.__ For small changes $\Delta S$, $\Delta\sigma$, $\Delta t$, and $\Delta g_{y}$ in the share price, the volatility, the calendar time (years), and the risk-free rate, the premium $\mathcal{P}_{\star}$ (USD/share) of a call ($\star=c$) or a put ($\star=p$) changes by:
+$$
+\begin{align*}
+\Delta\mathcal{P}_{\star} &\approx \Delta_{\star}\,\Delta S + \frac{1}{2}\,\Gamma_{\star}\,(\Delta S)^{2} + \nu_{\star}\,\Delta\sigma + \Theta_{\star}\,\Delta t + \rho_{\star}\,\Delta g_{y}\\
+&= \underbrace{\left(\Delta_{\star} + \frac{1}{2}\,\Gamma_{\star}\,\Delta S\right)\Delta S}_{\text{share price}} + \underbrace{\nu_{\star}\,\Delta\sigma}_{\text{volatility}} + \underbrace{\Theta_{\star}\,\Delta t}_{\text{time}} + \underbrace{\rho_{\star}\,\Delta g_{y}}_{\text{rate}}
+\end{align*}
+$$
+Delta $\Delta_{\star}$ and Gamma $\Gamma_{\star}$ are the slope and the curvature of the premium in the share price. Vega $\nu_{\star}$, Theta $\Theta_{\star}$, and Rho $\rho_{\star}$ are its sensitivities to the volatility, the calendar time, and the rate. Trading platforms quote $\Theta_{\star}/365$ per day, and $\nu_{\star}/100$ and $\rho_{\star}/100$ per percentage point. One contract covers 100 shares, so it is equivalent to $100\cdot\Delta_{\star}$ shares.
 
-In 2021, the U.K. broker IG Group [bought tastytrade](https://investegate.co.uk/announcement/rns/ig-group-holdings--igg/acquisition/6468003) for 300 million USD in cash and 61 million IG shares.
+__POE and POP.__ The probability of exercise (POE) is the probability that a contract finishes in the money by more than 0.01 USD/share, the threshold for automatic exercise. The probability of profit (POP) is the probability that its profit at expiration is positive. 
+
+For a contract with strike price $K$, the profit is positive beyond the breakeven share price $S^{\ddagger}=K\pm\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\star}$ ($+$ for a call, $-$ for a put), where $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ grows the premium to the expiration $T$:
+$$
+\text{POE}=\begin{cases}
+\mathbb{P}\left(S(T)>K+0.01\right) & \text{call}\\
+\mathbb{P}\left(S(T)<K-0.01\right) & \text{put}
+\end{cases}
+\qquad
+\text{POP}=\begin{cases}
+\mathbb{P}\left(S(T)>S^{\ddagger}\right) & \text{bought a call or sold a put}\\
+\mathbb{P}\left(S(T)<S^{\ddagger}\right) & \text{sold a call or bought a put}
+\end{cases}
+$$
+We compute both from simulated share prices at expiration $S(T)$, under our belief $\mathbb{P}$. However, the POE $\sim|\Delta_{\star}|$, where $\Delta_{\star}$ is the call's or put's Delta, which is quoted by trading platforms under the risk-neutral probabilities $\mathbb{Q}$.
+
+Let's outline pseudocode that simulates share prices at expiration and reads the POE and POP from the sample cumulative distribution function.
+
+__Initialize__: Given the share price $S(0)$, the strike price $K$, the premium $\mathcal{P}_{\star}$ of the call or put, the time to expiration $T$ (units: years), the drift $\mu$ (units: $\mathrm{yr}^{-1}$) and the volatility $\sigma$ (units: $\mathrm{yr}^{-1/2}$) under $\mathbb{P}$, the risk-free rate $g_{y}$, and the number of samples $M$. Compute the breakeven share price $S^{\ddagger}$.
+
+1. For each sample $j = 1,2,\dots,M$ __do__:
+   - a. Draw a sample from the standard normal distribution: $Z_{j}\sim\mathcal{N}(0,1)$.
+   - b. Compute the share price at expiration: $S_{j}(T) \gets S(0)\exp\left[\left(\mu-\sigma^{2}/2\right)T+\sigma\sqrt{T}\,Z_{j}\right]$.
+2. Compute the cumulative distribution function, the fraction of samples at or below each share price $x$: $\hat{F}(x) \gets \frac{1}{M}\cdot\#\left\{j : S_{j}(T)\leq x\right\}$.
+3. Compute the probability of exercise. If the contract is a call, __then__ $\text{POE} \gets 1-\hat{F}(K+0.01)$. Otherwise, $\text{POE} \gets \hat{F}(K-0.01)$.
+4. Compute the probability of profit:
+   - If we bought a call or sold a put, __then__ the profit is positive above the breakeven: $\text{POP} \gets 1-\hat{F}(S^{\ddagger})$.
+   - If we sold a call or bought a put, __then__ the profit is positive below the breakeven: $\text{POP} \gets \hat{F}(S^{\ddagger})$.
+
+__Output__: The probability of exercise $\text{POE}$ and the probability of profit $\text{POP}$.
+
+With $\mu=g_{y}$ and $\sigma$ set to the implied volatility, the same steps give the probabilities under $\mathbb{Q}$. These are the probabilities inside the market price, not our forecast.
+
+> __Examples:__
+>
+> [▶ Let's compute the Greeks for call and put options](../L10a/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb). In this example, we compute the five Greeks of an American call and put on the Leisen–Reimer tree, compare them with the quoted values, and see how they change with the strike price and the time to expiration. We then convert them to short contracts and size a Delta hedge.
+>
+> [▶ Compute the POP and POE for a short call contract](../L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb). In this example, we compute the probability of profit (POP) and the probability of exercise (POE) of a short call under the risk-neutral probabilities and under our forecast, and compare the POE with Delta.
+___
+
+## Company Profile: Akuna Capital
+
+[Akuna Capital](https://akunacapital.com/what-we-do) is a trading firm specializing in options market making. The firm [began as an idea in Sydney](https://akunacapital.com/who-we-are/) and opened its Chicago headquarters in 2011. It now also has offices in London, Sydney, Shanghai, and Singapore. 
 
 > __What does the firm do?__
 >
-> * __Options brokerage:__ IG describes tastytrade as "an online brokerage and investor education platform with a leading position in the U.S. listed options and futures market."
-> * __Teaching traders to sell options:__ tastylive's guides teach the composite contracts in this lecture. Its [strangle guide](https://www.tastylive.com/concepts-strategies/strangle) suggests selling strangles when implied volatility is high, at around 45 days to expiration.
-> * __Managing winners:__ The same guide sets the first profit target at "50% of the maximum profit," reached by buying the strangle back for half of the credit received.
+> * __Options market making:__ A market maker posts prices at which it will buy and sell, and it trades with whoever accepts them. Akuna describes itself as a [proprietary trading firm](https://akunacapital.com/options-market-making/), which means it trades with its own money.
+> * __Building its own models and technology:__ The firm says it designs and develops [its own trading systems, models, and infrastructure](https://akunacapital.com/what-we-do/).
+> * __Teaching options:__ Akuna offers a free online [Options 101 course to "prepare you for a role in trading."](https://akunacapital.com/work-with-us/options-101/) It covers payoff diagrams, historical and implied volatility, and the Greeks. All the stuff we have been talking about!
 
 __Explore further:__
 
-* __Strategy guides:__ Read tastylive's guides to the [iron condor](https://www.tastylive.com/concepts-strategies/iron-condor) and the [jade lizard](https://www.tastylive.com/concepts-strategies/jade-lizard), our protected strangle.
-* __Videos:__ Watch [Market Measures](https://www.tastylive.com/shows/market-measures), a tastylive show on options probabilities, volatility, and trading strategies.
+* __Jobs and internships:__ Browse Akuna's [internships page](https://akunacapital.com/work-with-us/internships/). The Akunacademy program takes students in the second-to-last year of their degree into the technology, trading, and quant departments, and one-week Sneak Peek Weeks run at the Chicago headquarters. In October 2026, the [careers page](https://akunacapital.com/careers/) listed Summer 2027 quantitative internships in Chicago.
+* __Course videos:__ The [Options 101 course](https://akunacapital.teachable.com/) includes videos that "explain what options market-makers look at while trading the markets," and its payoff diagrams are the profit diagrams we draw in this lecture!
 
-__Connection to today's lecture:__ Buying a strangle back at half of its credit closes it before expiration. The cost to close is the premium still left in the legs, so the trade gives up the rest of the credit to end sooner. We look at this tradeoff in *Why Wait to Expiration?*
+__Connection to today's lecture:__ When we _sell a put credit spread_, a market maker such as Akuna may take the other side of one or both legs. Its premiums are set under the risk-neutral probabilities $\mathbb{Q}$, and the Delta a trading platform quotes is computed from them. So each leg's Delta approximates that leg's POE under $\mathbb{Q}$, not under our forecast $\mathbb{P}$.
+
+The POE/POP  under our forecast $\mathbb{P}$ is __our own estimate__ of how likely the trade is to make money. In the examples, let's compute both, compare them and see what they tell us about the trade.
 
 ___
 
@@ -74,18 +130,18 @@ The payoff of a composite contract is the sum of its legs' payoffs, weighted by 
 
 Let's start with what a composite contract is worth today.
 
-### The Net Present Value of a Composite Contract
-A composite contract is a sum of legs, so its NPV is the sum of the legs' NPVs, weighted by $\theta_{i}n_{i}$:
+### The Net Present Value (NPV) of a Composite Contract
+A composite contract is a sum of legs, so its NPV is the sum of the legs' NPVs, weighted by $\theta_{i}n_{i}$ (perspective: buyer):
 $$
 \begin{align*}
-\operatorname{NPV}_{0}(\mathcal{C}) &= \sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\underbrace{\Bigl(-\mathcal{P}_{i}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))\Bigr)}_{\text{NPV of buying leg } i} && \text{NPV of each leg, weighted by }\theta_{i}n_{i}\\
+\operatorname{NPV}_{0}(\mathcal{C}) &= \sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\underbrace{\Bigl(-\mathcal{P}_{i}+\overbrace{\mathcal{D}^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))}^{\text{discounted payoff}}\Bigr)}_{\text{NPV of buying leg } i} && \text{NPV of each leg, weighted by }\theta_{i}n_{i}\\
 &= -\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,\mathcal{P}_{i}}_{=\,\mathcal{P}_{\mathcal{C}}}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,V_{i}(K_{i},S(T))}_{=\,\hat{V}_{\mathcal{C}}(S(T))} && \text{split the sum: composite premium and composite payoff}\\
 &= -\mathcal{P}_{\mathcal{C}}+\mathcal{D}^{-1}_{T,0}(g_{y})\cdot\hat{V}_{\mathcal{C}}(S(T)) && \\
 &= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\Bigl(\hat{V}_{\mathcal{C}}(S(T))-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}\Bigr)}_{=\,\hat{P}_{\mathcal{C}}(S(T))} && \text{factor out }\mathcal{D}^{-1}_{T,0}(g_{y})\text{: profit at expiration}\\
-&= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\hat{P}_{\mathcal{C}}(S(T)) &&
+&= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\hat{P}_{\mathcal{C}}(S(T))}_{\text{profit at expiration}} &&
 \end{align*}
 $$
-where $\mathcal{P}_{i}$ is the premium of leg $i$ (USD/share), $\mathcal{P}_{\mathcal{C}}$ is the __composite premium__, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and $\hat{P}_{\mathcal{C}}(S(T))$ is the __profit at expiration__ (USD/share). 
+where $\mathcal{P}_{i}>0$ is the premium of leg $i$ (USD/share), positive whether we buy or sell it ($\theta_{i}$ sets the direction), $\mathcal{P}_{\mathcal{C}}$ is the __composite premium__, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and $\hat{P}_{\mathcal{C}}(S(T))$ is the __profit at expiration__ (USD/share). 
 
 As for a single contract, the NPV is the profit at expiration discounted to today. If $\mathcal{P}_{\mathcal{C}}>0$, we pay more premium than we collect, and the contract opens for a __debit__. If $\mathcal{P}_{\mathcal{C}}<0$, we collect more than we pay, and it opens for a __credit__ of $-\mathcal{P}_{\mathcal{C}}$ USD/share.
 
@@ -106,13 +162,9 @@ $$
 ___
 
 ## Common Composite Contracts
-Each contract below opens for a credit: it collects more premium than it pays. Each has a __put side__ and a __call side__, and each side is:
+Each contract below opens for a credit: it collects more premium than it pays. So $\mathcal{P}_{\mathcal{C}}<0$, and the first term of each profit at expiration, $-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}$, is the credit grown to expiration.
 
-* __empty:__ no contract on that side, so that side cannot lose;
-* __naked:__ a short contract with no protection;
-* __a credit spread:__ a short contract protected by a long one farther from the share price.
-
-The put side can lose only if the share price falls, and the call side only if it rises. So the __outlook__ follows from which side can lose: only the put side, __neutral to bullish__; only the call side, __neutral to bearish__; both, __neutral__:
+By choosing which puts and calls we sell and buy, we can build trades that are bullish, bearish, or neutral. A short contract is __naked__ if no long contract caps its loss:
 
 | Composite contract | Put side | Call side | Outlook |
 |:--|:--|:--|:--|
@@ -143,7 +195,7 @@ Each figure shows the payoff (blue) and the profit (black) at expiration, per sh
 </style>
 *Figure: Two panels of the payoff (blue) and the profit (black) at expiration against the share price at expiration. Left, a short put at strike K: the profit is the credit above K and falls one for one below K, crossing zero at the breakeven, with the largest loss at a share price of zero. Right, a short call at K: the profit is the credit below K and falls without limit above K, crossing zero at the breakeven. A tick labeled S(0) marks the share price when the trade opens: above K for the put and below K for the call, so each starts out of the money.*
 
-Selling one put, a [short put](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered), or one call, a [short call](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered), is the building block of every structure below. With premiums $\mathcal{P}_{p}$ (put) and $\mathcal{P}_{c}$ (call) at strike $K$, the profits at expiration are:
+Selling [a put](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered), or [a call](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered), is the building block of every structure below. With premiums $\mathcal{P}_{p}$ (put) and $\mathcal{P}_{c}$ (call) at strike $K$, the profits at expiration are, with $\theta=-1$ (a short contract) and $n=1$ (one contract):
 $$
 \begin{align*}
 \hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}-(K-S(T))^{+} && \text{short put}\\
@@ -151,17 +203,15 @@ $$
 \end{align*}
 $$
 
-Their maximum profit, breakevens $S^{\ddagger}$, and maximum losses are:
+Their maximum profit, breakevens $S^{\ddagger}$, and maximum losses are given by:
 
 | | Short put | Short call |
 |:--|:--|:--|
 | Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ for $S(T)\geq K$ | $\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}$ for $S(T)\leq K$ |
-| Breakeven, put side | $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ | none |
-| Maximum loss, put side | $K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ at $S(T)=0$ | none |
-| Breakeven, call side | none | $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}$ |
-| Maximum loss, call side | none | unlimited |
+| Breakeven | $S^{\ddagger}=K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ | $S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}$ |
+| Maximum loss | $K-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{p}$ at $S(T)=0$ | unlimited |
 
-Each keeps the whole premium if it expires out of the money. The share price cannot fall below zero, so the short put's loss is bounded, but the short call's loss is not.
+Each keeps the whole premium if it expires out of the money. The share price cannot fall below zero, so the short put's loss is bounded, but the short call's loss is not (share price could rise without limit).
 
 ### Credit Spreads
 
@@ -195,10 +245,8 @@ Their maximum profit, breakevens, and maximum losses are:
 | | Put credit spread | Call credit spread |
 |:--|:--|:--|
 | Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\geq K_{2}$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\leq K_{1}$ |
-| Breakeven, put side | $S^{\ddagger}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ | none |
-| Maximum loss, put side | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\leq K_{1}$ | none |
-| Breakeven, call side | none | $S^{\ddagger}=K_{1}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ |
-| Maximum loss, call side | none | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\geq K_{2}$ |
+| Breakeven | $S^{\ddagger}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ | $S^{\ddagger}=K_{1}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ |
+| Maximum loss | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\leq K_{1}$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\geq K_{2}$ |
 
 Beyond the long strike, the long leg gains every dollar the short leg loses, so the loss stops at the strike width minus the credit. The spread gives up part of the credit for this known maximum loss.
 
@@ -236,10 +284,10 @@ Their maximum profit, breakevens $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$, and 
 | | Short straddle | Short strangle |
 |:--|:--|:--|
 | Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=K$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ |
-| Breakeven, put side | $S^{\ddagger}_{-}=K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
-| Maximum loss, put side | $K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=0$ | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ at $S(T)=0$ |
-| Breakeven, call side | $S^{\ddagger}_{+}=K+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
-| Maximum loss, call side | unlimited | unlimited |
+| Lower breakeven | $S^{\ddagger}_{-}=K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
+| Maximum loss below $S^{\ddagger}_{-}$ | $K-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ at $S(T)=0$ | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ at $S(T)=0$ |
+| Upper breakeven | $S^{\ddagger}_{+}=K+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
+| Maximum loss above $S^{\ddagger}_{+}$ | unlimited | unlimited |
 
 Each profits only between its breakevens, so its probability of profit is $\mathbb{P}(S^{\ddagger}_{-}<S(T)<S^{\ddagger}_{+})$. The straddle collects more credit, but the strangle keeps its credit over a wider range of share prices. Buying both legs ($\theta_{i}=1$) flips the diagram about the zero line: the loss is capped at the premium paid, and the profit grows with a large move either way. Let's compute the POP and POE for a short straddle on AMD.
 
@@ -282,10 +330,10 @@ Their maximum profit, breakevens, and maximum losses are:
 | | Protected strangle | Iron condor |
 |:--|:--|:--|
 | Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ |
-| Breakeven, put side | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ | $S^{\ddagger}_{-}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
-| Maximum loss, put side | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ at $S(T)=0$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\leq K_{1}$ |
-| Breakeven, call side | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
-| Maximum loss, call side | $(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
+| Lower breakeven | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ | $S^{\ddagger}_{-}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
+| Maximum loss below $S^{\ddagger}_{-}$ | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ at $S(T)=0$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\leq K_{1}$ |
+| Upper breakeven | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
+| Maximum loss above $S^{\ddagger}_{+}$ | $(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
 
 The protected strangle's call side is capped but its put side is naked, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
 
@@ -324,7 +372,7 @@ This lecture computes the probabilities of exercise and profit of a single contr
 >
 > * __POE, POP, and Delta:__ We computed the probability of exercise and the probability of profit of a single contract from simulated share prices at expiration. The size of Delta approximates the POE under the risk-neutral probabilities $\mathbb{Q}$.
 > * __The NPV of a composite contract is a sum over its legs:__ We weighted each leg's NPV by its orientation and copy number. The NPV is the profit at expiration discounted to today, so the POP is the probability that this profit is positive.
-> * __Common composite contracts have a put side and a call side:__ We used the sides to read each contract's outlook and maximum loss. The maximum profit is the credit grown to expiration, and closing early earns less, by roughly the extrinsic value left in the legs.
+> * __Common composite contracts can be bullish, bearish, or neutral:__ We combined short and long puts and calls into eight contracts that open for a credit, and read each profit diagram for its outlook, breakevens, and maximum loss. The maximum profit is the credit grown to expiration, and closing early earns less, by roughly the extrinsic value left in the legs.
 
 These results let us compare composite contracts by what they can earn, what they can lose, and how likely they are to make money.
 ___

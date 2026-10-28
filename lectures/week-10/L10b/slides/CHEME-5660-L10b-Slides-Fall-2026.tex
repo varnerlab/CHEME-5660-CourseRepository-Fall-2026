@@ -10,7 +10,11 @@
 % \mathcal{P}_{\mathcal{C}}, profit at expiration \hat{P}_{\mathcal{C}}(S(T)),
 % discount factor \mathcal{D}^{-1}_{T,0}(g_y), accumulation factor
 % \mathcal{D}_{T,0}(g_y) (always written in full), and breakevens S^{\ddagger},
-% S^{\ddagger}_{\pm}. October 27, 2026: Delta hedging moved to L11a.
+% S^{\ddagger}_{\pm}. October 28, 2026: the POE/POP pseudocode frames from L10a
+% added to the review (S_0 -> S(0), \mathcal{P} -> \Pc_{\star}, sample
+% index i -> j because i is the leg index in L10b).
+% Same day: the tastytrade company profile replaced by Akuna Capital.
+% October 27, 2026: Delta hedging moved to L11a.
 % October 26, 2026: first build, from the lecture after the October 26 scoring-round
 % fixes. Figures are the light PDFs in ../figs (see ../figs/README.md).
 % Same day, after the midterm feedback: a "What You Need to Know" frame (core results
@@ -70,7 +74,7 @@
 
 \begin{frame}{What You Need to Know}
   \vspace{0.3em}
-  {\large\textbf{\ink{Core results}}}
+  {\large\textbf{\ink{Core concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item POE: the probability a contract finishes in the money. POP: the
       probability its profit at expiration is positive. Both come from simulated
@@ -157,25 +161,65 @@
   \end{equation*}
   where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$; we simulate $S(T)$ under our belief $\mathbb{P}$.
   However, the~POE~$\sim|\Delta_{\star}|$, the Delta quoted by trading platforms under $\Q$.
+\end{frame}
+
+\begin{frame}{Review: Computing POE and POP by Simulation}
+  \vspace{0.3em}
+  \hilite{Initialize}: given $S(0)$, $K$, the premium $\Pc_{\star}$ of the
+  call or put, $T$ (years), the drift $\mu$ and volatility $\sigma$ under
+  $\mathbb{P}$, $g_{y}$, and the number of samples $M$. Compute the breakeven
+  $S^{\ddagger}$.
+  \begin{enumerate}\setlength{\itemsep}{0.35em}
+    \item For each sample $j=1,2,\dots,M$ \textbf{do}:
+      \begin{itemize}
+        \item[a.] Draw $Z_{j}\sim\mathcal{N}(0,1)$.
+        \item[b.] Compute
+          $S_{j}(T)\gets S(0)\exp\left[\left(\mu-\sigma^{2}/2\right)T+\sigma\sqrt{T}\,Z_{j}\right]$.
+      \end{itemize}
+    \item Compute the fraction of samples at or below each share price $x$:
+      $\hat{F}(x)\gets\frac{1}{M}\cdot\#\left\{j:S_{j}(T)\leq x\right\}$.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Review: Pseudocode for POE and POP}
+  \vspace{0.3em}
+  \begin{enumerate}\setlength{\itemsep}{0.45em}
+    \setcounter{enumi}{2}
+    \item If the contract is a call, \textbf{then}
+      $\text{POE}\gets1-\hat{F}(K+0.01)$. Otherwise,
+      $\text{POE}\gets\hat{F}(K-0.01)$.
+    \item Compute the probability of profit:
+      \begin{itemize}\setlength{\itemsep}{0.25em}
+        \item If we bought a call or sold a put, \textbf{then}
+          $\text{POP}\gets1-\hat{F}(S^{\ddagger})$.
+        \item If we sold a call or bought a put, \textbf{then}
+          $\text{POP}\gets\hat{F}(S^{\ddagger})$.
+      \end{itemize}
+  \end{enumerate}
+
+  \vspace{0.6em}
+  With $\mu=g_{y}$ and $\sigma$ set to the implied volatility, the same steps
+  give the probabilities under $\Q$. These are the probabilities inside the
+  market price, not our forecast.
   \slidenote{Example 2:}{\href{\repoa/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb}}}
 \end{frame}
 
-% ========== Company Profile: tastytrade
-\begin{frame}{Company Profile: tastytrade}
-  \href{https://tastytrade.com/about-us}{\hilite{tastytrade}}: a U.S. online
-  brokerage (2017), part of the free options network tastylive (2011), started by
-  former Cboe market makers who also founded thinkorswim. IG Group bought it in 2021.
+% ========== Company Profile: Akuna Capital
+\begin{frame}{Company Profile: Akuna Capital}
+  \href{https://akunacapital.com/what-we-do}{\hilite{Akuna Capital}}: an options
+  market maker, headquartered in Chicago since 2011.
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Options brokerage}: a leading position in U.S. listed options and
-      futures.
-    \item \hilite{Selling options}: sell strangles when implied volatility is high,
-      at around 45 days to expiration.
-    \item \hilite{Managing winners}: buy the strangle back at 50\% of the maximum
-      profit.
+    \item \hilite{Options market making}: it posts prices to buy and sell, trading
+      with its own money (a proprietary trading firm).
+    \item \hilite{Its own models}: it designs its own trading systems and models.
+    \item \hilite{Teaching options}: a free
+      \href{https://akunacapital.com/work-with-us/options-101/}{Options 101} course
+      on payoff diagrams and the Greeks.
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Connection:}} closing early gives up the premium still left in the
-  legs; see \emph{Why Wait to Expiration?}
+  \textbf{\ink{Connection:}} a market maker may take the other side of one or
+  both legs of the spread we sell. The quoted Delta comes from its premiums, so $|\Delta_{\star}|$ approximates each leg's
+  POE under $\Q$, not under our forecast $\mathbb{P}$.
 \end{frame}
 
 % ========== Composite Contracts
@@ -196,11 +240,12 @@
   A composite contract is a sum of legs, so its NPV is the sum of the legs'
   NPVs, weighted by $\theta_{i}n_{i}$:
   \begin{align*}
-    \operatorname{NPV}_{0}(\Cc) &= \sum_{i\in\Cc}\theta_{i}\,n_{i}\underbrace{\Bigl(-\Pc_{i}+\Dc^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))\Bigr)}_{\textstyle\text{NPV of buying leg } i} && \text{weighted leg NPVs}\\
+    \operatorname{NPV}_{0}(\Cc) &= \sum_{i\in\Cc}\theta_{i}\,n_{i}\underbrace{\Bigl(-\Pc_{i}+\overbrace{\Dc^{-1}_{T,0}(g_{y})\cdot V_{i}(K_{i},S(T))}^{\textstyle\text{discounted payoff}}\Bigr)}_{\textstyle\text{NPV of buying leg } i} && \text{weighted leg NPVs}\\
     &= -\underbrace{\sum_{i\in\Cc}\theta_{i}\,n_{i}\,\Pc_{i}}_{\textstyle=\,\Pc_{\Cc}}+\Dc^{-1}_{T,0}(g_{y})\cdot\underbrace{\sum_{i\in\Cc}\theta_{i}\,n_{i}\,V_{i}(K_{i},S(T))}_{\textstyle=\,\hat{V}_{\Cc}(S(T))} && \text{split the sum}\\
     &= -\Pc_{\Cc}+\Dc^{-1}_{T,0}(g_{y})\cdot\hat{V}_{\Cc}(S(T))
   \end{align*}
-  where $\Pc_{i}$ is the premium of leg $i$ (USD/share) and $\Pc_{\Cc}$ is the
+  where $\Pc_{i}$ is the premium of leg $i$ (USD/share), positive whether we buy
+  or sell it ($\theta_{i}$ sets the direction), and $\Pc_{\Cc}$ is the
   \hilite{composite premium}.
 \end{frame}
 
@@ -209,7 +254,7 @@
   discounted to today:
   \begin{align*}
     \operatorname{NPV}_{0}(\Cc) &= \Dc^{-1}_{T,0}(g_{y})\cdot\underbrace{\Bigl(\hat{V}_{\Cc}(S(T))-\Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}\Bigr)}_{\textstyle=\,\hat{P}_{\Cc}(S(T))} && \text{factor out }\Dc^{-1}_{T,0}(g_{y})\\
-    &= \Dc^{-1}_{T,0}(g_{y})\cdot\hat{P}_{\Cc}(S(T))
+    &= \Dc^{-1}_{T,0}(g_{y})\cdot\underbrace{\hat{P}_{\Cc}(S(T))}_{\makebox[0pt]{profit at expiration}}
   \end{align*}
   where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and:
   \begin{equation*}
@@ -236,19 +281,17 @@
 
 % ========== Common Composite Contracts
 \begin{frame}{Common Composite Contracts}
-  Each contract below opens for a credit and has a \hilite{put side} and a
-  \hilite{call side}:
+  By choosing which puts and calls we sell and buy, we can build trades that
+  are bullish, bearish, or neutral:
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Sides}: empty, a \hilite{naked} short contract, or a
-      \hilite{credit spread} (a short contract protected by a long one farther
-      out).
-    \item \hilite{Outlook}: the put side loses if the price falls, the call side
-      if it rises. Only the put side: neutral to bullish; only the call side:
-      neutral to bearish; both: neutral.
+    \item \hilite{Naked}: a short contract with no long contract to cap its loss.
+    \item \hilite{Credit}: each contract below opens for a credit, so
+      $\Pc_{\Cc}<0$, and each profit at expiration starts with the credit grown
+      to expiration, $-\Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}$.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Common Composite Contracts: Sides and Outlook}
+\begin{frame}{Common Composite Contracts: Outlook}
   The eight structures, by side:
   \begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
     \begin{tabular}{llll}
@@ -295,10 +338,8 @@
       & Short put & Short call \\
       \midrule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ for $S(T)\geq K$ & $\Dc_{T,0}(g_{y})\cdot\Pc_{c}$ for $S(T)\leq K$ \\
-      Breakeven, put side & $S^{\ddagger}=K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ & none \\
-      Maximum loss, put side & $K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ at $S(T)=0$ & none \\
-      Breakeven, call side & none & $S^{\ddagger}=K+\Dc_{T,0}(g_{y})\cdot\Pc_{c}$ \\
-      Maximum loss, call side & none & unlimited \\
+      Breakeven & $S^{\ddagger}=K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ & $S^{\ddagger}=K+\Dc_{T,0}(g_{y})\cdot\Pc_{c}$ \\
+      Maximum loss & $K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ at $S(T)=0$ & unlimited \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -328,8 +369,8 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\geq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ \\
-      Maximum loss, put side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\leq K_{1}$ \\
+      Breakeven & $S^{\ddagger}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ \\
+      Maximum loss & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}-\Pc_{1})$ for $S(T)\leq K_{1}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -346,8 +387,8 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\leq K_{1}$ \\
-      Breakeven, call side & $S^{\ddagger}=K_{1}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ \\
-      Maximum loss, call side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\geq K_{2}$ \\
+      Breakeven & $S^{\ddagger}=K_{1}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ \\
+      Maximum loss & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}-\Pc_{2})$ for $S(T)\geq K_{2}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -376,10 +417,10 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=K$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
-      Maximum loss, put side & $K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K+\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
-      Maximum loss, call side & unlimited \\
+      Lower breakeven & $S^{\ddagger}_{-}=K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum loss below $S^{\ddagger}_{-}$ & $K-\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ at $S(T)=0$ \\
+      Upper breakeven & $S^{\ddagger}_{+}=K+\Dc_{T,0}(g_{y})\cdot(\Pc_{p}+\Pc_{c})$ \\
+      Maximum loss above $S^{\ddagger}_{+}$ & unlimited \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -396,10 +437,10 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
-      Maximum loss, put side & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
-      Maximum loss, call side & unlimited \\
+      Lower breakeven & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum loss below $S^{\ddagger}_{-}$ & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ at $S(T)=0$ \\
+      Upper breakeven & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2})$ \\
+      Maximum loss above $S^{\ddagger}_{+}$ & unlimited \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -431,10 +472,10 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ \\
-      Maximum loss, put side & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ at $S(T)=0$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$${}^{a}$ \\
-      Maximum loss, call side & $(K_{3}-K_{2})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $S(T)\geq K_{3}$${}^{b}$ \\
+      Lower breakeven & $S^{\ddagger}_{-}=K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ \\
+      Maximum loss below $S^{\ddagger}_{-}$ & $K_{1}-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ at $S(T)=0$ \\
+      Upper breakeven & $S^{\ddagger}_{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$${}^{a}$ \\
+      Maximum loss above $S^{\ddagger}_{+}$ & $(K_{3}-K_{2})-\Dc_{T,0}(g_{y})\cdot(\Pc_{1}+\Pc_{2}-\Pc_{3})$ for $S(T)\geq K_{3}$${}^{b}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -455,10 +496,10 @@
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ \\
-      Breakeven, put side & $S^{\ddagger}_{-}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
-      Maximum loss, put side & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\leq K_{1}$ \\
-      Breakeven, call side & $S^{\ddagger}_{+}=K_{3}+\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
-      Maximum loss, call side & $(K_{4}-K_{3})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\geq K_{4}$ \\
+      Lower breakeven & $S^{\ddagger}_{-}=K_{2}-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss below $S^{\ddagger}_{-}$ & $(K_{2}-K_{1})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\leq K_{1}$ \\
+      Upper breakeven & $S^{\ddagger}_{+}=K_{3}+\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ \\
+      Maximum loss above $S^{\ddagger}_{+}$ & $(K_{4}-K_{3})-\Dc_{T,0}(g_{y})\cdot(\Pc_{2}+\Pc_{3}-\Pc_{1}-\Pc_{4})$ for $S(T)\geq K_{4}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -497,8 +538,9 @@
       share prices, and the size of Delta approximates the POE under $\Q$.
     \item \hilite{The NPV of a composite contract is a sum over its legs}: the POP
       is the probability that the profit at expiration is positive.
-    \item \hilite{Common composite contracts have a put side and a call side}:
-      the sides set the outlook and the maximum loss; closing early earns less.
+    \item \hilite{Common composite contracts can be bullish, bearish, or neutral}:
+      the profit diagram gives the outlook, breakevens, and maximum loss; closing
+      early earns less.
   \end{itemize}
 \end{frame}
 

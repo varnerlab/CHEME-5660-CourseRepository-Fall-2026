@@ -1040,6 +1040,17 @@ The instructor's 2025 L5a takeaways supplied the structure and voice; the
 This preference is also recorded in the user-level Codex and Claude instruction
 files so it is available when working in other course repositories on this machine.
 
+## "What you need to know" box — CHEME 5660, October 28, 2026
+
+Lectures from L10a onward have a "What you need to know" box right after the
+learning objectives and a matching deck frame. It has two parts. The first,
+labeled __Core concepts__, gives exactly three points, one for each learning
+objective. The second, labeled __For understanding__, lists material students
+will not need to reproduce or memorize. The instructor renamed the first label
+from "Core results" on October 28, 2026, because most points define things
+rather than state derived results. Use "Core concepts" from week 11 on. L10a
+and L10b were already changed in their notebooks and decks.
+
 ## Example callouts within lectures — CHEME 5660
 
 Confirmed September 18, 2026. Follow the L4a and L4b format for example stops

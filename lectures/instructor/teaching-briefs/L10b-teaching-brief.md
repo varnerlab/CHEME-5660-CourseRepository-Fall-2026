@@ -15,17 +15,20 @@ expiration, 53 days). AMD reports earnings on November 3 after the close.
    the premium, the quoted units (Θ/365, ν/100, ρ/100), one contract = 100·Δ shares, and
    the POE and POP formulas. No finite differences and no Delta–POE proposition; the
    examples carry those.
-   Then the **tastytrade profile** (one slide): a broker built on teaching people to sell
-   strangles and iron condors at ~45 DTE and buy them back at 50% of max profit. Its
-   connection is the early-exit section: closing early gives up the premium left in the legs.
+   Then the **Akuna Capital profile** (one slide; replaced tastytrade 2026-10-28): a
+   Chicago options market maker that trades with its own money and runs a free
+   Options 101 course. Its connection is Delta and the POE: a market maker may take the other side
+   of one or both legs of the spread we sell, the quoted Delta comes from its premiums, so |Delta| approximates each leg's
+   POE under Q, not under our forecast P.
 1. Last time: one contract. Today: put several together. What is the combination
    worth, and when does it make money?
 2. **The profit at expiration is a sum over the legs.** Payoffs weighted by θᵢnᵢ, minus
    the composite premium grown to expiration (𝒟). The NPV is that profit discounted to today,
    so the POP is the chance the profit is positive. The same counting works with two
    breakevens.
-3. **Eight credit structures, one idea.** Each has a put side and a call side: empty,
-   naked, or a credit spread. The sides give the outlook and the maximum loss. The
+3. **Eight credit structures, one idea.** By choosing which puts and calls we sell and
+   buy, we build bullish, bearish, or neutral trades; read the outlook, breakevens, and
+   maximum loss off each profit diagram. The
    formula tables are reference material, not something to memorize.
 4. **Why we wait to expiration (after the diagrams).** Closing early means buying the legs back,
    and their price still includes extrinsic value. Use the strangle time-decay figure.
