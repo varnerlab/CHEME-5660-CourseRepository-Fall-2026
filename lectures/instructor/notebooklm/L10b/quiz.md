@@ -44,7 +44,7 @@ What is the outlook of a put credit spread, and on which side can it lose money?
 - **D)** Bullish, with the risk of loss on the call side.
 
 **Answer:** **C) Neutral to bullish, with the risk of loss on the put side if the share price falls.**
-**Explanation:** A put credit spread has a put credit spread on its put side and its call side is empty, so only the put side can lose, which gives it a neutral to bullish outlook.
+**Explanation:** A put credit spread has a short put at \\(K_2\\) and a long put at \\(K_1 < K_2\\) on its put side and nothing on its call side, so only the put side can lose, which gives it a neutral to bullish outlook.
 
 ---
 
@@ -56,7 +56,7 @@ Compare a short straddle at strike \\(K\\) with a short strangle at strikes \\(K
 - **D)** A short strangle has only one breakeven.
 
 **Answer:** **A) Both have two breakevens and an unlimited maximum loss on the call side.**
-**Explanation:** Short straddles and short strangles both leave the call side naked, so each has two breakevens and an unlimited maximum loss on the call side.
+**Explanation:** Short straddles and short strangles both have a short call with no long call to cap its loss, so each has two breakevens and an unlimited maximum loss on the call side.
 
 ---
 
@@ -150,7 +150,7 @@ Time passes toward expiration while the share price stays at \\(S(0)\\). How doe
 **A:** A short strangle sells a put at \\(K_1\\) and a call at \\(K_2 > K_1\\). It collects less credit than a straddle, but it keeps the maximum profit over a wider range of share prices, \\(K_1 \le S(T) \le K_2\\).
 
 **Q:** How does a protected strangle (jade lizard) change a short strangle, and what is its outlook?  
-**A:** A protected strangle adds a long call at \\(K_3 > K_2\\), so its call side becomes a call credit spread while its put side stays naked. Its outlook is neutral, leaning bullish.
+**A:** A protected strangle adds a long call at \\(K_3 > K_2\\), so its call side becomes a call credit spread while its put side has no long put to cap its loss. Its outlook is neutral, leaning bullish.
 
 **Q:** Under what condition can the call side of a protected strangle not lose money at any share price at expiration?  
 **A:** When the credit grown to expiration is at least the call strike width \\(K_3 - K_2\\); then the call side cannot lose at any share price at expiration.

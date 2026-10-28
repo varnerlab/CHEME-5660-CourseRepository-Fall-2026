@@ -36,64 +36,12 @@ __We will work through these examples in lecture:__
 
 __Review these examples on your own.__
 
-> [▶ Compute the POP and POE for a straddle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a straddle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss.
-___
-
-## Review: The Greeks, POE, and POP
-Let's review the results we need for the first two examples.
-
-__The Greeks.__ For small changes $\Delta S$, $\Delta\sigma$, $\Delta t$, and $\Delta g_{y}$ in the share price, the volatility, the calendar time (years), and the risk-free rate, the premium $\mathcal{P}_{\star}$ (USD/share) of a call ($\star=c$) or a put ($\star=p$) changes by:
-$$
-\begin{align*}
-\Delta\mathcal{P}_{\star} &\approx \Delta_{\star}\,\Delta S + \frac{1}{2}\,\Gamma_{\star}\,(\Delta S)^{2} + \nu_{\star}\,\Delta\sigma + \Theta_{\star}\,\Delta t + \rho_{\star}\,\Delta g_{y}\\
-&= \underbrace{\left(\Delta_{\star} + \frac{1}{2}\,\Gamma_{\star}\,\Delta S\right)\Delta S}_{\text{share price}} + \underbrace{\nu_{\star}\,\Delta\sigma}_{\text{volatility}} + \underbrace{\Theta_{\star}\,\Delta t}_{\text{time}} + \underbrace{\rho_{\star}\,\Delta g_{y}}_{\text{rate}}
-\end{align*}
-$$
-Delta $\Delta_{\star}$ and Gamma $\Gamma_{\star}$ are the slope and the curvature of the premium in the share price. Vega $\nu_{\star}$, Theta $\Theta_{\star}$, and Rho $\rho_{\star}$ are its sensitivities to the volatility, the calendar time, and the rate. Trading platforms quote $\Theta_{\star}/365$ per day, and $\nu_{\star}/100$ and $\rho_{\star}/100$ per percentage point. One contract covers 100 shares, so it is equivalent to $100\cdot\Delta_{\star}$ shares.
-
-__POE and POP.__ The probability of exercise (POE) is the probability that a contract finishes in the money by more than 0.01 USD/share, the threshold for automatic exercise. The probability of profit (POP) is the probability that its profit at expiration is positive. 
-
-For a contract with strike price $K$, the profit is positive beyond the breakeven share price $S^{\ddagger}=K\pm\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\star}$ ($+$ for a call, $-$ for a put), where $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ grows the premium to the expiration $T$:
-$$
-\text{POE}=\begin{cases}
-\mathbb{P}\left(S(T)>K+0.01\right) & \text{call}\\
-\mathbb{P}\left(S(T)<K-0.01\right) & \text{put}
-\end{cases}
-\qquad
-\text{POP}=\begin{cases}
-\mathbb{P}\left(S(T)>S^{\ddagger}\right) & \text{bought a call or sold a put}\\
-\mathbb{P}\left(S(T)<S^{\ddagger}\right) & \text{sold a call or bought a put}
-\end{cases}
-$$
-We compute both from simulated share prices at expiration $S(T)$, under our belief $\mathbb{P}$. However, the POE $\sim|\Delta_{\star}|$, where $\Delta_{\star}$ is the call's or put's Delta, which is quoted by trading platforms under the risk-neutral probabilities $\mathbb{Q}$.
-
-Let's outline pseudocode that simulates share prices at expiration and reads the POE and POP from the sample cumulative distribution function.
-
-__Initialize__: Given the share price $S(0)$, the strike price $K$, the premium $\mathcal{P}_{\star}$ of the call or put, the time to expiration $T$ (units: years), the drift $\mu$ (units: $\mathrm{yr}^{-1}$) and the volatility $\sigma$ (units: $\mathrm{yr}^{-1/2}$) under $\mathbb{P}$, the risk-free rate $g_{y}$, and the number of samples $M$. Compute the breakeven share price $S^{\ddagger}$.
-
-1. For each sample $j = 1,2,\dots,M$ __do__:
-   - a. Draw a sample from the standard normal distribution: $Z_{j}\sim\mathcal{N}(0,1)$.
-   - b. Compute the share price at expiration: $S_{j}(T) \gets S(0)\exp\left[\left(\mu-\sigma^{2}/2\right)T+\sigma\sqrt{T}\,Z_{j}\right]$.
-2. Compute the cumulative distribution function, the fraction of samples at or below each share price $x$: $\hat{F}(x) \gets \frac{1}{M}\cdot\#\left\{j : S_{j}(T)\leq x\right\}$.
-3. Compute the probability of exercise. If the contract is a call, __then__ $\text{POE} \gets 1-\hat{F}(K+0.01)$. Otherwise, $\text{POE} \gets \hat{F}(K-0.01)$.
-4. Compute the probability of profit:
-   - If we bought a call or sold a put, __then__ the profit is positive above the breakeven: $\text{POP} \gets 1-\hat{F}(S^{\ddagger})$.
-   - If we sold a call or bought a put, __then__ the profit is positive below the breakeven: $\text{POP} \gets \hat{F}(S^{\ddagger})$.
-
-__Output__: The probability of exercise $\text{POE}$ and the probability of profit $\text{POP}$.
-
-With $\mu=g_{y}$ and $\sigma$ set to the implied volatility, the same steps give the probabilities under $\mathbb{Q}$. These are the probabilities inside the market price, not our forecast.
-
-> __Examples:__
->
-> [▶ Let's compute the Greeks for call and put options](../L10a/CHEME-5660-L10a-Example-Greeks-PutCall-Fall-2026.ipynb). In this example, we compute the five Greeks of an American call and put on the Leisen–Reimer tree, compare them with the quoted values, and see how they change with the strike price and the time to expiration. We then convert them to short contracts and size a Delta hedge.
->
-> [▶ Compute the POP and POE for a short call contract](../L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb). In this example, we compute the probability of profit (POP) and the probability of exercise (POE) of a short call under the risk-neutral probabilities and under our forecast, and compare the POE with Delta.
+> [▶ Compute the POP and POE for a strangle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a strangle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss. Setting both strikes equal turns the strangle into a straddle.
 ___
 
 ## Company Profile: Akuna Capital
 
-[Akuna Capital](https://akunacapital.com/what-we-do) is a trading firm specializing in options market making. The firm [began as an idea in Sydney](https://akunacapital.com/who-we-are/) and opened its Chicago headquarters in 2011. It now also has offices in London, Sydney, Shanghai, and Singapore. 
+[Akuna Capital](https://akunacapital.com/what-we-do) is a trading firm specializing in options market making. The firm [began as an idea in Sydney](https://akunacapital.com/who-we-are/) and opened its Chicago headquarters in 2011. It now also has offices in London, Sydney, Shanghai, and Singapore.
 
 > __What does the firm do?__
 >
@@ -141,7 +89,7 @@ $$
 &= \mathcal{D}^{-1}_{T,0}(g_{y})\cdot\underbrace{\hat{P}_{\mathcal{C}}(S(T))}_{\text{profit at expiration}} &&
 \end{align*}
 $$
-where $\mathcal{P}_{i}>0$ is the premium of leg $i$ (USD/share), positive whether we buy or sell it ($\theta_{i}$ sets the direction), $\mathcal{P}_{\mathcal{C}}$ is the __composite premium__, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and $\hat{P}_{\mathcal{C}}(S(T))$ is the __profit at expiration__ (USD/share). 
+where $\mathcal{P}_{i}>0$ is the premium of leg $i$ (USD/share), positive whether we buy or sell it ($\theta_{i}$ sets the direction), $\mathcal{P}_{\mathcal{C}}$ is the __composite premium__, $\mathcal{D}_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor, and $\hat{P}_{\mathcal{C}}(S(T))$ is the __profit at expiration__ (USD/share).
 
 As for a single contract, the NPV is the profit at expiration discounted to today. If $\mathcal{P}_{\mathcal{C}}>0$, we pay more premium than we collect, and the contract opens for a __debit__. If $\mathcal{P}_{\mathcal{C}}<0$, we collect more than we pay, and it opens for a __credit__ of $-\mathcal{P}_{\mathcal{C}}$ USD/share.
 
@@ -164,20 +112,20 @@ ___
 ## Common Composite Contracts
 Each contract below opens for a credit: it collects more premium than it pays. So $\mathcal{P}_{\mathcal{C}}<0$, and the first term of each profit at expiration, $-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}$, is the credit grown to expiration.
 
-By choosing which puts and calls we sell and buy, we can build trades that are bullish, bearish, or neutral. A short contract is __naked__ if no long contract caps its loss:
+By choosing which puts and calls we sell and buy, we can build trades that are __bullish__, __bearish__, or __neutral__:
 
 | Composite contract | Put side | Call side | Outlook |
 |:--|:--|:--|:--|
-| [Short put](#Short-Puts-and-Short-Calls) | naked short put | none | neutral to bullish |
-| [Short call](#Short-Puts-and-Short-Calls) | none | naked short call | neutral to bearish |
-| [Put credit spread](#Credit-Spreads) | put credit spread | none | neutral to bullish |
-| [Call credit spread](#Credit-Spreads) | none | call credit spread | neutral to bearish |
-| [Short straddle](#Short-Straddles-and-Strangles) | naked short put | naked short call at the same strike | neutral |
-| [Short strangle](#Short-Straddles-and-Strangles) | naked short put | naked short call at a higher strike | neutral |
-| [Protected strangle](#Protected-Strangles-and-Iron-Condors) | naked short put | call credit spread | neutral, leaning bullish |
-| [Iron condor](#Protected-Strangles-and-Iron-Condors) | put credit spread | call credit spread | neutral |
+| [Short put](#Short-Puts-and-Short-Calls) | short put at $K$ | none | neutral to bullish |
+| [Short call](#Short-Puts-and-Short-Calls) | none | short call at $K$ | neutral to bearish |
+| [Put credit spread](#Credit-Spreads) | short put at $K_{2}$, long put at $K_{1}<K_{2}$ | none | neutral to bullish |
+| [Call credit spread](#Credit-Spreads) | none | short call at $K_{1}$, long call at $K_{2}>K_{1}$ | neutral to bearish |
+| [Short straddle](#Short-Straddles-and-Strangles) | short put at $K$ | short call at $K$ | neutral |
+| [Short strangle](#Short-Straddles-and-Strangles) | short put at $K_{1}$ | short call at $K_{2}>K_{1}$ | neutral |
+| [Protected strangle](#Protected-Strangles-and-Iron-Condors) | short put at $K_{1}$ | short call at $K_{2}$, long call at $K_{3}>K_{2}$ | neutral, leaning bullish |
+| [Iron condor](#Protected-Strangles-and-Iron-Condors) | short put at $K_{2}$, long put at $K_{1}<K_{2}$ | short call at $K_{3}$, long call at $K_{4}>K_{3}$ | neutral |
 
-Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high and a tick at $S(0)$, the share price when we open the trade. 
+Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high and a tick at $S(0)$, the share price when we open the trade.
 
 ### Short Puts and Short Calls
 
@@ -193,7 +141,7 @@ Each figure shows the payoff (blue) and the profit (black) at expiration, per sh
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration against the share price at expiration. Left, a short put at strike K: the profit is the credit above K and falls one for one below K, crossing zero at the breakeven, with the largest loss at a share price of zero. Right, a short call at K: the profit is the credit below K and falls without limit above K, crossing zero at the breakeven. A tick labeled S(0) marks the share price when the trade opens: above K for the put and below K for the call, so each starts out of the money.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration against the share price at expiration. Left, a short put at strike K: the profit is the credit above K and falls one for one below K, crossing zero at the breakeven, with the largest loss at a share price of zero. Right, a short call at K: the profit is the credit below K and falls without limit above K, crossing zero at the breakeven. A tick labeled S(0) marks the share price when the trade opens: above K for the put and below K for the call, so each starts out of the money. The note in each panel's upper-right corner gives its outlook: neutral to bullish for the short put, neutral to bearish for the short call.*
 
 Selling [a put](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered), or [a call](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortcall-uncovered), is the building block of every structure below. With premiums $\mathcal{P}_{p}$ (put) and $\mathcal{P}_{c}$ (call) at strike $K$, the profits at expiration are, with $\theta=-1$ (a short contract) and $n=1$ (one contract):
 $$
@@ -227,7 +175,7 @@ Each keeps the whole premium if it expires out of the money. The share price can
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a put credit spread: a long put at K1 and a short put at K2. The profit is the credit above K2, falls between the strikes, crosses zero at the breakeven, and stays at the maximum loss below K1. Right, a call credit spread, its mirror image: a short call at K1 and a long call at K2, with the credit below K1 and the maximum loss above K2. A tick labeled S(0) marks the share price when the trade opens, between the two spreads, so both start out of the money.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a put credit spread: a long put at K1 and a short put at K2. The profit is the credit above K2, falls between the strikes, crosses zero at the breakeven, and stays at the maximum loss below K1. Right, a call credit spread, its mirror image: a short call at K1 and a long call at K2, with the credit below K1 and the maximum loss above K2. A tick labeled S(0) marks the share price when the trade opens, between the two spreads, so both start out of the money. The note in each panel's upper-right corner gives its outlook: neutral to bullish for the put credit spread, neutral to bearish for the call credit spread.*
 
 A __vertical spread__ pairs two contracts of the same type and expiration at different strikes. A __credit spread__ sells the one closer to the share price and buys the one farther away. The short leg collects the credit, and the long leg caps the loss. The two are also called a [bull put spread](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bull-put-spread) and a [bear call spread](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/bear-call-spread).
 
@@ -238,9 +186,7 @@ $$
 \hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})-(S(T)-K_{1})^{+}+(S(T)-K_{2})^{+} && \text{call credit spread}
 \end{align*}
 $$
-The first term is the credit grown to expiration, and the others are the leg payoffs.
-
-Their maximum profit, breakevens, and maximum losses are:
+The first term is the credit grown to expiration, and the others are the leg payoffs. Their maximum profit, breakevens, and maximum losses are:
 
 | | Put credit spread | Call credit spread |
 |:--|:--|:--|
@@ -248,9 +194,7 @@ Their maximum profit, breakevens, and maximum losses are:
 | Breakeven | $S^{\ddagger}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ | $S^{\ddagger}=K_{1}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ |
 | Maximum loss | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}-\mathcal{P}_{1})$ for $S(T)\leq K_{1}$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})$ for $S(T)\geq K_{2}$ |
 
-Beyond the long strike, the long leg gains every dollar the short leg loses, so the loss stops at the strike width minus the credit. The spread gives up part of the credit for this known maximum loss.
-
-Let's compute the POP and POE for a put credit spread on AMD.
+Beyond the long strike, the long leg gains every dollar the short leg loses, so the loss stops at the strike width minus the credit. The spread gives up part of the credit for this known maximum loss. Let's compute the POP and POE for a put credit spread on AMD.
 
 > __Example:__
 >
@@ -270,9 +214,9 @@ Let's compute the POP and POE for a put credit spread on AMD.
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a short straddle: a short put and a short call at one strike K. The profit peaks at the credit at K and falls on both sides, crossing zero at two breakevens, with an unlimited loss as the share price rises. Right, a short strangle: a short put at K1 and a short call at K2. The profit is the credit between the strikes, with two breakevens outside them. The straddle's strike is labeled K = S(0), at the share price when the trade opens, and a tick labeled S(0) sits between the strangle's strikes.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a short straddle: a short put and a short call at one strike K. The profit peaks at the credit at K and falls on both sides, crossing zero at two breakevens, with an unlimited loss as the share price rises. Right, a short strangle: a short put at K1 and a short call at K2. The profit is the credit between the strikes, with two breakevens outside them. The straddle's strike is labeled K = S(0), at the share price when the trade opens, and a tick labeled S(0) sits between the strangle's strikes. The note in each panel's upper-right corner gives its outlook: neutral for both.*
 
-A [straddle](https://www.investopedia.com/terms/s/straddle.asp) buys (or sells) a put and a call with the _same expiration_ and the _same strike price_ $K$. A [strangle](https://www.investopedia.com/terms/s/strangle.asp) uses _different strike prices_, a put at $K_{1}$ below a call at $K_{2}$. Selling both legs gives the profit at expiration:
+A [straddle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-straddle) buys (or sells) a put and a call with the _same expiration_ and the _same strike price_ $K$. A [strangle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-strangle) uses _different strike prices_, a put at $K_{1}$ below a call at $K_{2}$. Selling both legs gives the profit at expiration:
 $$
 \begin{align*}
 \hat{P}_{\mathcal{C}}(S(T)) &= \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})-(K-S(T))^{+}-(S(T)-K)^{+} && \text{short straddle}\\
@@ -289,13 +233,15 @@ Their maximum profit, breakevens $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$, and 
 | Upper breakeven | $S^{\ddagger}_{+}=K+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2})$ |
 | Maximum loss above $S^{\ddagger}_{+}$ | unlimited | unlimited |
 
-Each profits only between its breakevens, so its probability of profit is $\mathbb{P}(S^{\ddagger}_{-}<S(T)<S^{\ddagger}_{+})$. The straddle collects more credit, but the strangle keeps its credit over a wider range of share prices. Buying both legs ($\theta_{i}=1$) flips the diagram about the zero line: the loss is capped at the premium paid, and the profit grows with a large move either way. Let's compute the POP and POE for a short straddle on AMD.
+Each profits only between its breakevens, so its probability of profit is $\mathbb{P}(S^{\ddagger}_{-}<S(T)<S^{\ddagger}_{+})$. The straddle collects more credit, but the strangle keeps its credit over a wider range of share prices.
+
+Let's compute the POP and POE for a short strangle on AMD.
 
 > __Review on your own:__
 >
-> [▶ Compute the POP and POE for a straddle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a straddle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss.
+> [▶ Compute the POP and POE for a strangle on AMD](CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a strangle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss. Setting both strikes equal turns the strangle into a straddle.
 
-Next, we buy long legs to protect the naked sides of the short strangle.
+Next, we buy long legs to cap the loss on each side of the short strangle.
 
 ### Protected Strangles and Iron Condors
 
@@ -311,9 +257,9 @@ Next, we buy long legs to protect the naked sides of the short strangle.
   body[data-vscode-theme-kind="vscode-high-contrast"] .course-diagram { color-scheme: dark; }
   @media print { .course-diagram { color-scheme: only light !important; } }
 </style>
-*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a protected strangle: a short put at K1, a short call at K2, and a long call at K3. The profit is the credit between K1 and K2, stops at a maximum loss above K3, and keeps falling below K1. Right, an iron condor: a long put at K1, a short put at K2, a short call at K3, and a long call at K4. The profit is the credit between K2 and K3 and stops at a maximum loss on both sides. In both panels, a tick labeled S(0) marks the share price when the trade opens, between the short put and the short call.*
+*Figure: Two panels of the payoff (blue) and the profit (black) at expiration. Left, a protected strangle: a short put at K1, a short call at K2, and a long call at K3. The profit is the credit between K1 and K2, stops at a maximum loss above K3, and keeps falling below K1. Right, an iron condor: a long put at K1, a short put at K2, a short call at K3, and a long call at K4. The profit is the credit between K2 and K3 and stops at a maximum loss on both sides. In both panels, a tick labeled S(0) marks the share price when the trade opens, between the short put and the short call. The note in each panel's upper-right corner gives its outlook: neutral, leaning bullish for the protected strangle, neutral for the iron condor.*
 
-A __protected strangle__, or [jade lizard](https://www.tastylive.com/concepts-strategies/jade-lizard), adds a long call at $K_{3}$ to a short strangle, so its call side becomes a credit spread and its put side stays naked. An [iron condor](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-iron-condor-spread) also adds a long put, so both sides are credit spreads. Each long leg caps the loss on its side but lowers the credit.
+A __protected strangle__, or [jade lizard](https://www.tastylive.com/concepts-strategies/jade-lizard), adds a long call at $K_{3}$ to a short strangle, so its call side becomes a credit spread and its put side has no long put to cap its loss. An [iron condor](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-iron-condor-spread) also adds a long put, so both sides are credit spreads. Each long leg caps the loss on its side but lowers the credit.
 
 The profits at expiration are:
 $$
@@ -332,10 +278,10 @@ Their maximum profit, breakevens, and maximum losses are:
 | Maximum profit | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $K_{1}\leq S(T)\leq K_{2}$ | $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $K_{2}\leq S(T)\leq K_{3}$ |
 | Lower breakeven | $S^{\ddagger}_{-}=K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ | $S^{\ddagger}_{-}=K_{2}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
 | Maximum loss below $S^{\ddagger}_{-}$ | $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ at $S(T)=0$ | $(K_{2}-K_{1})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\leq K_{1}$ |
-| Upper breakeven | $S^{\ddagger}_{+}=K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}$, otherwise none | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
-| Maximum loss above $S^{\ddagger}_{+}$ | $(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})$ for $S(T)\geq K_{3}$ if $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}$, otherwise none | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
+| Upper breakeven | $S^{\ddagger}_{+}=\begin{cases}K_{2}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3}) & \text{if } \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\leq K_{3}-K_{2}\\ \text{none} & \text{otherwise}\end{cases}$ | $S^{\ddagger}_{+}=K_{3}+\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ |
+| Maximum loss above $S^{\ddagger}_{+}$ | $\begin{cases}(K_{3}-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})\text{ for }S(T)\geq K_{3} & \text{if } \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}+\mathcal{P}_{2}-\mathcal{P}_{3})<K_{3}-K_{2}\\ \text{none} & \text{otherwise}\end{cases}$ | $(K_{4}-K_{3})-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{2}+\mathcal{P}_{3}-\mathcal{P}_{1}-\mathcal{P}_{4})$ for $S(T)\geq K_{4}$ |
 
-The protected strangle's call side is capped but its put side is naked, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
+The protected strangle's call side is capped but its put side is not, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
 
 ### Why Wait to Expiration?
 Our profit diagrams are drawn at expiration. What if we close earlier? Closing a short leg means buying it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. Consider a short strangle on a share at $S(0)=100$ USD/share, a put sold at $K_{1}=90$ USD/share and a call sold at $K_{2}=110$ USD/share, opened 30 days before expiration:
@@ -362,7 +308,11 @@ __What do we see?__
 * __At the entry share price (right):__ Both legs are out of the money, so buying them back right away costs exactly the credit, all of it extrinsic value. Closing at once earns nothing.
 * __Time decay:__ As the extrinsic value decays, the profit if we close rises, up to the whole credit at expiration.
 
-So the diagrams above show the most each contract can earn at each share price. An early exit earns less, by roughly the extrinsic value left in the legs.
+So the diagrams above show the most each contract can earn at each share price. An early exit earns less, by roughly the extrinsic value left in the legs. However, premium sellers often do not wait.
+* Tastylive, for example, [sells strangles about 45 days before expiration](https://www.tastylive.com/concepts-strategies/strangle) and buys them back at half the maximum profit, or about 21 days before expiration. The right panel shows that closing at $S(0)$ with 20 days left already earns close to half the credit. The left panel shows the cost of waiting: as expiration nears, the curves bend toward the kinks at the strikes, so a small move in the share price near a strike changes the profit by more.
+* What if the share price moves toward a short strike, say up toward $K_{2}$? The call costs more to buy back, and closing now loses money. We can close and take the loss, or __defend__ the trade. One defense is to __roll the untested side__: buy back the put, which has lost most of its value, and sell a new put closer to the share price. The extra credit moves both breakevens up, toward the share price, but the call side's loss is still unlimited.
+
+So whether we close early or defend the trade, we weigh the credit left to earn against what the trade can still lose.
 ___
 
 ## Summary
