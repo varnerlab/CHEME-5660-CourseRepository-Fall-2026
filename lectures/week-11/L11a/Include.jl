@@ -27,3 +27,4 @@ using FileIO
 using JLD2
 using HypothesisTests
 using StatsPlots
+using Random # reproducible simulations
