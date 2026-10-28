@@ -132,6 +132,14 @@ using Distributions
         P = profit([call_contract], m, [110.0])
         # equity leg should be: direction * number_of_shares * (Sᵢ - Sₒ) = 1 * 100 * (110 - 100) = 1000
         @test isapprox(P[end - 1], 1000.0; atol = 1e-10)
+
+        # with 𝒟, both the premium and the purchase price grow to expiration -
+        m.number_of_shares = 1
+        𝒟 = exp(0.04 * 0.5)
+        P𝒟 = profit([call_contract], m, [90.0, 120.0]; 𝒟 = 𝒟)
+        @test P𝒟[:, 2] ≈ -([0.0, 10.0] .- 𝒟 * 2.0)
+        @test P𝒟[:, 3] ≈ [90.0, 120.0] .- 𝒟 * 100.0
+        @test P𝒟[:, end] ≈ min.([90.0, 120.0], 110.0) .- 𝒟 * (100.0 - 2.0)
     end
 
     @testset "profit with the premium's future value" begin

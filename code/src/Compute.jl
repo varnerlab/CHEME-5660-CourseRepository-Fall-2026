@@ -870,7 +870,24 @@ function profit(contracts::Array{T,1}, S::Array{Float64,1}; 𝒟::Float64 = 1.0)
     return profit_array;    
 end
 
-function profit(contracts::Array{T,1}, equity::MyEquityModel, S::Array{Float64,1}) where T <: AbstractContractModel
+"""
+    profit(contracts::Array{T,1}, equity::MyEquityModel, S::Array{Float64,1}; 𝒟::Float64 = 1.0) -> Array{Float64,2} where T <: AbstractContractModel
+
+The `profit` function computes the profit at expiration for a set of option contracts and a position in the underlying shares, e.g., a covered call, given the underlying prices contained in the `S::Array{Float64,1}` array.
+The premiums are paid or collected today and the share purchase price is paid today, so the profit compares the payoffs and the share value at expiration with their future values, `𝒟*premium` and `𝒟*purchase_price`,
+where `𝒟 = exp(g*T)` is the accumulation factor from today to expiration for the risk-free rate `g` (units: 1/year) and the time to expiration `T` (units: years).
+
+### Arguments
+- `contracts::Array{T,1}`: An array of option contracts where `T` is a subtype of the `AbstractContractModel` type. Each contract must have the `premium` field set.
+- `equity::MyEquityModel`: The share position. Its profit is `direction*number_of_shares*(S - 𝒟*purchase_price)`.
+- `S::Array{Float64,1}`: An array of underlying prices at expiration.
+- `𝒟::Float64 = 1.0`: The accumulation factor applied to each premium and to the share purchase price (dimensionless). The default, `1.0`, ignores the time value of money.
+
+### Returns
+- `Array{Float64,2}`: A matrix of size `(number_of_underlying_prices, number_of_contracts + 3)`. The first column contains the underlying price, the next columns contain the profit for each contract, the next-to-last column contains the profit for the shares,
+and the last column contains the sum of the profits.
+"""
+function profit(contracts::Array{T,1}, equity::MyEquityModel, S::Array{Float64,1}; 𝒟::Float64 = 1.0) where T <: AbstractContractModel
 
     # initialize - 
     number_of_underlying_prices = length(S);
@@ -895,15 +912,15 @@ function profit(contracts::Array{T,1}, equity::MyEquityModel, S::Array{Float64,1
             copy = contract.copy |> Float64;
             premium = contract.premium;
 
-            # compute the payoff -
-            profit_array[i,j+1] = (copy*sense)*(_payoff(contract, Sᵢ) - premium)
+            # compute the profit: payoff minus the premium's future value at expiration -
+            profit_array[i,j+1] = (copy*sense)*(_payoff(contract, Sᵢ) - 𝒟*premium)
         end
 
-        # update the equity profit
+        # update the equity profit: share value minus the purchase price's future value at expiration -
         direction = equity.direction;
         n = equity.number_of_shares;
         Sₒ = equity.purchase_price;
-        profit_array[i,number_of_contracts+2] = direction*n*(Sᵢ - Sₒ);
+        profit_array[i,number_of_contracts+2] = direction*n*(Sᵢ - 𝒟*Sₒ);
     end
     
     # compute the overall sum
