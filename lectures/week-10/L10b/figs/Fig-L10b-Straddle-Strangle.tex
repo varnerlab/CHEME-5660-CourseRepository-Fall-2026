@@ -16,6 +16,7 @@
   % ---------------- left panel: short straddle ----------------
   \begin{scope}
     \panelframe{\textbf{Short straddle:} sell a call and a put at one strike}
+    \outlook{neutral}
     \begin{profitdata}
       \strike{4.4}{0}{$K=S(0)$}{short put, short call}
       \draw[payoff, more] (0, -4.4) -- (4.4, 0) -- (8.6, -4.2);
@@ -32,6 +33,7 @@
   % ---------------- right panel: short strangle ----------------
   \begin{scope}[xshift=\panelgap cm*0.8]
     \panelframe{\textbf{Short strangle:} sell a put at $K_{1}$ and a call at $K_{2}$}
+    \outlook{neutral}
     \begin{profitdata}
       \strike{3.4}{0.8}{$K_{1}$}{short put}
       \strike{5.4}{0.8}{$K_{2}$}{short call}

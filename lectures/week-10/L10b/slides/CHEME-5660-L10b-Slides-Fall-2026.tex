@@ -280,37 +280,26 @@
 \end{frame}
 
 % ========== Common Composite Contracts
-\begin{frame}{Common Composite Contracts}
-  By choosing which puts and calls we sell and buy, we can build trades that
-  are bullish, bearish, or neutral:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Naked}: a short contract with no long contract to cap its loss.
-    \item \hilite{Credit}: each contract below opens for a credit, so
-      $\Pc_{\Cc}<0$, and each profit at expiration starts with the credit grown
-      to expiration, $-\Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}$.
-  \end{itemize}
-\end{frame}
-
 \begin{frame}{Common Composite Contracts: Outlook}
-  The eight structures, by side:
-  \begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
+  The eight structures, by side:\par
+  {\centering\footnotesize\setlength{\tabcolsep}{4pt}
     \begin{tabular}{llll}
       \toprule
       Composite contract & Put side & Call side & Outlook \\
       \midrule
-      Short put & naked short put & none & neutral to bullish \\
-      Short call & none & naked short call & neutral to bearish \\
-      Put credit spread & put credit spread & none & neutral to bullish \\
-      Call credit spread & none & call credit spread & neutral to bearish \\
-      Short straddle & naked short put & naked short call at the same strike & neutral \\
-      Short strangle & naked short put & naked short call at a higher strike & neutral \\
-      Protected strangle & naked short put & call credit spread & neutral, leaning bullish \\
-      Iron condor & put credit spread & call credit spread & neutral \\
+      Short put & short put at $K$ & none & neutral to bullish \\
+      Short call & none & short call at $K$ & neutral to bearish \\
+      Put credit spread & \begin{tabular}[c]{@{}l@{}}short put at $K_{2}$\\ long put at $K_{1}<K_{2}$\end{tabular} & none & neutral to bullish \\
+      Call credit spread & none & \begin{tabular}[c]{@{}l@{}}short call at $K_{1}$\\ long call at $K_{2}>K_{1}$\end{tabular} & neutral to bearish \\
+      Short straddle & short put at $K$ & short call at $K$ & neutral \\
+      Short strangle & short put at $K_{1}$ & short call at $K_{2}>K_{1}$ & neutral \\
+      Protected strangle & short put at $K_{1}$ & \begin{tabular}[c]{@{}l@{}}short call at $K_{2}$\\ long call at $K_{3}>K_{2}$\end{tabular} & neutral, leaning bullish \\
+      Iron condor & \begin{tabular}[c]{@{}l@{}}short put at $K_{2}$\\ long put at $K_{1}<K_{2}$\end{tabular} & \begin{tabular}[c]{@{}l@{}}short call at $K_{3}$\\ long call at $K_{4}>K_{3}$\end{tabular} & neutral \\
       \bottomrule
-    \end{tabular}
-  \end{center}
-  Strikes are numbered low to high, $\Pc_{i}$ is the premium of the leg at
-  $K_{i}$. Figures: payoff (blue), profit (black), and $S(0)$, the share price at entry.
+    \end{tabular}\par}
+  \vspace{0.2em}
+  {\small Strikes are numbered low to high, $\Pc_{i}$ is the premium of the leg at
+  $K_{i}$. Figures: payoff (blue), profit (black), and $S(0)$, the share price at entry.}
 \end{frame}
 
 \begin{frame}{Short Puts and Short Calls}
@@ -397,9 +386,9 @@
 \end{frame}
 
 \begin{frame}{Short Straddles and Strangles}
-  A \href{https://www.investopedia.com/terms/s/straddle.asp}{\hilite{straddle}}:
+  A \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-straddle}{\hilite{straddle}}:
   a put and a call at one strike $K$. A
-  \href{https://www.investopedia.com/terms/s/strangle.asp}{\hilite{strangle}}: a
+  \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-strangle}{\hilite{strangle}}: a
   put at $K_{1}$ below a call at $K_{2}$. Same expiration:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{../figs/Fig-L10b-Straddle-Strangle.pdf}
@@ -444,8 +433,6 @@
       \bottomrule
     \end{tabular}
   \end{center}
-  Buying both legs ($\theta_{i}=1$) flips either diagram: the loss is capped at
-  the premium paid, and a large move either way pays.
   \slidenote{Review on your own:}{\href{\repo/CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}{\dimmed{CHEME-5660-L10b-Example-Straddle-AMD-Earnings-Fall-2026.ipynb}}}
 \end{frame}
 

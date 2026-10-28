@@ -105,6 +105,13 @@
   \draw[gap] (#1, -0.06) -- (#1, #2 + 0.06);
   \node[anchor=#3, inner sep=4pt] at (#1, #2/2) {max loss};}
 
+% The structure's outlook (#1), as in the lecture's composite-contract table, in
+% the panel's upper-right corner, the one corner no structure draws into. Added
+% October 28, 2026, at the instructor's request.
+\newcommand{\outlook}[1]{%
+  \node[anchor=north east, inner sep=2pt, font=\sffamily\footnotesize]
+    at (\xaxis, \yaxis) {{\color{gdgray}Outlook:} #1};}
+
 % A loss that keeps growing as S(T) rises: note with its lower-left corner at
 % (#1, #2), placed above the descending profit line near its arrowhead.
 \newcommand{\unlimited}[2]{%

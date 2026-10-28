@@ -19,6 +19,7 @@
   % ---------------- left panel: put credit spread ----------------
   \begin{scope}
     \panelframe{\textbf{Put credit spread:} sell a put at $K_{2}$, buy one at $K_{1}$}
+    \outlook{neutral to bullish}
     \begin{profitdata}
       \strike{2.2}{-1.1}{$K_{1}$}{long put}
       \strike{4.0}{0.7}{$K_{2}$}{short put}
@@ -36,6 +37,7 @@
   % ---------------- right panel: call credit spread ----------------
   \begin{scope}[xshift=\panelgap cm*0.8]
     \panelframe{\textbf{Call credit spread:} sell a call at $K_{1}$, buy one at $K_{2}$}
+    \outlook{neutral to bearish}
     \begin{profitdata}
       \strike{5.0}{0.7}{$K_{1}$}{short call}
       \strike{6.8}{-1.1}{$K_{2}$}{long call}
