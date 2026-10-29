@@ -1,0 +1,54 @@
+% L11a short put and short call, two panels: the building blocks of the
+% composite contracts. Schematic: the payoff (blue) and the profit (ink) at
+% expiration, per share, for one contract.
+%
+% Left: sell a put at K = 4.4 for a credit of 0.9.
+%   profit = 0.9 - (K - S)^+, breakeven K - 0.9 = 3.5. The share price cannot
+%   fall below zero, so the largest loss, K - 0.9 = 3.5, is at S(T) = 0, where
+%   the max-loss arrow runs along the y-axis.
+% Right: sell a call at K = 4.4 for a credit of 0.9.
+%   profit = 0.9 - (S - K)^+, breakeven K + 0.9 = 5.3. Paths stop at S = 8.6,
+%   where an arrowhead marks the loss that keeps growing as S(T) rises.
+% The payoff is the profit shifted down by the credit.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ---------------- left panel: short put ----------------
+  \begin{scope}
+    \panelframe{\textbf{Short put:} sell a put at $K$}
+    \outlook{neutral to bullish}
+    \begin{profitdata}
+      \strike{4.4}{0.9}{$K$}{short put}
+      \entryprice{5.6}
+      \draw[payoff] (0, -4.4) -- (4.4, 0) -- (9.0, 0);
+      \draw[profit] (0, -3.5) -- (4.4, 0.9) -- (9.0, 0.9);
+      \maxprofit{7.8}{0.9}
+      \draw[gap] (0.25, -0.06) -- (0.25, -3.19);
+      \node[anchor=north west, inner sep=4pt] at (0.25, -0.45) {max loss};
+      \node[anchor=south west, inner sep=4pt] at (4.6, 0.9) {profit};
+      \node[anchor=north west, text=gdblue, inner sep=3pt] at (5.6, 0) {payoff};
+      \breakeven{3.5}{$S^{\ddagger}$}{above left}
+    \end{profitdata}
+  \end{scope}
+
+  % ---------------- right panel: short call ----------------
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \panelframe{\textbf{Short call:} sell a call at $K$}
+    \outlook{neutral to bearish}
+    \begin{profitdata}
+      \strike{4.4}{0.9}{$K$}{short call}
+      \entryprice{3.2}
+      \draw[payoff, more] (0, 0) -- (4.4, 0) -- (8.6, -4.2);
+      \draw[profit, more] (0, 0.9) -- (4.4, 0.9) -- (8.6, -3.3);
+      \maxprofit{2.2}{0.9}
+      \node[anchor=south west] at (6.5, -0.9) {profit};
+      \node[anchor=north east, text=gdblue] at (6.3, -2.2) {payoff};
+      \unlimited{8.0}{-2.3}
+      \breakeven{5.3}{$S^{\ddagger}$}{above right}
+    \end{profitdata}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

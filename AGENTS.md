@@ -1,5 +1,29 @@
 # Repository Working Agreements
 
+## Week 11 shift: composite contracts become L11a — October 29, 2026
+
+- His decision: L10b ran behind, and the class did not reach the composite
+  contract material after the Akuna Capital profile. That material becomes the
+  new L11a. The covered calls and cash secured puts lecture moves from L11a to
+  L11b. The old L11b (protective collars, the TJUL comparison, and the Wheel
+  material in `advanced/`) is archived in
+  `lectures/archive/week-11-L11b-before-shift-2026-10-29/` "until we figure
+  out what to do". L10b is not cut: it stays as released in week-10.2, and the
+  new L11a ships in week-11.0.
+- New L11a (`CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb`):
+  the L10b cells from `## Composite Contracts` through `### Why Wait to
+  Expiration?` copied verbatim, except figure paths, example links, and "at
+  the risk-free rate $g_{y}$" added after "accumulation factor" (the L10b
+  Review, which defined it, stays in L10b). The
+  title block, Examples cell, and Summary are new. The two AMD examples (put
+  credit spread, strangle) are copies of the L10b ones, and the figures are
+  copies renamed `Fig-L11a-*`. The deck is the L10b composite frames with new
+  objectives, What You Need to Know, examples, and summary frames.
+- L11b: the files were renamed L11a to L11b and their self-references (title,
+  notation anchor, example links, Notes.tex) updated. Nothing else changed.
+- Notation: an L11a copy of the L10b composite NPV table; the covered call and
+  Delta tables relabeled L11b; Context "Where" entries updated.
+
 ## Moneyness is K/S(0), course-wide — October 25, 2026
 
 - His decision: moneyness is $K/S(0)$, the strike price divided by the share

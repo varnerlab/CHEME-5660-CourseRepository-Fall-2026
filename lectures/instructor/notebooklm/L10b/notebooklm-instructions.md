@@ -1,18 +1,23 @@
-# NotebookLM: L10b, The NPV and Probability of Profit of Composite Contracts
+# NotebookLM: L10b, The Greeks, POE, and POP in Practice
+
+Redone October 29, 2026. Class ran behind: L10b covered the review of the Greeks,
+the POE, and the POP, the Akuna Capital profile, and the two L10a examples. The
+composite contract material moved to L11a, and the earlier L10b set (which covered
+it) is in `../L11a/`.
 
 ## 1. Sources to upload
 
-Upload these three files from this folder as the notebook's sources. Do not upload this
+Upload these four files from this folder as the notebook's sources. Do not upload this
 instructions file; its prompts go in the "Customize" boxes.
 
-- `CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts.md` (the lecture)
-- `CHEME-5660-L10b-Example-Delta-VerticalSpread.md` (Example 3, in class)
-- `CHEME-5660-L10b-Slides-Fall-2026.pdf` (a copy of the deck)
+- `CHEME-5660-L10b-Lecture-Review-Greeks-POE-POP.md` (the lecture's review section and the Akuna Capital profile only)
+- `CHEME-5660-L10a-Example-Greeks-PutCall.md` (Example 1, in class)
+- `CHEME-5660-L10a-Example-POE-POP-Call.md` (Example 2, in class)
+- `CHEME-5660-L10b-Slides-Review-Fall-2026.pdf` (deck pages 6 to 10: the four review frames and the Akuna frame)
 
-Left out on purpose: the "Review: The Greeks, POE, and POP" section (cut from the lecture
-export) and its four slides (cut from the deck copy), the two L10a examples worked at the
-start of class (the deck copy still names them on its examples slide), and the strangle example (review on your own). The audio stays on
-composite contracts.
+Left out on purpose: the lecture's title block, learning objectives, and every
+composite contract section, and the matching deck frames, because class did not reach
+them. The put credit spread and strangle examples are left out for the same reason.
 
 ## 2. Audio Overview prompt
 
@@ -20,39 +25,39 @@ In the Audio Overview "Customize" dialog, choose Format: Deep Dive and Length: S
 then paste this prompt.
 
 ```
-Audience: engineering students in a quantitative finance course who already price single American calls and puts, know the Greeks, and compute the probability of exercise (POE) and the probability of profit (POP) of one contract from simulated share prices. New today: composite contracts, which combine several calls and puts on the same share with the same expiration.
+Audience: engineering students in a quantitative finance course who already price American calls and puts on a binomial (CRR) tree under the risk-neutral probabilities Q, and who met the Greeks, the probability of exercise (POE), and the probability of profit (POP) in the previous class. Today they used them on real NVDA contracts.
 
-Frame the episode around the AMD put credit spread in the example: sell the 520 put, buy the 500 put, and collect a credit. When does it make money, how likely is that, and what happens if we close it early? Build the episode on these three results:
-* The profit at expiration is the sum of the legs' payoffs, each weighted by its orientation (+1 bought, -1 sold) and number of contracts, minus the composite premium grown to expiration. The POP, under P or under Q, is the probability that this profit is positive.
-* A profit diagram shows the breakevens, the maximum profit, and the maximum loss. For the eight credit contracts in the lecture, the maximum profit is the credit grown to expiration, and the maximum loss comes from the put side or the call side.
-* Closing before expiration earns less than the profit at expiration, by roughly the extrinsic value left in the legs, because buying a leg back costs its intrinsic plus extrinsic value. Premium sellers often close early anyway, and a trade that moves toward a short strike can be closed at a loss or defended by rolling the untested side.
+Frame the episode around one question: suppose we sell the NVDA 235 call that expires in 43 days. How sensitive is its premium to the market, and how likely is it to be exercised or to make money? Build the episode on these three results:
+* What each Greek measures: Delta and Gamma (the share price), Theta (time), Vega (volatility), and Rho (the risk-free rate). Our Theta is per year, so divide by 365 for one day; divide Vega and Rho by 100 for one percentage point. One contract covers 100 shares, so it acts like 100 times Delta shares, and a short contract's Greeks are the long contract's with the sign flipped.
+* The POE is the probability the contract finishes in the money by more than 0.01 USD/share. The POP is the probability its profit at expiration is positive, which is decided by the breakeven: the strike plus the premium grown to expiration for a call. Both come from simulated share prices at expiration.
+* The size of Delta approximates the POE under Q, the probabilities inside the market price. It is not our forecast. The same simulation with our own drift and volatility gives the POE and POP under P, our belief.
 
-Accuracy rules: say whether each probability is under P (our forecast) or Q (the probabilities inside the market price). Explain Q only as the probabilities under which the expected discounted payoff equals the price; never explain Q through a replicating portfolio. Treat the NPV derivation and the formula tables as background and do not walk through them. Do not re-teach the Greeks or the single-contract POE and POP. Strikes are numbered low to high: K1 = 500 is the long put, K2 = 520 the short put. Do not preview other lectures.
+Accuracy rules: say whether each probability is under P (our belief) or Q (the risk-neutral probabilities). Explain Q only as the probabilities under which the expected discounted payoff equals the price; never explain Q through a replicating or hedging portfolio. Say "our belief P", not "the physical measure". Never read our per-year Theta as a daily number. Treat the Taylor expansion, the Leisen-Reimer tree, and the CRR sums behind Delta as background and do not walk through them. Do not discuss composite contracts or spreads, and do not preview other lectures.
 
-Tradeoffs: the long put lowers the credit but caps the loss; in the example the maximum profit is 8.80 and the maximum loss 11.20 USD/share, with the breakeven at 511.20. The POP is 0.71 under P but 0.54 under Q, because our drift estimate is far above the risk-free rate and our volatility below the implied volatility. The maximum profit is the credit grown to expiration, reached only if we wait to expiration; tastylive sells strangles about 45 days before expiration and buys them back at half the maximum profit or about 21 days before expiration, because near expiration a small move near a strike changes the profit by more.
+Tradeoffs: the Greeks describe small moves; for a 5 percent rise in the share price, Delta alone predicts a gain of 631.88 USD for one long 230 call, while repricing gives 722.20 USD. The quoted Delta of the 235 call, 0.4833, sits above its POE under Q, 0.4295. Under P, with our historical drift of 0.5788 per year instead of the risk-free rate of 0.0413, the POE rises to 0.6185 and the seller's POP falls from 0.6976 under Q to 0.5034.
 
 Keep the tone conversational, not lecture-y. Prefer analogies over formulas read aloud.
 ```
 
-## 3. Quiz and flashcards prompt
+## 3. Quiz
 
-Paste this into the "Customize" box for the Quiz, and again for Flashcards.
+Claude writes the 10-question quiz from these sources (`quiz.md`), so NotebookLM is used
+for the audio only. There are no flashcards, because Canvas has no flashcard tool. The
+scope the quiz follows:
 
 ```
-Write questions only on these three core results: (1) the profit at expiration of a composite contract as the orientation- and copy-weighted sum of its legs' payoffs minus the composite premium grown to expiration, and the POP as the probability that this profit is positive; (2) reading a profit diagram for the eight credit contracts (short put, short call, put and call credit spreads, short straddle, short strangle, protected strangle, iron condor): the breakevens, the maximum profit, the maximum loss, and the outlook; (3) why closing before expiration earns less than the profit at expiration (the extrinsic value left in the legs). Mix concept questions with short calculations that use the AMD put credit spread numbers in the sources. Do not ask about the NPV derivation or ask students to recall the formula tables. Do not ask about the Greeks or the POE and POP of a single contract. In every question and answer, say whether a probability is under P or Q.
+Write questions only on these three core results: (1) what each Greek measures, converting Theta to a one-day change (divide by 365) and Vega and Rho to a one-percentage-point change (divide by 100), share equivalents of 100 times Delta per contract, and the sign flip for short contracts; (2) the POE and the POP from simulated share prices at expiration, the 0.01 USD/share exercise threshold, and the breakeven price; (3) the size of Delta as an approximation of the POE under Q, and how the POE and POP change under P, our belief. Mix concept questions with short calculations that use the NVDA numbers in the sources. Do not ask about the Taylor expansion, the Leisen-Reimer tree, or the CRR sums. Do not ask about composite contracts. In every question and answer, say whether a probability is under P or Q.
 ```
 
 ## 4. Before sharing
 
-- **Listen** to the audio once. Stop on any of these: P and Q mixed up, the strikes swapped (K1 is the long put), "replicating portfolio", a re-teach of the Greeks, or a preview of a later lecture.
-- **Get the quiz and flashcards as text.** NotebookLM's Quiz and Flashcards cannot be downloaded, so paste the section 3 prompt into the notebook's chat, followed by: "Give me 10 questions with four choices, the answer, and a one-sentence explanation; then 15 flashcards as Q:/A: lines." Copy the answer into `quiz.md` in this folder and ask Claude to check each item against the lecture. Only checked text belongs in the repo; this repository is public.
-- **Build the Canvas quiz.** After the check, Claude builds `L10b-quiz-canvas-qti.zip` and `quiz-instructions.txt`. Import the zip in Canvas (Settings > Import Course Content > QTI .zip file), set Points to 0, check "Do not count this assignment towards the final grade", and preview the math.
+- **Listen** to the audio once. Stop on any of these: P and Q mixed up, Theta read as a daily number, "replicating portfolio", composite contracts or spreads, or a preview of a later lecture.
+- **Build the Canvas quiz.** Import `L10b-quiz-canvas-qti.zip` in Canvas (Settings > Import Course Content > QTI .zip file), set Points to 0, check "Do not count this assignment towards the final grade", preview the math, and paste `quiz-instructions.txt` into the Instructions box.
 - **Post** the audio on Canvas. Keep the audio and video out of git and the release zip.
 
 ## What was emphasized
 
-- The framing uses the AMD put credit spread from Example 3, the composite contract worked in class, so the episode has a concrete defined-risk trade.
-- The three bullets are the lecture's composite-contract results: the second and third must-know points, with the closing-early point split out of the third. The first must-know point (single-contract POE and POP) is the L10a catch-up and is left out on purpose. The NPV derivation and the formula tables are named as background.
-- The L10a catch-up (the review section, its two slides, and the two L10a examples) is left out of the sources, so the episode does not drift back to single contracts.
-- The third bullet and the last tradeoff follow the lecture's early-exit paragraphs (added October 28): tastylive's 45-day entry and early exit, and defending a tested trade by rolling the untested side.
-- The tradeoffs come from the example's outputs (maximum profit 8.80, maximum loss 11.20, breakeven 511.20 USD/share; POP 0.7144 under P and 0.5402 under Q) and the lecture's "Why Wait to Expiration?" time-decay discussion. Delta hedging moved to L11a on October 27, so it is not in these sources.
+- The framing uses the short NVDA 235 call from the POE and POP example, and the tradeoffs add the 230 call from the Greeks example, so the episode stays on the two examples worked in class.
+- The three bullets are the first must-know point of the L10b box (POE, POP, and Delta), split out, with the Greeks units from the review section in front of it.
+- The lecture export holds only the review section and the Akuna profile. The Akuna profile's connection paragraph names a put credit spread; the prompt says not to discuss spreads.
+- The tradeoffs come from example outputs: the Delta-only, Delta-Gamma, and repriced changes for a 5 percent move (631.88, 726.28, and 722.20 USD); the quoted Delta 0.4833 against the POE under Q 0.4295; and the four-case table (POE 0.6185 and seller's POP 0.5034 under P; 0.4295 and 0.6976 under Q).

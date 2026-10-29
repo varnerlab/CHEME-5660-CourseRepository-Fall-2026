@@ -1,0 +1,55 @@
+% L11a put and call credit spreads, two panels. Schematic: the payoff (blue)
+% and the profit (ink) at expiration, per share, for one copy of each leg.
+% Strikes are numbered from low to high, K1 < K2, in both panels. The panels
+% are mirror images about S = 4.5, so each flat stretch has room for its labels.
+%
+% Left: buy a put at K1 = 2.2 and sell a put at K2 = 4.0 for a credit of 0.7.
+%   profit = 0.7 + (K1 - S)^+ - (K2 - S)^+: 0.7 above K2, 0.7 - (K2 - K1) = -1.1
+%   below K1, breakeven K2 - 0.7 = 3.3.
+% Right: sell a call at K1 = 5.0 and buy a call at K2 = 6.8 for a credit of 0.7.
+%   profit = 0.7 - (S - K1)^+ + (S - K2)^+: 0.7 below K1, -1.1 above K2,
+%   breakeven K1 + 0.7 = 5.7.
+% The payoff is the profit shifted down by the credit.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ---------------- left panel: put credit spread ----------------
+  \begin{scope}
+    \panelframe{\textbf{Put credit spread:} sell a put at $K_{2}$, buy one at $K_{1}$}
+    \outlook{neutral to bullish}
+    \begin{profitdata}
+      \strike{2.2}{-1.1}{$K_{1}$}{long put}
+      \strike{4.0}{0.7}{$K_{2}$}{short put}
+      \entryprice{4.5}
+      \draw[payoff] (0, -1.8) -- (2.2, -1.8) -- (4.0, 0) -- (9.0, 0);
+      \draw[profit] (0, -1.1) -- (2.2, -1.1) -- (4.0, 0.7) -- (9.0, 0.7);
+      \maxprofit{7.25}{0.7}
+      \maxloss{0.4}{-1.1}{west}
+      \node[anchor=south west, inner sep=4pt] at (4.0, 0.7) {profit};
+      \node[anchor=north, text=gdblue, inner sep=3pt] at (1.2, -1.8) {payoff};
+      \breakeven{3.3}{$S^{\ddagger}$}{above left}
+    \end{profitdata}
+  \end{scope}
+
+  % ---------------- right panel: call credit spread ----------------
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \panelframe{\textbf{Call credit spread:} sell a call at $K_{1}$, buy one at $K_{2}$}
+    \outlook{neutral to bearish}
+    \begin{profitdata}
+      \strike{5.0}{0.7}{$K_{1}$}{short call}
+      \strike{6.8}{-1.1}{$K_{2}$}{long call}
+      \entryprice{4.5}
+      \draw[payoff] (0, 0) -- (5.0, 0) -- (6.8, -1.8) -- (9.0, -1.8);
+      \draw[profit] (0, 0.7) -- (5.0, 0.7) -- (6.8, -1.1) -- (9.0, -1.1);
+      \maxprofit{1.85}{0.7}
+      \maxloss{8.6}{-1.1}{east}
+      \node[anchor=south east, inner sep=4pt] at (5.0, 0.7) {profit};
+      \node[anchor=north, text=gdblue, inner sep=3pt] at (7.8, -1.8) {payoff};
+      \breakeven{5.7}{$S^{\ddagger}$}{above right}
+    \end{profitdata}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

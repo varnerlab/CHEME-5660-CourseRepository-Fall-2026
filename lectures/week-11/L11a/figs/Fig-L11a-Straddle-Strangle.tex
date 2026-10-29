@@ -1,0 +1,52 @@
+% L11a short straddle and short strangle, two panels. Schematic: the payoff
+% (blue) and the profit (ink) at expiration, per share, for one copy of each leg.
+%
+% Left: sell a call and a put at K = 4.4 for a credit of 1.5.
+%   profit = 1.5 - |S - K|, breakevens K - 1.5 = 2.9 and K + 1.5 = 5.9.
+% Right: sell a put at K1 = 3.4 and a call at K2 = 5.4 for a credit of 0.8.
+%   profit = 0.8 - (K1 - S)^+ - (S - K2)^+, breakevens 2.6 and 6.2.
+% The payoff is the profit shifted down by the credit. Paths stop at S = 8.6,
+% where an arrowhead marks the loss that keeps growing as S(T) rises.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ---------------- left panel: short straddle ----------------
+  \begin{scope}
+    \panelframe{\textbf{Short straddle:} sell a call and a put at one strike}
+    \outlook{neutral}
+    \begin{profitdata}
+      \strike{4.4}{0}{$K=S(0)$}{short put, short call}
+      \draw[payoff, more] (0, -4.4) -- (4.4, 0) -- (8.6, -4.2);
+      \draw[profit, more] (0, -2.9) -- (4.4, 1.5) -- (8.6, -2.7);
+      \maxprofit{4.4}{1.5}
+      \node[anchor=south east] at (1.5, -1.4) {profit};
+      \node[anchor=north west, text=gdblue] at (1.6, -2.8) {payoff};
+      \unlimited{7.9}{-1.6}
+      \breakeven{2.9}{$S^{\ddagger}_{-}$}{above left}
+      \breakeven{5.9}{$S^{\ddagger}_{+}$}{above right}
+    \end{profitdata}
+  \end{scope}
+
+  % ---------------- right panel: short strangle ----------------
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \panelframe{\textbf{Short strangle:} sell a put at $K_{1}$ and a call at $K_{2}$}
+    \outlook{neutral}
+    \begin{profitdata}
+      \strike{3.4}{0.8}{$K_{1}$}{short put}
+      \strike{5.4}{0.8}{$K_{2}$}{short call}
+      \entryprice{4.4}
+      \draw[payoff, more] (0, -3.4) -- (3.4, 0) -- (5.4, 0) -- (8.6, -3.2);
+      \draw[profit, more] (0, -2.6) -- (3.4, 0.8) -- (5.4, 0.8) -- (8.6, -2.4);
+      \maxprofit{4.4}{0.8}
+      \node[anchor=south east] at (1.4, -1.3) {profit};
+      \node[anchor=north west, text=gdblue] at (1.5, -2.0) {payoff};
+      \unlimited{7.9}{-1.3}
+      \breakeven{2.6}{$S^{\ddagger}_{-}$}{above left}
+      \breakeven{6.2}{$S^{\ddagger}_{+}$}{above right}
+    \end{profitdata}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

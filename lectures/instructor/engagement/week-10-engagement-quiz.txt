@@ -1,0 +1,13 @@
+CHEME 5660 Engagement Quiz: Week 10 (L10a and L10b)
+
+Question 1 title:
+Delta and Our Own Forecast
+
+Question 1 text:
+If you were about to sell a call, would you trust its quoted Delta or your own simulated probability of exercise more, and why?
+
+Question 2 title:
+What Is Still Confusing?
+
+Question 2 text:
+What is one thing from this week's lectures that is still confusing to you?

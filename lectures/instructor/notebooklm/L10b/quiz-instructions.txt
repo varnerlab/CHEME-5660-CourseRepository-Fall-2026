@@ -1,13 +1,13 @@
-L10b Self-Check: Composite Contracts
+L10b Self-Check: The Greeks, POE, and POP
 
-This is an ungraded self-check on the composite-contract results from L10b:
+This is an ungraded self-check on what we did in L10b:
 
-1. The profit at expiration of a composite contract is the sum of its legs' payoffs, weighted by orientation and copy number, minus the composite premium grown to expiration. The POP is the probability that this profit is positive, under our belief ℙ or under the risk-neutral probabilities ℚ.
-2. A profit diagram shows the breakevens, the maximum profit (the credit grown to expiration), and the maximum loss of each contract.
-3. Closing before expiration earns less than the profit at expiration, by roughly the extrinsic value left in the legs.
+1. What each Greek measures. Divide our Theta by 365 for one day, and our Vega and Rho by 100 for one percentage point. One contract acts like 100 times Delta shares.
+2. How to compute the probability of exercise (POE) and the probability of profit (POP) from simulated share prices at expiration.
+3. Delta is close to the POE under the risk-neutral probabilities ℚ, but it is not our own forecast under our belief ℙ.
 
-There are 10 multiple-choice questions, and several use the AMD put credit spread from class. Each answer comes with a one-sentence explanation. Take it as many times as you like; it does not count toward your grade.
+There are 10 multiple-choice questions, and most use the NVDA examples from class. Each answer comes with a short explanation. Take it as many times as you like; it does not count toward your grade.
 
 Keep the lecture and the examples open while you work. If a question says ℙ, it means our belief (our forecast). If it says ℚ, it means the risk-neutral probabilities inside the market price.
 
-The questions were drafted with NotebookLM from the course materials and checked by the teaching team. If you think an answer is wrong, post it on the course discussion board.
+The questions were written from the course materials and checked by the teaching team. If you think an answer is wrong, post it on the course discussion board.

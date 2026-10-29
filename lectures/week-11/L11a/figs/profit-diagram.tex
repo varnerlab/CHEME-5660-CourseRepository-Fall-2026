@@ -1,0 +1,118 @@
+% Shared style for the L11a profit diagrams, \input by each Fig-L11a-*.tex.
+%
+% Drawn on October 23, 2026 in the style of the CHEME 5800 L9c convexity and
+% gradient-descent schematics: arrowed axes, a thick ink curve (the profit), a
+% blue companion curve (the payoff), open circle markers, and dashed drops to
+% colored axis labels. Each figure has two panels; each panel is a schematic,
+% so the axes carry no numbers.
+%
+% Panel coordinates: x is the share price at expiration S(T), with the y-axis
+% at S(T) = 0. Inside \begin{profitdata} ... \end{profitdata} the y coordinate
+% is the profit (USD/share): the scope shifts the zero-profit line up to
+% \yzero and scales profits by \yscale, so every path is written in the
+% structure's own units. Nodes are not scaled.
+%
+% Math uses the standard TeX fonts (no unicode-math), as in the L9c figures,
+% so S, K, and the double dagger match the notebook's math.
+%
+% The notebook SVG carries a dark palette added by theme_svg.py; keep new
+% colors in that script's mapping when changing the palette here.
+\usepackage[no-math]{fontspec}
+\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{TeX Gyre Heros}}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,calc}
+
+% Same colors as the L9c figures.
+\definecolor{vnink}{HTML}{202124}
+\definecolor{gdblue}{HTML}{0091FF}
+\definecolor{gdred}{HTML}{E02020}
+\definecolor{gdgray}{HTML}{6D7278}
+% The L9c simulated-annealing orange, used only for profits before expiration.
+\definecolor{saorange}{HTML}{F08C00}
+
+% Panel geometry (x units): the axes run to \xaxis and \yaxis, the zero-profit
+% line sits at \yzero, and a profit of 1 USD/share is \yscale units tall.
+\def\xaxis{9.6}
+\def\yaxis{6.3}
+\def\yzero{3.9}
+\def\yscale{0.8}
+\def\panelgap{10.6}
+
+\tikzset{
+  every picture/.append style={x=0.8cm, y=0.8cm, font=\sffamily\small, text=vnink},
+  axis/.style={draw=vnink, line width=0.8pt, -{Latex[length=2.6mm, width=1.8mm]}},
+  zero/.style={draw=gdgray, line width=0.5pt},
+  profit/.style={draw=vnink, line width=1.6pt, line join=round},
+  payoff/.style={draw=gdblue, line width=1.2pt, line join=round},
+  more/.style={-{Latex[length=2.4mm, width=1.7mm]}},
+  drop/.style={draw=gdgray, line width=0.8pt, dash pattern=on 3pt off 2pt},
+  gap/.style={draw=vnink, line width=0.8pt,
+    {Latex[length=1.8mm, width=1.3mm]}-{Latex[length=1.8mm, width=1.3mm]}},
+  pt/.style={circle, fill=white, line width=1.0pt, inner sep=0pt, minimum size=2.4mm},
+  note/.style={text=gdgray, font=\sffamily\footnotesize, align=center},
+}
+
+% Axes, zero-profit line, the bold run-in title (#1), and the axis labels
+% (#2 horizontal, #3 vertical).
+\newcommand{\panelaxes}[3]{%
+  \draw[zero] (0, \yzero) -- (\xaxis - 0.2, \yzero);
+  \draw[axis] (-0.15, 0) -- (\xaxis, 0);
+  \draw[axis] (0, -0.15) -- (0, \yaxis);
+  \node[anchor=east, text=gdgray] at (-0.05, \yzero) {$0$};
+  \node[anchor=north] at (\xaxis/2, -1.05) {#2};
+  \node[rotate=90, anchor=south] at (-0.55, \yaxis/2) {#3};
+  \node[anchor=south] at (\xaxis/2, \yaxis + 0.15) {#1};
+}
+% The expiration diagrams' frame.
+\newcommand{\panelframe}[1]{%
+  \panelaxes{#1}{Share price at expiration $S(T)$}{Payoff and profit (USD/share)}}
+
+% Scope in which (S, profit) are the coordinates.
+\newenvironment{profitdata}{\begin{scope}[shift={(0, \yzero)}, yscale=\yscale]}{\end{scope}}
+
+% A strike: dashed drop from the profit kink (#1, #2) to the S(T) axis, with the
+% strike symbol #3 and, below it, the leg written at that strike, #4.
+\newcommand{\strike}[4]{%
+  \draw[drop] (#1, #2) -- (#1, -\yzero/\yscale);
+  \node[anchor=north, align=center, inner sep=1.5pt, text=gdgray]
+    at (#1, -\yzero/\yscale - 0.08/\yscale)
+    {#3\\[-1.5pt]{\footnotesize\color{vnink}#4}};}
+
+% The share price when the trade opens, S(0): a short tick on the S(T) axis at
+% #1, labeled just above the axis so it clears the strike labels below it. Added
+% October 27, 2026, so students can see where the strikes sit relative to today's
+% price (the time-decay figure marks S(0) the same way).
+\newcommand{\entryprice}[1]{%
+  \draw[draw=vnink, line width=0.8pt] (#1, -\yzero/\yscale) -- (#1, -\yzero/\yscale + 0.2/\yscale);
+  \node[anchor=south, inner sep=1.5pt, text=gdgray] at (#1, -\yzero/\yscale + 0.2/\yscale) {$S(0)$};}
+
+% A breakeven: open red circle on the zero line at #1, label #2 placed #3 of
+% the circle (above left or above right), clear of the circle's outline.
+\newcommand{\breakeven}[3]{%
+  \node[pt, draw=gdred,
+    label={[text=gdred, inner sep=0.5pt, label distance=2pt]#3:#2}] at (#1, 0) {};}
+
+% Maximum profit: arrow at S = #1 from the payoff (zero) up to the profit #2.
+% For a credit structure the gap is the credit, grown to expiration.
+\newcommand{\maxprofit}[2]{%
+  \draw[gap] (#1, 0.06) -- (#1, #2 - 0.06);
+  \node[anchor=south, inner sep=4pt] at (#1, #2) {max profit $=$ credit};}
+
+% Maximum loss: arrow at S = #1 from zero down to the profit #2 (negative),
+% label anchored #3 (west puts it to the right of the arrow).
+\newcommand{\maxloss}[3]{%
+  \draw[gap] (#1, -0.06) -- (#1, #2 + 0.06);
+  \node[anchor=#3, inner sep=4pt] at (#1, #2/2) {max loss};}
+
+% The structure's outlook (#1), as in the lecture's composite-contract table, in
+% the panel's upper-right corner, the one corner no structure draws into. Added
+% October 28, 2026, at the instructor's request.
+\newcommand{\outlook}[1]{%
+  \node[anchor=north east, inner sep=2pt, font=\sffamily\footnotesize]
+    at (\xaxis, \yaxis) {{\color{gdgray}Outlook:} #1};}
+
+% A loss that keeps growing as S(T) rises: note with its lower-left corner at
+% (#1, #2), placed above the descending profit line near its arrowhead.
+\newcommand{\unlimited}[2]{%
+  \node[note, anchor=south west, inner sep=0pt] at (#1, #2) {unlimited\\loss};}

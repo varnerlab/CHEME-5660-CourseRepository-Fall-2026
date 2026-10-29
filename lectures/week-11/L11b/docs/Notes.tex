@@ -1,258 +1,181 @@
 \documentclass[11pt]{article}
 \usepackage{varnernotes}
 
+\newcommand{\R}{\mathbb{R}}
+
 \begin{document}
 
-\lecturenotes{11b}{Protective Collars with Standard Listed Options---TJUL as a Comparison}{Fall 2026}{November 5, 2026}{Jeffrey D. Varner}
+\lecturenotes{11a}{Covered Calls and Cash-Secured Puts}{Fall 2026}{November 3, 2026}{Jeffrey D. Varner}
 
 \learningobjectives
-  {Construct a standard listed collar}
-  {Match 100 shares with one ordinary listed put and one ordinary listed call using a common expiration.}
-  {Compute economic risk and reward}
-  {Use executable premiums to calculate the floor, cap, breakeven, maximum loss, and maximum profit.}
-  {Compare implementation choices}
-  {Distinguish a self-managed standard collar from TJUL's FLEX-option fund structure without requiring students to trade FLEX options.}
+  {Derive expiration P\&L}
+  {Construct covered-call and cash-secured-put profit functions, breakevens, and best/worst terminal outcomes.}
+  {Explain their equivalence}
+  {Use put--call parity and terminal payoff algebra to identify when the two positions are economically equivalent.}
+  {Manage implementation risk}
+  {Evaluate opportunity cost, funding, dividends, early assignment, position delta, and model-conditional outcome probabilities.}
 
-\section{The Core Position Uses Standard Listed Options}
+\section{Premium Income Is Payment for a Contingent Obligation}
 
-A protective collar combines long exposure to an underlying asset, a long put
-that limits downside, and a short call that helps finance the put by surrendering
-upside. The core classroom construction uses ordinary listed options that an
-options-approved brokerage account may support. FLEX options are not required.
+Selling an option creates cash today in exchange for a state-dependent obligation later. The premium is not yield in the bond sense and is not free downside protection. A covered call pairs a long stock position with a short call; a cash-secured put pairs a short put with enough cash to meet assignment. Both reshape the same underlying exposure into capped-upside, stock-like downside.
 
-Let one standard option contract represent $m=100$ shares and hold $n$ matched
-contracts. At time zero, buy or already own $mn$ shares at $S_0$, buy $n$ puts
-with strike $K_P$, and sell $n$ calls with strike $K_C$, where both option legs
-have the same expiration and
+Let $S(0)>0$ be the current stock price, $S(T)\geq 0$ the price at expiration $T$, $K>0$ the strike, and $m>0$ the contract multiplier in shares/contract. Let $\mathcal P_c,\mathcal P_p\geq 0$ be call and put premiums in USD/share. Amounts paid or collected today are grown to expiration with the accumulation factor $\mathcal D_{T,0}(g_y)=e^{g_yT}$, where $g_y$ is the risk-free rate. We initially analyze one contract, ignore costs and taxes, and treat expiration exercise mechanically from intrinsic value.
+
+\begin{remark}{Which stock basis belongs in the decision?}{basis}
+An historical acquisition price may determine accounting or tax P\&L, but the prospective economics of writing a call today use the stock's current opportunity value $S(0)$. Keeping stock worth $S(0)$ and selling a call should be compared with selling or otherwise deploying that stock now. Report historical-basis and forward-decision views separately rather than mixing them.
+\end{remark}
+
+\section{Covered Call: Long Stock Plus Short Call}
+
+Suppose one acquires or commits $m$ shares at current opportunity cost $S(0)$ per share and sells one call for $\mathcal P_c$. With the net cost grown to expiration, the frictionless expiration profit is
 \begin{equation}
-  \label{eq:strike-order}
-  K_P<S_0<K_C.
+  \label{eq:covered-call-profit}
+  m\,\hat P(S(T))
+  =m\left[S(T)-(S(T)-K)^+-\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)\right]
+  =m\left[\min\{S(T),K\}-\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)\right],
 \end{equation}
-The terminal value is
+where $\hat P(S(T))$ is the profit at expiration in USD/share. Thus the breakeven is $S^{\ddagger}=\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)$. Maximum profit is $m\left[K-\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)\right]$ when $S(T)\geq K$. If limited liability implies $S(T)\geq 0$, worst terminal profit is $-m\,\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)$ at $S(T)=0$, a loss magnitude of $m\,\mathcal D_{T,0}(g_y)\left(S(0)-\mathcal P_c\right)$. The premium cushions only $\mathcal D_{T,0}(g_y)\,\mathcal P_c$ per share of stock downside.
+
+Above $K$, additional stock appreciation is surrendered. Relative to holding the same shares without the call, the incremental profit of writing the call is
 \begin{equation}
-  \label{eq:collar-value}
-  V_T=mn\left[S_T+(K_P-S_T)^+-(S_T-K_C)^+\right].
+  \label{eq:covered-call-relative}
+  m\,\hat P(S(T))-m\left[S(T)-\mathcal D_{T,0}(g_y)\,S(0)\right]
+  =m\left[\mathcal D_{T,0}(g_y)\,\mathcal P_c-(S(T)-K)^+\right].
 \end{equation}
-Therefore,
-\begin{equation}
-  \label{eq:collar-piecewise}
-  V_T=mn
-  \begin{cases}
-    K_P, & S_T<K_P,\\
-    S_T, & K_P\leq S_T\leq K_C,\\
-    K_C, & S_T>K_C.
-  \end{cases}
-\end{equation}
-The put creates the floor, the shares participate one-for-one between the
-strikes, and the short call creates the cap.
+The covered call underperforms stock alone when $S(T)>K+\mathcal D_{T,0}(g_y)\,\mathcal P_c$ in this expiration-only comparison. That is opportunity cost, not an additional cash loss on top of \eqnref{covered-call-profit}.
 
 \begin{figure}[ht]
   \centering
-  \begin{tikzpicture}[x=0.78cm,y=0.62cm,>=Latex,font=\sffamily\small]
-    \draw[->,vnmuted] (0,0)--(12.4,0) node[right] {$S_T$};
-    \draw[->,vnmuted] (0,0)--(0,7.1) node[above] {$V_T$};
-    \draw[vnlink,very thick] (0.4,2.1)--(3.5,2.1)--(9.0,6.0)--(11.8,6.0);
-    \draw[vncarnelian,dashed] (3.5,0)--(3.5,2.1) node[below] {$K_P$};
-    \draw[vncarnelian,dashed] (9.0,0)--(9.0,6.0) node[below] {$K_C$};
-    \node[vnmuted,align=center] at (1.8,3.0) {put floor};
-    \node[vnmuted,align=center] at (6.3,4.8) {share\\participation};
-    \node[vnmuted,align=center] at (10.4,6.7) {call cap};
+  \begin{tikzpicture}[x=0.72cm,y=0.58cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.0)--(10.3,2.0) node[right] {$S(T)$};
+    \draw[->,vnmuted] (4.3,0)--(4.3,5.8) node[above] {profit};
+    \draw[vnmuted,dashed] (6.8,0.25)--(6.8,5.3);
+    \draw[vnmuted,dotted] (3.2,0.25)--(3.2,5.3);
+    \draw[vnlink,very thick] (0.7,0.35)--(6.8,4.5)--(9.6,4.5);
+    \draw[vncarnelian,thick,dashed] (0.7,0.1)--(9.4,5.35);
+    \node[below] at (3.2,2.0) {$S^{\ddagger}$};
+    \node[below] at (6.8,2.0) {$K$};
+    \node[vnlink,above] at (8.2,4.5) {covered call};
+    \node[vncarnelian,above left] at (9.0,5.1) {stock only};
   \end{tikzpicture}
-  \caption{Terminal value of a standard listed protective collar. Premiums
-  shift the profit diagram but do not change the three payoff regions.}
-  \label{fig:collar-payoff}
+  \caption{Covered-call expiration profit versus stock alone. Premium shifts the initial breakeven left, while the short call caps profit above the strike.}
+  \label{fig:covered-call}
 \end{figure}
 
-The Options Clearing Corporation reports that each ordinary standard equity
-option generally covers 100 shares and that standard equity options are
-American-style. Corporate actions can create adjusted contracts with a
-different deliverable, so the broker's contract specification must still be
-checked.
-
-\section{Build the Retail Order Ticket}
-
-For an existing 100-share position, the opening option order is:
-\begin{enumerate}[leftmargin=1.5em,itemsep=2pt,topsep=3pt]
-  \item buy to open one put at strike $K_P$; and
-  \item sell to open one call at strike $K_C$ with the same expiration.
-\end{enumerate}
-For a new position, buy 100 shares as well. Some brokers support a three-leg
-stock-plus-options combination order. Otherwise, entering the legs separately
-creates execution and interim-exposure risk.
-
-Use executable quote sides in the pre-trade estimate. Let $P_0^{ask}$ be the
-put ask and $C_0^{bid}$ the call bid. A conservative initial cost for one
-matched collar is
-\begin{equation}
-  \label{eq:initial-cost}
-  \Pi_0=m\left(S_0+P_0^{ask}-C_0^{bid}\right),
-  \qquad m=100.
-\end{equation}
-The broker may fill a multi-leg limit order inside the component quotes, but a
-midpoint fill is an execution outcome rather than an assumption. Verify the
-underlying, deliverable, strikes, expiration, multiplier, option approval,
-buying power, and ex-dividend date before entering the order.
-
 \notebooklink
-  {L11b: Standard-Listed SPY Protective Collar}
-  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}
-  {Match 100 illustrative SPY shares with one listed put and call, use executable quote sides, calculate risk metrics, and compare the result with TJUL.}
+  {L11b: Covered Call on AMD}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-AnalysisCoveredCall-Fall-2026.ipynb}
+  {Select an option-chain call, combine it with the required shares, plot expiration P\&L, and estimate downside, assignment, and opportunity-cost scenarios.}
 
-\section{Payoff Is Not Profit}
+\section{Cash-Secured Put: Cash Plus a Short Put}
 
-Ignoring financing, dividends, taxes, and transaction fees, expiration profit
-is $V_T-\Pi_0$. For a matched collar,
-\begin{align}
-  \label{eq:risk-metrics}
-  \text{maximum loss}
-    &=\Pi_0-mnK_P,\\
-  \text{maximum profit}
-    &=mnK_C-\Pi_0,\\
-  \text{interior breakeven}
-    &=\frac{\Pi_0}{mn}
-      =S_0+P_0^{ask}-C_0^{bid}.
-\end{align}
-The breakeven formula applies when it lies between the strikes. A ``zero-cost
-collar'' only means that the quoted put premium is approximately financed by
-the quoted call premium. It does not remove underlying risk, bid--ask cost,
-assignment risk, taxes, financing, or foregone upside.
-
-\section{The Standard Chain Constrains the Design}
-
-Standard listed options restrict the investor to available strikes and
-expirations. Raising $K_P$ improves the floor but generally increases the put
-cost. Lowering $K_C$ generally collects more call premium but surrenders upside
-sooner. A reproducible selection rule can maximize $K_C$ subject to a minimum
-$K_P$, maximum net debit, minimum volume/open interest, and maximum spread.
-
-For example, a 10\%-down/10\%-up collar has
+Sell one put for $\mathcal P_p$ and reserve enough liquid capital to buy $m$ shares at $K$ if assigned. The short-put expiration profit, before interest on collateral, is
 \begin{equation}
-  \label{eq:ten-ten}
-  K_P=0.90S_0,
-  \qquad K_C=1.10S_0.
-\end{equation}
-It does not provide a 100\% downside buffer. The position participates in the
-first 10\% decline and is protected only below $K_P$. A put nearer $S_0$
-provides stronger protection but normally requires a larger debit or a lower
-call cap.
-
-\section{Keep Growth and Price Changes Distinct}
-
-For a horizon $\Delta t$ measured in years, this course uses
-\begin{equation}
-  \label{eq:growth-convention}
-  r_{t,\Delta t}
-  :=\log\!\left(\frac{S_{t+\Delta t}}{S_t}\right)
-  =(\Delta t)g_{t,\Delta t}.
-\end{equation}
-Option diagrams and defined-outcome documents generally quote a cumulative
-simple price change. Denote it by a capital $R$:
-\begin{equation}
-  \label{eq:simple-change}
-  R_{t,\Delta t}
-  :=\frac{S_{t+\Delta t}-S_t}{S_t}
-  =\exp\!\left((\Delta t)g_{t,\Delta t}\right)-1.
-\end{equation}
-A 90-day collar outcome or a two-year ETF cap is cumulative over its stated
-horizon, not an annual growth rate.
-
-\section{Expiration and Early Assignment}
-
-Below $K_P$, put exercise or assignment can sell the matched shares at the floor
-strike. Between the strikes, both options normally expire without exercise and
-the investor retains the shares. Above $K_C$, call assignment sells the shares
-at the cap strike.
-
-Standard equity and ETF options are generally American-style, so assignment can
-occur before expiration. Short-call assignment risk is especially relevant near
-an ex-dividend date when remaining extrinsic value is small. The operator should
-decide before entry how to handle dividends, closing, rolling, exercise,
-assignment, and any mismatch between shares and adjusted deliverables. Adjusting
-one leg must not accidentally leave an unintended naked option.
-
-\section{TJUL Is the Comparison, Not the Required Instrument}
-
-The Innovator Equity Defined Protection ETF (TJUL) packages a defined outcome
-inside an exchange-traded fund. TJUL uses customized FLEX options on SPY; the
-disclosed construction uses purchased call exposure, a purchased put, and a
-sold call that creates the cap. FLEX options permit customized strikes,
-expirations, and exercise styles and use specialized exchange execution
-workflows. Students do not need that access. They can:
-\begin{itemize}[leftmargin=1.3em,itemsep=2pt,topsep=2pt]
-  \item build a self-managed collar with ordinary listed SPY options;
-  \item buy or analyze TJUL shares as an ETF product; or
-  \item compare the two without trying to replicate TJUL's FLEX positions.
-\end{itemize}
-
-Let $R_{SPY}$ be the complete-period cumulative SPY price change and $c$ the
-starting cap. A simplified full-buffer outcome before expenses is
-\begin{equation}
-  \label{eq:defined-outcome}
-  R_{TJUL}^{\mathrm{gross}}=
+  \label{eq:csp-profit}
+  m\,\hat P(S(T))
+  =m\left[\mathcal D_{T,0}(g_y)\,\mathcal P_p-(K-S(T))^+\right]
+  =
   \begin{cases}
-    0, & R_{SPY}<0,\\
-    R_{SPY}, & 0\leq R_{SPY}\leq c,\\
-    c, & R_{SPY}>c.
+    m\,\mathcal D_{T,0}(g_y)\,\mathcal P_p, & S(T)\geq K,\\
+    m\left(S(T)-K+\mathcal D_{T,0}(g_y)\,\mathcal P_p\right), & S(T)<K.
   \end{cases}
 \end{equation}
-This is a complete-period outcome map, not a daily guarantee, a mid-period NAV
-model, or an instruction to trade FLEX contracts.
+The breakeven and effective acquisition price are $S^{\ddagger}=K-\mathcal D_{T,0}(g_y)\,\mathcal P_p$. Maximum profit is $m\,\mathcal D_{T,0}(g_y)\,\mathcal P_p$; worst terminal profit is $m\left(\mathcal D_{T,0}(g_y)\,\mathcal P_p-K\right)$ at $S(T)=0$, a maximum loss magnitude of $m\left(K-\mathcal D_{T,0}(g_y)\,\mathcal P_p\right)$. ``Cash secured'' describes funding capacity, not protection from the acquired stock losing value.
 
-\section{A Dated TJUL Snapshot}
+Collateral treatment matters. Reserving $mK$ in non-interest-bearing cash is conservative but costly. If the broker permits Treasury collateral or interest-bearing cash, financing income changes P\&L. If collateral can fall in value, be rehypothecated, or become unavailable, the position is not economically secured in the simple sense assumed by \eqnref{csp-profit}.
 
-The official materials checked on August 4, 2026 describe an outcome period
-from July 1, 2025 through June 30, 2027, a 13.61\% starting cap before expenses,
-a 100\% starting buffer before expenses, and a 0.79\% annual management fee.
-The prospectus illustrates a 12.03\% cap and 98.42\% buffer after two years of
-management fees. Refresh the
-\href{https://www.innovatoretfs.com/etf/?ticker=TJUL}{official fund page},
-\href{https://www.innovatoretfs.com/pdf/tjul_prospectus.pdf}{prospectus}, and
-\href{https://www.innovatoretfs.com/pdf/tjul_factsheet.pdf}{factsheet} before
-class. Starting outcomes apply only from the first through the last day of the
-outcome period.
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[x=0.75cm,y=0.62cm,>=Latex,font=\sffamily\small]
+    \draw[->,vnmuted] (0,2.0)--(9.9,2.0) node[right] {$S(T)$};
+    \draw[->,vnmuted] (4.0,0)--(4.0,5.6) node[above] {profit};
+    \draw[vnmuted,dotted] (3.0,0.2)--(3.0,5.1);
+    \draw[vnmuted,dashed] (6.3,0.2)--(6.3,5.1);
+    \draw[vnlink,very thick] (0.7,0.3)--(6.3,4.35)--(9.2,4.35);
+    \node[below] at (3.0,2.0) {$S^{\ddagger}$};
+    \node[below] at (6.3,2.0) {$K$};
+    \node[vnlink,above,align=center] at (7.9,4.35) {max profit\\$m\,\mathcal D_{T,0}(g_y)\,\mathcal P_p$};
+    \node[vnlink,below right] at (1.0,0.55) {stock-like downside};
+  \end{tikzpicture}
+  \caption{Cash-secured-put expiration profit. The initial credit creates a buffer down to $K-\mathcal D_{T,0}(g_y)\,\mathcal P_p$, but losses then grow one-for-one as the stock falls.}
+  \label{fig:csp}
+\end{figure}
 
-\begin{center}
-\small
-\renewcommand{\arraystretch}{1.18}
-\begin{tabular}{p{0.22\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
-\hline
-\textbf{Feature} & \textbf{Self-managed standard collar} & \textbf{TJUL}\\
-\hline
-Investor accesses & Shares plus listed put and call & ETF shares\\
-Options used & Standard listed contracts & FLEX contracts managed inside fund\\
-Granularity & Usually 100-share blocks & Whole or fractional ETF shares, broker dependent\\
-Floor and cap & Available strikes, premium, expiration & Dated starting buffer and cap\\
-Management & Investor handles execution and assignment & Fund manages option package\\
-Costs & Spreads, fees, financing, taxes & Expense ratio, ETF spread, premium/discount, taxes\\
-\hline
-\end{tabular}
-\end{center}
+\notebooklink
+  {L11b: Cash-Secured Put on AMD}
+  {https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-CashSecuredPut-Fall-2026.ipynb}
+  {Construct a short put with reserved cash, calculate its effective purchase price and terminal P\&L, and evaluate model-conditional outcome regions.}
 
-TJUL references the SPY \emph{price} return. Direct SPY ownership may also
-receive distributions, so compare complete wealth using consistent price-return
-or total-return conventions.
+\section{Parity Reveals the Shared Exposure}
 
-\section{Optional Advanced Track}
+At expiration, the asset identities
+\begin{equation}
+  \label{eq:terminal-parity}
+  S(T)-(S(T)-K)^+
+  =K-(K-S(T))^+
+  =\min\{S(T),K\}
+\end{equation}
+show that long stock plus short call has the same payoff as $K$ cash plus short put. Before expiration, European put--call parity with continuous dividend yield $\delta$ and risk-free rate $g_y$ is
+\begin{equation}
+  \label{eq:put-call-parity}
+  S(0)e^{-\delta T}-\mathcal P_c=K\,\mathcal D^{-1}_{T,0}(g_y)-\mathcal P_p.
+\end{equation}
+The left side is a prepaid-forward version of a covered call; the right side is a present-value-funded short put. Under matching contracts and frictionless assumptions, equal terminal payoffs imply equal no-arbitrage values.
 
-An advanced standard-options project can load a dated SPY chain and optimize
-collar strikes under floor, cap, liquidity, and maximum-debit constraints. The
-previous Wheel lecture and supporting examples remain in the \texttt{advanced/}
-subfolder as a separate optional extension.
+\begin{theorem}{Covered-call/cash-secured-put equivalence}{cc-csp-equivalence}
+For European options with common $K,T$, consistent dividends and financing, and the funding asset specified by \eqnref{put-call-parity}, covered-call and cash-secured-put packages are synthetic equivalents. Their apparent labels do not create different fundamental payoff risk.
+\end{theorem}
 
-\Needspace{0.34\textheight}
+Real implementations can differ because equity dividends, collateral yield, borrow costs, taxes, bid--ask spreads, discrete dividends, and early exercise are not identical across the two packages. American put--call parity becomes a set of bounds rather than the European equality. The equivalence is therefore a baseline for reconciliation, not a guarantee that two brokerage trades have identical realized returns.
+
+\section{Delta and Assignment Change Through Time}
+
+Let $\Delta_c:=\partial\mathcal P_c/\partial S$ and $\Delta_p:=\partial\mathcal P_p/\partial S$ be per-share long-option deltas. The current net deltas for one contract are
+\begin{equation}
+  \label{eq:position-deltas}
+  \Delta_{\text{net}}=m(1-\Delta_c)\ \text{(covered call)},
+  \qquad
+  \Delta_{\text{net}}=-m\Delta_p\ \text{(cash-secured put)},
+\end{equation}
+because cash has zero spot delta. For matched non-dividend European options, $\Delta_c-\Delta_p=1$, so the two net deltas are equal. They are typically positive: both packages retain bullish, stock-like directional exposure. Delta changes with spot, time, volatility, and the American exercise boundary.
+
+Short American options can be assigned before expiration. Covered calls are particularly exposed around ex-dividend dates when a deep-ITM call has little remaining extrinsic value; assignment delivers the shares at $K$ and forfeits subsequent dividends and upside. Short puts can also be assigned early, especially when deep ITM. Pin risk near $K$, after-hours movement, exercise-by-exception rules, and delayed assignment notices can create an unexpected stock position.
+
+\section{Outcome Probabilities Are Conditional Estimates}
+
+Given a stated terminal-price CDF $F(x):=\mathbb P(S(T)\leq x)$, frictionless expiration events include
+\begin{align}
+  \label{eq:covered-call-events}
+  \text{covered call:}\quad\mathbb P\left(\hat P(S(T))<0\right)&=F(S^{\ddagger}),
+  &
+  \mathbb P(S(T)>K)&=1-F(K),\\
+  \label{eq:csp-events}
+  \text{cash-secured put:}\quad\mathbb P\left(\hat P(S(T))<0\right)&=F(S^{\ddagger}),
+  &
+  \mathbb P(S(T)<K)&=F(K),
+\end{align}
+where $S^{\ddagger}$ is each position's breakeven, when the distribution is continuous at the thresholds. These are model-conditional terminal probabilities. A risk-neutral distribution is appropriate for pricing but is not automatically a real-world forecast; historical and subjective forecast distributions answer different questions. Early assignment probabilities require a path-dependent exercise model, not only the terminal CDF.
+
+Probability of assignment, probability of loss, expected P\&L, maximum loss, and expected shortfall are different risk summaries. A high probability of keeping a small premium can coexist with a low-probability, large stock loss. Evaluate the entire distribution and stress scenarios rather than ranking contracts only by premium or ``win rate.''
+
+\Needspace{0.38\textheight}
 \keytakeaways
-  {In this lecture, we constructed a retail-replicable collar using ordinary listed options and used TJUL only as a defined-outcome comparison.}
-  {FLEX options are not required}
-  {The core position is 100 shares, one standard listed put, and one standard listed call with a common expiration.}
-  {Use executable premiums}
-  {Put ask minus call bid determines a conservative initial debit and therefore shifts breakeven, maximum loss, and maximum profit.}
-  {Implementation determines the outcome}
-  {Listed strikes constrain a self-managed floor and cap; TJUL instead manages FLEX options internally while the investor accesses ETF shares.}
-  {Next, generalize sequential decisions to exploration--exploitation problems with stochastic multi-armed bandits.}
+  {In this lecture, we derived the capped-upside, stock-like downside of covered calls and cash-secured puts and used parity to expose their common economic structure.}
+  {Premium is a limited buffer}
+  {A covered call can lose nearly the stock purchase price and a cash-secured put can lose nearly the strike; collateral does not remove asset risk.}
+  {Parity is the organizing principle}
+  {Long stock minus a call and funded cash minus a put share the payoff $\min\{S(T),K\}$ under matched assumptions.}
+  {Implementation breaks textbook symmetry}
+  {Dividends, funding yield, early assignment, taxes, spreads, and current opportunity cost must accompany payoff and probability analysis.}
+  {Next, connect repeated cash-secured puts and covered calls into the state-dependent Wheel process.}
+
+\begin{readinglist}
+  \item Fischer Black and Myron Scholes, \href{https://doi.org/10.1086/260062}{``The Pricing of Options and Corporate Liabilities,''} \emph{Journal of Political Economy} 81(3), 637--654 (1973).
+  \item Robert C. Merton, \href{https://doi.org/10.2307/1831029}{``Theory of Rational Option Pricing,''} \emph{Bell Journal of Economics and Management Science} 4(1), 141--183 (1973).
+  \item Lawrence G. McMillan, \emph{Options as a Strategic Investment}, 5th ed., Prentice Hall (2012), sections on covered writing and put writing.
+\end{readinglist}
 
 \vfill
-{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.}
-These notes are for instruction only and do not constitute investment advice or
-an order recommendation. Options involve risk and require broker approval.}
+{\sffamily\footnotesize\color{vnmuted}\textbf{Educational use and risk notice.} These notes are for instruction only and do not constitute investment advice. Short-option positions can incur substantial losses and early assignment.}
 
 \end{document}
