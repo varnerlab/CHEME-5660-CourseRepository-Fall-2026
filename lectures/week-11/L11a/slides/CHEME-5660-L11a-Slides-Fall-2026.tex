@@ -144,11 +144,12 @@
 \end{frame}
 
 \begin{frame}{Debit or Credit}
-  Because $\theta_{i}=1$ for a long leg and $\theta_{i}=-1$ for a short leg, the
-  composite premium splits into the premium we pay and the premium we collect:
-  \begin{equation*}
-    \Pc_{\Cc}=\underbrace{\sum_{\text{long legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we pay}}-\underbrace{\sum_{\text{short legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we collect}}
-  \end{equation*}
+  Splitting the composite premium into long and short legs:
+  \begin{align*}
+    \Pc_{\Cc} &= \sum_{i\in\Cc}\theta_{i}\,n_{i}\,\Pc_{i} && \text{composite premium}\\
+    &= \sum_{\text{long legs}}(1)\,n_{i}\,\Pc_{i}+\sum_{\text{short legs}}(-1)\,n_{i}\,\Pc_{i} && \theta_{i}=1 \text{ long, } \theta_{i}=-1 \text{ short}\\
+    &= \underbrace{\sum_{\text{long legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we pay}}-\underbrace{\sum_{\text{short legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we collect}} && \text{factor }{-1}\text{ out of the short-leg sum}
+  \end{align*}
   If we pay more than we collect, $\Pc_{\Cc}>0$: a \hilite{debit}. If we collect
   more than we pay, $\Pc_{\Cc}<0$: the contract has a negative price to a buyer,
   so we are paid to open it, a \hilite{credit} of $-\Pc_{\Cc}$ USD/share. For
