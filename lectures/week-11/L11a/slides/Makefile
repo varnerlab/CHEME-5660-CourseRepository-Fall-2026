@@ -6,7 +6,7 @@ LATEXMK ?= latexmk
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 STYLE := ../../../templates/vnslides.sty
-FIGURES := ../figs/Fig-L11a-Strangle-Time-Decay.pdf ../figs/Fig-L11a-Short-Put-Call.pdf \
+FIGURES := ../figs/Fig-L11a-Long-Shares.pdf ../figs/Fig-L11a-Strangle-Time-Decay.pdf ../figs/Fig-L11a-Short-Put-Call.pdf \
 	../figs/Fig-L11a-Credit-Spreads.pdf ../figs/Fig-L11a-Straddle-Strangle.pdf \
 	../figs/Fig-L11a-Protected-Condor.pdf
 

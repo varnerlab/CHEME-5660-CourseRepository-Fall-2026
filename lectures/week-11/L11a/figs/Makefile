@@ -8,7 +8,7 @@
 #   make clean      remove LaTeX intermediates
 #   make distclean  also remove the generated PDF/SVG
 
-FIGURES := Fig-L11a-Short-Put-Call Fig-L11a-Credit-Spreads \
+FIGURES := Fig-L11a-Long-Shares Fig-L11a-Short-Put-Call Fig-L11a-Credit-Spreads \
            Fig-L11a-Straddle-Strangle Fig-L11a-Protected-Condor \
            Fig-L11a-Strangle-Time-Decay
 

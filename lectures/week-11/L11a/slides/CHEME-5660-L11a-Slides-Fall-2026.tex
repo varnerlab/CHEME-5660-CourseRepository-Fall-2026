@@ -214,13 +214,22 @@
 
 \begin{frame}{Buying Shares}
   Before combining options, let's look at the simplest position: buying one
-  share at $S(0)$ and holding it to expiration. Its profit at expiration is the
-  share price at expiration minus the purchase price grown to expiration:
+  share at $S(0)$ and holding it to expiration:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{../figs/Fig-L11a-Long-Shares.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Buying Shares: Profit at Expiration}
+  The profit at expiration is the share price at expiration minus the purchase
+  price grown to expiration:
   \begin{equation*}
     \hat{P}(S(T)) = S(T)-\Dc_{T,0}(g_{y})\cdot S(0)
   \end{equation*}
-  The profit has no upper limit, but if the share price falls to zero, we lose
-  the whole purchase price grown to expiration.
+  It breaks even at $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot S(0)$, slightly above
+  $S(0)$, because the money paid for the share could have earned the risk-free
+  rate. The profit has no upper limit, but if the share price falls to zero, we
+  lose the whole purchase price grown to expiration.
 \end{frame}
 
 \begin{frame}{Short Puts and Short Calls}

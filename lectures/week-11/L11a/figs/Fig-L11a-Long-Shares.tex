@@ -1,0 +1,47 @@
+% L11a buying shares, one panel: the baseline before the composite contracts.
+% Schematic: the profit (ink) at expiration, per share, for one share bought at
+% S(0) and held to expiration.
+%
+% Buy one share at S(0) = 2.6; the purchase price grown to expiration is drawn
+% as 3.6 (exaggerated so the gap between S(0) and the breakeven is visible).
+%   profit = S(T) - 3.6, breakeven 3.6.
+%   Dashed drops mark S(0) and the breakeven on the S(T) axis, labeled below
+%   the axis like the strikes in the composite panels. The arrow between them is
+%   the rise the share price needs before we break even: the purchase price
+%   grows at the risk-free rate while we hold the share (time value of money).
+%   The share price cannot fall below zero, so the largest loss, the whole
+%   purchase price grown to expiration (3.6), is at S(T) = 0, where the
+%   max-loss arrow runs along the y-axis, as in the short put panel.
+%   The profit keeps rising with S(T); an arrowhead marks the unlimited profit.
+% Unlike the composite panels, there is no payoff curve: a share's payoff is
+% S(T) itself, which leaves the panel almost at once. \yscale is 1 here (not
+% 0.8) so the profit line is drawn at 45 degrees, \yzero is 4.2 (not 3.9) to
+% leave room for the loss, and the vertical axis is labeled profit only.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+\def\yscale{1.0}
+\def\yzero{4.2}
+
+\begin{document}
+\begin{tikzpicture}
+  \panelaxes{\textbf{Buying shares:} buy one share at $S(0)$}{Share price at expiration $S(T)$}{Profit (USD/share)}
+  \outlook{bullish}
+  \begin{profitdata}
+    % S(0) and the breakeven, dropped to the S(T) axis and labeled below it
+    \draw[drop] (2.6, -1.0) -- (2.6, -4.2);
+    \draw[drop] (3.6, 0) -- (3.6, -4.2);
+    \node[anchor=north, inner sep=1.5pt, text=gdgray] at (2.6, -4.28) {$S(0)$};
+    \node[anchor=north, inner sep=1.5pt, text=gdred] at (3.6, -4.28) {$S^{\ddagger}$};
+    % the rise needed to break even
+    \draw[gap] (2.66, -2.9) -- (3.54, -2.9);
+    \node[note, anchor=west, inner sep=3pt] at (3.6, -2.9) {time value\\of money};
+    \draw[profit, more] (0, -3.6) -- (5.2, 1.6);
+    \draw[gap] (0.25, -0.06) -- (0.25, -3.29);
+    \node[anchor=north west, inner sep=4pt] at (0.25, -0.45) {max loss};
+    \node[anchor=north west, inner sep=3pt] at (3.9, -0.5) {profit};
+    \node[note, anchor=south west, inner sep=0pt] at (5.5, 0.75) {unlimited\\profit};
+    % the breakeven is labeled once, below the axis, next to S(0)
+    \node[pt, draw=gdred] at (3.6, 0) {};
+  \end{profitdata}
+\end{tikzpicture}
+\end{document}

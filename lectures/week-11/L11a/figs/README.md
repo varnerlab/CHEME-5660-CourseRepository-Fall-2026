@@ -54,6 +54,24 @@ Label placement was checked by measurement as well as by eye. Every word box
 every other label. The exceptions are the deliberate 1.9 pt gap between each
 breakeven label and its circle, and the lines inside one stacked label.
 
+## Buying shares
+
+`Fig-L11a-Long-Shares` is a one-panel baseline for the Buying Shares subsection,
+added October 31, 2026 at the instructor's request, before the four composite
+diagrams. It draws only the profit $S(T)-\mathcal{D}_{T,0}(g_{y})\cdot S(0)$
+(ink), at 45 degrees (`\yscale` is set to 1 in this file), with the vertical axis
+labeled profit only. There is no payoff curve: a share's payoff is $S(T)$ itself,
+which left the panel almost at once and confused the first draft. The purchase
+price grown to expiration is drawn as 3.6 against $S(0)=2.6$, exaggerated so the
+gap is visible. Dashed drops mark $S(0)$ and $S^{\ddagger}$ on the $S(T)$ axis,
+labeled below it like the strikes in the composite panels, and an arrow between
+them labeled "time value of money" shows the rise the share price needs before we
+break even (the instructor's request). `\yzero` is 4.2 here to leave room for
+the loss. The max-loss arrow runs along the y-axis, as
+in the short put panel, and an arrowhead with an "unlimited profit" note marks
+the rising side. The notebook shows it at width 450, half the two-panel figures;
+the deck splits Buying Shares into a figure frame and a profit frame.
+
 ## Short strangle before expiration
 
 `Fig-L11a-Strangle-Time-Decay` shows why the diagrams above are drawn at
