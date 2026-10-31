@@ -24,7 +24,10 @@
 
 \begin{document}
 \begin{tikzpicture}
-  \panelaxes{\textbf{Buying shares:} buy one share at $S(0)$}{Share price at expiration $S(T)$}{Profit (USD/share)}
+  \panelaxes{\textbf{Buying shares:} buy one share at $S(0)$}{}{Profit (USD/share)}
+  % x-axis title set closer than \panelaxes puts it (-1.05): the labels under
+  % this axis are one line, not the two-line strike labels of the other panels
+  \node[anchor=north] at (\xaxis/2, -0.72) {Share price at expiration $S(T)$};
   \outlook{bullish}
   \begin{profitdata}
     % S(0) and the breakeven, dropped to the S(T) axis and labeled below it
