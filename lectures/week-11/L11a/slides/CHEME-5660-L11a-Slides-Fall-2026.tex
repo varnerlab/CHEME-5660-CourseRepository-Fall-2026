@@ -139,8 +139,21 @@
   \begin{equation*}
     \boxed{\hat{P}_{\Cc}(S(T)) = \hat{V}_{\Cc}(S(T)) - \Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}}
   \end{equation*}
-  is the \hilite{profit at expiration} (USD/share). $\Pc_{\Cc}>0$ opens for a
-  \hilite{debit}; $\Pc_{\Cc}<0$ opens for a \hilite{credit} of $-\Pc_{\Cc}$.
+  is the \hilite{profit at expiration} (USD/share).
+\end{frame}
+
+\begin{frame}{Debit or Credit}
+  Because $\theta_{i}=1$ for a long leg and $\theta_{i}=-1$ for a short leg, the
+  composite premium splits into the premium we pay and the premium we collect:
+  \begin{equation*}
+    \Pc_{\Cc}=\underbrace{\sum_{\text{long legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we pay}}-\underbrace{\sum_{\text{short legs}}n_{i}\,\Pc_{i}}_{\textstyle\text{premium we collect}}
+  \end{equation*}
+  If we pay more than we collect, $\Pc_{\Cc}>0$: a \hilite{debit}. If we collect
+  more than we pay, $\Pc_{\Cc}<0$: a \hilite{credit} of $-\Pc_{\Cc}$ USD/share.
+  For example, selling one put with premium $\Pc_{p}$ gives $\Pc_{\Cc}=-\Pc_{p}$,
+  so the profit at expiration starts from
+  $-\Dc_{T,0}(g_{y})\cdot\Pc_{\Cc}=\Dc_{T,0}(g_{y})\cdot\Pc_{p}$, the credit grown
+  to expiration.
 \end{frame}
 
 \begin{frame}{Probability of Profit and Probability of Exercise}
@@ -181,6 +194,23 @@
   $K_{i}$. Figures: payoff (blue), profit (black), and $S(0)$, the share price at entry.}
 \end{frame}
 
+\begin{frame}{Common Composite Contracts: Three Steps}
+  Each row of the tables follows from the profit at expiration in three steps:
+  \begin{enumerate}\setlength{\itemsep}{0.6em}
+    \item Compute the composite premium $\Pc_{\Cc}$, with a minus sign for each
+      short leg. If $\Pc_{\Cc}<0$, the contract opens for a credit of $-\Pc_{\Cc}$.
+    \item Write the profit on each interval between the strikes. There, each
+      leg's payoff is zero or linear in $S(T)$, so the profit is a straight line.
+    \item Evaluate the profit at the strikes, at $S(T)=0$, and as $S(T)$ grows,
+      to find the maximum profit and maximum loss. Set the profit to zero where
+      it slopes to find the breakevens, keeping each solution that lies in its
+      interval.
+  \end{enumerate}
+  \vspace{0.4em}
+  Maximum losses are listed as positive amounts (USD/share).
+  \slidenote{Derivation:}{\href{\repo/CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb}}}
+\end{frame}
+
 \begin{frame}{Short Puts and Short Calls}
   Selling one put, a
   \href{https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/shortput-uncovered}{\hilite{short put}},
@@ -212,6 +242,28 @@
     \end{tabular}
   \end{center}
   The short put's loss is bounded ($S(T)\geq0$); the short call's is not.
+\end{frame}
+
+\begin{frame}{Short Put Compared with One Share}
+  Buying one share at $S(0)$ and holding it to expiration gives the profit:
+  \begin{equation*}
+    \hat{P}(S(T)) = S(T)-\Dc_{T,0}(g_{y})\cdot S(0)
+  \end{equation*}
+  \begin{center}\small
+    \begin{tabular}{lll}
+      \toprule
+      & Short put & One share \\
+      \midrule
+      Maximum profit & $\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ for $S(T)\geq K$ & unlimited \\
+      Breakeven & $S^{\ddagger}=K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ & $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot S(0)$ \\
+      Maximum loss & $K-\Dc_{T,0}(g_{y})\cdot\Pc_{p}$ at $S(T)=0$ & $\Dc_{T,0}(g_{y})\cdot S(0)$ at $S(T)=0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  With $S(0)=K$, the short put breaks even lower and has a smaller maximum loss,
+  but its profit stops at the credit grown to expiration. All entries are per
+  share: one contract covers 100 shares, so multiply by 100 to compare one
+  contract with 100 shares.
 \end{frame}
 
 \begin{frame}{Credit Spreads}
