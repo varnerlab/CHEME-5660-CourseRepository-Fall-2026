@@ -25,6 +25,8 @@ def export(src, dst):
             s = re.sub(r'<div>\s*<center>\s*<img[^>]*alt="([^"]*)"[^>]*/>\s*</center>\s*</div>',
                        r'*Figure: \1*', s, flags=re.S)
             s = re.sub(r'!\[([^\]]*)\]\([^)]*\)', r'*Figure: \1*', s)
+            # drop the theme <style> blocks that accompany inline figures
+            s = re.sub(r'\n*<style>.*?</style>\n*', '\n\n', s, flags=re.S)
             out.append(s)
         elif c['cell_type'] == 'code':
             for o in c.get('outputs', []):
@@ -39,7 +41,9 @@ def export(src, dst):
                 if 'Activating project' in txt or 'Precompiling' in txt:
                     continue
                 lines = txt.splitlines()
-                if len(lines) > MAX_LINES or not txt.strip() or re.match(r'\d+(×\d+)?-element', lines[0]):
+                # raw sample vectors are dropped; short result vectors (e.g., two breakevens) are kept
+                m = re.match(r'(\d+)(×\d+)?-element', lines[0])
+                if len(lines) > MAX_LINES or not txt.strip() or (m and (m.group(2) or int(m.group(1)) > 10)):
                     continue
                 out.append('Output:\n```\n' + txt + '\n```')
     Path(dst).write_text('\n\n'.join(out) + '\n')
