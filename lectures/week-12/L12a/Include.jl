@@ -31,3 +31,4 @@ using Random # reproducible simulations
 using Dates # the end-of-day options archive
 using LinearAlgebra
 import JumpHMM # synthetic markets: always call JumpHMM.fit, JumpHMM.tune, JumpHMM.simulate (qualified)
+import StatsBase # autocor for the volatility-clustering checks
