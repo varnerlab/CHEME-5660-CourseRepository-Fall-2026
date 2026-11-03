@@ -1,10 +1,10 @@
-# L12a — Stochastic multi-armed bandits
+# L12a — Synthetic Markets with Jump Hidden Markov Models
 
-The required production notes are in `docs/Notes.tex` and `docs/Notes.pdf`.
-They introduce stochastic bandits, exploration versus exploitation, regret, and
-the financial-model audit that prepares students for the binary ticker-picker
-implementation in L12b.
+L12a builds synthetic markets for stress tests. It reviews Markov chains and hidden Markov
+models, builds the JumpHMM generator for one asset (SPY), and extends it to many assets with
+the sector factor model (market + sector + own draws, no copula). The generator comes from
+`JumpHMM.jl` (version 0.2.0, pinned in the root environment); notebooks import it as
+`import JumpHMM` and call it qualified (`JumpHMM.fit`, `JumpHMM.tune`, `JumpHMM.simulate`).
 
-The inherited Markov and hidden-Markov lecture/examples are useful enrichment
-but are not the substrate for this production topic; they now live in
-`advanced/markov/`.
+The slides in `slides/` are the student companion to the lecture notebook. The 2025 Markov and
+hidden Markov lecture and its examples remain in `advanced/markov/` as optional background.

@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "6f95c8df363812cc7a36dc4023f342db960f9653"
+project_hash = "cd913f1467435def8f6a9da42d60fab4cd9fbebc"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "0a81a018463de6c3f4f2c9360121c562e5add9e4"
@@ -1213,6 +1213,14 @@ version = "1.31.1"
 deps = ["StyledStrings"]
 uuid = "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011"
 version = "1.12.0"
+
+[[deps.JumpHMM]]
+deps = ["DataFrames", "Distributions", "HypothesisTests", "LinearAlgebra", "PDMats", "Random", "SpecialFunctions", "Statistics", "StatsBase"]
+git-tree-sha1 = "c87cbe74829fbba132668b8cc39bb521a1f90354"
+repo-rev = "3a9fd46"
+repo-url = "https://github.com/varnerlab/JumpHMM.jl"
+uuid = "6ee30eab-673b-484c-8b30-2cdb31ee1eb8"
+version = "0.2.0"
 
 [[deps.KernelAbstractions]]
 deps = ["Adapt", "Atomix", "InteractiveUtils", "MacroTools", "PrecompileTools", "Requires", "StaticArrays", "UUIDs"]

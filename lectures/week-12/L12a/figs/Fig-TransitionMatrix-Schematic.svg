@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1109px" height="551px" viewBox="0 0 1109 551" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <g id="Artboard" stroke="none" fill="none">
+        <rect id="Rectangle" fill-opacity="0.1" fill="#000000" fill-rule="evenodd" x="219" y="314" width="600" height="46"></rect>
+        <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" fill-rule="evenodd" transform="translate(558, 282) rotate(90) translate(-558, -282)" x="368" y="259" width="380" height="46"></rect>
+        <line x1="409.5" y1="48.5" x2="409.5" y2="248.5" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" stroke-dasharray="4"></line>
+        <line x1="157" y1="270" x2="387" y2="270" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" stroke-dasharray="4"></line>
+        <line x1="157" y1="336" x2="219" y2="336" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" stroke-dasharray="4"></line>
+        <line x1="545.5" y1="493.5" x2="570.5" y2="493.5" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" transform="translate(558, 493.5) rotate(90) translate(-558, -493.5)"></line>
+        <line x1="831" y1="336" x2="856" y2="336" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" transform="translate(843.5, 336) rotate(-0) translate(-843.5, -336)"></line>
+        <line x1="157" y1="134" x2="312" y2="134" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" stroke-dasharray="4"></line>
+        <line x1="303.5" y1="80.5" x2="367" y2="81" id="Line-3" stroke="#979797" stroke-width="2" stroke-linecap="square" stroke-dasharray="4" transform="translate(335.5, 80.5) scale(-1, -1) rotate(90) translate(-335.5, -80.5)"></line>
+        <g id="Group-2" stroke-width="1" fill-rule="evenodd" transform="translate(219, 80.5)" stroke="#000000" stroke-linecap="square">
+            <line x1="0.5" y1="0.5" x2="0.5" y2="378.5" id="Line" stroke-width="4"></line>
+            <line x1="1" y1="0.5" x2="30" y2="0.5" id="Line-2" stroke-width="4"></line>
+            <line x1="1" y1="379" x2="30" y2="379" id="Line-2" stroke-width="4"></line>
+        </g>
+        <g id="Group" stroke-width="1" fill-rule="evenodd" transform="translate(804, 282) scale(-1, -1) translate(-804, -282)translate(789, 92)" stroke="#000000" stroke-linecap="square">
+            <line x1="0.5" y1="1" x2="0.5" y2="379" id="Line" stroke-width="4"></line>
+            <line x1="1" y1="0.5" x2="30" y2="0.5" id="Line-2" stroke-width="4"></line>
+            <line x1="1" y1="379.5" x2="30" y2="379.5" id="Line-2" stroke-width="4"></line>
+        </g>
+        <g id="Group-3" stroke-width="1" fill-rule="evenodd" transform="translate(249, 122)">
+            <circle id="Oval" fill="#D8D8D8" cx="12" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="528" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="456" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="382" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="308" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="234" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="160" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#E02020" cx="86" cy="12" r="12"></circle>
+        </g>
+        <g id="Group-3" stroke-width="1" fill-rule="evenodd" transform="translate(249, 416)" fill="#D8D8D8">
+            <circle id="Oval" cx="12" cy="12" r="12"></circle>
+            <circle id="Oval" cx="528" cy="12" r="12"></circle>
+            <circle id="Oval" cx="456" cy="12" r="12"></circle>
+            <circle id="Oval" cx="382" cy="12" r="12"></circle>
+            <circle id="Oval" cx="308" cy="12" r="12"></circle>
+            <circle id="Oval" cx="234" cy="12" r="12"></circle>
+            <circle id="Oval" cx="160" cy="12" r="12"></circle>
+            <circle id="Oval" cx="86" cy="12" r="12"></circle>
+        </g>
+        <g id="Group-3" stroke-width="1" fill-rule="evenodd" transform="translate(249, 326)" fill="#D8D8D8" stroke="#979797">
+            <circle id="Oval" cx="12" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="528" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="456" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="382" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="308" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="234" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="160" cy="12" r="11.5"></circle>
+            <circle id="Oval" cx="86" cy="12" r="11.5"></circle>
+        </g>
+        <g id="Group-3" stroke-width="1" fill-rule="evenodd" transform="translate(249, 258)">
+            <circle id="Oval" fill="#D8D8D8" cx="12" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="528" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="456" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="382" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="308" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="234" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#F7B500" cx="160" cy="12" r="12"></circle>
+            <circle id="Oval" fill="#D8D8D8" cx="86" cy="12" r="12"></circle>
+        </g>
+        <g id="Group-3" stroke-width="1" fill-rule="evenodd" transform="translate(249, 193)" fill="#D8D8D8">
+            <circle id="Oval" cx="12" cy="12" r="12"></circle>
+            <circle id="Oval" cx="528" cy="12" r="12"></circle>
+            <circle id="Oval" cx="456" cy="12" r="12"></circle>
+            <circle id="Oval" cx="382" cy="12" r="12"></circle>
+            <circle id="Oval" cx="308" cy="12" r="12"></circle>
+            <circle id="Oval" cx="234" cy="12" r="12"></circle>
+            <circle id="Oval" cx="160" cy="12" r="12"></circle>
+            <circle id="Oval" cx="86" cy="12" r="12"></circle>
+        </g>
+        <rect id="Rectangle" stroke="#000000" stroke-width="2" x="388" y="249" width="42" height="42"></rect>
+        <rect id="Rectangle" stroke="#000000" stroke-width="2" x="313" y="113" width="42" height="42"></rect>
+        <text id="state-i-(now)" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="14" y="275">state i (now)</tspan>
+        </text>
+        <text id="state-1-(now)" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="6" y="145">state 1 (now)</tspan>
+        </text>
+        <text id="state-2-(next)" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="219" y="36">state 2 (next)</tspan>
+        </text>
+        <text id="Columns-=-future-sta" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="448" y="533">Columns = future states</tspan>
+        </text>
+        <text id="Rows-=-current-state" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="867" y="345">Rows = current states</tspan>
+        </text>
+        <text id="state-k-(now)" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="7" y="345">state k (now)</tspan>
+        </text>
+        <text id="sum-=-1" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="701" y="387">sum = 1</tspan>
+        </text>
+        <text id="state-i-(next)" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#000000">
+            <tspan x="397" y="36">state i (next)</tspan>
+        </text>
+        <text id="pii" font-family="Helvetica-Light, Helvetica" font-size="20" font-weight="300" fill="#000000">
+            <tspan x="437" y="273">p</tspan>
+            <tspan x="449.22" y="273">ii</tspan>
+        </text>
+        <text id="p12" font-family="Helvetica-Light, Helvetica" font-size="18" font-weight="300" fill="#000000">
+            <tspan x="320" y="171">p</tspan>
+            <tspan x="330.998" y="171">12</tspan>
+        </text>
+        <text id="self-loop" font-family="Helvetica-Light, Helvetica" font-size="18" font-weight="300" fill="#000000">
+            <tspan x="374" y="310">self-loop</tspan>
+        </text>
+        <circle id="Oval" fill="#D8D8D8" fill-rule="evenodd" cx="483" cy="368" r="4"></circle>
+        <circle id="Oval" fill="#D8D8D8" fill-rule="evenodd" cx="483" cy="402" r="4"></circle>
+        <circle id="Oval" fill="#D8D8D8" fill-rule="evenodd" cx="483" cy="385" r="4"></circle>
+    </g>
+</svg>
