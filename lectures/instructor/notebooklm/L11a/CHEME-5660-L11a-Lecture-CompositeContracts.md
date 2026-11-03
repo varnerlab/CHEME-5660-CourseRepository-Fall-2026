@@ -26,13 +26,13 @@ Let's get started!
 ___
 
 ## Examples
-__We will work through these examples in lecture:__
+__We will work through this example in lecture:__
 
 > [▶ Compute the POP and POE for a put credit spread on AMD](CHEME-5660-L11a-Example-Delta-VerticalSpread-Fall-2026.ipynb). In this example, we build a put credit spread on AMD and compute its maximum profit, maximum loss, and breakeven. We then compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities.
 
-> [▶ Compute the POP and POE for a strangle on AMD](CHEME-5660-L11a-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a strangle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss. Setting both strikes equal turns the strangle into a straddle.
+__Review these notebooks on your own:__
 
-__Review this notebook on your own:__
+> [▶ Compute the POP and POE for a strangle on AMD](CHEME-5660-L11a-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a strangle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss. Setting both strikes equal turns the strangle into a straddle.
 
 > [▶ Derive the maximum profit, maximum loss, and breakevens of a composite contract](CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb). In this notebook, we start from the profit at expiration of a composite contract and compute its composite premium, keeping track of the sign of each leg. We then write the profit on each interval between the strikes and derive the maximum profit, maximum loss, and breakevens of a put credit spread and a short strangle. It is a derivation notebook with no code.
 ___
@@ -93,7 +93,7 @@ $$
 ___
 
 ## Common Composite Credit Contracts
-Each contract below opens for a __credit__: it collects more premium than it pays. So $\mathcal{P}_{\mathcal{C}}<0$, and the first term of each profit at expiration, $-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}$, is the credit grown to expiration.
+Each contract below opens for a __credit__: it collects more premium than it pays. So $\mathcal{P}_{\mathcal{C}}<0$, and the first term of each profit at expiration, $-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}} > 0$, is the credit grown to expiration.
 
 By choosing which puts and calls we sell and buy, we can build trades that are __bullish__, __bearish__, or __neutral__:
 
@@ -110,12 +110,7 @@ By choosing which puts and calls we sell and buy, we can build trades that are _
 
 Each figure shows the payoff (blue) and the profit (black) at expiration, per share, with the strikes numbered from low to high and a tick at $S(0)$, the share price when we open the trade.
 
-Each row of the tables follows from the profit at expiration expression in three steps:
-1. Compute the composite premium $\mathcal{P}_{\mathcal{C}}$, with a minus sign for each short leg. If $\mathcal{P}_{\mathcal{C}}<0$, the contract opens for a credit of $-\mathcal{P}_{\mathcal{C}}$ (a positive term in the profit at expiration).
-2. Write the profit on each interval between the strikes. There, each leg's payoff is zero or linear in $S(T)$, so the profit is a straight line.
-3. Evaluate the profit at the strikes, at $S(T)=0$, and as $S(T)$ grows, to find the maximum profit and maximum loss. Set the profit to zero where it slopes to find the breakevens, keeping each solution that lies in its interval.
-
-The [derivation notebook](CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb) works through these steps for the put credit spread and the short strangle.
+The [derivation notebook](CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb) works through the derivation of the max profit, loss, and breakeven points for a put credit spread and a short strangle examples. 
 
 ### Buying Shares
 Before combining options, let's look at the simplest position: buying one share at $S(0)$ and holding it to expiration.
@@ -202,7 +197,7 @@ Each profits only between its breakevens, so its probability of profit is $\math
 
 Let's compute the POP and POE for a short strangle on AMD.
 
-> __Example:__
+> __Review on your own:__
 >
 > [▶ Compute the POP and POE for a strangle on AMD](CHEME-5660-L11a-Example-Straddle-AMD-Earnings-Fall-2026.ipynb). In this example, we sell a strangle on AMD before an earnings release and compute its probability of profit and each leg's probability of exercise, both from our forecast and from the risk-neutral probabilities. We then buy both legs back after the release and compute the profit or loss. Setting both strikes equal turns the strangle into a straddle.
 
@@ -237,7 +232,9 @@ Their maximum profit, breakevens, and maximum losses are:
 The protected strangle's call side is capped but its put side is not, so it leans bullish. If the credit grown to expiration is at least $K_{3}-K_{2}$, the call side cannot lose. At any share price at expiration, at most one side of the iron condor can lose, so its maximum loss is its wider strike width minus the credit.
 
 ### Why Wait to Expiration?
-Our profit diagrams are drawn at expiration. What if we close earlier? Closing a short leg means buying it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. Consider a short strangle on a share at $S(0)=100$ USD/share, a put sold at $K_{1}=90$ USD/share and a call sold at $K_{2}=110$ USD/share, opened 30 days before expiration:
+Our profit diagrams are drawn at expiration. What if we choose to close the trade earlier? 
+
+Closing a short leg means buying it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. Consider a short strangle on a share at $S(0)=100$ USD/share, a put sold at $K_{1}=90$ USD/share and a call sold at $K_{2}=110$ USD/share, opened 30 days before expiration:
 
 *Figure: Two panels for a short strangle with a put at K1 = 90 and a call at K2 = 110 USD/share, opened 30 days before expiration with the share price at S(0) = 100 USD/share. Left: the profit if both legs are bought back with 30 (entry), 20, and 10 days left, in orange that darkens toward expiration, and at expiration in black, against the share price on that day. Every earlier curve lies below the profit at expiration and rises toward it. Right: at the share price S(0), the credit collected at entry (dashed) and the cost to buy both legs back (orange) against the days to expiration. The cost starts equal to the credit and decays to zero, so the gap between them, the profit if we close, grows from zero at entry to the whole credit at expiration.*
 
@@ -249,9 +246,9 @@ __What do we see?__
 * __At the entry share price (right):__ Both legs are out of the money, so buying them back right away costs exactly the credit, all of it extrinsic value. Closing at once earns nothing.
 * __Time decay:__ As the extrinsic value decays, the profit if we close rises, up to the whole credit at expiration.
 
-So the diagrams above show the most each contract can earn at each share price. An early exit earns less, by roughly the extrinsic value left in the legs. However, premium sellers often do not wait. 
-* Tastylive, for example, [sells strangles about 45 days before expiration](https://www.tastylive.com/concepts-strategies/strangle) and buys them back at half the maximum profit, or about 21 days before expiration. The right panel shows that closing at $S(0)$ with 20 days left already earns close to half the credit. The left panel shows the cost of waiting: as expiration nears, the curves bend toward the kinks at the strikes, so a small move in the share price near a strike changes the profit by more.
-* What if the share price moves toward a short strike, say up toward $K_{2}$? The call costs more to buy back, and closing now loses money. We can close and take the loss, or __defend__ the trade. One defense is to __roll the untested side__: buy back the put, which has lost most of its value, and sell a new put closer to the share price. The extra credit moves both breakevens up, toward the share price, but the call side's loss is still unlimited.
+An early exit earns less, by roughly the extrinsic value left in the legs. However, premium sellers often do not wait until expiration to close. They may close early to lock in a profit, or to defend against a move in the share price toward one of the short strikes.
+* __Close early__: Tastylive, for example, [sells strangles about 45 days before expiration](https://www.tastylive.com/concepts-strategies/strangle) and buys them back at half the maximum profit, or about 21 days before expiration. The right panel shows that closing at $S(0)$ with 20 days left already earns close to half the credit. The left panel shows the cost of waiting: as expiration nears, the curves bend toward the kinks at the strikes, so a small move in the share price near a strike changes the profit by more.
+* __Defend__: What if the share price moves toward a short strike, say up toward $K_{2}$? The call costs more to buy back, and closing now loses money. We can close and take the loss, or __defend__ the trade. One defense is to __roll the untested side__: buy back the put, which has lost most of its value, and sell a new put closer to the share price. The extra credit moves both breakevens up, toward the share price, but the call side's loss is still unlimited.
 
 So whether we close early or defend the trade, we weigh the credit left to earn against what the trade can still lose.
 ___

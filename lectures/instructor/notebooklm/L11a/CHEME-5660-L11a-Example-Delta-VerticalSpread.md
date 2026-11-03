@@ -40,6 +40,21 @@ KeySet for a Dict{String, Any} with 10 entries. Keys:
   "underlying_share_price_mid"
 ```
 
+Output:
+```
+Dict{String, Any} with 10 entries:
+  "DTE"                        => "53"
+  "purchase_date"              => "2026-10-26"
+  "historical_volatility"      => "0.5659"
+  "underlying_share_price_ask" => "532.00"
+  "source"                     => "barchart.com"
+  "underlying_share_price_bid" => "531.30"
+  "is_weekly"                  => false
+  "atm_IV"                     => "0.5617"
+  "expiration_date"            => "2026-12-18"
+  "underlying_share_price_mid" => "531.26"
+```
+
 What about the `optionschain::DataFrame` variable?
 
 Output:
@@ -56,31 +71,65 @@ Output:
    6 │    30.0     0.9436   499.6    501.83   504.05   457.14       0  208
    7 │    35.0     0.9342   494.65   496.85   499.05   479.33       0  9
    8 │    40.0     0.9247   488.4    491.17   493.95   483.4        1  13
-   9 │    45.0     0.9153   484.25   486.7    489.15   425.63       0  101     ⋯
-  10 │    50.0     0.9059   479.15   481.65   484.15   558.43       0  210
-  11 │    55.0     0.8965   474.2    476.7    479.2    526.5        0  51
   ⋮  │    ⋮         ⋮         ⋮        ⋮        ⋮        ⋮       ⋮        ⋮    ⋱
- 293 │  1220.0     1.2953   686.4    688.88   691.35     0.0        0  0
- 294 │  1230.0     1.3141   696.4    698.88   701.35     0.0        0  0       ⋯
- 295 │  1240.0     1.3329   706.25   709.1    711.95     0.0        0  0
- 296 │  1250.0     1.3517   716.4    719.18   721.95     0.0        0  0
+ 296 │  1250.0     1.3517   716.4    719.18   721.95     0.0        0  0       ⋯
  297 │  1260.0     1.3706   726.4    728.88   731.35     0.0        0  0
- 298 │  1270.0     1.3894   736.4    739.18   741.95     0.0        0  0       ⋯
+ 298 │  1270.0     1.3894   736.4    739.18   741.95     0.0        0  0
  299 │  1280.0     1.4082   746.4    748.88   751.35     0.0        0  0
- 300 │  1290.0     1.427    756.4    759.18   761.95     0.0        0  0
+ 300 │  1290.0     1.427    756.4    759.18   761.95     0.0        0  0       ⋯
  301 │  1300.0     1.4458   766.4    769.18   771.95     0.0        0  0
- 302 │  1310.0     1.4646   776.4    778.88   781.35     0.0        0  0       ⋯
-                                                  4 columns and 281 rows omitted
+ 302 │  1310.0     1.4646   776.4    778.88   781.35     0.0        0  0
+                                                  4 columns and 287 rows omitted
 ```
 
 ### Constants
 Next, let's set the constants. See the comments next to the constants for definitions, units, permissible values, etc. 
 
+Output:
+```
+531.26
+```
+
 In this example, we'll need to do a projection of the future share price distribution at the contract's expiration date. We'll use a Geometric Brownian Motion (GBM) model to project the future share price distribution at expiration.
 
 Let's load the single asset geometric Brownian motion (SAGBM) parameters which we estimated a few lectures ago, which include the drift and diffusion coefficients for each ticker. We'll store this data in the `parameters_df::DataFrame` variable:
 
+Output:
+```
+424×6 DataFrame
+ Row │ ticker   drift        t        lower_bound_drift  upper_bound_drift  vo ⋯
+     │ String7  Float64      Float64  Float64            Float64            Fl ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │ A         0.147468    1.96082         0.145641            0.149295      ⋯
+   2 │ AAL      -0.141294    1.96082        -0.144466           -0.138122
+   3 │ AAP      -0.0481021   1.96082        -0.0523967          -0.0438075
+   4 │ AAPL      0.24271     1.96082         0.240518            0.244901
+   5 │ ABBV      0.116       1.96082         0.114452            0.117548      ⋯
+   6 │ ABT       0.123083    1.96082         0.121183            0.124983
+   7 │ ACN       0.151012    1.96082         0.149657            0.152367
+   8 │ ADBE      0.224401    1.96082         0.221289            0.227512
+  ⋮  │    ⋮          ⋮          ⋮             ⋮                  ⋮             ⋱
+ 418 │ XOM       0.00632113  1.96082         0.00307346          0.0095688     ⋯
+ 419 │ XRAY     -0.0537881   1.96082        -0.0563051          -0.0512711
+ 420 │ XYL       0.130132    1.96082         0.128383            0.131881
+ 421 │ YUM       0.0664123   1.96082         0.0651324           0.0676923
+ 422 │ ZBRA      0.189351    1.96082         0.185366            0.193335      ⋯
+ 423 │ ZION      0.0486871   1.96082         0.0458189           0.0515553
+ 424 │ ZTS       0.184223    1.96082         0.182003            0.186442
+                                                   1 column and 409 rows omitted
+```
+
 We are looking at `AMD`, so let's see what the parameters for this ticker are:
+
+Output:
+```
+1×6 DataFrame
+ Row │ ticker   drift     t        lower_bound_drift  upper_bound_drift  volat ⋯
+     │ String7  Float64   Float64  Float64            Float64            Float ⋯
+─────┼──────────────────────────────────────────────────────────────────────────
+   1 │ AMD      0.439658  1.96082            0.43459           0.444725    0.4 ⋯
+                                                                1 column omitted
+```
 
 ### Contract models
 Next, we construct contract models for the options in this example. We begin by building an instance of the [MyAmericanPutContractModel type](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/derivatives/#VLQuantitativeFinancePackage.MyAmericanPutContractModel) using the [custom build(...) method](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/derivatives/#VLQuantitativeFinancePackage.build-Tuple{Type{MyAmericanPutContractModel},%20NamedTuple}). 
@@ -88,6 +137,11 @@ Next, we construct contract models for the options in this example. We begin by 
 The [build(...) method](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/derivatives/#VLQuantitativeFinancePackage.build-Tuple{Type{MyAmericanPutContractModel},%20NamedTuple}) takes two arguments: the type to build, and a [NamedTuple](https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple) containing the strike price `K`, the `premium` paid for the option, the days to expiration `DTE` (units: years), the `sense` parameter (1 for long, -1 for short), the number of contracts in the `copy` field and the implied volatility in the `IV` field.
 
 We save the __short__ put option contract model, at the higher strike price $K_{2}$, in the `put_contract_model_short::MyAmericanPutContractModel` variable:
+
+Output:
+```
+premium = 38.1
+```
 
 Output:
 ```
@@ -220,7 +274,7 @@ Normal{Float64}(μ=534.4545050434095, σ=113.71114807827765)
 
 `Unhide` the code block below to see how we plotted the `d_gbm::LogNormal` and `d_IV::Normal` future share price densities at `T = 53 days`.  
 
-> __What do we see?__ The log-normal GBM share price distribution (blue line) is right-skewed and cannot admit negative share prices. However, the Normal IV distribution (red line) is symmetric around the mean future share price and can admit negative share prices, albeit with a small probability.
+> __What do we see?__ Both distributions have the same mean (black dashed line), the share price grown at the risk-free rate. The Normal IV distribution (red line) is symmetric and can admit negative share prices, albeit with a small probability. The log-normal GBM distribution (blue line) is right-skewed, so it peaks at a lower share price (blue dotted line) and cannot admit negative share prices.
 
 How do the two distributions compare?
 

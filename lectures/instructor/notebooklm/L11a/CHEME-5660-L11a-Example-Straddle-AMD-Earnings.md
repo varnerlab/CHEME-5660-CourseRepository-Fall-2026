@@ -1,12 +1,12 @@
 # Example: Analysis of a Strangle Position in AMD
-In this example, we analyze a strangle on Advanced Micro Devices, Inc. (AMD) using historical options data. A long (short) strangle buys (sells) a put at strike $K_{1}$ and a call at a higher strike $K_{2}$, with the same expiration date. If we set $K_{1}=K_{2}$, the strangle becomes a straddle.
+In this example, we analyze a strangle on Advanced Micro Devices, Inc. (AMD) using historical options data. A short strangle sells a put at strike $K_{1}$ and a call at a higher strike $K_{2}$, with the same expiration date. If we set $K_{1}=K_{2}$, the strangle becomes a straddle.
 
 We sell a strangle on AMD before its earnings release, so we make money if the share price stays between the two breakevens.
 
 > __Learning Objectives:__
 >
 > By the end of this example, you should be able to:
-> * __Construct profit diagrams for strangle positions:__ Build profit and loss profiles for long and short strangles by combining a put at $K_{1}$ and a call at $K_{2}\geq K_{1}$ with the same expiration date, and compute breakeven points where the position transitions from profit to loss.
+> * __Construct profit diagrams for strangle positions:__ Build the profit and loss profile of a short strangle by selling a put at $K_{1}$ and a call at $K_{2}\geq K_{1}$ with the same expiration date, and compute breakeven points where the position transitions from profit to loss.
 > * __Calculate the probability of profit and the probability of exercise for a strangle:__ Use cumulative distribution functions of projected share price distributions to determine the likelihood that a strangle will be profitable at expiration, accounting for the two breakeven boundaries, and each leg's probability of exercise, under our belief $\mathbb{P}$ and the risk-neutral probabilities $\mathbb{Q}$.
 > * __Evaluate the strangle after the earnings release:__ Buy both legs back at their premiums after the release and compute the profit or loss, which includes the extrinsic value still left in the legs.
 
@@ -117,26 +117,30 @@ ___
 ## Task 1: Compute Profit, Loss and Breakeven Points
 In this task, we compute the profit and loss (P&L) profile of our short strangle at expiration, as well as its breakeven points. 
 
-A [strangle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-strangle) buys (or sells) a put at strike $K_{1}$ and a call at strike $K_{2}$, with the _same expiration_ and $K_{1}<S(0)<K_{2}$. A [straddle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-straddle) uses one strike, $K_{1}=K_{2}\approx{S(0)}$.
+A [short strangle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-strangle) sells a put at strike $K_{1}$ and a call at strike $K_{2}$, with the _same expiration_ and $K_{1}<S(0)<K_{2}$. A [short straddle](https://www.fidelity.com/learning-center/investment-products/options/options-strategy-guide/short-straddle) uses one strike, $K_{1}=K_{2}\approx{S(0)}$.
 
-> __Long (short) strangle__
+> __Short strangle__
 > 
-> For a long strangle, we buy both legs ($\theta = 1$). For a short strangle, we sell both legs ($\theta = -1$). We set the strikes $K_{1}$ and $K_{2}$ and the orientation $\theta$ in the constants cell above, which prints them along with the share price $S(0)$ and the days to expiration.
->
-> In this example, we sell both legs ($\theta = -1$).
+> We sell both legs ($\theta = -1$). We set the strikes $K_{1}$ and $K_{2}$ in the constants cell above, which prints them along with the share price $S(0)$ and the days to expiration.
 
 ### Profit and Breakeven Analysis
-Let $\mathcal{P}_{p}$ and $\mathcal{P}_{c}$ denote the premiums of the put and the call (USD/share), and let $\mathcal{D}_{T,0}(g_{y})$ be the accumulation factor from today to expiration. The premiums are paid today and the payoffs arrive at expiration, so the profit of a single strangle at expiration $\hat{P}_{\mathcal{C}}$ compares the payoffs with the premiums grown to expiration:
+Let $\mathcal{P}_{p}$ and $\mathcal{P}_{c}$ denote the premiums of the put and the call (USD/share), and let $\mathcal{D}_{T,0}(g_{y})$ be the accumulation factor from today to expiration. The premiums are collected today and the payoffs arrive at expiration, so the profit of a single strangle at expiration $\hat{P}_{\mathcal{C}}$ compares the payoffs with the premiums grown to expiration:
 
-$$\hat{P}_{\mathcal{C}} = \theta\cdot\Bigl[(K_{1}-S(T))^{+}+(S(T)-K_{2})^{+}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})\Bigr]$$
+$$\hat{P}_{\mathcal{C}} = \mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})-(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}$$
 
-where $\theta=-1$ if both legs are sold (short) and $\theta=1$ if both are bought (long). Here $V_{p}(K_{1},S(T)) = (K_{1}-S(T))^{+}=\max(K_{1}-S(T),0)$ is the payoff function for the put contract, and $V_{c}(K_{2},S(T)) = (S(T)-K_{2})^{+} = \max(S(T)-K_{2},0)$ is the payoff function for the call contract. The profit (or loss) of a strangle has three regimes given by:
+The first term is the credit grown to expiration. The two payoff functions are:
+* Put: $V_{p}(K_{1},S(T)) = (K_{1}-S(T))^{+}=\max(K_{1}-S(T),0)$
+* Call: $V_{c}(K_{2},S(T)) = (S(T)-K_{2})^{+} = \max(S(T)-K_{2},0)$
+
+> __Connection to the lecture:__ This is the lecture's composite profit $\hat{P}_{\mathcal{C}}=\hat{V}_{\mathcal{C}}-\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{\mathcal{C}}$ with $\theta_{i}=-1$ and $n_{i}=1$ for both legs. The composite premium is $\mathcal{P}_{\mathcal{C}}=-(\mathcal{P}_{p}+\mathcal{P}_{c})$, a credit of $\mathcal{P}_{p}+\mathcal{P}_{c}$. The lecture writes $\mathcal{P}_{1}$ and $\mathcal{P}_{2}$ for the put and call premiums.
+
+The profit (or loss) of a strangle has three regimes given by:
 
 $$
 \hat{P}_{\mathcal{C}} = \begin{cases}
-  \theta\cdot\Bigl[(S(T)-K_{2})-\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)\Bigr]  & S(T)>K_{2} \\
-  -\theta\cdot\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right) & K_{1}\leq S(T)\leq K_{2} \\
-    \theta\cdot\Bigl[(K_{1}-S(T))-\mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)\Bigr] & S(T)<K_{1}
+  \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)-(S(T)-K_{2})  & S(T)>K_{2} \\
+  \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right) & K_{1}\leq S(T)\leq K_{2} \\
+    \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)-(K_{1}-S(T)) & S(T)<K_{1}
 \end{cases}
 $$
 
@@ -144,7 +148,12 @@ Finally, a strangle has _two_ possible breakeven points denoted as $S^{\ddagger}
 * If $S(T)>K_{2}$: a strangle will breakeven at $S^{\ddagger}_{+} = K_{2} + \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)$
 * If $S(T)<K_{1}$: a strangle will breakeven at $S^{\ddagger}_{-} = K_{1} - \mathcal{D}_{T,0}(g_{y})\cdot\left(\mathcal{P}_{p}+\mathcal{P}_{c}\right)$.
 
-With $K_{1}=K_{2}=K$, these are the profit and breakevens of a straddle. A short strangle profits when the share price finishes between the breakevens, and a long strangle when it finishes outside them.
+For our short strangle, the maximum profit and maximum losses are the lecture's table entries, with maximum losses listed as positive amounts (USD/share):
+* The maximum profit of $\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ occurs when $K_{1}\leq S(T)\leq K_{2}$.
+* The maximum loss below $S^{\ddagger}_{-}$ of $K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})$ occurs at $S(T)=0$.
+* The maximum loss above $S^{\ddagger}_{+}$ is unlimited, because the share price can rise without limit.
+
+With $K_{1}=K_{2}=K$, these are the profit, breakevens, and maximum losses of a straddle. A short strangle profits when the share price finishes between the breakevens.
 
 So what do we see?
 
@@ -230,26 +239,11 @@ Normal{Float64}(μ=534.4545050434095, σ=113.71114807827765)
 
 `Unhide` the code block below to see how we plotted the `d_gbm::LogNormal` and `d_IV::Normal` future share price densities at expiration.  
 
-> __What do we see?__ The log-normal GBM share price distribution (blue line) is right-skewed and cannot admit negative share prices. However, the Normal IV distribution (red line) is symmetric around its mean, the share price grown at the risk-free rate, and can admit negative share prices, albeit with a small probability.
+> __What do we see?__ Both distributions have the same mean (black dashed line), the share price grown at the risk-free rate. The Normal IV distribution (red line) is symmetric and can admit negative share prices, albeit with a small probability. The log-normal GBM distribution (blue line) is right-skewed, so it peaks at a lower share price (blue dotted line) and cannot admit negative share prices.
 
 How do the two distributions compare?
 
 ### Probability of Profit (POP)
-The POP for a long (short) strangle position is given by the probability that the future share price at expiration $S(T)$ is outside (inside) the breakeven points $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$. Let's look at the two cases:
-
-> __Probability of Profit (POP) for Long Strangle__ 
-> 
-> The POP for a long strangle position is the probability that the future share price at expiration $S(T)$ is either greater than the upper breakeven point $S^{\ddagger}_{+}$ or less than the lower breakeven point $S^{\ddagger}_{-}$:
-> $$
-\begin{align*}
-\text{POP} &= \mathbb{P}(S(T) > S^{\ddagger}_{+}) + \mathbb{P}(S(T) < S^{\ddagger}_{-}) \\
-& = 1 - \mathbb{P}(S^{\ddagger}_{-} \leq S(T) \leq S^{\ddagger}_{+}) \\
-& = 1 - \left[F_{S}(S^{\ddagger}_{+}) - F_{S}(S^{\ddagger}_{-})\right]
-\end{align*}
-$$
-> where $F_{S}(x)$ is the cumulative distribution function (CDF) of the future share price at expiration, i.e., $F_{S}(x) = \mathbb{P}(S(T) \leq x)$.
-
-However, if we were trading a short strangle position, the POP would be given by:
 > __Probability of Profit (POP) for Short Strangle__ 
 > 
 > The POP for a short strangle position is the probability that the future share price at expiration $S(T)$ is between the lower breakeven point $S^{\ddagger}_{-}$ and the upper breakeven point $S^{\ddagger}_{+}$:
@@ -293,9 +287,11 @@ risk-neutral ℚ: gᵧ = 0.0413 (1/yr), ATM IV = 0.5617
 > * __The POE:__ The rows with the historical drift $\hat{\mu}$ shift the share price up. Compared with $\mathbb{Q}$, they make the call more likely, and the put less likely, to be exercised.
 > * __The Normal IV approximation:__ It gives nearly the same POP as $\mathbb{Q}$, but it tilts the POE toward the call. A Normal distribution is symmetric about its mean, while the log-normal distribution puts its median below its mean.
 
-`Unhide` the code block below to see how we plotted the cumulative distribution function $F_{S}(x)$ of each distribution in the table. The POP of the short strangle is the rise of a curve between the breakevens $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$, the put's POE is the height of a curve at $K_{1}$, and the call's POE is one minus the height at $K_{2}$. The dashed lines read the heights of $\mathbb{P}$ and $\mathbb{Q}$ across to the probability axis.
+`Unhide` the code block below to see how we plotted the cumulative distribution function $F_{S}(x)$ of each distribution in the table. 
 
-> __What do we see?__ At the strikes $K_{1}$ and $K_{2}$ (purple lines), the two curves with the historical drift $\hat{\mu}$ (navy and orange lines) sit to the right of $\mathbb{Q}$ (blue line), so they are lower at both strikes: the put is less likely, and the call more likely, to be exercised than under $\mathbb{Q}$. The two curves with the historical volatility $\hat{\sigma}$ (navy and gray lines) are steeper between the breakevens (green lines), so they rise more there and give the short strangle a higher POP.
+The POP of the short strangle is the rise of a curve between the breakevens $S^{\ddagger}_{-}$ and $S^{\ddagger}_{+}$, the put's POE is the height of a curve at $K_{1}$, and the call's POE is one minus the height at $K_{2}$. The dashed lines read the heights of $\mathbb{P}$ and $\mathbb{Q}$ across to the probability axis.
+
+> __What do we see?__ The curves with the historical drift $\hat{\mu}$ (navy and orange lines) sit to the right of $\mathbb{Q}$ (blue line), so they are lower at both strikes (purple lines): the put is less likely, and the call more likely, to be exercised. The curves with the historical volatility $\hat{\sigma}$ (navy and gray lines) are steeper between the breakevens (green lines), so they give a higher POP.
 
 How do the cumulative distributions compare?
 
@@ -304,13 +300,13 @@ ___
 ## Task 3: Did we make money on the strangle?
 In this task, we close our short strangle after AMD's earnings release and compute the profit or loss.
 
-> __Earnings Release:__ [AMD reports its third-quarter 2026 results](https://ir.amd.com/news-events/press-releases/detail/1300/amd-to-report-fiscal-third-quarter-2026-financial-results) on `2026-11-03` after market close, after we priced the contracts on `2026-10-26`. Earnings releases can move the share price sharply in either direction. A short strangle profits if the share price stays between the breakevens, and a long strangle if it moves outside them.
+> __Earnings Release:__ [AMD reports its third-quarter 2026 results](https://ir.amd.com/news-events/press-releases/detail/1300/amd-to-report-fiscal-third-quarter-2026-financial-results) on `2026-11-03` after market close, after we priced the contracts on `2026-10-26`. Earnings releases can move the share price sharply in either direction. A short strangle profits if the share price stays between the breakevens.
 
-The release comes weeks before expiration, so the breakevens alone cannot tell us whether we made money. Both legs still carry extrinsic value, and closing a short strangle means buying both legs back at their premiums on that day, $\mathcal{P}^{\prime}_{p}$ and $\mathcal{P}^{\prime}_{c}$. If we close $\tau$ years after we opened, the profit per share is:
+The release comes weeks before expiration, so both legs still carry extrinsic value, and the breakevens alone cannot tell us whether we made money. To close a short strangle, we buy both legs back at that day's premiums, $\mathcal{P}^{\prime}_{p}$ and $\mathcal{P}^{\prime}_{c}$. If we close $\tau$ years after we opened, the profit per share is:
 $$
-\hat{P}_{\mathcal{C}}(\tau) = \theta\cdot\Bigl[(\mathcal{P}^{\prime}_{p}+\mathcal{P}^{\prime}_{c})-\mathcal{D}_{\tau,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})\Bigr]
+\hat{P}_{\mathcal{C}}(\tau) = \mathcal{D}_{\tau,0}(g_{y})\cdot(\mathcal{P}_{p}+\mathcal{P}_{c})-(\mathcal{P}^{\prime}_{p}+\mathcal{P}^{\prime}_{c})
 $$
-where $\mathcal{D}_{\tau,0}(g_{y})=e^{g_{y}\tau}$. For our short strangle ($\theta=-1$), this is the premiums we collected when we sold the put and the call, grown to the closing day, minus the cost to buy both legs back.
+where $\mathcal{D}_{\tau,0}(g_{y})=e^{g_{y}\tau}$. The profit is the premiums we collected, grown to the closing day, minus the cost to buy both legs back.
 
 Until the release, `post_release_ticker` is `missing` and the cells below print a pending message. After the release, download the AMD chain for the same expiration, save it as a new dataset, set `post_release_ticker` to its name, and rerun this task.
 
