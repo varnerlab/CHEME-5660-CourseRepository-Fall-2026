@@ -1217,7 +1217,7 @@ version = "1.12.0"
 [[deps.JumpHMM]]
 deps = ["DataFrames", "Distributions", "HypothesisTests", "LinearAlgebra", "PDMats", "Random", "SpecialFunctions", "Statistics", "StatsBase"]
 git-tree-sha1 = "c87cbe74829fbba132668b8cc39bb521a1f90354"
-repo-rev = "3a9fd46"
+repo-rev = "3a9fd4601a5839476d89e39c005cb9db38c1a0d1"
 repo-url = "https://github.com/varnerlab/JumpHMM.jl"
 uuid = "6ee30eab-673b-484c-8b30-2cdb31ee1eb8"
 version = "0.2.0"
