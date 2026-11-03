@@ -196,20 +196,11 @@
   $K_{i}$. Figures: payoff (blue), profit (black), and $S(0)$, the share price at entry.}
 \end{frame}
 
-\begin{frame}{Composite Credit Contracts: Three Steps}
-  Each row of the tables follows from the profit at expiration expression in three steps:
-  \begin{enumerate}\setlength{\itemsep}{0.6em}
-    \item Compute the composite premium $\Pc_{\Cc}$, with a minus sign for each
-      short leg. If $\Pc_{\Cc}<0$, the contract opens for a credit of $-\Pc_{\Cc}$
-      (a positive term in the profit at expiration).
-    \item Write the profit on each interval between the strikes. There, each
-      leg's payoff is zero or linear in $S(T)$, so the profit is a straight line.
-    \item Evaluate the profit at the strikes, at $S(T)=0$, and as $S(T)$ grows,
-      to find the maximum profit and maximum loss. Set the profit to zero where
-      it slopes to find the breakevens, keeping each solution that lies in its
-      interval.
-  \end{enumerate}
+\begin{frame}{Composite Credit Contracts: Derivation}
+  The derivation notebook works through the derivation of the maximum profit,
+  maximum loss, and breakevens for a put credit spread and a short strangle.
   \vspace{0.4em}
+
   Maximum losses are listed as positive amounts (USD/share).
   \slidenote{Derivation:}{\href{\repo/CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb}}}
 \end{frame}
