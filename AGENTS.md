@@ -1,5 +1,29 @@
 # Repository Working Agreements
 
+## Week 12: JumpHMM synthetic markets and the INFORMS study replace bandits — November 3, 2026
+
+- His decision: bandits are out of the main path "unless we need them". L12a
+  teaches synthetic markets with jump hidden Markov models (one asset, then the
+  INFORMS sector factor model for many); L12b teaches the INFORMS 2026 study
+  (interpretable allocation and model-predictive rebalancing), building on L8b.
+  At most two examples are worked in class per lecture. Design:
+  `private/specs/2026-11-03-week12-jumphmm-informs-design.md`.
+- The multi-asset generator lives in `varnerlab/JumpHMM.jl` 0.2.0
+  (`SectorFactorModel`, commit `3a9fd4601a5839476d89e39c005cb9db38c1a0d1`),
+  pinned in the root `Project.toml` (`[sources]`) and `Manifest.toml`. Notebooks
+  `import JumpHMM` and call it qualified. A fresh install fetches it from GitHub.
+- L12a: lecture (Markov foundations from the 2025 text, then JumpHMM and the sector
+  factor model), two examples (SPY with N = 100 states; 22 stocks, two per sector
+  from one sub-industry, because each sector's residuals must covary positively),
+  and the deck. α, β fixed in the composition; drifting β is the last, optional
+  step, sized from the online (EWLS) β after its first year. The fitted generator
+  is saved to `L12a/data/` and copied to `L12b/data/` for L12b's synthetic example.
+- Open for the instructor: the disposition of `L12a/advanced/markov/` (its SPY
+  example calls the states hidden and then treats them as observed); the
+  JumpHMM tuning objective identifies ϵ weakly (it lands at the grid's lower
+  edge, as in the INFORMS study). The L12a bandit Notes were deleted; L12b's bandit
+  material is handled with the L12b rebuild.
+
 ## L11b: protective collars replace cash secured puts — November 3, 2026
 
 - His decision: drop the cash secured put section (its profit is the short
