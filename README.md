@@ -141,7 +141,7 @@ for published student bundles.
 | 8 | Option contracts: call and put payoff and profit | [Week 8](lectures/week-8/) |
 | 9 | Derivatives, options, and European and American pricing | [Week 9](lectures/week-9/) |
 | 10 | Option sensitivities, probability of profit, composite contracts, and delta hedging | [Week 10](lectures/week-10/) |
-| 11 | Covered calls, cash-secured puts, protective collars, and defined-outcome ETFs | [Week 11](lectures/week-11/) |
+| 11 | Composite contracts, covered calls, protective collars, and defined-outcome ETFs | [Week 11](lectures/week-11/) |
 | 12 | Stochastic multi-armed bandits and binary ticker selection | [Week 12](lectures/week-12/) |
 | 13 | Maximum-utility allocation, adaptive rebalancing, and market crashes | [Week 13](lectures/week-13/) |
 | 14 | Building and testing the course Autotrader | [Week 14](lectures/week-14/) |

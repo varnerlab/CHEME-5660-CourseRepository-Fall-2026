@@ -1,5 +1,23 @@
 # Repository Working Agreements
 
+## L11b: protective collars replace cash secured puts — November 3, 2026
+
+- His decision: drop the cash secured put section (its profit is the short
+  put's, already in L11a) and teach a protective collar, with TJUL as the
+  comparison. He waived the 48-hour freeze for the Thursday, November 5 class.
+  The lecture is renamed `CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb`.
+- New example `CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb`,
+  rewritten from the October 29 archive on the SPY end-of-day chain
+  (2026-10-16, December 18 expiration) instead of illustrative quotes. The
+  cash secured put example is archived in
+  `lectures/archive/week-11-L11b-cash-secured-put-2026-11-03/`.
+- Class works at most two examples: the AMD covered call and the SPY collar
+  are worked in lecture; the SPY covered call fund is review on your own.
+- TJUL facts come from Innovator's fact sheet as of September 30, 2026. Its
+  13.61% cap is measured on the fund's value, not the sold call's distance
+  above the starting SPY level.
+- The L11b `docs/` Notes are deleted; the deck in `slides/` replaces them.
+
 ## Week 11 shift: composite contracts become L11a — October 29, 2026
 
 - His decision: L10b ran behind, and the class did not reach the composite

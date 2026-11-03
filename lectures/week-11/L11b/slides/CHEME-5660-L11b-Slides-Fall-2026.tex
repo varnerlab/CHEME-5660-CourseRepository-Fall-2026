@@ -1,0 +1,359 @@
+% L11b student companion deck: covered calls, protective collars (with TJUL), and
+% the net Delta of a portfolio of shares and options.
+%
+% November 3, 2026: replaces the retired docs/ Notes. Same day, the cash secured put
+% section was replaced by protective collars (instructor decision). The frame order mirrors the
+% lecture notebook. The disclaimer is slide 2, by instructor preference. Notation
+% follows the lecture: shares bought at S(0), strike K, call premium \mathcal{P}_{c};
+% collar put at K_1 (premium \mathcal{P}_{1}) and call at K_2 (premium \mathcal{P}_{2}); profit at expiration \hat{P}(S(T)), accumulation factor
+% \mathcal{D}_{T,0}(g_y) (always written in full), breakeven S^{\ddagger}, cost
+% basis S^{\dagger}, contract multiplier m, number of contracts n, net Delta
+% \Delta_{\text{net}}, options Delta \Delta_{\text{opts}}, composite Delta
+% \Delta_{\mathcal{C}}. Maximum losses are listed as positive amounts.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b}
+
+\title{\texorpdfstring{{\vnheavy L11b}}{L11b}: Covered Calls and Protective Collars}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today, we analyze two strategies that combine shares with options. What can
+  each trade earn and lose, and how does its value change with the share price?
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Covered calls}: shares plus a short call, two regimes,
+      breakeven, maximum profit and loss.
+    \item \hilite{Protective collars}: shares plus a long put and a short call,
+      three regimes, breakeven, maximum profit and loss.
+    \item \hilite{Net Delta}: the shares plus the weighted Deltas of the option
+      legs, and the shares that make a position delta-neutral.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What You Need to Know}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Core concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Covered call profit per share:
+      $\min(S(T),K)-\Dc_{T,0}(g_{y})\cdot(S(0)-\Pc_{c})$. The premium lowers the
+      breakeven, and the call caps the profit at the strike.
+    \item Collar profit per share, put at $K_{1}$, call at $K_{2}$:
+      $S(T)+(K_{1}-S(T))^{+}-(S(T)-K_{2})^{+}-\Dc_{T,0}(g_{y})\cdot(S(0)+\Pc_{1}-\Pc_{2})$.
+      The put sets a floor, and the call a cap.
+    \item Net Delta: $\Delta_{\text{net}}=N_{S}+\Delta_{\text{opts}}$; holding
+      $N_{S}=-\Delta_{\text{opts}}$ shares makes a position delta-neutral. A collar's
+      put and call can only lower its net Delta from that of the shares.
+  \end{itemize}
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item The derivation of the net Delta and the composite Delta table.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par\small
+  \href{\repo/CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Examples:}}\par\small
+  \href{\repo/CHEME-5660-L11b-Example-AnalysisCoveredCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-AnalysisCoveredCall-Fall-2026.ipynb}}\par
+  \href{\repo/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}}}
+
+  \vspace{0.45em}
+  {\normalsize\textbf{\ink{Review on your own:}}\par\small
+  \href{\repo/CHEME-5660-L11b-Example-CoveredCallFund-SPY-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-CoveredCallFund-SPY-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== Company Profile: J.P. Morgan Asset Management
+\begin{frame}{Company Profile: J.P. Morgan Asset Management}
+  \href{https://am.jpmorgan.com/us/en/asset-management/adv/}{\hilite{J.P. Morgan Asset Management}}:
+  the investment management business of JPMorganChase. It runs two large covered
+  call funds, JEPI (S\&P 500) and JEPQ (Nasdaq-100):
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Shares plus sold options}: each fund owns U.S. large-cap stocks,
+      sells options, and seeks monthly income from the premiums and dividends.
+    \item \hilite{Equity-linked notes}: notes whose value is tied to stocks; as
+      notes, they carry credit or counterparty risk.
+    \item \hilite{Size}: about 45 (JEPI) and 44 (JEPQ) billion USD on September
+      30, 2026.
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Connection:}} the premiums lower the breakeven, and the sold calls
+  give up gains above the strike.
+\end{frame}
+
+% ========== Covered Calls
+\begin{frame}{Covered Calls}
+  A \hilite{covered call} owns shares and sells a call on them, collecting the
+  premium. Investors use it when they expect the share price to stay flat or
+  rise slightly.
+
+  \vspace{0.6em}
+  \textbf{\ink{Naked calls:}} selling a call without owning the shares carries
+  unlimited risk if the share price rises. The shares in a covered call cover
+  that obligation.
+
+  \vspace{0.6em}
+  Covered call ETFs, such as
+  \href{https://www.globalxetfs.com/funds/qyld/}{\hilite{QYLD}} and
+  \href{https://www.rexshares.com/fang/}{\hilite{FEPI}}, run this strategy for you.
+  \slidenote{Video:}{\href{https://www.youtube.com/embed/Tid1rfVIc9c?rel=0}{\dimmed{SMB Capital, Simple \& Low Risk Investing Strategy}}}
+\end{frame}
+
+\begin{frame}{Covered Call: Profit at Expiration}
+  Buy shares at $S(0)$ and sell one call per $m$ shares, with strike $K$, premium
+  $\Pc_{c}$, and expiration $T$. The value at expiration minus today's cost grown
+  to expiration is:
+  \begin{align*}
+    \hat{P}(S(T)) &= S(T) - \left(S(T) - K\right)^{+} - \Dc_{T,0}(g_{y})\cdot\left(S(0) - \Pc_{c}\right)\\
+    &= \underbrace{\left(S(T) - \Dc_{T,0}(g_{y})\cdot S(0)\right)}_{\textstyle\text{shares}} + \underbrace{\Dc_{T,0}(g_{y})\cdot\Pc_{c} - \left(S(T) - K\right)^{+}}_{\textstyle\text{short call}}
+  \end{align*}
+  where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor and
+  $\hat{P}(S(T))$ is in USD/share. For $n$ contracts, multiply by $mn$.
+\end{frame}
+
+\begin{frame}{Covered Call: Two Regimes}
+  With no dividends and no early exercise, the call's payoff is zero when
+  $S(T)\leq K$, so:
+  {\small\begin{equation*}
+    \boxed{
+    \hat{P}(S(T)) = \begin{cases}
+    \overbrace{K - \Dc_{T,0}(g_{y})\cdot S(0) + \Dc_{T,0}(g_{y})\cdot\Pc_{c}}^{\textstyle\text{realized gain}}, & \text{if } S(T) > K\;\text{(exercised)}\\
+    \Dc_{T,0}(g_{y})\cdot\Pc_{c} + \underbrace{\left(S(T) - \Dc_{T,0}(g_{y})\cdot S(0)\right)}_{\textstyle\text{unrealized gain}}, & \text{if } S(T) \leq K\;\text{(expires worthless)}
+    \end{cases}}
+  \end{equation*}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Call exercised}: we sell the shares at $K$, so the whole profit
+      is realized, and the call caps it.
+    \item \hilite{Call expires worthless}: we keep the premium and the shares; the
+      share gain or loss is unrealized.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Covered Call: Breakeven, Maximum Profit, and Maximum Loss}
+  The maximum profit, breakeven $S^{\ddagger}$, and maximum loss are given below.
+  Maximum losses are listed as positive amounts (USD/share):
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $K-\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ for $S(T)\geq K$ \\
+      Breakeven & $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ \\
+      Maximum loss & $\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ at $S(T)=0$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Compared with owning the shares alone, the premium lowers the breakeven, and
+  the call gives up the gains above the strike. If we bought the shares earlier at
+  a cost basis $S^{\dagger}$, the realized gain on the shares at exercise is
+  $K-S^{\dagger}$.
+  \slidenote{Example:}{\href{\repo/CHEME-5660-L11b-Example-AnalysisCoveredCall-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-AnalysisCoveredCall-Fall-2026.ipynb}}\hspace{0.8em}{\vnmedium Review on your own:}\hspace{0.65em}\href{\repo/CHEME-5660-L11b-Example-CoveredCallFund-SPY-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-CoveredCallFund-SPY-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== Protective Collars
+\begin{frame}{Protective Collars}
+  A \hilite{protective collar} adds a long put to a covered call: own the
+  shares, buy a put at $K_{1}$ below the share price, and sell a call at
+  $K_{2}>K_{1}$ above it, same expiration $T$. Per $m$ shares, with premiums
+  $\Pc_{1}$ (put) and $\Pc_{2}$ (call), the profit at expiration (USD/share) is:
+  \begin{equation*}
+    \hat{P}(S(T)) = S(T) + \underbrace{\left(K_{1} - S(T)\right)^{+}}_{\textstyle\text{long put}} - \underbrace{\left(S(T) - K_{2}\right)^{+}}_{\textstyle\text{short call}} - \underbrace{\Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right)}_{\textstyle\text{today's cost, grown}}
+  \end{equation*}
+  The put sets a floor under the shares, the call caps them, and the call
+  premium pays for some or all of the put.
+\end{frame}
+
+\begin{frame}{Protective Collar: Three Regimes}
+  With no dividends and no early exercise, at most one option pays at expiration:
+  {\small\begin{equation*}
+    \boxed{
+    \hat{P}(S(T)) = \begin{cases}
+    K_{1} - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } S(T) < K_{1}\;\text{(put exercised)}\\
+    S(T) - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } K_{1} \leq S(T) \leq K_{2}\;\text{(neither)}\\
+    K_{2} - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } S(T) > K_{2}\;\text{(call exercised)}
+    \end{cases}}
+  \end{equation*}}
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Put exercised}: we sell the shares at $K_{1}$; the loss is
+      realized and stops growing.
+    \item \hilite{Neither}: we keep the shares; the profit moves with the share price.
+    \item \hilite{Call exercised}: we sell the shares at $K_{2}$; the profit is
+      realized and capped.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Protective Collar: Breakeven, Maximum Profit, and Maximum Loss}
+  The maximum profit, breakeven $S^{\ddagger}$, and maximum loss, a positive
+  amount (USD/share), are:
+  \begin{center}\small
+    \begin{tabular}{ll}
+      \toprule
+      Maximum profit & $K_{2}-\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)$ for $S(T)\geq K_{2}$ \\
+      Breakeven & $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)$, if $K_{1}\leq S^{\ddagger}\leq K_{2}$ \\
+      Maximum loss & $\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)-K_{1}$ for $S(T)\leq K_{1}$${}^{a}$ \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  {\footnotesize ${}^{a}$If $\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)>K_{1}$; otherwise none.\par}
+  \vspace{0.3em}
+  When $\Pc_{1}=\Pc_{2}$, the call premium pays for the whole put: a
+  \hilite{zero-cost collar}. Compared with the covered call, the put limits the
+  loss, and it costs some of the call premium.
+\end{frame}
+
+\begin{frame}{TJUL: A Collar Inside a Fund}
+  The \href{https://www.innovatoretfs.com/etf/?ticker=TJUL}{\hilite{Innovator Equity Defined Protection ETF (TJUL)}}
+  holds a collar-like package of SPY options from July 1, 2025 to June 30, 2027.
+  Its holdings on September 30, 2026, all expiring June 30, 2027:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Purchased call, strike 11.09}: deep in the money, it moves almost
+      one for one with SPY and stands in for the shares (without dividends).
+    \item \hilite{Purchased put, strike 616.16}: close to the starting SPY level of
+      617.85, the floor.
+    \item \hilite{Sold call, strike 718.63}: sets the cap.
+  \end{itemize}
+  \vspace{0.3em}
+  It seeks a 100\% buffer and a 13.61\% cap over the whole period, before its
+  0.79\% expense ratio, for holders from first to last day. The cap is on the
+  fund's value, not the call's distance above 617.85.
+  \slidenote{Example:}{\href{\repo/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}}\hspace{0.8em}{\vnmedium Source:}\hspace{0.65em}\href{https://www.innovatoretfs.com/pdf/tjul_factsheet.pdf}{\dimmed{TJUL fact sheet, September 30, 2026}}}
+\end{frame}
+
+% ========== Delta of Covered Calls and Collars
+\begin{frame}{Delta of Covered Calls and Collars}
+  Previously, we used Delta as an estimate of the probability of exercise. Its
+  other use is \hilite{hedging}: offsetting potential losses with an opposite
+  position in a related \hilite{counter asset}, often the underlying shares.
+
+  \vspace{0.5em}
+  Hold cash $N_{C}$ (USD), $N_{S}$ shares, and the legs of a composite contract
+  $\Cc$. Leg $i$ has orientation $\theta_{i}$ ($1$ long, $-1$ short), $n_{i}$
+  contracts, multiplier $m$, and premium $\Pc_{i}(S,t)$ (USD/share). The wealth
+  at time $t$ is:
+  \begin{equation*}
+    W_{t}=N_{C}+N_{S}\,S+m\sum_{i\in\Cc}\theta_{i}n_{i}\Pc_{i}(S,t)
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{The Net Delta of a Portfolio}
+  The \hilite{net Delta} is the sensitivity of the wealth to the share price:
+  \begin{align*}
+    \Delta_{\text{net}}(S,t)&=\frac{\partial W_{t}}{\partial S} = \underbrace{\frac{\partial N_C}{\partial S}}_{=0} + \underbrace{\frac{\partial (N_S S)}{\partial S}}_{=N_S} + m\sum_{i\in\Cc} \theta_i n_i \underbrace{\frac{\partial \Pc_i}{\partial S}}_{=\Delta_i(S,t)}\\
+    &= N_S + \underbrace{m\sum_{i\in\Cc} \theta_i n_i \Delta_i(S,t)}_{\textstyle= \Delta_{\text{opts}}(S,t)}
+  \end{align*}
+  The options contribute $\Delta_{\text{opts}}=m\,\Delta_{\Cc}$, where
+  $\Delta_{\Cc}(S,t)=\sum_{i\in\Cc}\theta_{i}n_{i}\Delta_{i}(S,t)$ is the
+  \hilite{composite Delta}.
+\end{frame}
+
+\begin{frame}{Delta-Neutral Positions}
+  A position is \hilite{delta-neutral} if $\Delta_{\text{net}}(S,t)=0$, which we
+  get by holding $N_{S}=-\Delta_{\text{opts}}(S,t)$ shares. For example, short
+  $10$ calls at $\Delta=0.6$ with $m=100$ give:
+  \begin{equation*}
+    \Delta_{\text{opts}}=100\times(-1)\times 10\times 0.6=-600
+    \quad\Longrightarrow\quad N_{S}=600 \text{ shares}
+  \end{equation*}
+  If leg $i$ is exercised or assigned at time $\tau\le T$, set $\Delta_{i}=0$ for
+  $t\geq\tau$ and update the shares:
+  \begin{equation*}
+    N_S \leftarrow N_S + \theta_i m n_i \;\;\text{(call)}\qquad
+    N_S \leftarrow N_S - \theta_i m n_i \;\;\text{(put)}
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Covered Call and Collar Delta}
+  A covered call holds $N_{S}=mn$ shares and is short $n$ calls with Delta
+  $\Delta_{c}$; a collar adds $n$ long puts with Delta $\Delta_{p}$ (put at
+  $K_{1}$, call at $K_{2}$). The cash does not contribute:
+  \begin{align*}
+    \Delta_{\text{net}}(S,t) &= mn\left(1-\Delta_{c}(S,t)\right) && \text{covered call}\\
+    \Delta_{\text{net}}(S,t) &= mn\left(1+\Delta_{p}(S,t)-\Delta_{c}(S,t)\right) && \text{collar}
+  \end{align*}
+  Since $0\leq\Delta_{c}\leq 1$ and $-1\leq\Delta_{p}\leq 0$, the put and the
+  call can only lower the collar's net Delta from $mn$. Delta-neutral cases:
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Covered call}: $\Delta_{c}\approx 1$, the call deep in the money
+      ($S(t)\gg K$).
+    \item \hilite{Collar}: beyond either strike, $S(t)\ll K_{1}$ ($\Delta_{p}\approx-1$)
+      or $S(t)\gg K_{2}$ ($\Delta_{c}\approx1$).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Delta of the Common Composite Contracts}
+  Choose the strikes by Delta, a common rule of thumb: short legs at $\pm 0.25$,
+  protecting long legs at $\pm 0.10$, the straddle at the money (about $\pm 0.5$). At
+  entry, for one contract ($m=100$):\par
+  {\centering\footnotesize\setlength{\tabcolsep}{5pt}
+    \begin{tabular}{lll}
+      \toprule
+      Composite contract & Composite Delta, $\Delta_{\Cc}$ & Shares to hedge, $N_{S}$ \\
+      \midrule
+      Short put & $-(-0.25)=0.25$ & $-25$ \\
+      Short call & $-0.25$ & $+25$ \\
+      Put credit spread & $-0.10-(-0.25)=0.15$ & $-15$ \\
+      Call credit spread & $-0.25+0.10=-0.15$ & $+15$ \\
+      Short straddle & $-(-0.5)-0.5\approx0$ & $\approx0$ \\
+      Short strangle & $-(-0.25)-0.25=0$ & $0$ \\
+      Protected strangle & $-(-0.25)-0.25+0.10=0.10$ & $-10$ \\
+      Iron condor & $-0.10-(-0.25)-0.25+0.10=0$ & $0$ \\
+      \bottomrule
+    \end{tabular}\par}
+  \vspace{0.3em}
+  {\small A Delta of zero is not zero risk: Gamma moves the Delta as the share
+  price changes, so a delta-neutral position must update $N_{S}$.}
+\end{frame}
+
+\begin{frame}{Summary}
+  \vspace{0.3em}
+  We analyzed covered calls and protective collars, two strategies that combine
+  shares with options, and computed the net Delta of shares plus options.
+
+  \vspace{0.4em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Covered calls}: the call caps the profit at the strike, and the
+      premium lowers the breakeven.
+    \item \hilite{Protective collars}: the put sets a floor and the call a cap;
+      in between, the position moves with the shares.
+    \item \hilite{Net Delta}: the shares plus the weighted Deltas of the option
+      legs; a collar's put and call can only lower it from that of the shares.
+  \end{itemize}
+  \vspace{0.3em}
+  These strategies trade some of the upside of the shares for income or for
+  protection.
+\end{frame}
+
+\end{document}
