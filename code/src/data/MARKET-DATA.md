@@ -63,3 +63,13 @@ INFO, LIN, DD) were not repaired because the course notebooks filter them out.
 | GOOG | file start to 2014-04-02 | 2 |
 | UA | file start to 2014-04-14, and file start to 2016-04-07 | 2 and 2 |
 | UNP | file start to 2014-06-06 | 2 |
+
+## Risk-free rate: `DTB3.csv`
+
+`DTB3.csv` is the FRED series DTB3, the 3-month Treasury bill secondary-market rate (bank-discount
+basis, percent), from the Board of Governors of the Federal Reserve System (H.15), downloaded from
+`https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3` on 2026-11-04 and trimmed to 2013-12-02
+through 2026-09-04 (3,330 rows; holidays are empty values, which the loader skips). The
+`MPCPortfolio` submodule's `load_market_data` converts it to a continuously compounded growth rate,
+g_f = −ln(1 − d·91/360)·365/91, and uses the last observation dated before each trading day, as the
+INFORMS 2026 study does.
