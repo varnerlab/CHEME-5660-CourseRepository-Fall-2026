@@ -18,7 +18,6 @@ end
 using VLQuantitativeFinancePackage
 using DataFrames
 using Statistics
-using StatsBase
 using Plots
 using Colors
 using PrettyTables
@@ -28,4 +27,16 @@ using FileIO
 using JLD2
 using HypothesisTests
 using StatsPlots
+using Random # reproducible simulations
+using Dates # the end-of-day options archive
 using LinearAlgebra
+import JumpHMM # synthetic markets: always call JumpHMM functions qualified
+import StatsBase # quantiles and autocorrelations
+
+# the INFORMS 2026 model-predictive portfolio method, a submodule of the course package: always call it
+# qualified (MPC.run_study, ...), because some of its names are also used by the course package itself.
+# The examples run single-threaded; for threaded runs, SCS needs OMP_NUM_THREADS=1 and KMP_GTID_MODE=2.
+import VLQuantitativeFinancePackage.MPCPortfolio as MPC
+
+# the course's daily S&P 500 files, sector list, and 13-week bill rates (DTB3) -
+const _PATH_TO_MARKET_DATA = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data");
