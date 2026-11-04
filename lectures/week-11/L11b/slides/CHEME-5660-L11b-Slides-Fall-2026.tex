@@ -103,16 +103,33 @@
   the investment management business of JPMorganChase. It runs two large covered
   call funds, JEPI (S\&P 500) and JEPQ (Nasdaq-100):
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Shares plus sold options}: each fund owns U.S. large-cap stocks,
-      sells options, and seeks monthly income from the premiums and dividends.
-    \item \hilite{Equity-linked notes}: notes whose value is tied to stocks; as
-      notes, they carry credit or counterparty risk.
+    \item \hilite{Shares plus sold options}: each fund owns U.S. large-cap stocks
+      and sells calls on its index, seeking monthly income from the premiums.
+    \item \hilite{Equity-linked notes}: the calls sit inside notes issued by
+      banks; if a bank fails to pay, the fund can lose money.
     \item \hilite{Size}: about 45 (JEPI) and 44 (JEPQ) billion USD on September
       30, 2026.
+    \item \hilite{Volatility}: 7.78\% (JEPI) vs 12.42\% (S\&P 500) per year.
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Connection:}} the premiums lower the breakeven, and the sold calls
-  give up gains above the strike.
+  \textbf{\ink{Connection:}} the calls are on the index, not on the stocks the
+  fund owns, so the two can move apart.
+\end{frame}
+
+% ========== Company Profile: REX and FEPI
+\begin{frame}{A Closer Model: REX and FEPI}
+  The \href{https://www.rexshares.com/rex-covered-call-etfs/}{\hilite{REX FANG \& Innovation
+  Equity Premium Income ETF (FEPI)}} runs the covered call from today's lecture:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Shares plus calls on those shares}: it owns 15 large
+      technology stocks, AMD among them, and sells slightly out-of-the-money
+      calls on each, about one contract per 100 shares.
+    \item \hilite{Size}: about 0.65 billion USD on July 31, 2026
+      (\href{https://www.sec.gov/Archives/edgar/data/1771146/000199937126021985/fepi-ncsr_073126.htm}{\hilite{annual report to the SEC}}).
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Connection:}} over the year ending July 31, 2026, FEPI trailed its
+  index because the sold calls gave up gains when technology stocks rose.
 \end{frame}
 
 % ========== Covered Calls
@@ -127,10 +144,9 @@
   that obligation.
 
   \vspace{0.6em}
-  Covered call ETFs, such as
-  \href{https://www.globalxetfs.com/funds/qyld/}{\hilite{QYLD}} and
-  \href{https://www.rexshares.com/fang/}{\hilite{FEPI}}, run this strategy for you.
-  \slidenote{Video:}{\href{https://www.youtube.com/embed/Tid1rfVIc9c?rel=0}{\dimmed{SMB Capital, Simple \& Low Risk Investing Strategy}}}
+  Besides the funds in the company profiles, covered call ETFs such as
+  \href{https://www.globalxetfs.com/funds/qyld/}{\hilite{QYLD}} run this strategy for you.
+  \slidenote{Video:}{\href{https://www.youtube.com/watch?v=Tid1rfVIc9c}{\dimmed{SMB Capital, Simple \& Low Risk Investing Strategy}}}
 \end{frame}
 
 \begin{frame}{Covered Call: Profit at Expiration}
@@ -151,7 +167,7 @@
   {\small\begin{equation*}
     \boxed{
     \hat{P}(S(T)) = \begin{cases}
-    \overbrace{K - \Dc_{T,0}(g_{y})\cdot S(0) + \Dc_{T,0}(g_{y})\cdot\Pc_{c}}^{\textstyle\text{realized gain}}, & \text{if } S(T) > K\;\text{(exercised)}\\
+    \overbrace{K - \Dc_{T,0}(g_{y})\cdot\left(S(0) - \Pc_{c}\right)}^{\textstyle\text{realized gain}}, & \text{if } S(T) > K\;\text{(exercised)}\\
     \Dc_{T,0}(g_{y})\cdot\Pc_{c} + \underbrace{\left(S(T) - \Dc_{T,0}(g_{y})\cdot S(0)\right)}_{\textstyle\text{unrealized gain}}, & \text{if } S(T) \leq K\;\text{(expires worthless)}
     \end{cases}}
   \end{equation*}}

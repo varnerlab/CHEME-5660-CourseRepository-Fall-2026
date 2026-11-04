@@ -7,7 +7,7 @@
 % \mathcal{S}, transition matrix \mathbf{P} with entries p_{ij}, estimate \hat{p}_{ij},
 % stationary distribution \bar{\pi}, emission matrix \mathbf{E}, daily growth rate g_t
 % (1/yr), jump probability \epsilon and mean episode length \lambda, and the sector
-% factor model g_i = alpha_i + beta_i g_m + delta_i f_s + s_i eps_i.
+% factor model g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i eps_i.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -68,7 +68,7 @@
       state. Jump episodes (probability $\epsilon$, mean length $\lambda$) keep
       volatility clustering.
     \item A synthetic stock is
-      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+s_{i}\,\tilde{\varepsilon}_{i}$:
+      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{\varepsilon}_{i}$:
       shared market and sector draws make stocks move together.
   \end{itemize}
 
@@ -216,11 +216,11 @@
   Each synthetic stock $i$ in sector $s$ is built from draws it shares with other
   stocks and a draw of its own:
   \begin{equation*}
-    g_{i}(t)=\alpha_{i}+\beta_{i}\,\underbrace{g_{m}(t)}_{\textstyle\text{market}}+\delta_{i}\,\underbrace{f_{s}(t)}_{\textstyle\text{sector}}+s_{i}\,\underbrace{\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{own}}
+    g_{i}(t)=\alpha_{i}+\beta_{i}\,\underbrace{g_{m}(t)}_{\textstyle\text{market}}+\delta_{i}\,\underbrace{f_{s}(t)}_{\textstyle\text{sector}}+\psi_{i}\,\underbrace{\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{own}}
   \end{equation*}
   $\alpha_{i}$, $\beta_{i}$: single index estimates, held fixed. $f_{s}$: a model of the
   sector's average residual, with loading $\delta_{i}$. $\tilde{\varepsilon}_{i}$: a model of
-  the stock, centered and scaled by $s_{i}$ so its variance matches the real one on
+  the stock, centered and scaled by $\psi_{i}$ so its variance matches the real one on
   average. Each piece is a jump hidden Markov model.
 \end{frame}
 
