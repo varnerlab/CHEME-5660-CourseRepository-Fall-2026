@@ -99,13 +99,14 @@
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Fat tails}: large daily moves are far more common than a normal
       distribution predicts.
-    \item \hilite{Volatility clustering}: large moves follow large moves, so $|g_{t}|$
-      stays correlated for weeks.
+    \item \hilite{Volatility clustering}: large moves follow large moves, so the size
+      of the daily move stays correlated for weeks.
     \item \hilite{Co-movement}: stocks move together, through the market and their
       sectors.
   \end{itemize}
   \vspace{0.3em}
-  Geometric Brownian motion has none of the three.
+  Geometric Brownian motion can have co-movement through correlated shocks, but
+  neither fat tails nor volatility clustering.
 \end{frame}
 
 % ========== Markov Chains
@@ -149,12 +150,12 @@
   $\bar{\pi}=\bar{\pi}\Pb$: the long-run share of time in each state, and where a
   generator starts its paths. \hilite{Power iteration} applies $\Pb$ until nothing changes:
   \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item Start from the uniform $\pi=[1/N,\dotsc,1/N]$.
+    \item Start from the uniform $\pi=[1/N,\dotsc,1/N]$ over the $N$ states.
     \item Repeat $\pi^{\prime}\gets\pi\Pb$ until $\lVert\pi^{\prime}-\pi\rVert_{1}\leq\text{tol}$ or
       $T$ iterations; return $\bar{\pi}\gets\pi^{\prime}$.
   \end{itemize}
   \vspace{0.2em}
-  This needs an ergodic $\Pb$ (irreducible, aperiodic); the spectral gap sets the speed.
+  This needs an ergodic $\Pb$; software often solves $\bar{\pi}=\bar{\pi}\Pb$ directly instead.
 \end{frame}
 
 % ========== Hidden Markov Models
@@ -179,8 +180,8 @@
       $N$ bins of equal probability; state 1 holds the most negative growth rates.
     \item \hilite{Transitions}: assign each day to its bin and count, $\hat{p}_{ij}$.
     \item \hilite{Emissions}: in state $s_{k}$,
-      $g_{t}\mid X_{t}=s_{k}\sim\mu_{k}+\sigma_{k}\,T_{\nu}$, a Student-t located and scaled
-      by the days in that state.
+      $g_{t}\mid X_{t}=s_{k}\sim\mu_{k}+\sigma_{k}\,T_{\nu}$: $\mu_{k}$, $\sigma_{k}$ the mean and
+      standard deviation of the days in that state, $T_{\nu}$ a Student-t with $\nu$ fixed.
   \end{itemize}
   \vspace{0.2em}
   In the data the states are observed bins; in simulation they are hidden, and only
@@ -200,14 +201,13 @@
 \end{frame}
 
 \begin{frame}{Tuning and Checking the Model}
-  A grid search picks $(\epsilon,\lambda)$. On simulated paths that contain an
-  episode, it scores the autocorrelation $\rho_{k}$ of $|g_{t}|$ and the kurtosis
-  $\kappa$ against the data:
+  A grid search picks $(\epsilon,\lambda)$. On the $M$ simulated paths with an episode,
+  it scores each path's autocorrelation $\hat{\rho}_{m,k}$ of $|g_{t}|$ and kurtosis
+  $\hat{\kappa}_{m}$ against the data's $\rho_{k}$, $\kappa$:
   \begin{equation*}
-    J(\epsilon,\lambda)=\sum_{k=1}^{25}\left(\rho_{k}-\hat{\rho}_{k}\right)^{2}+0.2\left(\kappa-\hat{\kappa}\right)^{2}
+    J(\epsilon,\lambda)=\frac{1}{M}\sum_{m=1}^{M}\Bigl[\sum_{k=1}^{25}\left(\rho_{k}-\hat{\rho}_{m,k}\right)^{2}+0.2\left(\kappa-\hat{\kappa}_{m}\right)^{2}\Bigr]
   \end{equation*}
-  where hats mark a simulated path, averaged over the paths. The tuned model is
-  checked on the distribution, the kurtosis, and the volatility clustering.
+  The score is noisy, so the chosen pair can change with the seed.
   \slidenote{Example:}{\href{\repo/CHEME-5660-L12a-Example-JumpHMM-SPY-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-JumpHMM-SPY-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -220,21 +220,20 @@
   \end{equation*}
   $\alpha_{i}$, $\beta_{i}$: single index estimates, held fixed. $f_{s}$: a model of the
   sector's average residual, with loading $\delta_{i}$. $\tilde{\varepsilon}_{i}$: a model of
-  the stock, centered and scaled by $s_{i}$ so the stock keeps its real variance. Each
-  piece is a jump hidden Markov model.
+  the stock, centered and scaled by $s_{i}$ so its variance matches the real one on
+  average. Each piece is a jump hidden Markov model.
 \end{frame}
 
 \begin{frame}{What the Model Keeps and Gives Up}
   Composing stocks from shared draws on the same day has consequences:
   \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Keeps}: each stock's fat tails and volatility clustering; stocks in a
-      sector move together through their shared sector draw, and all stocks through
-      the market draw.
+    \item \hilite{Keeps}: fat tails and clustered volatility in every draw; stocks in a
+      sector move together through their shared sector draw, all stocks through the
+      market draw.
     \item \hilite{Gives up}: sector draws are independent, so stocks in different
-      sectors are linked only through the market, and cross-sector correlations come
-      out a little low.
+      sectors are linked only through the market.
     \item \hilite{No copula}: a copula reorders each stock's draws across days and would
-      scramble the timing of its volatile periods and jump episodes.
+      scramble the timing of the volatile periods and jump episodes in them.
   \end{itemize}
 \end{frame}
 
