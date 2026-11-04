@@ -1,0 +1,46 @@
+% L11b covered call, one panel. Schematic: the profit (ink) at expiration, per
+% share, of a covered call, with the profit of the shares alone (gray, dashed)
+% for comparison. Drawn November 4, 2026 in the style of L11a's buying-shares
+% panel (no payoff curve: the shares' payoff leaves the panel).
+%
+% Buy shares at S(0) = 3.8 and sell a call at K = 5.0; the premium grown to
+% expiration is drawn as 1.0.
+%   Shares alone: profit = S(T) - 4.0 (S(0) grown to expiration, exaggerated).
+%   Covered call: today's cost S(0) - P_c grown to expiration is drawn as 3.0,
+%   profit = min(S(T), K) - 3.0: breakeven 3.0, max loss 3.0 at S(T) = 0,
+%   max profit K - 3.0 = 2.0 for S(T) >= K.
+%   Opportunity point O+ = K + (premium grown) = 6.0, where the shares alone
+%   reach the covered call's max profit. Above O+, the shares alone earn more:
+%   the shaded wedge is the opportunity loss (added November 4, 2026, at the
+%   instructor's request; O+ is defined in the covered call example).
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+% 3.2 = 4.0 x \yscale, so the shares-alone line starts exactly at the axes'
+% corner: its profit at S(T) = 0 is the whole purchase price grown, -4.0
+\def\yzero{3.2}
+
+\begin{document}
+\begin{tikzpicture}
+  \panelaxes{\textbf{Covered call:} own the shares, sell a call at $K$}{}{Profit (USD/share)}
+  \node[anchor=north] at (\xaxis/2, -1.05) {Share price at expiration $S(T)$};
+  \shareslegend{covered call}
+  \begin{profitdata}
+    % the opportunity loss: the shares alone above the covered call's cap
+    \fill[gdgray, fill opacity=0.25] (6.0, 2.0) -- (7.4, 3.4) -- (7.4, 2.0) -- cycle;
+    \node[note, anchor=west, inner sep=0pt] at (7.65, 2.95) {opportunity\\loss};
+    \strike{5.0}{2.0}{$K$}{short call}
+    \entryprice{3.8}
+    % shares alone, for comparison
+    \draw[shares, more] (0, -4.0) -- (7.4, 3.4);
+    % covered call
+    \draw[profit] (0, -3.0) -- (5.0, 2.0) -- (9.0, 2.0);
+    \draw[gap] (8.6, 0.06) -- (8.6, 1.94);
+    \node[anchor=east, inner sep=4pt] at (8.6, 1.0) {max profit};
+    % the profit line at S = 0.25 is -2.75; the tip stops 0.06 short of it (as in L11a)
+    \draw[gap] (0.25, -0.06) -- (0.25, -2.69);
+    \node[anchor=north west, inner sep=4pt, align=left] at (0.25, -0.3) {max\\loss};
+    \breakeven{3.0}{$S^{\ddagger}$}{above left}
+    \node[pt, draw=vnink, label={[inner sep=0.5pt, label distance=2pt]above left:$O^{+}$}] at (6.0, 2.0) {};
+  \end{profitdata}
+\end{tikzpicture}
+\end{document}

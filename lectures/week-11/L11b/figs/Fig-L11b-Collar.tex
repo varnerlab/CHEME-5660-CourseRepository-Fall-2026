@@ -1,0 +1,62 @@
+% L11b protective collar, three panels: net credit, zero cost, and net debit.
+% Schematic: the profit (ink) at expiration, per share, of a protective collar,
+% with the profit of the shares alone (gray, dashed). Drawn November 4, 2026
+% in the style of L11a's buying-shares panel; three panels at the instructor's
+% request, to show where the opportunity point lands for each net premium.
+%
+% All panels: shares bought at S(0) = 3.8, shares alone profit = S(T) - 4.0
+% (S(0) grown to expiration, exaggerated), put at K1 = 2.6, call at K2 = 5.6.
+% The collar's cost today, S(0) + P1 - P2, grown to expiration, is c:
+%   profit = K1 - c below K1, S(T) - c between the strikes, K2 - c above K2.
+% The opportunity point O+ = K2 + (P2 - P1) grown = K2 - c + 4.0 is where the
+% shares alone reach the collar's maximum profit. Shaded: where the shares alone
+% earn more than the collar (the opportunity loss).
+%   Net credit (P2 > P1), c = 3.4: floor -0.8, cap 2.2, breakeven 3.4,
+%     O+ = 6.2 > K2; the shares earn more only above O+.
+%   Zero cost (P1 = P2), c = 4.0: floor -1.4, cap 1.6, breakeven 4.0,
+%     O+ = K2; the collar and the shares coincide between the strikes.
+%   Net debit (P1 > P2), c = 4.6: floor -2.0, cap 1.0, breakeven 4.6,
+%     O+ = 5.0 < K2; the shares earn more everywhere above S = 2.0, where they
+%     cross the floor, by the debit between the strikes.
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+% 3.2 = 4.0 x \yscale, so the shares-alone line starts exactly at the axes'
+% corner: its profit at S(T) = 0 is the whole purchase price grown, -4.0
+\def\yzero{3.2}
+% wider than L11a's 10.6 so each y-axis label clears the panel to its left
+\def\panelgap{11.4}
+
+% One panel: #1 title, #2 collar cost c, #3 breakeven label position,
+% #4 the shaded region, a closed path (shares above the collar),
+% #5 the S where the shares reach the cap (O+).
+\newcommand{\collarpanel}[5]{%
+  \panelaxes{#1}{}{Profit (USD/share)}
+  \node[anchor=north] at (\xaxis/2, -1.05) {Share price at expiration $S(T)$};
+  \begin{profitdata}
+    % opportunity loss: the shares alone above the collar
+    \pgfmathsetmacro{\fl}{2.6-#2}\pgfmathsetmacro{\cp}{5.6-#2}
+    \fill[gdgray, fill opacity=0.25] #4;
+    \node[note, anchor=west, inner sep=0pt] at (7.65, \cp + 0.95) {opportunity\\loss};
+    \strike{2.6}{\fl}{$K_{1}$}{long put}
+    \strike{5.6}{\cp}{$K_{2}$}{short call}
+    \entryprice{3.8}
+    \draw[shares, more] (0, -4.0) -- (7.4, 3.4);
+    \draw[profit] (0, \fl) -- (2.6, \fl) -- (5.6, \cp) -- (9.0, \cp);
+    \breakeven{#2}{$S^{\ddagger}$}{#3}
+    \node[pt, draw=vnink, label={[inner sep=0.5pt, label distance=2pt]above left:$O^{+}$}] at (#5, \cp) {};
+  \end{profitdata}}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{scope}
+    \collarpanel{\textbf{Collar, net credit:} $\mathcal{P}_{2}>\mathcal{P}_{1}$}{3.4}{above left}{(6.2, 2.2) -- (7.4, 3.4) -- (7.4, 2.2) -- cycle}{6.2}
+    \shareslegend{collar}
+  \end{scope}
+  \begin{scope}[xshift=\panelgap cm*0.8]
+    \collarpanel{\textbf{Collar, zero cost:} $\mathcal{P}_{1}=\mathcal{P}_{2}$}{4.0}{above left}{(5.6, 1.6) -- (7.4, 3.4) -- (7.4, 1.6) -- cycle}{5.6}
+  \end{scope}
+  \begin{scope}[xshift=2*\panelgap cm*0.8]
+    \collarpanel{\textbf{Collar, net debit:} $\mathcal{P}_{1}>\mathcal{P}_{2}$}{4.6}{below right}{(2.0, -2.0) -- (7.4, 3.4) -- (7.4, 1.0) -- (5.6, 1.0) -- (2.6, -2.0) -- cycle}{5.0}
+  \end{scope}
+\end{tikzpicture}
+\end{document}
