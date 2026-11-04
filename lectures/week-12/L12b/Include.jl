@@ -33,6 +33,7 @@ using LinearAlgebra
 import JumpHMM # synthetic markets: always call JumpHMM functions qualified
 import StatsBase # quantiles and autocorrelations
 import Logging # silence the data loader's notes about split adjustments
+import TOML # the summary of the generator fit
 
 # the INFORMS 2026 model-predictive portfolio method, a submodule of the course package: always call it
 # qualified (MPC.run_study, ...), because some of its names are also used by the course package itself.
