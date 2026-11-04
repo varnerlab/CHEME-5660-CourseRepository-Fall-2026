@@ -1236,8 +1236,8 @@ version = "1.12.0"
 
 [[deps.JumpHMM]]
 deps = ["DataFrames", "Distributions", "HypothesisTests", "LinearAlgebra", "PDMats", "Random", "SpecialFunctions", "Statistics", "StatsBase"]
-git-tree-sha1 = "ad5ce7f59dd77be85f70c1f143da86dda68ca80b"
-repo-rev = "202f8b79253df605e2ea5021d2fc69ce29ee6228"
+git-tree-sha1 = "6ef968786d973946246b319e9355c65c1d9fc8a0"
+repo-rev = "efadb711724af20e65bfe1112e48c5574213cbda"
 repo-url = "https://github.com/varnerlab/JumpHMM.jl"
 uuid = "6ee30eab-673b-484c-8b30-2cdb31ee1eb8"
 version = "0.3.0"
@@ -2654,7 +2654,7 @@ uuid = "41fe7b60-77ed-43a1-b4f0-825fd5a5650d"
 version = "0.2.0"
 
 [[deps.VLQuantitativeFinancePackage]]
-deps = ["COSMO", "CSV", "Clarabel", "DataFrames", "DataStructures", "Dates", "Distributions", "FileIO", "JLD2", "JuMP", "LazyArtifacts", "LinearAlgebra", "LsqFit", "MadNLP", "Optim", "Random", "SCS", "Statistics", "StatsBase", "TOML"]
+deps = ["COSMO", "CSV", "Clarabel", "DataFrames", "DataStructures", "Dates", "Distributions", "FileIO", "JLD2", "JuMP", "JumpHMM", "LazyArtifacts", "LinearAlgebra", "LsqFit", "MadNLP", "Optim", "Random", "SCS", "Statistics", "StatsBase", "TOML"]
 path = "code"
 uuid = "4119e0bf-20d0-4785-913e-5ebdb0caa218"
 version = "1.0.0-DEV"

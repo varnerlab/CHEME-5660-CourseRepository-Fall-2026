@@ -33,6 +33,7 @@ module MPCPortfolio
     using JuMP
     using Clarabel
     using SCS
+    import JumpHMM
 
     # the engine, in the study's include order -
     include(joinpath(@__DIR__, "Types.jl"))
@@ -62,6 +63,7 @@ module MPCPortfolio
 
     # course additions: default settings, universe selection, synthetic markets -
     include(joinpath(@__DIR__, "Course.jl"))
+    include(joinpath(@__DIR__, "Synthetic.jl"))
 
     # exports (the study's names for the ported files, plus the course additions) -
     export MyMarketData, load_market_data, growth_rates, index_of, DATA_FILES,
@@ -86,4 +88,7 @@ module MPCPortfolio
         growth_scorecard, MyStudyRun, MyStudyResult, make_rule, make_screen, run_study, limits_row,
         limits_day, limits_failures
     export default_study_path, select_universe, subset_universe
+    export SYNTH_HMM, SYNTH_TRAIN, SYNTH_ALPHA_WINDOWS, growth_window, fit_name_model, model_sd_ratio,
+        ewls_beta_path, beta_path_stats, real_drift_targets, fit_beta_drift, fit_alpha_pull, fit_generator,
+        market_data_from_growth, synthetic_market_data, market_path_stats, path_sets, run_synthetic_path
 end

@@ -16,7 +16,7 @@ include(joinpath(@__DIR__, "helpers.jl"))
               "test_backtest.jl", "test_bandit.jl", "test_market_inputs.jl", "test_calibration.jl",
               "test_allocators_hedge.jl", "test_allocators_caps.jl", "test_allocators_eta.jl",
               "test_online_sim.jl", "test_hedge_pool.jl", "test_screens.jl", "test_screens_universe.jl",
-              "test_study_config.jl", "test_growth_scorecard.jl", "test_study_backtest.jl", "test_limits.jl", "test_real_pipeline.jl")
+              "test_study_config.jl", "test_growth_scorecard.jl", "test_study_backtest.jl", "test_limits.jl", "test_real_pipeline.jl", "test_synthetic.jl")
         include(joinpath(@__DIR__, f))
     end
 end

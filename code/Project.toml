@@ -14,6 +14,7 @@ Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
+JumpHMM = "6ee30eab-673b-484c-8b30-2cdb31ee1eb8"
 LazyArtifacts = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LsqFit = "2fda8390-95c7-5789-9bda-21331edee243"
@@ -24,6 +25,9 @@ SCS = "c946c3f1-0d1f-5ce8-9dea-7daa1f7e2d13"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[sources]
+JumpHMM = {url = "https://github.com/varnerlab/JumpHMM.jl", rev = "efadb711724af20e65bfe1112e48c5574213cbda"}
 
 [compat]
 Aqua = "0.8"
@@ -37,6 +41,7 @@ Distributions = "0.25"
 FileIO = "1.17.0"
 JLD2 = "0.5"
 JuMP = "1"
+JumpHMM = "0.3.0"
 LazyArtifacts = "1"
 LinearAlgebra = "1"
 LsqFit = "0.15"
