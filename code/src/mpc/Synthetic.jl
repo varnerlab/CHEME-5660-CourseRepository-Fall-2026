@@ -361,6 +361,17 @@ function fit_generator(md::MyMarketData, calib::MyCalibration; market_model, tra
 end
 
 """
+    NonFiniteCloseError(msg)
+
+Thrown by `market_data_from_growth` when a synthetic close is not finite and positive. A dedicated type, so a
+caller can skip such a market and count it without hiding any other error.
+"""
+struct NonFiniteCloseError <: Exception
+    msg::String
+end
+Base.showerror(io::IO, e::NonFiniteCloseError) = print(io, "NonFiniteCloseError: ", e.msg)
+
+"""
     market_data_from_growth(md::MyMarketData, g_m::AbstractVector, G::AbstractMatrix;
         volume_stop::Date=Date(2024, 12, 31))::MyMarketData
 
@@ -368,7 +379,8 @@ A synthetic `MyMarketData` on the calendar of the real market `md`: the market g
 row) and the name growth `G` (yr⁻¹, rows × `md.tickers`) compound from the real first closes as exp(g·Δt) with
 Δt = 1/252 yr; opens equal closes; each name's volume is its median real daily volume on the dates up to
 `volume_stop` (all dates if none); the sectors and the risk-free rates are the real ones. Throws
-`ArgumentError` naming the first ticker whose close is not finite and positive.
+`NonFiniteCloseError` naming the first ticker whose close is not finite and positive, and `ArgumentError`
+when the shapes do not match the market data.
 """
 function market_data_from_growth(md::MyMarketData, g_m::AbstractVector, G::AbstractMatrix;
         volume_stop::Date=Date(2024, 12, 31))::MyMarketData
@@ -381,7 +393,7 @@ function market_data_from_growth(md::MyMarketData, g_m::AbstractVector, G::Abstr
     for j in 1:M
         for t in 1:(n + 1)
             (isfinite(close[t, j]) && close[t, j] > 0) ||
-                throw(ArgumentError("ticker $(md.tickers[j]) has close $(close[t, j]) on day $(t); closes must be finite and positive"))
+                throw(NonFiniteCloseError("ticker $(md.tickers[j]) has close $(close[t, j]) on day $(t); closes must be finite and positive"))
         end
     end
     vrows = findall(<=(volume_stop), md.dates)
@@ -396,7 +408,8 @@ end
 
 Synthetic market `p` on the calendar of the real market `md`: one path of `JumpHMM.sample_dependence(gen, n;
 seed=p)` over the `n = length(md.dates) − 1` growth rows, turned into market data by `market_data_from_growth`.
-The same `p` gives the same market. `gen.tickers` must equal `md.tickers` (else `ArgumentError`).
+The same `p` gives the same market. `gen.tickers` must equal `md.tickers` (else `ArgumentError`); a non-finite
+close throws `NonFiniteCloseError`.
 """
 function synthetic_market_data(gen::JumpHMM.SectorFactorModel, md::MyMarketData, p::Int)::MyMarketData
     gen.tickers == md.tickers || throw(ArgumentError("the generator's tickers differ from the market data's"))
@@ -507,7 +520,8 @@ One row per run, in order: `label`, `allocator`, `screen`, `seed`, `hedge`, `sta
 (missing when ok), `wealth_ratio` (ending wealth ÷ `W0`), `growth` (`growth_scorecard`'s realized growth,
 ln(W_end/W_1)/((N−1)Δt), yr⁻¹), `max_drawdown` (fraction), `n_decisions`, and the same run window's SPY
 `spy_ratio` (last close ÷ first close) and `spy_growth` (yr⁻¹). A run that throws keeps its row with status
-`"error"`, the message, and missing results.
+`"error"`, the message, and missing results; if the calibration itself fails, every run gets such a row, with
+an error message that starts "calibration failed".
 """
 function run_synthetic_path(md::MyMarketData, runs::Vector{MyStudyRun}; calib=nothing)::DataFrame
     isempty(runs) && throw(ArgumentError("runs is empty"))
@@ -515,7 +529,17 @@ function run_synthetic_path(md::MyMarketData, runs::Vector{MyStudyRun}; calib=no
     all(r -> r.settings.train_start == s1.train_start && r.settings.train_stop == s1.train_stop, runs) ||
         throw(ArgumentError("every run must share one training window"))
     if calib === nothing
-        calib = calibrate(md; train_start=s1.train_start, train_stop=s1.train_stop, window=s1.omega_window)
+        calib = try
+            calibrate(md; train_start=s1.train_start, train_stop=s1.train_stop, window=s1.omega_window)
+        catch err
+            err  # recorded below as an error row for every run
+        end
+    end
+    if calib isa Exception
+        message = "calibration failed: " * sprint(showerror, calib)
+        return DataFrame([(label=r.label, allocator=r.allocator, screen=r.screen, seed=r.seed, hedge=r.settings.hedge,
+            status="error", error=message, wealth_ratio=missing, growth=missing, max_drawdown=missing,
+            n_decisions=missing, spy_ratio=missing, spy_growth=missing) for r in runs])
     end
     ctxs = Dict{Any,Any}()
     for r in runs

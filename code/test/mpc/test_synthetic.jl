@@ -24,7 +24,8 @@ end
     @test m1.open == m1.close && all(m1.volume[:, 3] .== median(md.volume[:, 3]))
     G[5, 2] = Inf
     err = try market_data_from_growth(md, g_m, G); nothing catch e; e end
-    @test err isa ArgumentError && occursin(md.tickers[2], err.msg)
+    @test err isa NonFiniteCloseError && occursin(md.tickers[2], err.msg)
+    @test_throws ArgumentError market_data_from_growth(md, g_m[1:end-1], G)   # a shape error is not a non-finite close
 
     # one synthetic path: reproducible, on the real calendar, SPY from the generator's market draw
     a = synthetic_market_data(gen, md, 3)
@@ -70,6 +71,13 @@ end
     @test nrow(out) == 2 && all(out.status .== "ok") && all(isfinite, out.wealth_ratio)
     @test all(isfinite, out.growth) && all(out.spy_growth .== out.spy_growth[1])
     @test out.screen == [:gamma, :random]
+
+    # a market whose calibration fails gives one error row per run, not a crash
+    bad = with_settings(s; train_start = Date(2018, 12, 31))   # a one-day training window: calibrate throws
+    bad_runs = [build(MyStudyRun, (settings = bad, allocator = "CD", screen = :gamma, seed = 5660)),
+        build(MyStudyRun, (settings = bad, allocator = "CD", screen = :random, seed = 5660))]
+    failed = run_synthetic_path(a, bad_runs)
+    @test nrow(failed) == 2 && all(failed.status .== "error") && all(occursin.("calibration", failed.error))
 
     # the whole generator fit, at toy scale (untuned models, two bank paths, two half-lives)
     gen2, summary = fit_generator(md, calib; market_model = gen.market_model, train = train, alpha_windows = halves,

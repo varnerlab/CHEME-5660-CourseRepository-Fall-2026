@@ -90,5 +90,5 @@ module MPCPortfolio
     export default_study_path, select_universe, subset_universe
     export SYNTH_HMM, SYNTH_TRAIN, SYNTH_ALPHA_WINDOWS, growth_window, fit_name_model, model_sd_ratio,
         ewls_beta_path, beta_path_stats, real_drift_targets, fit_beta_drift, fit_alpha_pull, fit_generator,
-        market_data_from_growth, synthetic_market_data, market_path_stats, path_sets, run_synthetic_path
+        NonFiniteCloseError, market_data_from_growth, synthetic_market_data, market_path_stats, path_sets, run_synthetic_path
 end
