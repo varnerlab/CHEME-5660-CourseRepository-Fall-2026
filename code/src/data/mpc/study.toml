@@ -1,0 +1,92 @@
+# Defaults of the screened-utility panel study. Dates are calendar days; windows are in trading days.
+
+[window]
+start = 2025-01-02        # first run day (date)
+stop = 2026-09-04         # last run day (date)
+train_start = 2014-01-03  # calibration start (date)
+train_stop = 2024-12-31   # calibration end (date)
+W0 = 100000.0             # initial wealth ($)
+
+[market]
+xi_short = 21             # short EMA span of SPY closes for xi (trading days)
+xi_long = 63              # long EMA span of SPY closes for xi (trading days)
+xi_quantile = 0.99        # quantile that sets the xi gain (dimensionless)
+gtilde_window = 252       # window of the market growth average (trading days)
+beta_floor = 0.1          # floor on beta in gamma weights (dimensionless)
+
+[sim]
+ewls_half_life = 63.0     # EWLS half-life (trading days)
+ewls_prior_weight = 63.0  # EWLS prior weight (trading days)
+
+[covariance]
+omega_window = 126        # residual covariance window (trading days)
+lambda = "calibrated"     # shrinkage of the residual covariance toward its diagonal (dimensionless, 0-1); "calibrated" = from calibration
+
+[triggers]
+T = 21                    # MPC horizon (trading days)
+z = 1.96                  # band half-width (standard deviations)
+D_max = 0.08              # drawdown limit (fraction of wealth)
+drawdown_reset = true     # set the drawdown peak back to current wealth at each drawdown decision (flag)
+cash_revisit = 21         # days between cash revisits (trading days)
+n_paths = 1000            # projection paths (count)
+
+[screens]
+N_per_sector = 3          # names picked per sector (count)
+repick_interval = 21      # days between re-picks (trading days)
+repick_on_band_exit = true  # re-pick when the band is exited (flag)
+bandit_lookback = 252     # bandit training lookback (trading days)
+bandit_horizon = 21       # reward window (trading days)
+bandit_eps_floor = 0.05   # exploration floor (probability)
+bandit_iters_per_arm = 50 # iterations per arm (count)
+bandit_min_iters = 500    # minimum iterations (count)
+bandit_max_iters = 5000   # maximum iterations (count)
+basket_K = 13             # names picked by the universe-wide screens (count)
+liquidity_shortlist = 100 # liquid shortlist size (count)
+liquidity_window = 63     # window of the dollar-volume ranking (trading days)
+corr_max = 0.7            # largest pairwise growth-rate correlation accepted (dimensionless)
+corr_window = 252         # correlation window (trading days)
+fixed_tickers = ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"]  # pre-chosen list, picked in advance without 2025 data
+
+[limits]
+w_max = 0.10              # single-name weight cap (fraction of wealth)
+vol_cap_annual = "calibrated"  # annualized volatility cap (1/sqrt(yr)); "calibrated" = SPY 2014-2024
+s_max = 1.0               # sector weight cap (fraction of wealth)
+turnover_frac = 0.10      # spread-cost budget per decision: half-spread cost of the share changes <= this x wealth (fraction of wealth)
+w_max_scale = 1.5         # a screen pick's cap is max(w_max, w_max_scale/K) (dimensionless)
+
+[allocators]
+ces_eta = 0.5             # CES elasticity parameter (dimensionless)
+sg_baseline = 0.01        # Stone-Geary baseline weight (fraction of wealth)
+ls_long = 1.30            # 130/30 gross long (fraction of wealth)
+ls_short = 0.30           # 130/30 gross short (fraction of wealth)
+ls_net = 1.00             # 130/30 net exposure (fraction of wealth)
+borrow_rate = 0.0075      # short borrow fee (per year)
+
+[costs]
+half_spread_bps = 5.0     # half bid-ask spread (basis points)
+impact_kappa = 0.001      # impact coefficient (dimensionless)
+
+[hedge]
+hedge = true              # beta hedge on (flag)
+beta_ref = 1.0            # reference portfolio beta (dimensionless)
+kappa_beta = 1.0          # beta cap strength (dimensionless)
+beta_min = 0.0            # floor of the beta cap beta_max (dimensionless)
+pool_H = 5                # hedge pool size (count)
+downday_lookback = 252    # down-day beta lookback (trading days)
+
+[grid]
+n_seeds = 30              # seeds per cell (count)
+base_seed = 5660          # first seed (integer)
+allocators = ["CD", "CES", "CESw", "SG", "MinVar", "Tangent", "LS"]  # allocator labels
+screens = ["bandit", "gamma", "random"]                       # screen labels
+hedge = [true, false]     # hedge on/off cells (flags)
+K = [5, 8, 13, 21, 34]     # basket sizes of the universe-wide screens (count)
+universe_screens = ["global_gamma", "liquid_gamma", "corr_gamma", "random_global", "random_liquid"]  # screen labels
+eta = [0.1, 0.25, 0.5, 2.0, 4.0, 10.0]                     # CES elasticities of the eta sweep, step (b) (dimensionless); Cobb-Douglas is eta = 1
+eta_limits = [0.05, 0.1, 0.25, 0.5, 2.0, 4.0, 10.0, 20.0]  # CES elasticities of the clean-limits runs, step (a) (dimensionless)
+eta_ces_drop = [0.1]                                       # share-count CES elasticities left out of the eta sweep, step (b) (dimensionless): ill-conditioned when a limit binds (user, 2026-10-22)
+limits_list = "l8b_13"                                      # fixed list of the clean-limits runs (a [grid.fixed_lists] name)
+
+[grid.fixed_lists]        # lists chosen in advance without 2025 data
+l8b_13 = ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"]
+l8b_15 = ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ", "WMT", "PG"]

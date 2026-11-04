@@ -15,3 +15,6 @@ using Test
     include("test_smoke.jl")
     include("test_aqua.jl")
 end
+
+# the MPCPortfolio submodule (the INFORMS 2026 engine), in its own test module
+include(joinpath(@__DIR__, "mpc", "runtests_mpc.jl"))

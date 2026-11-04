@@ -36,7 +36,7 @@ UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 VLQuantitativeFinancePackage = "4119e0bf-20d0-4785-913e-5ebdb0caa218"
 
 [sources]
-JumpHMM = {url = "https://github.com/varnerlab/JumpHMM.jl", rev = "3a9fd4601a5839476d89e39c005cb9db38c1a0d1"}
+JumpHMM = {url = "https://github.com/varnerlab/JumpHMM.jl", rev = "202f8b79253df605e2ea5021d2fc69ce29ee6228"}
 
 [compat]
 julia = "1.12"

@@ -46,3 +46,6 @@ include(joinpath(_PATH_TO_SRC, "Trees.jl"));
 include(joinpath(_PATH_TO_SRC, "Sharpe.jl"));
 include(joinpath(_PATH_TO_SRC, "AdaptivePortfolio.jl"));
 include(joinpath(_PATH_TO_SRC, "OrderBook.jl"));
+
+# the INFORMS 2026 model-predictive portfolio method, as a submodule -
+include(joinpath(_PATH_TO_SRC, "mpc", "MPCPortfolio.jl"));
