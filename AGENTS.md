@@ -8,21 +8,40 @@
   (interpretable allocation and model-predictive rebalancing), building on L8b.
   At most two examples are worked in class per lecture. Design:
   `private/specs/2026-11-03-week12-jumphmm-informs-design.md`.
-- The multi-asset generator lives in `varnerlab/JumpHMM.jl` 0.2.0
-  (`SectorFactorModel`, commit `3a9fd4601a5839476d89e39c005cb9db38c1a0d1`),
-  pinned in the root `Project.toml` (`[sources]`) and `Manifest.toml`. Notebooks
+- The multi-asset generator lives in `varnerlab/JumpHMM.jl` (`SectorFactorModel`;
+  0.2.0 added it, 0.3.0 added the calibration tools `sample_draws`, `compose`,
+  `compose_name`, `with_parameters`, and fitting from given models), pinned at
+  `efadb711724af20e65bfe1112e48c5574213cbda` in the root `Project.toml`
+  (`[sources]`), `code/Project.toml` (`[sources]`), and both manifests. Notebooks
   `import JumpHMM` and call it qualified. A fresh install fetches it from GitHub.
 - L12a: lecture (Markov foundations from the 2025 text, then JumpHMM and the sector
-  factor model), two examples (SPY with N = 100 states; 22 stocks, two per sector
-  from one sub-industry, because each sector's residuals must covary positively),
+  factor model), two examples (SPY with N = 100 states; 22 stocks, two per sector,
+  each pair chosen so its residuals covary positively; only 5 of the 11 pairs share
+  a sub-industry),
   and the deck. α, β fixed in the composition; drifting β is the last, optional
   step, sized from the online (EWLS) β after its first year. The fitted generator
-  is saved to `L12a/data/` and copied to `L12b/data/` for L12b's synthetic example.
+  is saved to `L12a/data/`.
 - Open for the instructor: the disposition of `L12a/advanced/markov/` (its SPY
   example calls the states hidden and then treats them as observed); the
   JumpHMM tuning objective identifies ϵ weakly (it lands at the grid's lower
-  edge, as in the INFORMS study). The L12a bandit Notes were deleted; L12b's bandit
-  material is handled with the L12b rebuild.
+  edge, as in the INFORMS study). The L12a bandit Notes were deleted.
+- L12b (November 4, his decision: "one home" for each piece, and examples that are
+  direct clones of the INFORMS study, with the number of tickers a setting): the
+  INFORMS engine is the course package submodule `VLQuantitativeFinancePackage.MPCPortfolio`
+  (`code/src/mpc/`, ported from the study's repository at `2fc998c`, with its tests;
+  notebooks `import ... MPCPortfolio as MPC`, because the course package has its own
+  `MySIMParameterEstimate` and EWLS functions for L7b). The synthetic-market
+  composition lives only in JumpHMM.jl; `code/src/mpc/Synthetic.jl` holds the
+  method-specific calibration (β drift fitted to the method's online β, α pull),
+  the typical/burst/bear path sets, and the runner. The risk-free rate is FRED
+  DTB3 (`code/src/data/DTB3.csv`). The real-data pipeline reproduces the study's
+  published result (Cobb–Douglas, γ picker, hedge off: 122,169.64 USD, 27
+  decisions; a package test), and the 373-name generator fit reproduces the study's
+  (h_β 126, median k 4.9745, φ 0.6); it is saved in `L12b/data/` with its summary,
+  refit by `L12b/scripts/fit_generator.jl`. Lecture, two examples (real data, about
+  1 minute; synthetic data, about 4 minutes), and deck. The bandit lecture, the BBBP
+  example, and the HMM out-of-sample example are in
+  `lectures/archive/week-12-L12b-bandits-2026-11-04/`; the L12b Notes were deleted.
 
 ## L11b: protective collars replace cash secured puts — November 3, 2026
 
