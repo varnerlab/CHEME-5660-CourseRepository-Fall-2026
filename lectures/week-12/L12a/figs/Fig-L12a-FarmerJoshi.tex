@@ -1,0 +1,72 @@
+% L12a Farmer–Joshi market, two panels (November 5, 2026). A: one step of the market,
+% with the price feeding back into every trader's signal. B: the threshold rule of a
+% value investor as a three-state machine (after Farmer and Joshi 2002, Figs. 4-5);
+% trend followers use the same machine with the signs reversed.
+%
+% Transition checks against code/src/AgentBasedMarkets.jl threshold_position (value
+% investor, direction -1): from 0, short if zeta > chi_in, long if zeta < -chi_in; from
+% short, exit if zeta < chi_out; from long, exit if zeta > -chi_out. All comparisons strict.
+\documentclass[tikz,border=6pt]{standalone}
+\input{abm-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  % ================= Panel A: one step of the market =================
+  \node[paneltitle] at (-0.6, 10.85) {\textbf{A}\quad One step of the Farmer–Joshi market};
+
+  \node[note] (val) at (2.1, 9.75) {log value $v_{t}$ (random walk)};
+  \node[agent, fill=redfill, draw=gdred, minimum width=3.9cm, minimum height=1.35cm] (vi) at (2.1, 8.1)
+    {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=p_{t}-\bigl(v_{t}+v^{(i)}\bigr)$};
+  \node[agent, fill=bluefill, draw=gdblue, minimum width=3.9cm, minimum height=1.35cm] (tf) at (7.2, 8.1)
+    {\textcolor{gdblue}{\textbf{trend followers}}\\[1pt]$\zeta^{(i)}_{t}=p_{t}-p_{t-\theta_{i}}$};
+  \draw[flow] (val.south) -- (vi.north);
+
+  % threshold rule -> orders -> net order
+  \node[note] (vr) at (2.1, 6.55) {threshold rule: $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$};
+  \node[note] (tr) at (7.2, 6.55) {threshold rule: $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$};
+  \draw[flow] (vi.south) -- (vr.north);
+  \draw[flow] (tf.south) -- (tr.north);
+  \node[sumbox] (net) at (4.65, 4.95) {net order $\sum_{i}\omega^{(i)}_{t+1}$, \quad $\omega^{(i)}_{t+1}=x^{(i)}_{t+1}-x^{(i)}_{t}$};
+  \draw[flow] (vr.south) -- (vr.south |- net.north);
+  \draw[flow] (tr.south) -- (tr.south |- net.north);
+
+  % the market maker sets the new log price
+  \node[sumbox, minimum width=5.6cm] (mm) at (4.65, 3.35)
+    {\textbf{market maker}\\[2pt]$p_{t+1}=p_{t}+\dfrac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\xi_{t+1}$};
+  \draw[flow] (net.south) -- (mm.north);
+  \node[note, anchor=west] (noise) at (8.15, 3.35) {noise $\xi_{t+1}$};
+  \draw[flow] (noise.west) -- (mm.east);
+
+  \node[minority, minimum width=1.9cm] (price) at (4.65, 1.75) {log price $p_{t+1}$};
+  \draw[flow] (mm.south) -- (price.north);
+
+  % feedback: the new price changes every signal at the next step
+  \draw[feedback] (price.west) -- (-0.55, 1.75) -- (-0.55, 8.1) -- (vi.west);
+  \draw[feedback] (price.east) -- (9.85, 1.75) -- (9.85, 8.1) -- (tf.east);
+  \node[rotate=90, text=saorange, font=\sffamily\footnotesize] at (-0.85, 4.95) {the new price changes every signal};
+
+  % ================= Panel B: the threshold rule =================
+  \begin{scope}[xshift=11.6cm]
+    \node[paneltitle] at (-0.3, 10.85) {\textbf{B}\quad Threshold rule of value investor $i$};
+
+    \node[state] (long)  at (0.9, 7.5) {$+c_{i}$};
+    \node[state] (flat)  at (3.9, 7.5) {$0$};
+    \node[state] (short) at (6.9, 7.5) {$-c_{i}$};
+    \node[note, below=3pt of long]  {long};
+    \node[note, below=3pt of flat]  {flat};
+    \node[note, below=3pt of short] {short};
+
+    % entries (above), exits (below)
+    \draw[flow] (flat.north east) to[bend left=35] node[above, align=center] {$\zeta^{(i)}_{t}>\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}overpriced: sell}} (short.north west);
+    \draw[flow] (flat.north west) to[bend right=35] node[above, align=center] {$\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}underpriced: buy}} (long.north east);
+    \draw[flow] (short.south west) to[bend left=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}<\chi^{\text{out}}_{i}$} (flat.south east);
+    \draw[flow] (long.south east) to[bend right=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}>-\chi^{\text{out}}_{i}$} (flat.south west);
+
+    \node[anchor=north west, align=left] at (-0.3, 4.75) {%
+      Otherwise the position stays the same.\\[6pt]
+      Position size: $c_{i}=a\bigl(\chi^{\text{in}}_{i}-\chi^{\text{out}}_{i}\bigr)$\\[6pt]
+      \textcolor{gdblue}{Trend followers} use the same rule with the signs reversed:\\[2pt]
+      buy when $\zeta^{(i)}_{t}>\chi^{\text{in}}_{i}$, sell when $\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$.};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

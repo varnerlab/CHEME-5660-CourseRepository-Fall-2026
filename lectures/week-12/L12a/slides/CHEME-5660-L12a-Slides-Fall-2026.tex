@@ -163,6 +163,22 @@
   switch to the same action at the same time.
 \end{frame}
 
+\begin{frame}{One Round of the Minority Game}
+  The history goes to every agent; the actions add up to the attendance, which
+  feeds back into the history and every strategy's score:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=0 0 248bp 0,clip]{../figs/Fig-L12a-MinorityGame.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{One Agent's Strategies}
+  Each strategy is a table with one action per history. The round updates both
+  scores, and the scores set the next choice:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=337bp 0 0 0,clip]{../figs/Fig-L12a-MinorityGame.pdf}
+  \end{center}
+\end{frame}
+
 % ========== Maximum entropy
 \begin{frame}{Choosing a Strategy: Maximum Entropy}
   An agent chooses strategy $s$ with probability $\pi_{s}$. The \hilite{entropy}
@@ -206,6 +222,21 @@
   \vspace{0.3em}
   \textbf{\ink{Physics:}} $-d\Hc/d\bar{U}=\phi_{1}=1/T$, the way thermodynamics
   defines temperature through entropy and energy.
+\end{frame}
+
+\begin{frame}{The Thermal Minority Game Algorithm}
+  \small
+  \textbf{\ink{Initialize:}} $N$ (odd), $m$, $S$, $T$, rounds $R$; $P=2^{m}$; random tables
+  $a_{is}^{\mu}$; scores $U_{is}(1)\gets 0$; random history $\mu(1)$. For each round
+  $t=1,\dots,R$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.15em}
+    \item \hilite{Choose}: draw $s_{i}(t)$ with $\pi_{is}(t)=\exp(U_{is}(t)/T)/\Zc_{i}(t)$.
+    \item \hilite{Act}: $a_{i}(t)\gets a_{i\,s_{i}(t)}^{\mu(t)}$.
+    \item \hilite{Aggregate}: $A(t)\gets\sum_{i}a_{i}(t)$; the minority action is $-\text{sign}\,A(t)$.
+    \item \hilite{Score}: $U_{is}(t+1)\gets U_{is}(t)-a_{is}^{\mu(t)}A(t)/P$ for every $i$ and $s$.
+    \item \hilite{History}: drop the oldest action in $\mu(t)$, append $-\text{sign}\,A(t)$.
+  \end{enumerate}
+  \textbf{\ink{Output:}} $A(1),\dots,A(R)$ and $\sigma^{2}/N=\langle A^{2}\rangle/N$ after a burn-in.
 \end{frame}
 
 % ========== What the minority game shows
@@ -252,6 +283,38 @@
   \textbf{\ink{Our variant:}} Table 1 traders, 1,200 of each, with
   $\sigma_{\xi}=0.05$ (Table 1 lists 0.35, which lets the price drift far from
   the value) and a random-walk log value $v_{t}$.
+\end{frame}
+
+\begin{frame}{One Step of the Market}
+  Signals set positions, positions set orders, and the net order sets the price,
+  which changes every signal at the next step:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=0 0 261bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Threshold Rule}
+  A value investor's position is one of three states. It enters when the
+  mispricing passes $\pm\cin$ and exits when it comes back past $\pm\cout$:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=340bp 0 0 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Farmer–Joshi Algorithm}
+  \small
+  \textbf{\ink{Initialize:}} thresholds $\cin>\cout$, offsets $v^{(i)}$, lags $\theta_{i}$, $a$,
+  $\lambda$, $\sigma_{\xi}$, $\sigma_{\eta}$, steps $R$; $c_{i}\gets a(\cin-\cout)$;
+  $x^{(i)}_{0}\gets 0$. For each step $t=0,\dots,R-1$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.15em}
+    \item \hilite{Signals}: $\zeta^{(i)}_{t}\gets p_{t}-(v_{t}+v^{(i)})$ (value) or
+      $p_{t}-p_{t-\theta_{i}}$ (trend, once $t\geq\theta_{i}$).
+    \item \hilite{Positions}: the threshold rule sets $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$.
+    \item \hilite{Orders}: $\omega^{(i)}_{t+1}\gets x^{(i)}_{t+1}-x^{(i)}_{t}$.
+    \item \hilite{Price}: $p_{t+1}\gets p_{t}+\frac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\xi_{t+1}$.
+    \item \hilite{Value}: $v_{t+1}\gets v_{t}+\eta_{t+1}$.
+  \end{enumerate}
+  \textbf{\ink{Output:}} log prices, log values, log returns $r_{t+1}=p_{t+1}-p_{t}$, volume.
 \end{frame}
 
 \begin{frame}{Stylized Facts: Simulated and Real}

@@ -151,3 +151,21 @@ individual names." Left out on purpose: the Dow figure (CNBC's article gives two
 values) and the leveraged-ETF buying (buying a falling market with leverage is not trend
 following, so it would muddy the value-investor mapping). The connection is posed as a question
 for the trader-mix result, not as an explanation of the sell-off.
+
+## November 5, 2026 (later): figures and pseudocode
+
+At the instructor's request ("we need to make some figures, and each method needs p-code"; his
+NSF-proposal minority game figure was the starting point):
+- `figs/Fig-L12a-MinorityGame` (end of The Minority Game): one round with both feedback paths
+  (the minority action into the history, the attendance into every strategy's score), and one
+  agent's two strategy tables for m = 3 with the current history row, the scores 2.4 and 0.9, and
+  the Boltzmann probabilities 0.73 and 0.27 at T = 1.5 (the score gap, matching the lecture's
+  0.73 at T = Δ).
+- `figs/Fig-L12a-FarmerJoshi` (Farmer–Joshi section): one step of the market and the value
+  investor's threshold rule as three states; transitions checked against `threshold_position`.
+- Pseudocode in the course format: the thermal minority game algorithm (end of the derivation
+  section) and the Farmer–Joshi algorithm (after the figure). New symbols, all added to the L12a
+  notation section: the signal $\zeta_t^{(i)}$ (unused course-wide), the drawn strategy $s_i(t)$,
+  the per-agent $\mathcal Z_i(t)$, and the run length $R$ (rounds or steps).
+- Deck: one frame per figure panel (cropped from the PDF) and one frame per algorithm; 25 pages,
+  zero Overfull lines. Both SVGs checked in light and dark mode with headless Chrome.
