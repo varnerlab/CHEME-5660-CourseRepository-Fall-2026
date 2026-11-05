@@ -12,6 +12,7 @@ using Test
     include("test_order_book.jl")
     include("test_stochastic.jl")
     include("test_market_data.jl")
+    include("test_agent_based_markets.jl")
     include("test_smoke.jl")
     include("test_aqua.jl")
 end

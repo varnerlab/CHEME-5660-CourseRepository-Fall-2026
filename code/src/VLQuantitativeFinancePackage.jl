@@ -70,6 +70,9 @@ module VLQuantitativeFinancePackage
     export ewls_init, ewls_update!, ewls_path
     export evaluate_validation_gates, route_portfolio_event
 
+    # agent-based markets (L12a)
+    export MyThermalMinorityGameModel, boltzmann_weights
+
     # limit-order-book functions -
     export submit_order!, cancel_order!, clear_order_book!
     export order_book_depth, order_book_snapshot, validate_order_book
