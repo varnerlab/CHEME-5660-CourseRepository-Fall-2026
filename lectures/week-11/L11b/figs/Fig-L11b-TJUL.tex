@@ -1,0 +1,96 @@
+% L11b TJUL today: one panel, drawn to scale with numeric axes (instructor's choice,
+% November 5, 2026). The profit at expiration (June 30, 2027), per share of SPY, of
+% the collar that the Innovator Equity Defined Protection ETF (TJUL) holds, with
+% SPY alone (gray, dashed) and the two options together (blue), as in the
+% net debit panel of Fig-L11b-Collar. The SPY close on November 4, 2026 is marked
+% in orange (the course's color for before expiration): the profit if SPY stayed
+% at that price until expiration.
+%
+% Data (SEC Form N-PORT for TJUL, series S000080903, July 31, 2025; cost = value
+% minus unrealized appreciation, per share = per contract / 100):
+%   long put  K1 = 617.85 = S(0), the SPY close on June 30, 2025: P1 = 45.459
+%   short call K2 = 701.94 = 617.85 x 1.1361 (the 13.61% cap):    P2 = 34.232
+%   (the fund holds a call at 11.12 instead of the shares; the figure uses the
+%   lecture's frame, shares bought at S(0))
+% Growth to expiration: two-year Treasury yield on June 30, 2025 (FRED DGS2),
+% 3.72%, semiannual bond-equivalent, so g_y = 2 ln(1 + 0.0372/2) = 0.03686/yr;
+% T = 730/365 = 2 yr, D = exp(g_y T) = 1.07650.
+%   net debit grown  D(P1 - P2)        = 12.086
+%   cost grown       c = D(S0 + P1 - P2) = 677.202 (breakeven S-double-dagger)
+%   SPY alone        S - D S0 = S - 665.117
+%   collar: floor K1 - c = -59.352; S - c between the strikes; cap K2 - c = 24.738
+%   options together: (K1 - S)^+ - (S - K2)^+ - 12.086, zero at K1 - 12.086 = 605.764,
+%     where SPY alone crosses the floor and the opportunity loss starts
+%   today, S = 766.81: SPY alone 101.693, collar 24.738, gap 76.956
+% As in the net debit panel, no O+ is drawn: it is not where the loss starts.
+%
+% Coordinates: inside the data scope, x is SPY in USD (570 at the y-axis, 30 USD
+% per 0.8 cm) and y is profit in USD/share (-100 at the x-axis, 35 USD per 0.8 cm).
+\documentclass[tikz,border=4pt]{standalone}
+\input{profit-diagram.tex}
+
+% data scope: (S, profit) in USD; the axes' corner is (570, -100)
+\newenvironment{tjuldata}{\begin{scope}[x=0.8cm/30, y=0.8cm/35, shift={(-570, 100)}]}{\end{scope}}
+
+\begin{document}
+\begin{tikzpicture}
+  % axes (panel units: 0.8 cm), title, axis labels
+  \draw[axis] (-0.15, 0) -- (9.6, 0);
+  \draw[axis] (0, -0.15) -- (0, 7.3);
+  \node[anchor=south] at (4.8, 7.45) {\textbf{TJUL today:} a net debit collar on SPY};
+  \node[rotate=90, anchor=south] at (-1.05, 3.65) {Profit at expiration (USD/share)};
+  \node[anchor=north] at (4.8, -0.75) {SPY price at expiration $S(T)$ (USD/share)};
+  \begin{tjuldata}
+    % zero-profit line and tick marks with values
+    \draw[zero] (570, 0) -- (848, 0);
+    \foreach \s in {600, 650, 700, 750, 800}
+      \draw[draw=vnink, line width=0.6pt] (\s, -100) -- ++(0, -3.5)
+        node[below, inner sep=2pt, font=\sffamily\footnotesize, text=gdgray] {\s};
+    \foreach \p in {-90, -60, -30, 0, 30, 60, 90, 120}
+      \draw[draw=vnink, line width=0.6pt] (570, \p) -- ++(-3, 0)
+        node[left, inner sep=2pt, font=\sffamily\footnotesize, text=gdgray] {\p};
+    % opportunity loss: SPY alone above the collar, from the floor crossing to the
+    % end of the SPY-alone line (S = 776, so its label fits to the right)
+    \fill[gdgray, fill opacity=0.25] (605.764, -59.352) -- (776, 110.883)
+      -- (776, 24.738) -- (701.94, 24.738) -- (617.85, -59.352) -- cycle;
+    % strikes: drops from the collar's kinks to the axis, labeled inside the panel
+    \draw[drop] (617.85, -59.352) -- (617.85, -100);
+    \draw[drop] (701.94, 24.738) -- (701.94, -100);
+    \node[anchor=south west, align=left, inner sep=2pt, font=\sffamily\footnotesize]
+      at (619.5, -99) {$K_{1}=S(0)$\\long put};
+    \node[anchor=south west, align=left, inner sep=2pt, font=\sffamily\footnotesize]
+      at (703.5, -99) {$K_{2}$\\short call};
+    % SPY alone, S - 665.117, from the y-axis to the end of the shading
+    \draw[shares, more] (570, -95.117) -- (776, 110.883);
+    % options together, drawn before the collar
+    \draw[payoff, more] (570, 35.764) -- (617.85, -12.086) -- (701.94, -12.086) -- (786, -96.146);
+    % collar
+    \draw[profit] (570, -59.352) -- (617.85, -59.352) -- (701.94, 24.738) -- (848, 24.738);
+    % breakeven
+    % the label sits above the SPY-alone line, which crosses zero at 665.117 just
+    % left of the circle; below it, the blue line at -12.086 leaves no room
+    \node[pt, draw=gdred] at (677.202, 0) {};
+    \node[anchor=south east, inner sep=0.5pt, text=gdred] at (671, 11) {$S^{\ddagger}$};
+    % the options together break even where the loss starts: drop to the floor crossing
+    \draw[drop] (605.764, 0) -- (605.764, -59.352);
+    \node[pt, draw=gdblue] at (605.764, 0) {};
+    % today: SPY close on November 4, 2026
+    \draw[draw=saorange, line width=0.8pt, dash pattern=on 3pt off 2pt] (766.81, -100) -- (766.81, 101.693);
+    \draw[gap] (766.81, 28.5) -- (766.81, 97.9);
+    \node[anchor=west, align=left, inner sep=0pt, font=\sffamily\footnotesize] at (780, 63.2) {opportunity\\loss $\approx 77$};
+    \node[circle, fill=saorange, inner sep=0pt, minimum size=2.2mm] at (766.81, 24.738) {};
+    \node[circle, fill=saorange, inner sep=0pt, minimum size=2.2mm] at (766.81, 101.693) {};
+    % above-left of the dot, clear of the SPY-alone line (below and right of it)
+    \node[anchor=south east, align=right, inner sep=0pt, text=saorange, font=\sffamily\footnotesize] at (761, 109) {SPY on Nov 4, 2026\\$S=766.81$};
+  \end{tjuldata}
+  % legend: one row below the axis label (the upper-left corner holds today's label)
+  \begin{scope}[shift={(4.8, -1.75)}]
+    \draw[profit] (-5.03, 0) -- (-4.23, 0);
+    \node[anchor=west, inner sep=3pt, text height=1.6ex, text depth=0.4ex] at (-4.23, 0) {collar};
+    \draw[shares] (-2.36, 0) -- (-1.56, 0);
+    \node[anchor=west, inner sep=3pt, text height=1.6ex, text depth=0.4ex, text=gdgray] at (-1.56, 0) {SPY alone};
+    \draw[payoff] (1.27, 0) -- (2.07, 0);
+    \node[anchor=west, inner sep=3pt, text height=1.6ex, text depth=0.4ex, text=gdblue] at (2.07, 0) {options together};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

@@ -1,6 +1,7 @@
 % L11b protective collar, three panels: net credit, zero cost, and net debit.
 % Schematic: the profit (ink) at expiration, per share, of a protective collar,
-% with the profit of the shares alone (gray, dashed). Drawn November 4, 2026
+% with the profit of the shares alone (gray, dashed) and of the two options
+% together (blue, added November 5, 2026; see below). Drawn November 4, 2026
 % in the style of L11a's buying-shares panel; three panels at the instructor's
 % request, to show where the opportunity point lands for each net premium.
 %
@@ -17,7 +18,32 @@
 %     O+ = K2; the collar and the shares coincide between the strikes.
 %   Net debit (P1 > P2), c = 4.6: floor -2.0, cap 1.0, breakeven 4.6,
 %     O+ = 5.0 < K2; the shares earn more everywhere above S = 2.0, where they
-%     cross the floor, by the debit between the strikes.
+%     cross the floor, by the debit between the strikes. No O+ circle is drawn
+%     in this panel (removed November 5, 2026, at the instructor's request): O+ is
+%     not where the opportunity loss starts, so the circle marked nothing useful;
+%     the blue circle at S = 2.0 marks where it starts.
+%
+% Options together (blue, added November 5, 2026, at the instructor's request):
+% the long put and the short call held together, n = (P2 - P1) grown = 4.0 - c,
+%   profit = (K1 - S(T))^+ - (S(T) - K2)^+ + n,
+% so the collar is the shares plus the options together, and the shading begins
+% where the options together start to lose money (blue drops below zero); the
+% shading stops where the shares line ends, the blue line runs on. This is the
+% collar's counterpart of the short call alone in the covered call figure.
+%   Net credit, n = +0.6: zero at K2 + n = 6.2, directly below O+ (open blue circle,
+%     gray drop to O+).
+%   Zero cost, n = 0: zero along the whole interval [K1, K2], drawn over the zero
+%     line; no circle.
+%   Net debit, n = -0.6: zero at K1 + n = 2.0 (open blue circle, gray drop to
+%     where the shares cross the floor and the shading starts); here the options
+%     together do not break even at K2 + n = 5.0, where the shares reach the cap.
+% A net premium of |n| = 0.6 leaves only 0.6 x 0.8 x 0.8 cm (about 11 pt) between the
+% zero line and the blue line, less than the S-double-dagger label's height, so
+% in the credit and debit panels that label sits left (credit) or right (debit)
+% of its circle, nudged 3 pt toward the open side, on a white knockout that
+% breaks the zero line behind it (white maps to the dark background in the SVG).
+% The legend moved from the first panel's upper-left corner, where the blue line
+% now starts, to one row centered below the three panels.
 \documentclass[tikz,border=4pt]{standalone}
 \input{profit-diagram.tex}
 % 3.2 = 4.0 x \yscale, so the shares-alone line starts exactly at the axes'
@@ -26,37 +52,66 @@
 % wider than L11a's 10.6 so each y-axis label clears the panel to its left
 \def\panelgap{11.4}
 
-% One panel: #1 title, #2 collar cost c, #3 breakeven label position,
-% #4 the shaded region, a closed path (shares above the collar),
-% #5 the S where the shares reach the cap (O+).
+% One panel: #1 title, #2 the net premium n grown to expiration (P2 - P1, negative
+% for a debit), #3 the breakeven label's options and position ("[options]angle"
+% without the opening bracket, e.g. "]above left"), #4 the shaded region, a
+% closed path (shares above the collar), #5 the S where the options together
+% cross zero (an open blue circle with a gray drop to the shares), or empty when
+% there is no single crossing (zero cost: zero along the whole interval [K1, K2]).
 \newcommand{\collarpanel}[5]{%
   \panelaxes{#1}{}{Profit (USD/share)}
   \node[anchor=north] at (\xaxis/2, -1.05) {Share price at expiration $S(T)$};
   \begin{profitdata}
+    % c = S(0) grown - n; floor K1 - c; cap K2 - c; O+ = K2 + n
+    \pgfmathsetmacro{\cc}{4.0-(#2)}\pgfmathsetmacro{\fl}{2.6-\cc}\pgfmathsetmacro{\cp}{5.6-\cc}
+    \pgfmathsetmacro{\op}{5.6+(#2)}
     % opportunity loss: the shares alone above the collar
-    \pgfmathsetmacro{\fl}{2.6-#2}\pgfmathsetmacro{\cp}{5.6-#2}
     \fill[gdgray, fill opacity=0.25] #4;
     \node[note, anchor=west, inner sep=0pt] at (7.65, \cp + 0.95) {opportunity\\loss};
     \strike{2.6}{\fl}{$K_{1}$}{long put}
     \strike{5.6}{\cp}{$K_{2}$}{short call}
     \entryprice{3.8}
     \draw[shares, more] (0, -4.0) -- (7.4, 3.4);
+    % options together: K1 - S + n below K1, n between the strikes, n - (S - K2) above K2;
+    % drawn before the collar so the ink line stays on top where they cross
+    \draw[payoff, more] (0, 2.6+#2) -- (2.6, #2) -- (5.6, #2) -- (8.4, #2-2.8);
     \draw[profit] (0, \fl) -- (2.6, \fl) -- (5.6, \cp) -- (9.0, \cp);
-    \breakeven{#2}{$S^{\ddagger}$}{#3}
-    \node[pt, draw=vnink, label={[inner sep=0.5pt, label distance=2pt]above left:$O^{+}$}] at (#5, \cp) {};
+    \node[pt, draw=gdred, label={[text=gdred, inner sep=0.5pt, label distance=2pt, #3:$S^{\ddagger}$}] at (\cc, 0) {};
+    % where the options together break even, the collar equals the shares: a gray drop
+    % from the blue circle to the shares line, S - 4.0
+    \ifx\relax#5\relax\else
+      \draw[drop] (#5, 0.0) -- (#5, #5-4.0);
+      \node[pt, draw=gdblue] at (#5, 0.0) {};
+    \fi
+    % O+ only for a net credit or zero cost (n >= 0); for a net debit the opportunity
+    % loss starts below K1, at the blue circle, so O+ is not drawn
+    \ifdim #2 pt < 0pt\else
+      \node[pt, draw=vnink, label={[inner sep=0.5pt, label distance=2pt]above left:$O^{+}$}] at (\op, \cp) {};
+    \fi
   \end{profitdata}}
+
+% A legend entry: line style #1, its sample from x = #2 to #2 + 0.8, label #3 in
+% color #4. The fixed text height and depth keep the three labels on one baseline.
+\newcommand{\legendentry}[4]{%
+  \draw[#1] (#2, 0) -- (#2 + 0.8, 0);
+  \node[anchor=west, inner sep=3pt, text height=1.6ex, text depth=0.4ex, text=#4] at (#2 + 0.8, 0) {#3};}
 
 \begin{document}
 \begin{tikzpicture}
   \begin{scope}
-    \collarpanel{\textbf{Collar, net credit:} $\mathcal{P}_{2}>\mathcal{P}_{1}$}{3.4}{above left}{(6.2, 2.2) -- (7.4, 3.4) -- (7.4, 2.2) -- cycle}{6.2}
-    \shareslegend{collar}
+    \collarpanel{\textbf{Collar, net credit:} $\mathcal{P}_{2}>\mathcal{P}_{1}$}{0.6}{fill=white, yshift=3pt]left}{(6.2, 2.2) -- (7.4, 3.4) -- (7.4, 2.2) -- cycle}{6.2}
   \end{scope}
   \begin{scope}[xshift=\panelgap cm*0.8]
-    \collarpanel{\textbf{Collar, zero cost:} $\mathcal{P}_{1}=\mathcal{P}_{2}$}{4.0}{above left}{(5.6, 1.6) -- (7.4, 3.4) -- (7.4, 1.6) -- cycle}{5.6}
+    \collarpanel{\textbf{Collar, zero cost:} $\mathcal{P}_{1}=\mathcal{P}_{2}$}{0}{]above left}{(5.6, 1.6) -- (7.4, 3.4) -- (7.4, 1.6) -- cycle}{}
   \end{scope}
   \begin{scope}[xshift=2*\panelgap cm*0.8]
-    \collarpanel{\textbf{Collar, net debit:} $\mathcal{P}_{1}>\mathcal{P}_{2}$}{4.6}{below right}{(2.0, -2.0) -- (7.4, 3.4) -- (7.4, 1.0) -- (5.6, 1.0) -- (2.6, -2.0) -- cycle}{5.0}
+    \collarpanel{\textbf{Collar, net debit:} $\mathcal{P}_{1}>\mathcal{P}_{2}$}{-0.6}{fill=white, yshift=-3pt]right}{(2.0, -2.0) -- (7.4, 3.4) -- (7.4, 1.0) -- (5.6, 1.0) -- (2.6, -2.0) -- cycle}{2.0}
+  \end{scope}
+  % one legend for the three panels, centered below the middle panel, equal gaps
+  \begin{scope}[shift={(\panelgap + \xaxis/2, -2.15)}]
+    \legendentry{profit}{-6.01}{collar}{vnink}
+    \legendentry{shares}{-2.54}{shares alone}{gdgray}
+    \legendentry{payoff}{2.25}{options together}{gdblue}
   \end{scope}
 \end{tikzpicture}
 \end{document}

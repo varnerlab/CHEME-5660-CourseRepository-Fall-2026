@@ -236,20 +236,20 @@
 \begin{frame}{TJUL: A Collar Inside a Fund}
   The \href{https://www.innovatoretfs.com/etf/?ticker=TJUL}{\hilite{Innovator Equity Defined Protection ETF (TJUL)}}
   runs a collar on SPY for you, with a two-year expiration; the current period runs from
-  July 1, 2025 to June 30, 2027. On September 30, 2026, it held three options on
+  July 1, 2025 to June 30, 2027. On July 31, 2026, it held three options on
   SPY, all expiring June 30, 2027:
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Long call, strike 11.09}: so deep in the money that it moves
+    \item \hilite{Long call, strike 11.12}: so deep in the money that it moves
       almost one for one with SPY; the fund holds it instead of the shares (no
       dividends).
-    \item \hilite{Long put, strike 616.16}: SPY started at 617.85, so this put
-      protects against almost any loss.
-    \item \hilite{Short call, strike 718.63}: caps the gain, as in a covered call.
+    \item \hilite{Long put, strike 617.85}: SPY started at 617.85, so this put
+      protects against any fall in SPY below that price.
+    \item \hilite{Short call, strike 701.94} ($=617.85\times 1.1361$): caps the gain, as in a covered call.
   \end{itemize}
   \vspace{0.3em}
   The fund's goal: held for the whole two years, its share price rises as much as
   the price of SPY, up to 13.61\%, and does not fall if SPY falls (before fees).
-  \slidenote{Example:}{\href{\repo/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}}\hspace{0.8em}{\vnmedium Source:}\hspace{0.65em}\href{https://www.innovatoretfs.com/pdf/tjul_factsheet.pdf}{\dimmed{TJUL fact sheet, September 30, 2026}}}
+  \slidenote{Example:}{\href{\repo/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}}\hspace{0.8em}{\vnmedium Source:}\hspace{0.65em}\href{https://www.sec.gov/Archives/edgar/data/1415726/000089418926028218/0000894189-26-028218-index.htm}{\dimmed{SEC N-PORT, July 31, 2026}}}
 \end{frame}
 
 % ========== Delta of Covered Calls and Collars

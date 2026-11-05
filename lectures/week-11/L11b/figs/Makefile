@@ -8,7 +8,7 @@
 #   make clean      remove LaTeX intermediates
 #   make distclean  also remove the generated PDF/SVG
 
-FIGURES := Fig-L11b-Covered-Call Fig-L11b-Collar
+FIGURES := Fig-L11b-Covered-Call Fig-L11b-Collar Fig-L11b-TJUL
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
