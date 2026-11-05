@@ -11,3 +11,12 @@ VLQuantitativeFinancePackage.boltzmann_weights
 VLQuantitativeFinancePackage.build(modeltype::Type{MyThermalMinorityGameModel}, data::NamedTuple)
 VLQuantitativeFinancePackage.solve(model::MyThermalMinorityGameModel)
 ```
+
+## Farmer–Joshi market
+
+```@docs
+VLQuantitativeFinancePackage.MyFarmerJoshiMarketModel
+VLQuantitativeFinancePackage.threshold_position
+VLQuantitativeFinancePackage.build(modeltype::Type{MyFarmerJoshiMarketModel}, data::NamedTuple)
+VLQuantitativeFinancePackage.solve(model::MyFarmerJoshiMarketModel)
+```

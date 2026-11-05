@@ -102,3 +102,93 @@ using Statistics
         @test near_critical.volatility_per_agent < 1.0
     end
 end
+
+@testset "Farmer-Joshi market" begin
+
+    # apply the threshold rule to a sequence of signals, starting from a zero position
+    function run_rule(signals, entry, exit, capital, direction)
+        x = 0.0
+        out = Float64[]
+        for s in signals
+            x = threshold_position(x, s, entry, exit, capital, direction)
+            push!(out, x)
+        end
+        return out
+    end
+
+    @testset "threshold state machine" begin
+        signals = [0.5, 1.2, 0.8, 0.3, -0.1, -1.5, -0.4, 0.1]
+        @test run_rule(signals, 1.0, 0.0, 2.0, -1) == [0, -2, -2, -2, 0, 2, 2, 0]
+        @test run_rule(signals, 1.0, 0.0, 2.0, +1) == [0, 2, 2, 2, 0, -2, -2, 0]
+        # a negative exit threshold catches a wrong sign on the long or short exit
+        signals = [1.1, -0.1, -0.3, -1.1, 0.1, 0.3]
+        @test run_rule(signals, 1.0, -0.2, 2.0, -1) == [-2, -2, 0, 2, 2, 0]
+        @test run_rule(signals, 1.0, -0.2, 2.0, +1) == [2, 2, 0, -2, -2, 0]
+        # strict inequalities at the boundaries (value investor, exit τ = -0.2)
+        @test threshold_position(0.0, 1.0, 1.0, -0.2, 2.0, -1) == 0.0
+        @test threshold_position(0.0, -1.0, 1.0, -0.2, 2.0, -1) == 0.0
+        @test threshold_position(-2.0, -0.2, 1.0, -0.2, 2.0, -1) == -2.0   # m == τ: still short
+        @test threshold_position(2.0, 0.2, 1.0, -0.2, 2.0, -1) == 2.0      # m == -τ: still long
+        @test_throws ArgumentError threshold_position(0.0, 0.5, 1.0, 0.0, 2.0, 0)
+    end
+
+    @testset "first trend signal at t = θ" begin
+        # log_price[k] holds p_{k-1}; the trend signal p_t - p_{t-θ} exists once t ≥ θ
+        prices = [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0]
+        θ = 5
+        for k in 1:5
+            @test VLQuantitativeFinancePackage._fj_trend_signal(prices, k, θ) === nothing
+        end
+        @test VLQuantitativeFinancePackage._fj_trend_signal(prices, 6, θ) == 1.0
+        @test VLQuantitativeFinancePackage._fj_trend_signal(prices, 7, θ) == 1.0
+    end
+
+    @testset "build" begin
+        model = build(MyFarmerJoshiMarketModel, (rng=MersenneTwister(1),))
+        @test length(model.value_entry) == 1200 && length(model.trend_entry) == 1200
+        @test all(0.2 .<= model.value_entry .<= 4.0) && all(0.2 .<= model.trend_entry .<= 4.0)
+        @test all(-0.2 .<= model.value_exit .<= 0.0) && all(-0.2 .<= model.trend_exit .<= 0.0)
+        @test all(-2.0 .<= model.value_offset .<= 2.0)
+        @test model.value_capital ≈ 2.5e-3 .* (model.value_entry .- model.value_exit)
+        @test model.trend_capital ≈ 2.5e-3 .* (model.trend_entry .- model.trend_exit)
+        @test eltype(model.trend_lag) == Int && all(1 .<= model.trend_lag .<= 100)
+        @test model.σ_ξ == 0.35 && model.λ == 1.0
+        @test_throws ArgumentError build(MyFarmerJoshiMarketModel, (value_T_min=-0.1,))
+        @test_throws ArgumentError build(MyFarmerJoshiMarketModel, (λ=0.0,))
+        @test_throws ArgumentError build(MyFarmerJoshiMarketModel, (trend_number=-1,))
+        @test_throws ArgumentError build(MyFarmerJoshiMarketModel, (trend_θ_min=0,))
+    end
+
+    @testset "solve" begin
+        # no traders: returns are the price noise alone
+        empty_market = build(MyFarmerJoshiMarketModel, (value_number=0, trend_number=0, rng=MersenneTwister(2)))
+        r = solve(empty_market; number_of_steps=20_000, rng=MersenneTwister(3))
+        @test length(r.returns) == 20_000 && length(r.log_price) == 20_001
+        @test r.returns ≈ diff(r.log_price)
+        @test isapprox(std(r.returns), 0.35; rtol=0.05)
+        @test all(iszero, r.value_volume) && all(iszero, r.trend_volume)
+
+        # value investors only
+        value_only = build(MyFarmerJoshiMarketModel, (trend_number=0, rng=MersenneTwister(4)))
+        r = solve(value_only; number_of_steps=500, burn_in=100, rng=MersenneTwister(5))
+        @test length(r.returns) == 500 && all(isfinite, r.log_price)
+
+        # a supplied value path is used unchanged
+        path = collect(range(0.0, 1.0; length=651))
+        r = solve(value_only; number_of_steps=500, burn_in=150, rng=MersenneTwister(6), log_value_path=path)
+        @test r.log_value == path[151:651]
+        @test_throws ArgumentError solve(value_only; number_of_steps=500, burn_in=150, log_value_path=path[1:600])
+
+        # short history: trend lags up to 100 with only 50 steps
+        full = build(MyFarmerJoshiMarketModel, (rng=MersenneTwister(7),))
+        @test length(solve(full; number_of_steps=50, rng=MersenneTwister(8)).returns) == 50
+
+        # reproducibility
+        run() = solve(build(MyFarmerJoshiMarketModel, (rng=MersenneTwister(5660),)); number_of_steps=1_000,
+            rng=MersenneTwister(5660)).log_price
+        @test run() == run()
+
+        @test_throws ArgumentError solve(full; number_of_steps=0)
+        @test_throws ArgumentError solve(full; number_of_steps=10, burn_in=-1)
+    end
+end

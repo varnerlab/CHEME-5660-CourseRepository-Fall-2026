@@ -197,3 +197,206 @@ function solve(model::MyThermalMinorityGameModel; number_of_rounds::Int, burn_in
     return (attendance = attendance, information = information,
         volatility_per_agent = mean(abs2, attendance) / N, alpha = P / N, final_scores = scores)
 end
+
+# ---------------------------------------------------------------------------------------- #
+# Farmer–Joshi market
+# ---------------------------------------------------------------------------------------- #
+
+"""
+    mutable struct MyFarmerJoshiMarketModel <: AbstractAgentModel
+
+The agent-based market of Farmer and Joshi (2002), "The price dynamics of common trading
+strategies", J. Econ. Behav. Organ. 49, 149–171. Value investors and trend followers trade
+through a market maker who moves the log price in proportion to the net order.
+
+Each trader uses a state-dependent threshold strategy (the paper's Section 3.2.4): a position
+of size ``c=a(T-\\tau)`` is entered when a signal crosses the entry threshold ``T`` and
+held until it crosses the exit threshold ``\\tau`` (see [`threshold_position`](@ref)).
+
+### Fields
+- `a::Float64`, `λ::Float64`: capital scale and liquidity (shared).
+- `σ_ξ::Float64`: standard deviation of the price noise ``\\xi``.
+- `σ_η::Float64`, `μ_η::Float64`: standard deviation and mean of the reference-value steps ``\\eta``.
+- `value_entry`, `value_exit`, `value_capital`, `value_offset::Vector{Float64}`: each value
+  investor's entry threshold ``T``, exit threshold ``\\tau``, position size ``c``, and
+  offset ``v^{(i)}`` of its perceived log value from the reference ``v_{t}``.
+- `trend_entry`, `trend_exit`, `trend_capital::Vector{Float64}` and `trend_lag::Vector{Int}`:
+  each trend follower's thresholds, position size, and lag ``\\theta`` (time steps).
+"""
+mutable struct MyFarmerJoshiMarketModel <: AbstractAgentModel
+    a::Float64
+    λ::Float64
+    σ_ξ::Float64
+    σ_η::Float64
+    μ_η::Float64
+    value_entry::Vector{Float64}
+    value_exit::Vector{Float64}
+    value_capital::Vector{Float64}
+    value_offset::Vector{Float64}
+    trend_entry::Vector{Float64}
+    trend_exit::Vector{Float64}
+    trend_capital::Vector{Float64}
+    trend_lag::Vector{Int}
+end
+
+"""
+    threshold_position(current::Float64, signal::Float64, entry::Float64, exit::Float64,
+        capital::Float64, direction::Int) -> Float64
+
+Return a trader's next position under the threshold strategy of Farmer and Joshi (2002),
+Section 3.2.4. The position is ``-c``, ``0``, or ``+c`` with ``c=`` `capital`.
+
+- Value investor (`direction = -1`), `signal` = mispricing ``m=p_{t}-v_{t}^{(i)}``: from zero,
+  go short if ``m>T`` and long if ``m<-T``; exit a short when ``m<\\tau`` and a long when ``m>-\\tau``.
+- Trend follower (`direction = +1`), `signal` = ``p_{t}-p_{t-\\theta}``: from zero, go long if
+  the signal is above ``T`` and short if below ``-T``; exit a long when it falls below ``\\tau``
+  and a short when it rises above ``-\\tau``.
+
+All comparisons are strict. Here ``T=`` `entry` and ``\\tau=`` `exit`.
+"""
+function threshold_position(current::Float64, signal::Float64, entry::Float64, exit::Float64,
+        capital::Float64, direction::Int)::Float64
+    direction in (-1, 1) || throw(ArgumentError("direction must be -1 (value) or +1 (trend)"))
+    z = direction * signal          # positive z favors a long position
+    if current == 0.0
+        z > entry && return capital
+        z < -entry && return -capital
+        return 0.0
+    elseif current > 0.0
+        return z < exit ? 0.0 : current
+    else
+        return z > -exit ? 0.0 : current
+    end
+end
+
+# trend signal p_t - p_{t-θ} at array index k (log_price[k] holds p_{k-1}); nothing while t < θ
+function _fj_trend_signal(log_price::AbstractVector{Float64}, k::Int, θ::Int)::Union{Nothing,Float64}
+    t = k - 1
+    t < θ && return nothing
+    return log_price[k] - log_price[k - θ]
+end
+
+"""
+    build(modeltype::Type{MyFarmerJoshiMarketModel}, data::NamedTuple) -> MyFarmerJoshiMarketModel
+
+Build a Farmer–Joshi market and draw each trader's thresholds, offset, and lag. Defaults
+are the paper's Table 1.
+
+### Arguments (all optional)
+- Per group, with prefix `value_` or `trend_`: `number = 1200`, `T_min = 0.2`, `T_max = 4.0`,
+  `τ_min = -0.2`, `τ_max = 0.0`, `a = 2.5e-3`. Entry thresholds ``T`` are uniform on
+  `[T_min, T_max]`, exit thresholds ``\\tau`` uniform on `[τ_min, τ_max]`, and ``c=a(T-\\tau)``.
+- `value_v_min = -2.0`, `value_v_max = 2.0`: range of the perceived-value offsets.
+- `trend_θ_min = 1`, `trend_θ_max = 100`: range of the integer lags.
+- Shared: `σ_ξ = 0.35`, `λ = 1.0`, `σ_η = 0.01`, `μ_η = 0.0`, `rng = Random.default_rng()`.
+  The paper drives the reference value with a data path in its Table 1 run; `σ_η` and `μ_η`
+  are used only when `solve` is not given `log_value_path`.
+"""
+function build(modeltype::Type{MyFarmerJoshiMarketModel}, data::NamedTuple)::MyFarmerJoshiMarketModel
+    rng = get(data, :rng, Random.default_rng())
+    σ_ξ = Float64(get(data, :σ_ξ, 0.35)); λ = Float64(get(data, :λ, 1.0))
+    σ_η = Float64(get(data, :σ_η, 0.01)); μ_η = Float64(get(data, :μ_η, 0.0))
+    (σ_ξ >= 0 && σ_η >= 0 && isfinite(μ_η)) || throw(ArgumentError("σ_ξ and σ_η must be nonnegative"))
+    λ > 0 || throw(ArgumentError("λ must be positive"))
+
+    function group(prefix::String)
+        key(s) = Symbol(prefix * s)
+        n = get(data, key("number"), 1200)
+        T_min = Float64(get(data, key("T_min"), 0.2)); T_max = Float64(get(data, key("T_max"), 4.0))
+        τ_min = Float64(get(data, key("τ_min"), -0.2)); τ_max = Float64(get(data, key("τ_max"), 0.0))
+        a = Float64(get(data, key("a"), 2.5e-3))
+        (n isa Integer && n >= 0) || throw(ArgumentError("$(prefix)number must be a nonnegative integer"))
+        (0 < T_min <= T_max) || throw(ArgumentError("$(prefix)T_min must be positive and at most T_max"))
+        (τ_min <= τ_max < T_min) || throw(ArgumentError("$(prefix)τ_min ≤ τ_max < T_min is required"))
+        a > 0 || throw(ArgumentError("$(prefix)a must be positive"))
+        entry = T_min .+ (T_max - T_min) .* rand(rng, n)
+        exit = τ_min .+ (τ_max - τ_min) .* rand(rng, n)
+        return entry, exit, a .* (entry .- exit), a, n
+    end
+
+    value_entry, value_exit, value_capital, a, n_value = group("value_")
+    trend_entry, trend_exit, trend_capital, _, n_trend = group("trend_")
+    v_min = Float64(get(data, :value_v_min, -2.0)); v_max = Float64(get(data, :value_v_max, 2.0))
+    v_min <= v_max || throw(ArgumentError("value_v_min must be at most value_v_max"))
+    θ_min = get(data, :trend_θ_min, 1); θ_max = get(data, :trend_θ_max, 100)
+    (θ_min isa Integer && θ_max isa Integer && 1 <= θ_min <= θ_max) ||
+        throw(ArgumentError("trend lags must be integers with 1 ≤ θ_min ≤ θ_max"))
+    value_offset = v_min .+ (v_max - v_min) .* rand(rng, n_value)
+    trend_lag = rand(rng, Int(θ_min):Int(θ_max), n_trend)
+
+    return MyFarmerJoshiMarketModel(a, λ, σ_ξ, σ_η, μ_η, value_entry, value_exit, value_capital,
+        value_offset, trend_entry, trend_exit, trend_capital, trend_lag)
+end
+
+"""
+    solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::Int = 0,
+        rng::AbstractRNG = Random.default_rng(), p₀::Float64 = 0.0, v₀::Float64 = 0.0,
+        log_value_path = nothing) -> NamedTuple
+
+Simulate the market for `burn_in + number_of_steps` steps and return the last
+`number_of_steps`. Each step, in order:
+
+1. every trader sets its next position ``x_{t+1}^{(i)}`` from ``p_{t}`` (and ``v_{t}``) with [`threshold_position`](@ref);
+2. its order is ``\\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}`` (Eq. 1);
+3. the market maker sets ``p_{t+1}=p_{t}+\\lambda^{-1}\\sum_{i}\\omega_{t+1}^{(i)}+\\xi_{t+1}`` (Eq. 7);
+4. the reference log value advances, ``v_{t+1}=v_{t}+\\eta_{t+1}`` (Eq. 13), or is read from `log_value_path`.
+
+A value investor perceives ``v_{t}^{(i)}=v_{t}+v^{(i)}`` (Eq. 18). A trend follower holds no
+position until ``t\\geq\\theta``.
+
+### Arguments
+- `log_value_path`: optional reference log values ``v_{0},v_{1},\\dots``; its length must be at
+  least `burn_in + number_of_steps + 1`.
+
+### Returns
+A `NamedTuple` with `log_price` and `log_value` (`number_of_steps + 1` values),
+`returns` ``=p_{t+1}-p_{t}`` (`number_of_steps` values), and `value_volume` and
+`trend_volume`, the total absolute order ``\\sum_{i}|\\omega_{t}^{(i)}|`` of each group per step.
+"""
+function solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::Int = 0,
+        rng::AbstractRNG = Random.default_rng(), p₀::Float64 = 0.0, v₀::Float64 = 0.0,
+        log_value_path::Union{Nothing,AbstractVector{<:Real}} = nothing)
+    number_of_steps >= 1 || throw(ArgumentError("number_of_steps must be at least 1"))
+    burn_in >= 0 || throw(ArgumentError("burn_in must be nonnegative"))
+    total = burn_in + number_of_steps
+    if !isnothing(log_value_path)
+        length(log_value_path) >= total + 1 ||
+            throw(ArgumentError("log_value_path needs at least burn_in + number_of_steps + 1 values"))
+    end
+
+    p = Vector{Float64}(undef, total + 1)
+    v = Vector{Float64}(undef, total + 1)
+    p[1] = p₀
+    v[1] = isnothing(log_value_path) ? v₀ : Float64(log_value_path[1])
+    value_volume = zeros(Float64, total)
+    trend_volume = zeros(Float64, total)
+    x_value = zeros(Float64, length(model.value_entry))
+    x_trend = zeros(Float64, length(model.trend_entry))
+
+    for k in 1:total                       # step from p_{k-1} (index k) to p_k (index k+1)
+        net_order = 0.0
+        for i in eachindex(x_value)
+            m = p[k] - (v[k] + model.value_offset[i])
+            x_new = threshold_position(x_value[i], m, model.value_entry[i], model.value_exit[i],
+                model.value_capital[i], -1)
+            ω = x_new - x_value[i]
+            net_order += ω; value_volume[k] += abs(ω); x_value[i] = x_new
+        end
+        for j in eachindex(x_trend)
+            s = _fj_trend_signal(p, k, model.trend_lag[j])
+            isnothing(s) && continue
+            x_new = threshold_position(x_trend[j], s, model.trend_entry[j], model.trend_exit[j],
+                model.trend_capital[j], +1)
+            ω = x_new - x_trend[j]
+            net_order += ω; trend_volume[k] += abs(ω); x_trend[j] = x_new
+        end
+        p[k + 1] = p[k] + net_order / model.λ + model.σ_ξ * randn(rng)
+        v[k + 1] = isnothing(log_value_path) ? v[k] + model.μ_η + model.σ_η * randn(rng) :
+            Float64(log_value_path[k + 1])
+    end
+
+    kept = (burn_in + 1):(total + 1)
+    log_price = p[kept]
+    return (log_price = log_price, log_value = v[kept], returns = diff(log_price),
+        value_volume = value_volume[(burn_in + 1):total], trend_volume = trend_volume[(burn_in + 1):total])
+end

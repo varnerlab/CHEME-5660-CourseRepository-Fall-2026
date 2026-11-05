@@ -71,7 +71,7 @@ module VLQuantitativeFinancePackage
     export evaluate_validation_gates, route_portfolio_event
 
     # agent-based markets (L12a)
-    export MyThermalMinorityGameModel, boltzmann_weights
+    export MyThermalMinorityGameModel, boltzmann_weights, MyFarmerJoshiMarketModel, threshold_position
 
     # limit-order-book functions -
     export submit_order!, cancel_order!, clear_order_book!
