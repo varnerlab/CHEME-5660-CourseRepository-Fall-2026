@@ -201,3 +201,12 @@ between panels) were updated; both SVGs checked in dark mode.
 - Same day: the instructor did not find the position-signal loop clear and preferred the state
   machine, so panel B of `Fig-L12a-FarmerJoshi` is the state machine again (with its three text
   lines); the simplified panel A stays. Alt text, lead sentence, and deck crop restored to match.
+
+## November 5, 2026 (later): paper references
+
+The instructor asked to download the four papers into `docs/` and link to the local PDFs. All four
+carry arXiv's default "assumed 1991–2003" license (no third-party redistribution) and the repository
+is public, so, with his OK, the lecture instead has CRR-style `__Reference:__` entries (citations
+checked against Crossref) that link to the free arXiv PDFs, and the inline author links now point
+there too: Challet–Zhang and Challet–Marsili–Zecchina in The Minority Game, Cavagna et al. in the
+derivation, Farmer–Joshi in The Farmer–Joshi Market. The examples and the deck still link the DOIs.
