@@ -54,7 +54,7 @@
     <!-- LECTURE_NAV slot: a complete ul of li items, each a link to a section id on this page. -->
     <nav class='lecture-nav' aria-labelledby='lecture-nav-title'>
       <h2 id='lecture-nav-title' class='section-label'>Lectures</h2>
-      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="L10b">L10b</option><option value="L11a">L11a</option><option value="L11b">L11b</option><option value="Context">Context</option></select></div>
+      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="L10b">L10b</option><option value="L11a">L11a</option><option value="L11b">L11b</option><option value="L12a">L12a</option><option value="L12b">L12b</option><option value="Context">Context</option></select></div>
     </nav>
 
     <!-- NOTATION_SECTIONS slot: one section per lecture with class notation-section, data-lecture and an id, containing
@@ -3306,6 +3306,183 @@
 </tr>
 </tbody>
 </table>
+</div></div></section><section class="notation-section" id="L12a" data-lecture="L12a"><div class="notation-section-heading"><h2>L12a</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-JumpHMM-SyntheticMarkets-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>Synthetic Markets with Jump Hidden Markov Models</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Synthetic Markets with Jump Hidden Markov Models"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math></td>
+<td>State space: the set of states a Markov chain can take. In the jump hidden Markov model, the states are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math> bins of the daily growth rate.</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐏</mi><annotation encoding="application/x-tex">\mathbf P</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">p_{ij}</annotation></semantics></math></td>
+<td>Transition matrix; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>s</mi><mi>j</mi></msub><mo>∣</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><msub><mi>s</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{ij}=P(X_{n+1}=s_j\mid X_n=s_i)</annotation></semantics></math>. Rows sum to one.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>p</mi><mo accent="true">̂</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\hat p_{ij}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">n_{ij}</annotation></semantics></math></td>
+<td>Counting estimate of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">p_{ij}</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>/</mi><msub><mo>∑</mo><mi>k</mi></msub><msub><mi>n</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub></mrow><annotation encoding="application/x-tex">n_{ij}/\sum_k n_{ik}</annotation></semantics></math>, where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">n_{ij}</annotation></semantics></math> counts days in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mi>i</mi></msub><annotation encoding="application/x-tex">s_i</annotation></semantics></math> followed by a day in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mi>j</mi></msub><annotation encoding="application/x-tex">s_j</annotation></semantics></math>.</td>
+<td>1; days</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>π</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar\pi</annotation></semantics></math></td>
+<td>Stationary distribution, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>π</mi><mo accent="true">‾</mo></mover><mo>=</mo><mover><mi>π</mi><mo accent="true">‾</mo></mover><mi>𝐏</mi></mrow><annotation encoding="application/x-tex">\bar\pi=\bar\pi\mathbf P</annotation></semantics></math> (row vector): the long-run share of time in each state.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐄</mi><annotation encoding="application/x-tex">\mathbf E</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">e_{ij}</annotation></semantics></math></td>
+<td>Emission matrix of a hidden Markov model with finite observations; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>O</mi><mi>n</mi></msub><mo>=</mo><msub><mi>o</mi><mi>j</mi></msub><mo>∣</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><msub><mi>s</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">e_{ij}=P(O_n=o_j\mid X_n=s_i)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>t</mi></msub><annotation encoding="application/x-tex">g_t</annotation></semantics></math></td>
+<td>Daily growth rate, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mi>/</mi><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{\Delta t}\ln(S_t/S_{t-1})</annotation></semantics></math>, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>252</mn></mrow><annotation encoding="application/x-tex">\Delta t=1/252</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\sigma_k</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math></td>
+<td>Mean and standard deviation of the growth rates in state <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mi>k</mi></msub><annotation encoding="application/x-tex">s_k</annotation></semantics></math>, used as the location and scale of its Student-t emission, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>s</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>+</mo><msub><mi>σ</mi><mi>k</mi></msub><msub><mi>T</mi><mi>ν</mi></msub></mrow><annotation encoding="application/x-tex">g_t\mid X_t=s_k\sim\mu_k+\sigma_kT_\nu</annotation></semantics></math>; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math> is the fixed degrees of freedom.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></td>
+<td>Jump-episode probability: the chance an episode starts on a day with none under way. Distinct from the finite-difference step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϵ</mi><mi>x</mi></msub><annotation encoding="application/x-tex">\epsilon_x</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">y</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{day}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></td>
+<td>Mean length of a jump episode. Distinct from the EMA decay factor and the Lagrange multipliers.</td>
+<td>days</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\rho_k</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math></td>
+<td>Autocorrelation of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>g</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\lvert g_t\rvert</annotation></semantics></math> at lag <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>, and kurtosis, of the data; hats mark a simulated path.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>m</mi></msub><annotation encoding="application/x-tex">g_m</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>s</mi></msub><annotation encoding="application/x-tex">f_s</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>ε</mi><mo accent="true">̃</mo></mover><mi>i</mi></msub><annotation encoding="application/x-tex">\tilde\varepsilon_i</annotation></semantics></math></td>
+<td>Market draw, sector-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math> factor draw, and stock <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>’s own draw (centered) in the sector factor model.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\delta_i</annotation></semantics></math></td>
+<td>Sector loading of stock <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>: the slope of its residual on the other residuals in its sector, scaled to the sector’s co-movement.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\psi_i</annotation></semantics></math></td>
+<td>Scale of stock <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>’s own draw, set so the synthetic stock’s variance matches its real variance on average.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><section class="notation-section" id="L12b" data-lecture="L12b"><div class="notation-section-heading"><h2>L12b</h2></div><div class="notation-group"><h3>Interpretable Allocation and Model-Predictive Rebalancing</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Interpretable Allocation and Model-Predictive Rebalancing"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\gamma_i(t)</annotation></semantics></math></td>
+<td>Score of stock <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> on day <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>tanh</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mi>/</mi><mo>max</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>β</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">|</mo><mo>,</mo><mn>0.1</mn><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ξ</mi><mi>t</mi></msub></msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tanh\bigl(\tilde g_{i,t}/\max(\lvert\beta_i(t)\rvert,0.1)^{\xi_t}\bigr)</annotation></semantics></math>, the INFORMS form of the L8b preference weight.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{i,t}</annotation></semantics></math></td>
+<td>Expected growth rate of stock <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> from its single index model: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>β</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha_i(t)+\beta_i(t)\,\tilde g_{M,t}</annotation></semantics></math>.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha_i(t)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta_i(t)</annotation></semantics></math></td>
+<td>Online single index estimates, updated daily by exponentially weighted least squares with a 63-day half-life.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\xi_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>g</mi><mo accent="true">̃</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde g_{M,t}</annotation></semantics></math></td>
+<td>Market state, its gain, and the recent market growth rate, as in L8b.</td>
+<td>1; 1; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒩</mi><annotation encoding="application/x-tex">\mathcal N</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math></td>
+<td>Names the picker chose for a decision, and their number.</td>
+<td>Index set; names</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝒜</mi><mo>+</mo></msup><annotation encoding="application/x-tex">\mathcal A^{+}</annotation></semantics></math></td>
+<td>Names in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒩</mi><annotation encoding="application/x-tex">\mathcal N</annotation></semantics></math> with a positive score, as in L8b.</td>
+<td>Index set</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mi>i</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">v</mi></mrow></msubsup><annotation encoding="application/x-tex">n_i^{\mathrm{prev}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>n</mi><mo>⋆</mo></msup><annotation encoding="application/x-tex">n^\star</annotation></semantics></math></td>
+<td>Shares of name <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> chosen at a re-plan, shares held before it, and the target shares.</td>
+<td>Shares</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>w</mi><mo accent="true">‾</mo></mover><mi>i</mi></msub><annotation encoding="application/x-tex">\bar w_i</annotation></semantics></math></td>
+<td>Weight <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>i</mi></msub><msub><mi>S</mi><mi>i</mi></msub><mi>/</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">n_iS_i/W</annotation></semantics></math> of name <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, and its cap <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.10</mn><mo>,</mo><mspace width="0.167em"></mspace><mn>1.5</mn><mi>/</mi><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\max(0.10,\,1.5/K)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\Sigma_g</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">Y</mi></mrow></msub><annotation encoding="application/x-tex">\sigma_{\mathrm{SPY}}</annotation></semantics></math></td>
+<td>Covariance of the names’ daily growth rates; volatility of SPY’s daily growth rate on 2014–2024, used as the volatility cap.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-2}</annotation></semantics></math>; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>c</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar c</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>S</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar S</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math></td>
+<td>Half bid–ask spread (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">5\times10^{-4}</annotation></semantics></math>); mean price of the names; turnover budget <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.10</mn><mspace width="0.167em"></mspace><mi>W</mi></mrow><annotation encoding="application/x-tex">0.10\,W</annotation></semantics></math>.</td>
+<td>1; USD/share; USD</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math></td>
+<td>CES elasticity, 0.5 in the study, as in L8b.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
+<td>Forecast horizon of 21 trading days; trading days since the last re-plan.</td>
+<td>Trading days</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>p</mi></msub><annotation encoding="application/x-tex">N_p</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>W</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_W(\tau)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>W</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sigma_W(\tau)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math></td>
+<td>Number of forecast paths; mean and standard deviation of the forecast wealth <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math> days after a re-plan; band half-width, 1.96.</td>
+<td>Paths; USD; USD; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W(t)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>W</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">k</mi></mrow></msup><annotation encoding="application/x-tex">W^{\mathrm{pk}}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mo>max</mo></msub><annotation encoding="application/x-tex">D_{\max}</annotation></semantics></math></td>
+<td>Wealth at the close, its running peak, and the drawdown limit 0.08.</td>
+<td>USD; USD; 1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C(q)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>S</mi><mi>i</mi><mi>o</mi></msubsup><annotation encoding="application/x-tex">S^{o}_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>i</mi></msub><annotation encoding="application/x-tex">A_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math></td>
+<td>Cost of a fill of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> shares; open price; mean daily volume over 63 trading days; market-impact coefficient, 0.001 (distinct from the kurtosis <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math> of L12a).</td>
+<td>USD; USD/share; shares/day; 1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>β</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar\beta</annotation></semantics></math></td>
+<td>Cap on the book’s market loading with the hedge on: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mspace width="0.167em"></mspace><mn>1</mn><mo>−</mo><msub><mi>ξ</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\max(0,\,1-\xi_t)</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
 </div></div></section><section class="notation-section" id="Context" data-lecture="Context"><div class="notation-section-heading"><h2>Context</h2></div><div class="notation-group"><h3>Symbols Whose Meaning Changes with Context</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Symbols Whose Meaning Changes with Context"><table>
 <colgroup>
 <col style="width: 33%" />
@@ -3337,13 +3514,13 @@
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math></td>
-<td>Option sensitivity in the orientation preview; growth innovation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\delta_k</annotation></semantics></math> in EMA; income cut in the income-gamble interview.</td>
-<td>L1a; L5a; L7b</td>
+<td>Option sensitivity in the orientation preview; growth innovation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\delta_k</annotation></semantics></math> in EMA; income cut in the income-gamble interview; sector loading <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\delta_i</annotation></semantics></math> in the sector factor model.</td>
+<td>L1a; L5a; L7b; L12a</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></td>
-<td>EMA decay factor; GMV equality-constraint multiplier; Cobb–Douglas budget multiplier.</td>
-<td>L5a; L6a; L7b</td>
+<td>EMA decay factor; GMV equality-constraint multiplier; Cobb–Douglas budget multiplier; mean jump-episode length.</td>
+<td>L5a; L6a; L7b; L12a</td>
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_g</annotation></semantics></math></td>
@@ -3397,8 +3574,8 @@
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></td>
-<td>L3a uses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> for a count of prices; lattice <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> is a step count; continuous-time models use time in years.</td>
-<td>L3a-L6b</td>
+<td>L3a uses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> for a count of prices; lattice <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> is a step count; continuous-time models use time in years; L12b uses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> for a forecast horizon of 21 trading days.</td>
+<td>L3a-L6b; L12b</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math></td>
@@ -3437,8 +3614,8 @@
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math></td>
-<td>Lattice lag; real-valued up-count threshold; reference year for annualizing a Sharpe ratio; power-utility exponent; American exercise time, a stopping time.</td>
-<td>L3b; L4a; L6b-L7a; L7b; L9a, L11b</td>
+<td>Lattice lag; real-valued up-count threshold; reference year for annualizing a Sharpe ratio; power-utility exponent; American exercise time, a stopping time; trading days since the last re-plan.</td>
+<td>L3b; L4a; L6b-L7a; L7b; L9a, L11b; L12b</td>
 </tr>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\nu_{j,k}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\nu_\star</annotation></semantics></math></td>
@@ -3504,6 +3681,11 @@
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋆</mo><annotation encoding="application/x-tex">\star</annotation></semantics></math></td>
 <td>Marks a target, as in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\rho_\star</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">g_\star</annotation></semantics></math>; option contract type <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> or <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.</td>
 <td>L5a, L6a; L10a</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math></td>
+<td>Kurtosis; market-impact coefficient of the trading cost.</td>
+<td>L12a; L12b</td>
 </tr>
 </tbody>
 </table>
