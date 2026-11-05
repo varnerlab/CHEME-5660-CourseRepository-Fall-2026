@@ -35,6 +35,21 @@ debit ($O^{+}<K_{2}$, and the shares earn more everywhere above the point where
 they cross the floor). The max-profit and max-loss arrows are drawn only in the
 covered call figure, to keep the three collar panels readable.
 
+## Short call alone (covered call figure)
+
+Added November 4, 2026, at the instructor's request. The covered call figure also
+draws the profit of the short call alone (blue, `payoff` style, third legend entry),
+flat at the premium grown to expiration for $S(T)\le K$ and falling one for one above $K$. It crosses
+zero at $K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}=O^{+}$: an open blue circle
+labeled "short call breakeven", joined by a gray drop to the $O^{+}$ circle directly
+above it. The covered call is the shares plus the short call, so the two are equal
+where the short call breaks even, and the opportunity loss above $O^{+}$ is the short
+call's loss. The blue line is drawn before the covered call, so the ink line stays
+on top where they cross. With the schematic values, the shares line passes through
+the short call's kink at $(K, 1.0)$; that is a coincidence of the values, not a
+general result. The label starts at $S=6.75$, about 3.8 pt clear of the falling line
+(measured with `pdftotext -bbox`).
+
 ## Fit and finish (November 4, 2026)
 
 - The "opportunity loss" label sits 0.95 profit units above the cap, to the right

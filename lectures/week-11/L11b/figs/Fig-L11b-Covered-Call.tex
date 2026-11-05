@@ -13,6 +13,14 @@
 %   reach the covered call's max profit. Above O+, the shares alone earn more:
 %   the shaded wedge is the opportunity loss (added November 4, 2026, at the
 %   instructor's request; O+ is defined in the covered call example).
+%   Short call alone (blue, added November 4, 2026, at the instructor's request):
+%   profit = 1.0 - (S(T) - K)^+, flat at the premium grown to expiration for S(T) <= K and zero at
+%   S(T) = K + 1.0 = 6.0 = O+. O+ is the short call's breakeven: the covered call
+%   is the shares plus the short call, so the two are equal where the short call
+%   breaks even, and the wedge above O+ is the short call's loss. A gray drop joins
+%   the short call's breakeven to O+ directly above it. With these values, the
+%   shares line passes through the short call's kink at (K, 1.0); that is a
+%   coincidence of the schematic values (K - 4.0 = 1.0), not a general result.
 \documentclass[tikz,border=4pt]{standalone}
 \input{profit-diagram.tex}
 % 3.2 = 4.0 x \yscale, so the shares-alone line starts exactly at the axes'
@@ -24,6 +32,9 @@
   \panelaxes{\textbf{Covered call:} own the shares, sell a call at $K$}{}{Profit (USD/share)}
   \node[anchor=north] at (\xaxis/2, -1.05) {Share price at expiration $S(T)$};
   \shareslegend{covered call}
+  % third legend entry: the short call alone (blue), below the two shared entries
+  \draw[payoff] (0.45, \yaxis - 1.55) -- (1.25, \yaxis - 1.55);
+  \node[anchor=west, inner sep=3pt, text=gdblue] at (1.25, \yaxis - 1.55) {short call alone};
   \begin{profitdata}
     % the opportunity loss: the shares alone above the covered call's cap
     \fill[gdgray, fill opacity=0.25] (6.0, 2.0) -- (7.4, 3.4) -- (7.4, 2.0) -- cycle;
@@ -32,6 +43,8 @@
     \entryprice{3.8}
     % shares alone, for comparison
     \draw[shares, more] (0, -4.0) -- (7.4, 3.4);
+    % the short call alone: flat at the premium grown to expiration for S(T) <= K, falling one for one above K
+    \draw[payoff, more] (0, 1.0) -- (5.0, 1.0) -- (8.4, -2.4);
     % covered call
     \draw[profit] (0, -3.0) -- (5.0, 2.0) -- (9.0, 2.0);
     \draw[gap] (8.6, 0.06) -- (8.6, 1.94);
@@ -40,6 +53,11 @@
     \draw[gap] (0.25, -0.06) -- (0.25, -2.69);
     \node[anchor=north west, inner sep=4pt, align=left] at (0.25, -0.3) {max\\loss};
     \breakeven{3.0}{$S^{\ddagger}$}{above left}
+    % its breakeven, at K + premium grown = O+, joined to O+ directly above it
+    \draw[drop] (6.0, 0.0) -- (6.0, 2.0);
+    \node[pt, draw=gdblue] at (6.0, 0.0) {};
+    % the label sits above the falling line and below the zero line, right of the circle
+    \node[anchor=north west, inner sep=1.5pt, text=gdblue, font=\sffamily\footnotesize] at (6.75, -0.08) {short call breakeven};
     \node[pt, draw=vnink, label={[inner sep=0.5pt, label distance=2pt]above left:$O^{+}$}] at (6.0, 2.0) {};
   \end{profitdata}
 \end{tikzpicture}
