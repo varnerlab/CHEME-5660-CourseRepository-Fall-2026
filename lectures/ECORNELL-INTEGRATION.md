@@ -129,7 +129,7 @@ ideas, not treated as current source.
 |---|---|
 | week-7/L7a | Utility-based allocation and the adaptive rebalancing engine (2026-08-17 restructure): utility allocator, engine scorecard, and drift examples on course data. |
 | week-7/L7b | Online SIM estimation (2026-08-17 restructure): rolling betas with bands, the EWLS recursion and prior, a walk-forward half-life, the frozen-versus-online replay of the L7a engine on 2025, and the SIM-simulated scenario ensemble with the distributional scorecard; replaces the previous stress-testing and rebalancing lecture. |
-| week-13/L13a | Maximum-utility allocation and adaptive rebalancing; former Bandit/MWA lecture preserved under advanced/bandits. |
+| archive/week-13-L13a-adaptive-rebalancing-2026-11-05 | Maximum-utility allocation and adaptive rebalancing (archived November 5, 2026, when weeks 12 and 13 were swapped); former Bandit/MWA lecture preserved under advanced/bandits. |
 | week-15/L15a | Autotrader diagnostics, EWLS replay (recall of L7b pending re-scope), validation gates, and the policy-gradient derivation. |
 | week-15/L15b | Final trading challenge and credential-free captured decision queue. |
 

@@ -1,9 +1,8 @@
 # setup paths -
-const _ROOT = pwd();
+const _ROOT = @__DIR__;
 const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
-const _PATH_TO_FRAMES = joinpath(_ROOT, "frames");
 
 # setup the course environment: walk up to the nearest Project.toml
 # (repo root in a clone; bundle root in an unzipped weekly download) -
@@ -18,31 +17,28 @@ end
 # load external packages -
 using VLQuantitativeFinancePackage
 using DataFrames
-using CSV
-using Dates
-using LinearAlgebra
 using Statistics
 using Plots
 using Colors
-using StatsPlots
-using JLD2
-using FileIO
-using Distributions
-using Distances
-using MathOptInterface
-using DataStructures
 using PrettyTables
-using StatsBase
-using KernelFunctions
+using CSV
+using Distributions
+using FileIO
+using JLD2
 using HypothesisTests
-using JuMP
-using MadNLP
-using NNlib
-using Random
-using IJulia
-using ProgressMeter
-using Images
-using ImageIO
+using StatsPlots
+using Random # reproducible simulations
+using Dates # the end-of-day options archive
+using LinearAlgebra
+import JumpHMM # synthetic markets: always call JumpHMM functions qualified
+import StatsBase # quantiles and autocorrelations
+import Logging # silence the data loader's notes about split adjustments
+import TOML # the summary of the generator fit
 
-# Set the random seed for reproducibility
-# Random.seed!(1234);
+# the INFORMS 2026 model-predictive portfolio method, a submodule of the course package: always call it
+# qualified (MPC.run_study, ...), because some of its names are also used by the course package itself.
+# The examples run single-threaded; for threaded runs, SCS needs OMP_NUM_THREADS=1 and KMP_GTID_MODE=2.
+import VLQuantitativeFinancePackage.MPCPortfolio as MPC
+
+# the course's daily S&P 500 files, sector list, and 13-week bill rates (DTB3) -
+const _PATH_TO_MARKET_DATA = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data");

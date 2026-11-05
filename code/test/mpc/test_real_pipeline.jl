@@ -1,5 +1,5 @@
 # The real-data pipeline on the course's S&P 500 files: the INFORMS universe, the DTB3 risk-free rate,
-# the 2014–2024 calibration, and one study run on a sector-balanced subset (the full universe runs in L12b).
+# the 2014–2024 calibration, and one study run on a sector-balanced subset (the full universe runs in L13b).
 @testset "real-data pipeline" begin
     dir = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data")
     md = load_market_data(dir; start = Date(2014, 1, 3), stop = Date(2026, 9, 4))

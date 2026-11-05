@@ -36,10 +36,10 @@ guest Q/A is confirmed it is delivered asynchronously and does not displace 7a.
 | 10b | Oct 29 | 3 | Probability of profit, composite contracts, and delta hedging | `week-10/L10b` | Notebook complete; slides pending; legacy notes retained temporarily |
 | 11a | Nov 3 | 3 | Composite contracts: NPV, probability of profit, and the common credit structures (moved from L10b October 29, when class did not reach them) | `week-11/L11a`; put credit spread and strangle examples copied from L10b | Lecture and deck assembled October 29 from the L10b composite contract cells and frames; L10b keeps its released copy |
 | 11b | Nov 5 | 3 | Covered calls and protective collars (collars and TJUL replaced cash-secured puts November 3) | `week-11/L11b`; the cash secured put example is archived in `archive/week-11-L11b-cash-secured-put-2026-11-03/`, and the Wheel material stays in `archive/week-11-L11b-before-shift-2026-10-29/` | Notebook complete; slides built; notes deleted (slides instead) |
-| 12a | Nov 10 | 4 | Synthetic markets with jump hidden Markov models (replaced bandits November 3) | `week-12/L12a`; the 2025 Markov/HMM material stays in `advanced/markov/` pending review | Notebook, two examples, and slides complete; notes deleted (slides instead) |
-| 12b | Nov 12 | 4 | Interpretable allocation and model-predictive rebalancing (the INFORMS 2026 study; replaced the bandit ticker picker November 3) | `week-12/L12b`; the method is the `MPCPortfolio` submodule of the course package; the bandit material is in `archive/week-12-L12b-bandits-2026-11-04/` | Notebook, two examples (real data; synthetic data from the 373-name generator in `data/`), and slides complete; notes deleted (slides instead) |
-| 13a | Nov 17 | 4 | Maximum-utility allocation and adaptive portfolio rebalancing | `week-13/L13a`; former Bandit/MWA lecture in `advanced/` | Notebook complete; slides and re-scope pending; legacy notes retained temporarily |
-| 13b | Nov 19 | 4 | Market crashes and agent-based Wolfram Markets | `week-13/L13b` | Notebook complete; slides pending; legacy notes retained temporarily |
+| 12a | Nov 10 | 4 | How do micro decisions lead to emergent macro trends? Agent-based models: the Thermal Minority Game and the Farmer–Joshi market (new November 5, when weeks 12 and 13 were swapped) | `week-12/L12a`; design in `private/specs/2026-11-05-week12-L12a-minority-game-farmer-joshi-design.md` | In development; freeze Sunday Nov 8 |
+| 12b | Nov 12 | 4 | Market crashes and agent-based Wolfram Markets (moved from 13b November 5) | `week-12/L12b`; 2025 lecture and examples; to be rebuilt on the Wolfram markets paper simulator (separate design) | 2025 notebook in place; rebuild pending; legacy notes retained temporarily |
+| 13a | Nov 17 | 4 | Synthetic markets with jump hidden Markov models (replaced bandits November 3; moved from 12a November 5) | `week-13/L13a`; the 2025 Markov/HMM material stays in `advanced/markov/` pending review | Notebook, two examples, and slides complete; notes deleted (slides instead) |
+| 13b | Nov 19 | 4 | Interpretable allocation and model-predictive rebalancing (the INFORMS 2026 study; replaced the bandit ticker picker November 3; moved from 12b November 5) | `week-13/L13b`; the method is the `MPCPortfolio` submodule of the course package; the bandit material is in `archive/week-12-L12b-bandits-2026-11-04/`; the former 13a adaptive-rebalancing lecture is in `archive/week-13-L13a-adaptive-rebalancing-2026-11-05/` | Notebook, two examples (real data; synthetic data from the 373-name generator in `data/`), and slides in progress; notes deleted (slides instead) |
 | 14a | Nov 24 | 4 | Building and testing the course Autotrader | `week-14/L14a` | Notebook complete; slides pending; legacy notes retained temporarily |
 | 15a | Dec 1 | 4 | Autotrader laboratory: diagnostics, risk controls, and strategy iteration | `week-15/L15a`; EWLS-replay and validation-gate examples plus the policy-gradient derivation | Notebook complete; slides and re-scope pending; no legacy notes |
 | 15b | Dec 3 | 4 | Final trading challenge, model review, and course synthesis | `week-15/L15b`; captured decision-queue example | Notebook complete; slides pending; no legacy notes |
@@ -54,9 +54,9 @@ guest Q/A is confirmed it is delivered asynchronously and does not displace 7a.
 - Optional extensions live in an `advanced/` subfolder of the applicable
   lecture directory. L2b contains the former Week 3 yield-curve, stochastic-rate,
   and STRIPS material; the Wheel lecture and supporting examples are archived with the October 29 L11b snapshot;
-  L12a contains the Markov/HMM enrichment module; L7a contains the CES
+  L13a contains the Markov/HMM enrichment module; L7a contains the CES
   derivation; L7b contains the EWLS recursion derivation; L9b contains the contingent-claims derivation, the
-  SPXW parity and volatility-skew notebook, and the CRR factor derivation; L10a contains the numerical Greeks notebook; L13a
+  SPXW parity and volatility-skew notebook, and the CRR factor derivation; L10a contains the numerical Greeks notebook; the archived former L13a
   contains the former Bandit/MWA lecture; L15a contains the policy-gradient
   derivation.
 - Fall Break remains L8a and Thanksgiving Break remains L14b; production topics

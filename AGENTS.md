@@ -1,5 +1,25 @@
 # Repository Working Agreements
 
+## Weeks 12 and 13 swapped — November 5, 2026
+
+- His decision: the agent-based week comes first, so that JumpHMM and
+  model-predictive rebalancing lead directly into the Autotrader (L14a) and the
+  autotrading rollout around Thanksgiving. The Box schedule spreadsheet and
+  `lectures/instructor/schedule/` CSV carry the new order.
+- Moves: the JumpHMM lecture is now `week-13/L13a` and the INFORMS/MPC lecture is
+  `week-13/L13b` (files, decks, notation anchors, and links renamed; decks rebuilt).
+  The 2025 Wolfram crash lecture is now `week-12/L12b`. The former 13a lecture
+  (maximum-utility allocation and adaptive rebalancing, superseded by the MPC
+  lecture) is archived in `lectures/archive/week-13-L13a-adaptive-rebalancing-2026-11-05/`.
+- New L12a (Tue Nov 10, freeze Sun Nov 8): agent-based models with the Thermal
+  Minority Game (Boltzmann choice rule derived from maximum entropy) and the
+  Farmer–Joshi market. Design: `private/specs/2026-11-05-week12-L12a-minority-game-farmer-joshi-design.md`.
+- L12b (Thu Nov 12) will be rebuilt on the simulator of his Wolfram markets paper
+  (`github.com/varnerlab/Wolfram-markets-abm-paper`, public since November 5),
+  ported into the course package to replace the outdated `Wolfram.jl`. Separate design.
+- The "Week 12" section below describes the JumpHMM/MPC work under its old IDs
+  (L12a, L12b); those lectures are now L13a and L13b.
+
 ## Week 12: JumpHMM synthetic markets and the INFORMS study replace bandits — November 3, 2026
 
 - His decision: bandits are out of the main path "unless we need them". L12a
