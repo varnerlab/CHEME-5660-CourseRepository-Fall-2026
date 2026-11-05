@@ -8,11 +8,15 @@ shared style file, `abm-diagram.tex`.
 |---|---|
 | `Fig-L12a-MinorityGame` | The Minority Game, end of the section (A: one round with both feedback paths; B: one agent's two strategy tables, scores, and Boltzmann probabilities) |
 | `Fig-L12a-FarmerJoshi` | The Farmer–Joshi Market, before the algorithm (A: one step of the market; B: the threshold rule of a value investor as three states) |
+| `Fig-L12a-MinorityGame-Results` | What the minority game shows (A: phase diagram at T = 0; B: volatility per agent against the temperature) |
+| `Fig-L12a-FarmerJoshi-Results` | What the Farmer–Joshi market shows (A: autocorrelation of absolute log returns vs SPY; B, C: excess kurtosis and lag-1 autocorrelation against the number of trend followers) |
 
 Each `.tex` header records the consistency checks (the highlighted history row, the minority action,
 which score rises, the probabilities at T equal to the score gap, and the transitions against
 `threshold_position`). From this folder, run `make` to build each PDF (deck; the deck crops one panel
 per frame with `trim`) and themed SVG (notebook, width 1000).
 
-The PNG files (`Fig-L12a-PhaseDiagram`, `Fig-L12a-Temperature`, `Fig-L12a-TraderMix`) are executed
-outputs of the two examples (seed 5660), used only in the deck.
+The two results figures are pgfplots charts (shared style `results-plots.tex`) drawn from CSVs
+written by `generate_results_data.jl`, which replays the examples' code with seed 5660, so every
+point matches the executed notebooks. Rerun it (`julia --project=../../../.. generate_results_data.jl`)
+after any change to the examples, then `make`.

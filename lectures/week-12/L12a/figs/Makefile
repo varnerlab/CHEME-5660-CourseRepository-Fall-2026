@@ -5,7 +5,7 @@
 #   make            build every figure in both formats
 #   make clean      remove LaTeX intermediates
 
-FIGURES := Fig-L12a-MinorityGame Fig-L12a-FarmerJoshi
+FIGURES := Fig-L12a-MinorityGame Fig-L12a-FarmerJoshi Fig-L12a-MinorityGame-Results Fig-L12a-FarmerJoshi-Results
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
@@ -23,7 +23,7 @@ all: pdf svg
 pdf: $(PDFS)
 svg: $(SVGS)
 
-%.pdf: %.tex abm-diagram.tex Makefile
+%.pdf: %.tex abm-diagram.tex results-plots.tex Makefile
 	$(XELATEX) $(LATEX_FLAGS) $<
 
 %.svg: %.pdf theme_svg.py

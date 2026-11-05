@@ -27,6 +27,7 @@ DARK_COLORS = {
     (255, 232, 199): "#5a3d10",  # orangefill: the current history row
     (229, 243, 255): "#123a5c",  # bluefill: trend follower box
     (253, 232, 232): "#4a1c1c",  # redfill: value investor box
+    (227, 229, 232): "#3a3d42",  # gridgray: plot grid lines
 }
 TOLERANCE = 2
 

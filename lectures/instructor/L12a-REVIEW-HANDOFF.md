@@ -169,3 +169,20 @@ NSF-proposal minority game figure was the starting point):
   the per-agent $\mathcal Z_i(t)$, and the run length $R$ (rounds or steps).
 - Deck: one frame per figure panel (cropped from the PDF) and one frame per algorithm; 25 pages,
   zero Overfull lines. Both SVGs checked in light and dark mode with headless Chrome.
+
+## November 5, 2026 (later): results as figures, one section per model
+
+At the instructor's request ("way too much text", results belong under the minority game section,
+example callout at the end of the results): the lecture now has one `##` section per model. The
+minority game section holds the setup and schematic, the derivation (`###` with `####` parts), the
+algorithm, and `### What the minority game shows`; the Farmer–Joshi section holds the model and
+schematic, the algorithm, and `### What the Farmer–Joshi market shows`. Each results subsection is a
+one-paragraph lead, a results figure, two "What do we see?" bullets, and the example callout. The
+results figures (`figs/Fig-L12a-MinorityGame-Results`, `figs/Fig-L12a-FarmerJoshi-Results`) are
+pgfplots charts from CSVs that `figs/generate_results_data.jl` writes by replaying the examples
+with seed 5660 (values match: 2.723, 1.081, 0.142 at 0.3536; 45.25, 0.271; SPY 13.77, -0.110), so
+they follow dark mode. Removed from the lecture: the paragraph-length result bullets, the water
+analogy, and the "one way to read it" interpretation. The deck now uses the same figures; the three
+example PNGs were removed. Every bullet claim was checked against the per-market values for seeds
+5660-5662 (kurtosis above SPY's and lag-1 autocorrelation above SPY's for every market with 1,200 or
+more trend followers).

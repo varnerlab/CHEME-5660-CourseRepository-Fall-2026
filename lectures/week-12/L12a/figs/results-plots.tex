@@ -1,0 +1,22 @@
+% Shared pgfplots style for the L12a results figures (November 5, 2026). Every color is set
+% explicitly so theme_svg.py can map it; pgfplots' default black would fail the mapping.
+\usepackage{pgfplots}
+% the schematics' every-picture style fixes x = y = 1cm, which breaks pgfplots' linear axes
+\tikzset{every picture/.style={font=\sffamily\small, text=vnink}}
+\pgfplotsset{compat=1.18}
+\input{Data-L12a-Values.tex}
+\pgfplotsset{
+  l12a/.style={
+    width=7.6cm, height=5.6cm, scale only axis=false,
+    axis line style={draw=vnink, line width=0.6pt}, tick style={draw=vnink},
+    every tick label/.append style={text=vnink, font=\sffamily\footnotesize},
+    label style={text=vnink, font=\sffamily\small},
+    title style={text=vnink, font=\sffamily\small, align=center},
+    grid=major, major grid style={draw=gridgray, line width=0.4pt},
+    legend style={draw=none, fill=white, fill opacity=0.85, text opacity=1, text=vnink, font=\sffamily\scriptsize, cells={anchor=west}},
+    legend cell align=left,
+  },
+  games/.style={only marks, mark=*, mark size=1.3pt, mark options={draw=gdgray, fill=gdgray, fill opacity=0.55, draw opacity=0.55}},
+  means/.style={draw=gdred, line width=1.2pt, mark=*, mark size=1.4pt, mark options={fill=gdred, draw=gdred}},
+  ref/.style={draw=vnink, line width=1.0pt, dash pattern=on 4pt off 2.5pt},
+}
