@@ -5,6 +5,9 @@
 % section was replaced by protective collars (instructor decision). The frame order mirrors the
 % lecture notebook. November 4, 2026: the net Delta derivation, delta-neutral positions, and
 % the composite Delta table moved to the derivation notebook (one Delta frame remains).
+% November 5, 2026: synced with the lecture: the covered call, collar, and TJUL-today
+% figures (../figs PDFs), the opportunity point O^+ rows, the lecture's case labels, the
+% corrected TJUL strikes (SEC N-PORT), and EDGAR.
 % The disclaimer is slide 2, by instructor preference. Notation
 % follows the lecture: shares bought at S(0), strike K, call premium \mathcal{P}_{c};
 % collar put at K_1 (premium \mathcal{P}_{1}) and call at K_2 (premium \mathcal{P}_{2}); profit at expiration \hat{P}(S(T)), accumulation factor
@@ -153,6 +156,14 @@
   \slidenote{Video:}{\href{https://varnerlab.org/watch.html?v=Tid1rfVIc9c}{\dimmed{SMB Capital, Simple \& Low Risk Investing Strategy}}}
 \end{frame}
 
+\begin{frame}{Covered Call: Shares Plus a Short Call}
+  We buy shares at $S(0)$ and sell one call at the strike $K$ per $m$ shares.
+  Per share, we pay $S(0)-\Pc_{c}$ today:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{../figs/Fig-L11b-Covered-Call.pdf}
+  \end{center}
+\end{frame}
+
 \begin{frame}{Covered Call: Profit at Expiration}
   Buy shares at $S(0)$ and sell one call per $m$ shares, with strike $K$, premium
   $\Pc_{c}$, and expiration $T$. The profit at expiration (USD/share) is:
@@ -162,24 +173,25 @@
   \end{align*}
   where $\Dc_{T,0}(g_{y})=e^{g_{y}T}$ is the accumulation factor; for $n$
   contracts, multiply by $mn$. With no dividends and no early exercise:
-  {\small\begin{equation*}
+  {\footnotesize\begin{equation*}
     \boxed{
     \hat{P}(S(T)) = \begin{cases}
-    \overbrace{K - \Dc_{T,0}(g_{y})\cdot\left(S(0) - \Pc_{c}\right)}^{\textstyle\text{realized gain}}, & \text{if } S(T) > K\;\text{(exercised)}\\
-    \Dc_{T,0}(g_{y})\cdot\Pc_{c} + \underbrace{\left(S(T) - \Dc_{T,0}(g_{y})\cdot S(0)\right)}_{\textstyle\text{unrealized gain}}, & \text{if } S(T) \leq K\;\text{(expires worthless)}
+    \overbrace{K - \Dc_{T,0}(g_{y})\cdot\left(S(0) - \Pc_{c}\right)}^{\textstyle\text{realized gain}}, & \text{if } S(T) > K\;\text{(call exercised)}\\
+    \Dc_{T,0}(g_{y})\cdot\Pc_{c} + \underbrace{\left(S(T) - \Dc_{T,0}(g_{y})\cdot S(0)\right)}_{\textstyle\substack{\text{unrealized gain}\\\text{(no share sale)}}}, & \text{if } S(T) \leq K\;\text{(call expires worthless)}
     \end{cases}}
   \end{equation*}}
 \end{frame}
 
 \begin{frame}{Covered Call: Breakeven, Maximum Profit, and Maximum Loss}
-  The maximum profit, breakeven $S^{\ddagger}$, and maximum loss are given below.
-  Maximum losses are listed as positive amounts (USD/share):
+  The maximum profit, breakeven $S^{\ddagger}$, maximum loss, and opportunity
+  point $O^{+}$ are given below. Maximum losses are listed as positive amounts (USD/share):
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $K-\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ for $S(T)\geq K$ \\
       Breakeven & $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ \\
       Maximum loss & $\Dc_{T,0}(g_{y})\cdot\left(S(0)-\Pc_{c}\right)$ at $S(T)=0$ \\
+      Opportunity point & $O^{+}=K+\Dc_{T,0}(g_{y})\cdot\Pc_{c}$, the breakeven of the short call alone \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -204,29 +216,39 @@
 
   \vspace{0.3em}
   With no dividends and no early exercise, at most one option pays at expiration:
-  {\small\begin{equation*}
+  {\footnotesize\begin{equation*}
     \boxed{
     \hat{P}(S(T)) = \begin{cases}
     K_{1} - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } S(T) < K_{1}\;\text{(put exercised)}\\
-    S(T) - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } K_{1} \leq S(T) \leq K_{2}\;\text{(neither)}\\
+    S(T) - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } K_{1} \leq S(T) \leq K_{2}\;\text{(both expire worthless)}\\
     K_{2} - \Dc_{T,0}(g_{y})\cdot\left(S(0) + \Pc_{1} - \Pc_{2}\right), & \text{if } S(T) > K_{2}\;\text{(call exercised)}
     \end{cases}}
   \end{equation*}}
 \end{frame}
 
+\begin{frame}{Protective Collar: Net Credit, Zero Cost, and Net Debit}
+  The collar (black) against the shares alone (gray) and the two options
+  together (blue). The shading marks where the shares alone earn more:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L11b-Collar.pdf}
+  \end{center}
+\end{frame}
+
 \begin{frame}{Protective Collar: Breakeven, Maximum Profit, and Maximum Loss}
-  The maximum profit, breakeven $S^{\ddagger}$, and maximum loss are given below.
-  Maximum losses are listed as positive amounts (USD/share):
+  The maximum profit, breakeven $S^{\ddagger}$, maximum loss, and opportunity
+  point $O^{+}$ are given below. Maximum losses are listed as positive amounts (USD/share):
   \begin{center}\small
     \begin{tabular}{ll}
       \toprule
       Maximum profit & $K_{2}-\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)$ for $S(T)\geq K_{2}$ \\
       Breakeven & $S^{\ddagger}=\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)$, if $K_{1}\leq S^{\ddagger}\leq K_{2}$ \\
       Maximum loss & $\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)-K_{1}$ for $S(T)\leq K_{1}$${}^{a}$ \\
+      Opportunity point & $O^{+}=K_{2}+\Dc_{T,0}(g_{y})\cdot\left(\Pc_{2}-\Pc_{1}\right)$${}^{b}$ \\
       \bottomrule
     \end{tabular}
   \end{center}
-  {\footnotesize ${}^{a}$If $\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)>K_{1}$; otherwise none.\par}
+  {\footnotesize ${}^{a}$If $\Dc_{T,0}(g_{y})\cdot\left(S(0)+\Pc_{1}-\Pc_{2}\right)>K_{1}$; otherwise none.
+  ${}^{b}$For a net debit, the shares alone earn more for any $S(T)>K_{1}-\Dc_{T,0}(g_{y})\cdot\left(\Pc_{1}-\Pc_{2}\right)$.\par}
   \vspace{0.3em}
   When $\Pc_{1}=\Pc_{2}$, the call premium pays for the whole put: a
   \hilite{zero-cost collar}. Compared with the covered call, the put limits the
@@ -250,6 +272,15 @@
   The fund's goal: held for the whole two years, its share price rises as much as
   the price of SPY, up to 13.61\%, and does not fall if SPY falls (before fees).
   \slidenote{Example:}{\href{\repo/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}{\dimmed{CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb}}\hspace{0.8em}{\vnmedium Source:}\hspace{0.65em}\href{https://www.sec.gov/Archives/edgar/data/1415726/000089418926028218/0000894189-26-028218-index.htm}{\dimmed{SEC N-PORT, July 31, 2026}}}
+\end{frame}
+
+\begin{frame}{TJUL Today}
+  TJUL's July 31, 2025 report on \href{https://www.sec.gov/edgar/search/}{\hilite{EDGAR}}, the
+  SEC's free database of filings: $\Pc_{1}\approx 45.46$, $\Pc_{2}\approx 34.23$ USD/share, a net debit:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L11b-TJUL.pdf}
+  \end{center}
+  \slidenote{Source:}{\href{https://www.sec.gov/Archives/edgar/data/1415726/000089418925008511/0000894189-25-008511-index.htm}{\dimmed{SEC N-PORT, July 31, 2025}}}
 \end{frame}
 
 % ========== Delta of Covered Calls and Collars
