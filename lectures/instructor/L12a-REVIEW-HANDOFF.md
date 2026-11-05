@@ -198,3 +198,6 @@ with "orders" labels instead); panel B is now the position-against-signal loop o
 Joshi's Fig. 4 (enter at ±χ^in, hold, exit at ±χ^out) in place of the state machine and its three
 lines of text. Alt texts, the lecture lead sentence, and the deck crops (split at the blank gap
 between panels) were updated; both SVGs checked in dark mode.
+- Same day: the instructor did not find the position-signal loop clear and preferred the state
+  machine, so panel B of `Fig-L12a-FarmerJoshi` is the state machine again (with its three text
+  lines); the simplified panel A stays. Alt text, lead sentence, and deck crop restored to match.

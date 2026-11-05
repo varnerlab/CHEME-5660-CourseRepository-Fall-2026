@@ -1,10 +1,8 @@
 % L12a Farmer–Joshi market, two panels (November 5, 2026; revised the same day: panel A lost its
-% repeated notes and second equation, and panel B became the position-against-signal loop of
-% Farmer and Joshi's Fig. 4 instead of a state machine with three lines of text).
+% repeated notes and second equation).
 % A: one step of the market, with the new price feeding back into every signal.
-% B: the threshold rule of a value investor. Drawn with chi_in = 2 and chi_out = -0.5, so the
-% short position (-c) is entered at zeta = +2 and exited at zeta = -0.5, and the long position
-% (+c) is entered at zeta = -2 and exited at zeta = +0.5. Checked against threshold_position
+% B: the threshold rule of a value investor as three states (after Farmer and Joshi, Fig. 5);
+% the instructor preferred this to the position-signal loop tried the same day. Checked against threshold_position
 % (direction -1): from 0, short if zeta > chi_in, long if zeta < -chi_in; exit a short when
 % zeta < chi_out, exit a long when zeta > -chi_out.
 \documentclass[tikz,border=6pt]{standalone}
@@ -42,41 +40,28 @@
   \draw[feedback] (price.east) -- (9.75, 1.8) -- (9.75, 8.1) -- (tf.east);
   \node[anchor=north, text=saorange, font=\sffamily\footnotesize] at (4.65, 1.25) {new price, new signals};
 
-  % ================= Panel B: the threshold rule as a loop =================
-  \begin{scope}[xshift=15.0cm, yshift=5.6cm]
-    \node[paneltitle] at (-3.7, 4.85) {\textbf{B}\quad Threshold rule of a value investor};
-    % axes: signal zeta (x, 1 unit = 1.05 cm) and position (y: +c at 2.2, 0 at 0, -c at -2.2)
-    \def\s{1.05}
-    \draw[draw=vnink, line width=0.8pt, -{Latex[length=2.4mm, width=1.7mm]}] (-3.3*\s, 0) -- (3.4*\s, 0) node[right] {$\zeta^{(i)}_{t}$};
-    \draw[draw=vnink, line width=0.8pt, -{Latex[length=2.4mm, width=1.7mm]}] (0, -3.0) -- (0, 3.1) node[above] {position $x^{(i)}_{t+1}$};
-    % threshold ticks on the signal axis; each label sits on the side of the axis with no line
-    \foreach \x in {-2, -0.5, 0.5, 2} {\draw[draw=vnink, line width=0.6pt] (\x*\s, -0.08) -- (\x*\s, 0.08);}
-    \node[anchor=north, font=\sffamily\footnotesize] at (-2*\s, -0.12) {$-\chi^{\text{in}}_{i}$};
-    \node[anchor=south, font=\sffamily\footnotesize] at (2*\s, 0.12) {$\chi^{\text{in}}_{i}$};
-    \node[anchor=south, font=\sffamily\footnotesize] at (-0.5*\s, 0.12) {$\chi^{\text{out}}_{i}$};
-    \node[anchor=north, font=\sffamily\footnotesize] at (0.5*\s, -0.12) {$-\chi^{\text{out}}_{i}$};
+  % ================= Panel B: the threshold rule =================
+  \begin{scope}[xshift=11.6cm]
+    \node[paneltitle] at (-0.3, 10.45) {\textbf{B}\quad Threshold rule of value investor $i$};
 
-    % flat (0) between the entry thresholds
-    \draw[draw=gdgray, line width=1.6pt] (-2*\s, 0) -- (2*\s, 0);
-    % short branch: enter at +chi_in (down), hold, exit at chi_out (up)
-    \draw[draw=gdred, line width=1.6pt, -{Latex[length=2.6mm, width=1.9mm]}] (2*\s, 0) -- (2*\s, -2.15);
-    \draw[draw=gdred, line width=1.6pt] (3.1*\s, -2.2) -- (-0.5*\s, -2.2);
-    \draw[draw=gdred, line width=1.6pt, -{Latex[length=2.6mm, width=1.9mm]}] (-0.5*\s, -2.2) -- (-0.5*\s, -0.05);
-    \draw[draw=gdred, line width=1.2pt, -{Latex[length=2.2mm, width=1.6mm]}] (1.6*\s, -2.2) -- (0.9*\s, -2.2);
-    % long branch: enter at -chi_in (up), hold, exit at -chi_out (down)
-    \draw[draw=gdred, line width=1.6pt, -{Latex[length=2.6mm, width=1.9mm]}] (-2*\s, 0) -- (-2*\s, 2.15);
-    \draw[draw=gdred, line width=1.6pt] (-3.1*\s, 2.2) -- (0.5*\s, 2.2);
-    \draw[draw=gdred, line width=1.6pt, -{Latex[length=2.6mm, width=1.9mm]}] (0.5*\s, 2.2) -- (0.5*\s, 0.05);
-    \draw[draw=gdred, line width=1.2pt, -{Latex[length=2.2mm, width=1.6mm]}] (-1.6*\s, 2.2) -- (-0.9*\s, 2.2);
+    \node[state] (long)  at (0.9, 7.5) {$+c_{i}$};
+    \node[state] (flat)  at (3.9, 7.5) {$0$};
+    \node[state] (short) at (6.9, 7.5) {$-c_{i}$};
+    \node[note, below=3pt of long]  {long};
+    \node[note, below=3pt of flat]  {flat};
+    \node[note, below=3pt of short] {short};
 
-    % labels: the two positions at the ends of their lines, the two entries, and the holds
-    \node[anchor=east, font=\sffamily\footnotesize, text=gdred] at (-3.15*\s, 2.2) {long $+c_{i}$};
-    \node[anchor=west, font=\sffamily\footnotesize, text=gdred] at (3.15*\s, -2.2) {short $-c_{i}$};
-    \node[anchor=west, font=\sffamily\footnotesize, align=left] at (2.1*\s, -1.0) {overpriced:\\sell};
-    \node[anchor=east, font=\sffamily\footnotesize, align=right] at (-2.1*\s, 1.0) {underpriced:\\buy};
-    \node[note, anchor=south] at (-1.25*\s, 2.3) {hold};
-    \node[note, anchor=north] at (1.25*\s, -2.3) {hold};
-    \node[note, anchor=north] at (0, -3.35) {trend followers: the mirror image};
+    % entries (above), exits (below)
+    \draw[flow] (flat.north east) to[bend left=35] node[above, align=center] {$\zeta^{(i)}_{t}>\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}overpriced: sell}} (short.north west);
+    \draw[flow] (flat.north west) to[bend right=35] node[above, align=center] {$\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}underpriced: buy}} (long.north east);
+    \draw[flow] (short.south west) to[bend left=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}<\chi^{\text{out}}_{i}$} (flat.south east);
+    \draw[flow] (long.south east) to[bend right=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}>-\chi^{\text{out}}_{i}$} (flat.south west);
+
+    \node[anchor=north west, align=left] at (-0.3, 4.75) {%
+      Otherwise the position stays the same.\\[6pt]
+      Position size: $c_{i}=a\bigl(\chi^{\text{in}}_{i}-\chi^{\text{out}}_{i}\bigr)$\\[6pt]
+      \textcolor{gdblue}{Trend followers} use the same rule with the signs reversed:\\[2pt]
+      buy when $\zeta^{(i)}_{t}>\chi^{\text{in}}_{i}$, sell when $\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$.};
   \end{scope}
 \end{tikzpicture}
 \end{document}
