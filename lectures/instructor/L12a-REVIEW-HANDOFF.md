@@ -1,0 +1,139 @@
+# L12a review record: agent-based markets
+
+## November 5, 2026: new lecture, two examples, deck
+
+New lecture for Tuesday, November 10 (freeze Sunday, November 8), built after weeks 12 and 13
+were swapped. Design: `private/specs/2026-11-05-week12-L12a-minority-game-farmer-joshi-design.md`;
+plan: `private/plans/2026-11-05-week12-L12a-abm-plan.md`.
+
+### Files
+
+- Package: `code/src/AgentBasedMarkets.jl` (`MyThermalMinorityGameModel`, `boltzmann_weights`,
+  `MyFarmerJoshiMarketModel`, `threshold_position`, `build`, `solve`), docs page `code/docs/src/abm.md`,
+  tests `code/test/test_agent_based_markets.jl`, hand-run acceptance script
+  `code/test/acceptance/abm_acceptance.jl`.
+- Lecture: `CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb` (no code cells).
+- Examples: `CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb`,
+  `CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb`.
+- Deck: `slides/CHEME-5660-L12a-Slides-Fall-2026.tex` (18 pages); figures in `figs/` are the
+  executed example outputs (seed 5660).
+- Notation: L12a section and Context-table rows in `code/docs/faq-src/content.json`, rebuilt
+  with Pandoc 3.1.11.1.
+
+### Model conventions and deviations from the papers
+
+- **Minority game.** The binary lookup-table model of Challet and Zhang (1997) with the score
+  normalization of Challet, Marsili, and Zecchina (2000), $U_{is}(t+1)=U_{is}(t)-a_{is}^{\mu(t)}A(t)/P$,
+  and the Boltzmann choice of Cavagna, Garrahan, Giardina, and Sherrington (1999). Cavagna et al. use
+  a continuous strategy sphere and scores divided by $N$; our temperature is in units of
+  $P$-normalized scores, so $T_{\text{Cavagna}}=\alpha T_{\text{ours}}$. Stated in the lecture and the deck.
+  Temperature $0$ breaks ties uniformly at random; temperature $\infty$ is uniform choice.
+- **Critical value.** $\alpha_c\approx 0.3374$ (CMZ, $S=2$, very many agents) is cited, not
+  derived. The simulated minimum is reported separately from it.
+- **Farmer–Joshi price noise (instructor decision, November 5).** Table 1 of the paper prints
+  $\sigma_\xi=0.35$. Our faithful implementation with that value gives log-return standard
+  deviations near 0.5 per step, and the price wanders tens of log units from the value (with
+  value investors only, median $|p-v|$ from 2 to 49 depending on the seed; their total position is
+  only about $\pm6.6$ in the units of $\lambda$, so they saturate). The paper's Figure 10 shows the
+  price within about $\pm1.5$ of the value, and the text says parameters were chosen to match real
+  price volatility. A scan over $\sigma_\xi$ (8 seeds per value) showed that the trend followers
+  rarely trigger for $\sigma_\xi\le 0.025$, and that for $0.035\le\sigma_\xi\le 0.07$ the price
+  tracks the value with large kurtosis and clustering but a seed-dependent return
+  autocorrelation. The instructor chose $\sigma_\xi=0.05$, labeled as our variant everywhere.
+  The package default stays at the printed 0.35.
+- **Farmer–Joshi value process.** The paper drives the combined run with interpolated S&P 500
+  dividends; we use a random walk with $\sigma_\eta=0.01$. Before the $\sigma_\xi$ change, the
+  calibration gate showed the combined lag-1 return autocorrelation was about 0.5 for every
+  $\sigma_\eta$ in 0.001–0.03 and for a smooth linear path, so the value process is not the cause
+  of the gap to the paper's near-zero autocorrelation; the population mix is.
+- **Trader mix (instructor decision, option 1).** Table 1's 1,200/1,200 is kept, and Example 2
+  shows a sweep of the number of trend followers instead of retuning the model.
+
+### Symbols (new or reused in L12a)
+
+Minority game: $N$, $i$, $m$, $P=2^m$, $\alpha=P/N$, $\alpha_c$, $\mu(t)$, $S$, $s$, $a_{is}^{\mu}$,
+$a_i(t)$, $A(t)$, $U_{is}(t)$, $\sigma^2/N$, $\langle\cdot\rangle$. Maximum entropy: $\pi_s$,
+$\pi_{is}$, $\mathcal H(\pi)$ (new), $\bar U$, $\mathcal L$, $\phi_0$, $\phi_1$ (new), $T=1/\phi_1$,
+$\mathcal Z$ (new), $\Delta$. Farmer–Joshi: $p_t$, $v_t$, $v^{(i)}$, $x_t^{(i)}$, $c_i$, $a$,
+$\chi^{\text{in}}_i$ and $\chi^{\text{out}}_i$ (new; the paper's $T$, $\tau$), $\theta_i$,
+$\omega_{t+1}^{(i)}$, $\lambda$, $\xi_t$, $\sigma_\xi$, $\eta_t$, $\sigma_\eta$, $r_{t+1}$,
+$\sigma_r$; real ticker $S_t$, $g_t$.
+
+Choices: $T$ is the temperature (thermal-physics standard; expiration does not appear in L12a),
+so the Farmer–Joshi thresholds became $\chi$. The multipliers are $\phi_0,\phi_1$ because $\lambda$
+is the Farmer–Joshi liquidity (and the package field) and $\beta$ is the SIM beta. The choice
+probability is $\pi$ because $p_t$ is the Farmer–Joshi log price. Reused symbols ($\alpha$,
+$\lambda$, $\mu$, $T$, $c$, $A$, $U$, $r$, $\theta$, $\omega$, $\xi$, $\eta$, $\pi$, $S$, $m$, $P$,
+$a$) have Context-table entries. The package docstrings still write the thresholds as $T$, $\tau$
+(the paper's symbols).
+
+### Seed checks (every prose claim must hold for seeds 5660, 5661, 5662)
+
+Example 1 (runs in 70–74 s):
+
+| Quantity | 5660 | 5661 | 5662 |
+|---|---|---|---|
+| Task 1 $\sigma^2/N$ ($N=641$) | 2.80 | 2.84 | 2.74 |
+| $\alpha$ at the simulated minimum | 0.354 | 0.374 | 0.398 |
+| Smallest average $\sigma^2/N$ | 0.142 | 0.146 | 0.144 |
+| Greedy ($T=0$) | 2.72 | 2.87 | 2.85 |
+| Smallest at finite $T$ (all at $T=100$) | 0.462 | 0.463 | 0.453 |
+| Random choice ($T=\infty$) | 1.08 | 1.03 | 0.99 |
+
+All: crossing of the coin-flip line near $\alpha\approx0.2$; flat to $T\approx0.3$, steep drop from
+$T=1$ to $10$, below both limits from $T=10$ to $1{,}000$. The high-temperature end depends on run
+length (scores accumulate: at $T=1{,}000$, 0.75, 0.68, 0.61 for 5k, 10k, 20k rounds), so the prose
+quotes no high-temperature values.
+
+Example 2 (runs in 27–38 s):
+
+| Quantity | 5660 | 5661 | 5662 | SPY |
+|---|---|---|---|---|
+| Value only: sd, lag-1 ACF | 0.050, −0.024 | 0.051, −0.031 | 0.052, −0.038 | |
+| Trend only: sd, lag-1 ACF | 0.34, 0.91 | 0.34, 0.92 | 0.33, 0.92 | |
+| Both: sd, lag-1 ACF | 0.23, 0.27 | 0.19, 0.37 | 0.27, 0.035 | −0.110 |
+| Both: excess kurtosis | 45 | 57 | 89 | 13.8 |
+| Both: ACF of $\lvert r\rvert$, lags 1, 5 | 0.67, 0.025 | 0.67, 0.038 | 0.69, 0.085 | 0.364, 0.325 |
+
+Trader-mix sweep, per market: at 600 or fewer trend followers, kurtosis ≤ 1.2 and lag-1
+ACF of $\lvert r\rvert$ ≤ 0.04; at 900, each seed had both quiet and bursting markets; at
+1,200 and 1,500, every market had kurtosis 27–81 and lag-1 ACF of $r$ from −0.079 to 0.53, all
+above SPY's −0.110.
+
+Claims that failed the seed check and were rewritten before commit: "fat tails come with a positive
+return autocorrelation" (seed 5662 at 1,200 trend followers averages −0.022); "most markets at 900
+trend followers have both" (one of three for seed 5660); "the autocorrelations reach the band within
+15 steps and stay slightly below zero" (seed 5661 differs).
+
+### Codex audits and dispositions
+
+- **Plan review (before building):** findings applied to the plan and spec (Task 0 in the plan ledger).
+- **Lecture and examples audit (November 5):** verified the Lagrangian signs, the stationarity
+  and second-order conditions, $-d\mathcal H/d\bar U=\phi_1=1/T$ (envelope theorem), the limits,
+  $e/(e+1)=0.7311$, the code match, the temperature scaling, the four literature facts, and that
+  there are no forward links. Applied after verification: the condition on $\bar U$ (strictly
+  between the mean and the maximum score, scores not all equal); the entropy at $T\to0$ is zero
+  only for a unique best strategy; "most score gaps" and "rises slowly" rewritten to what the
+  outputs show; "no clustering" at 600 trend followers softened (0.024 vs a band of 0.014); the
+  900-trend-follower claim rewritten to what the plots show; "no mix matches" restated as "every mix
+  misses on at least one statistic by a wide margin"; $\chi^{\text{in}}>0\ge\chi^{\text{out}}$
+  stated as a Table 1 range, not part of the rule; position size tied to the gap between the
+  thresholds; "unlike the paper's figure" softened to "much farther than in the paper's figures"
+  (Figure 10 is annually averaged); the standard deviation symbol $s$ replaced by $\sigma_r$;
+  $\Delta$, $k$, $S_t$, $g_t$ added to the notation; the coin-flip value stated as an expectation.
+  Not applied: input constants (10,000 rounds, 1,200 traders, 20,000 steps, $\sigma_\xi$) are not
+  printed as outputs, but they are visible in the examples' Constants cells and are inputs, not
+  results.
+
+### Verification
+
+- Package tests: 2,181/2,181 and MPC 1,268/1,268; docs build exit 0 with the L12a anchor in the
+  notation page.
+- Deck: latexmk exit 0, zero Overfull lines, every page rendered and inspected.
+
+### Open for the instructor
+
+- Read-through of the lecture, both examples, and the deck before the Sunday freeze.
+- No company profile (not in the design). Add one if wanted.
+- Package docstrings use the paper's $T$, $\tau$ for the thresholds; align with $\chi$ if wanted.
+- NotebookLM materials, the self-check quiz, and the engagement quiz come after the lecture.
