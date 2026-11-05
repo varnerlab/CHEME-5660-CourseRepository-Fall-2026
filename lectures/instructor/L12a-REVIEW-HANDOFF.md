@@ -134,6 +134,20 @@ trend followers have both" (one of three for seed 5660); "the autocorrelations r
 ### Open for the instructor
 
 - Read-through of the lecture, both examples, and the deck before the Sunday freeze.
-- No company profile (not in the design). Add one if wanted.
 - Package docstrings use the paper's $T$, $\tau$ for the thresholds; align with $\chi$ if wanted.
 - NotebookLM materials, the self-check quiz, and the engagement quiz come after the lecture.
+
+## November 5, 2026 (later): In the News section instead of a company profile
+
+The instructor chose no company profile (no company uses these models in a way worth profiling)
+and asked for a tie-in to the November 5 sell-off. Added a lecture section and one deck frame
+(slide 6) after the Examples. Facts are from two CNBC articles of November 5: the Nasdaq fell
+5.5% into correction and the S&P 500 about 4.4%, the steepest one-day declines since the April
+2025 tariff shock, on worries about AI data-center spending after the midterms; the seven largest
+technology companies lost more than 1 trillion USD; retail investors sold a net 338 million USD
+of single stocks (Vanda Research, measured before the close), the largest one-day outflow since
+March 2020, with Vanda's quote that the dip-buying bid "has effectively disappeared from
+individual names." Left out on purpose: the Dow figure (CNBC's article gives two conflicting
+values) and the leveraged-ETF buying (buying a falling market with leverage is not trend
+following, so it would muddy the value-investor mapping). The connection is posed as a question
+for the trader-mix result, not as an explanation of the sell-off.
