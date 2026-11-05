@@ -209,4 +209,4 @@ carry arXiv's default "assumed 1991–2003" license (no third-party redistributi
 is public, so, with his OK, the lecture instead has CRR-style `__Reference:__` entries (citations
 checked against Crossref) that link to the free arXiv PDFs, and the inline author links now point
 there too: Challet–Zhang and Challet–Marsili–Zecchina in The Minority Game, Cavagna et al. in the
-derivation, Farmer–Joshi in The Farmer–Joshi Market. The examples and the deck still link the DOIs.
+derivation, Farmer–Joshi in The Farmer–Joshi Market. The examples and the deck link the same arXiv PDFs.
