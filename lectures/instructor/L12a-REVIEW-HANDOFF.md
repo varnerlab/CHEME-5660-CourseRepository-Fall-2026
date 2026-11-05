@@ -186,3 +186,15 @@ analogy, and the "one way to read it" interpretation. The deck now uses the same
 example PNGs were removed. Every bullet claim was checked against the per-market values for seeds
 5660-5662 (kurtosis above SPY's and lag-1 autocorrelation above SPY's for every market with 1,200 or
 more trend followers).
+
+## November 5, 2026 (later): schematics revised for less text
+
+The instructor asked whether the schematics were the best they could be ("the minority game has a
+lot of text"). Minority game: the rotated score formula and the brace sentence became short labels
+("update every score", "append to the history", "history μ(t)", "minority"); panel B's paragraph
+became three table rows under the strategy columns (score, π at T = 1.5, and ↓/↑ after the round).
+Farmer–Joshi: panel A lost its two repeated threshold notes and the net-order equation (a Σ node
+with "orders" labels instead); panel B is now the position-against-signal loop of Farmer and
+Joshi's Fig. 4 (enter at ±χ^in, hold, exit at ±χ^out) in place of the state machine and its three
+lines of text. Alt texts, the lecture lead sentence, and the deck crops (split at the blank gap
+between panels) were updated; both SVGs checked in dark mode.
