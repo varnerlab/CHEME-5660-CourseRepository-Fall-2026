@@ -1,0 +1,32 @@
+% L12a: the five parts of an agent-based model as one loop (November 5, 2026; replaces the
+% lecture's five bullets at the instructor's request). Information goes to the agents, each agent's
+% decision rule turns it into an action, the actions add up to the aggregate, and the aggregate
+% feeds back into what the agents see next. Same palette as the two model schematics: orange marks
+% the aggregate and the feedback.
+\documentclass[tikz,border=6pt]{standalone}
+\input{abm-diagram.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  % information
+  \node[sumbox, minimum width=3.0cm, minimum height=1.5cm] (info) at (0, 0) {\textbf{information}\\[2pt]{\footnotesize\color{gdgray}what each agent sees}};
+
+  % agents: a stack of cards, each with its own decision rule
+  \foreach \k/\dx in {3/0.36, 2/0.18} {
+    \node[agent, minimum width=3.0cm, minimum height=1.5cm] at (5.0+\dx, 0.0+\dx) {};
+  }
+  \node[agent, minimum width=3.0cm, minimum height=1.5cm] (agents) at (5.0, 0) {\textbf{decision rule}\\[2pt]{\footnotesize\color{gdgray}turns what agent $i$ sees}\\[-1pt]{\footnotesize\color{gdgray}into an action}};
+  \node[anchor=south, font=\sffamily\normalsize] at (5.18, 1.22) {\textbf{agents} $i=1,\dots,N$};
+
+  % aggregate
+  \node[minority, minimum width=3.0cm, minimum height=1.5cm, align=center, font=\sffamily\small] (agg) at (10.0, 0) {\textbf{aggregate}\\[2pt]{\footnotesize what the actions add up to}};
+
+  % flow
+  \draw[flow] (info.east) -- (agents.west) node[midway, above, font=\sffamily\footnotesize] {sees};
+  \draw[flow] ($(agents.east)+(0.36,0)$) -- (agg.west) node[midway, above, font=\sffamily\footnotesize] {actions};
+
+  % feedback
+  \draw[feedback] (agg.south) -- (10.0, -1.75) -- (0, -1.75) -- (info.south);
+  \node[anchor=north, text=saorange, font=\sffamily\small] at (5.0, -1.85) {\textbf{feedback}: the aggregate changes what the agents see next};
+\end{tikzpicture}
+\end{document}

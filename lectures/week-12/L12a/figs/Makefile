@@ -5,7 +5,7 @@
 #   make            build every figure in both formats
 #   make clean      remove LaTeX intermediates
 
-FIGURES := Fig-L12a-MinorityGame Fig-L12a-FarmerJoshi Fig-L12a-MinorityGame-Results Fig-L12a-FarmerJoshi-Results
+FIGURES := Fig-L12a-ABM-Structure Fig-L12a-MinorityGame Fig-L12a-FarmerJoshi Fig-L12a-MinorityGame-Results Fig-L12a-FarmerJoshi-Results
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
