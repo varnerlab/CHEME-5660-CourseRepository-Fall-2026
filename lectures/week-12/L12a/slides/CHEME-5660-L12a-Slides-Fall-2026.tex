@@ -1,0 +1,285 @@
+% L12a student companion deck: agent-based models, the thermal minority game (with the
+% maximum-entropy derivation of the Boltzmann choice rule), and the Farmer–Joshi market.
+%
+% November 5, 2026: new deck, built from the L11b template. The frame order mirrors the
+% lecture notebook. Notation follows the lecture: agents N, memory m, histories P = 2^m,
+% histories per agent \alpha = P/N, strategies S, history \mu(t), actions a_{is}^{\mu} and
+% a_i(t), attendance A(t), scores U_{is}(t), volatility per agent \sigma^2/N, choice
+% probability \pi_s, entropy \mathcal{H}, multipliers \phi_0 and \phi_1, temperature
+% T = 1/\phi_1, partition function \mathcal{Z}; Farmer–Joshi log price p_t, log value v_t,
+% offset v^{(i)}, position x_t^{(i)}, size c_i = a(\chi^in - \chi^out), lag \theta_i, order
+% \omega, liquidity \lambda, noise \xi with standard deviation \sigma_\xi (0.05, our variant).
+% Figures are the executed outputs of the two examples (random seed 5660), in ../figs.
+% The disclaimer is slide 2, by instructor preference.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Zc}{\mathcal{Z}}
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\cin}{\chi^{\text{in}}_{i}}
+\newcommand{\cout}{\chi^{\text{out}}_{i}}
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a}
+
+\title{\texorpdfstring{{\vnheavy L12a}}{L12a}: How Do Micro Decisions Lead to Emergent Macro Trends?}
+\subtitle{CHEME 5660 Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{Objectives for Today}
+  Today, we write down simple rules for individual traders, simulate many of them
+  together, and measure what the market as a whole does.
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{Today's concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Agent-based models}: the five parts every model shares, in the
+      minority game and the Farmer–Joshi market.
+    \item \hilite{The Boltzmann choice rule}: derived from maximum entropy, with a
+      temperature that sets how strongly agents favor high scores.
+    \item \hilite{Micro to macro}: volatility in the minority game; fat tails and
+      volatility clustering in the Farmer–Joshi market.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What You Need to Know}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Core concepts}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item Five parts: agents, information, a decision rule, an aggregate, and
+      feedback from the aggregate to the next decisions.
+    \item Maximum entropy for a fixed expected score gives
+      $\pi_{s}=\exp(U_{s}/T)/\Zc$: greedy as $T\to 0$, uniform as $T\to\infty$.
+    \item The minority game's volatility per agent depends on $\alpha$ and $T$;
+      Farmer–Joshi value investors and trend followers together produce fat tails
+      and volatility clustering.
+  \end{itemize}
+
+  \vspace{0.5em}
+  {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item The critical value $\alpha_{c}\approx 0.3374$ (cited, not derived) and
+      $-d\Hc/d\bar{U}=1/T$.
+    \item The Farmer–Joshi threshold rules and our parameter values.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lectures and Examples}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Lecture:}}\par\small
+  \href{\repo/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{Examples:}}\par\small
+  \href{\repo/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}}\par
+  \href{\repo/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== The structure of an agent-based model
+\begin{frame}{The Structure of an Agent-Based Model}
+  An \hilite{agent-based model} describes individual decision makers and their
+  rules, simulates them together, and measures the market-wide result:
+  \begin{center}\small
+    \begin{tabular}{lll}
+      \toprule
+      Part & Minority game & Farmer–Joshi market \\
+      \midrule
+      Agents & $N$ agents, $S$ fixed strategies each & Value investors, trend followers \\
+      Information & History $\mu(t)$ of the last $m$ outcomes & Mispricing or price change over a lag \\
+      Decision rule & Choose a strategy by its score & Enter or exit at a threshold \\
+      Aggregate & Attendance $A(t)$ & Net order, then the price \\
+      Feedback & $A(t)$ updates scores and history & New price changes every signal \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% ========== The minority game
+\begin{frame}{The Minority Game}
+  Each round, $N$ (odd) agents buy ($+1$) or sell ($-1$); the minority side,
+  $-\text{sign}\,A(t)$, wins. Agent $i$ plays the action $a_{i}(t)$ of one of its
+  $S$ strategies, tables $a_{is}^{\mu}$ over the $P=2^{m}$ histories $\mu$:
+  \begin{equation*}
+    A(t)=\sum_{i=1}^{N}a_{i}(t)
+    \qquad\qquad
+    U_{is}(t+1)=U_{is}(t)-\frac{a_{is}^{\mu(t)}A(t)}{P}
+  \end{equation*}
+  where $A(t)$ is the attendance and $U_{is}(t)$ the score of strategy $s$ of
+  agent $i$. A strategy that would have put its agent in the minority gains score.
+  \slidenote{Source:}{\href{https://doi.org/10.1016/S0378-4371(97)00419-6}{\dimmed{Challet and Zhang (1997)}}; scores divided by $P$ as in \href{https://doi.org/10.1103/PhysRevLett.84.1824}{\dimmed{Challet, Marsili, and Zecchina (2000)}}}
+\end{frame}
+
+\begin{frame}{Volatility per Agent}
+  We measure how far the attendance moves from an even split, compared with $N$
+  agents who flip fair coins (variance $N$):
+  \begin{equation*}
+    \frac{\sigma^{2}}{N}=\frac{\langle A^{2}\rangle}{N}
+    \qquad\qquad
+    \alpha=\frac{P}{N}
+  \end{equation*}
+  where $\langle\cdot\rangle$ averages over rounds and $\alpha$ is the number of
+  histories per agent. $\sigma^{2}/N>1$: more agents on the same side than with coin
+  flips; $\sigma^{2}/N<1$: a more even split. When $\alpha$ is small, many agents
+  switch to the same action at the same time.
+\end{frame}
+
+% ========== Maximum entropy
+\begin{frame}{Choosing a Strategy: Maximum Entropy}
+  An agent chooses strategy $s$ with probability $\pi_{s}$. The \hilite{entropy}
+  $\Hc(\pi)$ measures how spread out the choice is: zero for a certain choice,
+  $\ln S$ for a uniform one. For a fixed expected score $\bar{U}$, we choose the
+  $\pi_{s}$ that commit to the least:
+  \begin{equation*}
+    \max_{\pi}\;\Hc(\pi)=-\sum_{s=1}^{S}\pi_{s}\ln\pi_{s}
+    \quad\text{subject to}\quad
+    \sum_{s=1}^{S}\pi_{s}=1,\qquad \sum_{s=1}^{S}\pi_{s}U_{s}=\bar{U}
+  \end{equation*}
+  with $\bar{U}$ strictly between the average and the largest score.
+  \slidenote{Source:}{\href{https://doi.org/10.1103/PhysRevLett.83.4429}{\dimmed{Cavagna, Garrahan, Giardina, and Sherrington (1999)}}}
+\end{frame}
+
+\begin{frame}{The Boltzmann Rule}
+  With \hilite{Lagrange multipliers} $\phi_{0}$ (normalization) and $\phi_{1}$
+  (expected score), setting $\partial\Lc/\partial\pi_{s}=0$ gives:
+  \begin{equation*}
+    -\ln\pi_{s}-1-\phi_{0}+\phi_{1}U_{s}=0
+    \quad\Longrightarrow\quad
+    \boxed{\pi_{s}=\frac{1}{\Zc}\exp\left(\frac{U_{s}}{T}\right)},
+    \qquad
+    \Zc=\sum_{k=1}^{S}\exp\left(\frac{U_{k}}{T}\right)
+  \end{equation*}
+  where $T=1/\phi_{1}$ is the \hilite{temperature}, in the units of the scores, and
+  the normalizing sum $\Zc$ is the \hilite{partition function}. The second
+  derivative, $-1/\pi_{s}$, is negative, so this is a maximum.
+\end{frame}
+
+\begin{frame}{What the Temperature Does}
+  The temperature sets how much the choice depends on the scores:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{$T\to 0$}: the best strategy has probability 1, the greedy
+      minority game; with one best strategy, the entropy goes to zero.
+    \item \hilite{$T\to\infty$}: every strategy has probability $1/S$; the entropy
+      is $\ln S$.
+    \item \hilite{In between}: with two scores $\Delta$ apart, the better strategy is
+      played with probability $e^{\Delta/T}/(e^{\Delta/T}+1)$, about 0.73 at $T=\Delta$.
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Physics:}} $-d\Hc/d\bar{U}=\phi_{1}=1/T$, the way thermodynamics
+  defines temperature through entropy and energy.
+\end{frame}
+
+% ========== What the minority game shows
+\begin{frame}{The Phase Diagram}
+  Volatility per agent against $\alpha$ at $T=0$ ($m=6$, $S=2$, three games per
+  $N$). The minimum, 0.14 at $\alpha\approx 0.35$, is close to $\alpha_{c}\approx 0.3374$:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L12a-PhaseDiagram.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Effect of Temperature}
+  At $\alpha\approx 0.1$: greedy 2.72, random choice 1.08, and 0.46 at $T=100$,
+  below both limits. Our scores are divided by $P$, so our $T$ is $1/\alpha$
+  times that of Cavagna and coauthors:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L12a-Temperature.png}
+  \end{center}
+\end{frame}
+
+% ========== Farmer–Joshi
+\begin{frame}{The Farmer–Joshi Market}
+  Trader $i$ holds $x_{t}^{(i)}\in\{-c_{i},0,+c_{i}\}$ and orders
+  $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
+  price in proportion to the net order:
+  \begin{equation*}
+    p_{t+1}=p_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\xi_{t+1}
+  \end{equation*}
+  where $\lambda$ is the liquidity and $\xi_{t+1}$ is Normal noise with standard
+  deviation $\sigma_{\xi}$. The log return is $r_{t+1}=p_{t+1}-p_{t}$.
+  \slidenote{Source:}{\href{https://arxiv.org/abs/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
+\end{frame}
+
+\begin{frame}{Value Investors and Trend Followers}
+  Each trader enters at a signal beyond $\pm\cin$ and exits back across
+  $\pm\cout$, with position size $c_{i}=a(\cin-\cout)$:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Value investors}: signal $p_{t}-(v_{t}+v^{(i)})$; sell when
+      overpriced, buy when underpriced.
+    \item \hilite{Trend followers}: signal $p_{t}-p_{t-\theta_{i}}$; buy after a
+      rise, sell after a fall.
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Our variant:}} Table 1 traders, 1,200 of each, with
+  $\sigma_{\xi}=0.05$ (Table 1 lists 0.35, which lets the price drift far from
+  the value) and a random-walk log value $v_{t}$.
+\end{frame}
+
+\begin{frame}{Stylized Facts: Simulated and Real}
+  Both groups together, against \texttt{SPY} daily growth rates, 2014–2024
+  (kurtosis and autocorrelations do not depend on units):
+  \begin{center}\small
+    \begin{tabular}{lrr}
+      \toprule
+      Statistic & Simulated & \texttt{SPY} \\
+      \midrule
+      Excess kurtosis & 45.3 & 13.8 \\
+      Autocorrelation of $r$, lag 1 & 0.27 & $-0.11$ \\
+      Autocorrelation of $\lvert r\rvert$, lag 1 & 0.67 & 0.36 \\
+      Autocorrelation of $\lvert r\rvert$, lag 5 & 0.03 & 0.33 \\
+      Autocorrelation of volume, lag 1 & 0.56 & 0.75 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Fat tails and clustering come out of the rules, but the clustering fades within
+  a few steps.
+\end{frame}
+
+\begin{frame}{The Mix of Traders}
+  With 1,200 value investors: kurtosis and clustering near zero with 600 or fewer
+  trend followers; both large with 1,200 or more. Every mix misses \texttt{SPY} by a
+  wide margin on at least one statistic:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L12a-TraderMix.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Summary}
+  \vspace{0.3em}
+  We introduced agent-based models, derived the Boltzmann choice rule from
+  maximum entropy, and connected trading rules to market-wide behavior.
+
+  \vspace{0.4em}
+  {\large\textbf{\ink{Key takeaways}}}
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Agent-based models}: agents, information, a decision rule, an
+      aggregate, and feedback.
+    \item \hilite{Maximum entropy}: gives $\pi_{s}\propto\exp(U_{s}/T)$; the
+      multiplier on the expected score is $1/T$.
+    \item \hilite{Micro to macro}: the minority game's volatility depends on
+      $\alpha$ and $T$; Farmer–Joshi traders produce fat tails and clustering, but
+      not every stylized fact at once.
+  \end{itemize}
+\end{frame}
+
+\end{document}
