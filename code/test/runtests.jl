@@ -19,3 +19,6 @@ end
 
 # the MPCPortfolio submodule (the INFORMS 2026 engine), in its own test module
 include(joinpath(@__DIR__, "mpc", "runtests_mpc.jl"))
+
+# the WolframMarkets submodule (the reserve-clearing cellular-automaton market), in its own test module
+include(joinpath(@__DIR__, "wolfram", "runtests_wolfram.jl"))

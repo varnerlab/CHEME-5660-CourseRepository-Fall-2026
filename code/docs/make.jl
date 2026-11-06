@@ -3,7 +3,7 @@ using Documenter, VLQuantitativeFinancePackage
 makedocs(
     sitename = "CHEME 5660 Quantitative Finance Package",
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
-    modules = [VLQuantitativeFinancePackage, VLQuantitativeFinancePackage.MPCPortfolio],
+    modules = [VLQuantitativeFinancePackage, VLQuantitativeFinancePackage.MPCPortfolio, VLQuantitativeFinancePackage.WolframMarkets],
     checkdocs = :exports,
     warnonly = false,
     pages = [
@@ -32,6 +32,7 @@ makedocs(
             "Bandits" => "bandits.md",
             "Reinforcement learning" => "RL.md",
             "Agent-based markets" => "abm.md",
+            "Wolfram markets" => "wolfram.md",
         ],
     ]
 )

@@ -50,3 +50,6 @@ include(joinpath(_PATH_TO_SRC, "OrderBook.jl"));
 
 # the INFORMS 2026 model-predictive portfolio method, as a submodule -
 include(joinpath(_PATH_TO_SRC, "mpc", "MPCPortfolio.jl"));
+
+# the reserve-clearing Wolfram-rule market of the L12b paper, as a submodule -
+include(joinpath(_PATH_TO_SRC, "wolfram", "WolframMarkets.jl"));
