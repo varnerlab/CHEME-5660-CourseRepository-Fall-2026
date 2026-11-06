@@ -9,6 +9,7 @@ import VLQuantitativeFinancePackage.WolframMarkets as WM
 @testset "WolframMarkets" begin
     include(joinpath(@__DIR__, "test_parity.jl"))
     include(joinpath(@__DIR__, "test_random_edges.jl"))
+    include(joinpath(@__DIR__, "test_course.jl"))
 end
 
 end # module

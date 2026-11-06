@@ -50,5 +50,6 @@ module WolframMarkets
     include(joinpath(@__DIR__, "Compute.jl"))
     include(joinpath(@__DIR__, "Simulate.jl"))
     include(joinpath(@__DIR__, "Runtime.jl"))
+    include(joinpath(@__DIR__, "Course.jl"))
 
 end
