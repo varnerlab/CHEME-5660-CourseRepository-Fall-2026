@@ -4,7 +4,7 @@
     rule_table(R::Int64)::Vector{Int64}
 
 The nine actions ``a_0,\\dots,a_8`` of the two-dimensional totalistic Wolfram rule number `R`: the base-3 digits of
-`R`, least significant first, so index `k + 1` is the action for neighbor sum `k` (0 = Hold, 1 = Buy, 2 = Sell).
+`R`, least significant first, so index `k + 1` is the action for neighbor sum `k` (0 = Buy, 1 = Hold, 2 = Sell).
 Throws an `ArgumentError` unless `0 ≤ R < 3^9`.
 """
 function rule_table(R::Int64)::Vector{Int64}
