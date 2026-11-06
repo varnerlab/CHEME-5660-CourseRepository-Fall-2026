@@ -1,12 +1,12 @@
 % L12a student companion deck: agent-based models, the thermal minority game (with the
-% maximum-entropy derivation of the Boltzmann choice rule), and the Farmer–Joshi market.
+% Boltzmann choice rule stated as a maximum-entropy theorem; proof in advanced/max_entropy), and the Farmer–Joshi market.
 %
 % November 5, 2026: new deck, built from the L11b template. The frame order mirrors the
 % lecture notebook. Notation follows the lecture: agents N, memory m, histories P = 2^m,
 % histories per agent \alpha = P/N, policies \pi_{ij} (J per agent, index j), history \mu_t,
 % actions \pi_{ij}(\mu) and a_{i,t}, attendance A_t, scores U_{ij,t}, volatility per agent
-% \sigma_A^2/N, choice probability p_j (p_{ij}), entropy \mathcal{H}, multipliers \phi_0 and \phi_1,
-% temperature T = 1/\phi_1, partition function \mathcal{Z}; minority-game price S_t (instructor's
+% \sigma_A^2/N, choice probability p_j (p_{ij}), entropy \mathcal{H},
+% temperature T, partition function \mathcal{Z}; minority-game price S_t (instructor's
 % extension, November 6, 2026) and growth rate g_{t+1} = (1/\Delta t) ln(S_{t+1}/S_t) in both models
 % (rounds t = 0,...,R-1, S_0 = 1; November 6 notation change); Farmer–Joshi price S_t and log price \ln S_t, log value v_t,
 % offset v^{(i)}, position x_t^{(i)}, size c_i = a(\chi^in - \chi^out), lag \theta_i, order
@@ -59,7 +59,7 @@
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Agent-based models}: the five parts every model shares, in the
       minority game and the Farmer–Joshi market.
-    \item \hilite{The Boltzmann choice rule}: derived from maximum entropy, with a
+    \item \hilite{The Boltzmann choice rule}: the maximum-entropy choice, with a
       temperature that sets how strongly agents favor high scores.
     \item \hilite{Micro to macro}: volatility in the minority game; fat tails and
       volatility clustering in the Farmer–Joshi market.
@@ -82,8 +82,7 @@
   \vspace{0.5em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The critical value $\alpha_{c}\approx 0.3374$ (cited, not derived) and
-      $-d\Hc/d\bar{U}=1/T$.
+    \item The critical value $\alpha_{c}\approx 0.3374$ (cited, not derived).
     \item The minority-game price, an extension of the original model.
     \item The Farmer–Joshi threshold rules and our parameter values.
   \end{itemize}
@@ -199,49 +198,37 @@
   \slidenote{Related:}{\href{https://arxiv.org/abs/cond-mat/0011042}{\dimmed{Challet, Chessa, Marsili, and Zhang (2000)}}, with the opposite sign and no noise}
 \end{frame}
 
-% ========== Maximum entropy
-\begin{frame}{Choosing a Policy: Maximum Entropy}
+% ========== Maximum entropy (proof moved to advanced/max_entropy, November 6, 2026)
+\begin{frame}{The Boltzmann Choice Rule}
   An agent chooses policy $\pi_{j}$ with probability $p_{j}$. The \hilite{entropy}
-  $\Hc(p)$ measures how spread out the choice is: zero for a certain choice,
-  $\ln J$ for a uniform one. For a fixed expected score $\bar{U}$, we choose the
-  $p_{j}$ that commit to the least:
-  \begin{equation*}
-    \max_{p}\;\Hc(p)=-\sum_{j=1}^{J}p_{j}\ln p_{j}
-    \quad\text{subject to}\quad
-    \sum_{j=1}^{J}p_{j}=1,\qquad \sum_{j=1}^{J}p_{j}U_{j}=\bar{U}
-  \end{equation*}
-  with $\bar{U}$ strictly between the average and the largest score.
-  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/9903415}{\dimmed{Cavagna, Garrahan, Giardina, and Sherrington (1999)}}}
-\end{frame}
+  $\Hc(p)=-\sum_{j}p_{j}\ln p_{j}$ measures how spread out the choice is: zero for a
+  certain choice, $\ln J$ for a uniform one.
 
-\begin{frame}{The Boltzmann Rule}
-  With \hilite{Lagrange multipliers} $\phi_{0}$ (normalization) and $\phi_{1}$
-  (expected score), setting $\partial\Lc/\partial p_{j}=0$ gives:
+  \vspace{0.4em}
+  \textbf{\ink{Theorem:}} among all $p_{j}$ with a given expected score
+  $\sum_{j}p_{j}U_{j}=\bar{U}$, strictly between the average and the largest score,
+  the one with the largest entropy is
   \begin{equation*}
-    -\ln p_{j}-1-\phi_{0}+\phi_{1}U_{j}=0
-    \quad\Longrightarrow\quad
     \boxed{p_{j}=\frac{1}{\Zc}\exp\left(\frac{U_{j}}{T}\right)},
     \qquad
     \Zc=\sum_{k=1}^{J}\exp\left(\frac{U_{k}}{T}\right)
   \end{equation*}
-  where $T=1/\phi_{1}$ is the \hilite{temperature}, in the units of the scores, and
-  the normalizing sum $\Zc$ is the \hilite{partition function}. The second
-  derivative, $-1/p_{j}$, is negative, so this is a maximum.
+  where $T>0$ is the \hilite{temperature}, in the units of the scores, and $\Zc$ is
+  the \hilite{partition function}.
+  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/9903415}{\dimmed{Cavagna, Garrahan, Giardina, and Sherrington (1999)}}; proof in the optional advanced notebook}
 \end{frame}
 
 \begin{frame}{What the Temperature Does}
-  The temperature sets how much the choice depends on the scores:
+  The temperature is the value at which the Boltzmann probabilities give the target
+  expected score $\bar{U}$. Lowering $T$ raises $\bar{U}$:
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{$T\to 0$}: the best policy has probability 1, the greedy
-      minority game; with one best policy, the entropy goes to zero.
-    \item \hilite{$T\to\infty$}: every policy has probability $1/J$; the entropy
-      is $\ln J$.
+      minority game; $\bar{U}$ approaches the largest score.
+    \item \hilite{$T\to\infty$}: every policy has probability $1/J$; $\bar{U}$ is
+      the average score.
     \item \hilite{In between}: with two scores $\Delta$ apart, the better policy is
       used with probability $e^{\Delta/T}/(e^{\Delta/T}+1)$, about 0.73 at $T=\Delta$.
   \end{itemize}
-  \vspace{0.3em}
-  \textbf{\ink{Physics:}} $-d\Hc/d\bar{U}=\phi_{1}=1/T$, the way thermodynamics
-  defines temperature through entropy and energy.
 \end{frame}
 
 \begin{frame}{The Thermal Minority Game Algorithm}
@@ -306,7 +293,7 @@
   Signals set positions, positions set orders, and the net order sets the price,
   which changes every signal at the next step:
   \begin{center}
-    \includegraphics[height=0.67\textheight,trim=0 0 265bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+    \includegraphics[height=0.67\textheight,trim=0 0 227bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
   \end{center}
 \end{frame}
 
@@ -314,7 +301,7 @@
   A value investor's position is one of three states. It enters when the
   mispricing passes $\pm\cin$ and exits when it comes back past $\pm\cout$:
   \begin{center}
-    \includegraphics[height=0.67\textheight,trim=322bp 0 0 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+    \includegraphics[width=0.75\textwidth,trim=308bp 92bp 0 72bp,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
   \end{center}
 \end{frame}
 
@@ -365,11 +352,19 @@
 
 % ========== Optional advanced material (November 6, 2026)
 \begin{frame}{Optional Advanced Material}
-  \vspace{0.4em}
+  \vspace{0.2em}
+  {\normalsize\textbf{\ink{Maximum-entropy choice:}} \dimmed{advanced/max\_entropy/}\par
+  \href{\repo/advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb}}}
+
+  \vspace{0.3em}
+  We prove the Boltzmann choice rule with Lagrange multipliers and relate the
+  temperature to thermodynamics. A derivation with no code.
+
+  \vspace{0.6em}
   {\normalsize\textbf{\ink{Biased policies:}} \dimmed{advanced/biased\_policies/}\par
   \href{\repo/advanced/biased_policies/CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb}}}
 
-  \vspace{0.6em}
+  \vspace{0.3em}
   What if the policies lean toward buying? We derive how much of the bias agents
   who follow their scores can remove, and show that above a threshold the market
   locks into a steady trend. A derivation with no code.
@@ -377,16 +372,16 @@
 
 \begin{frame}{Summary}
   \vspace{0.3em}
-  We introduced agent-based models, derived the Boltzmann choice rule from
-  maximum entropy, and connected trading rules to market-wide behavior.
+  We introduced agent-based models, used the Boltzmann choice rule, the
+  maximum-entropy choice, and connected trading rules to market-wide behavior.
 
   \vspace{0.4em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Agent-based models}: agents, information, a decision rule, an
       aggregate, and feedback.
-    \item \hilite{Maximum entropy}: gives $p_{j}\propto\exp(U_{j}/T)$; the
-      multiplier on the expected score is $1/T$.
+    \item \hilite{Maximum entropy}: $p_{j}\propto\exp(U_{j}/T)$ has the largest
+      entropy for a given expected score; $T$ moves the agent from greedy to random.
     \item \hilite{Micro to macro}: the minority game's volatility depends on
       $\alpha$ and $T$, and a crowded game moves the price more; Farmer–Joshi traders produce fat tails and clustering, but
       not every stylized fact at once.

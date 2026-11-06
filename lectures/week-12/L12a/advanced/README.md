@@ -1,7 +1,12 @@
 # L12a optional advanced material
 
-This folder holds one notebook. It is a derivation with no code, and it is not a prerequisite for L12b.
+This folder holds two notebooks. Both are derivations with no code.
 
+- [`max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb`](max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb)
+  proves the theorem the lecture states: among all choice probabilities with a given expected
+  score, the Boltzmann rule has the largest entropy. It solves the constrained maximization with
+  Lagrange multipliers, shows that lowering the temperature raises the expected score, and relates
+  the temperature to thermodynamics through $-d\mathcal{H}/d\bar{U}=1/T$.
 - [`biased_policies/CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb`](biased_policies/CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb)
   lets every policy entry of the minority game be buy with a probability above one half. It
   sorts the agents at each history into those whose policies all agree, who cannot change their

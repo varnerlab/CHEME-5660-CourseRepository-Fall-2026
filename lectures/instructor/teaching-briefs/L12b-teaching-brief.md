@@ -38,7 +38,8 @@ about 2 seconds a run, so its numbers can differ from the cache. The plotting he
 
 **Example 2 (review on your own):** `CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb` runs everything live, about 10 seconds in total. Its markets
 never switch (`run_baseline` in `src/Helper.jl`). It compares the Wolfram market with SPY and the L12a Farmer–Joshi market. The headline is a model-scope
-lesson: the Wolfram price has no fat tails (excess kurtosis 0.016, against 13.768 for SPY) and no volatility clustering. Price feedback (active edge traders)
+lesson: the Wolfram price has no fat tails (excess kurtosis 0.016, against 13.768 for SPY) and only weak, short-lived volatility clustering (lag-1 autocorrelation
+of |g| 0.035, inside the band by lag 5, against SPY's 0.194 still at lag 20). Price feedback (active edge traders)
 damps the lag-1 autocorrelation of g, from 0.336 held to 0.115 active. No edge condition or dealer depth creates fat tails. The Farmer–Joshi numbers differ
 from the L12a table because its traders are a different random draw.
 

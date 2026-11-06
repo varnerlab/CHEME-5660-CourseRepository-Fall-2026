@@ -73,7 +73,7 @@ end
     excess_kurtosis(x::AbstractVector) -> Float64
 
 The excess kurtosis of `x`, the fourth standardized moment minus 3 (population moments). It is 0 for a
-Normal distribution and positive for fat tails.
+Normal distribution and positive when outliers are more frequent than for a Normal distribution.
 """
 excess_kurtosis(x::AbstractVector) = mean(((x .- mean(x)) ./ std(x, corrected = false)) .^ 4) - 3
 

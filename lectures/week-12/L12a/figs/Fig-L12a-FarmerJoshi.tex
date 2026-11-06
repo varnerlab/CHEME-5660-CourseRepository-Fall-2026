@@ -1,4 +1,5 @@
-% L12a Farmer–Joshi market, two panels (November 5, 2026; revised the same day: panel A lost its
+% L12a Farmer–Joshi market, two panels (November 6, 2026: panel letters and titles removed, and
+% the text under panel B dropped because the lecture states it; panel B centered vertically) (November 5, 2026; revised the same day: panel A lost its
 % repeated notes and second equation).
 % A: one step of the market, with the new price feeding back into every signal.
 % B: the threshold rule of a value investor as three states (after Farmer and Joshi, Fig. 5);
@@ -11,8 +12,6 @@
 \begin{document}
 \begin{tikzpicture}
   % ================= Panel A: one step of the market =================
-  \node[paneltitle] at (-0.6, 10.45) {\textbf{A}\quad One step};
-
   \node[note] (val) at (2.1, 9.6) {log value $v_{t}$};
   \node[agent, fill=redfill, draw=gdred, minimum width=3.9cm, minimum height=1.35cm] (vi) at (2.1, 8.1)
     {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\bigl(v_{t}+v^{(i)}\bigr)$};
@@ -29,8 +28,6 @@
   \node[sumbox, minimum width=5.4cm] (mm) at (4.65, 3.6)
     {\textbf{market maker}\\[2pt]$\ln S_{t+1}=\ln S_{t}+\dfrac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$};
   \draw[flow] (net.south) -- (mm.north) node[midway, right, font=\sffamily\footnotesize] {net order};
-  \node[note, anchor=west] (noise) at (8.05, 3.6) {noise};
-  \draw[flow] (noise.west) -- (mm.east);
 
   \node[minority, minimum width=1.9cm] (price) at (4.65, 1.8) {$\ln S_{t+1}$};
   \draw[flow] (mm.south) -- (price.north);
@@ -41,9 +38,7 @@
   \node[anchor=north, text=saorange, font=\sffamily\footnotesize] at (4.65, 1.25) {new price, new signals};
 
   % ================= Panel B: the threshold rule =================
-  \begin{scope}[xshift=11.6cm]
-    \node[paneltitle] at (-0.3, 10.45) {\textbf{B}\quad Threshold rule of value investor $i$};
-
+  \begin{scope}[xshift=10.5cm, yshift=-2cm]
     \node[state] (long)  at (0.9, 7.5) {$+c_{i}$};
     \node[state] (flat)  at (3.9, 7.5) {$0$};
     \node[state] (short) at (6.9, 7.5) {$-c_{i}$};
@@ -56,12 +51,6 @@
     \draw[flow] (flat.north west) to[bend right=35] node[above, align=center] {$\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}underpriced: buy}} (long.north east);
     \draw[flow] (short.south west) to[bend left=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}<\chi^{\text{out}}_{i}$} (flat.south east);
     \draw[flow] (long.south east) to[bend right=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}>-\chi^{\text{out}}_{i}$} (flat.south west);
-
-    \node[anchor=north west, align=left] at (-0.3, 4.75) {%
-      Otherwise the position stays the same.\\[6pt]
-      Position size: $c_{i}=a\bigl(\chi^{\text{in}}_{i}-\chi^{\text{out}}_{i}\bigr)$\\[6pt]
-      \textcolor{gdblue}{Trend followers} use the same rule with the signs reversed:\\[2pt]
-      buy when $\zeta^{(i)}_{t}>\chi^{\text{in}}_{i}$, sell when $\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$.};
   \end{scope}
 \end{tikzpicture}
 \end{document}

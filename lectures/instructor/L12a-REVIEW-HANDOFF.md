@@ -350,3 +350,19 @@ Instructor requests, in order:
   underbraces "agents" / "price noise" on $g_{t+1}$ and $\langle g^2\rangle$ and "attendance /
   cross / noise term" on $g_{t+1}^2$. Lecture, MG example (re-run, numbers identical), deck, MG
   results figure, and FAQ updated.
+- **Farmer–Joshi schematic** (instructor, same day): notation already matched the lecture. Panel
+  letters and titles removed; the text under the state diagram (otherwise unchanged, position size,
+  trend-follower reversal) dropped because the lecture states all three; the state diagram is
+  centered vertically and moved closer to the market loop. Lecture lead-in and alt text say
+  left/right; lecture width 910 (same scale as before). Deck crops recomputed from the rendered
+  gap (A: trim right 227bp; B: trim 308bp left, 92bp bottom, 72bp top, width 0.75\textwidth).
+  Instructor kept the right panel after asking whether it was needed.
+- **Boltzmann rule as a stated theorem** (instructor, same day): the lecture states the
+  maximum-entropy result as "Theorem (Boltzmann choice rule)" without the search framing or the
+  Lagrange proof. The proof, the expected-score derivative $d\bar U/dT=-\operatorname{Var}_p(U)/T^2$,
+  and the thermodynamics remark ($-d\mathcal H/d\bar U=1/T$) moved to a new optional notebook,
+  `advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb` (both formulas
+  checked numerically). Learning objective and takeaway changed from "derive" to "use". Deck: the
+  "Maximum Entropy" and "Boltzmann Rule" frames merged into one theorem frame; Physics line moved
+  out; advanced frame lists both notebooks (26 pages). Advanced README updated and its
+  "not a prerequisite for L12b" line removed (October 15 rule).
