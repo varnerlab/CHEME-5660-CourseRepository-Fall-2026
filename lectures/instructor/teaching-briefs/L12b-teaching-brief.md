@@ -15,7 +15,7 @@ analogy for real crashes, not an explanation of them.
 
 - **Core:**
   - a Wolfram rule is a policy: neighbor sum (state) to next intention (action); the two rules differ in one entry
-  - a dealer sets the price from the net trade, so every switched market is read beside a control with the same history
+  - a dealer sets the price from the net trade, and a shallow dealer can crash the price with no switch, so we compare every switched market with a no-switch control that shares its history
   - a switch for a fraction of the traders can tip the market toward Sell while the control does not; an analogy, not an explanation
 - **For understanding only:** the price formula, the band rule, the edge conditions, and the Q-learning notebook. Say out loud that students need not reproduce them.
 
@@ -32,23 +32,23 @@ analogy for real crashes, not an explanation of them.
 ## Where the results come from
 
 Tasks 2 and 3 load a cache built by `scripts/Compute-L12b-RuleSwitch-Cache.jl` (final, not provisional; the setup cell prints its settings). Rerunning at a larger grid is described
-in `scripts/README.md`; every number below would then change. Task 4 runs live on a smaller grid, about 2 seconds a run, and can differ from the cache.
+in `scripts/README.md`; every number below would then change. The cache is L = 64 with 20 starting markets (setup cell 4). Task 4 runs live at a default L = 32 (parameter cell 37), about 2 seconds a run, so its numbers can differ from the cache.
 
 ## Numbers to say aloud
 
 - Rule tables agree except at neighbor sum 1 (Task 1, rule table cell).
 - Seed 1, deep dealer, held edge, f = 0.25: Sell majority after 333 steps, drawdown 0.257 against 0.014 for the control (Task 2 table).
 - Shallow dealer, f = 0.10: switched drawdown 0.454 against 0.397 for the control (Task 2 table).
-- Over 20 starting markets, the fraction with a Sell majority is 0.00 at f = 0.16 (deep dealer), about one half at f = 0.18, and 1.00 from f = 0.20; every control is 0.00 (Task 3 summary table).
+- Over 20 starting markets, the fraction with a Sell majority is 0.00 at f = 0.16 (deep dealer), 0.50 (held edge) or 0.65 (active edge) at f = 0.18, and 1.00 from f = 0.20; every control is 0.00 (Task 3 summary table).
 - Live run, f = 0.25, seed 1: majority after 681 steps, drawdown 0.237 against 0.013 (Task 4 summary table).
 
 ## Likely student questions
 
-- **Why does one table entry matter?** Neighbor sum 1 is a buying neighborhood with one hesitant neighbor, which occurs often. Switched traders there sell, neighbors read the Sell, and it spreads.
+- **Why does one table entry matter?** Neighbor sum 1 is a buying neighborhood with one hesitant neighbor. Switched traders there sell, neighbors read the Sell, and it spreads.
 - **Why the control?** The dealer alone can move the price. The control has the same history, so a difference after the switch is the switch.
 - **Why does the shallow-dealer control fall?** A given net order moves a shallow dealer's price a long way, so it falls with no switch (control drawdown 0.397). The switched 0.454 at f = 0.10 is only a little above that.
 - **Is this how real crashes work?** No claim is made. It shows how a change in some traders' rule can tip a toy market; the three episodes are loose readings.
-- **Why do traders act on intentions they cannot fund?** Intentions are public and neighbors read them without checking holdings. A completed trade needs cash or a share, so an intention can spread when its sender cannot trade.
+- **Why do traders act on intentions they cannot fund?** Intentions are public and neighbors read them without checking holdings. A completed trade needs cash to buy and a share to sell, so an intention can spread when its sender cannot trade.
 
 ## Instructor notes
 
