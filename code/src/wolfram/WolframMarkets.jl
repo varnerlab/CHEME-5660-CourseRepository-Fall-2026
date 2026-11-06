@@ -23,6 +23,13 @@ Non-verbatim edits to the snapshot files -
    in place but is internal and undocumented).
 6. `Runtime.jl` is `simulate_repaired` of the snapshot's `rebuild/RebuildRuntime.jl` as `simulate_checked`,
    without the ledger write.
+7. Course addition, not a paper result: `Simulate.jl` accepts `boundary_mode = :random` with the keywords
+   `random_edge_probabilities` and `random_edge_seed`. Only the edge-classification branch changes; the draws
+   come from a separate `Xoshiro` stream (default seed `config.seed + 7919`), so the main RNG draw order and
+   the parity SHA-256 fingerprints of the paper modes are untouched. The `boundary_mode` error message now
+   names all three modes.
+8. The `verbose` docstring line of `simulate` no longer claims a ProgressMeter bar (the keyword is a no-op
+   since edit 4).
 """
 module WolframMarkets
 

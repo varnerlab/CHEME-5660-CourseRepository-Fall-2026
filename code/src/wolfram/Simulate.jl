@@ -394,7 +394,7 @@ market_ca_step(::AbstractMarketObserver, t, grid, world, agents, major) =
 """
     simulate(config::MyModelBConfiguration; initial_grid, snapshot_steps,
              intervention, minority_population, rule_activation_step,
-             boundary_mode, verbose)
+             boundary_mode, random_edge_probabilities, random_edge_seed, verbose)
         → MyModelBSimulationResult
 
 Run the closed-loop (Model B) simulation with per-agent budget constraints and
@@ -443,14 +443,23 @@ Arguments
                   active edge ring. `:hold` clamps the same sampled edge sites
                   to Hold while retaining the identical RNG stream, trader
                   denominator, books, and fixed-boundary CA geometry. This is
-                  the matched autonomous-CA ablation.
+                  the matched autonomous-CA ablation. `:random` (course addition,
+                  not a paper result) draws each edge trader's state independently
+                  every step from a separate Xoshiro stream, ignoring the price.
+                  Edges start in Hold and a draw at step t places its order at
+                  step t+1, exactly like an `:endogenous` edge.
+- random_edge_probabilities : (Buy, Hold, Sell) probabilities of the `:random`
+                  mode, a Float64 3-tuple, nonnegative, summing to 1 within 1e-12
+                  (default (1/3, 1/3, 1/3)). Course addition, not a paper result.
+- random_edge_seed : seed of the `:random` edge stream; `nothing` means
+                  `config.seed + 7919`. The main RNG draw order is untouched.
 - activation_action : `:rule` switches target rules; `:sell_pulse` instead
                   writes Sell once at the same targets before orders, retaining
                   the baseline rule. Requires delayed activation.
 - fixed_band_step : freeze the boundary decision deviation at its value just
                   before this step; the center and diagnostic deviation continue
                   updating. The pre-intervention path is unchanged.
-- verbose       : show a ProgressMeter bar (default true)
+- verbose       : accepted for compatibility; has no effect (the progress bar was removed)
 - observer      : optional decision/measurement observer. It runs before orders
                   and after settlement/repricing; legacy state histories still
                   describe the end-of-step local update.
@@ -470,6 +479,8 @@ function simulate(
     minority_population::Symbol = :all_sites,
     rule_activation_step::Union{Nothing, Int64} = nothing,
     boundary_mode::Symbol = :endogenous,
+    random_edge_probabilities::NTuple{3,Float64} = (1/3, 1/3, 1/3),
+    random_edge_seed::Union{Nothing,Int64} = nothing,
     activation_action::Symbol = :rule,
     fixed_band_step::Union{Nothing, Int64} = nothing,
     observer::Union{Nothing,AbstractMarketObserver} = nothing,
@@ -479,8 +490,13 @@ function simulate(
 
     clearing in (:legacy,:reserve) || throw(ArgumentError("unknown clearing mechanism"))
 
-    boundary_mode in (:endogenous, :hold) ||
-        throw(ArgumentError("boundary_mode must be :endogenous or :hold"))
+    boundary_mode in (:endogenous, :hold, :random) ||
+        throw(ArgumentError("boundary_mode must be :endogenous, :hold or :random"))
+    if boundary_mode == :random
+        (all(>=(0.0), random_edge_probabilities) &&
+            abs(sum(random_edge_probabilities) - 1.0) <= 1e-12) ||
+            throw(ArgumentError("random_edge_probabilities must be nonnegative and sum to 1"))
+    end
     activation_action in (:rule, :sell_pulse) ||
         throw(ArgumentError("activation_action must be :rule or :sell_pulse"))
     activation_action == :sell_pulse && isnothing(rule_activation_step) &&
@@ -579,6 +595,11 @@ function simulate(
     edge_now      = fill(1, n_edge)
     edge_switches = 0
 
+    # :random edge states come from their own stream (created once), so the main rng is untouched
+    edge_rng = Xoshiro(isnothing(random_edge_seed) ? config.seed + 7919 : random_edge_seed)
+    p_buy  = random_edge_probabilities[1]
+    p_hold = random_edge_probabilities[1] + random_edge_probabilities[2]
+
     # Sparse frames: always t = 0 and t = steps, plus log-spaced (or supplied) steps
     snaps = isnothing(snapshot_steps) ?
         Set{Int64}(unique(round.(Int, exp.(range(log(1), log(steps), length = 8))))) :
@@ -656,6 +677,13 @@ function simulate(
         if boundary_mode == :endogenous
             for i in 1:n_edge
                 e = compute_band_state(P, μ, decision_deviation, edge_k[i])
+                edge_switches += (e != edge_now[i])
+                edge_now[i]    = e
+            end
+        elseif boundary_mode == :random
+            for i in 1:n_edge
+                u = rand(edge_rng)
+                e = u < p_buy ? 0 : (u < p_hold ? 1 : 2)
                 edge_switches += (e != edge_now[i])
                 edge_now[i]    = e
             end
