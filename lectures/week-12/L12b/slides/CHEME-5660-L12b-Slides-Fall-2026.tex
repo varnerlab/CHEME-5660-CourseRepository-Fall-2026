@@ -164,13 +164,13 @@
       $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$, with rule number
       $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
     \item \hilite{Dealer}: quotes $P_{t}=W_{t}/Q_{t}$ (cash over shares), takes the
-      net trade $x_{t}$, and keeps $W_{t}Q_{t}$ fixed. Depth $h$ is its starting
-      shares per trader:
+      other side of the net trade $x_{t}$, and keeps $W_{t}Q_{t}$ fixed. Net buying
+      ($x_{t}>0$) raises the price, and the depth $h$ sets how far:
       \begin{equation*}
         \boxed{P_{t} = P_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}}
       \end{equation*}
     \item \hilite{Technical traders}: Buy below the band $\mu_{t}\pm k_{j}\sigma_{t}$,
-      Sell above, Hold inside; active, held, or random signal ($0<\alpha<1$):
+      Sell above it, and Hold inside it. The band uses smoothing $0<\alpha<1$:
       \begin{equation*}
         \boxed{\mu_{t}=\mu_{t-1}+\alpha\left(P_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|P_{t}-\mu_{t}|-\sigma_{t-1}\right)}
       \end{equation*}
