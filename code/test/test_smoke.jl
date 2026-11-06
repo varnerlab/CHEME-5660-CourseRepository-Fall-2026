@@ -102,22 +102,11 @@ using Distributions
 
         @test build(MyWolframRuleQLearningAgentModel,
                     (states = [1, 2], actions = [1, 2], γ = 0.95, α = 0.1, Q = zeros(2, 2))) isa MyWolframRuleQLearningAgentModel
-        r30 = build(MyOneDimensionalElementarWolframRuleModel, (index = 30, colors = 2, radius = 3))
-        @test r30 isa MyOneDimensionalElementarWolframRuleModel
-        @test length(r30.rule) == 8
-        @test build(MyOneDimensionalTotalisticWolframRuleModel,
-                    (index = 5, colors = 2, radius = 3)) isa MyOneDimensionalTotalisticWolframRuleModel
-        rule2d = build(MyTwoDimensionalTotalisticWolframRuleModel, (index = 5, colors = 2, radius = 8))
-        @test rule2d isa MyTwoDimensionalTotalisticWolframRuleModel
         @test build(MyPeriodicRectangularGridWorldModel,
                     (nrows = 3, ncols = 3, rewards = Dict((1, 1) => 10.0))) isa MyPeriodicRectangularGridWorldModel
         @test build(MyWolframGridWorldModel,
                     (number_of_states = 4, data = Dict(1 => [1, 0, 1, 0]),
                      policymap = Dict(0.0 => 1), world = (args...) -> (1, 0.0))) isa MyWolframGridWorldModel
-        gw = build(MyTwoDimensionalFixedBoundaryGridWorld, (width = 3, height = 3))
-        @test gw isa MyTwoDimensionalFixedBoundaryGridWorld
-        @test build(MySimpleTwoDimensionalAgentModel, gw,
-                    (index = 5, rule = rule2d)) isa MySimpleTwoDimensionalAgentModel   # index 5 = center of 3×3
     end
 
     @testset "profit with equity leg" begin

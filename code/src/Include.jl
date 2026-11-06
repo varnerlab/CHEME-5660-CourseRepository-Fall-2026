@@ -38,7 +38,6 @@ include(joinpath(_PATH_TO_SRC, "EulerMaruyamaMethod.jl"));
 include(joinpath(_PATH_TO_SRC, "Hippo.jl"));
 include(joinpath(_PATH_TO_SRC, "Base.jl"));
 include(joinpath(_PATH_TO_SRC, "Bandits.jl"));
-include(joinpath(_PATH_TO_SRC, "Wolfram.jl"));
 include(joinpath(_PATH_TO_SRC, "RL.jl"));
 include(joinpath(_PATH_TO_SRC, "Treasury.jl"));
 include(joinpath(_PATH_TO_SRC, "Files.jl"));
