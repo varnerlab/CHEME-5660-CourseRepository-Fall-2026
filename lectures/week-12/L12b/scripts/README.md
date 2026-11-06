@@ -1,0 +1,49 @@
+# L12b rule-switch cache
+
+`Compute-L12b-RuleSwitch-Cache.jl` runs the rule-switch experiment (baseline Rule 19280, switch Rule 19286) and writes
+`lectures/week-12/L12b/data/L12b-RuleSwitch-Cache.jld2`, which the L12b example notebook loads. The script activates the
+repo-root course environment itself and resolves its output path from its own location, so it can be run from any
+directory.
+
+## Full run (Jeff, big machine)
+
+```
+julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
+```
+
+Run it from the repo root. Defaults are the paper settings: L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
+three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000. To raise L, edit
+`L_FULL` at the top of the script. The output file has `settings.provisional == false`.
+
+## Flags
+
+- `--provisional`: L = 32, seeds 1:5, written to the full file name with `provisional = true`. The notebook shows this flag.
+- `--smoke`: L = 24, seeds 1:2, t_pre = 50, t_post = 150, written to `L12b-RuleSwitch-Cache-smoke.jld2` (never overwrites the
+  full file; do not commit it).
+
+## Runtime
+
+Measured on the 10-thread development machine (`julia -t 10`), excluding package load:
+
+| Run | Work | Wall time |
+|---|---|---|
+| `--smoke` | 6 items, L = 24, 200 steps | 1.0 s |
+| `--provisional` | 15 items, L = 32, 4000 steps | 4.4 s |
+
+Cost scales as L^2 x (number of seeds) x steps. Relative to the provisional run, the full run (L = 64, 20 seeds) is about
+4 x 4 = 16 times the work, roughly 1.5 minutes on 10 threads; L = 128 with 20 seeds is about 64 times the provisional work,
+roughly 5 minutes. These are estimates scaled from the provisional timing, not measured. `run_rule_switch` re-runs the
+control arm for every f (same seed, same control), so the control is computed 6 times per (condition, seed); this is
+accepted rather than cached. Work is spread over (condition, seed) items, so more threads than 3 x 20 = 60 gives no
+further speedup.
+
+## Output keys
+
+- `settings`: NamedTuple with L, t_pre, t_post, seeds, f_values, f_control, conditions, paper settings, Julia version,
+  package git hash, threads, wall_seconds, and `provisional::Bool`.
+- `pairs`: headline switched/control pairs (f in {0.10, 0.25}, seed 1, each condition); each carries `sell_fraction`,
+  `buy_fraction`, `prices`, and `frames` (`pre` at t_pre, `final`) per arm.
+- `sweep`: DataFrame with one row per (condition, f, seed): L, condition, h, boundary_mode, f, seed, transitioned, onset,
+  final_sell_mean, max_drawdown, control_transitioned, control_max_drawdown. Sweep rows carry no frames.
+
+The notebook narrates numbers only from the non-provisional file.
