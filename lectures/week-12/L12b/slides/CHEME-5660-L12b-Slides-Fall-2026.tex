@@ -187,9 +187,10 @@
 % ========== The Rule Switch
 \begin{frame}{The Rule Switch}
   Rule 19286, $(222110022)_{3}$, differs from the baseline in one entry. Three
-  neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286 sells:
+  neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286 sells. Base-3 digits run from $c=8$ down to
+  $c=0$, the table columns run $c=0$ to $8$:
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L12b-RuleSwitch.pdf}
+    \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{../figs/Fig-L12b-RuleSwitch.pdf}
   \end{center}
 \end{frame}
 
@@ -203,7 +204,8 @@
     \item \hilite{Control}: a second market with the same history never switches,
       so differences after the switch come from the rule change.
     \item \hilite{Edge traders}: in the active condition they react to the price;
-      in the held condition they stay in Hold.
+      in the held condition they stay in Hold, so any cascade must come from
+      traders reading their neighbors.
   \end{itemize}
 \end{frame}
 
@@ -242,6 +244,7 @@
       the price less.
     \item \hilite{Public intentions}: neighbors read an intention without
       checking holdings, so it can spread even when its sender cannot trade.
+      A completed trade needs cash for a buyer and a share for a seller.
     \item \hilite{Control}: a shallow dealer can crash the price with no switch at
       all, so we read a switched price beside its control's.
   \end{itemize}
