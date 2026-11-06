@@ -1,0 +1,13 @@
+CHEME 5660 Engagement Quiz: Week 11 (L11a and L11b)
+
+Question 1 title:
+Covered Call or Collar?
+
+Question 1 text:
+If you owned shares you wanted to keep, would you sell a covered call, build a protective collar, or neither, and why?
+
+Question 2 title:
+What Is Still Confusing?
+
+Question 2 text:
+What is one thing from this week's lectures that is still confusing to you?

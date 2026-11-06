@@ -7,10 +7,10 @@ shared style file, `abm-diagram.tex`.
 | Figure | Shown in |
 |---|---|
 | `Fig-L12a-ABM-Structure` | The Structure of an Agent-Based Model (the five parts as one loop; replaces the bullet list, width 800) |
-| `Fig-L12a-MinorityGame` | The Minority Game, end of the section (A: one round with both feedback paths; B: one agent's two strategy tables, scores, and Boltzmann probabilities) |
+| `Fig-L12a-MinorityGame` | The Minority Game, end of the section (one round with both feedback paths; the panel with one agent's policy tables was removed November 6, width 520) |
 | `Fig-L12a-FarmerJoshi` | The Farmer–Joshi Market, before the algorithm (A: one step of the market; B: the threshold rule of a value investor as three states) |
 | `Fig-L12a-MinorityGame-Results` | What the minority game shows (A: phase diagram at T = 0; B: volatility per agent against the temperature) |
-| `Fig-L12a-FarmerJoshi-Results` | What the Farmer–Joshi market shows (A: autocorrelation of absolute log returns vs SPY; B, C: excess kurtosis and lag-1 autocorrelation against the number of trend followers) |
+| `Fig-L12a-FarmerJoshi-Results` | What the Farmer–Joshi market shows (A: autocorrelation of absolute growth rates vs SPY; B, C: excess kurtosis and lag-1 autocorrelation against the number of trend followers) |
 
 Each `.tex` header records the consistency checks (the highlighted history row, the minority action,
 which score rises, the probabilities at T equal to the score gap, and the transitions against

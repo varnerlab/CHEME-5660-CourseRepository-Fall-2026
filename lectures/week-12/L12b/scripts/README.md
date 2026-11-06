@@ -11,7 +11,7 @@ directory.
 julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
 ```
 
-Run it from the repo root. Defaults are the paper settings: L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
+Run it from the repo root. Defaults are the course settings (the paper's model with fewer seeds and the course's f grid): L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
 three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000. To raise L, edit
 `L_FULL` at the top of the script. The output file has `settings.provisional == false`.
 

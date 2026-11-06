@@ -1,76 +1,91 @@
-% L12b rule-switch figure. A trader whose four neighbors show Buy, Buy, Buy,
-% Hold has neighbor sum c = 0+0+0+1 = 1. Rule 19280 = (222110002)_3 returns
-% Buy at c = 1 and Rule 19286 = (222110022)_3 returns Sell; the two lookup
-% tables agree at every other c. Palette (Buy blue, Hold gray, Sell orange,
-% highlight yellow) is the paper's, from Fig1-ModelArchitecture.tex.
+% L12b rule-switch schematic (November 2026 redesign, same drawing as panels
+% A and B of Figure 1 in the Wolfram markets paper, commit 5cee50d).
 %
-% Geometry: neighbor cells sit at +-ZS from the center (ZS = the cell size,
-% so they touch). Both tables use one column pitch LS, so the highlighted
-% c = 1 column is a single rectangle through both rows. Arrows are drawn
-% between named node anchors, so tips land on their targets.
+% A trader whose four neighbors are Buy, Buy, Buy, Hold has neighbor sum
+% c = 0+0+0+1 = 1. The two lookup tables (Rule 19280 before the switch, Rule
+% 19286 after) agree at every c except c = 1, where 19280 gives Buy (0) and
+% 19286 gives Sell (2). The table digits are decoded here from the rule
+% numbers, floor(R/3^c) mod 3, so the drawing cannot drift from the rules.
 %
-% The notebook SVG carries a dark palette added by theme_svg.py; keep new
-% colors in that script's mapping when changing the palette here.
-\documentclass[tikz,border=3pt]{standalone}
-\usepackage{vnfigure}
-
+% Style: plain pdflatex standalone with the default Computer Modern font, and
+% pastel fills with borders in the paper palette (Buy blue, Hold gray, Sell
+% orange), matching the plots in the example. The notebook SVG gets a dark
+% palette from theme_svg.py; add any new color to its mapping.
+\documentclass[border=4pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,calc}
 \definecolor{buyblue}{HTML}{0072B2}
 \definecolor{holdgray}{HTML}{AAAAAA}
 \definecolor{sellorange}{HTML}{D55E00}
-\definecolor{hlyellow}{HTML}{F0E442}
+\definecolor{ink}{HTML}{252525}
+\newcount\ruledigit
+\newcount\rulequotient
+\newcount\ruledivisor
 
 \begin{document}
 \begin{tikzpicture}[
   x=1cm,y=1cm,
-  every node/.style={font=\sffamily\small},
-  panelletter/.style={font=\sffamily\large\bfseries, anchor=base west, text=vnink},
-  note/.style={font=\sffamily\footnotesize, text=vnink},
-  zcell/.style={minimum size=8.4mm, draw=white, line width=0.55pt, inner sep=0pt},
-  outcell/.style={minimum width=14mm, minimum height=8.4mm, draw=white,
-                  line width=0.55pt, inner sep=0pt},
-  lcell/.style={minimum width=6.0mm, minimum height=6.4mm, draw=white,
-                line width=0.45pt, inner sep=0pt, font=\sffamily\footnotesize},
-  flow/.style={-{Stealth[length=2.6mm,width=2.2mm]}, draw=vnink, line width=0.8pt},
-  hl/.style={draw=vnink, line width=0.9pt, dash pattern=on 2pt off 1.4pt},
+  every node/.style={font=\small,text=ink},
+  note/.style={font=\scriptsize,text=ink!60},
+  box/.style={rectangle,rounded corners=3pt,thick,inner sep=2pt,align=center},
+  buy/.style={box,draw=buyblue,fill=buyblue!12},
+  hold/.style={box,draw=holdgray,fill=holdgray!12,text=ink!70},
+  sell/.style={box,draw=sellorange,fill=sellorange!15},
+  me/.style={box,draw=ink!75,fill=white,line width=1.1pt},
+  nb/.style={minimum width=1.05cm,minimum height=.82cm},
+  cell/.style={minimum width=.56cm,minimum height=.56cm},
+  arr/.style={-{Stealth[length=2mm]},thick,ink!60},
 ]
-% ---- A. neighborhood and the two outcomes ------------------------------
-\node[panelletter] at (0,6.55) {A};
-\def\zx{1.7}\def\zy{5.0}\def\zs{0.84}
-\node[zcell, fill=buyblue,   text=white]      (zN) at (\zx,\zy+\zs) {0};
-\node[zcell, fill=buyblue,   text=white]      (zW) at (\zx-\zs,\zy) {0};
-\node[zcell, fill=hlyellow,  text=black!75, draw=vnink, line width=0.85pt] (zC) at (\zx,\zy) {?};
-\node[zcell, fill=buyblue,   text=white]      (zE) at (\zx+\zs,\zy) {0};
-\node[zcell, fill=holdgray,  text=black!75]   (zS) at (\zx,\zy-\zs) {1};
+% ---- trader i and its four neighbors ----
+\def\nx{1.15}\def\ny{2.45}\def\ns{1.13}
+\node[me,nb]   (C) at (\nx,\ny) {$i$};
+\node[buy,nb]  (N) at (\nx,\ny+\ns) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[buy,nb]  (W) at (\nx-\ns,\ny) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[buy,nb]  (E) at (\nx+\ns,\ny) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[hold,nb] (S) at (\nx,\ny-\ns) {Hold\\[-3pt]\scriptsize $z=1$};
+\node[note,anchor=north,align=center] at (\nx,\ny-\ns-.5) {trader $i$ reads only\\its four neighbors};
 
-% neighbor sum, then one arrow to each rule's outcome
-\node[note, anchor=west] (sum) at (3.55,5.0) {$c=0+0+0+1=1$};
-\node[outcell, fill=buyblue,    text=white] (oB) at (7.35,5.95) {Buy};
-\node[outcell, fill=sellorange, text=white] (oS) at (7.35,4.05) {Sell};
-\draw[flow] (sum.north east) -- (oB.west);
-\draw[flow] (sum.south east) -- (oS.west);
-\node[note, anchor=west] at (8.25,5.95) {Rule 19280};
-\node[note, anchor=west] at (8.25,4.05) {Rule 19286};
-
-% ---- B. the two lookup tables ----------------------------------------
-\node[panelletter] at (0,3.05) {B};
-\def\lx{3.2}\def\ls{0.62}\def\ya{2.05}\def\yb{1.35}
-\node[note, anchor=east] at (\lx-0.55,2.75) {$c$};
-\foreach \c in {0,...,8} {\node[note] at (\lx+\c*\ls,2.75) {\c};}
-\node[note, anchor=east, align=right] at (\lx-0.55,\ya) {Rule 19280\\[-1pt]\scriptsize $(222110002)_3$};
-\node[note, anchor=east, align=right] at (\lx-0.55,\yb) {Rule 19286\\[-1pt]\scriptsize $(222110022)_3$};
-
-% Rule 19280 = [2,0,0,0,1,1,2,2,2]; Rule 19286 = [2,2,0,0,1,1,2,2,2]
-\foreach \v [count=\c from 0] in {2,0,0,0,1,1,2,2,2} {
-  \ifnum\v=0 \node[lcell, fill=buyblue,    text=white]    at (\lx+\c*\ls,\ya) {0};\fi
-  \ifnum\v=1 \node[lcell, fill=holdgray,   text=black!75] at (\lx+\c*\ls,\ya) {1};\fi
-  \ifnum\v=2 \node[lcell, fill=sellorange, text=white]    at (\lx+\c*\ls,\ya) {2};\fi
+% ---- the two lookup tables: digits floor(R/3^c) mod 3 ----
+\def\tx{6.35}\def\tp{.74}\def\ra{2.85}\def\rb{2.05}\def\hy{3.6}
+\pgfmathsetmacro{\cx}{\tx+\tp}
+\fill[yellow!16,rounded corners=4pt] (\cx-.38,\rb-.44) rectangle (\cx+.38,\hy+.32);
+\node[note,anchor=east] at (\tx-.5,\hy) {neighbor sum $c$};
+\node[anchor=east,align=right] at (\tx-.5,\ra) {Rule 19280\\[-3pt]{\scriptsize\color{ink!60}before the switch}};
+\node[anchor=east,align=right] at (\tx-.5,\rb) {Rule 19286\\[-3pt]{\scriptsize\color{ink!60}after the switch}};
+\foreach \c in {0,...,8} {
+  \pgfmathsetmacro{\px}{\tx+\tp*\c}
+  \node at (\px,\hy) {\c};
+  \foreach \ruleindex/\yy in {19280/\ra,19286/\rb} {
+    % TeX integer division avoids PGF's dimension limit for rule IDs >16383.
+    \pgfmathtruncatemacro{\power}{pow(3,\c)}
+    \ruledivisor=\power\relax
+    \ruledigit=\ruleindex\relax
+    \divide\ruledigit by \ruledivisor
+    \rulequotient=\ruledigit
+    \divide\rulequotient by 3
+    \multiply\rulequotient by 3
+    \advance\ruledigit by -\rulequotient
+    \edef\state{\the\ruledigit}
+    \ifcase\state
+      \node[buy,cell] at (\px,\yy) {\state};
+    \or
+      \node[hold,cell] at (\px,\yy) {\state};
+    \or
+      \node[sell,cell] at (\px,\yy) {\state};
+    \fi
+  }
 }
-\foreach \v [count=\c from 0] in {2,2,0,0,1,1,2,2,2} {
-  \ifnum\v=0 \node[lcell, fill=buyblue,    text=white]    at (\lx+\c*\ls,\yb) {0};\fi
-  \ifnum\v=1 \node[lcell, fill=holdgray,   text=black!75] at (\lx+\c*\ls,\yb) {1};\fi
-  \ifnum\v=2 \node[lcell, fill=sellorange, text=white]    at (\lx+\c*\ls,\yb) {2};\fi
+
+% ---- the neighbor sum feeds the c = 1 column ----
+\node[box,draw=holdgray!80,fill=holdgray!8,inner xsep=6pt,inner ysep=3.5pt] (sum) at (\cx,4.45) {$c_{i}=0+0+0+1=1$};
+\draw[arr] (N.north) |- (sum.west);
+\draw[arr] (sum.south) -- (\cx,\hy+.34);
+
+% ---- legend ----
+\foreach \xx/\st/\label in {-0.9/buy/Buy ($z=0$),1.65/hold/Hold ($z=1$),4.2/sell/Sell ($z=2$)} {
+  \node[\st,minimum width=.42cm,minimum height=.3cm] at (\tx+\xx+.21,.95) {};
+  \node[note,text=ink,anchor=west] at (\tx+\xx+.52,.95) {\label};
 }
-% the only difference: column c = 1, spanning both rows (cells are 6.4 mm tall)
-\draw[hl] (\lx+0.5*\ls,\yb-0.32-0.04) rectangle (\lx+1.5*\ls,\ya+0.32+0.04);
 \end{tikzpicture}
 \end{document}

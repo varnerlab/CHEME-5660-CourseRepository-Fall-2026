@@ -1,22 +1,18 @@
-% L12a minority game, two panels (November 5, 2026; revised the same day to cut text: the score
-% formula, the brace sentence, and panel B's paragraph moved into the lecture or into table rows).
-% A: one round, with both feedback paths (the minority action into the history, the attendance
-% into every strategy's score). B: one agent's two strategy tables for m = 3, with the current
-% history row, the scores, the Boltzmann probabilities, and the change after the round as rows.
+% L12a minority game, one round (November 5, 2026; revised the same day to cut text; November 6:
+% the panel letters and the right-hand panel with one agent's policy tables, scores, and
+% Boltzmann probabilities were removed at the instructor's request; the lecture text and
+% equations explain policies, scores, and the choice rule). The figure follows one round with
+% both feedback paths: the minority action into the history, the attendance into every score.
 %
-% Consistency checks (by hand): history window (-1, +1, +1) is row 4 of the table; the drawn
-% actions -1, +1, -1 sum to -1 < 0, so the minority action is +1; in row 4, strategy 1 plays -1
-% (majority) and strategy 2 plays +1 (minority), so U_i2 rises and U_i1 falls under
-% U(t+1) = U(t) - a A(t)/P with A(t) < 0; scores 2.4 and 0.9 give a gap of 1.5, and at T = 1.5
-% the probabilities are e/(e+1) = 0.731 and 1/(e+1) = 0.269.
+% November 6: notation changed to subscripts (mu_t, a_{i,t}, A_t), rounds numbered from t = 0.
+%
+% Consistency check (by hand): the drawn actions -1, +1, -1 sum to -1 < 0, so the minority
+% action is +1, which is appended to the history.
 \documentclass[tikz,border=6pt]{standalone}
 \input{abm-diagram.tex}
-\usepackage{colortbl}
 
 \begin{document}
 \begin{tikzpicture}
-  % ================= Panel A: one round =================
-  \node[paneltitle] at (-0.3, 10.45) {\textbf{A}\quad One round};
 
   % the history: older minority actions in gray, the last m in boxes, the next slot dashed
   \foreach \x/\v in {0.25/\dots, 1.05/$+1$, 1.85/$-1$, 2.65/$+1$} {\node[oldtoken] at (\x, 9.3) {\v};}
@@ -25,15 +21,15 @@
   \node[token] (h3) at (5.25, 9.3) {$+1$};
   \node[token, draw=saorange, dash pattern=on 2pt off 1.5pt] (next) at (6.55, 9.3) {};
   \draw[decorate, decoration={brace, amplitude=5pt, raise=2pt}, line width=0.7pt, draw=vnink]
-    (h1.north west) -- (h3.north east) node[midway, above=8pt] {history $\mu(t)$};
+    (h1.north west) -- (h3.north east) node[midway, above=8pt] {history $\mu_{t}$};
 
   % the same history goes to every agent
   \node[circle, draw=vnink, fill=white, line width=0.8pt, inner sep=0pt, minimum size=0.22cm] (bc) at (4.45, 8.05) {};
   \draw[flow] (h2.south) -- (bc.north);
-  \node[agent] (a1) at (1.3, 6.65) {agent 1\\[-1pt]{\footnotesize\color{gdgray}$s\sim\pi_{1s}$}};
-  \node[agent] (a2) at (3.6, 6.65) {agent 2\\[-1pt]{\footnotesize\color{gdgray}$s\sim\pi_{2s}$}};
+  \node[agent] (a1) at (1.3, 6.65) {agent 1\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{1j,t}$}};
+  \node[agent] (a2) at (3.6, 6.65) {agent 2\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{2j,t}$}};
   \node[text=gdgray, font=\sffamily\large] at (5.25, 6.65) {$\cdots$};
-  \node[agent] (aN) at (6.9, 6.65) {agent $N$\\[-1pt]{\footnotesize\color{gdgray}$s\sim\pi_{Ns}$}};
+  \node[agent] (aN) at (6.9, 6.65) {agent $N$\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{Nj,t}$}};
   \foreach \a in {a1, a2, aN} {\draw[flow] (bc) -- (\a.north);}
 
   % the actions
@@ -41,12 +37,12 @@
   \node[action] (x2) at (3.6, 4.45) {$+1$};
   \node[action] (xN) at (6.9, 4.45) {$-1$};
   \foreach \a/\x in {a1/x1, a2/x2, aN/xN} {\draw[flow] (\a.south) -- (\x.north);}
-  \node[anchor=east, font=\sffamily\footnotesize] at (x1.west) {$a_{1}(t)$\,};
-  \node[anchor=east, font=\sffamily\footnotesize] at (x2.west) {$a_{2}(t)$\,};
-  \node[anchor=east, font=\sffamily\footnotesize] at (xN.west) {$a_{N}(t)$\,};
+  \node[anchor=east, font=\sffamily\footnotesize] at (x1.west) {$a_{1,t}$\,};
+  \node[anchor=east, font=\sffamily\footnotesize] at (x2.west) {$a_{2,t}$\,};
+  \node[anchor=east, font=\sffamily\footnotesize] at (xN.west) {$a_{N,t}$\,};
 
   % the attendance and the minority side
-  \node[sumbox] (sum) at (4.1, 2.85) {$A(t)=\sum_{i}a_{i}(t)<0$};
+  \node[sumbox] (sum) at (4.1, 2.85) {$A_{t}=\sum_{i}a_{i,t}<0$};
   \foreach \x in {x1, x2, xN} {\draw[flow] (\x.south) -- (sum.north);}
   \node[minority] (min) at (4.1, 1.55) {$+1$};
   \draw[flow] (sum.south) -- (min.north);
@@ -56,27 +52,7 @@
   \draw[feedback] (min.east) -- (8.1, 1.55) -- (8.1, 9.3) -- (next.east);
   \node[anchor=west, text=saorange, font=\sffamily\footnotesize, align=left] at (8.2, 5.4) {append to\\the history};
   \draw[scorefeed] (sum.west) -- (-0.15, 2.85) -- (-0.15, 6.65) -- (a1.west);
-  \node[anchor=east, text=gdblue, font=\sffamily\footnotesize, align=right] at (-0.25, 4.75) {update\\every\\score};
+  \node[anchor=east, text=gdblue, font=\sffamily\footnotesize, align=right] at (-0.25, 4.75) {update\\every\\policy\\score};
 
-  % ================= Panel B: one agent's strategies =================
-  \begin{scope}[xshift=11.4cm]
-    \node[paneltitle] at (-0.3, 10.45) {\textbf{B}\quad Agent $i$'s two strategies ($m=3$)};
-    \node[anchor=north west, inner sep=0pt] at (0.0, 9.7) {%
-      \renewcommand{\arraystretch}{1.2}%
-      \begin{tabular}{>{\raggedright\arraybackslash}p{2.75cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}l}
-        history $\mu$ & strategy 1 & strategy 2 & \\[2pt] \cline{1-3}
-        \rule{0pt}{12pt}$-1\;-1\;-1$ & $+1$ & $-1$ & \\
-        $-1\;-1\;+1$ & $-1$ & $-1$ & \\
-        $-1\;+1\;-1$ & $+1$ & $+1$ & \\
-        \cellcolor{orangefill}$-1\;+1\;+1$ & \cellcolor{orangefill}$-1$ & \cellcolor{orangefill}$+1$ & \textcolor{saorange}{\footnotesize\bfseries\,$\leftarrow\mu(t)$} \\
-        $+1\;-1\;-1$ & $-1$ & $+1$ & \\
-        $+1\;-1\;+1$ & $+1$ & $-1$ & \\
-        $+1\;+1\;-1$ & $+1$ & $+1$ & \\
-        $+1\;+1\;+1$ & $-1$ & $+1$ & \\ \cline{1-3}
-        \rule{0pt}{13pt}score $U_{is}(t)$ & $2.4$ & $0.9$ & \\
-        $\pi_{is}$ at $T=1.5$ & $0.73$ & $0.27$ & \\
-        after the round & \textcolor{gdblue}{$\downarrow$ falls} & \textcolor{gdblue}{$\uparrow$ rises} & \textcolor{saorange}{\footnotesize\,minority $=+1$} \\ \cline{1-3}
-      \end{tabular}};
-  \end{scope}
 \end{tikzpicture}
 \end{document}

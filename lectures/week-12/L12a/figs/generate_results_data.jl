@@ -10,18 +10,18 @@ end
 random_seed = 5660
 
 # ---------- thermal minority game example, Tasks 2 and 3 ----------
-m = 6; P = 2^m; S = 2; N_crowded = 641; number_of_rounds = 10_000; burn_in = 2_000; number_of_seeds = 3
+m = 6; P = 2^m; J = 2; N_crowded = 641; number_of_rounds = 10_000; burn_in = 2_000; number_of_seeds = 3
 agent_counts = [21, 41, 61, 81, 101, 121, 141, 151:10:251..., 281, 321, 401, 501, 641, 801, 1001]
 rng = MersenneTwister(random_seed); phase = []
 for N ∈ agent_counts, k ∈ 1:number_of_seeds
-    r = solve(build(MyThermalMinorityGameModel, (N = N, m = m, S = S, temperature = 0.0, rng = rng));
+    r = solve(build(MyThermalMinorityGameModel, (N = N, m = m, J = J, temperature = 0.0, rng = rng));
         number_of_rounds = number_of_rounds, burn_in = burn_in, rng = rng)
     push!(phase, (N, r.alpha, r.volatility_per_agent))
 end
 temperatures = [0.0; 10.0 .^ range(-2, 5, length = 15); Inf]
 rng = MersenneTwister(random_seed); temps = []
 for T ∈ temperatures, k ∈ 1:number_of_seeds
-    r = solve(build(MyThermalMinorityGameModel, (N = N_crowded, m = m, S = S, temperature = T, rng = rng));
+    r = solve(build(MyThermalMinorityGameModel, (N = N_crowded, m = m, J = J, temperature = T, rng = rng));
         number_of_rounds = number_of_rounds, burn_in = burn_in, rng = rng)
     push!(temps, (T, r.volatility_per_agent))
 end
@@ -35,23 +35,25 @@ greedy = mean(v for (t, v) ∈ temps if t == 0.0); randomchoice = mean(v for (t,
 jmin = argmin(last.(pm))
 
 # ---------- Farmer–Joshi example, Tasks 1 to 3 ----------
-σ_ξ = 0.05; σ_η = 0.01; number_of_steps = 20_000; fj_burn = 2_000
+Δt = 1 / 252; σ_S = 0.8; σ_v = 0.16; number_of_steps = 20_000; fj_burn = 2_000
 excess_kurtosis(x) = mean(((x .- mean(x)) ./ std(x, corrected = false)).^4) - 3
 rng = MersenneTwister(random_seed); markets = Dict{String,Any}()
 groups = Dict("value investors only" => (trend_number = 0,), "trend followers only" => (value_number = 0,), "both groups" => NamedTuple())
 for name ∈ ["value investors only", "trend followers only", "both groups"]
-    model = build(MyFarmerJoshiMarketModel, merge(groups[name], (σ_ξ = σ_ξ, σ_η = σ_η, rng = rng)))
+    model = build(MyFarmerJoshiMarketModel, merge(groups[name], (σ_S = σ_S, σ_v = σ_v, Δt = Δt, rng = rng)))
     markets[name] = solve(model; number_of_steps = number_of_steps, burn_in = fj_burn, rng = rng)
 end
+# `.returns` is the package field name (diff of the log price); the plotted statistics (autocorrelations,
+# excess kurtosis) are scale-free, so they are the same for the growth rate g = returns / Δt.
 r = markets["both groups"].returns
 prices = MyTrainingMarketDataSet()["dataset"]["SPY"].close
-g = (252) .* diff(log.(prices))
+g = diff(log.(prices)) ./ Δt
 lags = collect(1:50)
 writecsv("Data-L12a-FJ-ACF.csv", "lag,model,spy", [(l, a, b) for (l, a, b) ∈ zip(lags, sample_autocorrelation(abs.(r), lags), sample_autocorrelation(abs.(g), lags))])
 trend_counts = [0, 300, 600, 900, 1_200, 1_500]
 rng = MersenneTwister(random_seed); mix = []
 for n ∈ trend_counts, k ∈ 1:3
-    rr = solve(build(MyFarmerJoshiMarketModel, (trend_number = n, σ_ξ = σ_ξ, σ_η = σ_η, rng = rng));
+    rr = solve(build(MyFarmerJoshiMarketModel, (trend_number = n, σ_S = σ_S, σ_v = σ_v, Δt = Δt, rng = rng));
         number_of_steps = number_of_steps, burn_in = fj_burn, rng = rng).returns
     push!(mix, (n, sample_autocorrelation(rr, [1])[1], excess_kurtosis(rr)))
 end

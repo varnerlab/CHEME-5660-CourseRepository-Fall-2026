@@ -1,7 +1,7 @@
 % L12a Farmer–Joshi results (November 5, 2026): the executed outputs of the Farmer–Joshi example
-% (seed 5660, sigma_xi = 0.05), redrawn from the CSVs written by generate_results_data.jl.
-% A: autocorrelation of |r| (both groups) and of |g| (SPY daily growth rates, 2014-2024), lags
-% 1-50. B and C: excess kurtosis and lag-1 autocorrelation of r against the number of trend
+% (seed 5660, sigma_S = 0.8, sigma_v = 0.16, Delta t = 1/252), redrawn from the CSVs written by generate_results_data.jl.
+% A: autocorrelation of |g| (both groups, and SPY daily growth rates, 2014-2024), lags
+% 1-50. B and C: excess kurtosis and lag-1 autocorrelation of g against the number of trend
 % followers (1,200 value investors, three markets each), with SPY's values as dashed lines.
 \documentclass[tikz,border=6pt]{standalone}
 \input{abm-diagram.tex}
@@ -13,13 +13,13 @@
       xlabel={lag (steps or trading days)}, ylabel={autocorrelation},
       title={\textbf{A}\quad Volatility clustering}, legend pos=north east]
     \addplot[draw=gdred, line width=1.2pt] table[x=lag, y=model, col sep=comma] {Data-L12a-FJ-ACF.csv};
-    \addlegendentry{model $\lvert r\rvert$, both groups}
+    \addlegendentry{model $\lvert g\rvert$, both groups}
     \addplot[draw=vnink, line width=1.2pt] table[x=lag, y=spy, col sep=comma] {Data-L12a-FJ-ACF.csv};
     \addlegendentry{\texttt{SPY} $\lvert g\rvert$}
     \addplot[draw=gdgray, line width=0.6pt, domain=0:51, samples=2] {0};
   \end{axis}
   \begin{axis}[l12a, name=B, at={(A.east)}, anchor=west, xshift=1.5cm, xmin=-100, xmax=1600, ymin=-5, ymax=105,
-      xtick={0,300,600,900,1200,1500}, xlabel={trend followers}, ylabel={excess kurtosis of $r$},
+      xtick={0,300,600,900,1200,1500}, xlabel={trend followers}, ylabel={excess kurtosis of $g$},
       title={\textbf{B}\quad Fat tails}, legend pos=north west]
     \addplot[games] table[x=trend, y=kurtosis, col sep=comma] {Data-L12a-FJ-Mix-Games.csv};
     \addlegendentry{one market}
@@ -29,8 +29,8 @@
     \addlegendentry{\texttt{SPY}}
   \end{axis}
   \begin{axis}[l12a, at={(B.east)}, anchor=west, xshift=1.5cm, xmin=-100, xmax=1600, ymin=-0.15, ymax=0.55,
-      xtick={0,300,600,900,1200,1500}, xlabel={trend followers}, ylabel={lag-1 autocorrelation of $r$},
-      title={\textbf{C}\quad Return autocorrelation}, legend pos=north west]
+      xtick={0,300,600,900,1200,1500}, xlabel={trend followers}, ylabel={lag-1 autocorrelation of $g$},
+      title={\textbf{C}\quad Growth-rate autocorrelation}, legend pos=north west]
     \addplot[games] table[x=trend, y=acf1, col sep=comma] {Data-L12a-FJ-Mix-Games.csv};
     \addlegendentry{one market}
     \addplot[means] table[x=trend, y=acf1, col sep=comma] {Data-L12a-FJ-Mix-Means.csv};

@@ -1,0 +1,13 @@
+L11b Self-Check: Covered Calls and Protective Collars
+
+This is an ungraded self-check on the three core results from L11b:
+
+1. A covered call owns shares and sells a call on them. Its profit at expiration is min(S(T), K) minus today's cost, the share price minus the premium, grown to expiration. The premium lowers the breakeven, and the call caps the profit at the strike.
+2. A protective collar adds a long put at K1 to a covered call with its call at K2 > K1. The put sets a floor under the loss, the call sets a cap on the profit, and in between the position moves with the shares.
+3. The net Delta is the number of shares plus the weighted Deltas of the option legs: mn(1 - Delta_c) for a covered call and mn(1 + Delta_p - Delta_c) for a collar. A covered call's net Delta is never negative, and a collar's put and call can only lower its net Delta from that of the shares.
+
+There are 11 multiple-choice questions. Most use the AMD covered call and the SPY collar from class, including the probabilities of their outcomes under ℙ and ℚ. Each answer comes with a one-sentence explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the examples open while you work. If a question says ℙ, it means our belief (our forecast). If it says ℚ, it means the risk-neutral probabilities inside the market price.
+
+The questions were written from the course materials and checked by the teaching team. If you think an answer is wrong, post it on the course discussion board.

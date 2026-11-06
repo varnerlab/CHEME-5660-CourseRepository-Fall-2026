@@ -1,6 +1,6 @@
 # Compute-L12b-RuleSwitch-Cache.jl
 # Big-grid rule-switch experiment for L12b. Writes ../data/L12b-RuleSwitch-Cache.jld2.
-#   julia -t auto <this file>                full run (paper settings)
+#   julia -t auto <this file>                full run (course settings: the paper's model, 20 seeds, the course f grid)
 #   julia -t auto <this file> --provisional  L = 32, seeds 1:5, flagged provisional = true
 #   julia -t auto <this file> --smoke        tiny run, writes ...-smoke.jld2 (never overwrites the full file)
 

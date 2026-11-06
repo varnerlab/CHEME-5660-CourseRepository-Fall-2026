@@ -22,6 +22,27 @@ DARK_COLORS = {
     (240, 228, 66): "#e0d44a",   # hlyellow: the trader being updated
     (64, 64, 64): "#1f1f1f",     # black!75: dark digit on the Hold and yellow cells
     (255, 255, 255): "#1f1f1f",  # white: cell borders and digits on Buy/Sell cells, matched to VS Code's dark editor
+    # Rule-switch schematic (pdflatex, pastel tiles with paper-palette borders), November 2026:
+    (37, 37, 37): "#e3e6ea",     # ink: labels and digits
+    (92, 92, 92): "#c9cdd2",     # ink!75: outline of trader i's tile
+    (102, 102, 102): "#a9aeb4",  # ink!60: notes, "before/after the switch"
+    (124, 124, 124): "#a9aeb4",  # ink!60 arrows (stroke and arrowhead)
+    (187, 187, 187): "#6b7075",  # holdgray!80: border of the neighbor-sum box
+    (224, 238, 246): "#17324a",  # buyblue!12: Buy tile fill
+    (245, 245, 245): "#2c2e31",  # holdgray!12: Hold tile fill
+    (248, 248, 248): "#2a2c2f",  # holdgray!8: neighbor-sum box fill
+    (249, 231, 217): "#3d2614",  # sellorange!15: Sell tile fill
+    (255, 253, 214): "#3a3718",  # yellow!16: band on the c = 1 column
+    # Crash timeline (pdflatex, gray cards, teal highlight), November 2026:
+    (0, 0, 0): "#e3e6ea",        # black: card text
+    (14, 124, 134): "#3fb6c0",   # teal: highlighted card border and dots
+    (51, 51, 51): "#d6d9dd",     # black!80: the axis
+    (76, 76, 76): "#c9cdd2",     # black!70: dot outlines, key text
+    (89, 89, 89): "#b3b8be",     # black!65: year labels
+    (185, 185, 185): "#6b7075",  # gray!55: leader lines
+    (198, 198, 198): "#5f646a",  # gray!45: card borders
+    (231, 242, 243): "#14363a",  # teal!10: highlighted card fill
+    (247, 247, 247): "#2c2e31",  # gray!6: card fill
 }
 TOLERANCE = 2
 

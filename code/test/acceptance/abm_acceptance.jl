@@ -24,7 +24,7 @@ end
 
 report(name, rows, f) = (m = interval([f(r) for r in rows]); @printf("  %-34s mean %8.4f   95%% CI [%8.4f, %8.4f]\n", name, m...))
 
-println("Farmer–Joshi acceptance, Table 1 trader parameters, σ_ξ = 0.35, σ_η = 0.01, ",
+println("Farmer–Joshi acceptance, Table 1 trader parameters, σ_S = 0.35√252 (0.35 per step), σ_v = 0.16, Δt = 1/252, ",
     STEPS, " steps after ", BURN, " burn-in, ", length(SEEDS), " seeds")
 band = 1.96 / sqrt(STEPS)
 @printf("  white-noise 95%% band for one series: ±%.4f\n", band)
@@ -43,9 +43,9 @@ report("combined: std of returns", combined, r -> r.sd)
 
 println("\nCalibration of the combined market (5 seeds each): reference-value process")
 @printf("  %-28s %10s %10s %10s %10s\n", "value process", "ACF(r,1)", "kurtosis", "ACF(|r|,1)", "ACF(vol,1)")
-for σ_η in (0.001, 0.003, 0.01, 0.03)
-    rows = market_stats((σ_η=σ_η,); seeds=1:5)
-    @printf("  %-28s %10.4f %10.4f %10.4f %10.4f\n", "random walk σ_η = $(σ_η)", mean(r.acf_r for r in rows),
+for σ_v in (0.016, 0.048, 0.16, 0.48)    # annualized; per step 0.001 to 0.03
+    rows = market_stats((σ_v=σ_v,); seeds=1:5)
+    @printf("  %-28s %10.4f %10.4f %10.4f %10.4f\n", "random walk σ_v = $(σ_v)", mean(r.acf_r for r in rows),
         mean(r.kurt for r in rows), mean(r.acf_abs for r in rows), mean(r.acf_vol for r in rows))
 end
 # a smooth stand-in for interpolated dividends: a slow linear rise of 1 in log value over the run

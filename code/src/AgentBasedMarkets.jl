@@ -9,43 +9,44 @@
 """
     mutable struct MyThermalMinorityGameModel <: AbstractAgentModel
 
-A minority game with `N` agents in which each agent chooses among its strategies with
+A minority game with `N` agents in which each agent chooses among its policies with
 Boltzmann (softmax) probabilities set by a temperature.
 
 Each round, every agent chooses buy (``+1``) or sell (``-1``). The attendance is
-``A(t)=\\sum_{i}a_{i}(t)``, and agents on the minority side, ``-\\text{sign}(A)``, win. Every
-agent sees the same information ``\\mu(t)\\in\\{1,\\dots,P\\}``, with ``P=2^{m}``, and holds
-``S`` strategies; a strategy is a lookup table that maps each ``\\mu`` to an action.
+``A_{t}=\\sum_{i}a_{i,t}``, and agents on the minority side, ``-\\text{sign}(A)``, win. Every
+agent sees the same information ``\\mu_{t}\\in\\{1,\\dots,P\\}``, with ``P=2^{m}``, and holds
+``J`` policies; policy ``\\pi_{ij}`` is a lookup table that maps each ``\\mu`` to an action
+``\\pi_{ij}(\\mu)\\in\\{-1,+1\\}``.
 
 ### Fields
-- `N::Int`: number of agents (odd, so ``A(t)`` is never zero).
+- `N::Int`: number of agents (odd, so ``A_{t}`` is never zero).
 - `m::Int`: memory, the number of past minority actions in the information; ``P=2^{m}``.
-- `S::Int`: number of strategies per agent.
+- `J::Int`: number of policies per agent.
 - `temperature::Float64`: the temperature of the Boltzmann choice rule (dimensionless,
-  in units of the score). `0.0` gives the best-scoring strategy, `Inf` a uniform choice.
+  in units of the score). `0.0` gives the best-scoring policy, `Inf` a uniform choice.
 - `information::Symbol`: `:history` (the last `m` minority actions) or `:random`
   (``\\mu`` drawn uniformly each round).
-- `strategies::Array{Int8,3}`: actions ``a_{is}^{\\mu}\\in\\{-1,+1\\}``, sized `N`×`S`×`P`.
+- `policies::Array{Int8,3}`: actions ``\\pi_{ij}(\\mu)\\in\\{-1,+1\\}``, sized `N`×`J`×`P`.
 
 Scores use the binary-model normalization of Challet, Marsili, and Zecchina (2000),
-``U_{is}(t+1)=U_{is}(t)-a_{is}^{\\mu(t)}A(t)/P``, so the temperature here is measured in
+``U_{ij,t+1}=U_{ij,t}-\\pi_{ij}(\\mu_{t})A_{t}/P``, so the temperature here is measured in
 those units.
 """
 mutable struct MyThermalMinorityGameModel <: AbstractAgentModel
     N::Int
     m::Int
-    S::Int
+    J::Int
     temperature::Float64
     information::Symbol
-    strategies::Array{Int8,3}
+    policies::Array{Int8,3}
 end
 
 """
     boltzmann_weights(scores::AbstractVector{<:Real}, temperature::Real) -> Vector{Float64}
 
 Return the Boltzmann (softmax) probabilities
-``p_{s}=\\exp(U_{s}/T)/\\sum_{k}\\exp(U_{k}/T)`` for the scores ``U_{s}`` at temperature ``T``.
-These maximize the entropy ``-\\sum_{s}p_{s}\\ln p_{s}`` for a fixed expected score.
+``p_{j}=\\exp(U_{j}/T)/\\sum_{k}\\exp(U_{k}/T)`` for the scores ``U_{j}`` at temperature ``T``.
+These maximize the entropy ``-\\sum_{j}p_{j}\\ln p_{j}`` for a fixed expected score.
 
 At `temperature = 0` the probability is shared equally among the highest scores; at
 `temperature = Inf` it is uniform. Throws an `ArgumentError` for a negative or `NaN`
@@ -74,44 +75,55 @@ end
 """
     build(modeltype::Type{MyThermalMinorityGameModel}, data::NamedTuple) -> MyThermalMinorityGameModel
 
-Build a thermal minority game and draw every agent's strategies uniformly at random.
+Build a thermal minority game and draw every agent's policies at random: each entry
+``\\pi_{ij}(\\mu)`` is ``+1`` (buy) with probability `buy_probability` and ``-1`` (sell) otherwise.
 
 ### Arguments
 - `data::NamedTuple` with keys `N::Integer` (odd, ≥ 1), `m::Integer` (1 to 20), and optional
-  `S::Integer = 2` (≥ 2), `temperature::Real = 0.0` (≥ 0, `Inf` allowed),
-  `information::Symbol = :history` (or `:random`), and `rng::AbstractRNG = Random.default_rng()`.
+  `J::Integer = 2` (≥ 2), `temperature::Real = 0.0` (≥ 0, `Inf` allowed),
+  `information::Symbol = :history` (or `:random`), `buy_probability::Real = 0.5` (0 to 1; `0.5`
+  draws buy and sell equally, as in the standard game), and `rng::AbstractRNG = Random.default_rng()`.
 
-Throws an `ArgumentError` for invalid inputs.
+Throws an `ArgumentError` for invalid inputs, including the retired key `S` (use `J`).
 """
 function build(modeltype::Type{MyThermalMinorityGameModel}, data::NamedTuple)::MyThermalMinorityGameModel
     N = get(data, :N, nothing)
     m = get(data, :m, nothing)
-    S = get(data, :S, 2)
+    haskey(data, :S) &&
+        throw(ArgumentError("the number of policies per agent is now J; the key S is no longer accepted"))
+    J = get(data, :J, 2)
     temperature = get(data, :temperature, 0.0)
     information = get(data, :information, :history)
+    buy_probability = get(data, :buy_probability, 0.5)
     rng = get(data, :rng, Random.default_rng())
 
     (N isa Integer && !(N isa Bool) && N >= 1 && isodd(N)) ||
         throw(ArgumentError("N must be a positive odd integer"))
     (m isa Integer && !(m isa Bool) && 1 <= m <= 20) ||
         throw(ArgumentError("m must be an integer from 1 to 20"))
-    (S isa Integer && !(S isa Bool) && S >= 2) ||
-        throw(ArgumentError("S must be an integer of at least 2"))
+    (J isa Integer && !(J isa Bool) && J >= 2) ||
+        throw(ArgumentError("J must be an integer of at least 2"))
     (temperature isa Real && !isnan(temperature) && temperature >= 0) ||
         throw(ArgumentError("temperature must be a nonnegative real number"))
     information in (:history, :random) ||
         throw(ArgumentError("information must be :history or :random"))
+    (buy_probability isa Real && !(buy_probability isa Bool) && 0 <= buy_probability <= 1) ||
+        throw(ArgumentError("buy_probability must be a real number from 0 to 1"))
 
     P = 2^m
-    strategies = Int8.(rand(rng, (-1, 1), N, S, P))
-    return MyThermalMinorityGameModel(Int(N), Int(m), Int(S), Float64(temperature), information, strategies)
+    policies = if buy_probability == 0.5
+        Int8.(rand(rng, (-1, 1), N, J, P))    # the standard game (same draws as before the keyword existed)
+    else
+        Int8.(ifelse.(rand(rng, N, J, P) .< buy_probability, 1, -1))
+    end
+    return MyThermalMinorityGameModel(Int(N), Int(m), Int(J), Float64(temperature), information, policies)
 end
 
-# draw one strategy index for an agent from its scores at the model temperature
+# draw one policy index for an agent from its scores at the model temperature
 function _mg_choose(rng::AbstractRNG, scores::AbstractVector{Float64}, temperature::Float64)::Int
-    S = length(scores)
+    J = length(scores)
     if isinf(temperature)
-        return rand(rng, 1:S)
+        return rand(rng, 1:J)
     elseif temperature == 0
         best = maximum(scores)
         candidates = findall(==(best), scores)
@@ -120,11 +132,11 @@ function _mg_choose(rng::AbstractRNG, scores::AbstractVector{Float64}, temperatu
     w = boltzmann_weights(scores, temperature)
     u = rand(rng)
     acc = 0.0
-    for s in 1:S
-        acc += w[s]
-        u <= acc && return s
+    for j in 1:J
+        acc += w[j]
+        u <= acc && return j
     end
-    return S
+    return J
 end
 
 """
@@ -134,56 +146,56 @@ end
 Play the minority game for `burn_in + number_of_rounds` rounds and return the last
 `number_of_rounds`.
 
-Each round: every agent draws a strategy with [`boltzmann_weights`](@ref) of its scores,
-plays that strategy's action for the current information ``\\mu(t)``, the attendance
-``A(t)=\\sum_{i}a_{i}(t)`` is formed, and every strategy's score is updated as
-``U_{is}(t+1)=U_{is}(t)-a_{is}^{\\mu(t)}A(t)/P``. With `information = :history`, the new
+Each round: every agent draws a policy with [`boltzmann_weights`](@ref) of its scores,
+takes that policy's action for the current information ``\\mu_{t}``, the attendance
+``A_{t}=\\sum_{i}a_{i,t}`` is formed, and every policy's score is updated as
+``U_{ij,t+1}=U_{ij,t}-\\pi_{ij}(\\mu_{t})A_{t}/P``. With `information = :history`, the new
 minority action ``-\\text{sign}(A)`` becomes the lowest bit of the next ``\\mu``.
 
 ### Arguments
 - `number_of_rounds::Int`: rounds to return (≥ 1).
 - `burn_in::Int = 0`: rounds played first and discarded (≥ 0).
 - `rng`: random number generator.
-- `initial_information`: ``\\mu`` for the first round (1 to ``P``); drawn at random if `nothing`.
+- `initial_information`: ``\\mu_{0}`` for the first round, ``t=0`` (1 to ``P``); drawn at random if `nothing`.
 
 ### Returns
 A `NamedTuple` with `attendance::Vector{Int}` and `information::Vector{Int}` for the returned
 rounds, `volatility_per_agent::Float64` ``=\\langle A^{2}\\rangle/N`` over those rounds (1 for
 independent coin-flipping agents), `alpha::Float64` ``=P/N``, and
-`final_scores::Matrix{Float64}` (`N`×`S`).
+`final_scores::Matrix{Float64}` (`N`×`J`).
 """
 function solve(model::MyThermalMinorityGameModel; number_of_rounds::Int, burn_in::Int = 0,
         rng::AbstractRNG = Random.default_rng(), initial_information::Union{Nothing,Integer} = nothing)
     number_of_rounds >= 1 || throw(ArgumentError("number_of_rounds must be at least 1"))
     burn_in >= 0 || throw(ArgumentError("burn_in must be nonnegative"))
-    N, S, P = model.N, model.S, 2^model.m
-    size(model.strategies) == (N, S, P) || throw(ArgumentError("strategies must be sized N×S×2^m"))
+    N, J, P = model.N, model.J, 2^model.m
+    size(model.policies) == (N, J, P) || throw(ArgumentError("policies must be sized N×J×2^m"))
 
     μ = isnothing(initial_information) ? rand(rng, 1:P) : Int(initial_information)
     1 <= μ <= P || throw(ArgumentError("initial_information must be in 1:P"))
 
-    scores = zeros(Float64, N, S)
+    scores = zeros(Float64, N, J)
     choice = zeros(Int, N)
     total = burn_in + number_of_rounds
     attendance = Vector{Int}(undef, number_of_rounds)
     information = Vector{Int}(undef, number_of_rounds)
-    strategies = model.strategies
+    policies = model.policies
 
     for t in 1:total
-        # each agent chooses a strategy and plays its action for μ
+        # each agent chooses a policy and takes its action for μ
         A = 0
         for i in 1:N
-            s = _mg_choose(rng, view(scores, i, :), model.temperature)
-            choice[i] = s
-            A += strategies[i, s, μ]
+            j = _mg_choose(rng, view(scores, i, :), model.temperature)
+            choice[i] = j
+            A += policies[i, j, μ]
         end
         if t > burn_in
             attendance[t - burn_in] = A
             information[t - burn_in] = μ
         end
-        # virtual scoring of every strategy
-        for s in 1:S, i in 1:N
-            scores[i, s] -= strategies[i, s, μ] * A / P
+        # virtual scoring of every policy
+        for j in 1:J, i in 1:N
+            scores[i, j] -= policies[i, j, μ] * A / P
         end
         # next information
         if model.information == :history
@@ -207,7 +219,7 @@ end
 
 The agent-based market of Farmer and Joshi (2002), "The price dynamics of common trading
 strategies", J. Econ. Behav. Organ. 49, 149–171. Value investors and trend followers trade
-through a market maker who moves the log price in proportion to the net order.
+through a market maker who moves the log price ``\\ln S_{t}`` in proportion to the net order.
 
 Each trader uses a state-dependent threshold strategy (the paper's Section 3.2.4): a position
 of size ``c=a(T-\\tau)`` is entered when a signal crosses the entry threshold ``T`` and
@@ -215,8 +227,9 @@ held until it crosses the exit threshold ``\\tau`` (see [`threshold_position`](@
 
 ### Fields
 - `a::Float64`, `λ::Float64`: capital scale and liquidity (shared).
-- `σ_ξ::Float64`: standard deviation of the price noise ``\\xi``.
-- `σ_η::Float64`, `μ_η::Float64`: standard deviation and mean of the reference-value steps ``\\eta``.
+- `σ_S::Float64`: annualized volatility of the price noise, so the noise in ``\\ln S_{t+1}`` is ``\\sigma_S\\sqrt{\\Delta t}\\,Z_{t+1}``.
+- `σ_v::Float64`, `μ_v::Float64`: annualized volatility and drift of the reference log value, so ``v_{t+1}=v_{t}+\\mu_v\\Delta t+\\sigma_v\\sqrt{\\Delta t}\\,Z'_{t+1}``.
+- `Δt::Float64`: the time step in years (`1/252` for one trading day).
 - `value_entry`, `value_exit`, `value_capital`, `value_offset::Vector{Float64}`: each value
   investor's entry threshold ``T``, exit threshold ``\\tau``, position size ``c``, and
   offset ``v^{(i)}`` of its perceived log value from the reference ``v_{t}``.
@@ -226,9 +239,10 @@ held until it crosses the exit threshold ``\\tau`` (see [`threshold_position`](@
 mutable struct MyFarmerJoshiMarketModel <: AbstractAgentModel
     a::Float64
     λ::Float64
-    σ_ξ::Float64
-    σ_η::Float64
-    μ_η::Float64
+    σ_S::Float64
+    σ_v::Float64
+    μ_v::Float64
+    Δt::Float64
     value_entry::Vector{Float64}
     value_exit::Vector{Float64}
     value_capital::Vector{Float64}
@@ -246,9 +260,9 @@ end
 Return a trader's next position under the threshold strategy of Farmer and Joshi (2002),
 Section 3.2.4. The position is ``-c``, ``0``, or ``+c`` with ``c=`` `capital`.
 
-- Value investor (`direction = -1`), `signal` = mispricing ``m=p_{t}-v_{t}^{(i)}``: from zero,
+- Value investor (`direction = -1`), `signal` = mispricing ``m=\\ln S_{t}-v_{t}^{(i)}``: from zero,
   go short if ``m>T`` and long if ``m<-T``; exit a short when ``m<\\tau`` and a long when ``m>-\\tau``.
-- Trend follower (`direction = +1`), `signal` = ``p_{t}-p_{t-\\theta}``: from zero, go long if
+- Trend follower (`direction = +1`), `signal` = ``\\ln S_{t}-\\ln S_{t-\\theta}``: from zero, go long if
   the signal is above ``T`` and short if below ``-T``; exit a long when it falls below ``\\tau``
   and a short when it rises above ``-\\tau``.
 
@@ -269,7 +283,7 @@ function threshold_position(current::Float64, signal::Float64, entry::Float64, e
     end
 end
 
-# trend signal p_t - p_{t-θ} at array index k (log_price[k] holds p_{k-1}); nothing while t < θ
+# trend signal ln S_t - ln S_{t-θ} at array index k (log_price[k] holds ln S_{k-1}); nothing while t < θ
 function _fj_trend_signal(log_price::AbstractVector{Float64}, k::Int, θ::Int)::Union{Nothing,Float64}
     t = k - 1
     t < θ && return nothing
@@ -288,15 +302,22 @@ are the paper's Table 1.
   `[T_min, T_max]`, exit thresholds ``\\tau`` uniform on `[τ_min, τ_max]`, and ``c=a(T-\\tau)``.
 - `value_v_min = -2.0`, `value_v_max = 2.0`: range of the perceived-value offsets.
 - `trend_θ_min = 1`, `trend_θ_max = 100`: range of the integer lags.
-- Shared: `σ_ξ = 0.35`, `λ = 1.0`, `σ_η = 0.01`, `μ_η = 0.0`, `rng = Random.default_rng()`.
-  The paper drives the reference value with a data path in its Table 1 run; `σ_η` and `μ_η`
-  are used only when `solve` is not given `log_value_path`.
+- Shared: `Δt = 1/252` (years), `σ_S = 0.35*sqrt(252)` (the paper's 0.35 per step), `λ = 1.0`,
+  `σ_v = 0.16`, `μ_v = 0.0`, `rng = Random.default_rng()`. `σ_S` and `σ_v` are annualized
+  (units 1/√yr). The paper drives the reference value with a data path in its Table 1 run;
+  `σ_v` and `μ_v` are used only when `solve` is not given `log_value_path`.
 """
 function build(modeltype::Type{MyFarmerJoshiMarketModel}, data::NamedTuple)::MyFarmerJoshiMarketModel
     rng = get(data, :rng, Random.default_rng())
-    σ_ξ = Float64(get(data, :σ_ξ, 0.35)); λ = Float64(get(data, :λ, 1.0))
-    σ_η = Float64(get(data, :σ_η, 0.01)); μ_η = Float64(get(data, :μ_η, 0.0))
-    (σ_ξ >= 0 && σ_η >= 0 && isfinite(μ_η)) || throw(ArgumentError("σ_ξ and σ_η must be nonnegative"))
+    Δt = Float64(get(data, :Δt, 1 / 252)); λ = Float64(get(data, :λ, 1.0))
+    σ_S = Float64(get(data, :σ_S, 0.35 * sqrt(252)))
+    σ_v = Float64(get(data, :σ_v, 0.16)); μ_v = Float64(get(data, :μ_v, 0.0))
+    for old in (:σ_ξ, :σ_η, :μ_η)
+        haskey(data, old) && throw(ArgumentError("$(old) was replaced by the annualized σ_S, σ_v, and μ_v with time step Δt; see the build docstring"))
+    end
+    (isfinite(σ_S) && isfinite(σ_v) && σ_S >= 0 && σ_v >= 0) || throw(ArgumentError("σ_S and σ_v must be finite and nonnegative"))
+    (Δt > 0 && isfinite(Δt)) || throw(ArgumentError("Δt must be positive"))
+    isfinite(μ_v) || throw(ArgumentError("μ_v must be finite"))
     λ > 0 || throw(ArgumentError("λ must be positive"))
 
     function group(prefix::String)
@@ -324,37 +345,39 @@ function build(modeltype::Type{MyFarmerJoshiMarketModel}, data::NamedTuple)::MyF
     value_offset = v_min .+ (v_max - v_min) .* rand(rng, n_value)
     trend_lag = rand(rng, Int(θ_min):Int(θ_max), n_trend)
 
-    return MyFarmerJoshiMarketModel(a, λ, σ_ξ, σ_η, μ_η, value_entry, value_exit, value_capital,
+    return MyFarmerJoshiMarketModel(a, λ, σ_S, σ_v, μ_v, Δt, value_entry, value_exit, value_capital,
         value_offset, trend_entry, trend_exit, trend_capital, trend_lag)
 end
 
 """
     solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::Int = 0,
-        rng::AbstractRNG = Random.default_rng(), p₀::Float64 = 0.0, v₀::Float64 = 0.0,
+        rng::AbstractRNG = Random.default_rng(), initial_log_price::Float64 = 0.0, v₀::Float64 = 0.0,
         log_value_path = nothing) -> NamedTuple
 
 Simulate the market for `burn_in + number_of_steps` steps and return the last
 `number_of_steps`. Each step, in order:
 
-1. every trader sets its next position ``x_{t+1}^{(i)}`` from ``p_{t}`` (and ``v_{t}``) with [`threshold_position`](@ref);
+1. every trader sets its next position ``x_{t+1}^{(i)}`` from ``\\ln S_{t}`` (and ``v_{t}``) with [`threshold_position`](@ref);
 2. its order is ``\\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}`` (Eq. 1);
-3. the market maker sets ``p_{t+1}=p_{t}+\\lambda^{-1}\\sum_{i}\\omega_{t+1}^{(i)}+\\xi_{t+1}`` (Eq. 7);
-4. the reference log value advances, ``v_{t+1}=v_{t}+\\eta_{t+1}`` (Eq. 13), or is read from `log_value_path`.
+3. the market maker sets ``\\ln S_{t+1}=\\ln S_{t}+\\lambda^{-1}\\sum_{i}\\omega_{t+1}^{(i)}+\\sigma_S\\sqrt{\\Delta t}\\,Z_{t+1}`` (Eq. 7 with ``\\xi_{t+1}=\\sigma_S\\sqrt{\\Delta t}\\,Z_{t+1}``);
+4. the reference log value advances, ``v_{t+1}=v_{t}+\\mu_v\\Delta t+\\sigma_v\\sqrt{\\Delta t}\\,Z'_{t+1}`` (Eq. 13), or is read from `log_value_path`.
 
 A value investor perceives ``v_{t}^{(i)}=v_{t}+v^{(i)}`` (Eq. 18). A trend follower holds no
 position until ``t\\geq\\theta``.
 
 ### Arguments
+- `initial_log_price = 0.0`: the starting log price ``\\ln S_{0}`` (`0.0` normalizes ``S_{0}=1``).
+- `v₀ = 0.0`: the starting reference log value ``v_{0}``, used when `log_value_path` is not given.
 - `log_value_path`: optional reference log values ``v_{0},v_{1},\\dots``; its length must be at
   least `burn_in + number_of_steps + 1`.
 
 ### Returns
 A `NamedTuple` with `log_price` and `log_value` (`number_of_steps + 1` values),
-`returns` ``=p_{t+1}-p_{t}`` (`number_of_steps` values), and `value_volume` and
-`trend_volume`, the total absolute order ``\\sum_{i}|\\omega_{t}^{(i)}|`` of each group per step.
+`returns` ``=\\ln S_{t+1}-\\ln S_{t}=g_{t+1}\\Delta t`` (`number_of_steps` values; divide by ``\\Delta t`` for the growth rates), and `value_volume` and
+`trend_volume`, the total absolute order ``\\sum_{i}|\\omega_{t+1}^{(i)}|`` of each group per step.
 """
 function solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::Int = 0,
-        rng::AbstractRNG = Random.default_rng(), p₀::Float64 = 0.0, v₀::Float64 = 0.0,
+        rng::AbstractRNG = Random.default_rng(), initial_log_price::Float64 = 0.0, v₀::Float64 = 0.0,
         log_value_path::Union{Nothing,AbstractVector{<:Real}} = nothing)
     number_of_steps >= 1 || throw(ArgumentError("number_of_steps must be at least 1"))
     burn_in >= 0 || throw(ArgumentError("burn_in must be nonnegative"))
@@ -366,14 +389,14 @@ function solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::I
 
     p = Vector{Float64}(undef, total + 1)
     v = Vector{Float64}(undef, total + 1)
-    p[1] = p₀
+    p[1] = initial_log_price
     v[1] = isnothing(log_value_path) ? v₀ : Float64(log_value_path[1])
     value_volume = zeros(Float64, total)
     trend_volume = zeros(Float64, total)
     x_value = zeros(Float64, length(model.value_entry))
     x_trend = zeros(Float64, length(model.trend_entry))
 
-    for k in 1:total                       # step from p_{k-1} (index k) to p_k (index k+1)
+    for k in 1:total                       # step from ln S_{k-1} (index k) to ln S_k (index k+1)
         net_order = 0.0
         for i in eachindex(x_value)
             m = p[k] - (v[k] + model.value_offset[i])
@@ -390,8 +413,8 @@ function solve(model::MyFarmerJoshiMarketModel; number_of_steps::Int, burn_in::I
             ω = x_new - x_trend[j]
             net_order += ω; trend_volume[k] += abs(ω); x_trend[j] = x_new
         end
-        p[k + 1] = p[k] + net_order / model.λ + model.σ_ξ * randn(rng)
-        v[k + 1] = isnothing(log_value_path) ? v[k] + model.μ_η + model.σ_η * randn(rng) :
+        p[k + 1] = p[k] + net_order / model.λ + model.σ_S * sqrt(model.Δt) * randn(rng)
+        v[k + 1] = isnothing(log_value_path) ? v[k] + model.μ_v * model.Δt + model.σ_v * sqrt(model.Δt) * randn(rng) :
             Float64(log_value_path[k + 1])
     end
 

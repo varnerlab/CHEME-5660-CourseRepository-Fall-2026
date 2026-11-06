@@ -28,3 +28,6 @@ lecture or example notebooks:
   information.
 - Before showing any new prose, check every paragraph against these limits and
   fix it.
+- Exception: algorithm pseudocode steps (Initialize, the numbered loop steps,
+  Output) may run longer than the paragraph limit. They list inputs and
+  actions and have a purpose. Do not split them or flag them in reviews.

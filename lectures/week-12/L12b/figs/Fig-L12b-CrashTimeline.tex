@@ -1,0 +1,95 @@
+% L12b crash timeline (November 6, 2026 redesign, after the 2024 figure's staggered layout).
+% Events are evenly spaced along the axis, alternating above and below, with each card's date
+% and the year under its dot. Callouts step down in cascades of three heights (high, middle,
+% low), joined to their dots by straight vertical leaders. Cards are narrower than the gap
+% between same-side events, so no leader crosses a card. The three episodes described in the
+% lecture's "Historical Market Crashes" box (1929, 1987, April 2025) are highlighted in teal.
+% Style: plain pdflatex standalone, Computer Modern, pastel cards (CHEME 5820 reference style).
+% Fact sources and corrections to the 2024 entries are in README.md.
+\documentclass[border=12pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{amsmath,amssymb}
+\definecolor{hl}{HTML}{0E7C86}
+\begin{document}
+\begin{tikzpicture}[
+  card/.style={rectangle, rounded corners=3pt, thick, draw=gray!45, fill=gray!6, inner sep=4pt, align=left,
+               text width=3.42cm, font=\footnotesize, execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}},
+  hot/.style={card, draw=hl, fill=hl!10},
+  lead/.style={draw=gray!55, line width=0.6pt},
+  dot/.style={circle, draw=black!70, fill=white, line width=0.8pt, inner sep=0pt, minimum size=2.2mm},
+  hotdot/.style={circle, draw=hl, fill=hl, inner sep=0pt, minimum size=2.6mm},
+]
+\draw[black!80, line width=1.4pt, -{Stealth[length=3mm,width=2.6mm]}] (-0.6,0) -- (32.40,0);
+\node[hot, anchor=south west] at (-0.20,3.40) {\textbf{24--29 October 1929}\\Black Thursday and Tuesday. The Great Depression follows.};
+\draw[lead] (0.00,0.12) -- (0.00,3.40);
+\node[hotdot] at (0.00,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (0.00,-0.14) {1929};
+\node[card, anchor=north west] at (1.75,-3.40) {\textbf{1937--1938}\\A recession inside the Depression.};
+\draw[lead] (1.95,-0.12) -- (1.95,-3.40);
+\node[dot] at (1.95,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (1.95,0.14) {1938};
+\node[card, anchor=south west] at (3.70,1.95) {\textbf{2 September 1945}\\End of the Second World War.};
+\draw[lead] (3.90,0.12) -- (3.90,1.95);
+\node[dot] at (3.90,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (3.90,-0.14) {1945};
+\node[card, anchor=north west] at (5.65,-1.95) {\textbf{Flash Crash 1962}\\S\&P 500 down 22\% from its 1961 peak.};
+\draw[lead] (5.85,-0.12) -- (5.85,-1.95);
+\node[dot] at (5.85,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (5.85,0.14) {1962};
+\node[hot, anchor=south west] at (7.60,0.50) {\textbf{19 October 1987}\\Black Monday. The Dow falls 22.6\% in one day.};
+\draw[lead] (7.80,0.12) -- (7.80,0.50);
+\node[hotdot] at (7.80,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (7.80,-0.14) {1987};
+\node[card, anchor=north west] at (9.55,-0.50) {\textbf{13 October 1989}\\Friday 13th mini-crash. The UAL buyout fails.};
+\draw[lead] (9.75,-0.12) -- (9.75,-0.50);
+\node[dot] at (9.75,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (9.75,0.14) {1989};
+\node[card, anchor=south west] at (11.50,3.40) {\textbf{1990--1991}\\Recession. Stocks fall about 20\%.};
+\draw[lead] (11.70,0.12) -- (11.70,3.40);
+\node[dot] at (11.70,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (11.70,-0.14) {1991};
+\node[card, anchor=north west] at (13.45,-3.40) {\textbf{10 March 2000}\\Dot-com peak. NASDAQ down 78\% by 2002.};
+\draw[lead] (13.65,-0.12) -- (13.65,-3.40);
+\node[dot] at (13.65,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (13.65,0.14) {2000};
+\node[card, anchor=south west] at (15.40,1.95) {\textbf{11 September 2001}\\Attacks. U.S. markets fall 11--16\%.};
+\draw[lead] (15.60,0.12) -- (15.60,1.95);
+\node[dot] at (15.60,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (15.60,-0.14) {2001};
+\node[card, anchor=north west] at (17.35,-1.95) {\textbf{15 September 2008}\\Lehman fails. Global financial crisis.};
+\draw[lead] (17.55,-0.12) -- (17.55,-1.95);
+\node[dot] at (17.55,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (17.55,0.14) {2008};
+\node[card, anchor=south west] at (19.30,0.50) {\textbf{6 May 2010}\\Flash Crash. 1 trillion USD lost in 36 minutes, mostly regained.};
+\draw[lead] (19.50,0.12) -- (19.50,0.50);
+\node[dot] at (19.50,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (19.50,-0.14) {2010};
+\node[card, anchor=north west] at (21.25,-0.50) {\textbf{May--October 2011}\\Bear market, down 21.6\%.};
+\draw[lead] (21.45,-0.12) -- (21.45,-0.50);
+\node[dot] at (21.45,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (21.45,0.14) {2011};
+\node[card, anchor=south west] at (23.20,3.40) {\textbf{February--March 2020}\\Pandemic. S\&P 500 down 34\%.};
+\draw[lead] (23.40,0.12) -- (23.40,3.40);
+\node[dot] at (23.40,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (23.40,-0.14) {2020};
+\node[card, anchor=north west] at (25.15,-3.40) {\textbf{January--October 2022}\\Bear market. S\&P 500 down 25\%.};
+\draw[lead] (25.35,-0.12) -- (25.35,-3.40);
+\node[dot] at (25.35,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (25.35,0.14) {2022};
+\node[card, anchor=south west] at (27.10,1.95) {\textbf{27 January 2025}\\DeepSeek. Nvidia loses 589 billion USD in a day.};
+\draw[lead] (27.30,0.12) -- (27.30,1.95);
+\node[dot] at (27.30,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (27.30,-0.14) {2025};
+\node[hot, anchor=north west] at (29.05,-1.95) {\textbf{3--9 April 2025}\\Tariff shock. S\&P 500 down 10.5\% in two days.};
+\draw[lead] (29.25,-0.12) -- (29.25,-1.95);
+\node[hotdot] at (29.25,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=south] at (29.25,0.14) {2025};
+\node[card, anchor=south west] at (31.00,0.50) {\textbf{4--6 November 2025}\\AI-valuation selloff. Nasdaq down 2\% in a day.};
+\draw[lead] (31.20,0.12) -- (31.20,0.50);
+\node[dot] at (31.20,0) {};
+\node[font=\scriptsize\bfseries, text=black!65, fill=white, inner sep=1pt, anchor=north] at (31.20,-0.14) {2025};
+\node[hot, text width=0.35cm, minimum height=0.3cm, inner sep=0pt] (k) at (-0.4,-5.30) {};
+\node[anchor=west, font=\footnotesize, text=black!70] at (k.east) {\ the three landmark episodes};
+\end{tikzpicture}
+\end{document}

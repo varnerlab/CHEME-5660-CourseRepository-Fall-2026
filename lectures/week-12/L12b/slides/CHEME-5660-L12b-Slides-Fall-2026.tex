@@ -1,9 +1,11 @@
 % L12b student companion deck: why markets crash, on a Wolfram market with a rule switch.
 %
-% November 6, 2026: built from the rewritten lecture notebook, frame for frame. Notation
+% November 6, 2026 (rework): rebuilt to mirror the reorganized lecture, section for section:
+% why markets crash; agent-based markets; Wolfram markets (grid, rule number, dealer,
+% technical traders, the two algorithms); the rule switch. Notation
 % follows the lecture: intention z_{j}(t) in {0,1,2} (Buy, Hold, Sell), neighbors \partial i,
-% neighbor sum c_{i}(t) in {0,...,8}, table entries a_{c}, rule number, fraction f of
-% switching traders, dealer net trade x_{t}, dealer shares Q_{t-1}, price P_{t}, depth h.
+% neighbor sum c_{i}(t), table entries a_{c}, rule number R, fraction f, dealer cash W_{t},
+% shares Q_{t}, net trade x_{t}, price P_{t}, depth h, band mu_{t}, sigma_{t}, alpha, k_{j}.
 % No example parameters appear here (instructor rule, November 5, 2026).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
@@ -48,7 +50,7 @@
     \item \hilite{The dealer}: how net buying raises the price, net selling lowers
       it, and why a switched market needs a control.
     \item \hilite{Rule-switch simulation}: reading the selling fraction and the
-      price, and what the comparison does not tell us about real crashes.
+      price, and what the comparison does and does not show.
   \end{itemize}
 \end{frame}
 
@@ -59,8 +61,8 @@
     \item A Wolfram rule maps the neighbor sum $c\in\{0,1,\dots,8\}$ to the
       trader's next intention. Rules 19280 and 19286 differ only at $c=1$: Buy
       versus Sell.
-    \item The dealer sets the price from the net trade, so we compare every
-      switched market with a control that shares its history.
+    \item The dealer sets the price from the net trade. We compare every switched
+      market with a control that shares its history.
     \item Giving the changed rule to a fraction $f$ of the traders can tip the
       market toward a Sell majority while the control does not. This is an
       analogy for crashes, not an explanation of them.
@@ -69,8 +71,8 @@
   \vspace{0.5em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The dealer's price update formula and the technical traders' band rule.
-    \item The edge-trader conditions and the Q-learning notebook.
+    \item The dealer's price update and the technical traders' band rule.
+    \item The two algorithms, the edge-trader conditions, and the Q-learning notebook.
   \end{itemize}
 \end{frame}
 
@@ -84,15 +86,19 @@
   \href{\repo/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
+  {\normalsize\textbf{\ink{Review on your own:}}\par\small
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
   Optional advanced notebooks are listed on the Optional Advanced Material frame.
 \end{frame}
 
 % ========== Why do markets crash?
 \begin{frame}{Why Do Markets Crash?}
   A market crash is a sudden, significant decline in prices across a broad
-  market. Three episodes show investor psychology swinging from euphoria to panic:
+  market. The three teal episodes are described on the next frame:
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-Crashes-Schematic-2024.pdf}
+    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L12b-CrashTimeline.pdf}
   \end{center}
 \end{frame}
 
@@ -103,13 +109,15 @@
       loss of confidence, and leveraged investors rushed to cover.
     \item \hilite{1987 Black Monday}: portfolio insurance and program trading
       amplified a slide, and a one-day 22.6\% Dow drop followed.
-    \item \hilite{April 2025 tariff mini-crash}: tariff news and fast algorithmic
-      selling hit sentiment first and fundamentals second.
+    \item \hilite{April 2025 tariff mini-crash}: tariff announcements and retaliation
+      fears triggered price declines and a jump in volatility. Losses eased
+      after policy clarifications.
   \end{itemize}
-  \slidenote{Sources:}{\href{https://www.federalreservehistory.org/essays/stock-market-crash-of-1929}{\dimmed{Federal Reserve History}}; \href{https://fraser.stlouisfed.org/title/report-presidential-task-force-market-mechanisms-5732}{\dimmed{Brady Report}}; \href{https://ustr.gov/about-us/policy-offices/press-office/press-releases/2025/april}{\dimmed{USTR}}}
+  \slidenote{Sources:}{\href{https://www.federalreservehistory.org/essays/stock-market-crash-of-1929}{\dimmed{Federal Reserve History}}; \href{https://fraser.stlouisfed.org/title/report-presidential-task-force-market-mechanisms-5732}{\dimmed{Brady Report}}; \href{https://ustr.gov/about-us/policy-offices/press-office/press-releases/2025/april}{\dimmed{USTR}}; \href{https://www.federalreserve.gov/publications/April-2025-financial-stability-report-Asset-Valuations.htm}{\dimmed{Federal Reserve FSR}}}
 \end{frame}
 
-\begin{frame}{Agent-Based Modeling of Market Crashes}
+% ========== Agent-based markets
+\begin{frame}{Agent-Based Markets}
   Markets are man-made systems, and they can fail. An \hilite{agent-based model}
   simulates traders as autonomous agents with their own rules, and the price
   emerges from their actions:
@@ -123,7 +131,6 @@
   \slidenote{Sources:}{\href{https://arxiv.org/abs/adap-org/9905005}{\dimmed{Iori}}; \href{https://doi.org/10.1038/17290}{\dimmed{Lux and Marchesi, Nature 397}}}
 \end{frame}
 
-% ========== Agents as Policies
 \begin{frame}{Agents as Policies}
   A \hilite{policy} is a table that gives, for each possible state of an agent's
   surroundings, the action the agent takes. In our market:
@@ -135,60 +142,89 @@
   \end{itemize}
 \end{frame}
 
-% ========== Wolfram Markets
-\begin{frame}{Wolfram Markets}
+% ========== Wolfram markets
+\begin{frame}{Wolfram Markets: The Grid and Intentions}
   Traders sit on the cells of a square grid, and simple local rules produce
   market-level behavior, as in Wolfram's cellular automata:
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Intention}: Buy, Hold, or Sell, coded $0$, $1$, $2$. We write
       $z_{j}(t)\in\{0,1,2\}$ for the intention of trader $j$ at step $t$.
-    \item \hilite{Neighbors}: an interior trader has four, above, below, left,
+    \item \hilite{Interior traders}: each has four neighbors, above, below, left,
       and right, and updates its intention from theirs.
+    \item \hilite{Edge}: some edge traders are technical traders who react to the
+      dealer's price. The other edge positions stay in Hold.
   \end{itemize}
-  This is a three-color two-dimensional cellular automaton.
   \slidenote{Source:}{\href{https://github.com/varnerlab/Wolfram-markets-abm-paper}{\dimmed{our paper on rule switches in Wolfram markets}}; Wolfram, \emph{A New Kind of Science} (2002), Chapter 3}
 \end{frame}
 
-\begin{frame}{The Neighbor Sum}
-  Let $\partial i$ denote the four neighbors of trader $i$. The trader looks only
-  at the \hilite{neighbor sum} $c_{i}(t)$, not at its own current intention:
-  \begin{equation*}
-    \underbrace{c_{i}(t)}_{\text{neighbor sum}} = \sum_{j\in\partial i}z_{j}(t)\in\{0,1,\dots,8\}
-  \end{equation*}
-  The policy is a table with one action $a_{c}\in\{0,1,2\}$ for each of the nine
-  sums $c=0,1,\dots,8$: the intention the trader adopts next when its neighbor
-  sum is $c$.
+\begin{frame}{The Market Model}
+  \begin{itemize}\setlength{\itemsep}{0.2em}\small
+    \item \hilite{Rule}: trader $i$ sums the intentions of its four neighbors
+      $\partial i$, $c_{i}(t)=\sum_{j\in\partial i}z_{j}$, and sets
+      $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$, with rule number
+      $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
+    \item \hilite{Dealer}: quotes $P_{t}=W_{t}/Q_{t}$ (cash over shares), takes the
+      net trade $x_{t}$, and keeps $W_{t}Q_{t}$ fixed. Depth $h$ is its starting
+      shares per trader:
+      \begin{equation*}
+        \boxed{P_{t} = P_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}}
+      \end{equation*}
+    \item \hilite{Technical traders}: Buy below the band $\mu_{t}\pm k_{j}\sigma_{t}$,
+      Sell above, Hold inside; active, held, or random signal ($0<\alpha<1$):
+      \begin{equation*}
+        \boxed{\mu_{t}=\mu_{t-1}+\alpha\left(P_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|P_{t}-\mu_{t}|-\sigma_{t-1}\right)}
+      \end{equation*}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Rule Numbers}
-  There are $3^{9}=19{,}683$ such tables. We identify each by its \hilite{rule
-  number}, the table written in base 3, with digits from $a_{8}$ on the left to
-  $a_{0}$ on the right:
-  \begin{equation*}
-    \underbrace{\sum_{c=0}^{8}a_{c}\,3^{c}}_{\text{rule number}}
-  \end{equation*}
-  We use Rule 19280, $(222110002)_{3}$, as the baseline.
-\end{frame}
-
-\begin{frame}{Edge Traders and One Simulation Step}
-  Some edge traders are \hilite{technical traders}: they Buy when the dealer's
-  price falls below a band around its recent average, Sell above it, and Hold
-  otherwise. The others stay in Hold. Each step runs in this order:
-  \begin{enumerate}\setlength{\itemsep}{0.35em}
-    \item \hilite{Rule changes and orders}: apply any scheduled rule change; traders
-      order from their intentions.
-    \item \hilite{Clearing}: the dealer matches orders and updates the price.
-    \item \hilite{Technical traders}: update their bands and intentions.
-    \item \hilite{Interior traders}: all update together from the previous
-      intentions of their neighbors.
+\begin{frame}{Algorithm: One Market Step}
+  Each step $t=1,2,\dots,T$ runs in this order, with switch step $t_{s}$ and
+  $R_{i}$ the rule of interior trader $i$:
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item \hilite{Switch}: at $t=t_{s}$, the chosen fraction $f$ of interior traders
+      get Rule 19286 and keep their intentions, cash, and shares.
+    \item \hilite{Clear}: the dealer clears the orders from $z_{i}(t-1)$ and
+      returns $x_{t}$, $Q_{t}$, $W_{t}$, and $P_{t}$.
+    \item \hilite{Band}: update $\mu_{t}$ and $\sigma_{t}$ from $P_{t}$.
+    \item \hilite{Edge}: technical traders set $z_{j}(t)$ from the band (active),
+      Hold (held), or a random draw (random signal).
+    \item \hilite{Interior}: every interior trader computes $c_{i}(t)$ from the
+      old interior and new edge intentions, and sets $z_{i}(t)\gets a^{(R_{i})}_{c_{i}(t)}$.
   \end{enumerate}
+  \slidenote{Full version:}{the lecture notebook, after Algorithm S1 of our paper}
 \end{frame}
 
-% ========== The Rule Switch
+\begin{frame}{Algorithm: Dealer Clearing}
+  The dealer finds one price $F(x)=W_{t-1}/(Q_{t-1}-x)$ for a net trade $x$, with
+  excess demand $e(x)$ of buyers who can pay minus sellers with a share:
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item \hilite{Direction}: $d\gets\text{sign}\,e(0)$, and bounds $\ell$, $u$.
+    \item \hilite{Search}: bisect for the largest $m$ with $d\cdot e(dm)\geq m$.
+    \item \hilite{Price}: $x_{t}\gets d\ell$ and $F_{t}\gets F(x_{t})$.
+    \item \hilite{Fill and settle}: fill the short side in full; ration the other
+      side by a seeded priority; move cash and shares at $F_{t}$.
+    \item \hilite{Dealer}: $Q_{t}\gets Q_{t-1}-x_{t}$, $W_{t}\gets W_{t-1}Q_{t-1}/Q_{t}$,
+      and $P_{t}\gets W_{t}/Q_{t}$.
+  \end{enumerate}
+  \slidenote{Full version:}{the lecture notebook, after Algorithm S2 of our paper}
+\end{frame}
+
+\begin{frame}{Example: Does the Price Look Real?}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Review on your own:}}\par\small
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb}}}
+
+  \vspace{0.8em}
+  In this example, we measure the stylized facts of the dealer's price in a market
+  that never switches, compare them with a real ticker and the Farmer--Joshi
+  market, and vary the edge traders and the dealer's depth.
+\end{frame}
+
+% ========== The rule switch
 \begin{frame}{The Rule Switch}
   Rule 19286, $(222110022)_{3}$, differs from the baseline in one entry. Three
-  neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286 sells. Base-3 digits run from $c=8$ down to
-  $c=0$, the table columns run $c=0$ to $8$:
+  neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286
+  sells. Table columns run from $c=0$ to $8$:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{../figs/Fig-L12b-RuleSwitch.pdf}
   \end{center}
@@ -201,11 +237,10 @@
     \item \hilite{Shared history}: all interior traders follow Rule 19280. At the
       switch step, a fraction $f$ of them, chosen in advance, receive Rule 19286
       and keep their intentions, cash, and shares.
-    \item \hilite{Control}: a second market with the same history never switches,
-      so differences after the switch come from the rule change.
-    \item \hilite{Edge traders}: in the active condition they react to the price;
-      in the held condition they stay in Hold, so any cascade must come from
-      traders reading their neighbors.
+    \item \hilite{Control}: a second market with the same history never switches.
+      Differences after the switch come from the rule change.
+    \item \hilite{Edge traders}: active, held, or random signal (a course
+      addition). When held, any cascade comes from traders reading their neighbors.
   \end{itemize}
 \end{frame}
 
@@ -215,54 +250,9 @@
   \href{\repo/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}}}
 
   \vspace{0.8em}
-  In this example, we plot the fraction of traders who intend to sell and the
-  dealer's price for a switched market beside its control.
-
-  \vspace{0.8em}
-  The example uses the dealer's price throughout, so next we look at how the
-  dealer sets it.
-\end{frame}
-
-% ========== Prices and the Dealer
-\begin{frame}{Prices and the Dealer}
-  The dealer holds cash and shares and takes the other side of trades the traders
-  do not match. At step $t$, $x_{t}$ is the net number of shares the dealer sells
-  to traders (positive for net buyers), $Q_{t-1}$ the dealer's shares before the
-  trade, and $P_{t-1}$ the price before it. The price after the trade is:
-  \begin{equation*}
-    P_{t} = P_{t-1}\Bigl(\underbrace{\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\substack{\text{shares before}\\\text{over shares after}}}\Bigr)^{2}
-  \end{equation*}
-  Net buyers, $x_{t}>0$: the ratio exceeds one and the price rises. Net sellers,
-  $x_{t}<0$: the ratio is below one and the price falls.
-\end{frame}
-
-\begin{frame}{Dealer Depth and Public Intentions}
-  \vspace{0.3em}
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Depth}: the dealer's depth $h$ is its initial shares per trader.
-      A deeper dealer holds more shares $Q_{t-1}$, so a net order moves
-      the price less.
-    \item \hilite{Public intentions}: neighbors read an intention without
-      checking holdings, so it can spread even when its sender cannot trade.
-      A completed trade needs cash for a buyer and a share for a seller.
-    \item \hilite{Control}: a shallow dealer can crash the price with no switch at
-      all, so we read a switched price beside its control's.
-  \end{itemize}
-  \slidenote{Details:}{the full clearing rule is in the example's code and in the paper}
-\end{frame}
-
-% ========== Back to Real Crashes
-\begin{frame}{Back to Real Crashes}
-  Our market is a toy, and we do not claim it explains any real crash. The rule
-  switch is a loose analogy:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{1929}: buying neighborhoods ($c=1,2,3$) sustain themselves; the
-      switched entry sells when one neighbor holds back, confidence turning.
-    \item \hilite{1987}: portfolio insurance told some investors to sell; here a
-      fraction $f$ of traders receive a different entry.
-    \item \hilite{April 2025}: news changed how traders read each other, so the
-      same neighborhood leads to a different action.
-  \end{itemize}
+  In this example, we run a switched market and its control ourselves, compare
+  cached markets under three market conditions, and count how often a Sell
+  majority forms.
 \end{frame}
 
 % ========== Optional advanced material

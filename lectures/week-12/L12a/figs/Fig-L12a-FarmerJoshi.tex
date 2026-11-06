@@ -15,9 +15,9 @@
 
   \node[note] (val) at (2.1, 9.6) {log value $v_{t}$};
   \node[agent, fill=redfill, draw=gdred, minimum width=3.9cm, minimum height=1.35cm] (vi) at (2.1, 8.1)
-    {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=p_{t}-\bigl(v_{t}+v^{(i)}\bigr)$};
+    {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\bigl(v_{t}+v^{(i)}\bigr)$};
   \node[agent, fill=bluefill, draw=gdblue, minimum width=3.9cm, minimum height=1.35cm] (tf) at (7.2, 8.1)
-    {\textcolor{gdblue}{\textbf{trend followers}}\\[1pt]$\zeta^{(i)}_{t}=p_{t}-p_{t-\theta_{i}}$};
+    {\textcolor{gdblue}{\textbf{trend followers}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\ln S_{t-\theta_{i}}$};
   \draw[flow] (val.south) -- (vi.north);
 
   % orders into the net order
@@ -27,12 +27,12 @@
 
   % the market maker sets the new log price
   \node[sumbox, minimum width=5.4cm] (mm) at (4.65, 3.6)
-    {\textbf{market maker}\\[2pt]$p_{t+1}=p_{t}+\dfrac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\xi_{t+1}$};
+    {\textbf{market maker}\\[2pt]$\ln S_{t+1}=\ln S_{t}+\dfrac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$};
   \draw[flow] (net.south) -- (mm.north) node[midway, right, font=\sffamily\footnotesize] {net order};
-  \node[note, anchor=west] (noise) at (8.05, 3.6) {noise $\xi_{t+1}$};
+  \node[note, anchor=west] (noise) at (8.05, 3.6) {noise};
   \draw[flow] (noise.west) -- (mm.east);
 
-  \node[minority, minimum width=1.9cm] (price) at (4.65, 1.8) {$p_{t+1}$};
+  \node[minority, minimum width=1.9cm] (price) at (4.65, 1.8) {$\ln S_{t+1}$};
   \draw[flow] (mm.south) -- (price.north);
 
   % feedback: the new price changes every signal at the next step

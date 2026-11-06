@@ -15,6 +15,9 @@ text in lecture or example notebooks:
   information.
 - Before showing any new prose, check every paragraph against these limits and
   fix it. Reviews should flag any paragraph that breaks them.
+- Exception: algorithm pseudocode steps (Initialize, the numbered loop steps,
+  Output) may run longer than the paragraph limit. They list inputs and
+  actions and have a purpose. Do not split them or flag them in reviews.
 
 ## Weeks 12 and 13 swapped — November 5, 2026
 

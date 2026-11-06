@@ -210,3 +210,143 @@ is public, so, with his OK, the lecture instead has CRR-style `__Reference:__` e
 checked against Crossref) that link to the free arXiv PDFs, and the inline author links now point
 there too: Challet–Zhang and Challet–Marsili–Zecchina in The Minority Game, Cavagna et al. in the
 derivation, Farmer–Joshi in The Farmer–Joshi Market. The examples and the deck link the same arXiv PDFs.
+
+## November 6, 2026: connection paragraph, policy notation, and a minority-game price
+
+Instructor requests, in order:
+
+- **Connection paragraph** (In the News): rewritten around individual decisions, with the
+  Financial Crisis Inquiry Commission's 2011 conclusion quoted from the report PDF ("the result of
+  human action and inaction"; "To paraphrase Shakespeare, the fault lies not in the stars, but in
+  us"). Both phrases were checked word for word in the govinfo PDF. The value-investor/trend-follower
+  sentences and closing question were removed at the instructor's request. The deck's Connection
+  line and source note follow.
+- **Definition of the minority game**: less game jargon, traders buying or selling one asset, the
+  attendance as buyers minus sellers, and $\alpha$ defined in words before the display. A first draft
+  that gave the game a price and called actions "orders" was rejected in Codex pre-review (the game
+  had no price, and "order" is the Farmer–Joshi $\omega$).
+- **Notation (decided by the instructor)**: strategy → policy $\pi_{ij}$, with $\pi_{ij}(\mu)$
+  replacing $a_{is}^{\mu}$; $J$ policies per agent (index $j$); scores $U_{ij}$; Boltzmann choice
+  probabilities $p_{ij}$ / $p_j$ (kept despite L13a's Markov $p_{ij}$; a Context-table row separates
+  them, and another separates $J$ from L13a's $J(\epsilon,\lambda)$); price $S$, so the Farmer–Joshi
+  log price $p_t$ is now $\ln S_t$ everywhere (lecture, example, deck, figure, package docstrings).
+- **Instructor's extension: a minority-game price**, from his VLMinorityGameKit.jl
+  (`r = A/liquidity + Normal(0, σ)`, `S ← S·exp(r)`): $\ln S(t+1)=\ln S(t)+A(t)/\lambda+\xi(t+1)$,
+  $S(1)=1$, the Farmer–Joshi market-maker rule with the attendance as excess demand. Challet,
+  Chessa, Marsili, and Zhang (arXiv cond-mat/0011042, eq. A4) define a related price with the
+  opposite sign and no noise; the lecture says so. The lecture states the mean-square identity
+  $\langle(\Delta\ln S)^2\rangle\approx\sigma^2/\lambda^2+\sigma_\xi^2$ (a second moment, not a
+  variance; Codex caught the variance version) and that the volatility per agent sets the size of
+  price moves only at fixed $N$ and $\lambda$. The Farmer–Joshi section no longer says the
+  minority game has no price; it says the minority-game price never feeds back into decisions.
+- **Thermal example, Task 1**: new subsection "From the attendance to a price" (objective 1 and
+  takeaway 1 absorb it; still three of each). Fixed $N=641$, memory 6 ($\alpha\approx0.10$) against
+  memory 8 ($\alpha\approx0.40$), $\lambda=1000$, $\sigma_\xi=0.002$, one shared noise path from a
+  separate RNG (seed 5661) so the games' own draws are untouched. Output: measured mean square
+  matches $\sigma^2/\lambda^2+\sigma_\xi^2$ to three digits in both markets; root mean square
+  0.0425 vs 0.0119. The crowded price peaks at 2.53 × its start (round 365) and falls to 1.18 within
+  30 rounds; the near-critical price stays in [0.92, 1.29] (checked numerically, not read off the plot).
+- **Package**: `MyThermalMinorityGameModel` field `S` → `J`, `strategies` → `policies`, build key
+  `J` (the retired key `S` now throws, so a stale call cannot silently build `J = 2`); Farmer–Joshi
+  `solve` keyword `p₀` → `initial_log_price` (no caller used it). Golden attendance/history test
+  recorded before the rename passes after it; all pre-existing example outputs are unchanged except
+  the renamed column header, and the results CSVs regenerate byte for byte.
+- **Notation page**: `content.json` (the source) updated and `notation.html` rebuilt with Pandoc
+  3.1.11.1; only `notation.html` changed.
+- **Growth rates and stylized facts** (instructor request, same day): the lecture's extension
+  subsection derives $g(t)=\frac{1}{\Delta t}\ln\frac{S(t+1)}{S(t)}=\frac{1}{\Delta t}(A(t)/\lambda+\xi(t+1))$
+  and says fat-tailed noise gives fat tails by construction, while independent noise cannot give
+  volatility clustering. The thermal example adds `noise_model` (`:normal`/`:studentt`, rescaled to
+  `σ_ξ`), `ν = 3`, `Δt = 1/252`, `lags`, and a stylized-facts table (`stylized_facts_report`, as in
+  the Farmer–Joshi example). Normal noise: crowded excess kurtosis 1.08, near-critical 0.11; every
+  ACF of $g$ inside the ±0.020 band; ACF of $|g|$ above the band only near $\alpha_c$ at lag 1
+  (0.040). The "Try" line (Student-t, `σ_ξ = 0.02`) was run before it was written: kurtosis 2.54 and
+  21.72, every ACF of $|g|$ inside the band.
+- **Codex post-change audit, fixes applied**: leftover "random strategy choice" and a "strategies"
+  code comment; the Context-table $U$ row ($U_{ij}$); the FJ docstring volume index
+  ($\omega_{t+1}$); the mean-square statement now says the noise is independent of the attendance
+  and that the size claim needs fixed $N$, $\lambda$, and $\sigma_\xi$ (lecture and deck); "same
+  agents" → "same number of agents" in the price comparison, whose conclusion is now that the two
+  paths differ because their attendances differ (the second game is separately built).
+- **Codex findings left for the instructor (pre-existing, not changed)**: the example takeaway
+  "The same agents and rules behave differently…" (Task 2 builds new agents at every $N$); the
+  Farmer–Joshi example is described differently in the Examples list and at the stop; the Boltzmann
+  table cell has a checks block but no return block. Its deck-style findings (topic-style objectives
+  and takeaways) were dismissed: the slide workflow is outside the notebook style reset.
+- **`buy_probability` (instructor request, same day)**: new optional `build` key for
+  `MyThermalMinorityGameModel` (default 0.5 keeps the original draw, so the golden test and every
+  output are unchanged; 98 package tests pass). Scratch experiment (N = 641, T = 0, three games):
+  with J = 2, agents whose two policies agree are frozen, leaving a built-in bias 2p − 1 that the
+  switchers (fraction 2p(1 − p)) can cancel only for p ≤ 1/√2 ≈ 0.707. Measured: 91–97% of the
+  bias removed for p ≤ 0.7; above, the attendance locks at the predicted (2p − 1) − 2p(1 − p)
+  (0.13, 0.29, 0.65 measured vs 0.125, 0.28, 0.62), Var(A) = 0, and the drift is all of ⟨g²⟩.
+  The thermal example has a `buy_probability` constant (0.5) passed to both Task 1 games, and a Try
+  line for 0.8, verified by executing a scratch copy: attendance constant at 169 in both games, price
+  up about 18% per round (λ = 1000). The Try line points at the attendance plot, because the price
+  reaches about 1e36 by round 500. Package docs not yet rebuilt after the docstring change.
+- **Biased-policies derivation moved to `advanced/biased_policies/`** (instructor: "too much for
+  lecture"). The lecture keeps one pointer sentence after the symmetry paragraph, an Optional
+  Advanced Material section before the Summary, and the Examples pointer line; the deck has the
+  matching frame; `advanced/README.md` added. Symbol $b$ (buy probability; $p$ is the Boltzmann
+  choice probability), $b_c=2^{-1/J}$. Codex check of the derivation, all verified and applied: the
+  threshold is necessary, not sufficient; the lock holds with high probability for large $N$ and
+  history information; the locked attendance is $2X-N\approx N(2b^J-1)$ (not an equality); "at
+  $T>0$ more bias survives" was wrong above $b_c$ (score gaps grow without bound, so any finite $T$
+  locks too; only $T=\infty$ keeps $2b-1$); "scores per policy" reworded (one score ties an agent's
+  choices across histories). Context table gains a $b$ row.
+- **Minority game schematic** (instructor, same day): panel letters removed, then the right-hand
+  panel (one agent's policy tables, scores, Boltzmann probabilities, score change) dropped: it
+  tried to show three ideas at once and the instructor was not sure what it taught. The figure is
+  now the one-round loop only (width 520 in the lecture); the lecture lead sentence and alt text
+  were rewritten, the deck's "One Agent's Policies" frame was removed, and the "One Round" frame
+  shows the whole figure. Volatility-per-agent wording in the definition was cut back to the
+  definition; the explanation (why divide by N, link to the growth rate) moved into the coin-flip
+  bullet of "Three things to notice".
+
+## November 6, 2026 (later): prose density pass and one notation for both price rules
+
+- **Prose density** (instructor's hard rule, CLAUDE.md): nine lecture paragraphs or bullets over
+  ~60 words or 3 sentences were split, and every semicolon was removed. Example-link descriptions
+  follow the October 14 rule (three sentences, no itinerary). Codex reviewed before and audited
+  after. Still over: both algorithm Initialize steps (pseudocode, ~71 and ~75 words), the
+  phase-diagram "What do we see?" bullet (two paragraphs, ~70 words), and the in-lecture
+  Farmer–Joshi example stop (one long itinerary sentence, unchanged).
+- **Notation** (instructor chose subscripts for the whole minority game, matching Farmer–Joshi
+  and the discrete-time price lectures L3a, L3b, L4b, L13a): $\mu_t$, $a_{i,t}$, $A_t$,
+  $U_{ij,t}$ ($U_{ij,0}=0$), $p_{ij,t}$, $\mathcal Z_{i,t}$, $j_{i,t}$, $S_t$ ($S_0=1$),
+  $\xi_{t+1}$. Rounds and steps both run $t=0,\dots,R-1$. Both price rules read
+  $\ln S_{t+1}=\ln S_t+(\cdot)/\lambda+\xi_{t+1}$. The growth rate of either simulated price is
+  $g_{t+1}=\frac{1}{\Delta t}\ln(S_{t+1}/S_t)$, indexed by the end of the interval as in L3a.
+  The examples number recorded rounds from $t=0$ after the burn-in; the lecture algorithm is the
+  whole game. $\pi_{ij}(\mu)$ is unchanged.
+- **Farmer–Joshi growth rates** (instructor: $\Delta t=1/252$, as in the minority-game example):
+  the log return $r_{t+1}$ became $g_{t+1}$. Note: L3a defines both $g$ and the log return
+  $r=\Delta t\,g$, so $r$ was not wrong; the change makes the two models consistent. Standard
+  deviations in the FJ example scale by 252 (1/yr); every scale-free statistic (kurtosis,
+  autocorrelations, Hill index, bands) is unchanged after the re-run. The calibration caveat now
+  says $\Delta t$ sets the units but the noise is not calibrated to the ticker.
+- Updated: lecture, both examples (re-executed), biased-policies derivation, deck, MG and FJ
+  results figures (labels), READMEs, package docstrings, FAQ notation (rebuilt). The package
+  field `returns` keeps its name (code identifier).
+- **Noise in the GBM form** (instructor, same day): $\xi_{t+1}$ and $\eta_{t+1}$ are replaced by
+  $\sigma_S\sqrt{\Delta t}\,Z_{t+1}$ and $\sigma_v\sqrt{\Delta t}\,Z'_{t+1}$, $Z,Z'\sim\mathcal N(0,1)$
+  i.i.d. and independent, with ANNUALIZED $\sigma_S,\sigma_v$ ($\mathrm{yr}^{-1/2}$) as in L4b/L5a.
+  Name $\sigma_S$ because bare $\sigma$ is taken ($\sigma^2=\langle A^2\rangle$). The instructor
+  required the code to run the lecture's equations: the package `MyFarmerJoshiMarketModel` now has
+  fields `σ_S, σ_v, μ_v, Δt` (defaults `Δt = 1/252`, `σ_S = 0.35√252`, `σ_v = 0.16`); tests pass.
+  Example constants: minority game $\sigma_S=0.03$; Farmer–Joshi $\sigma_S=0.8$, $\sigma_v=0.16$
+  (paper's Table 1: 0.35 per step, $\sigma_S\approx5.6$). Both examples and the FJ results data
+  were re-run. Moved numbers: FJ both-groups excess kurtosis 45.3 → 38.8, lag-1 autocorrelation of
+  $g$ 0.27 → 0.31, of $|g|$ 0.67 → 0.65 (deck table, lecture alt text); panel B 900 trend
+  followers ~100 → ~93, 1,200–1,500 range 27–60 → 26–55. Lecture-quoted −0.024 and 0.91 hold.
+  New lecture sentence: the noise contributes $\sigma_S^2/\Delta t$ to $\langle g^2\rangle$, the
+  growth-rate variance of GBM with volatility $\sigma_S$ (for a later GBM comparison).
+- **Late additions, same day:** the coin-flip bullet now derives the baseline from a Bernoulli
+  trial ($a_{i,t}=2X_{i,t}-1$, variance 1; attendance variance $N$), mirrored in the deck's
+  "Volatility per Agent" frame. The volatility-per-agent definition no longer claims to show the
+  $\alpha$ dependence in its display; it says simulations show the dependence on $N,m$ only through
+  $\alpha$ (fixed $J$), and the crowding bullet explains the herding. The attendance mean square is
+  renamed $\sigma_A^2$ (instructor: two $\sigma$s were confusing next to $\sigma_S$), with
+  underbraces "agents" / "price noise" on $g_{t+1}$ and $\langle g^2\rangle$ and "attendance /
+  cross / noise term" on $g_{t+1}^2$. Lecture, MG example (re-run, numbers identical), deck, MG
+  results figure, and FAQ updated.

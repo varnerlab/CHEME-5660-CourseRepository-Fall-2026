@@ -3,12 +3,15 @@
 %
 % November 5, 2026: new deck, built from the L11b template. The frame order mirrors the
 % lecture notebook. Notation follows the lecture: agents N, memory m, histories P = 2^m,
-% histories per agent \alpha = P/N, strategies S, history \mu(t), actions a_{is}^{\mu} and
-% a_i(t), attendance A(t), scores U_{is}(t), volatility per agent \sigma^2/N, choice
-% probability \pi_s, entropy \mathcal{H}, multipliers \phi_0 and \phi_1, temperature
-% T = 1/\phi_1, partition function \mathcal{Z}; Farmer–Joshi log price p_t, log value v_t,
+% histories per agent \alpha = P/N, policies \pi_{ij} (J per agent, index j), history \mu_t,
+% actions \pi_{ij}(\mu) and a_{i,t}, attendance A_t, scores U_{ij,t}, volatility per agent
+% \sigma_A^2/N, choice probability p_j (p_{ij}), entropy \mathcal{H}, multipliers \phi_0 and \phi_1,
+% temperature T = 1/\phi_1, partition function \mathcal{Z}; minority-game price S_t (instructor's
+% extension, November 6, 2026) and growth rate g_{t+1} = (1/\Delta t) ln(S_{t+1}/S_t) in both models
+% (rounds t = 0,...,R-1, S_0 = 1; November 6 notation change); Farmer–Joshi price S_t and log price \ln S_t, log value v_t,
 % offset v^{(i)}, position x_t^{(i)}, size c_i = a(\chi^in - \chi^out), lag \theta_i, order
-% \omega, liquidity \lambda, noise \xi with standard deviation \sigma_\xi (0.05, our variant).
+% \omega, liquidity \lambda, price noise \sigma_S\sqrt{\Delta t} Z_{t+1} with annualized volatility \sigma_S (0.8, our variant), Z ~ N(0,1);
+% log value step \sigma_v\sqrt{\Delta t} Z'_{t+1} (November 6 noise-notation change).
 % Figures are the executed outputs of the two examples (random seed 5660), in ../figs.
 % The disclaimer is slide 2, by instructor preference.
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -70,7 +73,7 @@
     \item Five parts: agents, information, a decision rule, an aggregate, and
       feedback from the aggregate to the next decisions.
     \item Maximum entropy for a fixed expected score gives
-      $\pi_{s}=\exp(U_{s}/T)/\Zc$: greedy as $T\to 0$, uniform as $T\to\infty$.
+      $p_{j}=\exp(U_{j}/T)/\Zc$: greedy as $T\to 0$, uniform as $T\to\infty$.
     \item The minority game's volatility per agent depends on $\alpha$ and $T$;
       Farmer–Joshi value investors and trend followers together produce fat tails
       and volatility clustering.
@@ -81,6 +84,7 @@
   \begin{itemize}\setlength{\itemsep}{0.3em}
     \item The critical value $\alpha_{c}\approx 0.3374$ (cited, not derived) and
       $-d\Hc/d\bar{U}=1/T$.
+    \item The minority-game price, an extension of the original model.
     \item The Farmer–Joshi threshold rules and our parameter values.
   \end{itemize}
 \end{frame}
@@ -110,9 +114,9 @@
       disappeared from individual names.''
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Connection:}} dip buyers act like value investors. What happens to
-  price moves when they step back?
-  \slidenote{Source:}{\href{https://www.cnbc.com/2026/11/05/stock-market-selloff-ai-fears.html}{\dimmed{CNBC}}; \href{https://www.cnbc.com/2026/11/05/retail-traders-dump-the-most-stocks-in-single-day-since-covid-sell-off.html}{\dimmed{CNBC, Vanda Research data}}}
+  \textbf{\ink{Connection:}} the day's move was the sum of individual buy, sell,
+  or wait decisions. On 2008: ``the fault lies not in the stars, but in us.''
+  \slidenote{Source:}{\href{https://www.cnbc.com/2026/11/05/stock-market-selloff-ai-fears.html}{\dimmed{CNBC}}; \href{https://www.cnbc.com/2026/11/05/retail-traders-dump-the-most-stocks-in-single-day-since-covid-sell-off.html}{\dimmed{CNBC, Vanda Research data}}; \href{https://www.govinfo.gov/content/pkg/GPO-FCIC/pdf/GPO-FCIC.pdf}{\dimmed{FCIC report}}}
 \end{frame}
 
 % ========== The structure of an agent-based model
@@ -132,11 +136,11 @@
       \toprule
       Part & Minority game & Farmer–Joshi market \\
       \midrule
-      Agents & $N$ agents, $S$ fixed strategies each & Value investors, trend followers \\
-      Information & History $\mu(t)$ of the last $m$ outcomes & Mispricing or price change over a lag \\
-      Decision rule & Choose a strategy by its score & Enter or exit at a threshold \\
-      Aggregate & Attendance $A(t)$ & Net order, then the price \\
-      Feedback & $A(t)$ updates scores and history & New price changes every signal \\
+      Agents & $N$ agents, $J$ fixed policies each & Value investors, trend followers \\
+      Information & History $\mu_{t}$ of the last $m$ outcomes & Mispricing or price change over a lag \\
+      Decision rule & Choose a policy by its score & Enter or exit at a threshold \\
+      Aggregate & Attendance $A_{t}$ & Net order, then the price \\
+      Feedback & $A_{t}$ updates scores and history & New price changes every signal \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -145,58 +149,66 @@
 % ========== The minority game
 \begin{frame}{The Minority Game}
   Each round, $N$ (odd) agents buy ($+1$) or sell ($-1$); the minority side,
-  $-\text{sign}\,A(t)$, wins. Agent $i$ plays the action $a_{i}(t)$ of one of its
-  $S$ strategies, tables $a_{is}^{\mu}$ over the $P=2^{m}$ histories $\mu$:
+  $-\text{sign}\,A_{t}$, wins. Agent $i$ takes the action $a_{i,t}=\pi_{ij}(\mu_{t})$ of
+  one of its $J$ policies, tables $\pi_{ij}(\mu)$ over the $P=2^{m}$ histories $\mu$:
   \begin{equation*}
-    A(t)=\sum_{i=1}^{N}a_{i}(t)
+    A_{t}=\sum_{i=1}^{N}a_{i,t}
     \qquad\qquad
-    U_{is}(t+1)=U_{is}(t)-\frac{a_{is}^{\mu(t)}A(t)}{P}
+    U_{ij,t+1}=U_{ij,t}-\frac{\pi_{ij}(\mu_{t})A_{t}}{P}
   \end{equation*}
-  where $A(t)$ is the attendance and $U_{is}(t)$ the score of strategy $s$ of
-  agent $i$. A strategy that would have put its agent in the minority gains score.
+  where the attendance $A_{t}$ is the number of buyers minus sellers and $U_{ij,t}$
+  is the score of policy $\pi_{ij}$. A policy that would have put its agent in the
+  minority gains score.
   \slidenote{Source:}{\href{https://arxiv.org/pdf/adap-org/9708006}{\dimmed{Challet and Zhang (1997)}}; scores divided by $P$ as in \href{https://arxiv.org/pdf/cond-mat/9904392}{\dimmed{Challet, Marsili, and Zecchina (2000)}}}
 \end{frame}
 
 \begin{frame}{Volatility per Agent}
-  We measure how far the attendance moves from an even split, compared with $N$
-  agents who flip fair coins (variance $N$):
+  Each coin flip is a Bernoulli trial: $X_{i,t}=1$ (buy) with probability
+  $1/2$, and its action $a_{i,t}=2X_{i,t}-1$ has mean 0 and variance 1. The attendance
+  of $N$ independent flips has variance $N$, the baseline for the volatility per agent:
   \begin{equation*}
-    \frac{\sigma^{2}}{N}=\frac{\langle A^{2}\rangle}{N}
+    \frac{\sigma_{A}^{2}}{N}=\frac{\langle A^{2}\rangle}{N}
     \qquad\qquad
     \alpha=\frac{P}{N}
   \end{equation*}
   where $\langle\cdot\rangle$ averages over rounds and $\alpha$ is the number of
-  histories per agent. $\sigma^{2}/N>1$: more agents on the same side than with coin
-  flips; $\sigma^{2}/N<1$: a more even split. When $\alpha$ is small, many agents
+  histories per agent. $\sigma_{A}^{2}/N>1$: more agents on the same side than with coin
+  flips; $\sigma_{A}^{2}/N<1$: a more even split. When $\alpha$ is small, many agents
   switch to the same action at the same time.
 \end{frame}
 
 \begin{frame}{One Round of the Minority Game}
   The history goes to every agent; the actions add up to the attendance, which
-  feeds back into the history and every strategy's score:
+  feeds back into the history and every policy's score:
   \begin{center}
-    \includegraphics[height=0.67\textheight,trim=0 0 296bp 0,clip]{../figs/Fig-L12a-MinorityGame.pdf}
+    \includegraphics[height=0.67\textheight]{../figs/Fig-L12a-MinorityGame.pdf}
   \end{center}
 \end{frame}
 
-\begin{frame}{One Agent's Strategies}
-  Each strategy is a table with one action per history. The scores set the
-  choice, and the round updates the scores:
-  \begin{center}
-    \includegraphics[height=0.67\textheight,trim=340bp 0 0 0,clip]{../figs/Fig-L12a-MinorityGame.pdf}
-  \end{center}
+\begin{frame}{Adding a Price: Instructor's Extension}
+  The original game has no price. A market maker treats the attendance as the
+  excess demand and moves the log price, as in the Farmer–Joshi market:
+  \begin{equation*}
+    \ln S_{t+1}=\ln S_{t}+\frac{A_{t}}{\lambda}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
+  \end{equation*}
+  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise, and
+  $\sigma_{S}$ is its annualized volatility. If one round lasts $\Delta t$ years,
+  the growth rate is $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$, with mean square
+  about $\sigma_{A}^{2}/(\lambda^{2}\Delta t^{2})+\sigma_{S}^{2}/\Delta t$. At fixed $N$, $\lambda$,
+  and $\sigma_{S}$, a crowded game moves the price more.
+  \slidenote{Related:}{\href{https://arxiv.org/abs/cond-mat/0011042}{\dimmed{Challet, Chessa, Marsili, and Zhang (2000)}}, with the opposite sign and no noise}
 \end{frame}
 
 % ========== Maximum entropy
-\begin{frame}{Choosing a Strategy: Maximum Entropy}
-  An agent chooses strategy $s$ with probability $\pi_{s}$. The \hilite{entropy}
-  $\Hc(\pi)$ measures how spread out the choice is: zero for a certain choice,
-  $\ln S$ for a uniform one. For a fixed expected score $\bar{U}$, we choose the
-  $\pi_{s}$ that commit to the least:
+\begin{frame}{Choosing a Policy: Maximum Entropy}
+  An agent chooses policy $\pi_{j}$ with probability $p_{j}$. The \hilite{entropy}
+  $\Hc(p)$ measures how spread out the choice is: zero for a certain choice,
+  $\ln J$ for a uniform one. For a fixed expected score $\bar{U}$, we choose the
+  $p_{j}$ that commit to the least:
   \begin{equation*}
-    \max_{\pi}\;\Hc(\pi)=-\sum_{s=1}^{S}\pi_{s}\ln\pi_{s}
+    \max_{p}\;\Hc(p)=-\sum_{j=1}^{J}p_{j}\ln p_{j}
     \quad\text{subject to}\quad
-    \sum_{s=1}^{S}\pi_{s}=1,\qquad \sum_{s=1}^{S}\pi_{s}U_{s}=\bar{U}
+    \sum_{j=1}^{J}p_{j}=1,\qquad \sum_{j=1}^{J}p_{j}U_{j}=\bar{U}
   \end{equation*}
   with $\bar{U}$ strictly between the average and the largest score.
   \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/9903415}{\dimmed{Cavagna, Garrahan, Giardina, and Sherrington (1999)}}}
@@ -204,28 +216,28 @@
 
 \begin{frame}{The Boltzmann Rule}
   With \hilite{Lagrange multipliers} $\phi_{0}$ (normalization) and $\phi_{1}$
-  (expected score), setting $\partial\Lc/\partial\pi_{s}=0$ gives:
+  (expected score), setting $\partial\Lc/\partial p_{j}=0$ gives:
   \begin{equation*}
-    -\ln\pi_{s}-1-\phi_{0}+\phi_{1}U_{s}=0
+    -\ln p_{j}-1-\phi_{0}+\phi_{1}U_{j}=0
     \quad\Longrightarrow\quad
-    \boxed{\pi_{s}=\frac{1}{\Zc}\exp\left(\frac{U_{s}}{T}\right)},
+    \boxed{p_{j}=\frac{1}{\Zc}\exp\left(\frac{U_{j}}{T}\right)},
     \qquad
-    \Zc=\sum_{k=1}^{S}\exp\left(\frac{U_{k}}{T}\right)
+    \Zc=\sum_{k=1}^{J}\exp\left(\frac{U_{k}}{T}\right)
   \end{equation*}
   where $T=1/\phi_{1}$ is the \hilite{temperature}, in the units of the scores, and
   the normalizing sum $\Zc$ is the \hilite{partition function}. The second
-  derivative, $-1/\pi_{s}$, is negative, so this is a maximum.
+  derivative, $-1/p_{j}$, is negative, so this is a maximum.
 \end{frame}
 
 \begin{frame}{What the Temperature Does}
   The temperature sets how much the choice depends on the scores:
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{$T\to 0$}: the best strategy has probability 1, the greedy
-      minority game; with one best strategy, the entropy goes to zero.
-    \item \hilite{$T\to\infty$}: every strategy has probability $1/S$; the entropy
-      is $\ln S$.
-    \item \hilite{In between}: with two scores $\Delta$ apart, the better strategy is
-      played with probability $e^{\Delta/T}/(e^{\Delta/T}+1)$, about 0.73 at $T=\Delta$.
+    \item \hilite{$T\to 0$}: the best policy has probability 1, the greedy
+      minority game; with one best policy, the entropy goes to zero.
+    \item \hilite{$T\to\infty$}: every policy has probability $1/J$; the entropy
+      is $\ln J$.
+    \item \hilite{In between}: with two scores $\Delta$ apart, the better policy is
+      used with probability $e^{\Delta/T}/(e^{\Delta/T}+1)$, about 0.73 at $T=\Delta$.
   \end{itemize}
   \vspace{0.3em}
   \textbf{\ink{Physics:}} $-d\Hc/d\bar{U}=\phi_{1}=1/T$, the way thermodynamics
@@ -234,17 +246,18 @@
 
 \begin{frame}{The Thermal Minority Game Algorithm}
   \small
-  \textbf{\ink{Initialize:}} $N$ (odd), $m$, $S$, $T$, rounds $R$; $P=2^{m}$; random tables
-  $a_{is}^{\mu}$; scores $U_{is}(1)\gets 0$; random history $\mu(1)$. For each round
-  $t=1,\dots,R$ \textbf{do}:
+  \textbf{\ink{Initialize:}} $N$ (odd), $m$, $J$, $T$, rounds $R$, $\lambda$, $\sigma_{S}$, $\Delta t$; $P=2^{m}$;
+  random tables $\pi_{ij}(\mu)$; scores $U_{ij,0}\gets 0$; random $\mu_{0}$; $S_{0}\gets 1$. For each round
+  $t=0,\dots,R-1$ \textbf{do}:
   \begin{enumerate}\setlength{\itemsep}{0.15em}
-    \item \hilite{Choose}: draw $s_{i}(t)$ with $\pi_{is}(t)=\exp(U_{is}(t)/T)/\Zc_{i}(t)$.
-    \item \hilite{Act}: $a_{i}(t)\gets a_{i\,s_{i}(t)}^{\mu(t)}$.
-    \item \hilite{Aggregate}: $A(t)\gets\sum_{i}a_{i}(t)$; the minority action is $-\text{sign}\,A(t)$.
-    \item \hilite{Score}: $U_{is}(t+1)\gets U_{is}(t)-a_{is}^{\mu(t)}A(t)/P$ for every $i$ and $s$.
-    \item \hilite{History}: drop the oldest action in $\mu(t)$, append $-\text{sign}\,A(t)$.
+    \item \hilite{Choose}: draw $j_{i,t}$ with $p_{ij,t}=\exp(U_{ij,t}/T)/\Zc_{i,t}$.
+    \item \hilite{Act}: $a_{i,t}\gets\pi_{i\,j_{i,t}}(\mu_{t})$.
+    \item \hilite{Aggregate}: $A_{t}\gets\sum_{i}a_{i,t}$; the minority action is $-\text{sign}\,A_{t}$.
+    \item \hilite{Score}: $U_{ij,t+1}\gets U_{ij,t}-\pi_{ij}(\mu_{t})A_{t}/P$ for every $i$ and $j$.
+    \item \hilite{History}: drop the oldest action in $\mu_{t}$, append $-\text{sign}\,A_{t}$.
+    \item \hilite{Price} (extension): draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+A_{t}/\lambda+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
   \end{enumerate}
-  \textbf{\ink{Output:}} $A(1),\dots,A(R)$ and $\sigma^{2}/N=\langle A^{2}\rangle/N$ after a burn-in.
+  \textbf{\ink{Output:}} $A_{0},\dots,A_{R-1}$, $S_{0},\dots,S_{R}$, and $\sigma_{A}^{2}/N=\langle A^{2}\rangle/N$ after a burn-in.
 \end{frame}
 
 % ========== What the minority game shows
@@ -271,10 +284,10 @@
   $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
   price in proportion to the net order:
   \begin{equation*}
-    p_{t+1}=p_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\xi_{t+1}
+    \ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
   \end{equation*}
-  where $\lambda$ is the liquidity and $\xi_{t+1}$ is Normal noise with standard
-  deviation $\sigma_{\xi}$. The log return is $r_{t+1}=p_{t+1}-p_{t}$.
+  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise, and
+  $\sigma_{S}$ is its annualized volatility. As in the minority game, the growth rate is $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$.
   \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
 \end{frame}
 
@@ -282,9 +295,9 @@
   Each trader enters at a signal beyond $\pm\cin$ and exits back across
   $\pm\cout$, with position size $c_{i}=a(\cin-\cout)$:
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Value investors}: signal $p_{t}-(v_{t}+v^{(i)})$; sell when
+    \item \hilite{Value investors}: signal $\ln S_{t}-(v_{t}+v^{(i)})$; sell when
       overpriced, buy when underpriced.
-    \item \hilite{Trend followers}: signal $p_{t}-p_{t-\theta_{i}}$; buy after a
+    \item \hilite{Trend followers}: signal $\ln S_{t}-\ln S_{t-\theta_{i}}$; buy after a
       rise, sell after a fall.
   \end{itemize}
 \end{frame}
@@ -308,17 +321,17 @@
 \begin{frame}{The Farmer–Joshi Algorithm}
   \small
   \textbf{\ink{Initialize:}} thresholds $\cin>\cout$, offsets $v^{(i)}$, lags $\theta_{i}$, $a$,
-  $\lambda$, $\sigma_{\xi}$, $\sigma_{\eta}$, steps $R$; $c_{i}\gets a(\cin-\cout)$;
+  $\lambda$, $\sigma_{S}$, $\sigma_{v}$, $\Delta t$, steps $R$; $c_{i}\gets a(\cin-\cout)$;
   $x^{(i)}_{0}\gets 0$. For each step $t=0,\dots,R-1$ \textbf{do}:
   \begin{enumerate}\setlength{\itemsep}{0.15em}
-    \item \hilite{Signals}: $\zeta^{(i)}_{t}\gets p_{t}-(v_{t}+v^{(i)})$ (value) or
-      $p_{t}-p_{t-\theta_{i}}$ (trend, once $t\geq\theta_{i}$).
+    \item \hilite{Signals}: $\zeta^{(i)}_{t}\gets\ln S_{t}-(v_{t}+v^{(i)})$ (value) or
+      $\ln S_{t}-\ln S_{t-\theta_{i}}$ (trend, once $t\geq\theta_{i}$).
     \item \hilite{Positions}: the threshold rule sets $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$.
     \item \hilite{Orders}: $\omega^{(i)}_{t+1}\gets x^{(i)}_{t+1}-x^{(i)}_{t}$.
-    \item \hilite{Price}: $p_{t+1}\gets p_{t}+\frac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\xi_{t+1}$.
-    \item \hilite{Value}: $v_{t+1}\gets v_{t}+\eta_{t+1}$.
+    \item \hilite{Price}: draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
+    \item \hilite{Value}: draw $Z'_{t+1}\sim\mathcal{N}(0,1)$; $v_{t+1}\gets v_{t}+\sigma_{v}\sqrt{\Delta t}\,Z'_{t+1}$.
   \end{enumerate}
-  \textbf{\ink{Output:}} log prices, log values, log returns $r_{t+1}=p_{t+1}-p_{t}$, volume.
+  \textbf{\ink{Output:}} log prices, log values, growth rates $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$, volume.
 \end{frame}
 
 \begin{frame}{Stylized Facts: Simulated and Real}
@@ -329,11 +342,11 @@
       \toprule
       Statistic & Simulated & \texttt{SPY} \\
       \midrule
-      Excess kurtosis & 45.3 & 13.8 \\
-      Autocorrelation of $r$, lag 1 & 0.27 & $-0.11$ \\
-      Autocorrelation of $\lvert r\rvert$, lag 1 & 0.67 & 0.36 \\
-      Autocorrelation of $\lvert r\rvert$, lag 5 & 0.03 & 0.33 \\
-      Autocorrelation of volume, lag 1 & 0.56 & 0.75 \\
+      Excess kurtosis & 38.8 & 13.8 \\
+      Autocorrelation of $g$, lag 1 & 0.31 & $-0.11$ \\
+      Autocorrelation of $\lvert g\rvert$, lag 1 & 0.65 & 0.36 \\
+      Autocorrelation of $\lvert g\rvert$, lag 5 & 0.02 & 0.33 \\
+      Autocorrelation of volume, lag 1 & 0.55 & 0.75 \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -343,11 +356,23 @@
 
 \begin{frame}{Clustering and the Mix of Traders}
   The model's clustering fades within a few steps (A). Fat tails and a positive
-  return autocorrelation appear only with enough trend followers (B, C); every mix
+  growth-rate autocorrelation appear only with enough trend followers (B, C); every mix
   misses \texttt{SPY} by a wide margin on at least one statistic:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L12a-FarmerJoshi-Results.pdf}
   \end{center}
+\end{frame}
+
+% ========== Optional advanced material (November 6, 2026)
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Biased policies:}} \dimmed{advanced/biased\_policies/}\par
+  \href{\repo/advanced/biased_policies/CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Derivation-BiasedPolicies-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  What if the policies lean toward buying? We derive how much of the bias agents
+  who follow their scores can remove, and show that above a threshold the market
+  locks into a steady trend. A derivation with no code.
 \end{frame}
 
 \begin{frame}{Summary}
@@ -360,10 +385,10 @@
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Agent-based models}: agents, information, a decision rule, an
       aggregate, and feedback.
-    \item \hilite{Maximum entropy}: gives $\pi_{s}\propto\exp(U_{s}/T)$; the
+    \item \hilite{Maximum entropy}: gives $p_{j}\propto\exp(U_{j}/T)$; the
       multiplier on the expected score is $1/T$.
     \item \hilite{Micro to macro}: the minority game's volatility depends on
-      $\alpha$ and $T$; Farmer–Joshi traders produce fat tails and clustering, but
+      $\alpha$ and $T$, and a crowded game moves the price more; Farmer–Joshi traders produce fat tails and clustering, but
       not every stylized fact at once.
   \end{itemize}
 \end{frame}
