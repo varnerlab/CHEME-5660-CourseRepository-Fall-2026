@@ -12,3 +12,19 @@ is outside this reset. Keep unrelated technical and release requirements.
 
 The guide records the decisions and reference notebooks for both CHEME 5660 and
 CHEME 5800. Read it rather than asking the instructor to repeat the discussion.
+
+## Prose density (hard rule, all courses)
+
+The instructor has asked for this many times. When writing or editing text in
+lecture or example notebooks:
+
+- Paragraphs: at most 3 sentences or about 60 words. Longer means split it.
+- One idea per sentence. No chains joined by "so", "and with it", "therefore",
+  or semicolons.
+- To shorten, reorganize: a lead sentence, then short paragraphs or bullets
+  with full sentences. Never compress several points into one sentence, and
+  avoid fragment-only bullets.
+- Plain, direct English. Cut restatements and qualifiers that add no
+  information.
+- Before showing any new prose, check every paragraph against these limits and
+  fix it.
