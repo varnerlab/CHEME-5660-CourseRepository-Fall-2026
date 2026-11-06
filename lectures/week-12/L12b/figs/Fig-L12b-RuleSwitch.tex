@@ -1,0 +1,76 @@
+% L12b rule-switch figure. A trader whose four neighbors show Buy, Buy, Buy,
+% Hold has neighbor sum c = 0+0+0+1 = 1. Rule 19280 = (222110002)_3 returns
+% Buy at c = 1 and Rule 19286 = (222110022)_3 returns Sell; the two lookup
+% tables agree at every other c. Palette (Buy blue, Hold gray, Sell orange,
+% highlight yellow) is the paper's, from Fig1-ModelArchitecture.tex.
+%
+% Geometry: neighbor cells sit at +-ZS from the center (ZS = the cell size,
+% so they touch). Both tables use one column pitch LS, so the highlighted
+% c = 1 column is a single rectangle through both rows. Arrows are drawn
+% between named node anchors, so tips land on their targets.
+%
+% The notebook SVG carries a dark palette added by theme_svg.py; keep new
+% colors in that script's mapping when changing the palette here.
+\documentclass[tikz,border=3pt]{standalone}
+\usepackage{vnfigure}
+
+\definecolor{buyblue}{HTML}{0072B2}
+\definecolor{holdgray}{HTML}{AAAAAA}
+\definecolor{sellorange}{HTML}{D55E00}
+\definecolor{hlyellow}{HTML}{F0E442}
+
+\begin{document}
+\begin{tikzpicture}[
+  x=1cm,y=1cm,
+  every node/.style={font=\sffamily\small},
+  panelletter/.style={font=\sffamily\large\bfseries, anchor=base west, text=vnink},
+  note/.style={font=\sffamily\footnotesize, text=vnink},
+  zcell/.style={minimum size=8.4mm, draw=white, line width=0.55pt, inner sep=0pt},
+  outcell/.style={minimum width=14mm, minimum height=8.4mm, draw=white,
+                  line width=0.55pt, inner sep=0pt},
+  lcell/.style={minimum width=6.0mm, minimum height=6.4mm, draw=white,
+                line width=0.45pt, inner sep=0pt, font=\sffamily\footnotesize},
+  flow/.style={-{Stealth[length=2.6mm,width=2.2mm]}, draw=vnink, line width=0.8pt},
+  hl/.style={draw=vnink, line width=0.9pt, dash pattern=on 2pt off 1.4pt},
+]
+% ---- A. neighborhood and the two outcomes ------------------------------
+\node[panelletter] at (0,6.55) {A};
+\def\zx{1.7}\def\zy{5.0}\def\zs{0.84}
+\node[zcell, fill=buyblue,   text=white]      (zN) at (\zx,\zy+\zs) {0};
+\node[zcell, fill=buyblue,   text=white]      (zW) at (\zx-\zs,\zy) {0};
+\node[zcell, fill=hlyellow,  text=black!75, draw=vnink, line width=0.85pt] (zC) at (\zx,\zy) {?};
+\node[zcell, fill=buyblue,   text=white]      (zE) at (\zx+\zs,\zy) {0};
+\node[zcell, fill=holdgray,  text=black!75]   (zS) at (\zx,\zy-\zs) {1};
+
+% neighbor sum, then one arrow to each rule's outcome
+\node[note, anchor=west] (sum) at (3.55,5.0) {$c=0+0+0+1=1$};
+\node[outcell, fill=buyblue,    text=white] (oB) at (7.35,5.95) {Buy};
+\node[outcell, fill=sellorange, text=white] (oS) at (7.35,4.05) {Sell};
+\draw[flow] (sum.north east) -- (oB.west);
+\draw[flow] (sum.south east) -- (oS.west);
+\node[note, anchor=west] at (8.25,5.95) {Rule 19280};
+\node[note, anchor=west] at (8.25,4.05) {Rule 19286};
+
+% ---- B. the two lookup tables ----------------------------------------
+\node[panelletter] at (0,3.05) {B};
+\def\lx{3.2}\def\ls{0.62}\def\ya{2.05}\def\yb{1.35}
+\node[note, anchor=east] at (\lx-0.55,2.75) {$c$};
+\foreach \c in {0,...,8} {\node[note] at (\lx+\c*\ls,2.75) {\c};}
+\node[note, anchor=east, align=right] at (\lx-0.55,\ya) {Rule 19280\\[-1pt]\scriptsize $(222110002)_3$};
+\node[note, anchor=east, align=right] at (\lx-0.55,\yb) {Rule 19286\\[-1pt]\scriptsize $(222110022)_3$};
+
+% Rule 19280 = [2,0,0,0,1,1,2,2,2]; Rule 19286 = [2,2,0,0,1,1,2,2,2]
+\foreach \v [count=\c from 0] in {2,0,0,0,1,1,2,2,2} {
+  \ifnum\v=0 \node[lcell, fill=buyblue,    text=white]    at (\lx+\c*\ls,\ya) {0};\fi
+  \ifnum\v=1 \node[lcell, fill=holdgray,   text=black!75] at (\lx+\c*\ls,\ya) {1};\fi
+  \ifnum\v=2 \node[lcell, fill=sellorange, text=white]    at (\lx+\c*\ls,\ya) {2};\fi
+}
+\foreach \v [count=\c from 0] in {2,2,0,0,1,1,2,2,2} {
+  \ifnum\v=0 \node[lcell, fill=buyblue,    text=white]    at (\lx+\c*\ls,\yb) {0};\fi
+  \ifnum\v=1 \node[lcell, fill=holdgray,   text=black!75] at (\lx+\c*\ls,\yb) {1};\fi
+  \ifnum\v=2 \node[lcell, fill=sellorange, text=white]    at (\lx+\c*\ls,\yb) {2};\fi
+}
+% the only difference: column c = 1, spanning both rows (cells are 6.4 mm tall)
+\draw[hl] (\lx+0.5*\ls,\yb-0.32-0.04) rectangle (\lx+1.5*\ls,\ya+0.32+0.04);
+\end{tikzpicture}
+\end{document}
