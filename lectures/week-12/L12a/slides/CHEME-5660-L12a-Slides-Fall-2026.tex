@@ -249,8 +249,8 @@
 
 % ========== What the minority game shows
 \begin{frame}{The Phase Diagram}
-  Volatility per agent against $\alpha$ at $T=0$ ($m=6$, $S=2$, three games per
-  $N$). The minimum, 0.14 at $\alpha\approx 0.35$, is close to $\alpha_{c}\approx 0.3374$:
+  Volatility per agent against $\alpha$ in the greedy game ($T=0$). The minimum,
+  0.14 at $\alpha\approx 0.35$, is close to $\alpha_{c}\approx 0.3374$:
   \begin{center}
     \includegraphics[height=0.62\textheight,trim=0 0 208bp 0,clip]{../figs/Fig-L12a-MinorityGame-Results.pdf}
   \end{center}
@@ -287,10 +287,6 @@
     \item \hilite{Trend followers}: signal $p_{t}-p_{t-\theta_{i}}$; buy after a
       rise, sell after a fall.
   \end{itemize}
-  \vspace{0.3em}
-  \textbf{\ink{Our variant:}} Table 1 traders, 1,200 of each, with
-  $\sigma_{\xi}=0.05$ (Table 1 lists 0.35, which lets the price drift far from
-  the value) and a random-walk log value $v_{t}$.
 \end{frame}
 
 \begin{frame}{One Step of the Market}
@@ -326,7 +322,7 @@
 \end{frame}
 
 \begin{frame}{Stylized Facts: Simulated and Real}
-  Both groups together, against \texttt{SPY} daily growth rates, 2014–2024
+  Both groups together, against \texttt{SPY} daily growth rates
   (kurtosis and autocorrelations do not depend on units):
   \begin{center}\small
     \begin{tabular}{lrr}
