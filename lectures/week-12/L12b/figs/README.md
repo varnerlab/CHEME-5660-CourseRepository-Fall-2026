@@ -18,6 +18,15 @@ color fails the build on purpose. `Fig-Crashes-Schematic-2024` is the older
 crash figure, kept but no longer used; the other older files are not built by
 the Makefile either.
 
+## Wolfram market loop
+
+`Fig-L12b-WolframMarket` (November 2026) shows one step of the model as a loop,
+in the same style as the rule-switch figure. The grid's net trade goes to the
+dealer, the dealer's price moves technical trader j's band, and the band sets
+the edge intentions. A teal ring marks the edge (technical traders). It is a
+schematic only; simulation results stay in the examples. The teal fill and the
+band outline have dark mappings in `theme_svg.py`.
+
 ## Crash timeline
 
 `Fig-L12b-CrashTimeline` (November 2026) remakes `Fig-Crashes-Schematic-2024` in the reference

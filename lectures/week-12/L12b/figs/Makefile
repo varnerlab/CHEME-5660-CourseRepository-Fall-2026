@@ -1,7 +1,7 @@
-# Build the L12b figures (rule switch, crash timeline) with pdflatex to PDF (deck) and SVG (notebook).
+# Build the L12b figures (rule switch, market loop, crash timeline) with pdflatex to PDF (deck) and SVG (notebook).
 # The deck PNG is rendered from the light PDF.
 
-FIGURES := Fig-L12b-RuleSwitch Fig-L12b-CrashTimeline
+FIGURES := Fig-L12b-RuleSwitch Fig-L12b-WolframMarket Fig-L12b-CrashTimeline
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))

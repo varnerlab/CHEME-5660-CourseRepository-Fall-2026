@@ -5,6 +5,9 @@
 % both feedback paths: the minority action into the history, the attendance into every score.
 %
 % November 6: notation changed to subscripts (mu_t, a_{i,t}, A_t), rounds numbered from t = 0.
+% November 7: each agent box also shows the policy lookup a_{i,t} = pi_{ij}(mu_t), so p (choice
+% probability) and pi (policy) both appear (the instructor found p alone confusing). The three
+% action arrows now drop to one collecting line instead of converging on a single point.
 %
 % Consistency check (by hand): the drawn actions -1, +1, -1 sum to -1 < 0, so the minority
 % action is +1, which is appended to the history.
@@ -26,10 +29,10 @@
   % the same history goes to every agent
   \node[circle, draw=vnink, fill=white, line width=0.8pt, inner sep=0pt, minimum size=0.22cm] (bc) at (4.45, 8.05) {};
   \draw[flow] (h2.south) -- (bc.north);
-  \node[agent] (a1) at (1.3, 6.65) {agent 1\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{1j,t}$}};
-  \node[agent] (a2) at (3.6, 6.65) {agent 2\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{2j,t}$}};
+  \node[agent] (a1) at (1.3, 6.65) {agent 1\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{1j,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{1,t}=\pi_{1j}(\mu_{t})$}};
+  \node[agent] (a2) at (3.6, 6.65) {agent 2\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{2j,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{2,t}=\pi_{2j}(\mu_{t})$}};
   \node[text=gdgray, font=\sffamily\large] at (5.25, 6.65) {$\cdots$};
-  \node[agent] (aN) at (6.9, 6.65) {agent $N$\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{Nj,t}$}};
+  \node[agent] (aN) at (6.9, 6.65) {agent $N$\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{Nj,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{N,t}=\pi_{Nj}(\mu_{t})$}};
   \foreach \a in {a1, a2, aN} {\draw[flow] (bc) -- (\a.north);}
 
   % the actions
@@ -43,14 +46,18 @@
 
   % the attendance and the minority side
   \node[sumbox] (sum) at (4.1, 2.85) {$A_{t}=\sum_{i}a_{i,t}<0$};
-  \foreach \x in {x1, x2, xN} {\draw[flow] (\x.south) -- (sum.north);}
+  % the actions drop to one collecting line, which leads into the attendance box
+  \foreach \x in {x1, x2, xN} {\draw[draw=vnink, line width=0.9pt] (\x.south) |- (4.1, 3.6);}
+  \draw[flow] (4.1, 3.6) -- (sum.north);
   \node[minority] (min) at (4.1, 1.55) {$+1$};
   \draw[flow] (sum.south) -- (min.north);
   \node[anchor=east] at ($(min.west)+(-0.1,0)$) {minority};
 
   % feedback: the minority action joins the history; the attendance updates every score
-  \draw[feedback] (min.east) -- (8.1, 1.55) -- (8.1, 9.3) -- (next.east);
-  \node[anchor=west, text=saorange, font=\sffamily\footnotesize, align=left] at (8.2, 5.4) {append to\\the history};
+  % the orange return line sits as far right of agent N as the blue line sits left of agent 1
+  \path let \p1=(a1.west) in coordinate (fbx) at ($(aN.east)+({\x1+0.15cm},0)$);
+  \draw[feedback] (min.east) -- (min.east -| fbx) -- (fbx |- next.east) -- (next.east);
+  \node[anchor=west, text=saorange, font=\sffamily\footnotesize, align=left] at ($(fbx |- 0,5.4)+(0.1,0)$) {append to\\the history};
   \draw[scorefeed] (sum.west) -- (-0.15, 2.85) -- (-0.15, 6.65) -- (a1.west);
   \node[anchor=east, text=gdblue, font=\sffamily\footnotesize, align=right] at (-0.25, 4.75) {update\\every\\policy\\score};
 

@@ -43,6 +43,9 @@ DARK_COLORS = {
     (198, 198, 198): "#5f646a",  # gray!45: card borders
     (231, 242, 243): "#14363a",  # teal!10: highlighted card fill
     (247, 247, 247): "#2c2e31",  # gray!6: card fill
+    # Wolfram market loop (pdflatex, rule-switch palette plus teal edge ring), November 2026:
+    (216, 234, 236): "#173d41",  # tech!16: edge ring of technical traders
+    (201, 201, 201): "#5f646a",  # ink!25: outline of the band box
 }
 TOLERANCE = 2
 

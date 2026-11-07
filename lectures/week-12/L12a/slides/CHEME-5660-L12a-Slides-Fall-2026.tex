@@ -164,7 +164,8 @@
 \begin{frame}{Volatility per Agent}
   Each coin flip is a Bernoulli trial: $X_{i,t}=1$ (buy) with probability
   $1/2$, and its action $a_{i,t}=2X_{i,t}-1$ has mean 0 and variance 1. The attendance
-  of $N$ independent flips has variance $N$, the baseline for the volatility per agent:
+  adds the $N$ agents' independent actions, so it has variance $N$, the baseline for
+  the volatility per agent:
   \begin{equation*}
     \frac{\sigma_{A}^{2}}{N}=\frac{\langle A^{2}\rangle}{N}
     \qquad\qquad
@@ -172,7 +173,8 @@
   \end{equation*}
   where $\langle\cdot\rangle$ averages over rounds and $\alpha$ is the number of
   histories per agent. $\sigma_{A}^{2}/N>1$: more agents on the same side than with coin
-  flips; $\sigma_{A}^{2}/N<1$: a more even split. When $\alpha$ is small, many agents
+  flips; $\sigma_{A}^{2}/N<1$: a more even split. In the greedy game, each agent uses
+  its best-scoring policy. When $\alpha$ is small, the game is crowded: many agents
   switch to the same action at the same time.
 \end{frame}
 
@@ -244,7 +246,7 @@
     \item \hilite{History}: drop the oldest action in $\mu_{t}$, append $-\text{sign}\,A_{t}$.
     \item \hilite{Price} (extension): draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+A_{t}/\lambda+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
   \end{enumerate}
-  \textbf{\ink{Output:}} $A_{0},\dots,A_{R-1}$, $S_{0},\dots,S_{R}$, and $\sigma_{A}^{2}/N=\langle A^{2}\rangle/N$ after a burn-in.
+  \textbf{\ink{Output:}} $A_{0},\dots,A_{R-1}$, $S_{0},\dots,S_{R}$, and $\sigma_{A}^{2}/N=\langle A^{2}\rangle/N$ after a burn-in (the first rounds, discarded).
 \end{frame}
 
 % ========== What the minority game shows
