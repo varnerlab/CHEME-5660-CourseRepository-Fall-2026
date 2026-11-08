@@ -1,17 +1,17 @@
-# End-of-day options archive, April 13 to October 16, 2026
+# End-of-day options archive, April 13 to November 6, 2026
 
-End-of-day option chains for 31 underlyings over 121 trading sessions, captured
+End-of-day option chains for 31 underlyings over 136 trading sessions, captured
 from the [Alpaca Markets](https://alpaca.markets/) options snapshot endpoint by
 the daily DTE-ladder pull in
 [varnerlab/alpaca-markets-sdk](https://github.com/varnerlab/alpaca-markets-sdk).
 Each row is one contract on one session: the closing bid and ask, the last
 trade, Alpaca's implied volatility and Greeks, and the contract terms. The
-archive is frozen through October 16, 2026.
+archive is frozen through November 6, 2026.
 
-The archive is too large to vendor in git (119 MB compressed, 4,784,211 rows), so
+The archive is too large to vendor in git (134 MB compressed, 5,370,475 rows), so
 the package ships it as the lazy artifact `options_eod`, declared in
 `code/Artifacts.toml`. The first call to an archive loader downloads the tarball
-from the GitHub release `data-options-eod-2026-10-16` into the Julia depot. Later
+from the GitHub release `data-options-eod-2026-11-06` into the Julia depot. Later
 calls, and every weekly bundle on the same machine, reuse that copy.
 
 ```julia
@@ -40,10 +40,10 @@ first capture (April 13) used the ladder 4, 8, 12, 16, 24, 32, 40, 44, 64, 76
 days. Strikes span the whole listed chain, from deep in the money to far out
 of the money.
 
-The 121 sessions are 121 of the 131 trading days from April 13 to October 16,
+The 136 sessions are 136 of the 146 trading days from April 13 to November 6,
 2026. There are no captures for April 14, April 29, May 4, May 5, May 7, June 5,
 June 8, June 9, August 3, and August 20. AMGN, AVGO, BMY, GOOG, META, PFE, QCOM,
-and UNH are also missing on April 13 and April 20, so they have 119 sessions.
+and UNH are also missing on April 13 and April 20, so they have 134 sessions.
 The June 5 to June 9 gap was later backfilled from Alpaca's historical endpoints,
 but the backfill has no quotes, IV, or Greeks, so it is not part of this archive.
 
@@ -81,13 +81,13 @@ standard contract). `underlying.csv` has one row per ticker per session: `ticker
 - **Missing IV and Greeks.** Alpaca returns no implied volatility or Greeks for
   44% of rows. They are mostly away from the money. The share missing is 11% for
   strikes within 5% of the share price, about 30% for strikes 5 to 20% away, and
-  65 to 80% beyond that. Quotes are present on every row.
+  73% beyond that. Quotes are present on every row.
 - **Zero bids.** 18% of rows have a zero bid, mostly far out-of-the-money
   contracts with no buyer.
 - **Adjusted contracts.** The archive keeps only standard contracts, which
-  deliver 100 shares. From October 14, the CVX pull also returned adjusted
+  deliver 100 shares. From October 14 to October 20, the CVX pull also returned adjusted
   contracts (root `CVX1`, expiring January 15, 2027) at the same strikes as the
-  standard ones but with a different deliverable. The build drops these 192 rows.
+  standard ones but with a different deliverable. The build drops these 320 rows.
 - **Underlying bars come from the IEX feed.** The open, high, low, and close are
   within 0.02% (median) of the consolidated Polygon closes in
   `MyTestingMarketDataSet(year = 2026)`, with the largest gap below 1%. Volume
@@ -113,7 +113,7 @@ standard contract). `underlying.csv` has one row per ticker per session: `ticker
 alpaca-markets-sdk `data/` folder and an end date:
 
 ```sh
-julia --project=. scripts/build-options-eod-data.jl ../alpaca-markets-sdk/data 2026-10-16
+julia --project=. scripts/build-options-eod-data.jl ../alpaca-markets-sdk/data 2026-11-06
 ```
 
 It reads only the live `options-MM-DD-YY/` folders, keys each capture by its

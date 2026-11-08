@@ -126,7 +126,7 @@ end
     MyOptionsEODUnderlyingDataSet(; ticker, from, to) -> DataFrame
 
 Load the underlying share prices that go with the end-of-day options archive,
-one row per ticker per trading session from April 13 to October 16, 2026.
+one row per ticker per trading session from April 13 to November 6, 2026.
 
 Columns are `ticker`, `date`, `capture_ts` (UTC time of the options capture), and
 the session's `open`, `high`, `low`, `close` (USD/share), `iex_volume` (shares),
@@ -161,7 +161,7 @@ end
 
 Load the end-of-day option chains for one ticker, one row per contract per
 trading session. The archive covers 31 tickers (large-cap stocks plus SPY, QQQ,
-and IWM) over 121 sessions from April 13 to October 16, 2026, captured from the
+and IWM) over 136 sessions from April 13 to November 6, 2026, captured from the
 Alpaca Markets options snapshot after each close. Each session keeps the
 expirations nearest to 2, 7, 14, 30, 45, 60, and 90 days out, across all listed
 strikes.
