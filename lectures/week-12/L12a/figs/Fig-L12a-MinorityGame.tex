@@ -9,6 +9,10 @@
 % probability) and pi (policy) both appear (the instructor found p alone confusing). The three
 % action arrows now drop to one collecting line instead of converging on a single point.
 %
+% November 9: the history is now m = 2 (the lecture's worked example), and one small table shows
+% a policy of agent 1 with one row per history, because the instructor found P hard to connect
+% to anything. Scores and probabilities stay out of it (see the November 6 note above).
+%
 % Consistency check (by hand): the drawn actions -1, +1, -1 sum to -1 < 0, so the minority
 % action is +1, which is appended to the history.
 \documentclass[tikz,border=6pt]{standalone}
@@ -18,22 +22,39 @@
 \begin{tikzpicture}
 
   % the history: older minority actions in gray, the last m in boxes, the next slot dashed
-  \foreach \x/\v in {0.25/\dots, 1.05/$+1$, 1.85/$-1$, 2.65/$+1$} {\node[oldtoken] at (\x, 9.3) {\v};}
-  \node[token] (h1) at (3.65, 9.3) {$-1$};
-  \node[token] (h2) at (4.45, 9.3) {$+1$};
-  \node[token] (h3) at (5.25, 9.3) {$+1$};
-  \node[token, draw=saorange, dash pattern=on 2pt off 1.5pt] (next) at (6.55, 9.3) {};
+  \foreach \x/\v in {0.65/\dots, 1.45/$+1$, 2.25/$-1$, 3.05/$+1$} {\node[oldtoken] at (\x, 9.3) {\v};}
+  \node[token] (h1) at (4.05, 9.3) {$-1$};
+  \node[token] (h2) at (4.85, 9.3) {$+1$};
+  \node[token, draw=saorange, dash pattern=on 2pt off 1.5pt] (next) at (6.15, 9.3) {};
   \draw[decorate, decoration={brace, amplitude=5pt, raise=2pt}, line width=0.7pt, draw=vnink]
-    (h1.north west) -- (h3.north east) node[midway, above=8pt] {history $\mu_{t}$};
+    (h1.north west) -- (h2.north east) node[midway, above=8pt] {history $\mu_{t}$, $m=2$};
 
   % the same history goes to every agent
   \node[circle, draw=vnink, fill=white, line width=0.8pt, inner sep=0pt, minimum size=0.22cm] (bc) at (4.45, 8.05) {};
-  \draw[flow] (h2.south) -- (bc.north);
+  \draw[flow] ($(h1.south)!0.5!(h2.south)$) -- (bc.north);
   \node[agent] (a1) at (1.3, 6.65) {agent 1\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{1j,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{1,t}=\pi_{1j}(\mu_{t})$}};
   \node[agent] (a2) at (3.6, 6.65) {agent 2\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{2j,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{2,t}=\pi_{2j}(\mu_{t})$}};
   \node[text=gdgray, font=\sffamily\large] at (5.25, 6.65) {$\cdots$};
   \node[agent] (aN) at (6.9, 6.65) {agent $N$\\[-1pt]{\footnotesize\color{gdgray}$j\sim p_{Nj,t}$}\\[-1pt]{\footnotesize\color{gdgray}$a_{N,t}=\pi_{Nj}(\mu_{t})$}};
   \foreach \a in {a1, a2, aN} {\draw[flow] (bc) -- (\a.north);}
+
+  % one policy of agent 1: a table with one row per history (m = 2, P = 4 rows). The row that
+  % matches mu_t is highlighted, and its action is the -1 that agent 1 plays below.
+  \def\tl{-5.1} \def\tm{-3.65} \def\tr{-1.45}
+  \node[anchor=south, align=center] at ({(\tl+\tr)/2}, 8.32) {policy $\pi_{1j}$ of agent 1\\[-1pt]{\footnotesize\color{gdgray}one row per history, $P=2^{m}=4$ rows}};
+  \fill[boxfill] (\tl, 6.8) rectangle (\tr, 7.3);
+  \draw[draw=gridgray, line width=0.6pt] (\tl, 7.3) -- (\tr, 7.3) (\tl, 6.8) -- (\tr, 6.8) (\tl, 6.3) -- (\tr, 6.3);
+  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (\tl, 5.8) rectangle (\tr, 8.3);
+  \draw[draw=vnink, line width=0.8pt] (\tl, 7.8) -- (\tr, 7.8);
+  \draw[draw=vnink, line width=0.6pt] (\tm, 5.8) -- (\tm, 8.3);
+  \node[font=\sffamily\footnotesize] at ({(\tl+\tm)/2}, 8.05) {history $\mu$};
+  \node[font=\sffamily\footnotesize] at ({(\tm+\tr)/2}, 8.05) {action $\pi_{1j}(\mu)$};
+  \foreach \y/\h/\a in {7.55/$-1\;\;-1$/$+1$, 7.05/$-1\;\;+1$/$-1$, 6.55/$+1\;\;-1$/$-1$, 6.05/$+1\;\;+1$/$+1$} {
+    \node at ({(\tl+\tm)/2}, \y) {\h};
+    \node at ({(\tm+\tr)/2}, \y) {\a};
+  }
+  \draw[draw=vnink, line width=1.0pt] (\tl, 6.8) rectangle (\tr, 7.3);
+  \draw[flow, line width=0.7pt] (\tr, 7.05) -- (a1.west |- 0, 7.05);
 
   % the actions
   \node[action] (x1) at (1.3, 4.45) {$-1$};
@@ -55,11 +76,11 @@
 
   % feedback: the minority action joins the history; the attendance updates every score
   % the orange return line sits as far right of agent N as the blue line sits left of agent 1
-  \path let \p1=(a1.west) in coordinate (fbx) at ($(aN.east)+({\x1+0.15cm},0)$);
+  \path let \p1=(a1.west) in coordinate (fbx) at ($(aN.east)+({\x1+0.75cm},0)$);
   \draw[feedback] (min.east) -- (min.east -| fbx) -- (fbx |- next.east) -- (next.east);
   \node[anchor=west, text=saorange, font=\sffamily\footnotesize, align=left] at ($(fbx |- 0,5.4)+(0.1,0)$) {append to\\the history};
-  \draw[scorefeed] (sum.west) -- (-0.15, 2.85) -- (-0.15, 6.65) -- (a1.west);
-  \node[anchor=east, text=gdblue, font=\sffamily\footnotesize, align=right] at (-0.25, 4.75) {update\\every\\policy\\score};
+  \draw[scorefeed] (sum.west) -- (-0.75, 2.85) -- (-0.75, 6.65) -- (a1.west);
+  \node[anchor=east, text=gdblue, font=\sffamily\footnotesize, align=right] at (-0.85, 4.75) {update\\every\\policy\\score};
 
 \end{tikzpicture}
 \end{document}
