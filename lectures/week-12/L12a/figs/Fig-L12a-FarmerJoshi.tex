@@ -12,9 +12,9 @@
 \begin{document}
 \begin{tikzpicture}
   % ================= Panel A: one step of the market =================
-  \node[note] (val) at (2.1, 9.6) {log value $v_{t}$};
+  \node[note] (val) at (2.1, 9.6) {log value $\ln V_{t}$};
   \node[agent, fill=redfill, draw=gdred, minimum width=3.9cm, minimum height=1.35cm] (vi) at (2.1, 8.1)
-    {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\bigl(v_{t}+v^{(i)}\bigr)$};
+    {\textcolor{gdred}{\textbf{value investors}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\bigl(\ln V_{t}+v^{(i)}\bigr)$};
   \node[agent, fill=bluefill, draw=gdblue, minimum width=3.9cm, minimum height=1.35cm] (tf) at (7.2, 8.1)
     {\textcolor{gdblue}{\textbf{trend followers}}\\[1pt]$\zeta^{(i)}_{t}=\ln S_{t}-\ln S_{t-\theta_{i}}$};
   \draw[flow] (val.south) -- (vi.north);

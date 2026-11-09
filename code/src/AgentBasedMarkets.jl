@@ -129,14 +129,7 @@ function _mg_choose(rng::AbstractRNG, scores::AbstractVector{Float64}, temperatu
         candidates = findall(==(best), scores)
         return length(candidates) == 1 ? candidates[1] : rand(rng, candidates)
     end
-    w = boltzmann_weights(scores, temperature)
-    u = rand(rng)
-    acc = 0.0
-    for j in 1:J
-        acc += w[j]
-        u <= acc && return j
-    end
-    return J
+    return rand(rng, Categorical(boltzmann_weights(scores, temperature)))
 end
 
 """

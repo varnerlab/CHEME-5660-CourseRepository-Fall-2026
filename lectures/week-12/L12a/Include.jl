@@ -23,3 +23,6 @@ using PrettyTables
 using Distributions
 using StatsPlots
 using Random # reproducible simulations
+
+# load the functions written for these examples -
+include(joinpath(_PATH_TO_SRC, "Helper.jl"));

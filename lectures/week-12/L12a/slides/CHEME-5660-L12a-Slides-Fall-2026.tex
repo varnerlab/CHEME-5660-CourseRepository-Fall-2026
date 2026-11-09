@@ -8,10 +8,11 @@
 % \sigma_A^2/N, choice probability p_j (p_{ij}), entropy \mathcal{H},
 % temperature T, partition function \mathcal{Z}; minority-game price S_t (instructor's
 % extension, November 6, 2026) and growth rate g_{t+1} = (1/\Delta t) ln(S_{t+1}/S_t) in both models
-% (rounds t = 0,...,R-1, S_0 = 1; November 6 notation change); Farmer–Joshi price S_t and log price \ln S_t, log value v_t,
+% (rounds t = 0,...,R-1, S_0 = 1; November 6 notation change); Farmer–Joshi price S_t and log price \ln S_t, log value \ln V_t,
 % offset v^{(i)}, position x_t^{(i)}, size c_i = a(\chi^in - \chi^out), lag \theta_i, order
 % \omega, liquidity \lambda, price noise \sigma_S\sqrt{\Delta t} Z_{t+1} with annualized volatility \sigma_S (0.8, our variant), Z ~ N(0,1);
 % log value step \sigma_v\sqrt{\Delta t} Z'_{t+1} (November 6 noise-notation change).
+% November 9, 2026: the Farmer–Joshi frames moved ahead of the minority game, following the lecture notebook.
 % Figures are the executed outputs of the two examples (random seed 5660), in ../figs.
 % The disclaimer is slide 2, by instructor preference.
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -58,11 +59,11 @@
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Agent-based models}: the five parts every model shares, in the
-      minority game and the Farmer–Joshi market.
+      Farmer–Joshi market and the minority game.
     \item \hilite{The Boltzmann choice rule}: the maximum-entropy choice, with a
       temperature that sets how strongly agents favor high scores.
-    \item \hilite{Micro to macro}: volatility in the minority game; fat tails and
-      volatility clustering in the Farmer–Joshi market.
+    \item \hilite{Micro to macro}: fat tails and volatility clustering in the
+      Farmer–Joshi market; volatility in the minority game.
   \end{itemize}
 \end{frame}
 
@@ -74,17 +75,16 @@
       feedback from the aggregate to the next decisions.
     \item Maximum entropy for a fixed expected score gives
       $p_{j}=\exp(U_{j}/T)/\Zc$: greedy as $T\to 0$, uniform as $T\to\infty$.
-    \item The minority game's volatility per agent depends on $\alpha$ and $T$;
-      Farmer–Joshi value investors and trend followers together produce fat tails
-      and volatility clustering.
+    \item Farmer–Joshi value investors and trend followers together produce fat tails
+      and volatility clustering; the minority game's volatility per agent depends on
+      $\alpha$ and $T$.
   \end{itemize}
 
   \vspace{0.5em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The critical value $\alpha_{c}\approx 0.3374$ (cited, not derived).
-    \item The minority-game price, an extension of the original model.
     \item The Farmer–Joshi threshold rules and our parameter values.
+    \item The minority-game price, an extension of the original model.
   \end{itemize}
 \end{frame}
 
@@ -95,8 +95,8 @@
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Examples:}}\par\small
-  \href{\repo/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}}\par
-  \href{\repo/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}}}
+  \href{\repo/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb}}\par
+  \href{\repo/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb}}}
 \end{frame}
 
 % ========== In the news (instead of a company profile; instructor request November 5)
@@ -133,15 +133,101 @@
   \begin{center}\small
     \begin{tabular}{lll}
       \toprule
-      Part & Minority game & Farmer–Joshi market \\
+      Part & Farmer–Joshi market & Minority game \\
       \midrule
-      Agents & $N$ agents, $J$ fixed policies each & Value investors, trend followers \\
-      Information & History $\mu_{t}$ of the last $m$ outcomes & Mispricing or price change over a lag \\
-      Decision rule & Choose a policy by its score & Enter or exit at a threshold \\
-      Aggregate & Attendance $A_{t}$ & Net order, then the price \\
-      Feedback & $A_{t}$ updates scores and history & New price changes every signal \\
+      Agents & Value investors, trend followers & $N$ agents, $J$ fixed policies each \\
+      Information & Mispricing or price change over a lag & History $\mu_{t}$ of the last $m$ outcomes \\
+      Decision rule & Enter or exit at a threshold & Choose a policy by its score \\
+      Aggregate & Net order, then the price & Attendance $A_{t}$ \\
+      Feedback & New price changes every signal & $A_{t}$ updates scores and history \\
       \bottomrule
     \end{tabular}
+  \end{center}
+\end{frame}
+
+% ========== Farmer–Joshi
+\begin{frame}{The Farmer–Joshi Market}
+  Trader $i$ holds $x_{t}^{(i)}\in\{-c_{i},0,+c_{i}\}$ and orders
+  $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
+  price in proportion to the net order:
+  \begin{equation*}
+    \ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
+  \end{equation*}
+  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise, and
+  $\sigma_{S}$ is its annualized volatility. If one step lasts $\Delta t$ years, the growth rate is $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$.
+  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
+\end{frame}
+
+\begin{frame}{Value Investors and Trend Followers}
+  Each trader enters at a signal beyond $\pm\cin$ and exits back across
+  $\pm\cout$. The position size is $c_{i}=a(\cin-\cout)$, where $a>0$ is a constant scale factor:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Value investors}: signal $\ln S_{t}-(\ln V_{t}+v^{(i)})$, where $\ln V_{t}$ is the
+      log of the fundamental value, a random walk, and $v^{(i)}$ is the investor's fixed
+      offset; sell when overpriced, buy when underpriced.
+    \item \hilite{Trend followers}: signal $\ln S_{t}-\ln S_{t-\theta_{i}}$; buy after a
+      rise, sell after a fall.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{One Step of the Market}
+  Signals set positions, positions set orders, and the net order sets the price,
+  which changes every signal at the next step:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=0 0 227bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Threshold Rule}
+  A value investor's position is one of three states. It enters when the
+  mispricing passes $\pm\cin$ and exits when it comes back past $\pm\cout$:
+  \begin{center}
+    \includegraphics[width=0.75\textwidth,trim=308bp 92bp 0 72bp,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Farmer–Joshi Algorithm}
+  \small
+  \textbf{\ink{Initialize:}} thresholds $\cin>\cout$, offsets $v^{(i)}$, lags $\theta_{i}$, $a$,
+  $\lambda$, $\sigma_{S}$, $\sigma_{v}$, $\Delta t$, steps $R$; $c_{i}\gets a(\cin-\cout)$;
+  $x^{(i)}_{0}\gets 0$. For each step $t=0,\dots,R-1$ \textbf{do}:
+  \begin{enumerate}\setlength{\itemsep}{0.15em}
+    \item \hilite{Signals}: $\zeta^{(i)}_{t}\gets\ln S_{t}-(\ln V_{t}+v^{(i)})$ (value) or
+      $\ln S_{t}-\ln S_{t-\theta_{i}}$ (trend, once $t\geq\theta_{i}$).
+    \item \hilite{Positions}: the threshold rule sets $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$.
+    \item \hilite{Orders}: $\omega^{(i)}_{t+1}\gets x^{(i)}_{t+1}-x^{(i)}_{t}$.
+    \item \hilite{Price}: draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
+    \item \hilite{Value}: draw $Z'_{t+1}\sim\mathcal{N}(0,1)$; $\ln V_{t+1}\gets \ln V_{t}+\sigma_{v}\sqrt{\Delta t}\,Z'_{t+1}$.
+  \end{enumerate}
+  \textbf{\ink{Output:}} log prices, log values, growth rates $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$, volume.
+\end{frame}
+
+\begin{frame}{Stylized Facts: Simulated and Real}
+  Both groups together, against \texttt{SPY} daily growth rates
+  (kurtosis and autocorrelations do not depend on units):
+  \begin{center}\small
+    \begin{tabular}{lrr}
+      \toprule
+      Statistic & Simulated & \texttt{SPY} \\
+      \midrule
+      Excess kurtosis & 38.8 & 13.8 \\
+      Autocorrelation of $g$, lag 1 & 0.31 & $-0.11$ \\
+      Autocorrelation of $\lvert g\rvert$, lag 1 & 0.65 & 0.36 \\
+      Autocorrelation of $\lvert g\rvert$, lag 5 & 0.02 & 0.33 \\
+      Autocorrelation of volume, lag 1 & 0.55 & 0.75 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  Fat tails and clustering come out of the rules, but the clustering fades within
+  a few steps.
+\end{frame}
+
+\begin{frame}{Clustering and the Mix of Traders}
+  The model's clustering fades within a few steps (A). Fat tails and a positive
+  growth-rate autocorrelation appear only with enough trend followers (B, C); every mix
+  misses \texttt{SPY} by a wide margin on at least one statistic:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L12a-FarmerJoshi-Results.pdf}
   \end{center}
 \end{frame}
 
@@ -202,34 +288,28 @@
 
 % ========== Maximum entropy (proof moved to advanced/max_entropy, November 6, 2026)
 \begin{frame}{The Boltzmann Choice Rule}
-  An agent chooses policy $\pi_{j}$ with probability $p_{j}$. The \hilite{entropy}
-  $\Hc(p)=-\sum_{j}p_{j}\ln p_{j}$ measures how spread out the choice is: zero for a
-  certain choice, $\ln J$ for a uniform one.
-
-  \vspace{0.4em}
-  \textbf{\ink{Theorem:}} among all $p_{j}$ with a given expected score
-  $\sum_{j}p_{j}U_{j}=\bar{U}$, strictly between the average and the largest score,
-  the one with the largest entropy is
+  An agent with scores $U_{1},\dots,U_{J}$ uses policy $\pi_{j}$ with probability:
   \begin{equation*}
     \boxed{p_{j}=\frac{1}{\Zc}\exp\left(\frac{U_{j}}{T}\right)},
     \qquad
     \Zc=\sum_{k=1}^{J}\exp\left(\frac{U_{k}}{T}\right)
   \end{equation*}
-  where $T>0$ is the \hilite{temperature}, in the units of the scores, and $\Zc$ is
-  the \hilite{partition function}.
+  where $T>0$ is the \hilite{temperature}, in the units of the scores.
+
+  \vspace{0.4em}
+  Among all choice probabilities with a given expected score, this rule has the
+  largest \hilite{entropy}, a measure of how spread out the probabilities are.
   \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/9903415}{\dimmed{Cavagna, Garrahan, Giardina, and Sherrington (1999)}}; proof in the optional advanced notebook}
 \end{frame}
 
 \begin{frame}{What the Temperature Does}
-  The temperature is the value at which the Boltzmann probabilities give the target
-  expected score $\bar{U}$. Lowering $T$ raises $\bar{U}$:
+  The temperature sets how strongly the agent favors high scores:
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{$T\to 0$}: the best policy has probability 1, the greedy
-      minority game; $\bar{U}$ approaches the largest score.
-    \item \hilite{$T\to\infty$}: every policy has probability $1/J$; $\bar{U}$ is
-      the average score.
-    \item \hilite{In between}: with two scores $\Delta$ apart, the better policy is
-      used with probability $e^{\Delta/T}/(e^{\Delta/T}+1)$, about 0.73 at $T=\Delta$.
+      minority game.
+    \item \hilite{$T\to\infty$}: every policy has probability $1/J$.
+    \item \hilite{In between}: the best policy has the largest probability, and the other
+      policies share the rest in proportion to $\exp(U_{j}/T)$.
   \end{itemize}
 \end{frame}
 
@@ -239,20 +319,20 @@
   random tables $\pi_{ij}(\mu)$; scores $U_{ij,0}\gets 0$; random $\mu_{0}$; starting price $S_{0}$. For each round
   $t=0,\dots,R-1$ \textbf{do}:
   \begin{enumerate}\setlength{\itemsep}{0.15em}
-    \item \hilite{Choose}: draw $j_{i,t}$ with $p_{ij,t}=\exp(U_{ij,t}/T)/\Zc_{i,t}$.
+    \item \hilite{Choose}: $p_{ij,t}=\exp(U_{ij,t}/T)/\Zc_{i,t}$; draw $j_{i,t}\sim\text{Categorical}(p_{i1,t},\dots,p_{iJ,t})$.
     \item \hilite{Act}: $a_{i,t}\gets\pi_{i\,j_{i,t}}(\mu_{t})$.
     \item \hilite{Aggregate}: $A_{t}\gets\sum_{i}a_{i,t}$; the minority action is $-\text{sign}\,A_{t}$.
     \item \hilite{Score}: $U_{ij,t+1}\gets U_{ij,t}-\pi_{ij}(\mu_{t})A_{t}/P$ for every $i$ and $j$.
     \item \hilite{History}: drop the oldest action in $\mu_{t}$, append $-\text{sign}\,A_{t}$.
     \item \hilite{Price} (extension): draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+A_{t}/\lambda+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
   \end{enumerate}
-  \textbf{\ink{Output:}} $A_{0},\dots,A_{R-1}$, $S_{0},\dots,S_{R}$, and $\sigma_{A}^{2}/N=\langle A^{2}\rangle/N$ after a burn-in (the first rounds, discarded).
+  \textbf{\ink{Output:}} $A_{0},\dots,A_{R-1}$, $S_{0},\dots,S_{R}$, and $\sigma_{A}^{2}/N=\langle A^{2}\rangle/N$.
 \end{frame}
 
 % ========== What the minority game shows
 \begin{frame}{The Phase Diagram}
-  Volatility per agent against $\alpha$ in the greedy game ($T=0$). The minimum,
-  0.14 at $\alpha\approx 0.35$, is close to $\alpha_{c}\approx 0.3374$:
+  Volatility per agent against $\alpha$ in the greedy game. The minimum is
+  0.14 at $\alpha\approx 0.35$:
   \begin{center}
     \includegraphics[height=0.62\textheight,trim=0 0 208bp 0,clip]{../figs/Fig-L12a-MinorityGame-Results.pdf}
   \end{center}
@@ -264,91 +344,6 @@
   times that of Cavagna and coauthors:
   \begin{center}
     \includegraphics[height=0.62\textheight,trim=230bp 0 0 0,clip]{../figs/Fig-L12a-MinorityGame-Results.pdf}
-  \end{center}
-\end{frame}
-
-% ========== Farmer–Joshi
-\begin{frame}{The Farmer–Joshi Market}
-  Trader $i$ holds $x_{t}^{(i)}\in\{-c_{i},0,+c_{i}\}$ and orders
-  $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
-  price in proportion to the net order:
-  \begin{equation*}
-    \ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
-  \end{equation*}
-  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise, and
-  $\sigma_{S}$ is its annualized volatility. As in the minority game, the growth rate is $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$.
-  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
-\end{frame}
-
-\begin{frame}{Value Investors and Trend Followers}
-  Each trader enters at a signal beyond $\pm\cin$ and exits back across
-  $\pm\cout$, with position size $c_{i}=a(\cin-\cout)$:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Value investors}: signal $\ln S_{t}-(v_{t}+v^{(i)})$; sell when
-      overpriced, buy when underpriced.
-    \item \hilite{Trend followers}: signal $\ln S_{t}-\ln S_{t-\theta_{i}}$; buy after a
-      rise, sell after a fall.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{One Step of the Market}
-  Signals set positions, positions set orders, and the net order sets the price,
-  which changes every signal at the next step:
-  \begin{center}
-    \includegraphics[height=0.67\textheight,trim=0 0 227bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
-  \end{center}
-\end{frame}
-
-\begin{frame}{The Threshold Rule}
-  A value investor's position is one of three states. It enters when the
-  mispricing passes $\pm\cin$ and exits when it comes back past $\pm\cout$:
-  \begin{center}
-    \includegraphics[width=0.75\textwidth,trim=308bp 92bp 0 72bp,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
-  \end{center}
-\end{frame}
-
-\begin{frame}{The Farmer–Joshi Algorithm}
-  \small
-  \textbf{\ink{Initialize:}} thresholds $\cin>\cout$, offsets $v^{(i)}$, lags $\theta_{i}$, $a$,
-  $\lambda$, $\sigma_{S}$, $\sigma_{v}$, $\Delta t$, steps $R$; $c_{i}\gets a(\cin-\cout)$;
-  $x^{(i)}_{0}\gets 0$. For each step $t=0,\dots,R-1$ \textbf{do}:
-  \begin{enumerate}\setlength{\itemsep}{0.15em}
-    \item \hilite{Signals}: $\zeta^{(i)}_{t}\gets\ln S_{t}-(v_{t}+v^{(i)})$ (value) or
-      $\ln S_{t}-\ln S_{t-\theta_{i}}$ (trend, once $t\geq\theta_{i}$).
-    \item \hilite{Positions}: the threshold rule sets $x^{(i)}_{t+1}\in\{-c_{i},0,+c_{i}\}$.
-    \item \hilite{Orders}: $\omega^{(i)}_{t+1}\gets x^{(i)}_{t+1}-x^{(i)}_{t}$.
-    \item \hilite{Price}: draw $Z_{t+1}\sim\mathcal{N}(0,1)$; $\ln S_{t+1}\gets\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega^{(i)}_{t+1}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}$.
-    \item \hilite{Value}: draw $Z'_{t+1}\sim\mathcal{N}(0,1)$; $v_{t+1}\gets v_{t}+\sigma_{v}\sqrt{\Delta t}\,Z'_{t+1}$.
-  \end{enumerate}
-  \textbf{\ink{Output:}} log prices, log values, growth rates $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$, volume.
-\end{frame}
-
-\begin{frame}{Stylized Facts: Simulated and Real}
-  Both groups together, against \texttt{SPY} daily growth rates
-  (kurtosis and autocorrelations do not depend on units):
-  \begin{center}\small
-    \begin{tabular}{lrr}
-      \toprule
-      Statistic & Simulated & \texttt{SPY} \\
-      \midrule
-      Excess kurtosis & 38.8 & 13.8 \\
-      Autocorrelation of $g$, lag 1 & 0.31 & $-0.11$ \\
-      Autocorrelation of $\lvert g\rvert$, lag 1 & 0.65 & 0.36 \\
-      Autocorrelation of $\lvert g\rvert$, lag 5 & 0.02 & 0.33 \\
-      Autocorrelation of volume, lag 1 & 0.55 & 0.75 \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-  Fat tails and clustering come out of the rules, but the clustering fades within
-  a few steps.
-\end{frame}
-
-\begin{frame}{Clustering and the Mix of Traders}
-  The model's clustering fades within a few steps (A). Fat tails and a positive
-  growth-rate autocorrelation appear only with enough trend followers (B, C); every mix
-  misses \texttt{SPY} by a wide margin on at least one statistic:
-  \begin{center}
-    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L12a-FarmerJoshi-Results.pdf}
   \end{center}
 \end{frame}
 
@@ -384,9 +379,9 @@
       aggregate, and feedback.
     \item \hilite{Maximum entropy}: $p_{j}\propto\exp(U_{j}/T)$ has the largest
       entropy for a given expected score; $T$ moves the agent from greedy to random.
-    \item \hilite{Micro to macro}: the minority game's volatility depends on
-      $\alpha$ and $T$, and a crowded game moves the price more; Farmer–Joshi traders produce fat tails and clustering, but
-      not every stylized fact at once.
+    \item \hilite{Micro to macro}: Farmer–Joshi traders produce fat tails and clustering, but
+      not every stylized fact at once; the minority game's volatility depends on
+      $\alpha$ and $T$, and a crowded game moves the price more.
   \end{itemize}
 \end{frame}
 
