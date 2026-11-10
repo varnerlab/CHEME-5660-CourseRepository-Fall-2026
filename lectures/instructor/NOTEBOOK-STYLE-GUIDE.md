@@ -1051,6 +1051,11 @@ from "Core results" on October 28, 2026, because most points define things
 rather than state derived results. Use "Core concepts" from week 11 on. L10a
 and L10b were already changed in their notebooks and decks.
 
+On November 10, 2026, he set the count for the second part too: the __For
+understanding__ list has exactly three bullets ("=> three bullets!", on the
+L12b box, which had four). Group related items into one bullet to reach three,
+and give the deck frame the same three.
+
 ## Example callouts within lectures — CHEME 5660
 
 Confirmed September 18, 2026. Follow the L4a and L4b format for example stops

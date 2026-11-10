@@ -32,9 +32,8 @@ analogy for real crashes, not an explanation of them.
 
 ## Where the results come from
 
-Tasks 2 and 3 load a cache built by `scripts/Compute-L12b-RuleSwitch-Cache.jl` (final, not provisional; the setup cell prints its settings). Rerunning at a larger grid is described
-in `scripts/README.md`; every number below would then change. The cache is L = 64 with 20 starting markets (setup cell 4). Task 1 runs live at a default L = 32 (parameter cell 11),
-about 2 seconds a run, so its numbers can differ from the cache. The plotting helpers are in `src/Helper.jl`, loaded by `Include.jl`; `scripts/Test-Helper.jl` tests them.
+Redesigned November 10: the grid leads, and the example prints no tables. Tasks 1 and 2 run live at L = 64 (about 2 seconds for the switched market and its control, with the grid saved every 5 steps; about 3 seconds for the 20 starting markets at L = 32). Task 3 loads the `sweep` table of the cache built by
+`scripts/Compute-L12b-RuleSwitch-Cache.jl` (L = 64, 20 starting markets, final, not provisional). Rerunning it is described in `scripts/README.md`. The `plot_grid` helper is in `src/Helper.jl`, loaded by `Include.jl`; `scripts/Test-Helper.jl` tests it.
 
 **Example 2 (review on your own):** `CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb` runs everything live, about 10 seconds in total. Its markets
 never switch (`run_baseline` in `src/Helper.jl`). It compares the Wolfram market with SPY and the L12a Farmer–Joshi market. The headline is a model-scope
@@ -45,11 +44,12 @@ from the L12a table because its traders are a different random draw.
 
 ## Numbers to say aloud
 
-- Rule tables agree except at neighbor sum 1 (Task 1, rule table cell).
-- Live run, f = 0.25, seed 1: majority after 681 steps, drawdown 0.237 against 0.013 (Task 1 summary table).
-- Seed 1, deep dealer, held edge, f = 0.25: Sell majority after 333 steps, drawdown 0.257 against 0.014 for the control (Task 2 table).
-- Shallow dealer, f = 0.10: switched drawdown 0.454 against 0.397 for the control (Task 2 table).
-- Over 20 starting markets, the fraction with a Sell majority at f = 0.18 is 0.50 (deep dealer, held edge), 0.65 (deep dealer, active edge), and 0.50 (shallow dealer). It is 0.00 at f = 0.16 with a deep dealer (0.05 with a shallow dealer) and 1.00 from f = 0.20; every control is 0.00 (Task 3 summary table).
+- Task 1, six grids: one solid Sell region by step 1,200, most of the grid by step 1,500. At the last step, a band of traders near the edge has not turned to Sell, and the control is still mixed.
+- Task 2, f = 0.25, seed 1: Sell majority 245 steps after the switch, Sell fraction levels off near 0.88, share price falls from about 115 to about 86 USD/share (26%).
+- Task 2, orders: about 960 Sell orders and 960 Buy orders filled per step before the switch; about 90 of each late in the run, with about 3,300 Sell orders failing per step because the trader has no shares.
+- Task 2, 20 starting markets (L = 32): 18 of 20 switched prices end between 86 and 90 USD/share.
+- Task 3, deep dealer, active edge: median fall 5.9% at f = 0.16, 21.7% at f = 0.18, 25.2% at f = 0.20; control 0.8%. Shallow dealer (`condition_to_visualize = 3`): control 33.3%, switched 40.0% at f = 0.10.
+- Over 20 starting markets, the fraction with a Sell majority at f = 0.18 is 0.50 (deep dealer, held edge), 0.65 (deep dealer, active edge), and 0.50 (shallow dealer). It is 0.00 at f = 0.16 with a deep dealer (0.05 with a shallow dealer) and 1.00 from f = 0.20; every control is 0.00 (Task 3, first figure).
 
 ## Likely student questions
 
