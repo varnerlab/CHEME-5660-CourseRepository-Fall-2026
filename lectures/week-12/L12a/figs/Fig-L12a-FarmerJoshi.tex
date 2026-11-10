@@ -1,3 +1,5 @@
+% November 10, 2026: signal axis added under panel B at the instructor's request (example values chi_in = 0.5, chi_out = -0.1;
+% the four trigger points match panel B). Panel B moved up to make room; the deck's trim offsets for that panel moved with it.
 % November 10, 2026: words added on the two exit arrows at the instructor's request, and panel B moved up to stay centered.
 % L12a Farmer–Joshi market, two panels (November 6, 2026: panel letters and titles removed, and
 % the text under panel B dropped because the lecture states it; panel B centered vertically) (November 5, 2026; revised the same day: panel A lost its
@@ -39,7 +41,7 @@
   \node[anchor=north, text=saorange, font=\sffamily\footnotesize] at (4.65, 1.25) {new price, new signals};
 
   % ================= Panel B: the threshold rule =================
-  \begin{scope}[xshift=10.5cm, yshift=-1.65cm]
+  \begin{scope}[xshift=10.5cm, yshift=-0.5cm]
     \node[state] (long)  at (0.9, 7.5) {$+c_{i}$};
     \node[state] (flat)  at (3.9, 7.5) {$0$};
     \node[state] (short) at (6.9, 7.5) {$-c_{i}$};
@@ -52,6 +54,20 @@
     \draw[flow] (flat.north west) to[bend right=35] node[above, align=center] {$\zeta^{(i)}_{t}<-\chi^{\text{in}}_{i}$\\{\footnotesize\color{gdgray}underpriced: buy}} (long.north east);
     \draw[flow] (short.south west) to[bend left=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}<\chi^{\text{out}}_{i}$\\{\footnotesize\color{gdgray}no longer}\\{\footnotesize\color{gdgray}overpriced: buy}} (flat.south east);
     \draw[flow] (long.south east) to[bend right=35] node[below=5pt, align=center] {$\zeta^{(i)}_{t}>-\chi^{\text{out}}_{i}$\\{\footnotesize\color{gdgray}no longer}\\{\footnotesize\color{gdgray}underpriced: sell}} (flat.south west);
+  \end{scope}
+
+  % ================= Signal axis: the four trigger points of panel B, with example values =================
+  \begin{scope}[xshift=10.5cm]
+    \node[note] at (3.9, 3.35) {example: $\chi^{\text{in}}_{i}=0.5$ and $\chi^{\text{out}}_{i}=-0.1$};
+    \draw[flow] (0.45, 2.45) -- (7.5, 2.45);
+    \node[anchor=east, font=\sffamily\small] at (0.42, 2.45) {$\zeta^{(i)}_{t}$};
+    \foreach \x/\lab/\act in {0.9/{-0.5}/{enter\\long}, 3.3/{-0.1}/{exit\\short}, 4.5/{+0.1}/{exit\\long}, 6.9/{+0.5}/{enter\\short}} {
+      \draw[draw=vnink, line width=0.9pt] (\x, 2.33) -- (\x, 2.57);
+      \node[anchor=south, font=\sffamily\footnotesize, inner sep=2pt] at (\x, 2.57) {$\lab$};
+      \node[anchor=north, font=\sffamily\footnotesize, align=center, inner sep=2pt] at (\x, 2.33) {\act};
+    }
+    \draw[draw=vnink, line width=0.9pt] (3.9, 2.33) -- (3.9, 2.57);
+    \node[anchor=south, font=\sffamily\footnotesize, inner sep=2pt] at (3.9, 2.57) {$0$};
   \end{scope}
 \end{tikzpicture}
 \end{document}
