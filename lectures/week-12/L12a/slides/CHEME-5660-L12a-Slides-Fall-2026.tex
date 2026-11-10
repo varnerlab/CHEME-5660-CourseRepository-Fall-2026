@@ -13,6 +13,8 @@
 % \omega, liquidity \lambda, price noise \sigma_S\sqrt{\Delta t} Z_{t+1} with annualized volatility \sigma_S (0.8, our variant), Z ~ N(0,1);
 % log value step \sigma_v\sqrt{\Delta t} Z'_{t+1} (November 6 noise-notation change).
 % November 9, 2026: the Farmer–Joshi frames moved ahead of the minority game, following the lecture notebook.
+% November 10, 2026: Farmer–Joshi growth rate compared with single-asset GBM, following the lecture notebook.
+% November 10, 2026: Farmer–Joshi frames reordered (traders and rules before the price) and the alpha ranges added, following the lecture notebook.
 % Figures are the executed outputs of the two examples (random seed 5660), in ../figs.
 % The disclaimer is slide 2, by instructor preference.
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -146,16 +148,12 @@
 \end{frame}
 
 % ========== Farmer–Joshi
-\begin{frame}{The Farmer–Joshi Market}
-  Trader $i$ holds $x_{t}^{(i)}\in\{-c_{i},0,+c_{i}\}$ and orders
-  $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
-  price in proportion to the net order:
-  \begin{equation*}
-    \ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
-  \end{equation*}
-  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise, and
-  $\sigma_{S}$ is its annualized volatility. If one step lasts $\Delta t$ years, the growth rate is $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$.
-  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
+\begin{frame}{The Farmer–Joshi Market: One Step}
+  Signals set positions, positions set orders, and the net order sets the price,
+  which changes every signal at the next step:
+  \begin{center}
+    \includegraphics[height=0.67\textheight,trim=0 0 227bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+  \end{center}
 \end{frame}
 
 \begin{frame}{Value Investors and Trend Followers}
@@ -168,22 +166,42 @@
     \item \hilite{Trend followers}: signal $\ln S_{t}-\ln S_{t-\theta_{i}}$; buy after a
       rise, sell after a fall.
   \end{itemize}
-\end{frame}
-
-\begin{frame}{One Step of the Market}
-  Signals set positions, positions set orders, and the net order sets the price,
-  which changes every signal at the next step:
-  \begin{center}
-    \includegraphics[height=0.67\textheight,trim=0 0 227bp 0,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
-  \end{center}
+  \slidenote{Source:}{\href{https://arxiv.org/pdf/cond-mat/0012419}{\dimmed{Farmer and Joshi (2002)}}}
 \end{frame}
 
 \begin{frame}{The Threshold Rule}
   A value investor's position is one of three states. It enters when the
   mispricing passes $\pm\cin$ and exits when it comes back past $\pm\cout$:
   \begin{center}
-    \includegraphics[width=0.75\textwidth,trim=308bp 92bp 0 72bp,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
+    \includegraphics[width=0.68\textwidth,trim=308bp 80bp 0 62bp,clip]{../figs/Fig-L12a-FarmerJoshi.pdf}
   \end{center}
+\end{frame}
+
+\begin{frame}{The Market Maker Sets the Price}
+  Trader $i$ holds $x_{t}^{(i)}\in\{-c_{i},0,+c_{i}\}$ and orders
+  $\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log
+  price in proportion to the net order:
+  \begin{equation*}
+    \ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
+  \end{equation*}
+  where $\lambda$ is the liquidity, $Z_{t+1}\sim\mathcal{N}(0,1)$ is independent noise,
+  $\sigma_{S}$ is its annualized volatility, and each step lasts $\Delta t$ years.
+\end{frame}
+
+\begin{frame}{Growth Rate: Farmer–Joshi and GBM}
+  The growth rate over step $t$, $g_{t+1}=\frac{1}{\Delta t}\ln\frac{S_{t+1}}{S_{t}}$, follows
+  directly from the price rule. Let's compare it with single-asset geometric Brownian motion:
+  \begin{align*}
+    \text{Farmer–Joshi:}\quad g_{t+1}&=\underbrace{\frac{1}{\lambda\,\Delta t}\sum_{i}\omega_{t+1}^{(i)}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t+1}}_{\text{price noise}}\\
+    \text{Geometric Brownian motion:}\quad g_{t+1}&=\underbrace{\mu_{g}}_{\text{constant}}+\underbrace{\frac{\sigma}{\sqrt{\Delta t}}\,Z_{t+1}}_{\text{price noise}}
+  \end{align*}
+  where $\sigma=\sigma_{g}\sqrt{\Delta t}$ is the annualized volatility and $\mu=\mu_{g}+\frac{1}{2}\sigma^{2}$ is the drift.
+  We estimate the mean $\mu_{g}$ and the standard deviation $\sigma_{g}$ of the growth rate from data.
+
+  \vspace{0.4em}
+  In geometric Brownian motion, the first term is a constant that we estimate from data.
+  In the Farmer–Joshi market, the first term comes from a \hilite{mechanistic} model of how
+  the actions of the traders change the growth rate.
 \end{frame}
 
 \begin{frame}{The Farmer–Joshi Algorithm}
@@ -260,8 +278,8 @@
   where $\langle\cdot\rangle$ averages over rounds and $\alpha$ is the number of
   histories per agent. $\sigma_{A}^{2}/N>1$: more agents on the same side than with coin
   flips; $\sigma_{A}^{2}/N<1$: a more even split. In the greedy game, each agent uses
-  its best-scoring policy. When $\alpha$ is small, the game is crowded: many agents
-  switch to the same action at the same time.
+  its best-scoring policy. With $J=2$ and $\alpha$ below about 0.2, the game is crowded: many
+  agents switch to the same action at the same time.
 \end{frame}
 
 \begin{frame}{One Round of the Minority Game}
@@ -331,8 +349,9 @@
 
 % ========== What the minority game shows
 \begin{frame}{The Phase Diagram}
-  Volatility per agent against $\alpha$ in the greedy game. The minimum is
-  0.14 at $\alpha\approx 0.35$:
+  Volatility per agent against $\alpha$ in the greedy game with $J=2$. The game is crowded
+  below $\alpha\approx 0.2$. The minimum is 0.14 at $\alpha\approx 0.35$, and above that the
+  volatility rises toward 1 from below:
   \begin{center}
     \includegraphics[height=0.62\textheight,trim=0 0 208bp 0,clip]{../figs/Fig-L12a-MinorityGame-Results.pdf}
   \end{center}
