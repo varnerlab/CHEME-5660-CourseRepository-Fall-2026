@@ -67,3 +67,13 @@ Built with `scripts/release-week.sh week-12.0` from a `git archive` of 29e226d.
 1. Commit this record and push `main`.
 2. Push an annotated tag: `git tag -a week-12.0 -m "CHEME 5660 - Week 12"`.
 3. The workflow opens a draft release. The instructor reviews and publishes it.
+
+## CI build — November 10, 2026
+
+Tagged `week-12.0` at 1f3c6ab. Release workflow run 42831799853 passed and opened
+a draft release titled "CHEME 5660 - Week 12 (L12a)". The downloaded zip matches its
+`.sha256` file (GitHub digest
+`cfc32a91be48a576ecaf0a121d0f05302fd5ee92c7e6aa8f1fc62de0c2f3dae6`). Its 161 files
+have the same bytes as the local bundle. The only listing difference is how the two
+unzip tools print the narrow no-break space in three screenshot filenames under
+`code/src/data/options/original/`.
