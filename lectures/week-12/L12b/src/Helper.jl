@@ -38,18 +38,38 @@ Normal distribution and positive when outliers are more frequent than for a Norm
 excess_kurtosis(x::AbstractVector) = mean(((x .- mean(x)) ./ std(x, corrected = false)) .^ 4) - 3
 
 """
-    run_baseline(; L, h, boundary_mode, seed, steps, f = 0.25, kwargs...)
+    run_baseline(; rule, L, h, boundary_mode, seed, steps, f = 0.25, kwargs...)
 
-Run a Wolfram market that never switches rules: every interior trader keeps Rule 19280 for all `steps`
-steps. It is the control arm of `WM.run_rule_switch(...)` with the same `L`, `h`, `boundary_mode`, `seed`,
-and `f`, so it has the same prices. `f` only marks which traders would switch. Extra `kwargs` (for example
-`random_edge_probabilities`) go to the simulator. Returns the simulation result, with fields such as
-`prices` (length `steps + 1`) and `sell_fraction`.
+Run a Wolfram market that never switches rules: every interior trader keeps the rule number `rule` (from
+`0` to `19682`) for all `steps` steps. With `rule = 19280`, it is the control arm of
+`WM.run_rule_switch(...)` with the same `L`, `h`, `boundary_mode`, `seed`, and `f`, so it has the same
+prices. `f` only marks which traders would switch. Extra `kwargs` (for example `random_edge_probabilities`)
+go to the simulator. Returns the simulation result, with fields such as `prices` (length `steps + 1`) and
+`sell_fraction`.
+
+### Example
+```julia
+market = run_baseline(rule = 19280, L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 500);
+market.prices[end] # share price that the dealer quotes at the last step
+```
 """
-function run_baseline(; L::Int64, h::Float64, boundary_mode::Symbol, seed::Int64, steps::Int64, f::Float64 = 0.25, kwargs...)
-    steps >= 2 || throw(ArgumentError("a baseline market needs at least 2 steps"))
+function run_baseline(; rule::Int64, L::Int64, h::Float64, boundary_mode::Symbol, seed::Int64, steps::Int64, f::Float64 = 0.25, kwargs...)
+
+    # check the inputs -
+    if rule < 0 || rule >= 3^9
+        throw(ArgumentError("the rule number must be between 0 and $(3^9 - 1)"));
+    end
+    if steps < 2
+        throw(ArgumentError("a baseline market needs at least 2 steps"));
+    end
+
+    # initialize: the settings of the rule-switch market, with our rule in place of both of its rules -
     WM = VLQuantitativeFinancePackage.WolframMarkets
     config = WM.rule_switch_config(L = L, f = f, h = h, seed = seed, t_pre = steps - 1, t_post = 1)
+    config.rule_major_index = rule;
+    config.rule_minor_index = rule;
+
+    # run the market: the switch step is after the last step, so no trader ever switches -
     return WM.simulate_checked(config; snapshot_steps = [steps - 1, steps], minority_population = :interior,
         rule_activation_step = steps + 1, boundary_mode = boundary_mode, activation_action = :rule, fixed_band_step = nothing,
         intervention = nothing, initial_grid = nothing, observer = nothing, verbose = false, kwargs...)
@@ -87,17 +107,22 @@ function VLQuantitativeFinancePackage.WolframMarkets.market_before_step!(noise::
 end
 
 """
-    run_noisy_rule_switch(; L, f, h, seed, boundary_mode, σ_S, Δt, t_pre = 1000, t_post = 3000,
-        f_control = f, snapshot_steps = [t_pre, t_pre + t_post], kwargs...) -> NamedTuple
+    run_noisy_rule_switch(; baseline_rule, switch_rule, L, f, h, seed, boundary_mode, σ_S, Δt, t_pre = 1000,
+        t_post = 3000, f_control = f, snapshot_steps = [t_pre, t_pre + t_post], kwargs...) -> NamedTuple
 
-Run a switched Wolfram market and its control, with noise in the dealer's share price. This function
-does what `WM.run_rule_switch(...)` does, and adds a random change to the log share price at each step.
+Run a switched Wolfram market and its control, with noise in the dealer's share price. Every interior
+trader follows the rule number `baseline_rule` until the switch. After step `t_pre`, a fraction `f` of
+the interior traders follow the rule number `switch_rule`. The control never switches. Both rule numbers
+run from `0` to `19682`.
+
+With `baseline_rule = 19280` and `switch_rule = 19286`, this function does what `WM.run_rule_switch(...)`
+does, and adds a random change to the log share price at each step.
 
 The noise has annualized volatility `σ_S` (1/√yr), and one step lasts `Δt` years, so the noise added in
 one step has standard deviation `σ_S*sqrt(Δt)`. Changing `Δt` changes the noise of each step. The
 switched market and its control get the same noise. `σ_S = 0.0` gives the market with no noise.
 
-The other arguments are those of `WM.run_rule_switch(...)`: grid size `L`, fraction `f` of interior traders
+The other arguments are the grid size `L`, the fraction `f` of interior traders
 that switch, dealer depth `h`, starting market `seed`, edge traders `boundary_mode`, `t_pre` steps before
 the switch and `t_post` steps after it. We save the grid at the steps in `snapshot_steps`. Extra `kwargs`
 (for example `random_edge_probabilities`) go to the simulator.
@@ -108,15 +133,22 @@ Returns the named tuple `(switched, control, t_pre)`. Each market has fields suc
 ### Example
 ```julia
 Δt = 1/(252*390); # one step is one minute of a 390-minute trading day
-pair = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 1, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt);
+pair = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 1,
+    boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt);
 pair.switched.prices[end] < pair.control.prices[end] # true: the switched share price ends below the control
 ```
 """
-function run_noisy_rule_switch(; L::Int64, f::Float64, h::Float64, seed::Int64, boundary_mode::Symbol, σ_S::Float64, Δt::Float64,
-        t_pre::Int64 = 1000, t_post::Int64 = 3000, f_control::Float64 = f,
+function run_noisy_rule_switch(; baseline_rule::Int64, switch_rule::Int64, L::Int64, f::Float64, h::Float64, seed::Int64,
+        boundary_mode::Symbol, σ_S::Float64, Δt::Float64, t_pre::Int64 = 1000, t_post::Int64 = 3000, f_control::Float64 = f,
         snapshot_steps::Vector{Int64} = [t_pre, t_pre + t_post], kwargs...)
 
     # check the inputs -
+    if baseline_rule < 0 || baseline_rule >= 3^9
+        throw(ArgumentError("the baseline rule number must be between 0 and $(3^9 - 1)"));
+    end
+    if switch_rule < 0 || switch_rule >= 3^9
+        throw(ArgumentError("the switch rule number must be between 0 and $(3^9 - 1)"));
+    end
     if σ_S < 0.0
         throw(ArgumentError("the volatility σ_S of the noise must be zero or positive"));
     end
@@ -132,6 +164,8 @@ function run_noisy_rule_switch(; L::Int64, f::Float64, h::Float64, seed::Int64, 
     # run the control: its switch step is after the last step, so it never switches -
     control_noise = MyNoisyDealer(Xoshiro(seed + 10_000), step_volatility);
     control_config = WM.rule_switch_config(L = L, f = f_control, h = h, seed = seed, t_pre = t_pre, t_post = t_post);
+    control_config.rule_major_index = baseline_rule; # the rule before the switch
+    control_config.rule_minor_index = switch_rule; # the rule of the switching traders after the switch
     control = WM.simulate(control_config; clearing = :reserve, snapshot_steps = snapshot_steps, minority_population = :interior,
         rule_activation_step = steps + 1, boundary_mode = boundary_mode, activation_action = :rule, fixed_band_step = nothing,
         intervention = nothing, initial_grid = nothing, observer = control_noise, verbose = false, kwargs...);
@@ -139,6 +173,8 @@ function run_noisy_rule_switch(; L::Int64, f::Float64, h::Float64, seed::Int64, 
     # run the switched market: the same starting market and the same noise, with the switch after step t_pre -
     switched_noise = MyNoisyDealer(Xoshiro(seed + 10_000), step_volatility);
     switched_config = WM.rule_switch_config(L = L, f = f, h = h, seed = seed, t_pre = t_pre, t_post = t_post);
+    switched_config.rule_major_index = baseline_rule;
+    switched_config.rule_minor_index = switch_rule;
     switched = WM.simulate(switched_config; clearing = :reserve, snapshot_steps = snapshot_steps, minority_population = :interior,
         rule_activation_step = t_pre + 1, boundary_mode = boundary_mode, activation_action = :rule, fixed_band_step = nothing,
         intervention = nothing, initial_grid = nothing, observer = switched_noise, verbose = false, kwargs...);
@@ -157,8 +193,8 @@ end
     run_rule_market(; rule, L, h, seed, boundary_mode, steps, σ_S, Δt, snapshot_steps = [0, steps], kwargs...)
 
 Run a Wolfram market in which every interior trader follows the rule number `rule` at every step. No
-trader switches rules. With `rule = 19280`, this market is the control of `run_noisy_rule_switch(...)`
-with the same `L`, `h`, `seed`, `boundary_mode`, `σ_S`, and `Δt`.
+trader switches rules. This market is the control of `run_noisy_rule_switch(...)` with `baseline_rule = rule`
+and the same `L`, `h`, `seed`, `boundary_mode`, `σ_S`, and `Δt`.
 
 The arguments are the rule number `rule` (from `0` to `19682`), the grid size `L`, the dealer depth `h`,
 the starting market `seed`, the edge traders `boundary_mode`, and the number of `steps`. The dealer's

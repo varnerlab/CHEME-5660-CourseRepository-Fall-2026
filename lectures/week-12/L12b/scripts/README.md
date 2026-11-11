@@ -14,8 +14,8 @@ julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
 Run it from the repo root. Defaults are the course settings (the paper's model with fewer seeds and the course's f grid): L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
 three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000, a time step of one minute
 (`DT = 1/(252*390)` years), and dealer noise with annualized volatility `SIGMA_S = 0.20`. Each pair is run by
-`run_noisy_rule_switch` in `src/Helper.jl`; `SIGMA_S = 0.0` gives the paper's market with no noise. To raise L, edit
-`L_FULL` at the top of the script. The output file has `settings.provisional == false`.
+`run_noisy_rule_switch` in `src/Helper.jl`; `SIGMA_S = 0.0` gives the paper's market with no noise. To change the rules, edit
+`BASELINE_RULE` and `SWITCH_RULE` at the top of the script. To raise L, edit `L_FULL`. The output file has `settings.provisional == false`.
 
 ## Flags
 

@@ -24,7 +24,7 @@ end
     saved_steps = [200, 350, 500];
     for mode ∈ (:endogenous, :hold)
         plain = WM.run_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = mode, t_pre = 200, t_post = 300, snapshot_steps = saved_steps);
-        quiet = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = mode, σ_S = 0.0, Δt = 1/252, t_pre = 200, t_post = 300, snapshot_steps = saved_steps);
+        quiet = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = mode, σ_S = 0.0, Δt = 1/252, t_pre = 200, t_post = 300, snapshot_steps = saved_steps);
         @test quiet.switched.prices == plain.switched.prices
         @test quiet.control.prices == plain.control.prices
         @test quiet.switched.sell_fraction == plain.switched.sell_fraction
@@ -34,7 +34,7 @@ end
 
     # with noise, the two markets share their history up to the switch, and the package summary works -
     Δt = 1/(252*390);
-    noisy = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
+    noisy = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
     plain = WM.run_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, t_pre = 200, t_post = 300);
     @test noisy.control.prices != plain.control.prices
     @test noisy.switched.prices[1:202] == noisy.control.prices[1:202]
@@ -42,19 +42,29 @@ end
     @test WM.rule_switch_summary(noisy).control_transitioned == false
 
     # the same inputs give the same run -
-    again = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
+    again = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
     @test again.switched.prices == noisy.switched.prices
 
     # the noise of one step is σ_S√Δt: with large noise, it sets the size of the one-step change in the log price -
     for step ∈ (1/252, 1/(252*390))
-        loud = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 5.0, Δt = step, t_pre = 2000, t_post = 10);
+        loud = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 5.0, Δt = step, t_pre = 2000, t_post = 10);
         changes = diff(log.(loud.control.prices[200:end]));
         @test isapprox(std(changes), 5.0*sqrt(step); rtol = 0.1)
     end
 
     # bad inputs -
-    @test_throws ArgumentError run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = -0.1, Δt = 1/252)
-    @test_throws ArgumentError run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = 0.0)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = -0.1, Δt = 1/252)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = 0.0)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = -1, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19683, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt)
+
+    # other rules: the control of any pair is the one-rule market of its baseline rule, and a switch to the baseline rule changes nothing -
+    other = run_noisy_rule_switch(baseline_rule = 3720, switch_rule = 3882, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
+    alone = run_rule_market(rule = 3720, L = 32, h = 100.0, seed = 3, boundary_mode = :endogenous, steps = 500, σ_S = 0.20, Δt = Δt);
+    @test other.control.prices == alone.prices
+    @test other.switched.sell_fraction != other.control.sell_fraction
+    same = run_noisy_rule_switch(baseline_rule = 3720, switch_rule = 3720, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 300);
+    @test same.switched.prices == same.control.prices
 end
 
 @testset "Helper.jl: one-rule market" begin
@@ -63,7 +73,7 @@ end
     Δt = 1/(252*390);
     for mode ∈ (:endogenous, :hold)
         market = run_rule_market(rule = 19280, L = 32, h = 100.0, seed = 2, boundary_mode = mode, steps = 400, σ_S = 0.20, Δt = Δt);
-        pair = run_noisy_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 2, boundary_mode = mode, σ_S = 0.20, Δt = Δt, t_pre = 300, t_post = 100);
+        pair = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 2, boundary_mode = mode, σ_S = 0.20, Δt = Δt, t_pre = 300, t_post = 100);
         @test market.prices == pair.control.prices
         @test market.sell_fraction == pair.control.sell_fraction
     end
@@ -103,17 +113,23 @@ end
     @test abs(excess_kurtosis(randn(MersenneTwister(1), 200_000))) < 0.05
 
     # a baseline market is the control arm of a rule-switch run: same seed, same prices -
-    base = run_baseline(L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 500);
+    base = run_baseline(rule = 19280, L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 500);
     pair = WM.run_rule_switch(L = 32, f = 0.25, h = 100.0, seed = 1, boundary_mode = :endogenous, t_pre = 400, t_post = 100);
     @test base.prices == pair.control.prices
     @test base.sell_fraction == pair.control.sell_fraction
     @test length(base.prices) == 501
     for mode ∈ (:hold, :random)
         kw = mode == :random ? (random_edge_probabilities = (0.2, 0.5, 0.3),) : NamedTuple();
-        b2 = run_baseline(; L = 32, h = 1.0, boundary_mode = mode, seed = 2, steps = 300, kw...);
+        b2 = run_baseline(; rule = 19280, L = 32, h = 1.0, boundary_mode = mode, seed = 2, steps = 300, kw...);
         p2 = WM.run_rule_switch(; L = 32, f = 0.25, h = 1.0, seed = 2, boundary_mode = mode, t_pre = 200, t_post = 100, kw...);
         @test b2.prices == p2.control.prices
         @test b2.sell_fraction == p2.control.sell_fraction
     end
-    @test_throws ArgumentError run_baseline(L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 0)
+    @test_throws ArgumentError run_baseline(rule = 19280, L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 0)
+    @test_throws ArgumentError run_baseline(rule = 19683, L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 500)
+
+    # with no noise, a baseline market of any rule is the one-rule market of that rule -
+    b3 = run_baseline(rule = 3720, L = 32, h = 100.0, boundary_mode = :endogenous, seed = 1, steps = 300);
+    m3 = run_rule_market(rule = 3720, L = 32, h = 100.0, seed = 1, boundary_mode = :endogenous, steps = 300, σ_S = 0.0, Δt = 1/252);
+    @test b3.prices == m3.prices
 end

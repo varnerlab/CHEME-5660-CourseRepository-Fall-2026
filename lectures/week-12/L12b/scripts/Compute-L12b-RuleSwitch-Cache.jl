@@ -26,6 +26,8 @@ using Statistics
 include(joinpath(@__DIR__, "..", "src", "Helper.jl"))
 
 # defaults (full run) -
+const BASELINE_RULE = 19280  # rule number that every interior trader follows before the switch
+const SWITCH_RULE = 19286    # rule number that the switching traders follow after the switch
 const L_FULL = 64
 const SEEDS_FULL = collect(1:20)
 const F_VALUES = [0.10, 0.14, 0.16, 0.18, 0.20, 0.25]
@@ -64,7 +66,7 @@ function run_item(c, seed::Int64)
     rows = NamedTuple[]
     pairs = NamedTuple[]
     for f in F_VALUES
-        pair = run_noisy_rule_switch(; L = L, f = f, h = c.h, seed = seed, boundary_mode = c.boundary_mode,
+        pair = run_noisy_rule_switch(; baseline_rule = BASELINE_RULE, switch_rule = SWITCH_RULE, L = L, f = f, h = c.h, seed = seed, boundary_mode = c.boundary_mode,
             σ_S = SIGMA_S, Δt = DT, t_pre = T_PRE, t_post = T_POST, f_control = F_CONTROL)
         s = WM.rule_switch_summary(pair)
         push!(rows, (L = L, condition = condition_label(c), h = c.h, boundary_mode = c.boundary_mode, f = f,
@@ -105,8 +107,8 @@ function main()
         paper = (lambda = 0.02, k = 1.0, edge_band_spread = 0.5, cost_basis_rule = false, initial_cash = 1000.0,
             initial_shares = 10, P0 = 100.0, number_of_colors = 3, radius = 4,
             initial_condition = :balanced_perturbation, initial_buy_fraction = 0.05,
-            initial_sell_fraction = 0.05, edge_fraction = 0.25, alpha = 1 / 60, rule_major_index = 19280,
-            rule_minor_index = 19286, clearing = :reserve, minority_population = :interior),
+            initial_sell_fraction = 0.05, edge_fraction = 0.25, alpha = 1 / 60, rule_major_index = BASELINE_RULE,
+            rule_minor_index = SWITCH_RULE, clearing = :reserve, minority_population = :interior),
         julia_version = string(VERSION), package_git_hash = githash, threads = Threads.nthreads(),
         wall_seconds = elapsed, created = string(Dates.now()), provisional = (SMOKE || PROVISIONAL))
     mkpath(dirname(OUTFILE))
