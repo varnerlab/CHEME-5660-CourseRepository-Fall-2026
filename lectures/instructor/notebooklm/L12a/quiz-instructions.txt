@@ -1,0 +1,13 @@
+L12a Self-Check: Agent-Based Markets
+
+This is an ungraded self-check on the three core results from L12a:
+
+1. An agent-based model has five parts: agents, the information each agent sees, a decision rule, an aggregate of the agents' decisions (the net order, the price, the attendance), and feedback from the aggregate to the next decisions.
+2. Maximizing the entropy of the choice probabilities for a fixed expected score gives the Boltzmann rule, p_j = exp(U_j / T) / Z. As T goes to 0, the agent always uses its best policy. As T goes to infinity, it chooses uniformly at random.
+3. Market-wide behavior comes from the rules, not from assumptions about prices. In the Farmer-Joshi market, value investors and trend followers together produce fat tails and volatility clustering. In the minority game, the volatility per agent depends on the number of histories per agent, alpha, and on the temperature.
+
+There are 12 multiple-choice questions. Most use the Farmer-Joshi market and the thermal minority game from class, including the statistics we measured in the two examples. Each answer comes with a one-sentence explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the examples open while you work. You will not need the threshold rules of the Farmer-Joshi traders or the price we added to the minority game, and every number a question uses is given in the question.
+
+The questions were written from the course materials and checked by the teaching team. If you think an answer is wrong, post it on the course discussion board.
