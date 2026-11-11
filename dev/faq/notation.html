@@ -3552,31 +3552,36 @@
 <td>Shares/trader</td>
 </tr>
 <tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>λ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\lambda_t</annotation></semantics></math></td>
+<td>Liquidity of the dealer at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda_t=Q_{t-1}/2</annotation></semantics></math>, the net trade that moves the log price by one. For a net trade that is small compared with the dealer’s shares, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>t</mi></msub><mo>≈</mo><mfrac><msub><mi>x</mi><mi>t</mi></msub><mrow><msub><mi>λ</mi><mi>t</mi></msub><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>+</mo><mfrac><msub><mi>σ</mi><mi>S</mi></msub><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mfrac><msub><mi>Z</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">g_t\approx\frac{x_t}{\lambda_t\,\Delta t}+\frac{\sigma_S}{\sqrt{\Delta t}}Z_t</annotation></semantics></math>.</td>
+<td>Shares</td>
+</tr>
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\mu_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\sigma_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></td>
 <td>Moving average of the price and moving departure from it, which the technical traders track; smoothing parameter, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>α</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;\alpha&lt;1</annotation></semantics></math>.</td>
 <td>Cash/share; cash/share; 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mi>j</mi></msub><annotation encoding="application/x-tex">k_j</annotation></semantics></math></td>
 <td>Band multiplier of technical trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, whose band is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>t</mi></msub><mo>±</mo><msub><mi>k</mi><mi>j</mi></msub><msub><mi>σ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\mu_t\pm k_j\sigma_t</annotation></semantics></math>.</td>
 <td>1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">q_i</annotation></semantics></math></td>
 <td>Cash and shares of trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.</td>
 <td>Cash; shares</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℬ</mi><annotation encoding="application/x-tex">\mathcal B</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math></td>
 <td>Traders who intend Buy and traders who intend Sell when the dealer clears the orders.</td>
 <td>Sets</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(x)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>B</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">n_B(x)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>S</mi></msub><annotation encoding="application/x-tex">n_S</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">e(x)</annotation></semantics></math></td>
 <td>Candidate price for net trade <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_{t-1}/(Q_{t-1}-x)</annotation></semantics></math>; number of buyers who can pay it; number of sellers who hold a share; excess demand, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>n</mi><mi>B</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>n</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">e(x)=n_B(x)-n_S</annotation></semantics></math>.</td>
 <td>Cash/share; count; count; shares</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math></td>
 <td>Direction of the net trade, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">sign</mtext><mspace width="0.167em"></mspace><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{sign}\,e(0)</annotation></semantics></math>; lower bound, upper bound, and midpoint of the bisection search for its size.</td>
 <td>1; shares; shares; shares</td>
