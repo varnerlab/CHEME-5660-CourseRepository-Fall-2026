@@ -166,8 +166,8 @@
       $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$, with rule number
       $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
     \item \hilite{Dealer}: quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
-      net trade $x_{t}$, so $Q_{t}=Q_{t-1}-x_{t}$, and keeps cash times shares
-      $W_{t}Q_{t}$ constant. Net buying ($x_{t}>0$) raises the price, and the depth
+      net trade $x_{t}$ at the execution price $F_{t}=W_{t-1}/(Q_{t-1}-x_{t})$, so
+      $Q_{t}=Q_{t-1}-x_{t}$ and $W_{t}=W_{t-1}+F_{t}\,x_{t}$. Net buying ($x_{t}>0$) raises the price, and the depth
       $h$ sets how far. We also add price noise, a course addition:
       \begin{equation*}
         \boxed{S_{t} = S_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)}
