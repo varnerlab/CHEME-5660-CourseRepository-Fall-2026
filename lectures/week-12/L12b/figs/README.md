@@ -1,7 +1,16 @@
 # L12b figures
 
+`Fig-L12b-RuleNumber` (November 2026) shows Rule 19280 as a base-3 number, in the
+layout of the Fall 2025 "Two-dimensional Wolfram Totalistic Rules" slide and the
+style of the rule-switch figure. Each column is one neighbor sum, from c = 8 on
+the left to c = 0 on the right, with one arrangement of four neighbors, the next
+intention, and the place value 3^c. The digits are decoded from the rule number
+inside the TikZ file.
+
 `Fig-L12b-RuleSwitch` is the rule-switch schematic, the same drawing as panels A
-and B of Figure 1 in the Wolfram markets paper (commit 5cee50d). Trader i's four
+and B of Figure 1 in the Wolfram markets paper (commit 5cee50d), except that the
+table columns run from c = 8 down to c = 0, so that each row reads as the rule
+number. Trader i's four
 neighbors (Buy, Buy, Buy, Hold) give neighbor sum c = 1. The neighbor sum points
 into the highlighted c = 1 column of the two lookup tables: Rule 19280 (before
 the switch) and Rule 19286 (after). The tables differ only in that column. The

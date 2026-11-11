@@ -12,7 +12,9 @@ julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
 ```
 
 Run it from the repo root. Defaults are the course settings (the paper's model with fewer seeds and the course's f grid): L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
-three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000. To raise L, edit
+three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000, a time step of one minute
+(`DT = 1/(252*390)` years), and dealer noise with annualized volatility `SIGMA_S = 0.20`. Each pair is run by
+`run_noisy_rule_switch` in `src/Helper.jl`; `SIGMA_S = 0.0` gives the paper's market with no noise. To raise L, edit
 `L_FULL` at the top of the script. The output file has `settings.provisional == false`.
 
 ## Flags
@@ -32,14 +34,15 @@ Measured on the 10-thread development machine (`julia -t 10`), excluding package
 
 Cost scales as L^2 x (number of seeds) x steps. Relative to the provisional run, the full run (L = 64, 20 seeds) is about
 4 x 4 = 16 times the work, roughly 1.5 minutes on 10 threads; L = 128 with 20 seeds is about 64 times the provisional work,
-roughly 5 minutes. These are estimates scaled from the provisional timing, not measured. `run_rule_switch` re-runs the
+roughly 5 minutes. These are estimates scaled from the provisional timing, not measured. The full run took 35 seconds on 24
+threads (November 10). `run_noisy_rule_switch` re-runs the
 control arm for every f (same seed, same control), so the control is computed 6 times per (condition, seed); this is
 accepted rather than cached. Work is spread over (condition, seed) items, so more threads than 3 x 20 = 60 gives no
 further speedup.
 
 ## Output keys
 
-- `settings`: NamedTuple with L, t_pre, t_post, seeds, f_values, f_control, conditions, paper settings, Julia version,
+- `settings`: NamedTuple with L, t_pre, t_post, Δt, σ_S, seeds, f_values, f_control, conditions, paper settings, Julia version,
   package git hash, threads, wall_seconds, and `provisional::Bool`.
 - `pairs`: headline switched/control pairs (f in {0.10, 0.25}, seed 1, each condition); each carries `sell_fraction`,
   `buy_fraction`, `prices`, and `frames` (`pre` at t_pre, `final`) per arm.

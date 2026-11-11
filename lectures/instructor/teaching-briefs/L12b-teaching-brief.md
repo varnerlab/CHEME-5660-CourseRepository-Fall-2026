@@ -2,7 +2,7 @@
 
 Instructor notes. Public in the repository, not in the student release zip.
 
-Thursday, November 12, 2026. Deck: 19 pages (title and 18 frames). Lecture: Why do Markets Crash? Two examples: the Wolfram rule switch (in lecture, three tasks) and the stylized facts of a Wolfram market's price (review on your own). The 2025
+Thursday, November 12, 2026. Deck: 21 pages (title and 20 frames). Lecture: Why do Markets Crash? Three examples: what one rule does (in lecture, three tasks), the Wolfram rule switch (in lecture, three tasks), and the stylized facts of a Wolfram market's price (review on your own). The 2025
 Q-learning section is now an optional advanced notebook. Freeze: Tuesday, November 10. Reworked November 6 on the L11b pattern: one concept per section, boxed
 results, and both algorithms (market step and dealer clearing, after Algorithms S1 and S2 of the paper) in the lecture.
 
@@ -32,8 +32,12 @@ analogy for real crashes, not an explanation of them.
 
 ## Where the results come from
 
+**Example 0 (in lecture, added November 10):** `CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb` runs live in about 1 second. Set `rule` and `rule_to_compare` in the Constants cell and rerun. Task 1 draws the rule table. Task 2 runs the market (5,000 steps, about 2 seconds): the grid settles into a steady mix within about 10 steps, and the price rises from 100 to about 114 USD/share in 50 steps. Task 3 runs Rule 19286, which differs at sum 1: Sell regions cover most of the grid by step 20, and the price falls to about 85 USD/share within 50 steps. The closing line sets up the rule switch (only a fraction of the traders change, partway through). Other rules to show: 0, 9841, 19682 (Buy, Hold, or Sell in every entry). It is not in the timing table above yet; it takes about 5 minutes after the algorithms. Helpers: `run_rule_market` and `plot_rule` in `src/Helper.jl`.
+
 Redesigned November 10: the grid leads, and the example prints no tables. Tasks 1 and 2 run live at L = 64 (about 2 seconds for the switched market and its control, with the grid saved every 5 steps; about 3 seconds for the 20 starting markets at L = 32). Task 3 loads the `sweep` table of the cache built by
-`scripts/Compute-L12b-RuleSwitch-Cache.jl` (L = 64, 20 starting markets, final, not provisional). Rerunning it is described in `scripts/README.md`. The `plot_grid` helper is in `src/Helper.jl`, loaded by `Include.jl`; `scripts/Test-Helper.jl` tests it.
+`scripts/Compute-L12b-RuleSwitch-Cache.jl` (L = 64, 20 starting markets, final, not provisional). Rerunning it is described in `scripts/README.md`. The `plot_grid` and `run_noisy_rule_switch` helpers are in `src/Helper.jl`, loaded by `Include.jl`; `scripts/Test-Helper.jl` tests them.
+
+Time step and dealer noise (added November 10): the Constants cell sets `Δt = 1/(252*390)` (one minute per step) and `σ_S = 0.20`. The noise added to the log share price in one step has standard deviation `σ_S*sqrt(Δt)`, about 0.064% at the defaults. `σ_S = 0.0` gives the market with no noise. With `Δt = 1/252` (one trading day per step) the noise is 1.26% per step, and the switched price can no longer be told from the control price by eye. The cache uses the defaults, whatever the Constants cell says.
 
 **Example 2 (review on your own):** `CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb` runs everything live, about 10 seconds in total. Its markets
 never switch (`run_baseline` in `src/Helper.jl`). It compares the Wolfram market with SPY and the L12a Farmer–Joshi market. The headline is a model-scope
@@ -44,18 +48,18 @@ from the L12a table because its traders are a different random draw.
 
 ## Numbers to say aloud
 
-- Task 1, six grids: one solid Sell region by step 1,200, most of the grid by step 1,500. At the last step, a band of traders near the edge has not turned to Sell, and the control is still mixed.
-- Task 2, f = 0.25, seed 1: Sell majority 245 steps after the switch, Sell fraction levels off near 0.88, share price falls from about 115 to about 86 USD/share (26%).
-- Task 2, orders: about 960 Sell orders and 960 Buy orders filled per step before the switch; about 90 of each late in the run, with about 3,300 Sell orders failing per step because the trader has no shares.
-- Task 2, 20 starting markets (L = 32): 18 of 20 switched prices end between 86 and 90 USD/share.
-- Task 3, deep dealer, active edge: median fall 5.9% at f = 0.16, 21.7% at f = 0.18, 25.2% at f = 0.20; control 0.8%. Shallow dealer (`condition_to_visualize = 3`): control 33.3%, switched 40.0% at f = 0.10.
-- Over 20 starting markets, the fraction with a Sell majority at f = 0.18 is 0.50 (deep dealer, held edge), 0.65 (deep dealer, active edge), and 0.50 (shallow dealer). It is 0.00 at f = 0.16 with a deep dealer (0.05 with a shallow dealer) and 1.00 from f = 0.20; every control is 0.00 (Task 3, first figure).
+- Task 1, six grids: one solid Sell region by step 1,300, about half of the grid by step 1,500. At the last step, a band of traders near the edge has not turned to Sell, and the control is still mixed.
+- Task 2, f = 0.25, seed 1: Sell majority 402 steps after the switch (about one trading day at one minute per step), Sell fraction levels off near 0.91, share price falls from about 117 to about 84 USD/share (28%). The control price stays between 112 and 119 USD/share.
+- Task 2, orders: about 970 Sell orders and 970 Buy orders filled per step before the switch; about 70 of each late in the run, with about 3,400 Sell orders failing per step because the trader has no shares.
+- Task 2, 20 starting markets (L = 32): 15 of 20 switched prices end between 85 and 91 USD/share. Every switched price ends 20% to 26% below its own control.
+- Task 3, deep dealer, active edge: median fall 6.8% at f = 0.16, 20.4% at f = 0.18, 27.0% at f = 0.20; control 3.3% (the dealer noise). Shallow dealer (`condition_to_visualize = 3`): control 33.0%, switched 39.1% at f = 0.10.
+- Over 20 starting markets, the fraction with a Sell majority at f = 0.18 is 0.50 (deep dealer, held edge), 0.70 (deep dealer, active edge), and 0.75 (shallow dealer). It is 0.00 at f = 0.16 with a deep dealer (0.10 with a shallow dealer) and 1.00 from f = 0.20; every control is 0.00 (Task 3, first figure).
 
 ## Likely student questions
 
 - **Why does one table entry matter?** Neighbor sum 1 is a buying neighborhood with one hesitant neighbor. Switched traders there sell, neighbors read the Sell, and it spreads.
 - **Why the control?** The price can fall with no rule switch at all, most of all with a shallow dealer. The control has the same history, so a difference after the switch is the switch.
-- **Why does the shallow-dealer control fall?** A given net order moves a shallow dealer's price a long way, so it falls with no switch (control drawdown 0.397). The switched 0.454 at f = 0.10 is only a little above that.
+- **Why does the shallow-dealer control fall?** A given net order moves a shallow dealer's price a long way, so it falls with no switch (median control fall 0.330). The switched 0.391 at f = 0.10 is only a little above that.
 - **Is this how real crashes work?** No claim is made. It shows how a change in some traders' rule can tip a toy market. The crash episodes at the top motivate the question; the model does not explain them.
 - **Why do traders act on intentions they cannot fund?** Intentions are public and neighbors read them without checking holdings. A completed trade needs cash to buy and a share to sell, so an intention can spread when its sender cannot trade.
 

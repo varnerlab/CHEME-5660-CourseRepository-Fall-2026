@@ -54,7 +54,7 @@
     <!-- LECTURE_NAV slot: a complete ul of li items, each a link to a section id on this page. -->
     <nav class='lecture-nav' aria-labelledby='lecture-nav-title'>
       <h2 id='lecture-nav-title' class='section-label'>Lectures</h2>
-      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="L10b">L10b</option><option value="L11a">L11a</option><option value="L11b">L11b</option><option value="L12a">L12a</option><option value="L13a">L13a</option><option value="L13b">L13b</option><option value="Context">Context</option></select></div>
+      <div class='lecture-list'><label for="notation-lecture">Lecture</label><select id="notation-lecture"><option value="all">All lectures</option><option value="General">General</option><option value="L1b">L1b</option><option value="L2a">L2a</option><option value="L2b">L2b</option><option value="L3a">L3a</option><option value="L3b">L3b</option><option value="L4a">L4a</option><option value="L4b">L4b</option><option value="L5a">L5a</option><option value="L5b">L5b</option><option value="L6a">L6a</option><option value="L6b">L6b</option><option value="L7a">L7a</option><option value="L7b">L7b</option><option value="L8b">L8b</option><option value="L9a">L9a</option><option value="L9b">L9b</option><option value="L10a">L10a</option><option value="L10b">L10b</option><option value="L11a">L11a</option><option value="L11b">L11b</option><option value="L12a">L12a</option><option value="L12b">L12b</option><option value="L13a">L13a</option><option value="L13b">L13b</option><option value="Context">Context</option></select></div>
     </nav>
 
     <!-- NOTATION_SECTIONS slot: one section per lecture with class notation-section, data-lecture and an id, containing
@@ -3469,6 +3469,117 @@
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>t</mi></msub><annotation encoding="application/x-tex">g_t</annotation></semantics></math></td>
 <td>Closing share price of the real ticker in the Farmer–Joshi example and its daily growth rate, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mi>/</mi><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{\Delta t}\ln(S_t/S_{t-1})</annotation></semantics></math>.</td>
 <td>USD/share; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+</div></div></section><section class="notation-section" id="L12b" data-lecture="L12b"><div class="notation-section-heading"><h2>L12b</h2><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb">Lecture notes ↗</a></div><div class="notation-group"><h3>Wolfram Markets and the Rule Switch</h3><div class="table-scroll table-wrap" tabindex="0" aria-label="Wolfram Markets and the Rule Switch"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning and context</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mtext mathvariant="normal">tr</mtext></msub><annotation encoding="application/x-tex">N_{\text{tr}}</annotation></semantics></math></td>
+<td>Side of the square grid, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>L</mi><mo>−</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><annotation encoding="application/x-tex">(L-2)^2</annotation></semantics></math> interior traders; number of interior and technical traders.</td>
+<td>Count</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mi>s</mi></msub><annotation encoding="application/x-tex">t_s</annotation></semantics></math></td>
+<td>Number of steps of a market; step index; step at which the chosen traders change rules.</td>
+<td>Steps</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">z_j(t)</annotation></semantics></math></td>
+<td>Intention of trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math> at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>: Buy <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">=0</annotation></semantics></math>, Hold <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">=1</annotation></semantics></math>, Sell <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">=2</annotation></semantics></math>.</td>
+<td>Code</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">\partial i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_i(t)</annotation></semantics></math></td>
+<td>The four neighbors of interior trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>; its neighbor sum, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><mi>∂</mi><mi>i</mi></mrow></msub><msub><mi>z</mi><mi>j</mi></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>8</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\sum_{j\in\partial i}z_j\in\{0,1,\dots,8\}</annotation></semantics></math>.</td>
+<td>Set; 1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>c</mi></msub><annotation encoding="application/x-tex">a_c</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>a</mi><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">a^{(R)}_c</annotation></semantics></math></td>
+<td>Entry of a rule’s table at neighbor sum <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>, the next intention of a trader with that sum; the same entry of rule <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>.</td>
+<td>Code</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>i</mi></msub><annotation encoding="application/x-tex">R_i</annotation></semantics></math></td>
+<td>Rule number, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>a</mi><mn>8</mn></msub><msub><mi>a</mi><mn>7</mn></msub><mi>⋯</mi><msub><mi>a</mi><mn>1</mn></msub><msub><mi>a</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>b</mi></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>0</mn></mrow><mn>8</mn></msubsup><msub><mi>a</mi><mi>c</mi></msub><mspace width="0.167em"></mspace><msup><mi>b</mi><mi>c</mi></msup></mrow><annotation encoding="application/x-tex">R=(a_8a_7\cdots a_1a_0)_b=\sum_{c=0}^{8}a_c\,b^c</annotation></semantics></math>; rule of interior trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.</td>
+<td>Index</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math></td>
+<td>Base of the rule number, the number of intentions, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">b=3</annotation></semantics></math>.</td>
+<td>Count</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math></td>
+<td>Fraction of the interior traders who change rules at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mi>s</mi></msub><annotation encoding="application/x-tex">t_s</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mi>t</mi></msub><annotation encoding="application/x-tex">W_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>t</mi></msub><annotation encoding="application/x-tex">Q_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math></td>
+<td>Dealer’s cash, dealer’s shares, and quoted share price <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><msub><mi>W</mi><mi>t</mi></msub><mi>/</mi><msub><mi>Q</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">S_t=W_t/Q_t</annotation></semantics></math> at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>Cash; shares; cash/share</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>t</mi></msub><annotation encoding="application/x-tex">x_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>t</mi></msub><annotation encoding="application/x-tex">F_t</annotation></semantics></math></td>
+<td>Net trade, the shares the traders buy minus the shares they sell; execution price of every trade at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</td>
+<td>Shares; cash/share</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>t</mi></msub><annotation encoding="application/x-tex">g_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math></td>
+<td>Growth rate of the quoted share price over step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mi>/</mi><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>2</mn><mrow><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>ln</mo><mfrac><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mrow><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>x</mi><mi>t</mi></msub></mrow></mfrac><mo>+</mo><mfrac><msub><mi>σ</mi><mi>S</mi></msub><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt></mfrac><msub><mi>Z</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\frac{1}{\Delta t}\ln(S_t/S_{t-1})=\frac{2}{\Delta t}\ln\frac{Q_{t-1}}{Q_{t-1}-x_t}+\frac{\sigma_S}{\sqrt{\Delta t}}Z_t</annotation></semantics></math>; length of one step, such as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>252</mn><mo>×</mo><mn>390</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1/(252\times 390)</annotation></semantics></math> year for one minute of a trading day.</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>; yr</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Z</mi><mi>t</mi></msub><annotation encoding="application/x-tex">Z_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>S</mi></msub><annotation encoding="application/x-tex">\sigma_S</annotation></semantics></math></td>
+<td>Standard normal draw of the price noise at step <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, which multiplies the quoted share price by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>S</mi></msub><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mspace width="0.167em"></mspace><msub><mi>Z</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\exp(\sigma_S\sqrt{\Delta t}\,Z_t)</annotation></semantics></math> (a course addition); annualized volatility of the price noise (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.20</mn><annotation encoding="application/x-tex">0.20</annotation></semantics></math> in the example).</td>
+<td>1; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1/2}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math></td>
+<td>Dealer depth, the dealer’s starting shares per trader, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>0</mn></msub><mo>=</mo><mtext mathvariant="normal">round</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>h</mi><msub><mi>N</mi><mtext mathvariant="normal">tr</mtext></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Q_0=\text{round}(hN_{\text{tr}})</annotation></semantics></math>.</td>
+<td>Shares/trader</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\mu_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\sigma_t</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></td>
+<td>Moving average of the price and moving departure from it, which the technical traders track; smoothing parameter, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>α</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;\alpha&lt;1</annotation></semantics></math>.</td>
+<td>Cash/share; cash/share; 1</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mi>j</mi></msub><annotation encoding="application/x-tex">k_j</annotation></semantics></math></td>
+<td>Band multiplier of technical trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, whose band is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>t</mi></msub><mo>±</mo><msub><mi>k</mi><mi>j</mi></msub><msub><mi>σ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\mu_t\pm k_j\sigma_t</annotation></semantics></math>.</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">q_i</annotation></semantics></math></td>
+<td>Cash and shares of trader <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.</td>
+<td>Cash; shares</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℬ</mi><annotation encoding="application/x-tex">\mathcal B</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math></td>
+<td>Traders who intend Buy and traders who intend Sell when the dealer clears the orders.</td>
+<td>Sets</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(x)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>B</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">n_B(x)</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>S</mi></msub><annotation encoding="application/x-tex">n_S</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">e(x)</annotation></semantics></math></td>
+<td>Candidate price for net trade <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W_{t-1}/(Q_{t-1}-x)</annotation></semantics></math>; number of buyers who can pay it; number of sellers who hold a share; excess demand, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>n</mi><mi>B</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>n</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">e(x)=n_B(x)-n_S</annotation></semantics></math>.</td>
+<td>Cash/share; count; count; shares</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math></td>
+<td>Direction of the net trade, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">sign</mtext><mspace width="0.167em"></mspace><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{sign}\,e(0)</annotation></semantics></math>; lower bound, upper bound, and midpoint of the bisection search for its size.</td>
+<td>1; shares; shares; shares</td>
 </tr>
 </tbody>
 </table>

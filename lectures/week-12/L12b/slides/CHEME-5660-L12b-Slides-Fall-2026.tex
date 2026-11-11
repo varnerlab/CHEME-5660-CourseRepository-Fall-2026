@@ -5,7 +5,7 @@
 % technical traders, the two algorithms); the rule switch. Notation
 % follows the lecture: intention z_{j}(t) in {0,1,2} (Buy, Hold, Sell), neighbors \partial i,
 % neighbor sum c_{i}(t), table entries a_{c}, rule number R, fraction f, dealer cash W_{t},
-% shares Q_{t}, net trade x_{t}, price P_{t}, depth h, band mu_{t}, sigma_{t}, alpha, k_{j}.
+% shares Q_{t}, net trade x_{t}, price S_{t}, depth h, band mu_{t}, sigma_{t}, alpha, k_{j}.
 % No example parameters appear here (instructor rule, November 5, 2026).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
@@ -83,7 +83,8 @@
   \href{\repo/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
-  {\normalsize\textbf{\ink{Example:}}\par\small
+  {\normalsize\textbf{\ink{Examples:}}\par\small
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}}\par
   \href{\repo/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
@@ -159,22 +160,33 @@
 \end{frame}
 
 \begin{frame}{The Market Model}
-  \begin{itemize}\setlength{\itemsep}{0.2em}\small
+  \begin{itemize}\setlength{\itemsep}{0.8em}
     \item \hilite{Rule}: trader $i$ sums the intentions of its four neighbors
       $\partial i$, $c_{i}(t)=\sum_{j\in\partial i}z_{j}$, and sets
       $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$, with rule number
       $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
-    \item \hilite{Dealer}: quotes $P_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
+    \item \hilite{Dealer}: quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
       net trade $x_{t}$, so $Q_{t}=Q_{t-1}-x_{t}$, and keeps cash times shares
-      $W_{t}Q_{t}$ constant. Net buying
-      ($x_{t}>0$) raises the price, and the depth $h$ sets how far:
+      $W_{t}Q_{t}$ constant. Net buying ($x_{t}>0$) raises the price, and the depth
+      $h$ sets how far. We also add price noise, a course addition:
       \begin{equation*}
-        \boxed{P_{t} = P_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}}
+        \boxed{S_{t} = S_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)}
+      \end{equation*}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Market Model (continued)}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Growth rate}: each step lasts $\Delta t$ years, the draw is
+      $Z_{t}\sim\mathcal{N}(0,1)$, and $\sigma_{S}$ is the annualized volatility of the
+      price noise:
+      \begin{equation*}
+        g_{t}=\frac{1}{\Delta t}\ln\frac{S_{t}}{S_{t-1}}=\underbrace{\frac{2}{\Delta t}\ln\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t}}_{\text{price noise}}
       \end{equation*}
     \item \hilite{Technical traders}: Buy below the band $\mu_{t}\pm k_{j}\sigma_{t}$,
       Sell above it, and Hold inside it. The band uses smoothing $0<\alpha<1$:
       \begin{equation*}
-        \boxed{\mu_{t}=\mu_{t-1}+\alpha\left(P_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|P_{t}-\mu_{t}|-\sigma_{t-1}\right)}
+        \boxed{\mu_{t}=\mu_{t-1}+\alpha\left(S_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|S_{t}-\mu_{t}|-\sigma_{t-1}\right)}
       \end{equation*}
   \end{itemize}
 \end{frame}
@@ -185,9 +197,9 @@
   \begin{enumerate}\setlength{\itemsep}{0.3em}
     \item \hilite{Switch}: at $t=t_{s}$, the chosen fraction $f$ of interior traders
       get Rule 19286 and keep their intentions, cash, and shares.
-    \item \hilite{Clear}: the dealer clears the orders from $z_{i}(t-1)$ and
-      returns $x_{t}$, $Q_{t}$, $W_{t}$, and $P_{t}$.
-    \item \hilite{Band}: update $\mu_{t}$ and $\sigma_{t}$ from $P_{t}$.
+    \item \hilite{Clear}: the dealer's cash gets the price noise. The dealer then
+      clears the orders from $z_{i}(t-1)$ and returns $x_{t}$, $Q_{t}$, $W_{t}$, and $S_{t}$.
+    \item \hilite{Band}: update $\mu_{t}$ and $\sigma_{t}$ from $S_{t}$.
     \item \hilite{Edge}: technical traders set $z_{j}(t)$ from the band (active),
       Hold (held), or a random draw (random signal).
     \item \hilite{Interior}: every interior trader computes $c_{i}(t)$ from the
@@ -206,9 +218,20 @@
     \item \hilite{Fill and settle}: fill the short side in full; ration the other
       side by a seeded priority; move cash and shares at $F_{t}$.
     \item \hilite{Dealer}: $Q_{t}\gets Q_{t-1}-x_{t}$, $W_{t}\gets W_{t-1}Q_{t-1}/Q_{t}$,
-      and $P_{t}\gets W_{t}/Q_{t}$.
+      and $S_{t}\gets W_{t}/Q_{t}$.
   \end{enumerate}
   \slidenote{Full version:}{the lecture notebook, after Algorithm S2 of our paper}
+\end{frame}
+
+\begin{frame}{Example: One Rule}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Example:}}\par\small
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}}}
+
+  \vspace{0.8em}
+  In this example, we read the table of one rule and run a market in which every
+  interior trader follows it. We then run a second market under a different rule,
+  and compare the two grids and the two share prices.
 \end{frame}
 
 \begin{frame}{Example: Does the Price Look Real?}
@@ -226,7 +249,7 @@
 \begin{frame}{The Rule Switch}
   Rule 19286, $(222110022)_{3}$, differs from the baseline in one entry. Three
   neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286
-  sells. Table columns run from $c=0$ to $8$:
+  sells. Table columns run from $c=8$ down to $0$:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{../figs/Fig-L12b-RuleSwitch.pdf}
   \end{center}

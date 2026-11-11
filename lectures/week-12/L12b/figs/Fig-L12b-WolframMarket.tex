@@ -52,7 +52,7 @@
 
 % ---- dealer ----
 \node[box,draw=ink!75,fill=white,inner xsep=8pt,inner ysep=5pt] (dealer) at (8.6,3.45)
-  {\textbf{dealer}\\[2pt]{\scriptsize\color{ink!60}cash $W_{t}$, shares $Q_{t}$}\\[1pt]$P_{t}=W_{t}/Q_{t}$};
+  {\textbf{dealer}\\[2pt]{\scriptsize\color{ink!60}cash $W_{t}$, shares $Q_{t}$}\\[1pt]$S_{t}=W_{t}/Q_{t}$};
 
 % ---- technical trader's band ----
 \def\bx{7.2}\def\bw{2.8}\def\by{-.3}
@@ -73,7 +73,7 @@
 
 % ---- the loop ----
 \draw[arr] (6*\gp+.36,3.45) -- (dealer.west) node[midway,above,note,text=ink] {net trade $x_{t}$};
-\draw[arr] (dealer.south) -- (bandtitle.north) node[midway,right,note,text=ink] {price $P_{t}$};
+\draw[arr] (dealer.south) -- (bandtitle.north) node[midway,right,note,text=ink] {price $S_{t}$};
 \draw[arr] (\bx,\by+.9) -- (6*\gp+.36,\by+.9) node[midway,above,note,text=ink] {edge intention $z_{j}(t)$};
 
 % ---- notes under the grid ----

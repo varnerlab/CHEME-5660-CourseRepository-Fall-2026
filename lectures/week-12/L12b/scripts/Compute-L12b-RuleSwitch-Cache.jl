@@ -19,6 +19,11 @@ import VLQuantitativeFinancePackage.WolframMarkets as WM
 using DataFrames
 using JLD2
 using Dates
+using Random
+using Statistics
+
+# the run_noisy_rule_switch(...) function, which adds noise to the dealer's share price -
+include(joinpath(@__DIR__, "..", "src", "Helper.jl"))
 
 # defaults (full run) -
 const L_FULL = 64
@@ -31,6 +36,8 @@ const HEADLINE_F = [0.10, 0.25]
 const HEADLINE_SEED = 1
 const T_PRE_FULL = 1000
 const T_POST_FULL = 3000
+const DT = 1 / (252 * 390)   # length of one step (years): one minute of a 390-minute trading day
+const SIGMA_S = 0.20         # annualized volatility of the noise in the dealer's share price (1/√yr); 0.0 gives no noise
 
 const SMOKE = "--smoke" in ARGS
 const PROVISIONAL = "--provisional" in ARGS
@@ -57,8 +64,8 @@ function run_item(c, seed::Int64)
     rows = NamedTuple[]
     pairs = NamedTuple[]
     for f in F_VALUES
-        pair = WM.run_rule_switch(; L = L, f = f, h = c.h, seed = seed, boundary_mode = c.boundary_mode,
-            t_pre = T_PRE, t_post = T_POST, f_control = F_CONTROL)
+        pair = run_noisy_rule_switch(; L = L, f = f, h = c.h, seed = seed, boundary_mode = c.boundary_mode,
+            σ_S = SIGMA_S, Δt = DT, t_pre = T_PRE, t_post = T_POST, f_control = F_CONTROL)
         s = WM.rule_switch_summary(pair)
         push!(rows, (L = L, condition = condition_label(c), h = c.h, boundary_mode = c.boundary_mode, f = f,
             seed = seed, transitioned = s.transitioned, onset = s.onset, final_sell_mean = s.final_sell_mean,
@@ -78,7 +85,7 @@ function main()
     items = [(c, s) for c in CONDITIONS for s in SEEDS]
     results = Vector{Any}(undef, length(items))
     println("threads = $(Threads.nthreads()), work items = $(length(items)), L = $L, ",
-        "t_pre = $T_PRE, t_post = $T_POST, provisional = $(SMOKE || PROVISIONAL)")
+        "t_pre = $T_PRE, t_post = $T_POST, σ_S = $SIGMA_S, Δt = $DT, provisional = $(SMOKE || PROVISIONAL)")
     t0 = time()
     Threads.@threads for i in eachindex(items)
         results[i] = run_item(items[i]...)
@@ -93,7 +100,7 @@ function main()
     catch
         "unknown"
     end
-    settings = (L = L, t_pre = T_PRE, t_post = T_POST, seeds = SEEDS, f_values = F_VALUES,
+    settings = (L = L, t_pre = T_PRE, t_post = T_POST, Δt = DT, σ_S = SIGMA_S, seeds = SEEDS, f_values = F_VALUES,
         f_control = F_CONTROL, conditions = CONDITIONS,
         paper = (lambda = 0.02, k = 1.0, edge_band_spread = 0.5, cost_basis_rule = false, initial_cash = 1000.0,
             initial_shares = 10, P0 = 100.0, number_of_colors = 3, radius = 4,
