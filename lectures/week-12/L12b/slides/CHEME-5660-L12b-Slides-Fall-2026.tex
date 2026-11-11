@@ -167,8 +167,9 @@
       $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
     \item \hilite{Dealer}: quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
       net trade $x_{t}$ at the execution price $F_{t}=W_{t-1}/(Q_{t-1}-x_{t})$, so
-      $Q_{t}=Q_{t-1}-x_{t}$ and $W_{t}=W_{t-1}+F_{t}\,x_{t}$. Net buying ($x_{t}>0$) raises the price, and the depth
-      $h$ sets how far. We also add price noise, a course addition:
+      $Q_{t}=Q_{t-1}-x_{t}$ and $W_{t}=W_{t-1}+F_{t}\,x_{t}$. Net buying ($x_{t}>0$) raises the price.
+      The dealer starts with $Q_{0}=hN_{\text{tr}}$ shares for $N_{\text{tr}}$ traders, and
+      a larger depth $h$ gives a smaller move. We also add price noise, a course addition:
       \begin{equation*}
         \boxed{S_{t} = S_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)}
       \end{equation*}
@@ -183,6 +184,9 @@
       \begin{equation*}
         g_{t}=\frac{1}{\Delta t}\ln\frac{S_{t}}{S_{t-1}}=\underbrace{\frac{2}{\Delta t}\ln\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t}}_{\text{price noise}}
       \end{equation*}
+      A small net trade gives the Farmer--Joshi form, with half of the dealer's shares
+      as the liquidity $\lambda_{t}=Q_{t-1}/2$:
+      $g_{t}\approx x_{t}/(\lambda_{t}\,\Delta t)+(\sigma_{S}/\sqrt{\Delta t})\,Z_{t}$.
     \item \hilite{Technical traders}: Buy below the band $\mu_{t}\pm k_{j}\sigma_{t}$,
       Sell above it, and Hold inside it. The band uses smoothing $0<\alpha<1$:
       \begin{equation*}
