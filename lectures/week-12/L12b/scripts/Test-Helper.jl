@@ -67,6 +67,86 @@ end
     @test same.switched.prices == same.control.prices
 end
 
+@testset "Helper.jl: fresh players" begin
+
+    # the run with no fresh players -
+    Δt = 1/(252*390); # one minute of a 390-minute trading day
+    plain = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+
+    # a fraction of zero gives the run with no fresh players, whatever the other two settings are -
+    none = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600,
+        fresh_fraction = 0.0, t_fresh = 500, recovery_rule = 0);
+    @test none.switched.prices == plain.switched.prices
+    @test none.switched.sell_fraction == plain.switched.sell_fraction
+    @test none.control.prices == plain.control.prices
+
+    # fresh players who follow Rule 0 always intend to buy: the history up to step t_fresh is unchanged, and the share price ends higher -
+    buyers = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600,
+        fresh_fraction = 0.25, t_fresh = 500, recovery_rule = 0);
+    @test buyers.switched.prices[1:501] == plain.switched.prices[1:501]
+    @test buyers.switched.sell_fraction[1:500] == plain.switched.sell_fraction[1:500]
+    @test all(buyers.switched.buy_fraction[501:end] .>= 0.25)
+    @test buyers.switched.prices[end] > plain.switched.prices[end]
+    @test buyers.control.prices[end] > plain.control.prices[end]
+
+    # fresh players who follow Rule 19682 always intend to sell: the share price ends lower -
+    sellers = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600,
+        fresh_fraction = 0.25, t_fresh = 500, recovery_rule = 19682);
+    @test all(sellers.switched.sell_fraction[501:end] .>= 0.25)
+    @test sellers.switched.prices[end] < plain.switched.prices[end]
+
+    # the same settings give the same run -
+    again = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600,
+        fresh_fraction = 0.25, t_fresh = 500, recovery_rule = 0);
+    @test again.switched.prices == buyers.switched.prices
+
+    # bad settings -
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, fresh_fraction = -0.1)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, fresh_fraction = 1.5)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, fresh_fraction = 0.25, t_fresh = -1)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, fresh_fraction = 0.25, t_fresh = 4001)
+    @test_throws ArgumentError run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, fresh_fraction = 0.25, recovery_rule = 19683)
+end
+
+@testset "Helper.jl: viewport market" begin
+
+    # with no players coming and going and no contrarians, the viewport market is the plain rule-switch market -
+    Δt = 1/(252*390); # one minute of a 390-minute trading day
+    plain = run_noisy_rule_switch(baseline_rule = 19280, switch_rule = 19286, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    closed = run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 0.0, refresh_rate = 0.0,
+        L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    @test closed.switched.prices == plain.switched.prices
+    @test closed.switched.sell_fraction == plain.switched.sell_fraction
+    @test closed.control.prices == plain.control.prices
+
+    # players come and go: the switched market and its control share their history up to the switch, and the same settings give the same run -
+    open_market = run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 0.25, refresh_rate = 0.01,
+        L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    again = run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 0.25, refresh_rate = 0.01,
+        L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    @test open_market.switched.prices[1:201] == open_market.control.prices[1:201]
+    @test open_market.switched.prices == again.switched.prices
+    @test open_market.switched.prices != plain.switched.prices
+    @test length(open_market.switched.prices) == 801
+
+    # when every player is a contrarian, the rule of the seats does not matter: the switch changes nothing -
+    all_contrarian = run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 1.0, refresh_rate = 0.01,
+        L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    @test all_contrarian.switched.prices == all_contrarian.control.prices
+    @test all_contrarian.switched.sell_fraction == all_contrarian.control.sell_fraction
+
+    # contrarians who follow Rule 0 always intend to buy -
+    buyers = run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 0, contrarian_fraction = 0.25, refresh_rate = 0.0,
+        L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :endogenous, σ_S = 0.20, Δt = Δt, t_pre = 200, t_post = 600);
+    @test all(buyers.switched.buy_fraction[2:end] .>= 0.25)
+
+    # bad settings -
+    @test_throws ArgumentError run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 19683, contrarian_fraction = 0.25, refresh_rate = 0.01, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, t_pre = 20, t_post = 20)
+    @test_throws ArgumentError run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 1.5, refresh_rate = 0.01, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, t_pre = 20, t_post = 20)
+    @test_throws ArgumentError run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 0.25, refresh_rate = -0.01, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = 0.2, Δt = Δt, t_pre = 20, t_post = 20)
+    @test_throws ArgumentError run_viewport_rule_switch(baseline_rule = 19280, switch_rule = 19286, contrarian_rule = 377, contrarian_fraction = 0.25, refresh_rate = 0.01, L = 32, f = 0.25, h = 100.0, seed = 3, boundary_mode = :hold, σ_S = -0.2, Δt = Δt, t_pre = 20, t_post = 20)
+end
+
 @testset "Helper.jl: one-rule market" begin
 
     # Rule 19280 is the control of the rule-switch run with the same settings -

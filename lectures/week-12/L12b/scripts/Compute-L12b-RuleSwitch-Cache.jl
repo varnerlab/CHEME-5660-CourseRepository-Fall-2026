@@ -1,6 +1,7 @@
 # Compute-L12b-RuleSwitch-Cache.jl
-# Big-grid rule-switch experiment for L12b. Writes ../data/L12b-RuleSwitch-Cache.jld2.
-#   julia -t auto <this file>                full run (course settings: the paper's model, 20 seeds, the course f grid)
+# Big-grid rule-switch experiment for L12b. Writes ../data/Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L<L>.jld2,
+# the file name that the RuleSwitch example builds from its constants baseline_rule, switch_rule, and L.
+#   julia -t auto <this file>                full run (course settings: the paper's model, 20 seeds, f from 0.01 to 0.30)
 #   julia -t auto <this file> --provisional  L = 32, seeds 1:5, flagged provisional = true
 #   julia -t auto <this file> --smoke        tiny run, writes ...-smoke.jld2 (never overwrites the full file)
 
@@ -25,12 +26,12 @@ using Statistics
 # the run_noisy_rule_switch(...) function, which adds noise to the dealer's share price -
 include(joinpath(@__DIR__, "..", "src", "Helper.jl"))
 
-# defaults (full run) -
+# settings (full run): edit the two rules, then run the script to build the cache file of that pair -
 const BASELINE_RULE = 19280  # rule number that every interior trader follows before the switch
 const SWITCH_RULE = 19286    # rule number that the switching traders follow after the switch
 const L_FULL = 64
 const SEEDS_FULL = collect(1:20)
-const F_VALUES = [0.10, 0.14, 0.16, 0.18, 0.20, 0.25]
+const F_VALUES = round.(collect(0.01:0.005:0.30), digits = 3)   # fractions of switching traders: 1% to 30% in steps of 0.5%
 const CONDITIONS = [(h = 100.0, boundary_mode = :hold),
                     (h = 100.0, boundary_mode = :endogenous),
                     (h = 1.0, boundary_mode = :endogenous)]
@@ -49,8 +50,8 @@ const L = SMOKE ? 24 : (PROVISIONAL ? 32 : L_FULL)
 const SEEDS = SMOKE ? collect(1:2) : (PROVISIONAL ? collect(1:5) : SEEDS_FULL)
 const T_PRE = SMOKE ? 50 : T_PRE_FULL
 const T_POST = SMOKE ? 150 : T_POST_FULL
-const OUTFILE = joinpath(@__DIR__, "..", "data",
-    SMOKE ? "L12b-RuleSwitch-Cache-smoke.jld2" : "L12b-RuleSwitch-Cache.jld2")
+const CACHE_NAME = "Cache-base-$(BASELINE_RULE)-switch-$(SWITCH_RULE)-L$(L)"   # one file for each pair of rules and grid size
+const OUTFILE = joinpath(@__DIR__, "..", "data", SMOKE ? "$(CACHE_NAME)-smoke.jld2" : "$(CACHE_NAME).jld2")
 
 condition_label(c) = "h=$(c.h)/$(c.boundary_mode)"
 

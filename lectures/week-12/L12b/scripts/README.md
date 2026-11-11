@@ -1,7 +1,10 @@
 # L12b rule-switch cache
 
-`Compute-L12b-RuleSwitch-Cache.jl` runs the rule-switch experiment (baseline Rule 19280, switch Rule 19286) and writes
-`lectures/week-12/L12b/data/L12b-RuleSwitch-Cache.jld2`, which the L12b example notebook loads. The script activates the
+`Compute-L12b-RuleSwitch-Cache.jl` runs the rule-switch experiment for the rules `BASELINE_RULE` and `SWITCH_RULE` set at
+the top of the script and writes
+`lectures/week-12/L12b/data/Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L<L>.jld2`. Each pair of
+rules and each grid size gets its own file. Since November 11 the RuleSwitch example runs every task live and no longer
+loads these files. The script activates the
 repo-root course environment itself and resolves its output path from its own location, so it can be run from any
 directory.
 
@@ -11,7 +14,7 @@ directory.
 julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
 ```
 
-Run it from the repo root. Defaults are the course settings (the paper's model with fewer seeds and the course's f grid): L = 64, seeds 1:20, f in {0.10, 0.14, 0.16, 0.18, 0.20, 0.25},
+Run it from the repo root. Defaults are the course settings (the paper's model with fewer seeds and the course's f grid): L = 64, seeds 1:20, f from 0.01 to 0.30 in steps of 0.005 (59 fractions),
 three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1000, t_post = 3000, a time step of one minute
 (`DT = 1/(252*390)` years), and dealer noise with annualized volatility `SIGMA_S = 0.20`. Each pair is run by
 `run_noisy_rule_switch` in `src/Helper.jl`; `SIGMA_S = 0.0` gives the paper's market with no noise. To change the rules, edit
@@ -19,8 +22,8 @@ three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1
 
 ## Flags
 
-- `--provisional`: L = 32, seeds 1:5, written to the full file name with `provisional = true`. The notebook shows this flag.
-- `--smoke`: L = 24, seeds 1:2, t_pre = 50, t_post = 150, written to `L12b-RuleSwitch-Cache-smoke.jld2` (never overwrites the
+- `--provisional`: L = 32, seeds 1:5, written to the `-L32` file name with `provisional = true`. The notebook shows this flag.
+- `--smoke`: L = 24, seeds 1:2, t_pre = 50, t_post = 150, written to `Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L24-smoke.jld2` (never overwrites the
   full file; do not commit it).
 
 ## Runtime

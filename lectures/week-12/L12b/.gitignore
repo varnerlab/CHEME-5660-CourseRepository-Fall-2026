@@ -2,4 +2,5 @@ frames/
 frames-0-minor/
 data/*.jld2
 frames-backup-L15a/
-!data/L12b-RuleSwitch-Cache.jld2
+!data/Cache-base-*-switch-*-L*.jld2
+data/*-smoke.jld2
