@@ -51,8 +51,8 @@
       what a trader intends next.
     \item \hilite{The dealer}: how net buying raises the price, net selling lowers
       it, and why a switched market needs a control.
-    \item \hilite{Rule-switch simulation}: reading the selling fraction and the
-      price, and what the comparison does and does not show.
+    \item \hilite{Rule-switch simulation}: reading the fraction of Sell intentions and
+      the price, and what the comparison does and does not show.
   \end{itemize}
 \end{frame}
 
@@ -61,8 +61,8 @@
   {\large\textbf{\ink{Core concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item A Wolfram rule maps the neighbor sum $c\in\{0,1,\dots,8\}$ to the
-      trader's next intention. Rules 19280 and 19286 differ only at $c=1$: Buy
-      versus Sell.
+      trader's next intention. Some traders switch from a baseline rule
+      $R$ to a switch rule $\bar{R}$.
     \item The dealer sets the price from the net trade. We compare every switched
       market with a control that shares its history.
     \item After a fraction $f$ of the traders switch, the Sell intention can spread
@@ -110,13 +110,14 @@
 \begin{frame}{Three Landmark Episodes}
   Three episodes, each with a different trigger:
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{1929 Wall Street Crash}: margin-fueled speculation met a sudden
-      loss of confidence, and leveraged investors rushed to cover.
-    \item \hilite{1987 Black Monday}: portfolio insurance and program trading
-      amplified a slide, and a one-day 22.6\% Dow drop followed.
-    \item \hilite{April 2025 tariff mini-crash}: tariff announcements and retaliation
-      fears triggered price declines and a jump in volatility. Losses eased
-      after policy clarifications.
+    \item \hilite{1929 Wall Street Crash}: investors had bought shares with borrowed
+      money (on margin). When prices fell, brokers demanded more cash, and many had to sell.
+    \item \hilite{1987 Black Monday}: portfolio insurance, often done by selling
+      stock-index futures as prices fell, added selling to a falling market. The Dow
+      fell 22.6\% in one day.
+    \item \hilite{April 2025 tariff mini-crash}: tariff announcements and fears of
+      retaliation brought sharp declines and a jump in volatility. Stocks recovered
+      much of the loss after the higher tariff rates were paused for most countries on April 9.
   \end{itemize}
   \slidenote{Sources:}{\href{https://www.federalreservehistory.org/essays/stock-market-crash-of-1929}{\dimmed{Federal Reserve History}}; \href{https://fraser.stlouisfed.org/title/report-presidential-task-force-market-mechanisms-5732}{\dimmed{Brady Report}}; \href{https://ustr.gov/about-us/policy-offices/press-office/press-releases/2025/april}{\dimmed{USTR}}; \href{https://www.federalreserve.gov/publications/April-2025-financial-stability-report-Asset-Valuations.htm}{\dimmed{Federal Reserve FSR}}}
 \end{frame}
@@ -158,7 +159,8 @@
 
 \begin{frame}{Wolfram Markets: The Grid and Intentions}
   Traders sit on the cells of a square grid, and simple local rules produce
-  market-level behavior, as in Wolfram's cellular automata:
+  market-level behavior, as in Wolfram's cellular automata, grids in which each cell updates
+  from its neighbors by a fixed rule:
   \begin{itemize}\setlength{\itemsep}{0.5em}
     \item \hilite{Intention}: Buy, Hold, or Sell, coded $0$, $1$, $2$. We write
       $z_{j}(t)\in\{0,1,2\}$ for the intention of trader $j$ at step $t$.
@@ -174,8 +176,8 @@
   Trader $i$ sums the intentions of its four neighbors $\partial i$,
   $c_{i}(t)=\sum_{j\in\partial i}z_{j}$, and reads its next intention
   $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$ from its rule $R_{i}$. The nine entries $a_{c}$, read
-  in base 3, give the rule number $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The
-  baseline is Rule 19280:
+  in base 3, give the rule number $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. Rule
+  19280 is one example:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.54\textheight,keepaspectratio]{../figs/Fig-L12b-RuleNumber.pdf}
   \end{center}
@@ -217,11 +219,11 @@
 \end{frame}
 
 \begin{frame}{Algorithm: One Market Step}
-  Each step $t=1,2,\dots,T$ runs in this order, with switch step $t_{s}$ and
-  $R_{i}$ the rule of interior trader $i$:
+  Each step $t=1,2,\dots,T$ runs in this order, with switch step $t_{s}$.
+  Interior trader $i$ follows rule $R_{i}$, which starts at the baseline rule $R$:
   \begin{enumerate}\setlength{\itemsep}{0.3em}
     \item \hilite{Switch}: at $t=t_{s}$, the chosen fraction $f$ of interior traders
-      get Rule 19286 and keep their intentions, cash, and shares.
+      get the switch rule $\bar{R}$ and keep their intentions, cash, and shares.
     \item \hilite{Clear}: the dealer's cash gets the price noise. The dealer then
       clears the orders from $z_{i}(t-1)$ and returns $x_{t}$, $Q_{t}$, $W_{t}$, and $S_{t}$.
     \item \hilite{Band}: update $\mu_{t}$ and $\sigma_{t}$ from $S_{t}$.
@@ -272,9 +274,10 @@
 
 % ========== The rule switch
 \begin{frame}{The Rule Switch}
-  Rule 19286, $(222110022)_{3}$, differs from the baseline in one entry. Three
-  neighbors intend Buy and one Hold, so $c=1$: Rule 19280 buys, and Rule 19286
-  sells. Table columns run from $c=8$ down to $0$:
+  A rule switch moves some traders from a baseline rule $R$ to a switch rule
+  $\bar{R}$. The algorithm accepts any two different rules, and we study pairs that
+  differ in one entry. Here, with three Buy neighbors and one Hold ($c=1$), Rule
+  19280 buys and Rule 19286, $(222110022)_{3}$, sells:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{../figs/Fig-L12b-RuleSwitch.pdf}
   \end{center}
@@ -284,8 +287,8 @@
   We use the one-entry difference as a model of a change in psychology. The
   experiment has three parts:
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Shared history}: all interior traders follow Rule 19280. At the
-      switch step, a fraction $f$ of them, chosen in advance, receive Rule 19286
+    \item \hilite{Shared history}: all interior traders follow the baseline rule $R$. At
+      the switch step, a fraction $f$ of them, chosen in advance, receive the switch rule $\bar{R}$
       and keep their intentions, cash, and shares.
     \item \hilite{Control}: a second market with the same history never switches.
       Differences after the switch come from the rule change.
@@ -343,8 +346,8 @@
     \item \hilite{Dealer and control}: net trades set the price, and a control
       isolates the switch.
     \item \hilite{Rule switch, by analogy}: the Sell intention spreads, and the price
-      falls until the sellers run out of shares. A simulation does not establish
-      real causes.
+      falls until the sellers run out of shares. A simulation does not show that a
+      rule change causes real crashes.
   \end{itemize}
   \vspace{0.3em}
   Agent-based models ask how individual rules add up to market behavior.
