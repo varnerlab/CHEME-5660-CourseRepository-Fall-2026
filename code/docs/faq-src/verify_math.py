@@ -287,6 +287,122 @@ check('Rounded Hull table',[.9512*(.6282*0+.3718*4),.9512*(.6282*4+.3718*20),.95
 check('Rounded down-node chains',[52*.9512-40,52*(1-.9512)],[9.46,2.54],.005)
 check('Rounded early-exercise and extrinsic differences',[5.09-4.19,5.09-2],[.90,3.09])
 
+# Options and strategies (L10a/L10b, L11a, L11b surveys, November 12, 2026).
+def gbm_cdf(x,S,T,mu,sigma):
+    return norm.cdf((math.log(x/S)-(mu-sigma**2/2)*T)/(sigma*math.sqrt(T)))
+# Delta as a probability of exercise on a two-step tree.
+S0,K,T,g,sig,h=100,95,.5,.04,.30,2
+dt=T/h;u=math.exp(sig*math.sqrt(dt));d=1/u;q=(math.exp(g*dt)-d)/(u-d);qs=q*u*math.exp(-g*dt)
+check('Two-step tree factors and probabilities',[u,d,q,qs],[1.1618,.8607,.4959,.5705],.00005)
+check('Down-step weight equals one minus q*',(1-q)*d*math.exp(-g*dt),1-qs)
+check('Two-step terminal prices',[S0*u**2,S0*u*d,S0*d**2],[134.99,100.00,74.08],.005)
+itm=[k for k in range(h+1) if S0*u**k*d**(h-k)>K]
+check('Two-step in-the-money nodes',itm,[1,2])
+poe=sum(math.comb(h,k)*q**k*(1-q)**(h-k) for k in itm);delta=sum(math.comb(h,k)*qs**k*(1-qs)**(h-k) for k in itm)
+check('Two-step POE and Delta',[poe,delta],[.7459,.8155],.00005)
+check('Two-step POE and Delta from the written chains',[1-.5041**2,1-.4295**2],[.7459,.8155],.00005)
+def tree_call(S):
+    return math.exp(-g*T)*sum(math.comb(h,k)*q**k*(1-q)**(h-k)*max(S*u**k*d**(h-k)-K,0) for k in range(h+1))
+check('Two-step Delta by central difference',(tree_call(100.01)-tree_call(99.99))/.02,.8155,.00005)
+check('Growth-weighted Delta equals the q* sum',math.exp(-g*T)*sum(math.comb(h,k)*q**k*(1-q)**(h-k)*u**k*d**(h-k) for k in itm),delta)
+check('Top and bottom node weights under q and q*',[q**2,qs**2,(1-q)**2,(1-qs)**2],[.2460,.3254,.2541,.1845],.00005)
+for T_,s_,row in [(30/365,.30,[.086,.532,.498,.034]),(1.0,.50,[.500,.629,.433,.197])]:
+    _,_,dp_,dm_=bsm(s_,S=100,K=100,T=T_,g=.04)
+    check(f'Delta and POE gap, T={T_:.3f}, sigma={s_}',[s_*math.sqrt(T_),norm.cdf(dp_),norm.cdf(dm_),norm.cdf(dp_)-norm.cdf(dm_)],row,.0005)
+# Delta, the risk-neutral POE, and our forecast: the L10a NVDA call and the L11a AMD put credit spread.
+S0,K,P,T,g,iv,mu,sh=230.57,235,9.88,.1178,.0413,.3543,.5788,.3886
+Sb=K+math.exp(g*T)*P
+check('NVDA premium grown to expiration and breakeven',[math.exp(g*T)*P,Sb],[9.93,244.93],.005)
+qpoe=1-gbm_cdf(K+.01,S0,T,g,iv);ppoe=1-gbm_cdf(K+.01,S0,T,mu,sh)
+qpop=gbm_cdf(Sb,S0,T,g,iv);ppop=gbm_cdf(Sb,S0,T,mu,sh)
+check('NVDA POE under Q and P',[qpoe,ppoe],[.4295,.6185],.00005)
+check('NVDA seller POP under Q and P',[qpop,ppop],[.6976,.5034],.00005)
+check('NVDA exercised but profitable under Q',qpop-(1-qpoe),.1271,.00005)
+check('NVDA POP decomposition chain',[1-.4295,.5705+.1271],[.5705,.6976])
+check('NVDA seller profit at 240 and 250',[9.93-(240-235),9.93-(250-235)],[4.93,-5.07])
+S0,K1,K2,P1,P2,T,g=531.26,500,520,29.35,38.10,53/365,.0413
+Sb=K2-math.exp(g*T)*(P2-P1)
+check('AMD spread breakeven',Sb,511.20,.005)
+check('AMD POP under Q and P',[1-gbm_cdf(Sb,S0,T,g,.5617),1-gbm_cdf(Sb,S0,T,.5521,.4743)],[.540,.714],.0005)
+check('AMD POP at lower growth rates',[1-gbm_cdf(Sb,S0,T,mg+.4743**2/2,.4743) for mg in (.4397,.20,0)],[.714,.646,.584],.0005)
+check('AMD short put POE under Q',gbm_cdf(K2-.01,S0,T,g,.5617),.492,.0005)
+check('AMD risk-neutral mean growth rate',g-.5617**2/2,-.12,.005)
+check('Drift standard error with ten years (L4b regression slope)',math.sqrt(6/5)*.47/math.sqrt(10),.16,.005)
+Sb_amd=Sb;pop=lambda mg,s:1-gbm_cdf(Sb_amd,S0,T,mg+s**2/2,s)
+check('AMD gap at zero growth: growth effect and volatility effect',[pop(0,.4743)-pop(g-.5617**2/2,.4743),pop(0,.4743)-pop(0,.5617)],[.037,.013],.0005)
+# Longstaff-Schwartz on the paper's eight paths.
+paths=np.array([[1.00,1.09,1.08,1.34],[1.00,1.16,1.26,1.54],[1.00,1.22,1.07,1.03],[1.00,0.93,0.97,0.92],
+                [1.00,1.11,1.56,1.52],[1.00,0.76,0.77,0.90],[1.00,0.92,0.84,1.01],[1.00,0.88,1.22,1.34]])
+def lsm(fitted=False):
+    D=math.exp(-.06);V=lambda s:np.maximum(1.10-s,0);Y=V(paths[:,3]);out={}
+    for t in (2,1):
+        Y=D*Y;X=paths[:,t];itm=V(X)>0
+        beta=np.linalg.lstsq(np.vstack([np.ones(itm.sum()),X[itm],X[itm]**2]).T,Y[itm],rcond=None)[0]
+        H=beta[0]+beta[1]*X+beta[2]*X**2;ex=itm&(V(X)>H);out[t]=(beta,H,Y.copy(),ex)
+        Y=np.where(itm,np.maximum(V(X),H),Y) if fitted else np.where(ex,V(X),Y)
+    return max(.10,D*Y.mean()),out
+american,steps=lsm();beta,H,Y2,ex=steps[2];rows=[0,2,3,5,6]
+check('LSM t=2 coefficients, as reported by Longstaff and Schwartz',beta,[-1.070,2.983,-1.813],.001)
+check('LSM t=2 realized holds',Y2[rows],[0,.066,.170,.188,.085],.0005)
+check('LSM t=2 fitted holds',H[rows],[.037,.046,.118,.152,.156],.0005)
+check('LSM t=2 fitted holds from rounded coefficients',[-1.070+2.983*x-1.813*x*x for x in paths[rows,2]],[.037,.046,.118,.152,.156],.0005)
+check('LSM t=2 exercise decisions',list(np.where(ex)[0]+1),[4,6,7])
+check('LSM American, fitted-value, and European premiums',[american,lsm(True)[0],math.exp(-.18)*np.maximum(1.10-paths[:,3],0).mean()],[.1144,.1178,.0564],.00005)
+check('LSM early-exercise premium',american-math.exp(-.18)*np.maximum(1.10-paths[:,3],0).mean(),.058,.0005)
+check('LSM fitted hold at 0.90',[beta[0]+beta[1]*.9+beta[2]*.81,-1.070+2.983*.9-1.813*.81],[.146,.146],.0005)
+# Iron condor from BSM quotes at sigma=0.30, then the rounded quotes as written.
+T,g=30/365,.04;D=math.exp(g*T)
+quotes=[bsm(.30,K=85,T=T)[1],bsm(.30,K=90,T=T)[1],bsm(.30,K=110,T=T)[0],bsm(.30,K=115,T=T)[0]]
+check('Iron condor quotes',quotes,[.08,.40,.66,.22],.005)
+PC=.08-.40-.66+.22;cg=-PC*D
+check('Iron condor composite premium, accumulation factor, and grown credit',[PC,D,cg,.76*1.0033],[-.76,1.0033,.7625,.7625],.00005)
+def condor(x): return max(85-x,0)-max(90-x,0)-max(x-110,0)+max(x-115,0)+cg
+check('Iron condor profit on each interval',[condor(80),condor(87.5),condor(100),condor(112.5),condor(120)],[-4.2375,.7625-2.5,.7625,.7625-2.5,-4.2375],.00005)
+check('Iron condor breakevens',[90-cg,110+cg],[89.2375,110.7625],.00005)
+check('Iron condor as two spreads at 80',(.32*D-5)+.44*D,condor(80))
+check('Iron condor POP and short-leg POEs under Q',[gbm_cdf(110+cg,100,T,g,.30)-gbm_cdf(90-cg,100,T,g,.30),gbm_cdf(89.99,100,T,g,.30),1-gbm_cdf(110.01,100,T,g,.30)],[.790,.111,.133],.0005)
+check('Short legs alone understate the POP',1-.111-.133,.756)
+check('Protected strangle credit and lower breakeven',[(.84)*D,90-.84*D],[.8428,89.1572],.00005)
+# The L11a short strangle on the CRR tree (American legs).
+def crr_american(S,K,T,g,sigma,kind,h=2000):
+    if T<=0: return max(S-K,0) if kind=='c' else max(K-S,0)
+    dt=T/h;u=math.exp(sigma*math.sqrt(dt));d=1/u;q=(math.exp(g*dt)-d)/(u-d);disc=math.exp(-g*dt)
+    pay=(lambda x:np.maximum(x-K,0)) if kind=='c' else (lambda x:np.maximum(K-x,0))
+    k=np.arange(h+1);V=pay(S*u**k*d**(h-k))
+    for t in range(h-1,-1,-1):
+        k=np.arange(t+1);V=np.maximum(disc*(q*V[1:]+(1-q)*V[:-1]),pay(S*u**k*d**(t-k)))
+    return V[0]
+put0=crr_american(100,90,30/365,.04,.40,'p');call0=crr_american(100,110,30/365,.04,.40,'c');credit=put0+call0
+check('Strangle legs and credit at entry',[put0,call0,credit],[1.00,1.44,2.44],.005)
+for days,S,cost,close in [(30,100,2.44,0.00),(20,100,1.38,1.06),(10,100,.39,2.06),(10,108,2.04,.40)]:
+    c_=crr_american(S,90,days/365,.04,.40,'p')+crr_american(S,110,days/365,.04,.40,'c')
+    check(f'Strangle close at {days} days, S={S}',[c_,credit*math.exp(.04*(30-days)/365)-c_],[cost,close],.005)
+check('Strangle profit at expiration and upper breakeven',[credit*math.exp(.04*30/365),110+2.45],[2.45,112.45],.005)
+check('Fraction of the credit kept at 20 days',1.06/2.44,.43,.005)
+# Collars and net Delta: BSM quotes at sigma=0.25, three months, then the rounded quotes as written.
+T,g,sig=.25,.04,.25;D=math.exp(g*T)
+check('Collar quotes',[bsm(sig,K=95,T=T)[1],bsm(sig,K=90,T=T)[1],bsm(sig,K=105,T=T)[0],bsm(sig,K=110,T=T)[0]],[2.43,1.13,3.35,1.92],.005)
+check('Collar accumulation factor',D,1.0101,.00005)
+for K1,K2,P1,P2,row in [(95,105,2.43,3.35,[-.92,5.08,4.92,100.08,.495]),(95,110,2.43,1.92,[.51,6.52,8.48,101.52,.541]),(90,110,1.13,1.92,[-.79,10.21,9.79,100.21,.500])]:
+    C=D*(100+P1-P2)
+    check(f'Collar {K1}/{K2}',[P1-P2,C-K1,K2-C,C,gbm_cdf(C,100,T,g,sig)],row,.005)
+check('Shares alone breakeven and probability of a loss',[D*100,gbm_cdf(D*100,100,T,g,sig)],[101.01,.525],.005)
+check('Zero-cost call strike for the 95 put',__import__('scipy.optimize',fromlist=['brentq']).brentq(lambda k:bsm(sig,K=k,T=T)[0]-bsm(sig,K=95,T=T)[1],100,130),108,.5)
+check('Debit collar trails the shares above',95-D*(2.43-1.92),94.48,.005)
+check('Collar 95/110 and shares at 80 and 120',[95-D*(100+.51),110-D*(100+.51),80-D*100,120-D*100],[-6.52,8.48,-21.01,18.99],.005)
+def net_delta(S,tl):
+    dc=bsm(sig,S=S,K=110,T=tl)[2];dc=norm.cdf(dc)
+    dp=norm.cdf(bsm(sig,S=S,K=95,T=tl)[2])-1
+    return dc,dp,100*(1-dc),100*(1+dp-dc)
+dc,dp,cc,col=net_delta(100,.25)
+check('Collar Deltas at entry',[dc,dp],[.268,-.290],.0005)
+check('Net Delta at entry, written chains',[100*(1-.268),100*(1-.290-.268)],[73.2,44.2],.05)
+check('Gain for a 2 USD/share rise',[2*73.2,2*44.2],[146,88],.5)
+for tl,ccs,cols in [(.25,[97.3,84.9,73.2,59.1,44.3,20.1],[20.0,40.5,44.2,41.8,34.9,17.9]),(5/365,[100.0,100.0,99.9,94.0,48.7,.1],[0.0,51.3,96.2,94.0,48.7,.1])]:
+    vals=[net_delta(S,tl) for S in (85,95,100,105,110,120)]
+    check(f'Net Delta table, {tl:.4f} years left',[[v[2] for v in vals],[v[3] for v in vals]],[ccs,cols],.05)
+check('Call Delta at 105 with 5 days left',net_delta(105,5/365)[0],.06,.005)
+
 assert all(c['status']=='passed' for c in checks), 'Correct the reported discrepancies before publishing.'
 report={'status':'passed','checks':len(checks),'results':checks}
 (ROOT/'qa').mkdir(exist_ok=True)

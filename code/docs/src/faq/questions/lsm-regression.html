@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How does the Longstaff–Schwartz regression decide when to exercise early? · CHEME 5660</title>
+  <meta name="description" content="At each exercise date, we fit a curve to the in-the-money paths that estimates the value of holding from today&#x27;s share price alone. A path exercises when exercising now pays more than that estimate. The curve is used only to make this choice; each path then keeps the cash flow it actually receives.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>How does the Longstaff–Schwartz regression decide when to exercise early?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>At each exercise date, we fit a curve to the in-the-money paths that estimates the value of holding from today’s share price alone. A path exercises when exercising now pays more than that estimate. The curve is used only to make this choice; each path then keeps the cash flow it actually receives.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What does the regression estimate?</strong> At date <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, the holder of an American put knows today’s share price <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_{i}(t)</annotation></semantics></math>, but not where the path goes next. The value of holding is the expected discounted cash flow from holding, given today’s share price. A single path’s cash flow <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_{i}(t)</annotation></semantics></math> depends on that path’s own future, which the holder cannot see. Regressing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_{i}(t)</annotation></semantics></math> on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_{i}(t)</annotation></semantics></math> fits one curve through the cash flows of all the in-the-money paths, so each path’s own future is just one point in the fit. The fitted curve <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>S</mi><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><msup><mi>S</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\hat{H}_{t}(S)=\beta_{0}+\beta_{1}S+\beta_{2}S^{2}</annotation></semantics></math> estimates the value of holding at each share price.</p>
+<p><strong>One backward step on the eight paths.</strong> In the L10a example, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>1.10</mn></mrow><annotation encoding="application/x-tex">K=1.10</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.06</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.06\,\mathrm{yr}^{-1}</annotation></semantics></math>, and the exercise dates are one year apart. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">t=2</annotation></semantics></math>, five paths are in the money. Discounting their later cash flows one step and fitting gives the paper’s reported fit, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mn>2</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mn>1.070</mn><mo>+</mo><mn>2.983</mn><mi>S</mi><mo>−</mo><mn>1.813</mn><msup><mi>S</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\hat{H}_{2}(S)=-1.070+2.983S-1.813S^{2}</annotation></semantics></math>. The table compares exercising now, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(K,S_{i}(2))</annotation></semantics></math>, with the realized cash flow from holding, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_{i}(2)</annotation></semantics></math>, and the fitted value of holding, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mn>2</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{H}_{2}(S_{i}(2))</annotation></semantics></math> (USD/share):</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_{i}(2)</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_{i}(2)</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mn>2</mn></msub><annotation encoding="application/x-tex">\hat{H}_{2}</annotation></semantics></math></th>
+<th style="text-align: left;">Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1.08</td>
+<td style="text-align: left;">0.02</td>
+<td style="text-align: left;">0.000</td>
+<td style="text-align: left;">0.037</td>
+<td style="text-align: left;">hold</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">1.07</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">0.066</td>
+<td style="text-align: left;">0.046</td>
+<td style="text-align: left;">hold</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">0.97</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.170</td>
+<td style="text-align: left;">0.118</td>
+<td style="text-align: left;">exercise</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">0.77</td>
+<td style="text-align: left;">0.33</td>
+<td style="text-align: left;">0.188</td>
+<td style="text-align: left;">0.152</td>
+<td style="text-align: left;">exercise</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">0.84</td>
+<td style="text-align: left;">0.26</td>
+<td style="text-align: left;">0.085</td>
+<td style="text-align: left;">0.156</td>
+<td style="text-align: left;">exercise</td>
+</tr>
+</tbody>
+</table></div>
+<p>Look at path 4. With hindsight, holding was better: its realized cash flow from holding, 0.170, beats exercising for 0.13. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">t=2</annotation></semantics></math>, though, the rule compares the payoff now with the fitted curve at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>4</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.97</mn></mrow><annotation encoding="application/x-tex">S_{4}(2)=0.97</annotation></semantics></math>, which puts the value of holding at 0.118. So the rule exercises. The decision depends on path 4 only through its share price today.</p>
+<p><strong>Why fit only the in-the-money paths?</strong> An out-of-the-money path pays nothing if exercised, so holding is always at least as good, and there is no decision to make. The curve is only needed where exercising pays something, so Longstaff and Schwartz fit it there, and all three coefficients go to the share prices where the choice matters.</p>
+<p><strong>Why keep the realized cash flows instead of the fitted values?</strong> After the decision, a path that holds keeps its realized <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_{i}(t)</annotation></semantics></math>; only a path that exercises changes its cash flow, to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(K,S_{i}(t))</annotation></semantics></math>. Suppose instead that each in-the-money path took the larger of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\hat{H}_{t}</annotation></semantics></math>. Wherever the curve came out too high, we would keep its value; wherever it came out too low, the payoff would replace it. The curve’s errors would no longer cancel, and the premium would drift up: on the eight paths, to 0.1178 USD/share instead of 0.1144. Keeping the realized cash flows uses the curve only to choose when to exercise. If we fit the curve on one set of paths and price on new paths, every cash flow is one a holder could actually receive, so a poor curve can only lower the price. On the same eight paths, the curve has partly seen each path’s future, so 0.1144 can still be a little high; with thousands of paths, as in Task 2 of the example, this effect is small.</p>
+<p>Discounting the date-1 cash flows to today and averaging gives the American premium, 0.1144 USD/share. Always holding on the same paths gives the European premium, 0.0564 USD/share, so the early-exercise premium is about 0.058 USD/share.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Suppose a ninth path had <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.90</mn></mrow><annotation encoding="application/x-tex">S(2)=0.90</annotation></semantics></math> USD/share. Using the same fit, would it exercise at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">t=2</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> Yes. Exercising pays <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.10</mn><mo>−</mo><mn>0.90</mn><mo>=</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">1.10-0.90=0.20</annotation></semantics></math> USD/share, more than the fitted value of holding, <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>H</mi><mo accent="true">̂</mo></mover><mn>2</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mn>1.070</mn><mo>+</mo><mn>2.983</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.90</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>1.813</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.81</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.146</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat{H}_{2}(0.90)=-1.070+2.983(0.90)-1.813(0.81)=0.146\ \mathrm{USD/share}.</annotation></semantics></math></div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-LSM-Premium-Fall-2026.ipynb">L10a example: Longstaff–Schwartz premium</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L10a">L10a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do we track the signs, breakevens, and POP of a multi-leg contract? · CHEME 5660</title>
+  <meta name="description" content="Add the leg premiums with a plus sign for each leg we buy and a minus sign for each leg we sell. Then write the profit on each interval between the strikes, where it is a straight line, and set the sloped lines to zero to find the breakevens. The POP is the probability that the share price at expiration lands where the profit is positive.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Option strategies</span>
+    </p>
+    <h1 id='article-title'>How do we track the signs, breakevens, and POP of a multi-leg contract?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Add the leg premiums with a plus sign for each leg we buy and a minus sign for each leg we sell. Then write the profit on each interval between the strikes, where it is a straight line, and set the sloped lines to zero to find the breakevens. The POP is the probability that the share price at expiration lands where the profit is positive.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Step 1: the composite premium and its sign.</strong> Each premium <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{P}_{i}</annotation></semantics></math> is a positive number, and the orientation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_{i}</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> bought, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math> sold) sets its sign. So the composite premium is what we pay minus what we collect:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mi>𝒞</mi></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>𝒞</mi></mrow></munder><msub><mi>θ</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>n</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>i</mi></msub><mo>=</mo><munder><mo>∑</mo><mtext mathvariant="normal">long legs</mtext></munder><msub><mi>n</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>i</mi></msub><mo>−</mo><munder><mo>∑</mo><mtext mathvariant="normal">short legs</mtext></munder><msub><mi>n</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>𝒫</mi><mi>i</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal{P}_{\mathcal{C}}=\sum_{i\in\mathcal{C}}\theta_{i}\,n_{i}\,\mathcal{P}_{i}=\sum_{\text{long legs}}n_{i}\,\mathcal{P}_{i}-\sum_{\text{short legs}}n_{i}\,\mathcal{P}_{i}.
+</annotation></semantics></math></div>
+<p>A positive <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mi>𝒞</mi></msub><annotation encoding="application/x-tex">\mathcal{P}_{\mathcal{C}}</annotation></semantics></math> is a price we pay, a debit. A negative one is a price we are paid, a credit of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>𝒫</mi><mi>𝒞</mi></msub></mrow><annotation encoding="application/x-tex">-\mathcal{P}_{\mathcal{C}}</annotation></semantics></math>. Take an iron condor on a share at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S(0)=100</annotation></semantics></math> USD/share, 30 days from expiration, with these quotes (European BSM premiums at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, in USD/share): a long put at 85 for 0.08, a short put at 90 for 0.40, a short call at 110 for 0.66, and a long call at 115 for 0.22. Then:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>𝒫</mi><mi>𝒞</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.08</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.40</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.66</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.22</mn><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>−</mo><mn>0.76</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mo>,</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathcal{P}_{\mathcal{C}}&amp;=(1)(0.08)+(-1)(0.40)+(-1)(0.66)+(1)(0.22)\\
+&amp;=-0.76\ \mathrm{USD/share},
+\end{aligned}
+</annotation></semantics></math></div>
+<p>a credit of 0.76 USD/share. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mn>0.04</mn><mo>⋅</mo><mn>30</mn><mi>/</mi><mn>365</mn></mrow></msup><mo>=</mo><mn>1.0033</mn></mrow><annotation encoding="application/x-tex">\mathcal{D}_{T,0}(g_{y})=e^{0.04\cdot30/365}=1.0033</annotation></semantics></math>, so the credit grown to expiration is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.7625</mn><annotation encoding="application/x-tex">0.7625</annotation></semantics></math> USD/share.</p>
+<p><strong>Step 2: the profit on each interval.</strong> Between neighboring strikes, each leg stays in or out of the money, so the profit is a straight line. On each interval, keep only the in-the-money legs. Below 85 USD/share, for example, both puts pay:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>0.7625</mn><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>90</mn><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>85</mn><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>0.7625</mn><mo>−</mo><mn>5</mn><mo>=</mo><mo>−</mo><mn>4.2375</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\hat{P}_{\mathcal{C}}(S(T))&amp;=0.7625-(90-S(T))+(85-S(T))\\
+&amp;=0.7625-5=-4.2375\ \mathrm{USD/share}.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The other intervals follow the same way (USD/share):</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Interval</th>
+<th style="text-align: left;">In-the-money legs</th>
+<th style="text-align: left;">Profit at expiration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mn>85</mn></mrow><annotation encoding="application/x-tex">S(T)&lt;85</annotation></semantics></math></td>
+<td style="text-align: left;">both puts</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>4.2375</mn></mrow><annotation encoding="application/x-tex">-4.2375</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>85</mn><mo>≤</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mn>90</mn></mrow><annotation encoding="application/x-tex">85\leq S(T)&lt;90</annotation></semantics></math></td>
+<td style="text-align: left;">short put</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>89.2375</mn></mrow><annotation encoding="application/x-tex">S(T)-89.2375</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mo>≤</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mn>110</mn></mrow><annotation encoding="application/x-tex">90\leq S(T)\leq110</annotation></semantics></math></td>
+<td style="text-align: left;">none</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.7625</mn><annotation encoding="application/x-tex">0.7625</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>110</mn><mo>&lt;</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mn>115</mn></mrow><annotation encoding="application/x-tex">110&lt;S(T)\leq115</annotation></semantics></math></td>
+<td style="text-align: left;">short call</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>110.7625</mn><mo>−</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">110.7625-S(T)</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>115</mn></mrow><annotation encoding="application/x-tex">S(T)&gt;115</annotation></semantics></math></td>
+<td style="text-align: left;">both calls</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>4.2375</mn></mrow><annotation encoding="application/x-tex">-4.2375</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Step 3: breakevens, maximum profit, and maximum loss.</strong> Setting each sloped line to zero gives <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>S</mi><mo>−</mo><mo>‡</mo></msubsup><mo>=</mo><mn>90</mn><mo>−</mo><mn>0.7625</mn><mo>=</mo><mn>89.2375</mn></mrow><annotation encoding="application/x-tex">S^{\ddagger}_{-}=90-0.7625=89.2375</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>S</mi><mo>+</mo><mo>‡</mo></msubsup><mo>=</mo><mn>110</mn><mo>+</mo><mn>0.7625</mn><mo>=</mo><mn>110.7625</mn></mrow><annotation encoding="application/x-tex">S^{\ddagger}_{+}=110+0.7625=110.7625</annotation></semantics></math> USD/share. The maximum profit is the credit grown to expiration, 0.7625 USD/share, and the maximum loss is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>−</mo><mn>0.7625</mn><mo>=</mo><mn>4.2375</mn></mrow><annotation encoding="application/x-tex">5-0.7625=4.2375</annotation></semantics></math> USD/share on either side.</p>
+<p><strong>Why don’t the two sides’ losses add up?</strong> Each side does act as its own credit spread. As separate trades, the put spread collects <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.40</mn><mo>−</mo><mn>0.08</mn><mo>=</mo><mn>0.32</mn></mrow><annotation encoding="application/x-tex">0.40-0.08=0.32</annotation></semantics></math> and the call spread <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.66</mn><mo>−</mo><mn>0.22</mn><mo>=</mo><mn>0.44</mn></mrow><annotation encoding="application/x-tex">0.66-0.22=0.44</annotation></semantics></math> USD/share. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>80</mn></mrow><annotation encoding="application/x-tex">S(T)=80</annotation></semantics></math> USD/share, the put spread loses 5 USD/share less its credit grown to expiration, and the call spread keeps its credit grown to expiration. The two credits add up to the condor’s credit, so together they make the condor’s maximum loss:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0.32</mn><mo>+</mo><mn>0.44</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.0033</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>5</mn><mo>=</mo><mn>0.7625</mn><mo>−</mo><mn>5</mn><mo>=</mo><mo>−</mo><mn>4.2375</mn><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(0.32+0.44)(1.0033)-5=0.7625-5=-4.2375\ \mathrm{USD/share}.
+</annotation></semantics></math> The share price can finish below 90 or above 110, but not both, so at most one side loses, and the other side’s credit always offsets part of it.</p>
+<p><strong>Step 4: the probability of profit.</strong> The condor makes money between its breakevens, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">POP</mtext><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>S</mi><mo>−</mo><mo>‡</mo></msubsup><mo>&lt;</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><msubsup><mi>S</mi><mo>+</mo><mo>‡</mo></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{POP}=\mathbb{P}\left(S^{\ddagger}_{-}&lt;S(T)&lt;S^{\ddagger}_{+}\right)</annotation></semantics></math>. Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> with the same <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, the POP is 0.790. The short legs’ POEs are 0.111 (put) and 0.133 (call), and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mn>0.111</mn><mo>−</mo><mn>0.133</mn><mo>=</mo><mn>0.756</mn></mrow><annotation encoding="application/x-tex">1-0.111-0.133=0.756</annotation></semantics></math> is smaller than the POP: each breakeven lies beyond its short strike, so the condor still profits on some outcomes where a short leg is exercised (<a href="exercised-but-profitable.html">exercised but profitable</a>). With simulated share prices, we skip the breakevens: compute the profit of each sample and count the positive ones. This works for any number of legs.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Drop the long put, so the condor becomes a protected strangle. What happens to the credit, the lower breakeven, and the maximum loss below it? </p><details><summary>Show the answer</summary><div> The credit rises to 0.84 USD/share, or 0.8428 grown to expiration. The lower breakeven moves to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mo>−</mo><mn>0.8428</mn><mo>=</mo><mn>89.1572</mn></mrow><annotation encoding="application/x-tex">90-0.8428=89.1572</annotation></semantics></math> USD/share, and the maximum loss below it is 89.1572 USD/share, at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">S(T)=0</annotation></semantics></math>: the put side is no longer capped.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb">L11a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb">L11a derivation: profit, loss, and breakevens</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb">L10b lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L10b">L10b symbols and units</a></li><li><a href="../notation.html#L11a">L11a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="exercised-but-profitable.html">How can a short option be exercised and still make money?</a></li><li><a href="closing-early.html">Why does closing a credit trade early earn less, and why do traders do it anyway?</a></li><li><a href="collar-strikes.html">How do a collar&#x27;s strikes set its cost, floor, cap, and chance of loss?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

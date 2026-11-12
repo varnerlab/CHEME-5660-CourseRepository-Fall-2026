@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do a collar&#x27;s strikes set its cost, floor, cap, and chance of loss? · CHEME 5660</title>
+  <meta name="description" content="A higher put strike raises the floor but costs more. A higher call strike raises the cap but brings in less. If the collar costs money to open, its breakeven sits above that of the shares, so it loses slightly more often than the shares, but never by more than its maximum loss. A collar still contains a sold call, so the shares can be called away just as in a covered call.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Option strategies</span>
+    </p>
+    <h1 id='article-title'>How do a collar&#x27;s strikes set its cost, floor, cap, and chance of loss?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>A higher put strike raises the floor but costs more. A higher call strike raises the cap but brings in less. If the collar costs money to open, its breakeven sits above that of the shares, so it loses slightly more often than the shares, but never by more than its maximum loss. A collar still contains a sold call, so the shares can be called away just as in a covered call.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What does each strike set?</strong> With shares bought at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(0)</annotation></semantics></math>, a put bought at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>1</mn></msub><annotation encoding="application/x-tex">K_{1}</annotation></semantics></math> for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\mathcal{P}_{1}</annotation></semantics></math>, and a call sold at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>2</mn></msub><annotation encoding="application/x-tex">K_{2}</annotation></semantics></math> for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒫</mi><mn>2</mn></msub><annotation encoding="application/x-tex">\mathcal{P}_{2}</annotation></semantics></math>, every number in L11b follows from one quantity, the total cost grown to expiration, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>𝒫</mi><mn>1</mn></msub><mo>−</mo><msub><mi>𝒫</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C=\mathcal{D}_{T,0}(g_{y})\cdot\left(S(0)+\mathcal{P}_{1}-\mathcal{P}_{2}\right)</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">maximum loss</mtext><mo>=</mo><mi>C</mi><mo>−</mo><msub><mi>K</mi><mn>1</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><mtext mathvariant="normal">maximum profit</mtext><mo>=</mo><msub><mi>K</mi><mn>2</mn></msub><mo>−</mo><mi>C</mi><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>S</mi><mo>‡</mo></msup><mo>=</mo><mi>C</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{maximum loss}=C-K_{1},\qquad\text{maximum profit}=K_{2}-C,\qquad S^{\ddagger}=C.
+</annotation></semantics></math></div>
+<p>Raising <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>1</mn></msub><annotation encoding="application/x-tex">K_{1}</annotation></semantics></math> lifts the floor, but the put costs more, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math> rises. Raising <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>2</mn></msub><annotation encoding="application/x-tex">K_{2}</annotation></semantics></math> lifts the cap, but the call collects less, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math> also rises. The net premium <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mn>1</mn></msub><mo>−</mo><msub><mi>𝒫</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\mathcal{P}_{1}-\mathcal{P}_{2}</annotation></semantics></math> decides whether the collar opens for a debit, at zero cost, or for a credit.</p>
+<p><strong>Three collars on one share.</strong> Take <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S(0)=100</annotation></semantics></math> USD/share, three months to expiration, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1.0101</mn></mrow><annotation encoding="application/x-tex">\mathcal{D}_{T,0}(g_{y})=1.0101</annotation></semantics></math>. The quotes (USD/share) are BSM premiums at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.25</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.25\,\mathrm{yr}^{-1/2}</annotation></semantics></math>: puts at 95 for 2.43 and at 90 for 1.13, calls at 105 for 3.35 and at 110 for 1.92. Each collar is labeled by its strikes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>1</mn></msub><mi>/</mi><msub><mi>K</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">K_{1}/K_{2}</annotation></semantics></math>, amounts are in USD/share, and the last column is the probability of a loss under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><msup><mi>S</mi><mo>‡</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb{Q}(S(T)&lt;S^{\ddagger})</annotation></semantics></math>:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Position</th>
+<th style="text-align: left;">Net premium</th>
+<th style="text-align: left;">Max loss</th>
+<th style="text-align: left;">Max profit</th>
+<th style="text-align: left;">Breakeven</th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>(loss)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">95/105</td>
+<td style="text-align: left;">credit 0.92</td>
+<td style="text-align: left;">5.08</td>
+<td style="text-align: left;">4.92</td>
+<td style="text-align: left;">100.08</td>
+<td style="text-align: left;">0.495</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">95/110</td>
+<td style="text-align: left;">debit 0.51</td>
+<td style="text-align: left;">6.52</td>
+<td style="text-align: left;">8.48</td>
+<td style="text-align: left;">101.52</td>
+<td style="text-align: left;">0.541</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">90/110</td>
+<td style="text-align: left;">credit 0.79</td>
+<td style="text-align: left;">10.21</td>
+<td style="text-align: left;">9.79</td>
+<td style="text-align: left;">100.21</td>
+<td style="text-align: left;">0.500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shares</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">101.01</td>
+<td style="text-align: left;">unlimited</td>
+<td style="text-align: left;">101.01</td>
+<td style="text-align: left;">0.525</td>
+</tr>
+</tbody>
+</table></div>
+<p>For <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>1</mn></msub><mo>=</mo><mn>95</mn></mrow><annotation encoding="application/x-tex">K_{1}=95</annotation></semantics></math>, a call near 108 USD/share would pay for the whole put, a zero-cost collar. Listed strikes come in steps, so in practice we pick the nearest one.</p>
+<p><strong>Why can a collar lose more often than the shares?</strong> The 95/110 collar opens for a debit, so its breakeven, 101.52, sits above the shares’ 101.01. Between the strikes, it moves one for one with the shares but trails them by the debit grown to expiration, so it loses on slightly more outcomes, 0.541 against 0.525. In exchange, it can never lose more than 6.52 USD/share, while the shares can lose 101.01. The shares alone earn more for any <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><msub><mi>K</mi><mn>1</mn></msub><mo>−</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒫</mi><mn>1</mn></msub><mo>−</mo><msub><mi>𝒫</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>94.48</mn></mrow><annotation encoding="application/x-tex">S(T)&gt;K_{1}-\mathcal{D}_{T,0}(g_{y})\cdot(\mathcal{P}_{1}-\mathcal{P}_{2})=94.48</annotation></semantics></math> USD/share; below that, the floor pays. A credit collar such as 95/105 lowers the breakeven instead, but caps the profit sooner.</p>
+<p><strong>Which strikes should we choose?</strong> No formula picks them. The put strike sets the largest loss we accept, the call strike the largest gain we give up, and the net premium follows from both. The <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb">SPY collar example</a> compares these numbers using market quotes.</p>
+<p><strong>Does a collar protect us from losing the shares?</strong> No. A collar holds the same short call as a covered call. If <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><msub><mi>K</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">S(T)&gt;K_{2}</annotation></semantics></math>, the call is exercised and the shares are sold at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>2</mn></msub><annotation encoding="application/x-tex">K_{2}</annotation></semantics></math>. The put protects the value of the shares, not our ownership of them. Listed calls are American, so the shares can also be called away before expiration, most likely just before an ex-dividend date, when the call is deep in the money and the dividend is worth more than the extrinsic value left in the call (L10a). To keep the shares, we must buy the call back before then, at its current premium.</p>
+<div class="answer-check"><p><strong>Try it.</strong> For the 95/110 collar, what are the profits at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>80</mn></mrow><annotation encoding="application/x-tex">S(T)=80</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>120</mn></mrow><annotation encoding="application/x-tex">S(T)=120</annotation></semantics></math> USD/share, and what would the shares alone earn? </p><details><summary>Show the answer</summary><div> The collar earns <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mo>−</mo><mn>101.52</mn><mo>=</mo><mo>−</mo><mn>6.52</mn></mrow><annotation encoding="application/x-tex">95-101.52=-6.52</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>110</mn><mo>−</mo><mn>101.52</mn><mo>=</mo><mn>8.48</mn></mrow><annotation encoding="application/x-tex">110-101.52=8.48</annotation></semantics></math> USD/share. The shares alone earn <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mo>−</mo><mn>101.01</mn><mo>=</mo><mo>−</mo><mn>21.01</mn></mrow><annotation encoding="application/x-tex">80-101.01=-21.01</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>120</mn><mo>−</mo><mn>101.01</mn><mo>=</mo><mn>18.99</mn></mrow><annotation encoding="application/x-tex">120-101.01=18.99</annotation></semantics></math> USD/share.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb">L11b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb">L11b example: protective collar on SPY</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L11b">L11b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="exercised-but-profitable.html">How can a short option be exercised and still make money?</a></li><li><a href="composite-breakevens.html">How do we track the signs, breakevens, and POP of a multi-leg contract?</a></li><li><a href="closing-early.html">Why does closing a credit trade early earn less, and why do traders do it anyway?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "course": "CHEME 5660",
   "semester": "Fall 2026",
-  "updated": "2026-10-27",
+  "updated": "2026-11-12",
   "themes": [
     {
       "id": "models",
@@ -42,6 +42,11 @@
       "id": "options",
       "name": "Options & premiums",
       "description": "Price European and American options, and read what the premium and its inputs tell us."
+    },
+    {
+      "id": "strategies",
+      "name": "Option strategies",
+      "description": "What composite contracts, covered calls, and collars can earn and lose, and how to manage them."
     }
   ],
   "articles": [
@@ -961,6 +966,259 @@
           "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-9/L9b/advanced/spxw_volatility_skew/CHEME-5660-L9b-Advanced-SPXW-Volatility-Skew-Fall-2026.ipynb"
         }
       ]
+    },
+    {
+      "id": "delta-poe-gap",
+      "theme": "options",
+      "title": "Why is a call's Delta close to, but larger than, its probability of exercise?",
+      "answer": "Both add up the same in-the-money outcomes at expiration. The probability of exercise under Q weights each outcome by its chance of happening. Delta also weights it by how much the share grew to get there, discounted to today, so outcomes with more up moves count for more. That makes a call's Delta a little larger, and the gap grows with the volatility times the square root of the time to expiration.",
+      "lectures": [
+        "L10a"
+      ],
+      "keywords": "Delta probability of exercise POE q star q* N(d+) N(d-) risk-neutral CRR tree hedge ratio sigma sqrt T gap derivative premium",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L10a/L10b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a advanced: Delta as a probability of exercise",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a example: POE and POP of a short call",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**Where does the extra factor come from?** On a CRR tree with $h$ steps, the premium of a call on a share with no dividends is a discounted, probability-weighted sum over the terminal nodes (L10a). Delta is the slope of the premium with respect to today's share price $S_{0}$. The tree's $u$, $d$, and $q$ do not depend on $S_{0}$, so only the payoffs move. An in-the-money payoff $S_{0}u^{k}d^{h-k}-K$ rises by $u^{k}d^{h-k}$ for each USD/share added to $S_{0}$, and $u^{k}d^{h-k}=S_{T}/S_{0}$ is the factor by which the share grew to reach node $k$. Out-of-the-money payoffs stay at zero. So:\n\n$$\n\\begin{aligned}\n\\Delta_{c}&=\\mathcal{D}^{-1}_{T,0}(g_{y})\\sum_{k\\,\\in\\,\\text{ITM}}\\underbrace{\\binom{h}{k}q^{k}(1-q)^{h-k}}_{\\mathbb{Q}\\text{ probability of node }k}\\;\\underbrace{u^{k}d^{h-k}}_{S_{T}/S_{0}}\\\\\n\\mathbb{Q}\\left(S_{T}>K\\right)&=\\sum_{k\\,\\in\\,\\text{ITM}}\\binom{h}{k}q^{k}(1-q)^{h-k}.\n\\end{aligned}\n$$\n\nThe probability of exercise (POE) under $\\mathbb{Q}$ counts each in-the-money node by its probability. Delta also weights it by how much the share grew to get there, discounted to today. To get the lecture's proposition, split the discount factor $e^{-g_{y}h\\Delta t}$ into one factor $e^{-g_{y}\\Delta t}$ per step. Each up step then carries the weight $q^{*}=q\\,u\\,e^{-g_{y}\\Delta t}$, and each down step the weight $(1-q)\\,d\\,e^{-g_{y}\\Delta t}=1-q^{*}$. The two weights add to one because, under $\\mathbb{Q}$, the expected share price grows at the risk-free rate. So Delta is itself a probability of finishing in the money, computed with the up probability $q^{*}$.\n\n**Why is Delta larger?** The tree only has $q<1$ when $u>e^{g_{y}\\Delta t}$, so $q^{*}=q\\,u\\,e^{-g_{y}\\Delta t}>q$. A larger up probability moves weight toward the nodes with the most up moves. For a call, those are exactly the in-the-money nodes, so their total weight rises, and $\\Delta_{c}>\\mathbb{Q}(S_{T}>K)$.\n\n**A two-step example.** Take $S_{0}=100$ USD/share, $K=95$ USD/share, $T=0.5$ year, $h=2$ steps of $\\Delta t=0.25$ year, $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$, and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$. Then $u=e^{0.15}=1.1618$, $d=0.8607$, $q=0.4959$, and $q^{*}=q\\,u\\,e^{-0.01}=0.5705$. The terminal share prices are 134.99, 100.00, and 74.08 USD/share, so the two top nodes are in the money, and each probability is one minus the chance of two down moves:\n\n$$\n\\begin{aligned}\n\\mathbb{Q}\\left(S_{T}>K\\right)&=1-(1-q)^{2}=1-0.5041^{2}=0.7459,\\\\\n\\Delta_{c}&=1-\\left(1-q^{*}\\right)^{2}=1-0.4295^{2}=0.8155.\n\\end{aligned}\n$$\n\nRepricing the tree at $S_{0}=100.01$ and $99.99$ USD/share and taking the central difference gives the same Delta, 0.8155. Switching from $q$ to $q^{*}$ raises the top node's weight from 0.2460 to 0.3254 and lowers the bottom node's from 0.2541 to 0.1845, so the in-the-money total rises.\n\n**How far apart can they be?** As the tree steps shrink, Delta becomes $N(d_{+})$ and the POE under $\\mathbb{Q}$ becomes $N(d_{-})$, and $d_{+}-d_{-}=\\sigma\\sqrt{T}$. For an at-the-money call with $S_{0}=K=100$ USD/share and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$:\n\n| Contract | $\\sigma\\sqrt{T}$ | Delta, $N(d_{+})$ | POE under $\\mathbb{Q}$, $N(d_{-})$ | Gap |\n|:--|:--|:--|:--|:--|\n| 30 days, $\\sigma=0.30$ | 0.086 | 0.532 | 0.498 | 0.034 |\n| 1 year, $\\sigma=0.50$ | 0.500 | 0.629 | 0.433 | 0.197 |\n\nSo Delta is a good estimate of the POE under $\\mathbb{Q}$ for short contracts on calm shares, and a poor one for long contracts or volatile shares. Both numbers come from the pricing rule $\\mathbb{Q}$; neither is our forecast. [Which probability should we use?](which-probability.html) compares them with a forecast under $\\mathbb{P}$.\n\n**Check.** In the two-step example, raise the strike to $K=101$ USD/share, so only the top node is in the money. What are the POE under $\\mathbb{Q}$ and Delta? **Answer:** $\\mathbb{Q}(S_{T}>K)=q^{2}=0.2460$ and $\\Delta_{c}=(q^{*})^{2}=0.3254$. Delta is still larger, because $q^{*}>q$."
+    },
+    {
+      "id": "which-probability",
+      "theme": "options",
+      "title": "When Delta, the risk-neutral POE, and our forecast disagree, which should we use?",
+      "answer": "They answer different questions. Delta and the probabilities under Q describe how the market prices the option. Our forecast under P describes what we think will happen. We decide with our forecast, but it is only as good as our estimate of the drift, the input we know least well.",
+      "lectures": [
+        "L10a",
+        "L10b",
+        "L11a"
+      ],
+      "keywords": "Delta risk-neutral Q real-world P forecast POE POP drift estimate historical simulation which probability trust seller conservative AMD NVDA",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L10a/L10b, L11a",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a example: POE and POP of a short call",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11a example: put credit spread on AMD",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Example-Delta-VerticalSpread-Fall-2026.ipynb"
+        },
+        {
+          "label": "L4b advanced: drift uncertainty",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**Three numbers for one call.** In the L10a example, we sell an NVDA call with strike $K=235$ USD/share, 43 days to expiration, a premium of 9.88 USD/share, and an implied volatility of 0.3543. Our forecast $\\mathbb{P}$ is geometric Brownian motion with the historical drift $\\hat{\\mu}=0.5788\\,\\mathrm{yr}^{-1}$ and volatility $\\hat{\\sigma}=0.3886\\,\\mathrm{yr}^{-1/2}$. The risk-neutral $\\mathbb{Q}$ uses the drift $g_{y}=0.0413\\,\\mathrm{yr}^{-1}$ and the implied volatility:\n\n| | Delta (quoted) | POE under $\\mathbb{Q}$ | POE under $\\mathbb{P}$ |\n|:--|:--|:--|:--|\n| Probability the call is exercised | 0.4833 | 0.4295 | 0.6185 |\n| Seller's POP | | 0.6976 | 0.5034 |\n\n**What does each number answer?**\n\n* __Delta__ is the hedge ratio the trading platform computes under $\\mathbb{Q}$. Read as a probability, it sits slightly above the POE under $\\mathbb{Q}$ ([why Delta is larger](delta-poe-gap.html)). It is not a worst case for a seller: here our forecast puts the chance of exercise at 0.62, well above Delta.\n* __The probabilities under $\\mathbb{Q}$__ are the ones the market price is built on. Under $\\mathbb{Q}$, buying or selling at the market price has an expected NPV of about zero ([why we price with q](risk-neutral-probability.html)). So the seller's POP of 0.70 under $\\mathbb{Q}$ is not, by itself, a reason to sell. The seller wins a small amount often and loses a large amount now and then, and under $\\mathbb{Q}$ the two balance. \"Risk-neutral\" names this pricing rule; it does not say that the trade has no risk.\n* __The probabilities under $\\mathbb{P}$__ are our own forecast, and we decide with them. Under $\\mathbb{Q}$, a trade at the market price is worth about zero, so a trade can only look good to us when our forecast differs from $\\mathbb{Q}$. Be careful about why it differs. $\\mathbb{Q}$ is a pricing rule, not the market's forecast. If we expect a share to grow faster than the risk-free rate, bullish trades on it will look good under $\\mathbb{P}$. Part of that advantage is just the extra growth we expect for holding a risky share; it does not mean the option is mispriced. Here our forecast says the call is more likely to be exercised than the market implies, so selling it looks worse to us, not better.\n\n**How much should we trust our forecast?** In the L11a example, a put credit spread on AMD has a POP of 0.714 under our forecast and 0.540 under $\\mathbb{Q}$. The gap comes mostly from the drift: our estimate of AMD's mean growth rate is $\\hat{\\mu}_{g}=0.44\\,\\mathrm{yr}^{-1}$. The drift is the hardest parameter to estimate. For geometric Brownian motion, the [L4b drift-uncertainty notebook](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb) shows that a mean growth rate fitted to $T_{\\text{span}}$ years of prices has a standard error of about $\\sqrt{6/5}\\,\\hat{\\sigma}/\\sqrt{T_{\\text{span}}}$. With ten years of AMD's $\\hat{\\sigma}=0.47$, that is about $0.16\\,\\mathrm{yr}^{-1}$. The much narrower bounds printed with the AMD parameters assume that the errors around the fitted line are unrelated to one another, which is not true for prices that follow geometric Brownian motion. Keeping $\\hat{\\sigma}$ fixed and lowering the growth rate shows how much of the advantage depends on it:\n\n| Mean growth rate $\\mu_{g}$ ($\\mathrm{yr}^{-1}$) | 0.44 | 0.20 | 0.00 |\n|:--|:--|:--|:--|\n| POP under $\\mathbb{P}$ | 0.714 | 0.646 | 0.584 |\n\nEven with no growth, the POP stays above 0.540, mostly because the mean growth rate under $\\mathbb{Q}$ is $g_{y}-\\sigma^{2}/2=-0.12\\,\\mathrm{yr}^{-1}$, below zero. The wider implied volatility, 0.56 against our 0.47, accounts for only about 0.01. So most of the gap rests on the drift.\n\n**A practical reading.** Compute the probabilities under both. Where they agree, our model and the market see the trade the same way. Where they disagree, find which input causes the gap, the drift or the volatility, and recompute with a more cautious value. If the trade only looks good with the most favorable drift, it rests on a number we cannot estimate precisely.\n\n**Check.** Set our forecast's drift to $g_{y}$ and its volatility to the implied volatility. What POP do we get for the AMD spread, and what does that say about the trade? **Answer:** The POP under $\\mathbb{Q}$, 0.540. Our forecast then matches $\\mathbb{Q}$, so the trade has an expected NPV of about zero for us, and we have no reason to prefer it."
+    },
+    {
+      "id": "lsm-regression",
+      "theme": "options",
+      "title": "How does the Longstaff–Schwartz regression decide when to exercise early?",
+      "answer": "At each exercise date, we fit a curve to the in-the-money paths that estimates the value of holding from today's share price alone. A path exercises when exercising now pays more than that estimate. The curve is used only to make this choice; each path then keeps the cash flow it actually receives.",
+      "lectures": [
+        "L10a"
+      ],
+      "keywords": "Longstaff Schwartz LSM least squares regression continuation value hold exercise American put Monte Carlo in-the-money paths realized cash flows fitted H hat",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L10a/L10b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a example: Longstaff–Schwartz premium",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-LSM-Premium-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**What does the regression estimate?** At date $t$, the holder of an American put knows today's share price $S_{i}(t)$, but not where the path goes next. The value of holding is the expected discounted cash flow from holding, given today's share price. A single path's cash flow $Y_{i}(t)$ depends on that path's own future, which the holder cannot see. Regressing $Y_{i}(t)$ on $S_{i}(t)$ fits one curve through the cash flows of all the in-the-money paths, so each path's own future is just one point in the fit. The fitted curve $\\hat{H}_{t}(S)=\\beta_{0}+\\beta_{1}S+\\beta_{2}S^{2}$ estimates the value of holding at each share price.\n\n**One backward step on the eight paths.** In the L10a example, $K=1.10$ USD/share, $g_{y}=0.06\\,\\mathrm{yr}^{-1}$, and the exercise dates are one year apart. At $t=2$, five paths are in the money. Discounting their later cash flows one step and fitting gives the paper's reported fit, $\\hat{H}_{2}(S)=-1.070+2.983S-1.813S^{2}$. The table compares exercising now, $V(K,S_{i}(2))$, with the realized cash flow from holding, $Y_{i}(2)$, and the fitted value of holding, $\\hat{H}_{2}(S_{i}(2))$ (USD/share):\n\n| Path | $S_{i}(2)$ | $V$ | $Y_{i}(2)$ | $\\hat{H}_{2}$ | Decision |\n|:--|:--|:--|:--|:--|:--|\n| 1 | 1.08 | 0.02 | 0.000 | 0.037 | hold |\n| 3 | 1.07 | 0.03 | 0.066 | 0.046 | hold |\n| 4 | 0.97 | 0.13 | 0.170 | 0.118 | exercise |\n| 6 | 0.77 | 0.33 | 0.188 | 0.152 | exercise |\n| 7 | 0.84 | 0.26 | 0.085 | 0.156 | exercise |\n\nLook at path 4. With hindsight, holding was better: its realized cash flow from holding, 0.170, beats exercising for 0.13. At $t=2$, though, the rule compares the payoff now with the fitted curve at $S_{4}(2)=0.97$, which puts the value of holding at 0.118. So the rule exercises. The decision depends on path 4 only through its share price today.\n\n**Why fit only the in-the-money paths?** An out-of-the-money path pays nothing if exercised, so holding is always at least as good, and there is no decision to make. The curve is only needed where exercising pays something, so Longstaff and Schwartz fit it there, and all three coefficients go to the share prices where the choice matters.\n\n**Why keep the realized cash flows instead of the fitted values?** After the decision, a path that holds keeps its realized $Y_{i}(t)$; only a path that exercises changes its cash flow, to $V(K,S_{i}(t))$. Suppose instead that each in-the-money path took the larger of $V$ and $\\hat{H}_{t}$. Wherever the curve came out too high, we would keep its value; wherever it came out too low, the payoff would replace it. The curve's errors would no longer cancel, and the premium would drift up: on the eight paths, to 0.1178 USD/share instead of 0.1144. Keeping the realized cash flows uses the curve only to choose when to exercise. If we fit the curve on one set of paths and price on new paths, every cash flow is one a holder could actually receive, so a poor curve can only lower the price. On the same eight paths, the curve has partly seen each path's future, so 0.1144 can still be a little high; with thousands of paths, as in Task 2 of the example, this effect is small.\n\nDiscounting the date-1 cash flows to today and averaging gives the American premium, 0.1144 USD/share. Always holding on the same paths gives the European premium, 0.0564 USD/share, so the early-exercise premium is about 0.058 USD/share.\n\n**Check.** Suppose a ninth path had $S(2)=0.90$ USD/share. Using the same fit, would it exercise at $t=2$? **Answer:** Yes. Exercising pays $1.10-0.90=0.20$ USD/share, more than the fitted value of holding,\n$$\\hat{H}_{2}(0.90)=-1.070+2.983(0.90)-1.813(0.81)=0.146\\ \\mathrm{USD/share}.$$"
+    },
+    {
+      "id": "exercised-but-profitable",
+      "theme": "strategies",
+      "title": "How can a short option be exercised and still make money?",
+      "answer": "Exercise depends on the strike price, but profit depends on the breakeven, and the premium moves the breakeven past the strike. Between the two, the seller is assigned, but the premium still covers what the seller owes. So the seller's POP is larger than one minus the POE, and the buyer's POP is smaller than the POE.",
+      "lectures": [
+        "L10a",
+        "L11a"
+      ],
+      "keywords": "POE POP probability of exercise probability of profit short call short put assigned assignment breakeven strike seller buyer exercised profit",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L10a/L10b, L11a, L11b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a example: POE and POP of a short call",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11a example: put credit spread on AMD",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Example-Delta-VerticalSpread-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**Two reference points.** In the L10a example, we sell an NVDA call with strike $K=235$ USD/share and premium $\\mathcal{P}_{c}=9.88$ USD/share, expiring in $T=0.1178$ year, with $g_{y}=0.0413\\,\\mathrm{yr}^{-1}$. The call is exercised when $S(T)>K+0.01$. The seller's profit at expiration is the premium grown to expiration minus the payoff owed:\n\n$$\n\\hat{P}_{\\mathcal{C}}(S(T))=\\mathcal{D}_{T,0}(g_{y})\\cdot\\mathcal{P}_{c}-(S(T)-K)^{+}=9.93-(S(T)-235)^{+},\n$$\n\nwhich is positive below the breakeven $S^{\\ddagger}=K+\\mathcal{D}_{T,0}(g_{y})\\cdot\\mathcal{P}_{c}=244.93$ USD/share. So the share price at expiration falls into one of three ranges:\n\n| Share price at expiration | Exercised? | Seller's profit (USD/share) |\n|:--|:--|:--|\n| $S(T)\\leq 235.01$ | no | 9.93, the whole premium |\n| $235.01<S(T)<244.93$ | yes | between 0 and 9.93 |\n| $S(T)>244.93$ | yes | negative, without limit |\n\nAt $S(T)=240$ USD/share, the call is exercised and the seller owes $240-235=5$ USD/share, but keeps a profit of $9.93-5=4.93$ USD/share. Being assigned means the seller must deliver the shares at the strike price; it does not mean the trade lost money.\n\n**How do the probabilities fit together?** The seller profits when the call is not exercised, or when it is exercised but finishes below the breakeven:\n\n$$\n\\text{seller's POP}=\\underbrace{(1-\\text{POE})}_{S(T)\\,\\leq\\,K+0.01}+\\underbrace{\\mathbb{P}\\left(K+0.01<S(T)<S^{\\ddagger}\\right)}_{\\text{exercised, still profitable}}.\n$$\n\nUnder $\\mathbb{Q}$, the POE is 0.4295, so $0.6976=0.5705+0.1271$: about one time in eight, the seller is assigned and still makes money. For the buyer, the same middle range is exercised but unprofitable, so the buyer's POP is smaller than the POE.\n\n**The same thing in a composite contract.** In the L11a put credit spread on AMD, the short put at $K_{2}=520$ USD/share is exercised below 519.99 USD/share, but the breakeven is $S^{\\ddagger}=511.20$ USD/share, below the strike by the credit grown to expiration. Under $\\mathbb{Q}$, the short put's POE is 0.492 and the spread's POP is 0.540, which is larger than $1-0.492=0.508$. Between 511.20 and 520 USD/share, the short put is assigned and the spread still makes money. [Multi-leg breakevens](composite-breakevens.html) shows how to find them for any composite contract.\n\n**Check.** What is the seller's profit on the NVDA call if $S(T)=250$ USD/share? **Answer:** $9.93-(250-235)=-5.07$ USD/share. The share price is above the breakeven, so the payoff owed is larger than the premium kept."
+    },
+    {
+      "id": "composite-breakevens",
+      "theme": "strategies",
+      "title": "How do we track the signs, breakevens, and POP of a multi-leg contract?",
+      "answer": "Add the leg premiums with a plus sign for each leg we buy and a minus sign for each leg we sell. Then write the profit on each interval between the strikes, where it is a straight line, and set the sloped lines to zero to find the breakevens. The POP is the probability that the share price at expiration lands where the profit is positive.",
+      "lectures": [
+        "L10b",
+        "L11a"
+      ],
+      "keywords": "composite contract premium sign debit credit theta orientation breakeven maximum loss iron condor credit spread POP multi-leg legs intervals strikes",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L10a/L10b, L11a",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L11a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11a derivation: profit, loss, and breakevens",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Derivation-ProfitLossBreakeven-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**Step 1: the composite premium and its sign.** Each premium $\\mathcal{P}_{i}$ is a positive number, and the orientation $\\theta_{i}$ ($1$ bought, $-1$ sold) sets its sign. So the composite premium is what we pay minus what we collect:\n\n$$\n\\mathcal{P}_{\\mathcal{C}}=\\sum_{i\\in\\mathcal{C}}\\theta_{i}\\,n_{i}\\,\\mathcal{P}_{i}=\\sum_{\\text{long legs}}n_{i}\\,\\mathcal{P}_{i}-\\sum_{\\text{short legs}}n_{i}\\,\\mathcal{P}_{i}.\n$$\n\nA positive $\\mathcal{P}_{\\mathcal{C}}$ is a price we pay, a debit. A negative one is a price we are paid, a credit of $-\\mathcal{P}_{\\mathcal{C}}$. Take an iron condor on a share at $S(0)=100$ USD/share, 30 days from expiration, with these quotes (European BSM premiums at $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$, in USD/share): a long put at 85 for 0.08, a short put at 90 for 0.40, a short call at 110 for 0.66, and a long call at 115 for 0.22. Then:\n\n$$\n\\begin{aligned}\n\\mathcal{P}_{\\mathcal{C}}&=(1)(0.08)+(-1)(0.40)+(-1)(0.66)+(1)(0.22)\\\\\n&=-0.76\\ \\mathrm{USD/share},\n\\end{aligned}\n$$\n\na credit of 0.76 USD/share. With $g_{y}=0.04\\,\\mathrm{yr}^{-1}$, $\\mathcal{D}_{T,0}(g_{y})=e^{0.04\\cdot30/365}=1.0033$, so the credit grown to expiration is $0.7625$ USD/share.\n\n**Step 2: the profit on each interval.** Between neighboring strikes, each leg stays in or out of the money, so the profit is a straight line. On each interval, keep only the in-the-money legs. Below 85 USD/share, for example, both puts pay:\n\n$$\n\\begin{aligned}\n\\hat{P}_{\\mathcal{C}}(S(T))&=0.7625-(90-S(T))+(85-S(T))\\\\\n&=0.7625-5=-4.2375\\ \\mathrm{USD/share}.\n\\end{aligned}\n$$\n\nThe other intervals follow the same way (USD/share):\n\n| Interval | In-the-money legs | Profit at expiration |\n|:--|:--|:--|\n| $S(T)<85$ | both puts | $-4.2375$ |\n| $85\\leq S(T)<90$ | short put | $S(T)-89.2375$ |\n| $90\\leq S(T)\\leq110$ | none | $0.7625$ |\n| $110<S(T)\\leq115$ | short call | $110.7625-S(T)$ |\n| $S(T)>115$ | both calls | $-4.2375$ |\n\n**Step 3: breakevens, maximum profit, and maximum loss.** Setting each sloped line to zero gives $S^{\\ddagger}_{-}=90-0.7625=89.2375$ and $S^{\\ddagger}_{+}=110+0.7625=110.7625$ USD/share. The maximum profit is the credit grown to expiration, 0.7625 USD/share, and the maximum loss is $5-0.7625=4.2375$ USD/share on either side.\n\n**Why don't the two sides' losses add up?** Each side does act as its own credit spread. As separate trades, the put spread collects $0.40-0.08=0.32$ and the call spread $0.66-0.22=0.44$ USD/share. At $S(T)=80$ USD/share, the put spread loses 5 USD/share less its credit grown to expiration, and the call spread keeps its credit grown to expiration. The two credits add up to the condor's credit, so together they make the condor's maximum loss:\n\n$$\n(0.32+0.44)(1.0033)-5=0.7625-5=-4.2375\\ \\mathrm{USD/share}.\n$$ The share price can finish below 90 or above 110, but not both, so at most one side loses, and the other side's credit always offsets part of it.\n\n**Step 4: the probability of profit.** The condor makes money between its breakevens, so $\\text{POP}=\\mathbb{P}\\left(S^{\\ddagger}_{-}<S(T)<S^{\\ddagger}_{+}\\right)$. Under $\\mathbb{Q}$ with the same $\\sigma=0.30\\,\\mathrm{yr}^{-1/2}$, the POP is 0.790. The short legs' POEs are 0.111 (put) and 0.133 (call), and $1-0.111-0.133=0.756$ is smaller than the POP: each breakeven lies beyond its short strike, so the condor still profits on some outcomes where a short leg is exercised ([exercised but profitable](exercised-but-profitable.html)). With simulated share prices, we skip the breakevens: compute the profit of each sample and count the positive ones. This works for any number of legs.\n\n**Check.** Drop the long put, so the condor becomes a protected strangle. What happens to the credit, the lower breakeven, and the maximum loss below it? **Answer:** The credit rises to 0.84 USD/share, or 0.8428 grown to expiration. The lower breakeven moves to $90-0.8428=89.1572$ USD/share, and the maximum loss below it is 89.1572 USD/share, at $S(T)=0$: the put side is no longer capped."
+    },
+    {
+      "id": "closing-early",
+      "theme": "strategies",
+      "title": "Why does closing a credit trade early earn less, and why do traders do it anyway?",
+      "answer": "Buying a short leg back costs its intrinsic value plus its remaining extrinsic value, so at any share price, closing early earns less than holding to expiration would at that same price. Traders close anyway because the extrinsic value left is all the trade can still earn, while the call side can still lose without limit.",
+      "lectures": [
+        "L10b",
+        "L11a"
+      ],
+      "keywords": "close early before expiration buy back extrinsic value time decay theta short strangle credit profit defend roll untested side 50% max profit gamma why wait",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L11a, L11b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L11a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a example: intrinsic and extrinsic value",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-ExtrinsicValue-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10b/CHEME-5660-L10b-Lecture-POP-POE-Delta-CompositeContracts-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**What does closing cost?** To close a short leg at time $t$, we buy it back at its current premium, its intrinsic value plus its extrinsic value $E_{V}(t)$. So if we close a credit trade at a share price $S$:\n\n$$\n\\text{profit if we close}=\\underbrace{\\text{credit grown to }t}_{\\text{collected at entry}}-\\underbrace{\\left(\\text{intrinsic value}+E_{V}(t)\\right)}_{\\text{cost to buy the legs back}}.\n$$\n\nAt expiration, $E_{V}=0$, and the profit at the same share price is the credit grown to $T$ minus the intrinsic value. The two differ by the extrinsic value still in the legs, plus a little interest on the credit. That is why, in the lecture's figure, every curve before expiration lies below the profit at expiration.\n\n**The lecture's strangle in numbers.** A put at $K_{1}=90$ and a call at $K_{2}=110$ USD/share are sold 30 days before expiration, with $S(0)=100$ USD/share, $\\sigma=0.40\\,\\mathrm{yr}^{-1/2}$, and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$. Priced on the CRR tree as American contracts, they bring in 1.00 and 1.44 USD/share, a credit of 2.44 USD/share. Repricing the legs at later dates gives the cost to buy both legs back and the profit if we close. The last column is the profit if we hold to expiration instead and the share price ends at the same value (USD/share):\n\n| Days left | Share price | Cost to close | Profit if closed | If held |\n|:--|:--|:--|:--|:--|\n| 30 | 100 | 2.44 | 0.00 | 2.45 |\n| 20 | 100 | 1.38 | 1.06 | 2.45 |\n| 10 | 100 | 0.39 | 2.06 | 2.45 |\n| 10 | 108 | 2.04 | 0.40 | 2.45 |\n\nBoth legs are out of the money in every row, so the whole cost to buy back is extrinsic value. To estimate it for a real trade, we read the current quotes for each leg, or reprice each leg on the CRR tree at the current share price, days left, and implied volatility, as here.\n\n**Why close before expiration?** \"Closing early earns less\" compares the two at the same share price. The share price at expiration is still unknown, and closing trades the profit we have for the profit we might have.\n\n* __What is left to earn:__ With 10 days left at $S=100$, closing locks in 2.06 of the 2.45 USD/share possible. Holding can add at most the 0.39 USD/share of extrinsic value left.\n* __What is left to lose:__ The call side still loses without limit above the upper breakeven, $110+2.45=112.45$ USD/share. Near expiration, a small move near a strike also changes the profit by more, because the curves bend toward the kinks at the strikes.\n* __A move toward a strike__ makes this concrete: at $S=108$ with 10 days left, the call has grown more expensive, and closing keeps only 0.40 USD/share.\n\nThis is the reasoning behind rules such as tastylive's in the lecture: close at half the maximum profit or about 21 days before expiration. If the share price moves toward a short strike, we can close and take the loss, or defend the trade. One defense from L11a is to roll the untested side: buy back the leg the share price has moved away from, and sell a new one closer to the share price for more credit. Either way, we weigh the credit left to earn against what the trade can still lose.\n\n**Check.** With 20 days left and the share price still at 100 USD/share, what fraction of the credit do we keep by closing? **Answer:** $1.06/2.44\\approx0.43$, close to half, as the lecture's right panel shows."
+    },
+    {
+      "id": "collar-strikes",
+      "theme": "strategies",
+      "title": "How do a collar's strikes set its cost, floor, cap, and chance of loss?",
+      "answer": "A higher put strike raises the floor but costs more. A higher call strike raises the cap but brings in less. If the collar costs money to open, its breakeven sits above that of the shares, so it loses slightly more often than the shares, but never by more than its maximum loss. A collar still contains a sold call, so the shares can be called away just as in a covered call.",
+      "lectures": [
+        "L11b"
+      ],
+      "keywords": "protective collar strike choice put call floor cap net debit credit zero-cost breakeven opportunity point O+ probability of loss assignment early exercise dividend covered call keep shares",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L11b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L11b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11b example: protective collar on SPY",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**What does each strike set?** With shares bought at $S(0)$, a put bought at $K_{1}$ for $\\mathcal{P}_{1}$, and a call sold at $K_{2}$ for $\\mathcal{P}_{2}$, every number in L11b follows from one quantity, the total cost grown to expiration, $C=\\mathcal{D}_{T,0}(g_{y})\\cdot\\left(S(0)+\\mathcal{P}_{1}-\\mathcal{P}_{2}\\right)$:\n\n$$\n\\text{maximum loss}=C-K_{1},\\qquad\\text{maximum profit}=K_{2}-C,\\qquad S^{\\ddagger}=C.\n$$\n\nRaising $K_{1}$ lifts the floor, but the put costs more, so $C$ rises. Raising $K_{2}$ lifts the cap, but the call collects less, so $C$ also rises. The net premium $\\mathcal{P}_{1}-\\mathcal{P}_{2}$ decides whether the collar opens for a debit, at zero cost, or for a credit.\n\n**Three collars on one share.** Take $S(0)=100$ USD/share, three months to expiration, and $g_{y}=0.04\\,\\mathrm{yr}^{-1}$, so $\\mathcal{D}_{T,0}(g_{y})=1.0101$. The quotes (USD/share) are BSM premiums at $\\sigma=0.25\\,\\mathrm{yr}^{-1/2}$: puts at 95 for 2.43 and at 90 for 1.13, calls at 105 for 3.35 and at 110 for 1.92. Each collar is labeled by its strikes $K_{1}/K_{2}$, amounts are in USD/share, and the last column is the probability of a loss under $\\mathbb{Q}$, $\\mathbb{Q}(S(T)<S^{\\ddagger})$:\n\n| Position | Net premium | Max loss | Max profit | Breakeven | $\\mathbb{Q}$(loss) |\n|:--|:--|:--|:--|:--|:--|\n| 95/105 | credit 0.92 | 5.08 | 4.92 | 100.08 | 0.495 |\n| 95/110 | debit 0.51 | 6.52 | 8.48 | 101.52 | 0.541 |\n| 90/110 | credit 0.79 | 10.21 | 9.79 | 100.21 | 0.500 |\n| Shares | | 101.01 | unlimited | 101.01 | 0.525 |\n\nFor $K_{1}=95$, a call near 108 USD/share would pay for the whole put, a zero-cost collar. Listed strikes come in steps, so in practice we pick the nearest one.\n\n**Why can a collar lose more often than the shares?** The 95/110 collar opens for a debit, so its breakeven, 101.52, sits above the shares' 101.01. Between the strikes, it moves one for one with the shares but trails them by the debit grown to expiration, so it loses on slightly more outcomes, 0.541 against 0.525. In exchange, it can never lose more than 6.52 USD/share, while the shares can lose 101.01. The shares alone earn more for any $S(T)>K_{1}-\\mathcal{D}_{T,0}(g_{y})\\cdot(\\mathcal{P}_{1}-\\mathcal{P}_{2})=94.48$ USD/share; below that, the floor pays. A credit collar such as 95/105 lowers the breakeven instead, but caps the profit sooner.\n\n**Which strikes should we choose?** No formula picks them. The put strike sets the largest loss we accept, the call strike the largest gain we give up, and the net premium follows from both. The [SPY collar example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Example-StandardListed-SPY-ProtectiveCollar-Fall-2026.ipynb) compares these numbers using market quotes.\n\n**Does a collar protect us from losing the shares?** No. A collar holds the same short call as a covered call. If $S(T)>K_{2}$, the call is exercised and the shares are sold at $K_{2}$. The put protects the value of the shares, not our ownership of them. Listed calls are American, so the shares can also be called away before expiration, most likely just before an ex-dividend date, when the call is deep in the money and the dividend is worth more than the extrinsic value left in the call (L10a). To keep the shares, we must buy the call back before then, at its current premium.\n\n**Check.** For the 95/110 collar, what are the profits at $S(T)=80$ and $S(T)=120$ USD/share, and what would the shares alone earn? **Answer:** The collar earns $95-101.52=-6.52$ and $110-101.52=8.48$ USD/share. The shares alone earn $80-101.01=-21.01$ and $120-101.01=18.99$ USD/share."
+    },
+    {
+      "id": "net-delta",
+      "theme": "strategies",
+      "title": "What does the net Delta of a covered call or collar tell us?",
+      "answer": "Net Delta is the number of shares the whole position behaves like for a small move in the share price. A covered call behaves like fewer shares than it holds, and a collar like fewer still. Near expiration, a collar behaves like the shares between its strikes and like no shares at all beyond them.",
+      "lectures": [
+        "L11b"
+      ],
+      "keywords": "net Delta covered call collar shares equivalent hedge sensitivity gamma expiration delta-neutral portfolio put call Delta two meanings",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L11b",
+        "date": "2026-11-12"
+      },
+      "sources": [
+        {
+          "label": "L11b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb"
+        },
+        {
+          "label": "L11b derivation: net Delta of shares and options",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Derivation-NetDelta-Fall-2026.ipynb"
+        },
+        {
+          "label": "L10a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**What does the number mean?** For $n$ contracts on $m=100$ shares each, L11b gives:\n\n$$\n\\begin{aligned}\n\\Delta_{\\text{net}}&=mn\\left(1-\\Delta_{c}\\right)&&\\text{(covered call)}\\\\\n\\Delta_{\\text{net}}&=mn\\left(1+\\Delta_{p}-\\Delta_{c}\\right)&&\\text{(collar)}\n\\end{aligned}\n$$\n\nIts unit is shares: for a small move of $\\Delta S$ USD/share, the position gains or loses about $\\Delta_{\\text{net}}\\cdot\\Delta S$ USD, as if it held $\\Delta_{\\text{net}}$ shares. The shares contribute $mn$, the short call $-mn\\,\\Delta_{c}$, and the long put $mn\\,\\Delta_{p}$. Because $0\\leq\\Delta_{c}\\leq1$ and $-1\\leq\\Delta_{p}\\leq0$, both options lower the net Delta: the short call gives up part of each rise, and the long put gains when the shares fall.\n\n**One collar at entry.** Take the 95/110 collar from [the collar strikes answer](collar-strikes.html), one contract on 100 shares at $S=100$ USD/share with three months left, $\\sigma=0.25\\,\\mathrm{yr}^{-1/2}$, and BSM Deltas $\\Delta_{c}=0.268$ and $\\Delta_{p}=-0.290$:\n\n$$\n\\begin{aligned}\n\\Delta_{\\text{net}}&=100\\,(1-0.268)=73.2&&\\text{(covered call)}\\\\\n\\Delta_{\\text{net}}&=100\\,(1-0.290-0.268)=44.2&&\\text{(collar)}\n\\end{aligned}\n$$\n\nIf the share price rises 2 USD/share, the 100 shares alone gain 200 USD, the covered call about 146 USD, and the collar about 88 USD.\n\n**How does it change with the share price and time?** Recomputing the BSM Deltas at other share prices gives the net Delta (shares):\n\n| Share price | 85 | 95 | 100 | 105 | 110 | 120 |\n|:--|:--|:--|:--|:--|:--|:--|\n| Covered call, 3 months left | 97.3 | 84.9 | 73.2 | 59.1 | 44.3 | 20.1 |\n| Collar, 3 months left | 20.0 | 40.5 | 44.2 | 41.8 | 34.9 | 17.9 |\n| Covered call, 5 days left | 100.0 | 100.0 | 99.9 | 94.0 | 48.7 | 0.1 |\n| Collar, 5 days left | 0.0 | 51.3 | 96.2 | 94.0 | 48.7 | 0.1 |\n\nNear expiration, between the strikes, both options are almost worthless and barely move, so the collar behaves like the 100 shares. Beyond a strike, the deep in-the-money option cancels the shares: below 95 USD/share, the put gains what the shares lose, and above 110 USD/share, the call loses what the shares gain. The value is then locked at the floor or the cap, and the net Delta is close to zero. At a strike, the net Delta swings quickly between these values; Gamma measures how fast.\n\n**Is this Delta a probability?** Not for a position. A single call's Delta is close to, and slightly above, its probability of exercise under $\\mathbb{Q}$ ([why](delta-poe-gap.html)); for a put the match is rougher. Each option's Delta is also its sensitivity to the share price. The net Delta adds shares and option Deltas, so only the sensitivity meaning carries over: 44.2 is a number of shares, not a probability.\n\n**Does a net Delta of zero mean no risk?** No. Delta is the slope of the position's value at today's share price. Gamma changes it as the share price moves, and Theta, Vega, and Rho change the value through time, volatility, and the rate (L10a). For a large move, we reprice the legs instead of relying on Delta.\n\n**Check.** With 5 days left at $S=105$ USD/share, why do the covered call and the collar have the same net Delta, 94.0? **Answer:** The put at 95 USD/share is far out of the money, so $\\Delta_{p}\\approx0$, and the collar behaves like the covered call. Its call at 110 USD/share still has a small Delta, 0.06."
     }
   ],
   "notation": [
@@ -1177,7 +1435,7 @@
     {
       "lecture": "L10a",
       "title": "L10a: Monte Carlo Pricing of American Options",
-      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $S_0$ | Share price today. | USD/share |\n| $V(K,S)$ | Payoff from exercising a call or put with strike price $K$ when the share price is $S$. | USD/share |\n| $h$, $\\Delta t$ | Number of exercise dates after today, and the time between them, $\\Delta t=T/h$. The dates are indexed $t=0,1,\\dots,h$. In the Taylor expansion, $\\Delta t$ is instead a small change in calendar time. | Count; yr |\n| $\\mathcal D^{-1}_{t+1,t}(g_y)$ | Discount factor for one step between exercise dates, $e^{-g_y\\Delta t}$. | 1 |\n| $M$ | Number of simulated share price paths. | Paths |\n| $S_i(t)$ | Share price on simulated path $i$ at exercise date $t$. | USD/share |\n| $Y_i(t)$, $\\bar Y$ | Cash flow on path $i$ valued at date $t$, and the average cash flow discounted to today. | USD/share |\n| $\\hat C_t(S)$, $\\beta_0$, $\\beta_1$, $\\beta_2$ | Value of holding at date $t$ fitted by regression on the in-the-money paths, $\\beta_0+\\beta_1S+\\beta_2S^2$, and its coefficients. | USD/share; USD/share, 1, (USD/share)$^{-1}$ |\n| $\\mathcal P^{\\text{AM}}$, $\\mathcal P^{\\text{EU}}$ | American and European premiums. Their difference is the early-exercise premium. | USD/share |\n",
+      "markdown": "| Symbol | Meaning and context | Units |\n|---|---|---|\n| $S_0$ | Share price today. | USD/share |\n| $V(K,S)$ | Payoff from exercising a call or put with strike price $K$ when the share price is $S$. | USD/share |\n| $h$, $\\Delta t$ | Number of exercise dates after today, and the time between them, $\\Delta t=T/h$. The dates are indexed $t=0,1,\\dots,h$. In the Taylor expansion, $\\Delta t$ is instead a small change in calendar time. | Count; yr |\n| $\\mathcal D^{-1}_{t+1,t}(g_y)$ | Discount factor for one step between exercise dates, $e^{-g_y\\Delta t}$. | 1 |\n| $M$ | Number of simulated share price paths. | Paths |\n| $S_i(t)$ | Share price on simulated path $i$ at exercise date $t$. | USD/share |\n| $Y_i(t)$, $\\bar Y$ | Cash flow on path $i$ valued at date $t$, and the average cash flow discounted to today. | USD/share |\n| $\\hat H_t(S)$, $\\beta_0$, $\\beta_1$, $\\beta_2$ | Value of holding at date $t$ fitted by regression on the in-the-money paths, $\\beta_0+\\beta_1S+\\beta_2S^2$, and its coefficients. | USD/share; USD/share, 1, (USD/share)$^{-1}$ |\n| $\\mathcal P^{\\text{AM}}$, $\\mathcal P^{\\text{EU}}$ | American and European premiums. Their difference is the early-exercise premium. | USD/share |\n",
       "source_cell": "week10-longstaff"
     },
     {
@@ -1274,8 +1532,11 @@
       "L3b",
       "L4b",
       "L5b",
-      "L9a/L9b"
+      "L9a/L9b",
+      "L10a/L10b",
+      "L11a",
+      "L11b"
     ],
-    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks. The six options answers (October 27, 2026) follow the themes of the L9a/L9b engagement survey and the L9a, L9b, and L10a lecture notebooks."
+    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks. The six options answers (October 27, 2026) follow the themes of the L9a/L9b engagement survey and the L9a, L9b, and L10a lecture notebooks. The eight answers added on November 12, 2026 follow the themes of the L10a/L10b, L11a, and L11b engagement surveys and the L10a, L10b, L11a, and L11b lecture, example, and derivation notebooks."
   }
 }

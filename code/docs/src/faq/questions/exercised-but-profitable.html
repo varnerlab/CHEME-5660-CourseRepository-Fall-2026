@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How can a short option be exercised and still make money? · CHEME 5660</title>
+  <meta name="description" content="Exercise depends on the strike price, but profit depends on the breakeven, and the premium moves the breakeven past the strike. Between the two, the seller is assigned, but the premium still covers what the seller owes. So the seller&#x27;s POP is larger than one minus the POE, and the buyer&#x27;s POP is smaller than the POE.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Option strategies</span>
+    </p>
+    <h1 id='article-title'>How can a short option be exercised and still make money?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Exercise depends on the strike price, but profit depends on the breakeven, and the premium moves the breakeven past the strike. Between the two, the seller is assigned, but the premium still covers what the seller owes. So the seller’s POP is larger than one minus the POE, and the buyer’s POP is smaller than the POE.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Two reference points.</strong> In the L10a example, we sell an NVDA call with strike <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>235</mn></mrow><annotation encoding="application/x-tex">K=235</annotation></semantics></math> USD/share and premium <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒫</mi><mi>c</mi></msub><mo>=</mo><mn>9.88</mn></mrow><annotation encoding="application/x-tex">\mathcal{P}_{c}=9.88</annotation></semantics></math> USD/share, expiring in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0.1178</mn></mrow><annotation encoding="application/x-tex">T=0.1178</annotation></semantics></math> year, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.0413</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.0413\,\mathrm{yr}^{-1}</annotation></semantics></math>. The call is exercised when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>K</mi><mo>+</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">S(T)&gt;K+0.01</annotation></semantics></math>. The seller’s profit at expiration is the premium grown to expiration minus the payoff owed:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>P</mi><mo accent="true">̂</mo></mover><mi>𝒞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><msub><mi>𝒫</mi><mi>c</mi></msub><mo>−</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><mo>=</mo><mn>9.93</mn><mo>−</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mn>235</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\hat{P}_{\mathcal{C}}(S(T))=\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}-(S(T)-K)^{+}=9.93-(S(T)-235)^{+},
+</annotation></semantics></math></div>
+<p>which is positive below the breakeven <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mo>‡</mo></msup><mo>=</mo><mi>K</mi><mo>+</mo><msub><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><msub><mi>𝒫</mi><mi>c</mi></msub><mo>=</mo><mn>244.93</mn></mrow><annotation encoding="application/x-tex">S^{\ddagger}=K+\mathcal{D}_{T,0}(g_{y})\cdot\mathcal{P}_{c}=244.93</annotation></semantics></math> USD/share. So the share price at expiration falls into one of three ranges:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Share price at expiration</th>
+<th style="text-align: left;">Exercised?</th>
+<th style="text-align: left;">Seller’s profit (USD/share)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mn>235.01</mn></mrow><annotation encoding="application/x-tex">S(T)\leq 235.01</annotation></semantics></math></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">9.93, the whole premium</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>235.01</mn><mo>&lt;</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mn>244.93</mn></mrow><annotation encoding="application/x-tex">235.01&lt;S(T)&lt;244.93</annotation></semantics></math></td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">between 0 and 9.93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>244.93</mn></mrow><annotation encoding="application/x-tex">S(T)&gt;244.93</annotation></semantics></math></td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">negative, without limit</td>
+</tr>
+</tbody>
+</table></div>
+<p>At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">S(T)=240</annotation></semantics></math> USD/share, the call is exercised and the seller owes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>240</mn><mo>−</mo><mn>235</mn><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">240-235=5</annotation></semantics></math> USD/share, but keeps a profit of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9.93</mn><mo>−</mo><mn>5</mn><mo>=</mo><mn>4.93</mn></mrow><annotation encoding="application/x-tex">9.93-5=4.93</annotation></semantics></math> USD/share. Being assigned means the seller must deliver the shares at the strike price; it does not mean the trade lost money.</p>
+<p><strong>How do the probabilities fit together?</strong> The seller profits when the call is not exercised, or when it is exercised but finishes below the breakeven:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">seller’s POP</mtext><mo>=</mo><munder><munder><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mtext mathvariant="normal">POE</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo accent="true">⏟</mo></munder><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>≤</mo><mspace width="0.167em"></mspace><mi>K</mi><mo>+</mo><mn>0.01</mn></mrow></munder><mo>+</mo><munder><munder><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>+</mo><mn>0.01</mn><mo>&lt;</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><msup><mi>S</mi><mo>‡</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">exercised, still profitable</mtext></munder><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{seller&#39;s POP}=\underbrace{(1-\text{POE})}_{S(T)\,\leq\,K+0.01}+\underbrace{\mathbb{P}\left(K+0.01&lt;S(T)&lt;S^{\ddagger}\right)}_{\text{exercised, still profitable}}.
+</annotation></semantics></math></div>
+<p>Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, the POE is 0.4295, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.6976</mn><mo>=</mo><mn>0.5705</mn><mo>+</mo><mn>0.1271</mn></mrow><annotation encoding="application/x-tex">0.6976=0.5705+0.1271</annotation></semantics></math>: about one time in eight, the seller is assigned and still makes money. For the buyer, the same middle range is exercised but unprofitable, so the buyer’s POP is smaller than the POE.</p>
+<p><strong>The same thing in a composite contract.</strong> In the L11a put credit spread on AMD, the short put at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>2</mn></msub><mo>=</mo><mn>520</mn></mrow><annotation encoding="application/x-tex">K_{2}=520</annotation></semantics></math> USD/share is exercised below 519.99 USD/share, but the breakeven is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mo>‡</mo></msup><mo>=</mo><mn>511.20</mn></mrow><annotation encoding="application/x-tex">S^{\ddagger}=511.20</annotation></semantics></math> USD/share, below the strike by the credit grown to expiration. Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, the short put’s POE is 0.492 and the spread’s POP is 0.540, which is larger than <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mn>0.492</mn><mo>=</mo><mn>0.508</mn></mrow><annotation encoding="application/x-tex">1-0.492=0.508</annotation></semantics></math>. Between 511.20 and 520 USD/share, the short put is assigned and the spread still makes money. <a href="composite-breakevens.html">Multi-leg breakevens</a> shows how to find them for any composite contract.</p>
+<div class="answer-check"><p><strong>Try it.</strong> What is the seller’s profit on the NVDA call if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>250</mn></mrow><annotation encoding="application/x-tex">S(T)=250</annotation></semantics></math> USD/share? </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9.93</mn><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>250</mn><mo>−</mo><mn>235</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mn>5.07</mn></mrow><annotation encoding="application/x-tex">9.93-(250-235)=-5.07</annotation></semantics></math> USD/share. The share price is above the breakeven, so the payoff owed is larger than the premium kept.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb">L10a example: POE and POP of a short call</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb">L11a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Example-Delta-VerticalSpread-Fall-2026.ipynb">L11a example: put credit spread on AMD</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L10a">L10a symbols and units</a></li><li><a href="../notation.html#L11a">L11a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="composite-breakevens.html">How do we track the signs, breakevens, and POP of a multi-leg contract?</a></li><li><a href="closing-early.html">Why does closing a credit trade early earn less, and why do traders do it anyway?</a></li><li><a href="collar-strikes.html">How do a collar&#x27;s strikes set its cost, floor, cap, and chance of loss?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
