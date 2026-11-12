@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why is a call&#x27;s Delta close to, but larger than, its probability of exercise? · CHEME 5660</title>
+  <meta name="description" content="Both add up the same in-the-money outcomes at expiration. The probability of exercise under Q weights each outcome by its chance of happening. Delta also weights it by how much the share grew to get there, discounted to today, so outcomes with more up moves count for more. That makes a call&#x27;s Delta a little larger, and the gap grows with the volatility times the square root of the time to expiration.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>Why is a call&#x27;s Delta close to, but larger than, its probability of exercise?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Both add up the same in-the-money outcomes at expiration. The probability of exercise under Q weights each outcome by its chance of happening. Delta also weights it by how much the share grew to get there, discounted to today, so outcomes with more up moves count for more. That makes a call’s Delta a little larger, and the gap grows with the volatility times the square root of the time to expiration.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Where does the extra factor come from?</strong> On a CRR tree with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math> steps, the premium of a call on a share with no dividends is a discounted, probability-weighted sum over the terminal nodes (L10a). Delta is the slope of the premium with respect to today’s share price <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>0</mn></msub><annotation encoding="application/x-tex">S_{0}</annotation></semantics></math>. The tree’s <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> do not depend on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>0</mn></msub><annotation encoding="application/x-tex">S_{0}</annotation></semantics></math>, so only the payoffs move. An in-the-money payoff <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><msup><mi>u</mi><mi>k</mi></msup><msup><mi>d</mi><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup><mo>−</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">S_{0}u^{k}d^{h-k}-K</annotation></semantics></math> rises by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>u</mi><mi>k</mi></msup><msup><mi>d</mi><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex">u^{k}d^{h-k}</annotation></semantics></math> for each USD/share added to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>0</mn></msub><annotation encoding="application/x-tex">S_{0}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>u</mi><mi>k</mi></msup><msup><mi>d</mi><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup><mo>=</mo><msub><mi>S</mi><mi>T</mi></msub><mi>/</mi><msub><mi>S</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">u^{k}d^{h-k}=S_{T}/S_{0}</annotation></semantics></math> is the factor by which the share grew to reach node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>. Out-of-the-money payoffs stay at zero. So:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mi>c</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msubsup><mi>𝒟</mi><mrow><mi>T</mi><mo>,</mo><mn>0</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munder><mo>∑</mo><mrow><mi>k</mi><mspace width="0.167em"></mspace><mo>∈</mo><mspace width="0.167em"></mspace><mtext mathvariant="normal">ITM</mtext></mrow></munder><munder><munder><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>h</mi><mi>k</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>q</mi><mi>k</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><mo accent="true">⏟</mo></munder><mrow><mi>ℚ</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> probability of node </mtext><mspace width="0.333em"></mspace></mrow><mi>k</mi></mrow></munder><mspace width="0.278em"></mspace><munder><munder><mrow><msup><mi>u</mi><mi>k</mi></msup><msup><mi>d</mi><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow><mo accent="true">⏟</mo></munder><mrow><msub><mi>S</mi><mi>T</mi></msub><mi>/</mi><msub><mi>S</mi><mn>0</mn></msub></mrow></munder></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&gt;</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><munder><mo>∑</mo><mrow><mi>k</mi><mspace width="0.167em"></mspace><mo>∈</mo><mspace width="0.167em"></mspace><mtext mathvariant="normal">ITM</mtext></mrow></munder><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>h</mi><mi>k</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>q</mi><mi>k</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>h</mi><mo>−</mo><mi>k</mi></mrow></msup><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\Delta_{c}&amp;=\mathcal{D}^{-1}_{T,0}(g_{y})\sum_{k\,\in\,\text{ITM}}\underbrace{\binom{h}{k}q^{k}(1-q)^{h-k}}_{\mathbb{Q}\text{ probability of node }k}\;\underbrace{u^{k}d^{h-k}}_{S_{T}/S_{0}}\\
+\mathbb{Q}\left(S_{T}&gt;K\right)&amp;=\sum_{k\,\in\,\text{ITM}}\binom{h}{k}q^{k}(1-q)^{h-k}.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The probability of exercise (POE) under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> counts each in-the-money node by its probability. Delta also weights it by how much the share grew to get there, discounted to today. To get the lecture’s proposition, split the discount factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>h</mi><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{-g_{y}h\Delta t}</annotation></semantics></math> into one factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{-g_{y}\Delta t}</annotation></semantics></math> per step. Each up step then carries the weight <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mo>*</mo></msup><mo>=</mo><mi>q</mi><mspace width="0.167em"></mspace><mi>u</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">q^{*}=q\,u\,e^{-g_{y}\Delta t}</annotation></semantics></math>, and each down step the weight <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo>=</mo><mn>1</mn><mo>−</mo><msup><mi>q</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">(1-q)\,d\,e^{-g_{y}\Delta t}=1-q^{*}</annotation></semantics></math>. The two weights add to one because, under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, the expected share price grows at the risk-free rate. So Delta is itself a probability of finishing in the money, computed with the up probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>q</mi><mo>*</mo></msup><annotation encoding="application/x-tex">q^{*}</annotation></semantics></math>.</p>
+<p><strong>Why is Delta larger?</strong> The tree only has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">q&lt;1</annotation></semantics></math> when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>&gt;</mo><msup><mi>e</mi><mrow><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">u&gt;e^{g_{y}\Delta t}</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mo>*</mo></msup><mo>=</mo><mi>q</mi><mspace width="0.167em"></mspace><mi>u</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>g</mi><mi>y</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup><mo>&gt;</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">q^{*}=q\,u\,e^{-g_{y}\Delta t}&gt;q</annotation></semantics></math>. A larger up probability moves weight toward the nodes with the most up moves. For a call, those are exactly the in-the-money nodes, so their total weight rises, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>c</mi></msub><mo>&gt;</mo><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&gt;</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta_{c}&gt;\mathbb{Q}(S_{T}&gt;K)</annotation></semantics></math>.</p>
+<p><strong>A two-step example.</strong> Take <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S_{0}=100</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>95</mn></mrow><annotation encoding="application/x-tex">K=95</annotation></semantics></math> USD/share, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">T=0.5</annotation></semantics></math> year, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">h=2</annotation></semantics></math> steps of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>0.25</mn></mrow><annotation encoding="application/x-tex">\Delta t=0.25</annotation></semantics></math> year, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.30\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>. Then <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msup><mi>e</mi><mn>0.15</mn></msup><mo>=</mo><mn>1.1618</mn></mrow><annotation encoding="application/x-tex">u=e^{0.15}=1.1618</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0.8607</mn></mrow><annotation encoding="application/x-tex">d=0.8607</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>0.4959</mn></mrow><annotation encoding="application/x-tex">q=0.4959</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mo>*</mo></msup><mo>=</mo><mi>q</mi><mspace width="0.167em"></mspace><mi>u</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mo>−</mo><mn>0.01</mn></mrow></msup><mo>=</mo><mn>0.5705</mn></mrow><annotation encoding="application/x-tex">q^{*}=q\,u\,e^{-0.01}=0.5705</annotation></semantics></math>. The terminal share prices are 134.99, 100.00, and 74.08 USD/share, so the two top nodes are in the money, and each probability is one minus the chance of two down moves:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&gt;</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>1</mn><mo>−</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><msup><mn>0.5041</mn><mn>2</mn></msup><mo>=</mo><mn>0.7459</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mi>c</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>1</mn><mo>−</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>q</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><msup><mn>0.4295</mn><mn>2</mn></msup><mo>=</mo><mn>0.8155</mn><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\mathbb{Q}\left(S_{T}&gt;K\right)&amp;=1-(1-q)^{2}=1-0.5041^{2}=0.7459,\\
+\Delta_{c}&amp;=1-\left(1-q^{*}\right)^{2}=1-0.4295^{2}=0.8155.
+\end{aligned}
+</annotation></semantics></math></div>
+<p>Repricing the tree at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>100.01</mn></mrow><annotation encoding="application/x-tex">S_{0}=100.01</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>99.99</mn><annotation encoding="application/x-tex">99.99</annotation></semantics></math> USD/share and taking the central difference gives the same Delta, 0.8155. Switching from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math> to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>q</mi><mo>*</mo></msup><annotation encoding="application/x-tex">q^{*}</annotation></semantics></math> raises the top node’s weight from 0.2460 to 0.3254 and lowers the bottom node’s from 0.2541 to 0.1845, so the in-the-money total rises.</p>
+<p><strong>How far apart can they be?</strong> As the tree steps shrink, Delta becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>+</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_{+})</annotation></semantics></math> and the POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>−</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_{-})</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mo>+</mo></msub><mo>−</mo><msub><mi>d</mi><mo>−</mo></msub><mo>=</mo><mi>σ</mi><msqrt><mi>T</mi></msqrt></mrow><annotation encoding="application/x-tex">d_{+}-d_{-}=\sigma\sqrt{T}</annotation></semantics></math>. For an at-the-money call with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mi>K</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S_{0}=K=100</annotation></semantics></math> USD/share and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.04</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.04\,\mathrm{yr}^{-1}</annotation></semantics></math>:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Contract</th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><msqrt><mi>T</mi></msqrt></mrow><annotation encoding="application/x-tex">\sigma\sqrt{T}</annotation></semantics></math></th>
+<th style="text-align: left;">Delta, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>+</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_{+})</annotation></semantics></math></th>
+<th style="text-align: left;">POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mo>−</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(d_{-})</annotation></semantics></math></th>
+<th style="text-align: left;">Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">30 days, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\sigma=0.30</annotation></semantics></math></td>
+<td style="text-align: left;">0.086</td>
+<td style="text-align: left;">0.532</td>
+<td style="text-align: left;">0.498</td>
+<td style="text-align: left;">0.034</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 year, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">\sigma=0.50</annotation></semantics></math></td>
+<td style="text-align: left;">0.500</td>
+<td style="text-align: left;">0.629</td>
+<td style="text-align: left;">0.433</td>
+<td style="text-align: left;">0.197</td>
+</tr>
+</tbody>
+</table></div>
+<p>So Delta is a good estimate of the POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> for short contracts on calm shares, and a poor one for long contracts or volatile shares. Both numbers come from the pricing rule <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>; neither is our forecast. <a href="which-probability.html">Which probability should we use?</a> compares them with a forecast under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> In the two-step example, raise the strike to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>101</mn></mrow><annotation encoding="application/x-tex">K=101</annotation></semantics></math> USD/share, so only the top node is in the money. What are the POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> and Delta? </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>T</mi></msub><mo>&gt;</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>q</mi><mn>2</mn></msup><mo>=</mo><mn>0.2460</mn></mrow><annotation encoding="application/x-tex">\mathbb{Q}(S_{T}&gt;K)=q^{2}=0.2460</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>c</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>q</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>0.3254</mn></mrow><annotation encoding="application/x-tex">\Delta_{c}=(q^{*})^{2}=0.3254</annotation></semantics></math>. Delta is still larger, because <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mo>*</mo></msup><mo>&gt;</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">q^{*}&gt;q</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/advanced/delta_poe/CHEME-5660-L10a-Derivation-Delta-POE-Fall-2026.ipynb">L10a advanced: Delta as a probability of exercise</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb">L10a example: POE and POP of a short call</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L10a">L10a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

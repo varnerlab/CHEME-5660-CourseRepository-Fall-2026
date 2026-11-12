@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>When Delta, the risk-neutral POE, and our forecast disagree, which should we use? · CHEME 5660</title>
+  <meta name="description" content="They answer different questions. Delta and the probabilities under Q describe how the market prices the option. Our forecast under P describes what we think will happen. We decide with our forecast, but it is only as good as our estimate of the drift, the input we know least well.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Options &amp; premiums</span>
+    </p>
+    <h1 id='article-title'>When Delta, the risk-neutral POE, and our forecast disagree, which should we use?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>They answer different questions. Delta and the probabilities under Q describe how the market prices the option. Our forecast under P describes what we think will happen. We decide with our forecast, but it is only as good as our estimate of the drift, the input we know least well.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>Three numbers for one call.</strong> In the L10a example, we sell an NVDA call with strike <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>235</mn></mrow><annotation encoding="application/x-tex">K=235</annotation></semantics></math> USD/share, 43 days to expiration, a premium of 9.88 USD/share, and an implied volatility of 0.3543. Our forecast <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math> is geometric Brownian motion with the historical drift <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0.5788</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat{\mu}=0.5788\,\mathrm{yr}^{-1}</annotation></semantics></math> and volatility <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0.3886</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat{\sigma}=0.3886\,\mathrm{yr}^{-1/2}</annotation></semantics></math>. The risk-neutral <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> uses the drift <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>=</mo><mn>0.0413</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}=0.0413\,\mathrm{yr}^{-1}</annotation></semantics></math> and the implied volatility:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Delta (quoted)</th>
+<th style="text-align: left;">POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math></th>
+<th style="text-align: left;">POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Probability the call is exercised</td>
+<td style="text-align: left;">0.4833</td>
+<td style="text-align: left;">0.4295</td>
+<td style="text-align: left;">0.6185</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seller’s POP</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.6976</td>
+<td style="text-align: left;">0.5034</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What does each number answer?</strong></p>
+<ul>
+<li><strong>Delta</strong> is the hedge ratio the trading platform computes under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>. Read as a probability, it sits slightly above the POE under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> (<a href="delta-poe-gap.html">why Delta is larger</a>). It is not a worst case for a seller: here our forecast puts the chance of exercise at 0.62, well above Delta.</li>
+<li><strong>The probabilities under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math></strong> are the ones the market price is built on. Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, buying or selling at the market price has an expected NPV of about zero (<a href="risk-neutral-probability.html">why we price with q</a>). So the seller’s POP of 0.70 under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> is not, by itself, a reason to sell. The seller wins a small amount often and loses a large amount now and then, and under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> the two balance. “Risk-neutral” names this pricing rule; it does not say that the trade has no risk.</li>
+<li><strong>The probabilities under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math></strong> are our own forecast, and we decide with them. Under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, a trade at the market price is worth about zero, so a trade can only look good to us when our forecast differs from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>. Be careful about why it differs. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> is a pricing rule, not the market’s forecast. If we expect a share to grow faster than the risk-free rate, bullish trades on it will look good under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math>. Part of that advantage is just the extra growth we expect for holding a risky share; it does not mean the option is mispriced. Here our forecast says the call is more likely to be exercised than the market implies, so selling it looks worse to us, not better.</li>
+</ul>
+<p><strong>How much should we trust our forecast?</strong> In the L11a example, a put credit spread on AMD has a POP of 0.714 under our forecast and 0.540 under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>. The gap comes mostly from the drift: our estimate of AMD’s mean growth rate is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>g</mi></msub><mo>=</mo><mn>0.44</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat{\mu}_{g}=0.44\,\mathrm{yr}^{-1}</annotation></semantics></math>. The drift is the hardest parameter to estimate. For geometric Brownian motion, the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb">L4b drift-uncertainty notebook</a> shows that a mean growth rate fitted to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mtext mathvariant="normal">span</mtext></msub><annotation encoding="application/x-tex">T_{\text{span}}</annotation></semantics></math> years of prices has a standard error of about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mn>6</mn><mi>/</mi><mn>5</mn></mrow></msqrt><mspace width="0.167em"></mspace><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mi>/</mi><msqrt><msub><mi>T</mi><mtext mathvariant="normal">span</mtext></msub></msqrt></mrow><annotation encoding="application/x-tex">\sqrt{6/5}\,\hat{\sigma}/\sqrt{T_{\text{span}}}</annotation></semantics></math>. With ten years of AMD’s <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>σ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0.47</mn></mrow><annotation encoding="application/x-tex">\hat{\sigma}=0.47</annotation></semantics></math>, that is about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.16</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">0.16\,\mathrm{yr}^{-1}</annotation></semantics></math>. The much narrower bounds printed with the AMD parameters assume that the errors around the fitted line are unrelated to one another, which is not true for prices that follow geometric Brownian motion. Keeping <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>σ</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\sigma}</annotation></semantics></math> fixed and lowering the growth rate shows how much of the advantage depends on it:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Mean growth rate <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\mu_{g}</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\mathrm{yr}^{-1}</annotation></semantics></math>)</th>
+<th style="text-align: left;">0.44</th>
+<th style="text-align: left;">0.20</th>
+<th style="text-align: left;">0.00</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">POP under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb{P}</annotation></semantics></math></td>
+<td style="text-align: left;">0.714</td>
+<td style="text-align: left;">0.646</td>
+<td style="text-align: left;">0.584</td>
+</tr>
+</tbody>
+</table></div>
+<p>Even with no growth, the POP stays above 0.540, mostly because the mean growth rate under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>y</mi></msub><mo>−</mo><msup><mi>σ</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn><mo>=</mo><mo>−</mo><mn>0.12</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">g_{y}-\sigma^{2}/2=-0.12\,\mathrm{yr}^{-1}</annotation></semantics></math>, below zero. The wider implied volatility, 0.56 against our 0.47, accounts for only about 0.01. So most of the gap rests on the drift.</p>
+<p><strong>A practical reading.</strong> Compute the probabilities under both. Where they agree, our model and the market see the trade the same way. Where they disagree, find which input causes the gap, the drift or the volatility, and recompute with a more cautious value. If the trade only looks good with the most favorable drift, it rests on a number we cannot estimate precisely.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Set our forecast’s drift to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>y</mi></msub><annotation encoding="application/x-tex">g_{y}</annotation></semantics></math> and its volatility to the implied volatility. What POP do we get for the AMD spread, and what does that say about the trade? </p><details><summary>Show the answer</summary><div> The POP under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, 0.540. Our forecast then matches <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math>, so the trade has an expected NPV of about zero for us, and we have no reason to prefer it.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Example-POE-POP-Call-Fall-2026.ipynb">L10a example: POE and POP of a short call</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Lecture-CompositeContracts-Fall-2026.ipynb">L11a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11a/CHEME-5660-L11a-Example-Delta-VerticalSpread-Fall-2026.ipynb">L11a example: put credit spread on AMD</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-4/L4b/advanced/drift-uncertainty/CHEME-5660-L4b-Advanced-DriftUncertainty-Fall-2026.ipynb">L4b advanced: drift uncertainty</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L10a">L10a symbols and units</a></li><li><a href="../notation.html#L10b">L10b symbols and units</a></li><li><a href="../notation.html#L11a">L11a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="risk-neutral-probability.html">Why do we price options with q instead of our own probability?</a></li><li><a href="continuation-value.html">How do we compute the continuation value at a lattice node?</a></li><li><a href="early-exercise.html">Why can early exercise pay for a put but not for a call?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>What does the net Delta of a covered call or collar tell us? · CHEME 5660</title>
+  <meta name="description" content="Net Delta is the number of shares the whole position behaves like for a small move in the share price. A covered call behaves like fewer shares than it holds, and a collar like fewer still. Near expiration, a collar behaves like the shares between its strikes and like no shares at all beyond them.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Option strategies</span>
+    </p>
+    <h1 id='article-title'>What does the net Delta of a covered call or collar tell us?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Net Delta is the number of shares the whole position behaves like for a small move in the share price. A covered call behaves like fewer shares than it holds, and a collar like fewer still. Near expiration, a collar behaves like the shares between its strikes and like no shares at all beyond them.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What does the number mean?</strong> For <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> contracts on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">m=100</annotation></semantics></math> shares each, L11b gives:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>m</mi><mi>n</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>Δ</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">(covered call)</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>m</mi><mi>n</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>Δ</mi><mi>p</mi></msub><mo>−</mo><msub><mi>Δ</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">(collar)</mtext></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\Delta_{\text{net}}&amp;=mn\left(1-\Delta_{c}\right)&amp;&amp;\text{(covered call)}\\
+\Delta_{\text{net}}&amp;=mn\left(1+\Delta_{p}-\Delta_{c}\right)&amp;&amp;\text{(collar)}
+\end{aligned}
+</annotation></semantics></math></div>
+<p>Its unit is shares: for a small move of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\Delta S</annotation></semantics></math> USD/share, the position gains or loses about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><mo>⋅</mo><mi>Δ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\Delta_{\text{net}}\cdot\Delta S</annotation></semantics></math> USD, as if it held <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub><annotation encoding="application/x-tex">\Delta_{\text{net}}</annotation></semantics></math> shares. The shares contribute <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math>, the short call <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>m</mi><mi>n</mi><mspace width="0.167em"></mspace><msub><mi>Δ</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">-mn\,\Delta_{c}</annotation></semantics></math>, and the long put <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>n</mi><mspace width="0.167em"></mspace><msub><mi>Δ</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">mn\,\Delta_{p}</annotation></semantics></math>. Because <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><msub><mi>Δ</mi><mi>c</mi></msub><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\leq\Delta_{c}\leq1</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn><mo>≤</mo><msub><mi>Δ</mi><mi>p</mi></msub><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-1\leq\Delta_{p}\leq0</annotation></semantics></math>, both options lower the net Delta: the short call gives up part of each rise, and the long put gains when the shares fall.</p>
+<p><strong>One collar at entry.</strong> Take the 95/110 collar from <a href="collar-strikes.html">the collar strikes answer</a>, one contract on 100 shares at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S=100</annotation></semantics></math> USD/share with three months left, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>=</mo><mn>0.25</mn><mspace width="0.167em"></mspace><msup><mrow><mi mathvariant="normal">y</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma=0.25\,\mathrm{yr}^{-1/2}</annotation></semantics></math>, and BSM Deltas <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>c</mi></msub><mo>=</mo><mn>0.268</mn></mrow><annotation encoding="application/x-tex">\Delta_{c}=0.268</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>p</mi></msub><mo>=</mo><mo>−</mo><mn>0.290</mn></mrow><annotation encoding="application/x-tex">\Delta_{p}=-0.290</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>100</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mn>0.268</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>73.2</mn></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">(covered call)</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Δ</mi><mtext mathvariant="normal">net</mtext></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>100</mn><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mn>0.290</mn><mo>−</mo><mn>0.268</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>44.2</mn></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">(collar)</mtext></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\Delta_{\text{net}}&amp;=100\,(1-0.268)=73.2&amp;&amp;\text{(covered call)}\\
+\Delta_{\text{net}}&amp;=100\,(1-0.290-0.268)=44.2&amp;&amp;\text{(collar)}
+\end{aligned}
+</annotation></semantics></math></div>
+<p>If the share price rises 2 USD/share, the 100 shares alone gain 200 USD, the covered call about 146 USD, and the collar about 88 USD.</p>
+<p><strong>How does it change with the share price and time?</strong> Recomputing the BSM Deltas at other share prices gives the net Delta (shares):</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Share price</th>
+<th style="text-align: left;">85</th>
+<th style="text-align: left;">95</th>
+<th style="text-align: left;">100</th>
+<th style="text-align: left;">105</th>
+<th style="text-align: left;">110</th>
+<th style="text-align: left;">120</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Covered call, 3 months left</td>
+<td style="text-align: left;">97.3</td>
+<td style="text-align: left;">84.9</td>
+<td style="text-align: left;">73.2</td>
+<td style="text-align: left;">59.1</td>
+<td style="text-align: left;">44.3</td>
+<td style="text-align: left;">20.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Collar, 3 months left</td>
+<td style="text-align: left;">20.0</td>
+<td style="text-align: left;">40.5</td>
+<td style="text-align: left;">44.2</td>
+<td style="text-align: left;">41.8</td>
+<td style="text-align: left;">34.9</td>
+<td style="text-align: left;">17.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Covered call, 5 days left</td>
+<td style="text-align: left;">100.0</td>
+<td style="text-align: left;">100.0</td>
+<td style="text-align: left;">99.9</td>
+<td style="text-align: left;">94.0</td>
+<td style="text-align: left;">48.7</td>
+<td style="text-align: left;">0.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Collar, 5 days left</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: left;">51.3</td>
+<td style="text-align: left;">96.2</td>
+<td style="text-align: left;">94.0</td>
+<td style="text-align: left;">48.7</td>
+<td style="text-align: left;">0.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Near expiration, between the strikes, both options are almost worthless and barely move, so the collar behaves like the 100 shares. Beyond a strike, the deep in-the-money option cancels the shares: below 95 USD/share, the put gains what the shares lose, and above 110 USD/share, the call loses what the shares gain. The value is then locked at the floor or the cap, and the net Delta is close to zero. At a strike, the net Delta swings quickly between these values; Gamma measures how fast.</p>
+<p><strong>Is this Delta a probability?</strong> Not for a position. A single call’s Delta is close to, and slightly above, its probability of exercise under <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb{Q}</annotation></semantics></math> (<a href="delta-poe-gap.html">why</a>); for a put the match is rougher. Each option’s Delta is also its sensitivity to the share price. The net Delta adds shares and option Deltas, so only the sensitivity meaning carries over: 44.2 is a number of shares, not a probability.</p>
+<p><strong>Does a net Delta of zero mean no risk?</strong> No. Delta is the slope of the position’s value at today’s share price. Gamma changes it as the share price moves, and Theta, Vega, and Rho change the value through time, volatility, and the rate (L10a). For a large move, we reprice the legs instead of relying on Delta.</p>
+<div class="answer-check"><p><strong>Try it.</strong> With 5 days left at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>105</mn></mrow><annotation encoding="application/x-tex">S=105</annotation></semantics></math> USD/share, why do the covered call and the collar have the same net Delta, 94.0? </p><details><summary>Show the answer</summary><div> The put at 95 USD/share is far out of the money, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mi>p</mi></msub><mo>≈</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta_{p}\approx0</annotation></semantics></math>, and the collar behaves like the covered call. Its call at 110 USD/share still has a small Delta, 0.06.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Lecture-CoveredCalls-Collars-Fall-2026.ipynb">L11b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-11/L11b/CHEME-5660-L11b-Derivation-NetDelta-Fall-2026.ipynb">L11b derivation: net Delta of shares and options</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-10/L10a/CHEME-5660-L10a-Lecture-American-Derivatives-Greeks-Fall-2026.ipynb">L10a lecture</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L11b">L11b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="exercised-but-profitable.html">How can a short option be exercised and still make money?</a></li><li><a href="composite-breakevens.html">How do we track the signs, breakevens, and POP of a multi-leg contract?</a></li><li><a href="closing-early.html">Why does closing a credit trade early earn less, and why do traders do it anyway?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
