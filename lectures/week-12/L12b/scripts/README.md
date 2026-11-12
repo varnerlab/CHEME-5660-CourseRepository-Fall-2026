@@ -3,7 +3,7 @@
 `Compute-L12b-RuleSwitch-Cache.jl` runs the rule-switch experiment for the rules `BASELINE_RULE` and `SWITCH_RULE` set at
 the top of the script and writes
 `lectures/week-12/L12b/data/Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L<L>.jld2`. Each pair of
-rules and each grid size gets its own file. Since November 11 the RuleSwitch example runs every task live and no longer
+rules and each grid size gets its own file. Since November 11 the RuleSwitch example runs every task live, and no notebook
 loads these files. The script activates the
 repo-root course environment itself and resolves its output path from its own location, so it can be run from any
 directory.
@@ -22,7 +22,7 @@ three conditions (h = 100 hold, h = 100 endogenous, h = 1 endogenous), t_pre = 1
 
 ## Flags
 
-- `--provisional`: L = 32, seeds 1:5, written to the `-L32` file name with `provisional = true`. The notebook shows this flag.
+- `--provisional`: L = 32, seeds 1:5, written to the `-L32` file name with `provisional = true`.
 - `--smoke`: L = 24, seeds 1:2, t_pre = 50, t_post = 150, written to `Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L24-smoke.jld2` (never overwrites the
   full file; do not commit it).
 
@@ -39,7 +39,7 @@ Cost scales as L^2 x (number of seeds) x steps. Relative to the provisional run,
 4 x 4 = 16 times the work, roughly 1.5 minutes on 10 threads; L = 128 with 20 seeds is about 64 times the provisional work,
 roughly 5 minutes. These are estimates scaled from the provisional timing, not measured. The full run took 35 seconds on 24
 threads (November 10). `run_noisy_rule_switch` re-runs the
-control arm for every f (same seed, same control), so the control is computed 6 times per (condition, seed); this is
+control arm for every f (same seed, same control), so the control is computed once for each of the 59 fractions per (condition, seed); this is
 accepted rather than cached. Work is spread over (condition, seed) items, so more threads than 3 x 20 = 60 gives no
 further speedup.
 
@@ -51,5 +51,3 @@ further speedup.
   `buy_fraction`, `prices`, and `frames` (`pre` at t_pre, `final`) per arm.
 - `sweep`: DataFrame with one row per (condition, f, seed): L, condition, h, boundary_mode, f, seed, transitioned, onset,
   final_sell_mean, max_drawdown, control_transitioned, control_max_drawdown. Sweep rows carry no frames.
-
-The notebook narrates numbers only from the non-provisional file.

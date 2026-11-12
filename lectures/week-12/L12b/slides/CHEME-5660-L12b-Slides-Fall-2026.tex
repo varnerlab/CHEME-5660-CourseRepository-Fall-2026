@@ -7,6 +7,8 @@
 % neighbor sum c_{i}(t), table entries a_{c}, rule number R, fraction f, dealer cash W_{t},
 % shares Q_{t}, net trade x_{t}, price S_{t}, depth h, band mu_{t}, sigma_{t}, alpha, k_{j}.
 % No example parameters appear here (instructor rule, November 5, 2026).
+% November 11, 2026 (sync): the market and rule-number figures, the fresh players, and the closed and
+% open market example follow the lecture notebook.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -63,9 +65,9 @@
       versus Sell.
     \item The dealer sets the price from the net trade. We compare every switched
       market with a control that shares its history.
-    \item Giving the changed rule to a fraction $f$ of the traders can tip the
-      market toward a Sell majority while the control does not. This is an
-      analogy for crashes, not an explanation of them.
+    \item After a fraction $f$ of the traders switch, the Sell intention can spread
+      from neighbor to neighbor, and the price falls while the sellers have
+      shares. This is an analogy for crashes, not an explanation of them.
   \end{itemize}
 
   \vspace{0.5em}
@@ -85,7 +87,8 @@
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Examples:}}\par\small
   \href{\repo/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb}}\par
-  \href{\repo/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}}}
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb}}\par
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb}}}
 
   \vspace{0.6em}
   {\normalsize\textbf{\ink{Review on your own:}}\par\small
@@ -145,6 +148,14 @@
 \end{frame}
 
 % ========== Wolfram markets
+\begin{frame}{Wolfram Markets}
+  Traders on a grid send orders to a dealer, and the dealer's price returns to the
+  grid through the technical traders on the edge:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{../figs/Fig-L12b-WolframMarket.pdf}
+  \end{center}
+\end{frame}
+
 \begin{frame}{Wolfram Markets: The Grid and Intentions}
   Traders sit on the cells of a square grid, and simple local rules produce
   market-level behavior, as in Wolfram's cellular automata:
@@ -159,36 +170,46 @@
   \slidenote{Source:}{\href{https://github.com/varnerlab/Wolfram-markets-abm-paper}{\dimmed{our paper on rule switches in Wolfram markets}}; Wolfram, \emph{A New Kind of Science} (2002), Chapter 3}
 \end{frame}
 
-\begin{frame}{The Market Model}
+\begin{frame}{Traders and Their Rules}
+  Trader $i$ sums the intentions of its four neighbors $\partial i$,
+  $c_{i}(t)=\sum_{j\in\partial i}z_{j}$, and reads its next intention
+  $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$ from its rule $R_{i}$. The nine entries $a_{c}$, read
+  in base 3, give the rule number $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The
+  baseline is Rule 19280:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.54\textheight,keepaspectratio]{../figs/Fig-L12b-RuleNumber.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{The Dealer}
   \begin{itemize}\setlength{\itemsep}{0.8em}
-    \item \hilite{Rule}: trader $i$ sums the intentions of its four neighbors
-      $\partial i$, $c_{i}(t)=\sum_{j\in\partial i}z_{j}$, and sets
-      $z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}$, with rule number
-      $\boxed{\textstyle R=\sum_{c=0}^{8}a_{c}\,3^{c}}$. The baseline is Rule 19280.
-    \item \hilite{Dealer}: quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
+    \item \hilite{Price}: the dealer quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
       net trade $x_{t}$ at the execution price $F_{t}=W_{t-1}/(Q_{t-1}-x_{t})$, so
       $Q_{t}=Q_{t-1}-x_{t}$ and $W_{t}=W_{t-1}+F_{t}\,x_{t}$. Net buying ($x_{t}>0$) raises the price.
-      The dealer starts with $Q_{0}=hN_{\text{tr}}$ shares for $N_{\text{tr}}$ traders, and
-      a larger depth $h$ gives a smaller move. We also add price noise, a course addition:
+    \item \hilite{Depth}: the dealer starts with $Q_{0}=hN_{\text{tr}}$ shares for
+      $N_{\text{tr}}$ traders, and a larger depth $h$ gives a smaller move.
+    \item \hilite{Price noise}: a course addition. Each step lasts $\Delta t$ years, the
+      draw is $Z_{t}\sim\mathcal{N}(0,1)$, and $\sigma_{S}$ is the annualized volatility of
+      the price noise:
       \begin{equation*}
         \boxed{S_{t} = S_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2}\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)}
       \end{equation*}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{The Market Model (continued)}
+\begin{frame}{The Dealer and the Technical Traders}
   \begin{itemize}\setlength{\itemsep}{0.8em}
-    \item \hilite{Growth rate}: each step lasts $\Delta t$ years, the draw is
-      $Z_{t}\sim\mathcal{N}(0,1)$, and $\sigma_{S}$ is the annualized volatility of the
-      price noise:
+    \item \hilite{Growth rate}: the growth rate over step $t$ follows from the price
+      update:
       \begin{equation*}
         g_{t}=\frac{1}{\Delta t}\ln\frac{S_{t}}{S_{t-1}}=\underbrace{\frac{2}{\Delta t}\ln\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t}}_{\text{price noise}}
       \end{equation*}
       A small net trade gives the Farmer--Joshi form, with half of the dealer's shares
       as the liquidity $\lambda_{t}=Q_{t-1}/2$:
       $g_{t}\approx x_{t}/(\lambda_{t}\,\Delta t)+(\sigma_{S}/\sqrt{\Delta t})\,Z_{t}$.
-    \item \hilite{Technical traders}: Buy below the band $\mu_{t}\pm k_{j}\sigma_{t}$,
-      Sell above it, and Hold inside it. The band uses smoothing $0<\alpha<1$:
+    \item \hilite{Technical traders}: track a moving average $\mu_{t}$ and a moving
+      departure $\sigma_{t}$ of the price, with smoothing $0<\alpha<1$. Trader $j$ intends
+      Buy below its band $\mu_{t}\pm k_{j}\sigma_{t}$, Sell above it, and Hold inside it:
       \begin{equation*}
         \boxed{\mu_{t}=\mu_{t-1}+\alpha\left(S_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|S_{t}-\mu_{t}|-\sigma_{t-1}\right)}
       \end{equation*}
@@ -281,8 +302,20 @@
   \vspace{0.8em}
   In this example, we run a switched market and its control, and watch the Sell
   intention spread across the grid. We then follow the share price as it falls
-  and levels off, and use cached runs to find the fraction of switching traders
-  at which a Sell majority forms.
+  and levels off, and bring in fresh players to move the share price again.
+\end{frame}
+
+\begin{frame}{Example: Closed and Open Markets}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Example:}}\par\small
+  \href{\repo/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb}{\dimmed{CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb}}}
+
+  \vspace{0.8em}
+  In this example, we run a rule switch in a closed market, in which the same
+  traders stay on the grid, and in an open market, in which traders leave and new
+  players take their places. We then let a fraction of the players follow a
+  contrarian rule, and compare the share price and the filled orders with and
+  without the contrarian players.
 \end{frame}
 
 % ========== Optional advanced material
@@ -294,7 +327,7 @@
   \vspace{0.6em}
   How could a trader learn a policy table from experience instead of being handed
   one? We write the Q-learning update, lay out the algorithm, and describe when
-  it converges to the best policy. Not a prerequisite for L13a.
+  it converges to the best policy.
 \end{frame}
 
 \begin{frame}{Summary}
@@ -309,8 +342,9 @@
       change.
     \item \hilite{Dealer and control}: net trades set the price, and a control
       isolates the switch.
-    \item \hilite{Tipping, by analogy}: a switch for some traders can tip the
-      market toward selling, but a simulation does not establish real causes.
+    \item \hilite{Rule switch, by analogy}: the Sell intention spreads, and the price
+      falls until the sellers run out of shares. A simulation does not establish
+      real causes.
   \end{itemize}
   \vspace{0.3em}
   Agent-based models ask how individual rules add up to market behavior.
