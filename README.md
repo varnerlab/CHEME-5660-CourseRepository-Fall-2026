@@ -15,8 +15,7 @@ for materials, installation, and weekly notebooks.
 | **[Course syllabus](https://cornell.box.com/s/boxou8voal3ctaecouzwue8f4dfqq39b)** | Policies, grading, expectations, and course logistics |
 | **[Fall 2026 schedule](https://cornell.box.com/s/oztxiu2cc7oh4gos9snt2wbqdt7kk885)** | Lecture sequence, weekly topics, and important dates |
 | **[Course FAQ](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/)** | Search worked answers by theme, with links to lecture notes |
-| **[Notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html)** | Look up symbols, meanings, and units by lecture |
-| **[Nomenclature and worked explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)** | Symbols, units, worked calculations, and answer checks through L6b |
+| **[Notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html)** | Living lecture-by-lecture index of symbols, meanings, and units, updated as each lecture is finalized |
 
 ## Getting the course material
 
@@ -40,24 +39,17 @@ There are two ways to use the course materials:
    Current instructional materials are organized under [`lectures/`](lectures/).
 
 Problem sets and the practicum are distributed through separate repositories; see
-[Assignments and practicum](#assignments-and-practicum) below.
+[Problem sets and practicum](#problem-sets-and-practicum) below.
 
 ## Running course reference
 
-The [course FAQ](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/) groups conceptual questions by theme and gives a short
-answer before each worked explanation. Search across the answers, or use the
-[separate notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html) to look up symbols and units
-by lecture. Both follow the course notes through Week 6.
+The [course FAQ](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/)
+groups conceptual questions by theme and gives a short answer before each worked
+explanation. It grows as the course develops new conceptual questions.
 
-The [Nomenclature and Worked Explanations (PDF)](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.pdf)
-connects the course symbols and units to worked calculations and short checks
-with answers. It covers the main lectures through Week 6, including the L6a
-and L6b lectures and core examples in the Week 06.3 release.
-
-The [notebook version](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/reference/CHEME-5660-Nomenclature-Fall-2026.ipynb)
-contains the same material and requires no code execution. We will extend this
-reference as the course progresses; these links always point to the current
-published versions.
+The [notation reference](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html)
+is the living lecture-by-lecture index of symbols, meanings, units, and reused
+notation. We update it as each lecture is finalized.
 
 ## One-time setup
 
@@ -163,13 +155,24 @@ describes the reusable types and quantitative-finance routines. The semester
 snapshot is developed in the
 [upstream package repository](https://github.com/varnerlab/VLQuantitativeFinancePackage.jl).
 
-## Assignments and practicum
+## Problem sets and practicum
 
-Problem sets, the practicum, and their solutions are managed in separate
-repositories rather than this course-content repository. Assignment links and
-release instructions will be distributed through the course communication
-channels. GitHub Desktop is the supported way to obtain those repositories without
-using Git from a terminal.
+The problem sets ask students to build, test, and interpret quantitative-finance
+models using supplied data and reproducible computational workflows. Each problem
+set offers Standard and Advanced tracks and is maintained in its own public
+repository.
+
+| Problem set | Question and scope |
+|---:|---|
+| [PS1](https://github.com/varnerlab/PS1-CHEME-5660-Fall-2026) | Value Treasury securities, measure interest-rate risk, and compare strategies for funding a future obligation. |
+| [PS2](https://github.com/varnerlab/PS2-CHEME-5660-Fall-2026) | Use binomial lattices and geometric Brownian motion to estimate the probability that an equity investment beats a benchmark, then compare the forecast with out-of-sample outcomes. |
+| [PS3](https://github.com/varnerlab/PS3-CHEME-4660-5660-Fall-2026) | Build minimum-variance portfolios, test the effects of estimation windows and short positions, and compare model predictions with forward performance. |
+| [PS4](https://github.com/varnerlab/PS4-CHEME-4660-5660-Fall-2026) | Replay historical option trades to test whether selling premium pays, what protection costs, and how modeled probabilities compare with realized outcomes. |
+| [PS5](https://github.com/varnerlab/PS5-CHEME-4660-5660-Fall-2026) | Simulate and replay covered-call and collar funds to determine whether they beat holding their shares and what upside or downside protection they exchange. |
+
+The course culminates in practicum projects in which students build live,
+real-time paper-trading systems. In the Fall 2026 offering, students use Alpaca
+Markets to forward-test equity or derivative strategies with live market data.
 
 ## License and disclaimer
 
