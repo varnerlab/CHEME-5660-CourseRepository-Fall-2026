@@ -71,3 +71,14 @@ that this commit records.
 1. Commit this record and push `main`.
 2. Push an annotated tag: `git tag -a week-12.1 -m "CHEME 5660 - Week 12"`.
 3. The workflow opens a draft release. The instructor reviews and publishes it.
+
+## CI build — November 11, 2026: failed, no release
+
+Tagged `week-12.1` at 926a464. Release workflow run 43132396408 failed at **Test
+extracted bundle**, so no draft release was created. The tag stays where it is and
+has no release.
+
+`lectures/week-12/L12b/Include.jl` set `_ROOT = pwd()`. The workflow loads each
+`Include.jl` from the runner's working directory, so `src/Helper.jl` was not found.
+The local test for this release had changed into the L12b folder first, which hid the
+problem. The fix and the release are in `WEEK-12.2-RELEASE-HANDOFF.md`.
