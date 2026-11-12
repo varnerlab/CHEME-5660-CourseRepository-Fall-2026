@@ -185,9 +185,10 @@
 
 \begin{frame}{The Dealer}
   \begin{itemize}\setlength{\itemsep}{0.8em}
-    \item \hilite{Price}: the dealer quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares). It fills the
-      net trade $x_{t}$ at the execution price $F_{t}=W_{t-1}/(Q_{t-1}-x_{t})$, so
-      $Q_{t}=Q_{t-1}-x_{t}$ and $W_{t}=W_{t-1}+F_{t}\,x_{t}$. Net buying ($x_{t}>0$) raises the price.
+    \item \hilite{Price}: the dealer quotes $S_{t}=W_{t}/Q_{t}$ (cash over shares) and keeps
+      $W_{t}Q_{t}=W_{t-1}Q_{t-1}$ (constant product). After the net trade $x_{t}$,
+      $Q_{t}=Q_{t-1}-x_{t}$, and every share trades at $F_{t}=W_{t-1}/Q_{t}=\sqrt{S_{t-1}S_{t}}$.
+      Net buying ($x_{t}>0$) raises the price.
     \item \hilite{Depth}: the dealer starts with $Q_{0}=hN_{\text{tr}}$ shares for
       $N_{\text{tr}}$ traders, and a larger depth $h$ gives a smaller move.
     \item \hilite{Price noise}: a course addition. Each step lasts $\Delta t$ years, the
