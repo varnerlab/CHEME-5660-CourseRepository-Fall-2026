@@ -51,7 +51,7 @@ of |g| 0.035, inside the band by lag 5, against SPY's 0.194 still at lag 20). Pr
 damps the lag-1 autocorrelation of g, from 0.336 held to 0.115 active. No edge condition or dealer depth creates fat tails. The Farmer–Joshi numbers differ
 from the Farmer–Joshi example because its traders are a different random draw. The notebook's prose no longer quotes these numbers or the ticker name; they are here to say aloud.
 
-The rule-switch cache (`scripts/Compute-L12b-RuleSwitch-Cache.jl`, six files in `data/`) is no longer loaded by any notebook. It holds the old sweep over the fraction f.
+No notebook loads a rule-switch cache. The six cache files were deleted on November 11. `scripts/Compute-L12b-RuleSwitch-Cache.jl` can rebuild the old sweep over the fraction f.
 
 ## Numbers to say aloud
 

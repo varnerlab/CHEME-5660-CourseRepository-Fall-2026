@@ -46,5 +46,5 @@ using ImageIO
 
 # Set the random seed for reproducibility
 # Random.seed!(1234);
-# lecture helpers (plotting and cache lookup) -
+# lecture helpers -
 include(joinpath(_PATH_TO_SRC, "Helper.jl"));

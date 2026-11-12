@@ -3,12 +3,12 @@
 `Compute-L12b-RuleSwitch-Cache.jl` runs the rule-switch experiment for the rules `BASELINE_RULE` and `SWITCH_RULE` set at
 the top of the script and writes
 `lectures/week-12/L12b/data/Cache-base-<BASELINE_RULE>-switch-<SWITCH_RULE>-L<L>.jld2`. Each pair of
-rules and each grid size gets its own file. Since November 11 the RuleSwitch example runs every task live, and no notebook
-loads these files. The script activates the
+rules and each grid size gets its own file. The RuleSwitch example runs every task live, and no notebook
+loads these files. The files are not kept in the repository. The script activates the
 repo-root course environment itself and resolves its output path from its own location, so it can be run from any
 directory.
 
-## Full run (Jeff, big machine)
+## Full run
 
 ```
 julia -t auto lectures/week-12/L12b/scripts/Compute-L12b-RuleSwitch-Cache.jl
