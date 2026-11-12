@@ -30,3 +30,13 @@ that this commit records.
 1. Commit this record and push `main`.
 2. Push an annotated tag: `git tag -a week-12.2 -m "CHEME 5660 - Week 12"`.
 3. The workflow opens a draft release. The instructor reviews and publishes it.
+
+## CI build — November 11, 2026
+
+Tagged `week-12.2` at 0d9ccb2. Release workflow run 43134096188 passed and opened
+a draft release titled "CHEME 5660 - Week 12". The downloaded zip matches its
+`.sha256` file (GitHub digest
+`d81fd0f990c189e4804da902014ab8ef781934cff8a635e136fd7fa36fd01b54`). Its 201 files
+have the same bytes as the local bundle. The only listing difference is how the two
+unzip tools print the narrow no-break space in three screenshot filenames under
+`code/src/data/options/original/`.
