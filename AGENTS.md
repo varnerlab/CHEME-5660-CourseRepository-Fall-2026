@@ -39,6 +39,52 @@ text in lecture or example notebooks:
 - The "Week 12" section below describes the JumpHMM/MPC work under its old IDs
   (L12a, L12b); those lectures are now L13a and L13b.
 
+## L13b: an extended version of the INFORMS talk — November 12, 2026
+
+- His decision: "The L13b will be an extended version of my INFORMS 2026 talk", which
+  uses the JumpHMM material from L13a. The talk repository is public
+  (`varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab`; deck in `talk/`).
+- Lecture and deck were rebuilt in the talk's order, with his slide titles as headings:
+  Allocation (the utility problem with its trading limits, then the score γ),
+  Rebalancing (the triggers and the forecast band, then the real-data result), and
+  Market Generator (a short "Previously" recap of JumpHMM, then the simulated
+  sell-offs). The Summary carries the talk's three takeaways. The extra text comes
+  from his speaker notes. The earlier draft followed the paper's sections and had no
+  figures.
+- Figures: the talk's four figures (market state, forecast band, real-data dot plot,
+  synthetic dot plot) are built in `L13b/figs/` from copies of the talk's drawing
+  files and CSVs (commit `3bc41cf`), with XeLaTeX. They match the slides. The dark
+  palette is the talk's navy theme. See `L13b/figs/README.md`.
+- Wording: the lecture says "stock", "selection rule", "weighting rule", "score", and
+  "re-plan". The examples still say "name" and "picker", and the lecture says so once.
+  Lecture-number references were removed from the lecture, the deck, and the two
+  examples (the fixed list is now "the hand-picked 13").
+- Not used: the talk's backup slides (percentiles, large books, tables, name scatter)
+  and the cash-revisit trigger of the notes. The notation table for L13b was rewritten
+  to the lecture's symbols and rebuilt with the pinned Pandoc.
+
+## L13a: JumpHMM fit schematic and two algorithms — November 12, 2026
+
+- His request: "We need the JumpHMM p-code, and we need to show a JumpHMM schematic",
+  with the fit as he described it: fit a ticker's growth rates to a cumulative
+  distribution, slice the distribution into states, and count the moves from state
+  to state. The simulation uses the counted transitions and jumps to a tail state
+  now and again.
+- Lecture, "The Jump Hidden Markov Model" cell: a new fit schematic
+  (`figs/Fig-L13a-JumpHMM-Fit-Schematic`, drawn with $N = 5$ states and sixteen
+  made-up days, so the counts can be checked by hand), "Fitting algorithm", and
+  "Sampling algorithm" after the existing jump schematic. The sampling algorithm
+  follows Algorithm 1 of the JumpHMM paper in the lecture's notation.
+- Checked on SPY, 2014 to 2024: a direct implementation of the fitting algorithm
+  gives the package's states, $\hat{\mathbf{P}}$, $\mu_k$, and $\sigma_k$ exactly, and
+  a direct implementation of the sampling algorithm gives the package's paths
+  exactly for the same seed (40 of 40 seeds, at the tuned $\epsilon$ and at 0.02).
+- Deck: four frames added in notebook order (fit schematic, "Algorithm: Fit the
+  Model", jump schematic, "Algorithm: Sample a Path"). Notation: new L13a rows
+  ($T$, $X_t$, $N$, $\mu$, $b$, $F_L$, $\mathcal S_\pm$, $N_{\text{tail}}$,
+  $p_{\text{neg}}$) and Context rows for $\mu$, $b$, and $T$, rebuilt with the
+  pinned Pandoc.
+
 ## Week 12: JumpHMM synthetic markets and the INFORMS study replace bandits — November 3, 2026
 
 - His decision: bandits are out of the main path "unless we need them". L12a

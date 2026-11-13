@@ -188,6 +188,29 @@
   the growth rates are reported.
 \end{frame}
 
+\begin{frame}{Fitting the Model}
+  Each state is a slice of the fitted Laplace distribution. We count the moves between states:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{../figs/Fig-L13a-JumpHMM-Fit-Schematic.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Algorithm: Fit the Model}
+  Given the daily growth rates $g_{1},\dotsc,g_{T}$ of one ticker, the number of states
+  $N$, and $\nu$:
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item \hilite{Laplace}: $\mu\gets$ the median of the growth rates, and
+      $b\gets\frac{1}{T}\sum_{t}\lvert g_{t}-\mu\rvert$.
+    \item \hilite{States}: $X_{t}\gets s_{k}$, where $(k-1)/N\leq F_{L}(g_{t})<k/N$.
+    \item \hilite{Count}: $n_{ij}\gets n_{ij}+1$ for each move from $X_{t-1}=s_{i}$ to $X_{t}=s_{j}$.
+    \item \hilite{Transitions}: $\hat{p}_{ij}\gets n_{ij}/\sum_{k}n_{ik}$.
+    \item \hilite{Emissions}: $\mu_{k}$, $\sigma_{k}\gets$ the mean and standard deviation of
+      the growth rates of the days in state $s_{k}$.
+    \item \hilite{Start}: compute the stationary distribution $\bar{\pi}$ of $\hat{\Pb}$.
+  \end{enumerate}
+  \slidenote{Full version:}{the lecture notebook}
+\end{frame}
+
 \begin{frame}{Why Add Jumps?}
   The counted chain forgets quickly: after a volatile day, a few transitions usually
   return it to the middle states, so $|g_{t}|$ is correlated for only a few days.
@@ -198,6 +221,30 @@
     \item Each episode day is drawn from the few most extreme states, negative or
       positive: a run of large moves of both signs.
   \end{itemize}
+\end{frame}
+
+\begin{frame}{The Jump Hidden Markov Model: One Day}
+  An ordinary day steps with $\hat{\Pb}$. An episode day draws its state from the most
+  negative or the most positive states:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{../figs/Fig-L13a-JumpHMM-Schematic.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Algorithm: Sample a Path}
+  Draw $X_{1}\sim\bar{\pi}$ and $g_{1}$ from its emission, and set
+  $\texttt{remaining}\gets 0$. Each day $t=2,\dotsc,T$ runs in this order:
+  \begin{enumerate}\setlength{\itemsep}{0.3em}
+    \item \hilite{New episode}: if $\texttt{remaining}=0$, draw $u\sim\text{Uniform}(0,1)$.
+      If $u<\epsilon$, draw $\texttt{remaining}\sim\text{Poisson}(\lambda)$.
+    \item \hilite{Episode day}: if $\texttt{remaining}>0$, draw $X_{t}$ uniformly from the
+      most negative states $\Sc_{-}$ with probability $p_{\text{neg}}$, otherwise from the
+      most positive states $\Sc_{+}$. Set $\texttt{remaining}\gets\texttt{remaining}-1$.
+    \item \hilite{Ordinary day}: if $\texttt{remaining}=0$, draw $X_{t}$ from row
+      $X_{t-1}$ of $\hat{\Pb}$.
+    \item \hilite{Emission}: $g_{t}\gets\mu_{k}+\sigma_{k}\,T_{\nu}$, where $X_{t}=s_{k}$.
+  \end{enumerate}
+  \slidenote{Full version:}{the lecture notebook}
 \end{frame}
 
 \begin{frame}{Tuning and Checking the Model}

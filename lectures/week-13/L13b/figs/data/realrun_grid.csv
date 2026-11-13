@@ -1,0 +1,141 @@
+row,group_index,label,group,allocator,hedge,value,picker,n_seeds
+1,0,γ per sector,33 names · 3 per sector,CD,false,1.2295944723996635,gamma,30
+1,0,γ per sector,33 names · 3 per sector,CES,false,1.2191947528828275,gamma,30
+1,0,γ per sector,33 names · 3 per sector,CESw,false,1.2211237489653934,gamma,30
+1,0,γ per sector,33 names · 3 per sector,SG,false,1.2341710085021265,gamma,30
+1,0,γ per sector,33 names · 3 per sector,MinVar,false,1.0861674421066545,gamma,30
+1,0,γ per sector,33 names · 3 per sector,Tangent,false,1.2267995057506806,gamma,30
+1,0,γ per sector,33 names · 3 per sector,LS,false,1.109776245707945,gamma,30
+1,0,γ per sector,33 names · 3 per sector,CD,true,1.2115163655698455,gamma,30
+1,0,γ per sector,33 names · 3 per sector,CES,true,1.2322838072174627,gamma,30
+1,0,γ per sector,33 names · 3 per sector,CESw,true,1.2229865433815779,gamma,30
+1,0,γ per sector,33 names · 3 per sector,SG,true,1.2184864073729553,gamma,30
+1,0,γ per sector,33 names · 3 per sector,MinVar,true,1.0734443359578767,gamma,30
+1,0,γ per sector,33 names · 3 per sector,Tangent,true,1.285338400936374,gamma,30
+1,0,γ per sector,33 names · 3 per sector,LS,true,1.1303002403494495,gamma,30
+2,0,Bandit per sector,33 names · 3 per sector,CD,false,1.2257256791756117,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,CES,false,1.2342747725995666,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,CESw,false,1.2232453799908223,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,SG,false,1.2385612096929242,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,MinVar,false,1.161543732533828,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,Tangent,false,1.2286344431379284,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,LS,false,1.1399513438634656,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,CD,true,1.1248428233394723,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,CES,true,1.139869939196801,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,CESw,true,1.1665973050818974,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,SG,true,1.19396333259197,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,MinVar,true,1.165875965880507,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,Tangent,true,1.2140866688808885,bandit,30
+2,0,Bandit per sector,33 names · 3 per sector,LS,true,1.1196511063483694,bandit,30
+3,0,Random per sector,33 names · 3 per sector,CD,false,1.2045472494688911,random,30
+3,0,Random per sector,33 names · 3 per sector,CES,false,1.1828444997404186,random,30
+3,0,Random per sector,33 names · 3 per sector,CESw,false,1.2008058407755695,random,30
+3,0,Random per sector,33 names · 3 per sector,SG,false,1.183303437577059,random,30
+3,0,Random per sector,33 names · 3 per sector,MinVar,false,1.128498178798842,random,30
+3,0,Random per sector,33 names · 3 per sector,Tangent,false,1.1577344530509563,random,30
+3,0,Random per sector,33 names · 3 per sector,LS,false,1.1267970724231067,random,30
+3,0,Random per sector,33 names · 3 per sector,CD,true,1.1083645960810211,random,30
+3,0,Random per sector,33 names · 3 per sector,CES,true,1.0867264190169572,random,30
+3,0,Random per sector,33 names · 3 per sector,CESw,true,1.1144722885828973,random,30
+3,0,Random per sector,33 names · 3 per sector,SG,true,1.1549658734061445,random,30
+3,0,Random per sector,33 names · 3 per sector,MinVar,true,1.1549562338478776,random,30
+3,0,Random per sector,33 names · 3 per sector,Tangent,true,1.091570219343379,random,30
+3,0,Random per sector,33 names · 3 per sector,LS,true,1.0924818758431143,random,30
+4,1,Global γ,13 names,CD,false,1.5204075593650457,global_gamma|K=13,30
+4,1,Global γ,13 names,CES,false,1.3840698768322772,global_gamma|K=13,30
+4,1,Global γ,13 names,CESw,false,1.4599993557585125,global_gamma|K=13,30
+4,1,Global γ,13 names,SG,false,1.441250418495941,global_gamma|K=13,30
+4,1,Global γ,13 names,MinVar,false,1.3549383957452281,global_gamma|K=13,30
+4,1,Global γ,13 names,Tangent,false,1.3405896672029216,global_gamma|K=13,30
+4,1,Global γ,13 names,LS,false,1.2477860462816026,global_gamma|K=13,30
+4,1,Global γ,13 names,CD,true,1.5026683166967372,global_gamma|K=13,30
+4,1,Global γ,13 names,CES,true,1.304768282808071,global_gamma|K=13,30
+4,1,Global γ,13 names,CESw,true,1.4642306410578934,global_gamma|K=13,30
+4,1,Global γ,13 names,SG,true,1.461281751558762,global_gamma|K=13,30
+4,1,Global γ,13 names,MinVar,true,1.2026157425713067,global_gamma|K=13,30
+4,1,Global γ,13 names,Tangent,true,1.5887048738115694,global_gamma|K=13,30
+4,1,Global γ,13 names,LS,true,1.2834344617309323,global_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CD,false,1.3521435345088981,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CES,false,1.3855780448083108,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CESw,false,1.420794713556611,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,SG,false,1.3796790749594054,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,MinVar,false,1.2839660394038441,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,Tangent,false,1.4044049690132558,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,LS,false,1.2186360009913808,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CD,true,1.40906991600848,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CES,true,1.4289590816196718,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,CESw,true,1.4794148056949559,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,SG,true,1.4471203959287315,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,MinVar,true,1.2134557463998725,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,Tangent,true,1.3657950785621156,corr_gamma|K=13,30
+5,1,Correlation-aware γ,13 names,LS,true,1.2917222585309314,corr_gamma|K=13,30
+6,1,Liquid then γ,13 names,CD,false,1.3329872475737723,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,CES,false,1.3103134810076287,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,CESw,false,1.378856766162151,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,SG,false,1.3503649993562106,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,MinVar,false,1.2383106463280729,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,Tangent,false,1.3605274500745412,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,LS,false,1.3050288888715451,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,CD,true,1.3217247928846438,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,CES,true,1.2853438658248058,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,CESw,true,1.3470924623906484,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,SG,true,1.330976571459358,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,MinVar,true,1.1838088225633143,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,Tangent,true,1.316725269955347,liquid_gamma|K=13,30
+6,1,Liquid then γ,13 names,LS,true,1.3363916530458098,liquid_gamma|K=13,30
+7,1,{Random, liquid 100},13 names,CD,false,1.215516137106012,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,CES,false,1.1731138233000808,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,CESw,false,1.2105417016782432,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,SG,false,1.2115311692849882,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,MinVar,false,1.1581022292649465,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,Tangent,false,1.2743277275629388,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,LS,false,1.1520890385044251,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,CD,true,1.166654708061556,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,CES,true,1.1561373555529397,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,CESw,true,1.1735946349363562,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,SG,true,1.1775611339324241,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,MinVar,true,1.1234005680103714,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,Tangent,true,1.1547178934723643,random_liquid|K=13,30
+7,1,{Random, liquid 100},13 names,LS,true,1.1121943647353392,random_liquid|K=13,30
+8,1,{Random, whole universe},13 names,CD,false,1.0984518546857984,random_global|K=13,30
+8,1,{Random, whole universe},13 names,CES,false,1.131956806206344,random_global|K=13,30
+8,1,{Random, whole universe},13 names,CESw,false,1.1380442232298948,random_global|K=13,30
+8,1,{Random, whole universe},13 names,SG,false,1.1122300243595467,random_global|K=13,30
+8,1,{Random, whole universe},13 names,MinVar,false,1.1036906813167486,random_global|K=13,30
+8,1,{Random, whole universe},13 names,Tangent,false,1.1595153563209135,random_global|K=13,30
+8,1,{Random, whole universe},13 names,LS,false,1.0310096836760536,random_global|K=13,30
+8,1,{Random, whole universe},13 names,CD,true,1.0689193330480968,random_global|K=13,30
+8,1,{Random, whole universe},13 names,CES,true,1.105736907306558,random_global|K=13,30
+8,1,{Random, whole universe},13 names,CESw,true,1.0928748753293118,random_global|K=13,30
+8,1,{Random, whole universe},13 names,SG,true,1.114554989847285,random_global|K=13,30
+8,1,{Random, whole universe},13 names,MinVar,true,1.0792186254715084,random_global|K=13,30
+8,1,{Random, whole universe},13 names,Tangent,true,1.0617134843467981,random_global|K=13,30
+8,1,{Random, whole universe},13 names,LS,true,0.9940373900107622,random_global|K=13,30
+9,2,Hand-picked 13,Hand-picked,CD,false,1.547575207066134,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,CES,false,1.5707214180069813,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,CESw,false,1.6136994040388197,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,SG,false,1.6313026113588491,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,MinVar,false,1.4434892769582646,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,Tangent,false,1.6971415791763622,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,LS,false,1.548983610112508,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,CD,true,1.5540008975989827,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,CES,true,1.5173062393912493,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,CESw,true,1.5171326417068505,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,SG,true,1.5106502928957806,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,MinVar,true,1.2332802710983926,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,Tangent,true,1.581518454138663,fixed:l8b_13,30
+9,2,Hand-picked 13,Hand-picked,LS,true,1.5855892890128296,fixed:l8b_13,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CD,false,1.615523784929505,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CES,false,1.6460795863544737,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CESw,false,1.6368698521080391,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,SG,false,1.6388580736494591,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,MinVar,false,1.3617254601781654,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,Tangent,false,1.642399069715932,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,LS,false,1.6221708326097928,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CD,true,1.5639783069845425,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CES,true,1.5712448868456323,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,CESw,true,1.542666544129495,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,SG,true,1.5415575619640254,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,MinVar,true,1.159038925075066,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,Tangent,true,1.382612009991191,fixed:l8b_15,30
+10,2,{Hand-picked 13 + WMT, PG},Hand-picked,LS,true,1.6297936013028262,fixed:l8b_15,30

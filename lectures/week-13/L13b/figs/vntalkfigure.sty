@@ -1,0 +1,82 @@
+% ============================================================
+% vntalkfigure.sty -- style for the L13b figures taken from the INFORMS 2026 talk
+% Engine: XeLaTeX
+%
+% The four L13b figures are the talk's own figures, drawn by the talk's macro files
+% (market_state.tex, mpc.tex, dotplot.tex, copied unchanged into this folder). Those
+% files expect the talk's deck style, vnslides.sty, to define the fonts, the colors,
+% and a few commands. This file holds only those parts of vnslides.sty (white theme),
+% so that each figure compiles as a standalone picture and looks as it does on the
+% slide. Source: talk/vnslides.sty in varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab,
+% commit 3bc41cf.
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{vntalkfigure}[2026/11/12 L13b figures from the INFORMS 2026 talk]
+
+% ---------- type: the talk's faces, with the same fallbacks ----------
+\RequirePackage{fontspec}
+\IfFontExistsTF{Helvetica Neue Light}
+  {\setsansfont{Helvetica Neue Light}[
+      BoldFont={Helvetica Neue Medium},
+      ItalicFont={Helvetica Neue Light Italic},
+      BoldItalicFont={Helvetica Neue Medium Italic}]
+   \newfontfamily\vnlight{Helvetica Neue Light}
+   \newfontfamily\vnmedium{Helvetica Neue Medium}
+   \newfontfamily\vnheavy{Helvetica Neue Bold}}
+  {\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{TeX Gyre Heros}}
+   \newcommand{\vnlight}{\normalfont}
+   \newcommand{\vnmedium}{\bfseries}
+   \newcommand{\vnheavy}{\bfseries}}
+\renewcommand{\familydefault}{\sfdefault}
+
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage[
+  warnings-off={mathtools-colon,mathtools-overbracket}
+]{unicode-math}
+\setmathfont{latinmodern-math.otf}
+
+% ---------- drawing packages ----------
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning}
+\RequirePackage{graphicx}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\RequirePackage{pgfplotstable}
+
+% ---------- the talk's white-theme palette ----------
+\definecolor{vnbg}{HTML}{FFFFFF}         % the field behind the figure
+\definecolor{vnslideink}{HTML}{0D1B2A}   % headings, emphatic labels
+\definecolor{vnslidebody}{HTML}{3D4A5A}  % ordinary labels
+\definecolor{vnfigaccent}{HTML}{B8860B}  % the gold of the figures: SPY, re-plan marks
+\definecolor{vnslidelink}{HTML}{2F6B9A}  % the blue of the group labels and the market-state line
+% the plot panels of the forecast and market-state figures, and their grid lines
+\definecolor{vnplotpanel}{HTML}{F2F5F9}
+\definecolor{vnplotgrid}{HTML}{DDE4EC}
+% asides: symbol definitions and small notes
+\definecolor{vnquiet}{HTML}{6B7A8C}
+% the dot plots (dotplot.tex): filled and hollow dots, range bars, the equal-weight line, grid, axis, ticks
+\definecolor{vndotoff}{HTML}{3F7FC0}
+\definecolor{vndoton}{HTML}{1E3A5F}
+\definecolor{vndotbar}{HTML}{E1E8F0}
+\definecolor{vndotew}{HTML}{6B7A8C}
+\definecolor{vndotgrid}{HTML}{EDF1F5}
+\definecolor{vndotaxis}{HTML}{B8C3CF}
+\definecolor{vndottick}{HTML}{3D4A5A}
+% the forecast bands and the realized value (mpc.tex), and the bands' opacities, widest band first
+\definecolor{vnband}{HTML}{3E8BD0}
+\definecolor{vnmpcred}{HTML}{D94A3A}
+\newcommand{\vnbandouter}{0.12}
+\newcommand{\vnbandmiddle}{0.16}
+\newcommand{\vnbandinner}{0.26}
+
+% ---------- the talk's text commands ----------
+\newcommand{\vnkey}[1]{{\vnmedium\color{vnslideink}#1}}
+\newcommand{\vnlabel}[1]{{\color{vnslideink}#1}}
+\newcommand{\vnaside}[1]{{\color{vnquiet}#1}}
+
+% On the slides, ordinary text is set in the body color.
+\AtBeginDocument{\color{vnslidebody}}
+
+\endinput

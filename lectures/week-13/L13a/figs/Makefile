@@ -1,6 +1,7 @@
 # Build standalone L13a figures to PDF (for slides) and SVG (for notebooks).
+# Both figures share the style file jumphmm-diagram.tex (the week-12 schematic style).
 
-FIGURES := Fig-L13a-JumpHMM-Schematic
+FIGURES := Fig-L13a-JumpHMM-Schematic Fig-L13a-JumpHMM-Fit-Schematic
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
@@ -9,7 +10,7 @@ XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg
 PYTHON ?= python3
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
-STYLE := vnfigure.sty ../../../templates/vnfigure.sty ../../../templates/vnflow.sty
+STYLE := jumphmm-diagram.tex
 
 .PHONY: all pdf svg clean distclean
 .DEFAULT_GOAL := all

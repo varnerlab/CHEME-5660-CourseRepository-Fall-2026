@@ -1,18 +1,17 @@
 % L13b student companion deck: interpretable allocation and model-predictive rebalancing,
-% the portfolio method of the INFORMS 2026 study (arXiv:2611.03022).
+% an extended version of the INFORMS Annual Meeting 2026 talk (arXiv:2611.03022).
 %
-% November 4, 2026. The frame order mirrors the lecture notebook. The disclaimer is
-% slide 2, by instructor preference. Notation follows the lecture and L8b: score
-% \gamma_i(t), expected growth rate \tilde g_{i,t}, market state \xi_t with gain G,
-% recent market growth \tilde g_{M,t}, picked names \mathcal{N}, positive scores
-% \mathcal{A}^{+}, shares n_i, weights w_i and caps \bar w_i, growth covariance
-% \Sigma_g, forecast mean and SD \mu_W(\tau), \sigma_W(\tau), band half-width z,
-% horizon T, drawdown limit D_max, impact coefficient \kappa, and beta cap \bar\beta.
+% November 12, 2026. The frame order mirrors the lecture notebook, which follows the talk:
+% allocation, rebalancing, market generator. The disclaimer is slide 2, by instructor
+% preference. The four figures are the talk's own, built in ../figs from the talk's sources.
+% Notation follows the lecture: score \gamma_i, market state \xi with gain G, market growth
+% rate \tilde g_M, basket \mathcal{N} of K stocks, shares n_i, weights w_i, single-name cap
+% \bar w, growth-rate covariance \Sigma_g, volatility cap \sigma_SPY, half spread \bar c,
+% turnover budget B, beta cap \bar\beta, forecast mean and SD \mu_W(\tau), \sigma_W(\tau).
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
 \newcommand{\Nc}{\mathcal{N}}
-\newcommand{\Ap}{\mathcal{A}^{+}}
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-13/L13b}
 
 \title{\texorpdfstring{{\vnheavy L13b}}{L13b}: Interpretable Allocation and Model-Predictive Rebalancing}
@@ -42,38 +41,40 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  Today, we turn the utility allocation of L8b into a book that trades every day.
-  How do we build such a book, and how do we judge it when the real market gives us
-  only one path?
+  Previously, we chose the share counts of a portfolio once. How do we manage that
+  portfolio every day, and how do we judge it when the real market gives us only one path?
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{What to hold}: a score from the single index model and the market
-      state, and a picker.
-    \item \hilite{How to weight and when to trade}: maximum utility under limits, and
-      a controller that re-plans when the book leaves its forecast.
-    \item \hilite{How to judge it}: one real path against many synthetic markets.
+    \item \hilite{Allocation}: maximum utility within a budget and trading limits, with
+      a score for each stock from the single index model and the market state.
+    \item \hilite{Rebalancing}: a model-predictive controller that re-plans at the
+      horizon, at a band exit, or at a drawdown stop.
+    \item \hilite{Evaluation}: one historical path, and then typical and stressed
+      synthetic markets from a jump hidden Markov model.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{What You Need to Know}
   \vspace{0.3em}
   {\large\textbf{\ink{Core concepts}}}
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item The score $\gamma_{i}(t)$ has the sign of the stock's expected growth rate;
-      the market state $\xi_{t}$ only changes its size.
-    \item A re-plan maximizes a utility of the share counts under a budget and limits
-      on weight, volatility, and turnover. The book then holds until the 21-day
-      horizon, a band exit, or an 8\% drawdown.
-    \item A backtest is one path; synthetic markets and sell-off sets give many.
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item Each rebalance maximizes a utility $U(n;\gamma)$ within a budget and four
+      trading limits. The score $\gamma_{i}$ has the sign of the stock's expected growth
+      rate, and the market state $\xi$ changes only its size.
+    \item The book re-plans when 21 trading days have passed, when its wealth leaves
+      the 95\% band of a forecast, or when it falls 8\% below its peak.
+    \item A backtest is one historical path. A market generator gives many typical
+      futures and sell-offs on which to test the same method.
   \end{itemize}
 
-  \vspace{0.4em}
+  \vspace{0.3em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item The online update, the forecast covariance, the cost model, the hedge pool,
-      and the fit of the generator's $\beta$ drift.
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item The four utilities, the three benchmark weighting rules, and the hedge pool.
+    \item The daily single index update, the forecast covariance, and the trading costs.
+    \item The ten selection rules, and how the typical and stress sets are chosen.
   \end{itemize}
 \end{frame}
 
@@ -88,216 +89,326 @@
   \href{\repo/CHEME-5660-L13b-Example-MPC-SyntheticData-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-MPC-SyntheticData-Fall-2026.ipynb}}}
 \end{frame}
 
-% ========== From a utility allocation to a live book
-\begin{frame}{From a Utility Allocation to a Live Book}
-  In L8b, we chose share counts once, by maximizing a utility under a budget. A book
-  that trades for a year and a half has three more problems:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{What to hold}: hundreds of stocks, and estimates that change daily.
-    \item \hilite{How to weight}: under the budget alone, a utility can concentrate the
-      book or take on more volatility than the market.
-    \item \hilite{When to trade}: trading daily costs money; a fixed calendar ignores
-      the market in between.
+% ========== Live portfolio management
+\begin{frame}{Live Portfolio Management}
+  Live portfolio management couples three problems:
+  \begin{itemize}\setlength{\itemsep}{0.45em}
+    \item \hilite{Allocation} (what to hold): maximize a utility of a score $\gamma_{i}$
+      for each stock, within trading limits.
+    \item \hilite{Rebalancing} (when to trade): re-plan at a 21-day horizon, at a band
+      exit, or at a drawdown stop.
+    \item \hilite{Market generator} (evaluation): a backtest is one historical path. A
+      jump hidden Markov model (JumpHMM) generates typical and stressed futures.
   \end{itemize}
   \vspace{0.3em}
-  The INFORMS 2026 study (arXiv:2611.03022) answers each in a way we can inspect. It
-  calibrates on 2014--2024 and trades 373 stocks from January 2025 to September 2026.
+  The study uses the 373 S\&P 500 stocks with a complete history. It calibrates on
+  2014 to 2024 and trades from January 2, 2025 to September 4, 2026, 420 trading days.
+
+  \slidenote{Study:}{J. D. Varner, INFORMS Annual Meeting 2026, arXiv:2611.03022.}
 \end{frame}
 
-% ========== What to hold
-\begin{frame}{What to Hold: The Market Inputs}
-  Each stock's single index model, $g_{i}=\alpha_{i}+\beta_{i}\,g_{M}+\varepsilon_{i}$, is
-  updated every day, giving $\alpha_{i}(t)$ (1/yr) and $\beta_{i}(t)$. From the
-  \texttt{SPY} close, as in L8b, the recent market growth $\tilde{g}_{M,t}$ (1/yr) is its
-  252-day moving average, and the market state is:
+% ========== Allocation
+\begin{frame}{Maximize Utility Subject to Trading Limits}
+  A \hilite{selection rule} picks a basket $\Nc$ of $K$ stocks. Each rebalance chooses the
+  shares $n_{i}$ of each stock, with weight $w_{i}=n_{i}S_{i}/W$, to solve:
+  \vspace{-0.3em}
   \begin{equation*}
-    \xi_{t}=-G\left(\frac{\bar{S}^{(21)}_{t}}{\bar{S}^{(63)}_{t}}-1\right)
+    \boxed{\begin{aligned}
+      \operatorname*{maximize}_{n\,\geq\,0}\quad & U(n;\gamma) &&\quad\text{(utility)}\\
+      \text{subject to}\quad & \textstyle\sum_{i\in\Nc}n_{i}S_{i}\leq W &&\quad\text{(budget)}\\
+      & w_{i}\leq\bar{w} &&\quad\text{(single-name cap)}\\
+      & \sqrt{w^{\top}\Sigma_{g}\,w}\leq\sigma_{\text{SPY}} &&\quad\text{(volatility cap)}\\
+      & \bar{c}\,\lVert n-n^{\text{prev}}\rVert_{1}\leq B &&\quad\text{(turnover budget)}\\
+      & \beta^{\top}w\leq\bar{\beta} &&\quad\text{(}\beta\text{ cap, hedge on)}
+    \end{aligned}}
   \end{equation*}
-  where $\bar{S}^{(21)}_{t}$ and $\bar{S}^{(63)}_{t}$ are 21-day and 63-day moving averages
-  of the close, and the gain $G$ makes $|\xi_{t}|\leq 1$ on 99\% of 2014--2024 days. A
-  falling market has $\xi_{t}>0$.
+  where $S_{i}$ is the close price, $W$ is the wealth, and $\gamma_{i}$ is the score of stock $i$.
 \end{frame}
 
-\begin{frame}{The $\gamma$ Score}
-  The score of stock $i$ on day $t$ is:
-  \begin{equation*}
-    \gamma_{i}(t)=\tanh\left(\frac{\tilde{g}_{i,t}}{\max(|\beta_{i}(t)|,\,0.1)^{\xi_{t}}}\right),
-    \qquad
-    \underbrace{\tilde{g}_{i,t}=\alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t}}_{\text{expected growth rate}}
-  \end{equation*}
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Sign}: the denominator is positive, so $\gamma_{i}(t)$ has the sign of
-      $\tilde{g}_{i,t}$.
-    \item \hilite{Size}: when $\xi_{t}>0$, the score favors stocks with $|\beta_{i}|<1$;
-      when $\xi_{t}<0$, stocks with $|\beta_{i}|>1$.
-  \end{itemize}
-  L8b assumed $\beta_{i}>0$; the floor of $0.1$ keeps the score finite for any $\beta_{i}$.
-\end{frame}
-
-\begin{frame}{The Pickers}
-  A \hilite{picker} chooses the names $\Nc$ the book may hold. In our examples:
-  \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{$\gamma$ per sector}: the 3 stocks with the highest $\gamma_{i}(t)$ in
-      each of the 11 sectors, 33 names.
-    \item \hilite{Random per sector}: 3 stocks drawn at random in each sector, a
-      baseline with the same sector balance.
-    \item \hilite{A fixed list}: names chosen in advance, such as the 13 stocks of L8b.
-  \end{itemize}
-  \vspace{0.3em}
-  The picker runs on the first day, every 21 trading days after its last pick, and
-  whenever the book's value leaves its forecast band.
-\end{frame}
-
-% ========== How to weight
-\begin{frame}{How to Weight: Maximum Utility Under Limits}
-  With shares $n_{i}$, close $S_{i}$, wealth $W$, and weight $w_{i}=n_{i}S_{i}/W$, a re-plan
-  solves:
-  \begin{equation*}
-    \begin{aligned}
-      \max_{n\geq 0}\;U(n;\gamma)\quad\text{s.t.}\quad &
-      \underbrace{\textstyle\sum_{i}n_{i}S_{i}\leq W}_{\text{budget}},\qquad
-      \underbrace{w_{i}\leq\bar{w}_{i}}_{\text{cap}},\\
-      & \underbrace{\sqrt{w^{\top}\Sigma_{g}w}\leq\sigma_{\text{SPY}}}_{\text{volatility}},\qquad
-      \underbrace{\bar{c}\,\bar{S}\textstyle\sum_{i}|n_{i}-n^{\text{prev}}_{i}|\leq B}_{\text{turnover}}
-    \end{aligned}
-  \end{equation*}
-  where $\bar{w}_{i}=\max(0.10,1.5/K)$ for $K$ picked names, $\Sigma_{g}$ is the covariance
-  of the daily growth rates, $\sigma_{\text{SPY}}$ the volatility of \texttt{SPY} on
-  2014--2024, $n^{\text{prev}}$ the shares held, $\bar{c}=5\times10^{-4}$ the half spread,
-  $\bar{S}$ the mean price, and $B=0.10\,W$. Uninvested wealth is cash.
+\begin{frame}{The Trading Limits}
+  \vspace{0.2em}
+  \begin{center}\small
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}@{}}
+    \toprule
+    \textbf{\ink{Limit}} & \textbf{\ink{What it does}} & \textbf{\ink{Setting in the study}}\\
+    \midrule
+    Single-name cap $\bar{w}$ & No stock is more than $\bar{w}$ of the wealth. &
+      $\bar{w}=\max(0.10,\,1.5/K)$\\
+    Volatility cap $\sigma_{\text{SPY}}$ & The book is no more volatile than \texttt{SPY}.
+      $\Sigma_{g}$: covariance of daily growth rates. & \texttt{SPY} over 2014 to 2024,
+      17.3\% a year\\
+    Turnover budget $B$ & A rebalance spends at most $B$ on the spread. $\bar{c}$: half
+      spread per share. & $B=0.10\,W$, half spread of 5 basis points\\
+    $\beta$ cap $\bar{\beta}$ & The book's $\beta$ to \texttt{SPY} is at most $\bar{\beta}$. &
+      $\bar{\beta}=\max(0,\,1-\xi)$\\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.2em}
+  The $\beta$ cap applies only when the \hilite{market hedge} is on. It tightens as the
+  market state $\xi$ turns bearish. The book can then also hold up to five stocks whose
+  $\beta$ is zero or negative, the \hilite{hedge pool}.
 \end{frame}
 
 \begin{frame}{The Weighting Rules}
-  Four utilities of L8b's kind use the names with a positive score, $\Ap$:
-  \begin{itemize}\setlength{\itemsep}{0.35em}
-    \item \hilite{Cobb--Douglas}: $U=\prod_{i\in\Ap}n_{i}^{\gamma_{i}}$, the L8b allocation.
-    \item \hilite{CES} on share counts ($\eta=0.5$) and \hilite{CES} on weights.
-    \item \hilite{Stone--Geary}: Cobb--Douglas above a 1\% baseline in every name.
-  \end{itemize}
-  Three standard portfolios compare: minimum variance, the tangency portfolio, and a
-  130/30 long--short book.
+  Four utilities use the stocks with a positive score, $\gamma_{i}>0$:
+  \begin{center}\small
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}l@{\hspace{2em}}l@{\hspace{2em}}l@{}}
+    \toprule
+    \textbf{\ink{Utility}} & $U(n;\gamma)$ & \textbf{\ink{Solution with the budget alone}}\\
+    \midrule
+    Cobb--Douglas & $\sum_{i}\gamma_{i}\ln n_{i}$ & $w_{i}\propto\gamma_{i}$\\
+    CES on shares & $\left(\sum_{i}\gamma_{i}\,n_{i}^{\rho}\right)^{1/\rho}$ & $n_{i}\propto\left(\gamma_{i}/S_{i}\right)^{\eta}$\\
+    CES on weights & $\left(\sum_{i}\gamma_{i}\,w_{i}^{\rho}\right)^{1/\rho}$ & $w_{i}\propto\gamma_{i}^{\eta}$\\
+    Stone--Geary & $\sum_{i}\gamma_{i}\ln\left(n_{i}-b_{i}\right)$ & $\left(n_{i}-b_{i}\right)S_{i}\propto\gamma_{i}$\\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  where $\rho=1-1/\eta$ with $\eta=0.5$, and $b_{i}S_{i}=0.01\,W$. With the trading limits
+  there is no closed form. Each problem is a convex cone program.
 
   \vspace{0.3em}
-  With the limits there is no closed form, but each problem is a convex cone program,
-  solved with Clarabel (SCS as the fallback). If both fail, the book keeps its holdings.
+  Three benchmarks run under the same limits: minimum variance, the tangency
+  portfolio, and a 130/30 long--short book. That makes seven weighting rules.
 \end{frame}
 
-% ========== When to trade
-\begin{frame}{When to Trade: The Forecast Band}
-  At a re-plan, the controller forecasts the wealth of holding the targets $n^{\star}$
-  with a multi-asset geometric Brownian motion in growth rates: mean $\tilde{g}_{i,t}$,
-  covariance $\Sigma_{g}$, $N_{p}=1{,}000$ paths, $T=21$ trading days. With $\mu_{W}(\tau)$ and
-  $\sigma_{W}(\tau)$ the mean and SD of the forecast wealth $\tau$ days later, the band is:
+\begin{frame}{The Score $\gamma$}
+  Each stock gets a score after every close:
   \begin{equation*}
-    \mu_{W}(\tau)-z\,\sigma_{W}(\tau)\;\leq\;W(t)\;\leq\;\mu_{W}(\tau)+z\,\sigma_{W}(\tau),
-    \qquad z=1.96
+    \boxed{\gamma_{i}=\tanh\left(\frac{\alpha_{i}+\beta_{i}\,\tilde{g}_{M}}{\max\left(|\beta_{i}|,\,0.1\right)^{\xi}}\right)}
   \end{equation*}
-  If the model were right, the wealth would stay inside on about 95\% of days.
-\end{frame}
-
-\begin{frame}{The Triggers}
-  After each close, with $\tau$ the days since the last re-plan and $W^{\text{pk}}$ the
-  running peak, the controller re-plans on the first of:
-  \begin{enumerate}\setlength{\itemsep}{0.45em}
-    \item \hilite{Drawdown}: $1-W(t)/W^{\text{pk}}>D_{\max}=0.08$; the peak then resets.
-    \item \hilite{Horizon}: $\tau\geq T$, the plan has run its 21 days.
-    \item \hilite{Band exit}: the wealth has left the forecast band.
-  \end{enumerate}
-  \vspace{0.2em}
-  A scheduled pick that changes the names also re-plans. Between re-plans the book
-  does not trade: the band is a no-trade region on its value, and each re-plan starts
-  a new forecast from the measured wealth.
-\end{frame}
-
-\begin{frame}{Trades and Costs}
-  Orders fill at the next open, sells before buys, in fractional shares. A fill of
-  $q$ shares of name $i$ at the open price $S^{o}_{i}$ costs:
-  \begin{equation*}
-    C(q)=\underbrace{\bar{c}\,S^{o}_{i}\,|q|}_{\text{half spread}}
-    +\underbrace{\kappa\,\frac{|q|}{A_{i}}\,S^{o}_{i}\,|q|}_{\text{market impact}}
-  \end{equation*}
-  where $\bar{c}=5\times10^{-4}$, $A_{i}$ is the stock's mean daily volume over 63 trading
-  days (shares/day), and $\kappa=0.001$. The impact grows with the share of the day's
-  volume that the order takes.
-\end{frame}
-
-% ========== The market hedge
-\begin{frame}{The Market Hedge}
-  With the hedge on, every re-plan also limits the book's market loading:
-  \begin{equation*}
-    \sum_{i\in\Nc}\beta_{i}\,w_{i}\;\leq\;\bar{\beta}=\max\left(0,\,1-\xi_{t}\right)
-  \end{equation*}
-  The cap is the loading of \texttt{SPY} at $\xi_{t}=0$, tightens as the market falls, and
-  reaches zero at $\xi_{t}\geq 1$. To meet it, the book can hold cash or names from a
-  \hilite{hedge pool}: up to five stocks whose online $\beta_{i}$ and down-day $\beta$ over
-  the last year are at most zero. The hedge trades growth in rising markets for
-  protection in falling ones.
-\end{frame}
-
-% ========== How to judge the method
-\begin{frame}{How to Judge the Method}
-  On real data, the method runs once, on one path with one broad sell-off in spring
-  2025. A choice that did well may have been lucky.
-
-  \vspace{0.3em}
-  The study also uses the L13a generator, fitted to the same 373 stocks on 2014--2024,
-  with two parts tied to the method:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Drifting $\beta$}: sized so the method's online $\beta$ moves as much on
-      synthetic stocks as on real ones.
-    \item \hilite{Intercepts}: each $\alpha_{i}$ pulled toward the mean, so they spread and
-      persist as the real ones do.
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Expected growth rate} (numerator): $(\alpha_{i},\beta_{i})$ are the single
+      index model parameters of stock $i$ against \texttt{SPY}, updated daily, and
+      $\tilde{g}_{M}$ is the 252-day EMA of the daily growth rate of \texttt{SPY} (1/yr).
+    \item \hilite{Penalty on $\beta$} (denominator): set by the market state $\xi$, which
+      compares the 21-day and 63-day EMA of the \texttt{SPY} close:
   \end{itemize}
-  Each market calibrates on its 2014--2024 and trades its 2025--2026.
+  \vspace{-0.4em}
+  \begin{equation*}
+    \xi=-G\left(\frac{\text{EMA}_{21}}{\text{EMA}_{63}}-1\right)
+  \end{equation*}
+  \vspace{-0.4em}
+  where $G=21.23$ makes $|\xi|\leq 1$ on 99\% of the days from 2014 to 2024.
 \end{frame}
 
-\begin{frame}{Typical and Sell-off Sets}
-  From 10,000 candidate markets, the study chooses three sets by the \texttt{SPY} path
-  over the trading window:
+\begin{frame}{The Market State}
+  The market state is positive when $\text{EMA}_{21}<\text{EMA}_{63}$, as in a falling market:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{../figs/Fig-L13b-MarketState.pdf}
+  \end{center}
+  The shaded days have $\xi>0$: 75 of the 420 trading days, in spring 2025 and in March
+  and April 2026. Each ring marks a day on which the two EMAs cross, where $\xi=0$.
+\end{frame}
+
+\begin{frame}{Reading the Score}
   \begin{itemize}\setlength{\itemsep}{0.5em}
-    \item \hilite{Typical}: 600 markets drawn at random.
-    \item \hilite{Burst sell-offs}: the 200 deepest drawdowns among markets with a burst
-      of extreme daily moves.
-    \item \hilite{Bear sell-offs}: the 200 deepest drawdowns among markets without one,
-      with slower, more sustained declines.
+    \item \hilite{Sign}: the penalty is positive, so the score has the sign of the
+      expected growth rate.
+    \item \hilite{Size}: in a falling market ($\xi>0$), the score favors stocks with a low
+      $\beta$. In a rising market ($\xi<0$), it favors stocks with a high $\beta$.
+    \item \hilite{Bounds}: the hyperbolic tangent keeps the score between $-1$ and $1$, and
+      the floor of 0.1 keeps the penalty finite when $\beta_{i}$ is near zero.
   \end{itemize}
-  \vspace{0.3em}
-  The results are read as distributions, set by set, against \texttt{SPY} and an
-  equal-weight portfolio of every stock on the same market.
+  \vspace{0.4em}
+  This score is the preference weight we used previously, in a form that works for
+  every stock. It does two jobs:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Weighting}: stocks with $\gamma_{i}>0$ are held long, and the 130/30 rule
+      shorts stocks with $\gamma_{i}<0$.
+    \item \hilite{Selection}: a rule picks the stocks with the highest scores.
+  \end{itemize}
 \end{frame}
 
-% ========== What the study found
-\begin{frame}{What the Study Found}
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Stocks over weights}: on real prices, one 33-stock selection ended
-      between 1.09 and 1.23 times initial wealth across the seven rules; different
-      selections ended between 1.03 and 1.70.
-    \item \hilite{Early re-plans}: they made the median worst drawdown smaller in most
-      combinations, raised trading cost, and did not consistently raise wealth.
-    \item \hilite{Sell-offs}: every combination, random picks included, ended above
-      simulated \texttt{SPY} and the equal-weight universe in the median.
-    \item \hilite{Caveats}: the generator's persistent trends favored the $\gamma$ picker
-      more than the real market did; the hedge cost wealth on real prices and added to it in the bear set.
+% ========== Rebalancing
+\begin{frame}{Rebalancing: The Forecast Band}
+  A rebalance sets target shares, and the plan is to hold them. We call each
+  rebalance a \hilite{re-plan}. The method uses \hilite{model-predictive control}:
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item \hilite{Forecast}: a multi-asset geometric Brownian motion, 1,000 paths, 21
+      trading days ahead, with mean growth rates $\alpha_{i}+\beta_{i}\,\tilde{g}_{M}$ and
+      covariance $\Sigma_{g}$.
+    \item \hilite{Plant}: the market. The measurement is the wealth $W$ of the book at
+      the real close prices.
   \end{itemize}
+  With $\mu_{W}(\tau)$ and $\sigma_{W}(\tau)$ the mean and standard deviation of the forecast
+  wealth $\tau$ trading days after the re-plan, the 95\% \hilite{forecast band} is:
+  \begin{equation*}
+    \mu_{W}(\tau)-1.96\,\sigma_{W}(\tau)\;\leq\;W\;\leq\;\mu_{W}(\tau)+1.96\,\sigma_{W}(\tau)
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{The Rebalancing Triggers}
+  After each close, the controller re-plans on the first trigger that holds:
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item \hilite{Drawdown stop}: the wealth is more than 8\% below its running peak. The
+      peak then resets, so the stop fires once for each fresh 8\% loss.
+    \item \hilite{Horizon}: the plan has run for 21 trading days.
+    \item \hilite{Band exit}: the wealth has left the 95\% band of the forecast.
+  \end{enumerate}
+  \vspace{0.4em}
+  A re-plan solves the same allocation problem from the shares held, with that day's
+  estimates. No trigger changes the utility or the limits. Between re-plans, the book
+  does not trade.
+\end{frame}
+
+\begin{frame}{One Episode of the Real-Data Backtest}
+  The red line is the wealth of one book over its starting wealth $W_{0}$. Each gold ring
+  is a re-plan, and each re-plan starts a new forecast:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L13b-ForecastBand.pdf}
+  \end{center}
+  Over the whole window, this book re-planned 27 times: 17 times at the horizon, 7
+  times at a band exit, and 3 times at a drawdown stop.
+\end{frame}
+
+\begin{frame}{Fixed Schedule and Trading Costs}
+  \vspace{0.3em}
+  {\large\textbf{\ink{Do the triggers beat a fixed schedule?}}}
+
+  \vspace{0.3em}
+  We reran everything on a fixed 21-day schedule. The ending wealth is the same.
+  The triggers take about a point off the worst drawdown, on real prices and in
+  simulated sell-offs.
+
+  \vspace{1.0em}
+  {\large\textbf{\ink{What does a trade cost?}}}
+
+  \vspace{0.3em}
+  Orders fill at the next open, sells first and then buys. Each trade pays a half
+  spread of 5 basis points, plus an impact cost that grows with the fraction of the
+  stock's mean daily volume that the order takes. There is no commission.
+\end{frame}
+
+\begin{frame}{The Selection Rules}
+  Each run pairs a selection rule with a weighting rule, with the hedge on or off.
+  The study compares ten selection rules in three groups:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{33 stocks, 3 per sector}: in each of the 11 sectors, the 3 highest
+      scores, the top 3 stocks of a bandit, or 3 stocks at random.
+    \item \hilite{13 stocks}: the 13 highest scores in the universe, with or without a
+      correlation screen or a liquidity screen, or 13 stocks at random.
+    \item \hilite{Hand-picked}: 13 stocks chosen in advance, without 2025 data, and never
+      re-picked. A second list adds two more stocks.
+  \end{itemize}
+  \vspace{0.3em}
+  Every other rule picks on the first day, every 21 trading days after that, and at
+  every band exit.
+\end{frame}
+
+\begin{frame}{Selection Matters More Than Weighting}
+  Real-data backtest. Each row is a selection rule, and each dot is a weighting rule:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{../figs/Fig-L13b-RealData-Selection.pdf}
+  \end{center}
+  With the hedge off, seven weighting rules on one basket ended between 1.09 and 1.23
+  times the initial wealth. Different baskets ended between 1.03 and 1.70.
+\end{frame}
+
+\begin{frame}{Example: The Method on Real Data}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Example:}}\par\small
+  \href{\repo/CHEME-5660-L13b-Example-MPC-RealData-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-MPC-RealData-Fall-2026.ipynb}}}
+
+  \vspace{0.8em}
+  In this example, we calibrate the method on 2014 to 2024 for the 373 S\&P 500 stocks
+  with a complete history and trade 2025 and 2026. We follow the market state and the
+  scores, run one book day by day and read why it re-planned, and then change the
+  weighting rule, the selection rule, the hedge, and the basket on the same path.
+\end{frame}
+
+% ========== Market generator
+\begin{frame}{Market Generator: JumpHMM}
+  On real data, the method runs once, on one path with one broad sell-off in the
+  spring of 2025. Previously, we built a market generator from jump hidden Markov
+  models (JumpHMM). The daily growth rate of synthetic stock $i$ in sector $s$ is:
+  \begin{equation*}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\text{trend}}+\underbrace{\beta_{i}(t)\,g_{m}(t)}_{\text{market: 1 JumpHMM}}
+    +\underbrace{\delta_{i}\,f_{s}(t)}_{\text{sector: 11 JumpHMMs}}+\underbrace{\psi_{i}\,\tilde{\varepsilon}_{i}(t)}_{\text{own: 373 JumpHMMs}}
+  \end{equation*}
+  \begin{itemize}\setlength{\itemsep}{0.35em}
+    \item The generator is fitted to the same 373 stocks on 2014 to 2024, and each
+      $\beta_{i}(t)$ drifts around the stock's estimate.
+    \item It reproduces the fat tails of real growth rates, but its volatility
+      clustering fades after a day.
+    \item The controller still forecasts with a geometric Brownian motion. The test
+      markets have fat tails that the forecast model does not have.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Typical and Stress Sets}
+  On each synthetic market, the method calibrates on 2014 to 2024 and trades January
+  2025 to September 2026 with the real settings. We draw 10,000 paths of the market
+  model and rank them by the maximum drawdown of synthetic \texttt{SPY}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Typical}: 600 paths drawn at random. The median drawdown of \texttt{SPY}
+      is 17.6\%.
+    \item \hilite{Burst stress}: the 200 deepest drawdowns among the paths with a jump
+      burst in the trading window. The median drawdown is 36.4\%.
+    \item \hilite{Bear stress}: the 200 deepest drawdowns among the paths without a jump
+      burst. These declines are slower and more sustained, with a median of 40.6\%.
+  \end{itemize}
+  \vspace{0.3em}
+  Some paths are in more than one set, so the three sets hold 978 markets.
+\end{frame}
+
+\begin{frame}{Every Median Ends Above SPY}
+  Synthetic futures. Each dot is the median across the futures of a set:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.56\textheight,keepaspectratio]{../figs/Fig-L13b-Synthetic-Sets.pdf}
+  \end{center}
+  In both stress sets, every median ended above \texttt{SPY} and above the equal-weight
+  portfolio. The random selection rules did as well.
+\end{frame}
+
+\begin{frame}{Reading the Synthetic Results}
+  \begin{itemize}\setlength{\itemsep}{0.7em}
+    \item \hilite{The margin}: it came from parts of the method that every book shares,
+      not from stock selection or from the timing of the re-plans.
+    \item \hilite{Selection by score}: in typical futures with the hedge off, 13 stocks
+      picked by score beat 13 random stocks in 62 to 71\% of the futures. In bear
+      futures, random picks did as well or better for most weighting rules.
+    \item \hilite{The generator's trends}: the generator keeps each stock's 2014 to 2024
+      trend, which the score estimates. Part of the advantage of the score may not
+      carry over to real prices.
+    \item \hilite{The hedge}: it reduced terminal wealth on real prices. It added to
+      terminal wealth in the bear stress set, whose declines were the most sustained.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example: The Method on Synthetic Markets}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Example:}}\par\small
+  \href{\repo/CHEME-5660-L13b-Example-MPC-SyntheticData-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-MPC-SyntheticData-Fall-2026.ipynb}}}
+
+  \vspace{0.8em}
+  In this example, we draw synthetic markets from a generator fitted to the same 373
+  stocks, and choose typical markets and two kinds of sell-off as the study does. We
+  then run the method on each market, and compare the books with \texttt{SPY} and an
+  equal-weight portfolio set by set.
 \end{frame}
 
 \begin{frame}{Summary}
   \vspace{0.3em}
-  We built a book that chooses, weights, and trades stocks every day, and tested it
-  on real and synthetic markets.
+  We followed one system for managing a stock portfolio every day, from the
+  allocation problem to its test on real and synthetic markets.
 
   \vspace{0.4em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{What to hold}: a bounded score from the single index model and the
-      market state, and a picker.
-    \item \hilite{How to weight and when to trade}: utility under limits as a convex
-      program, and re-plans at the horizon, a band exit, or a drawdown.
-    \item \hilite{How to judge}: one real path, then distributions over typical and
-      sell-off synthetic markets.
+    \item \hilite{Allocation}: stock selection mattered more than the weighting rule.
+      Seven weighting rules on one basket ended close together, while different
+      baskets ended far apart.
+    \item \hilite{Rebalancing}: re-plans came at the horizon, a band exit, or a drawdown
+      stop. The triggers took about a point off the worst drawdown.
+    \item \hilite{Evaluation}: in both sell-off sets, every median ended above
+      \texttt{SPY}. The generator keeps each stock's past trend, which favors
+      selection by score.
   \end{itemize}
-  \vspace{0.3em}
-  The method joins the single index model, utility allocation, and synthetic markets.
+  \vspace{0.2em}
+  A paper-trading version of this system is running now.
 \end{frame}
 
 \end{document}

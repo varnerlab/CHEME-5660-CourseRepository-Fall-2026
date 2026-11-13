@@ -1,0 +1,351 @@
+% The talk's dot-plot grammar (spec, "Dot plots"). Input once in the preamble, after vnslides.
+%
+% \vndotplot[<keys>]{<dots.csv>}{<bars.csv>} draws one panel:
+%   - one row per ticker picker, grouped by basket size, at y = -(row + \vndotGap group_index): 1.4 rows more
+%     between groups, so each group's label has its own space, 1.1 rows above its first row, which leaves it clearly
+%     more room below than the rows have between them, and more room again above it, from the group before;
+%   - one dot per weighting rule, on the row's line: hedge on hollow, drawn first, and hedge off filled, drawn on top,
+%     so where two dots meet the filled one stays whole (user, 2026-10-30);
+%   - a pale bar from each row's lowest to highest dot (one per hedge setting; the two overlap on the row's line);
+%   - optional vertical lines: SPY buy-and-hold (gold, dashed), equal-weight universe (grey, dotted) and a midline
+%     (grey, dashed), each drawn only when its key is set;
+%   - an optional label on the SPY or equal-weight line: at the top of the plot, just left of the line, running up
+%     along it.
+% Keys: xmin, xmax, xstep, xprecision (decimals on the tick labels), spy, ew, midline, spylabel and ewlabel (the
+% lines' labels), width, height (of the plot area), rowlabels (true or false), labelsize (of the row labels, pt),
+% xlabel and title (one line above the plot, in a box of fixed height and depth, so titles with and without
+% descenders share a baseline). Panels set side by side line up on their x axes. Extra axis options for one panel go
+% in the style vndot extra, which \vndotplot clears when it is done.
+% The dots file has columns row, group_index, hedge and value; the bars file has row, group_index, label, group,
+% hedge, lo and hi. Both come from scripts/30_talk_data.jl.
+%
+% \vndotreadrefs{<refs.csv>} sets \vndotSPY and \vndotEW from a refs file (columns name, value); a name that is not
+% in the file leaves its macro empty.
+% \vndotreadaxis{<axes.csv>}{<set>} sets \vndotAxisLo and \vndotAxisHi from the row of an axes file (columns set, lo,
+% hi) whose set is <set>.
+% \vndotlegend[<keys>] draws the legend on one line. Keys: legend spy and legend ew (true or false), which items to
+% show; legend size, the font size in pt (8 under a plot, 7.5 on the footer line, to match the footer).
+% \vndotlegendstacked draws the legend in four lines (hedge off and hedge on share the first) in a plot's upper right
+% corner. A panel takes it through its extra axis options:
+%   \pgfplotsset{vndot extra/.style={extra description/.code={\vndotlegendstacked}}}
+% \vndothedgekey draws hedge on above hedge off, just right of a plot's top right corner, for a slide whose lines are
+% labeled in the plot. A panel takes it the same way.
+% \vndotupper{<text>} is <text> in capitals with γ left as it is: γ is a symbol on these slides, and capitals
+% would turn it into Γ.
+
+% the dots' radii and the range bars' width; a slide can make them smaller, inside a group around its frame
+\def\vndotOffRadius{1.8pt}
+\def\vndotOnRadius{1.7pt}
+\def\vndotBarWidth{2.2pt}
+
+% the colors (vndotoff, vndoton, vndotbar, vndotew, vndotgrid, vndotaxis, vndottick) come with the theme, from the
+% deck palette in vnslides.sty
+
+% the line and mark styles, shared by the plot and the legend
+\tikzset{
+  vndot spy/.style={draw=vnfigaccent, line width=1.1pt, dash pattern=on 4pt off 2.5pt},
+  vndot ew/.style={draw=vndotew, line width=1pt, dotted},
+  vndot mid/.style={draw=vndotew, line width=0.8pt, dash pattern=on 3pt off 2pt},
+  vndot off/.style={circle, fill=vndotoff, draw=none, inner sep=0pt, minimum size=2*\vndotOffRadius},
+  vndot on/.style={circle, fill=vnbg, draw=vndoton, line width=0.7pt, inner sep=0pt, minimum size=2*\vndotOnRadius},
+  vndot line label/.style={rotate=90, anchor=south east, inner xsep=2pt, inner ysep=0pt, fill=vnbg, overlay,
+    font=\fontsize{7.5}{9}\selectfont, text=vnslidebody},
+}
+
+% the space between a line's label and the line's center
+\def\vndotLabelGap{3pt}
+
+% the extra space between groups, in rows, and how far above its first row a group's label sits
+\def\vndotGap{1.4}
+\def\vndotGroupLift{1.1}
+
+% extra axis options for the next panel only; \vndotplot clears this style when it is done
+\pgfplotsset{vndot extra/.style={}}
+
+% keep only the table rows whose column #1 reads #2 (the hedge column reads false or true)
+\pgfplotsset{
+  vndot keep/.style 2 args={
+    x filter/.append code={%
+      \edef\vndotCellA{\thisrow{#1}}%
+      \edef\vndotCellB{#2}%
+      \ifx\vndotCellA\vndotCellB
+      \else
+        \def\pgfmathresult{inf}%
+      \fi
+    },
+  },
+}
+
+% the keys and their defaults; .estore in expands a value such as \vndotSPY when it is stored
+\pgfkeys{
+  /vndot/.is family, /vndot,
+  xmin/.estore in=\vndotXmin,
+  xmax/.estore in=\vndotXmax,
+  xstep/.estore in=\vndotXstep,
+  xprecision/.estore in=\vndotXprecision,
+  spy/.estore in=\vndotSpyAt,
+  ew/.estore in=\vndotEwAt,
+  midline/.estore in=\vndotMidAt,
+  spylabel/.store in=\vndotSpyLabel,
+  ewlabel/.store in=\vndotEwLabel,
+  width/.estore in=\vndotWidth,
+  height/.estore in=\vndotHeight,
+  rowlabels/.estore in=\vndotRowLabels,
+  labelsize/.estore in=\vndotLabelSize,
+  xlabel/.store in=\vndotXlabel,
+  title/.store in=\vndotTitle,
+  legend spy/.estore in=\vndotLegendSpy,
+  legend ew/.estore in=\vndotLegendEw,
+  legend size/.estore in=\vndotLegendSize,
+}
+
+\newcommand{\vndotdefaults}{%
+  \pgfkeys{/vndot, xmin=0.95, xmax=1.75, xstep=0.1, xprecision=1, spy={}, ew={}, midline={}, spylabel={}, ewlabel={},
+    width=8cm, height=4cm, rowlabels=true, labelsize=7.5, xlabel={}, title={}}%
+}
+
+\def\vndotTrue{true}
+\def\vndotFalse{false}
+
+% \vndotreadrefs{<refs.csv>}: \vndotSPY and \vndotEW from the refs file, looked up by name
+\def\vndotNameSpy{SPY buy-and-hold}
+\def\vndotNameEw{equal-weight universe}
+\newcommand{\vndotreadrefs}[1]{%
+  \def\vndotSPY{}%
+  \def\vndotEW{}%
+  \pgfplotstableread[col sep=comma]{#1}\vndotRefs
+  \pgfplotstablegetrowsof{\vndotRefs}%
+  \pgfmathtruncatemacro\vndotRefLast{\pgfplotsretval - 1}%
+  \pgfplotsforeachungrouped \vndotI in {0,...,\vndotRefLast}{%
+    \pgfplotstablegetelem{\vndotI}{name}\of\vndotRefs
+    \edef\vndotRefName{\pgfplotsretval}%
+    \pgfplotstablegetelem{\vndotI}{value}\of\vndotRefs
+    \ifx\vndotRefName\vndotNameSpy
+      \edef\vndotSPY{\pgfplotsretval}%
+    \fi
+    \ifx\vndotRefName\vndotNameEw
+      \edef\vndotEW{\pgfplotsretval}%
+    \fi
+  }%
+}
+
+% \vndotreadaxis{<axes.csv>}{<set>}: \vndotAxisLo and \vndotAxisHi from the row of that set
+\newcommand{\vndotreadaxis}[2]{%
+  \def\vndotAxisLo{}%
+  \def\vndotAxisHi{}%
+  \edef\vndotWantSet{#2}%
+  \pgfplotstableread[col sep=comma]{#1}\vndotAxes
+  \pgfplotstablegetrowsof{\vndotAxes}%
+  \pgfmathtruncatemacro\vndotAxisLast{\pgfplotsretval - 1}%
+  \pgfplotsforeachungrouped \vndotI in {0,...,\vndotAxisLast}{%
+    \pgfplotstablegetelem{\vndotI}{set}\of\vndotAxes
+    \edef\vndotThisSet{\pgfplotsretval}%
+    \ifx\vndotThisSet\vndotWantSet
+      \pgfplotstablegetelem{\vndotI}{lo}\of\vndotAxes
+      \edef\vndotAxisLo{\pgfplotsretval}%
+      \pgfplotstablegetelem{\vndotI}{hi}\of\vndotAxes
+      \edef\vndotAxisHi{\pgfplotsretval}%
+    \fi
+  }%
+}
+
+% \vndotupper{<text>}: capitals, with γ kept lower case
+\ExplSyntaxOn
+\cs_generate_variant:Nn \text_uppercase:n { V }
+\cs_new_protected:Npn \vndotupper #1
+  {
+    \tl_set:Ne \l_tmpa_tl {#1}
+    \tl_replace_all:Nnn \l_tmpa_tl { γ } { \NoCaseChange { γ } }
+    \text_uppercase:V \l_tmpa_tl
+  }
+\ExplSyntaxOff
+
+% \vndotplot[<keys>]{<dots.csv>}{<bars.csv>}
+\newcommand{\vndotplot}[3][]{%
+  \vndotdefaults
+  \pgfkeys{/vndot, #1}%
+  % the bar table drives the y range and the labels
+  \pgfplotstableread[col sep=comma]{#3}\vndotBars
+  \pgfplotstablegetrowsof{\vndotBars}%
+  \pgfmathtruncatemacro\vndotLast{\pgfplotsretval - 1}%
+  \pgfplotstablegetelem{\vndotLast}{row}\of\vndotBars
+  \let\vndotLastRow\pgfplotsretval
+  \pgfplotstablegetelem{\vndotLast}{group_index}\of\vndotBars
+  \let\vndotLastGroup\pgfplotsretval
+  \pgfmathsetmacro\vndotYmin{-(\vndotLastRow + \vndotGap*\vndotLastGroup) - 0.5}%
+  % the top of the plot is the first group's label
+  \pgfmathsetmacro\vndotYmax{-1 + \vndotGroupLift}%
+  % a title only when one is set: an empty title still takes a line
+  \ifx\vndotTitle\empty
+    \pgfplotsset{vndot title/.style={}}%
+  \else
+    \pgfplotsset{vndot title/.style={title={\vndotTitle}}}%
+  \fi
+  \begin{tikzpicture}[baseline=(current axis.south)]
+    \begin{axis}[
+      width=\vndotWidth, height=\vndotHeight, scale only axis,
+      clip=false,
+      xmin=\vndotXmin, xmax=\vndotXmax, xtick distance=\vndotXstep,
+      ymin=\vndotYmin, ymax=\vndotYmax,
+      axis y line=none, axis x line*=bottom,
+      x axis line style={draw=vndotaxis, -},
+      xmajorgrids, major grid style={draw=vndotgrid, line width=0.5pt},
+      major x tick style={draw=vndotaxis},
+      tick label style={font=\fontsize{8}{9.6}\selectfont, color=vndottick},
+      xticklabel style={/pgf/number format/assume math mode=true, /pgf/number format/fixed,
+        /pgf/number format/fixed zerofill, /pgf/number format/precision=\vndotXprecision},
+      xlabel={\vndotXlabel},
+      vndot title,
+      title style={font=\fontsize{8.5}{10}\selectfont, text=vnslideink, yshift=-2pt, text height=1.6ex,
+        text depth=0.45ex},
+      xlabel style={font=\fontsize{8.5}{10}\selectfont, color=vnslidebody, yshift=3pt},
+      every axis plot/.append style={line join=round},
+      vndot extra,
+    ]
+      % reference lines, behind the bars and dots
+      \ifx\vndotMidAt\empty
+      \else
+        \draw[vndot mid] (axis cs:\vndotMidAt,\vndotYmin) -- (axis cs:\vndotMidAt,\vndotYmax);
+      \fi
+      \ifx\vndotEwAt\empty
+      \else
+        \draw[vndot ew] (axis cs:\vndotEwAt,\vndotYmin) -- (axis cs:\vndotEwAt,\vndotYmax);
+      \fi
+      \ifx\vndotSpyAt\empty
+      \else
+        \draw[vndot spy] (axis cs:\vndotSpyAt,\vndotYmin) -- (axis cs:\vndotSpyAt,\vndotYmax);
+      \fi
+      % a line's label runs up along the line's left side, \vndotLabelGap from the line's center, and its text ends at
+      % the top of the plot; its field-colored box runs 2 pt past the text at each end, so a grid line under the label
+      % stops short of the letters. It is an overlay, so it may reach past the plot's left edge without moving the panel
+      \ifx\vndotEwLabel\empty
+      \else
+        \node[vndot line label] at ([xshift=-\vndotLabelGap, yshift=2pt]axis cs:\vndotEwAt,\vndotYmax)
+          {\vndotEwLabel};
+      \fi
+      \ifx\vndotSpyLabel\empty
+      \else
+        \node[vndot line label] at ([xshift=-\vndotLabelGap, yshift=2pt]axis cs:\vndotSpyAt,\vndotYmax)
+          {\vndotSpyLabel};
+      \fi
+
+      % bars: lowest to highest dot, drawn as an x error bar around the midpoint
+      \addplot[draw=none, mark=none, vndot keep={hedge}{false},
+        error bars/.cd, x dir=both, x explicit, error mark=none,
+        error bar style={draw=vndotbar, line width=\vndotBarWidth, line cap=round}]
+        table[col sep=comma, x expr={(\thisrow{lo} + \thisrow{hi})/2},
+          y expr={-(\thisrow{row} + \vndotGap*\thisrow{group_index})},
+          x error expr={(\thisrow{hi} - \thisrow{lo})/2}] {#3};
+      \addplot[draw=none, mark=none, vndot keep={hedge}{true},
+        error bars/.cd, x dir=both, x explicit, error mark=none,
+        error bar style={draw=vndotbar, line width=\vndotBarWidth, line cap=round}]
+        table[col sep=comma, x expr={(\thisrow{lo} + \thisrow{hi})/2},
+          y expr={-(\thisrow{row} + \vndotGap*\thisrow{group_index})},
+          x error expr={(\thisrow{hi} - \thisrow{lo})/2}] {#3};
+
+      % dots: hedge on hollow first (filled with the field, so the bar does not show through), then hedge off filled on
+      % top
+      \addplot[only marks, mark=*, mark size=\vndotOnRadius, mark options={fill=vnbg, draw=vndoton, line width=0.7pt},
+        vndot keep={hedge}{true}]
+        table[col sep=comma, x=value, y expr={-(\thisrow{row} + \vndotGap*\thisrow{group_index})}] {#2};
+      \addplot[only marks, mark=*, mark size=\vndotOffRadius, color=vndotoff,
+        mark options={fill=vndotoff, line width=0pt}, vndot keep={hedge}{false}]
+        table[col sep=comma, x=value, y expr={-(\thisrow{row} + \vndotGap*\thisrow{group_index})}] {#2};
+
+      % row labels at each row, and each group's label above its first row
+      \ifx\vndotRowLabels\vndotTrue
+        \def\vndotPrevGroup{-1}%
+        \pgfplotsforeachungrouped \vndotI in {0,...,\vndotLast}{%
+          \pgfplotstablegetelem{\vndotI}{hedge}\of\vndotBars
+          \edef\vndotHedge{\pgfplotsretval}%
+          \ifx\vndotHedge\vndotFalse
+            \pgfplotstablegetelem{\vndotI}{row}\of\vndotBars
+            \let\vndotRow\pgfplotsretval
+            \pgfplotstablegetelem{\vndotI}{group_index}\of\vndotBars
+            \let\vndotGroupIndex\pgfplotsretval
+            \pgfplotstablegetelem{\vndotI}{label}\of\vndotBars
+            \let\vndotLabel\pgfplotsretval
+            \pgfplotstablegetelem{\vndotI}{group}\of\vndotBars
+            \let\vndotGroup\pgfplotsretval
+            \pgfmathsetmacro\vndotY{-(\vndotRow + \vndotGap*\vndotGroupIndex)}%
+            \edef\vndotCmd{\noexpand\node[anchor=east, inner sep=0pt, xshift=-6pt,
+              font=\noexpand\fontsize{\vndotLabelSize}{\vndotLabelSize}\noexpand\selectfont, text=vnslideink]
+              at (axis cs:\vndotXmin,\vndotY) {\vndotLabel};}%
+            \vndotCmd
+            % a new group: its label sits \vndotGroupLift row above this row
+            \ifnum\vndotGroupIndex=\vndotPrevGroup
+            \else
+              \pgfmathsetmacro\vndotYgroup{\vndotY + \vndotGroupLift}%
+              \edef\vndotCmd{\noexpand\node[anchor=east, inner sep=0pt, xshift=-6pt,
+                font=\noexpand\fontsize{6}{7.2}\noexpand\selectfont\noexpand\addfontfeatures{LetterSpace=10},
+                text=vnslidelink]
+                at (axis cs:\vndotXmin,\vndotYgroup) {\noexpand\vndotupper{\vndotGroup}};}%
+              \vndotCmd
+              \edef\vndotPrevGroup{\vndotGroupIndex}%
+            \fi
+          \fi
+        }%
+      \fi
+    \end{axis}
+  \end{tikzpicture}%
+  \pgfplotsset{vndot extra/.style={}}%
+}
+
+% \vndotlegend[<keys>]: the legend on one line
+\newcommand{\vndotlegend}[1][]{%
+  \pgfkeys{/vndot, legend spy=true, legend ew=true, legend size=8, #1}%
+  \pgfmathsetmacro\vndotLegendSkip{1.2*\vndotLegendSize}%
+  {\fontsize{\vndotLegendSize}{\vndotLegendSkip}\selectfont\color{vnslidebody}%
+    \tikz[baseline=-0.6ex]\node[vndot off] {};~hedge off\hspace{1.2em}%
+    \tikz[baseline=-0.6ex]\node[vndot on] {};~hedge on\hspace{1.2em}%
+    \ifx\vndotLegendSpy\vndotTrue
+      \tikz[baseline=-0.6ex]\draw[vndot spy] (0,0) -- (0.5,0);~SPY buy-and-hold\hspace{1.2em}%
+    \fi
+    \ifx\vndotLegendEw\vndotTrue
+      \tikz[baseline=-0.6ex]\draw[vndot ew] (0,0) -- (0.5,0);~equal-weight universe\hspace{1.2em}%
+    \fi
+    one dot per weighting rule\par}%
+}
+
+% \vndotlegendstacked: the legend in four lines, in the plot's upper right. It is drawn in the axis's own picture (a
+% nested \tikz would take on the axis scaling), on a field-colored box so the grid lines stop at it. (1,1) is the
+% plot's top right corner, in axis description coordinates; the marks sit in a column at the left, the labels in a
+% column 0.15 cm to their right, and each line is \vndotPitch below the one before.
+\def\vndotPitch{9.6pt}
+\newcommand{\vndotlegendstacked}{%
+  \coordinate (vndotL) at (1,1);
+  % the box behind the legend
+  \fill[vnbg] ([xshift=-3.95cm, yshift=2pt]vndotL) rectangle ([yshift=-4*\vndotPitch - 2pt]vndotL);
+  \begin{scope}[font=\fontsize{8}{9.6}\selectfont, every node/.append style={text=vnslidebody}]
+    % line 1: hedge off and hedge on, each mark close to its own label
+    \node[vndot off] at ([xshift=-3.41cm, yshift=-0.5*\vndotPitch]vndotL) {};
+    \node[anchor=base west, inner sep=0pt] at ([xshift=-3.2cm, yshift=-0.5*\vndotPitch - 0.6ex]vndotL) {hedge off};
+    \node[vndot on] at ([xshift=-1.55cm, yshift=-0.5*\vndotPitch]vndotL) {};
+    \node[anchor=base west, inner sep=0pt] at ([xshift=-1.34cm, yshift=-0.5*\vndotPitch - 0.6ex]vndotL) {hedge on};
+    % lines 2 and 3: the reference lines
+    \draw[vndot spy] ([xshift=-3.85cm, yshift=-1.5*\vndotPitch]vndotL)
+      -- ([xshift=-3.35cm, yshift=-1.5*\vndotPitch]vndotL);
+    \node[anchor=base west, inner sep=0pt] at ([xshift=-3.2cm, yshift=-1.5*\vndotPitch - 0.6ex]vndotL)
+      {SPY buy-and-hold};
+    \draw[vndot ew] ([xshift=-3.85cm, yshift=-2.5*\vndotPitch]vndotL)
+      -- ([xshift=-3.35cm, yshift=-2.5*\vndotPitch]vndotL);
+    \node[anchor=base west, inner sep=0pt] at ([xshift=-3.2cm, yshift=-2.5*\vndotPitch - 0.6ex]vndotL)
+      {equal-weight universe};
+    % line 4: what a dot is
+    \node[anchor=base west, inner sep=0pt] at ([xshift=-3.85cm, yshift=-3.5*\vndotPitch - 0.6ex]vndotL)
+      {one dot per weighting rule};
+  \end{scope}%
+}
+
+% \vndothedgekey: hedge on above hedge off, just right of the plot. The labels hang from the top of the plot, the
+% second \vndotPitch below the first, 9.5 pt in from the plot's right edge; each mark sits 4.5 pt left of its label, at
+% the label's mid height. It is an overlay, so the panel keeps its width.
+\newcommand{\vndothedgekey}{%
+  \coordinate (vndotK) at (1,1);
+  \begin{scope}[overlay, font=\fontsize{7.5}{9}\selectfont, every node/.append style={text=vnslidebody}]
+    \node[anchor=north west, inner sep=0pt] (vndotKon) at ([xshift=9.5pt]vndotK) {hedge on};
+    \node[anchor=north west, inner sep=0pt] (vndotKoff) at ([yshift=-\vndotPitch]vndotKon.north west) {hedge off};
+    \node[vndot on] at ([xshift=-4.5pt]vndotKon.mid west) {};
+    \node[vndot off] at ([xshift=-4.5pt]vndotKoff.mid west) {};
+  \end{scope}%
+}

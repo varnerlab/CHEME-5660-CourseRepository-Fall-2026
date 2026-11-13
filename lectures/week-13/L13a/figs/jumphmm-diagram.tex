@@ -1,0 +1,38 @@
+% Shared style for the L13a schematics (November 12, 2026), \input by each Fig-L13a-*.tex.
+% Same fonts, ink, accent colors, boxes, and arrows as the L12a schematics
+% (week-12/L12a/figs/abm-diagram.tex), with the plot styles of the L10b profit diagrams
+% (arrowed axes, a thick ink curve, open circle markers, dashed drops). The notebook SVG
+% carries a dark palette added by theme_svg.py; every color here must be mapped there.
+\usepackage[no-math]{fontspec}
+\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{TeX Gyre Heros}}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing}
+
+\definecolor{vnink}{HTML}{202124}
+\definecolor{gdblue}{HTML}{0091FF}
+\definecolor{gdred}{HTML}{E02020}
+\definecolor{gdgray}{HTML}{6D7278}
+\definecolor{saorange}{HTML}{F08C00}
+\definecolor{boxfill}{HTML}{F1F3F4}
+\definecolor{orangefill}{HTML}{FFE8C7}
+\definecolor{bluefill}{HTML}{E5F3FF}
+\definecolor{redfill}{HTML}{FDE8E8}
+\definecolor{gridgray}{HTML}{E3E5E8}
+
+\tikzset{
+  every picture/.append style={x=1cm, y=1cm, font=\sffamily\small, text=vnink},
+  % boxes and arrows, as in the L12a schematics
+  flow/.style={draw=vnink, line width=0.9pt, -{Latex[length=2.4mm, width=1.7mm]}},
+  feedback/.style={draw=saorange, line width=1.2pt, -{Latex[length=2.6mm, width=1.9mm]}, rounded corners=6pt},
+  sumbox/.style={draw=vnink, fill=boxfill, line width=0.8pt, rounded corners=3pt, inner sep=5pt, align=center},
+  note/.style={text=gdgray, font=\sffamily\footnotesize, align=center},
+  state/.style={circle, draw=vnink, fill=white, line width=1.0pt, minimum size=1.1cm, inner sep=0pt, font=\sffamily\normalsize},
+  % plots, as in the L10b profit diagrams
+  axis/.style={draw=vnink, line width=0.8pt, -{Latex[length=2.6mm, width=1.8mm]}},
+  spine/.style={draw=vnink, line width=0.8pt},
+  curve/.style={draw=vnink, line width=1.6pt, line join=round, line cap=round},
+  series/.style={draw=gdgray, line width=0.9pt, line join=round},
+  drop/.style={draw=gdgray, line width=0.8pt, dash pattern=on 3pt off 2pt},
+  pt/.style={circle, draw=vnink, fill=white, line width=1.0pt, inner sep=0pt, minimum size=2.0mm},
+}

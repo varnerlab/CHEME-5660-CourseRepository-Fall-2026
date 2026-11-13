@@ -1,0 +1,121 @@
+% The MPC slide's figure (spec, slide 3): one real episode on one time axis. Input once in the preamble, after
+% vnslides.
+%
+% \vnmpcfigure{<width>}{<height>} draws, with the plot area <width> by <height>:
+%   - the three forecast cones of talk/data/mpc_cone_{1,2,3}.csv as 68/95/99% bands, mean ± 1, 1.96 and 2.576 SD;
+%   - the realized value W/W0 from talk/data/mpc_path.csv as the red line;
+%   - a gold ring at each re-plan in talk/data/mpc_events.csv, with its label above the plot and a dotted leader
+%     down to the ring, so no label sits on the bands.
+% x is the trading day of the episode (day 0 = Oct 10, 2025); the event days are 21, 29 and 50. The x axis is titled
+% with the year (review round, 2026-10-30: every axis is labeled). All files come from scripts/30_talk_data.jl.
+
+% the forecast bands (vnband), the realized value (vnmpcred), the plot panel (vnplotpanel) and the bands' opacities
+% come with the theme, from the deck palette in vnslides.sty
+
+% \vnmpcband{<cone>}{<z>}{<opacity>}{<tag>}: the band mean ± z·sd of one cone, filled at that opacity
+\newcommand{\vnmpcband}[4]{%
+  \addplot[name path=vnmpc#1#4hi, draw=none, forget plot]
+    table[col sep=comma, x=day, y expr={\thisrow{mean} + #2*\thisrow{sd}}] {data/mpc_cone_#1.csv};
+  \addplot[name path=vnmpc#1#4lo, draw=none, forget plot]
+    table[col sep=comma, x=day, y expr={\thisrow{mean} - #2*\thisrow{sd}}] {data/mpc_cone_#1.csv};
+  \addplot[fill=vnband, fill opacity=#3, draw=none, forget plot] fill between[of=vnmpc#1#4hi and vnmpc#1#4lo];
+}
+
+% \vnmpccone{<cone>}: the 99, 95 and 68% bands of one cone, widest first so the inner bands layer on top, each at the
+% theme's opacity for it
+\newcommand{\vnmpccone}[1]{%
+  \vnmpcband{#1}{2.576}{\vnbandouter}{a}%
+  \vnmpcband{#1}{1.96}{\vnbandmiddle}{b}%
+  \vnmpcband{#1}{1.0}{\vnbandinner}{c}%
+}
+
+% \vnmpcevent{<row>}{<node options>}{<label>}: the ring at the re-plan in row <row> (from 0) of mpc_events.csv, on the
+% red line, a dotted leader from the top of the plot down to it, and its label above the plot, placed by <node
+% options> (anchor=south east, align=right ends the label at the leader; anchor=south west, align=left starts it
+% there). The path has one row per day from day 0, so the value on the event day is the path's row of that number.
+% \\ breaks the label. pgfplots runs the drawing commands at \end{axis}, so \edef fixes the day and value now, and
+% \unexpanded carries the label's own tokens.
+\newcommand{\vnmpcevent}[3]{%
+  \pgfplotstablegetelem{#1}{day}\of\vnmpcEvents
+  \let\vnmpcDay\pgfplotsretval
+  \pgfplotstablegetelem{\vnmpcDay}{w}\of\vnmpcPath
+  \let\vnmpcW\pgfplotsretval
+  \edef\vnmpcCmd{%
+    \noexpand\draw[vnfigaccent, line width=0.6pt, dash pattern=on 1pt off 1.5pt]
+      (axis cs:\vnmpcDay,\vnmpcYtop) -- (axis cs:\vnmpcDay,\vnmpcW);
+    \noexpand\node[circle, draw=vnfigaccent, line width=1.2pt, fill=vnplotpanel, inner sep=0pt, minimum size=5pt]
+      at (axis cs:\vnmpcDay,\vnmpcW) {};
+    \noexpand\node[#2, font=\noexpand\fontsize{7.5}{9}\noexpand\selectfont, text=vnslideink, inner sep=0pt,
+      yshift=3pt]
+      at (axis cs:\vnmpcDay,\vnmpcYtop) {\unexpanded{#3}};}%
+  \vnmpcCmd
+}
+
+\newcommand{\vnmpcfigure}[2]{%
+  \pgfplotstableread[col sep=comma]{data/mpc_path.csv}\vnmpcPath
+  \pgfplotstableread[col sep=comma]{data/mpc_events.csv}\vnmpcEvents
+  % the band labels sit at the upper edge of each band where the last cone ends
+  \pgfplotstableread[col sep=comma]{data/mpc_cone_3.csv}\vnmpcLast
+  \pgfplotstablegetrowsof{\vnmpcLast}%
+  \pgfmathtruncatemacro\vnmpcLastRow{\pgfplotsretval - 1}%
+  \pgfplotstablegetelem{\vnmpcLastRow}{day}\of\vnmpcLast
+  \let\vnmpcEndDay\pgfplotsretval
+  \pgfplotstablegetelem{\vnmpcLastRow}{mean}\of\vnmpcLast
+  \let\vnmpcEndMean\pgfplotsretval
+  \pgfplotstablegetelem{\vnmpcLastRow}{sd}\of\vnmpcLast
+  \let\vnmpcEndSd\pgfplotsretval
+  % how far below its forecast the band exit was, in SDs, from the band_exit row (row 1; the data script checks the
+  % order of the re-plans): the exit is too close to the band edge to see, so the label states it
+  \pgfplotstablegetelem{1}{z}\of\vnmpcEvents
+  \pgfmathparse{abs(\pgfplotsretval)}%
+  \pgfmathprintnumberto[fixed, precision=1, assume math mode=true]{\pgfmathresult}{\vnmpcExitZ}%
+  % the top of the plot, where the re-plan labels hang
+  \def\vnmpcYtop{1.25}%
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=#1, height=#2, scale only axis,
+      clip=false,
+      xmin=0, xmax=50, ymin=0.90, ymax=\vnmpcYtop,
+      axis background/.style={fill=vnplotpanel},
+      axis line style={draw=none},
+      grid=major, major grid style={draw=vnplotgrid, line width=0.8pt},
+      tick style={draw=none},
+      xtick={0,21,29,50}, xticklabels={Oct 10, Nov 10, Nov 20, Dec 22},
+      % no label at the bottom edge, 0.90, so the first date has the corner to itself
+      ytick={0.95,1.00,1.05,1.10,1.15,1.20,1.25},
+      tick label style={font=\fontsize{9}{10.8}\selectfont, color=vndottick},
+      yticklabel style={/pgf/number format/assume math mode=true, /pgf/number format/fixed,
+        /pgf/number format/fixed zerofill, /pgf/number format/precision=2},
+      ylabel={$W/W_0$},
+      xlabel={date, 2025}, xlabel style={yshift=3pt},
+      label style={font=\fontsize{9.5}{11.4}\selectfont, color=vnslidebody},
+    ]
+      % forecast cones, each from the value at its re-plan
+      \vnmpccone{1}%
+      \vnmpccone{2}%
+      \vnmpccone{3}%
+
+      % band labels right of the last cone's end
+      \pgfmathsetmacro\vnmpcYa{\vnmpcEndMean + 2.576*\vnmpcEndSd}%
+      \pgfmathsetmacro\vnmpcYb{\vnmpcEndMean + 1.96*\vnmpcEndSd}%
+      \pgfmathsetmacro\vnmpcYc{\vnmpcEndMean + 1.0*\vnmpcEndSd}%
+      \node[anchor=west, xshift=3pt, font=\fontsize{8}{9.6}\selectfont, text=vnslidebody]
+        at (axis cs:\vnmpcEndDay,\vnmpcYa) {99\%};
+      \node[anchor=west, xshift=3pt, font=\fontsize{8}{9.6}\selectfont, text=vnslidebody]
+        at (axis cs:\vnmpcEndDay,\vnmpcYb) {95\%};
+      \node[anchor=west, xshift=3pt, font=\fontsize{8}{9.6}\selectfont, text=vnslidebody]
+        at (axis cs:\vnmpcEndDay,\vnmpcYc) {68\%};
+
+      % the realized value
+      \addplot[color=vnmpcred, line width=1.8pt, line join=round, mark=none]
+        table[col sep=comma, x=day, y=w] {data/mpc_path.csv};
+
+      % the re-plans, labelled above the plot: the first and last labels end at their leaders, the band exit's starts
+      % at its leader, so the two close together (8 days apart) do not collide
+      \vnmpcevent{0}{anchor=south east, align=right, xshift=-2pt}{{\vnmedium Re-plan}\\21 days passed}%
+      \vnmpcevent{1}{anchor=south west, align=left, xshift=2pt}{{\vnmedium Re-plan}\\left the 95\% band\\
+        \vnmpcExitZ{} SD below the mean}%
+      \vnmpcevent{2}{anchor=south east, align=right, xshift=-2pt}{{\vnmedium Re-plan}\\21 days passed}%
+    \end{axis}
+  \end{tikzpicture}%
+}

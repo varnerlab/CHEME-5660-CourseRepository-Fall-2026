@@ -1,0 +1,4 @@
+set,lo,hi
+typical,1.05,1.25
+burst_stress,0.85,1.05
+bear_stress,0.7,1.05

@@ -1,0 +1,23 @@
+% The plot-panel look that market_state.tex builds on (its vnms style starts from vnsf). On the talk's slides this
+% style is defined in talk/figs/stylized_facts.tex, with the three stylized-fact panels of the JumpHMM slide. L13b does
+% not draw those panels, so this file holds the style alone, copied unchanged (talk commit 3bc41cf).
+
+% the look shared by the panels
+\pgfplotsset{
+  vnsf/.style={
+    scale only axis,
+    axis background/.style={fill=vnplotpanel},
+    axis line style={draw=none},
+    grid=major, major grid style={draw=vnplotgrid, line width=0.6pt},
+    tick style={draw=none},
+    tick label style={font=\fontsize{7}{8.4}\selectfont, color=vndottick},
+    xticklabel style={/pgf/number format/assume math mode=true},
+    yticklabel style={/pgf/number format/assume math mode=true, /pgf/number format/fixed},
+    label style={font=\fontsize{7.5}{9}\selectfont, color=vnslidebody},
+    xlabel style={yshift=3pt},
+    ylabel style={yshift=-3pt},
+    % one box height for every title, so titles with and without descenders share a baseline
+    title style={font=\fontsize{8.5}{10}\vnmedium, text=vnslideink, yshift=-3pt, text height=1.6ex,
+      text depth=0.45ex},
+  },
+}

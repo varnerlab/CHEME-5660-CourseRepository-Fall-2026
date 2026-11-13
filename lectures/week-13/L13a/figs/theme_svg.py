@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add a dark screen palette to a notebook SVG exported from vnfigure.sty.
+"""Add a dark screen palette to a notebook SVG drawn with jumphmm-diagram.tex.
 
 Keep the original drawing and light/print colors intact. Colors are matched
 by nearest rounded RGB value, because pdf2svg writes fractional percentages
@@ -13,15 +13,20 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 
-# Light TikZ color (vnflow.sty palette and its tints) -> dark screen color.
+# Light TikZ color (the jumphmm-diagram.tex palette) -> dark screen color.
+# Same pairs as week-12/L12a/figs/theme_svg.py.
 DARK_COLORS = {
-    (32, 33, 36): "#e3e6ea",     # vnink: axes, ticks, titles, sigma ellipses
-    (95, 99, 104): "#aeb4ba",    # vnmuted: in-panel notes
-    (174, 180, 186): "#5c646d",  # vnrule: mean crosshair
-    (26, 82, 118): "#8cc0e6",    # vnlink: blue marker outline and ellipse
-    (118, 151, 173): "#4f7ea3",  # vnlink!60: blue marker fill
-    (179, 27, 27): "#ff8879",    # vncarnelian: red markers, ellipse, 4x label
-    (255, 255, 255): "#1f1f1f",  # white: contour halo, matched to VS Code's dark editor
+    (32, 33, 36): "#e3e6ea",     # vnink: text, axes, curves, boxes, arrows
+    (0, 145, 255): "#4fb0ff",    # gdblue: the most positive states
+    (224, 32, 32): "#ff6b6b",    # gdred: the most negative states
+    (109, 114, 120): "#aeb4ba",  # gdgray: notes, dashed state boundaries, the series line
+    (240, 140, 0): "#ffad33",    # saorange: the counted moves
+    (255, 255, 255): "#1f1f1f",  # white: box and marker interiors, matched to VS Code's dark editor
+    (241, 243, 244): "#2b2e33",  # boxfill: boxes, table header, states 2 and 4
+    (255, 232, 199): "#5a3d10",  # orangefill: the highlighted moves and their count
+    (229, 243, 255): "#123a5c",  # bluefill: the most positive states
+    (253, 232, 232): "#4a1c1c",  # redfill: the most negative states
+    (227, 229, 232): "#3a3d42",  # gridgray: table grid lines, emission base lines
 }
 TOLERANCE = 2
 

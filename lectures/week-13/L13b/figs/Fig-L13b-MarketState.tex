@@ -1,0 +1,16 @@
+% L13b market-state figure (November 2026): the figure on the score slide of the INFORMS 2026 talk.
+% Top strip: the SPY close with its 21-day and 63-day exponential moving averages, each divided by the first SPY
+% close, January 2, 2025 to September 4, 2026. Bottom strip: the market state ξ over the same days. A ring marks each
+% day the two averages cross, and a dotted line drops from the ring to the point where ξ crosses zero. The days with
+% ξ > 0 are shaded in both strips.
+%
+% The drawing code is the talk's own, market_state.tex, with the same sizes as on the slide. The data are
+% data/market_state.csv and data/market_state_crossings.csv.
+\documentclass[11pt,border=3pt]{standalone}
+\usepackage{vntalkfigure}
+\input{vnsf.tex}
+\input{market_state.tex}
+
+\begin{document}
+\vnmarketstate{12.9cm}{1.35cm}{1.2cm}%
+\end{document}

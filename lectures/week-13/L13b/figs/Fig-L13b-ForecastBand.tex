@@ -1,0 +1,15 @@
+% L13b forecast-band figure (November 2026): the figure on the rebalancing slide of the INFORMS 2026 talk.
+% One stretch of the real-data run (the 13 hand-picked names, Cobb–Douglas, hedge off), October 10 to December 22,
+% 2025. The red line is the book's wealth divided by its starting wealth. Each blue fan is the forecast made at a
+% re-plan: the mean ± 1, 1.96, and 2.576 standard deviations of the forecast wealth (the 68%, 95%, and 99% bands).
+% A gold ring marks each re-plan, with its reason above the plot.
+%
+% The drawing code is the talk's own, mpc.tex, with the same sizes as on the slide. The data are
+% data/mpc_path.csv, data/mpc_cone_1.csv to data/mpc_cone_3.csv, and data/mpc_events.csv.
+\documentclass[11pt,border=3pt]{standalone}
+\usepackage{vntalkfigure}
+\input{mpc.tex}
+
+\begin{document}
+\vnmpcfigure{11.5cm}{3.55cm}%
+\end{document}

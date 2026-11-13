@@ -1,0 +1,44 @@
+% L13b synthetic-markets figure (November 2026): the three dot plots on the synthetic slide of the INFORMS 2026 talk.
+% One panel per set of synthetic markets: 600 typical markets, the 200 burst sell-offs, and the 200 bear sell-offs.
+% Each row is a selection rule. Each dot is one weighting rule: the median across the set's markets of the ending
+% wealth divided by the starting wealth, filled with the hedge off and hollow with the hedge on. Each panel has its
+% own x range (data/syn_axes.csv) and its own lines for synthetic SPY (dashed gold) and the equal-weight portfolio
+% (dotted gray).
+%
+% The drawing code is the talk's own, dotplot.tex, called as on the slide, with the slide's smaller dots and bars.
+% The data are the data/syn_*.csv files.
+%
+% On the slide, the shared axis title and the hedge key are overlays: they take no space in the picture. A standalone
+% picture is cropped to its contents, so the border below adds that space back: 14pt under the panels for the axis
+% title and 46pt to their right for the hedge key (the border's order is left, bottom, right, top).
+\documentclass[11pt,border={3pt 14pt 46pt 3pt}]{standalone}
+\usepackage{vntalkfigure}
+\input{dotplot.tex}
+
+\begin{document}
+\def\vndotOffRadius{1.4pt}%
+\def\vndotOnRadius{1.35pt}%
+\def\vndotBarWidth{1.7pt}%
+\vndotreadaxis{data/syn_axes.csv}{typical}%
+\vndotreadrefs{data/syn_typical_refs.csv}%
+\vndotplot[xmin=\vndotAxisLo, xmax=\vndotAxisHi, xstep=0.1, spy=\vndotSPY, ew=\vndotEW, width=2.95cm,
+  height=4.23cm, labelsize=7, title={\vnmedium Typical}]%
+  {data/syn_typical_dots.csv}{data/syn_typical_bars.csv}%
+\hspace{0.3cm}%
+\vndotreadaxis{data/syn_axes.csv}{burst_stress}%
+\vndotreadrefs{data/syn_burst_stress_refs.csv}%
+% the shared axis title hangs under all three panels, so it does not count toward this panel's width
+\pgfplotsset{vndot extra/.style={xlabel style={overlay, yshift=2pt}}}%
+\vndotplot[xmin=\vndotAxisLo, xmax=\vndotAxisHi, xstep=0.1, spy=\vndotSPY, ew=\vndotEW, width=2.95cm,
+  height=4.23cm, rowlabels=false, spylabel=SPY, ewlabel=Equal,
+  xlabel={terminal wealth ÷ initial wealth, median across futures}, title={\vnmedium Burst stress}]%
+  {data/syn_burst_stress_dots.csv}{data/syn_burst_stress_bars.csv}%
+% no space here: the Bear stress panel's first tick label, at its left edge, already opens the same gap
+\vndotreadaxis{data/syn_axes.csv}{bear_stress}%
+\vndotreadrefs{data/syn_bear_stress_refs.csv}%
+\pgfplotsset{vndot extra/.style={extra description/.code={\vndothedgekey}}}%
+\vndotplot[xmin=\vndotAxisLo, xmax=\vndotAxisHi, xstep=0.1, spy=\vndotSPY, ew=\vndotEW, width=2.95cm,
+  height=4.23cm, rowlabels=false,
+  title={\vnmedium Bear stress}]%
+  {data/syn_bear_stress_dots.csv}{data/syn_bear_stress_bars.csv}%
+\end{document}

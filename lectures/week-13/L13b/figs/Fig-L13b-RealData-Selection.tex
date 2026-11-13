@@ -1,0 +1,18 @@
+% L13b real-data figure (November 2026): the dot plot on the real-data slide of the INFORMS 2026 talk.
+% Real-data backtest, January 2, 2025 to September 4, 2026, 373 names. Each row is a selection rule. Each dot is one
+% weighting rule: the median over 30 runs of the ending wealth divided by the starting wealth, filled with the hedge
+% off and hollow with the hedge on. The pale bar spans a row's dots. The dashed gold line is SPY bought and held, and
+% the dotted gray line is the equal-weight portfolio of all 373 names.
+%
+% The drawing code is the talk's own, dotplot.tex, called as on the slide. The data are data/realrun_grid.csv,
+% data/realrun_bars.csv, and data/realrun_refs.csv.
+\documentclass[11pt,border=3pt]{standalone}
+\usepackage{vntalkfigure}
+\input{dotplot.tex}
+
+\begin{document}
+\vndotreadrefs{data/realrun_refs.csv}%
+\pgfplotsset{vndot extra/.style={extra description/.code={\vndotlegendstacked}}}%
+\vndotplot[xmin=0.97, xmax=1.72, xstep=0.1, spy=\vndotSPY, ew=\vndotEW, width=10.1cm, height=4.77cm,
+  xlabel={terminal wealth ÷ initial wealth, median of 30 runs}]{data/realrun_grid.csv}{data/realrun_bars.csv}%
+\end{document}
