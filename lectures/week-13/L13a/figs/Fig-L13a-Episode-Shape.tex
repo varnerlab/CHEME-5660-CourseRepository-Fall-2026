@@ -1,0 +1,91 @@
+% L13a jump hidden Markov model, the shape of a jump episode next to a real crash
+% (November 12, 2026, after the instructor noticed in the SPY example that "the simulated
+% episodes don't look like SPY, e.g., around 2020 ... they have a diff shape"; two panels at
+% his request: "the schematic on the left, and the real data plot on the right").
+%
+% Left, a schematic: the volatility of a simulated episode is a flat box, because every episode
+% day draws its state from the same tail states; the volatility of a real crash spikes and fades.
+% Right, the data, drawn like the scratch Plots.jl figure the instructor picked ("I like that
+% style for the data figure"): the one-month rolling standard deviation of g (1/yr) for real SPY
+% from 2020-02-20, six jump episodes of the tuned SPY model one by one, and the mean over all
+% episodes, each aligned at its first day. Fig-L13a-Episode-Shape-Data.jl writes the CSV.
+%
+% Consistency checks (against the CSV and the script's printout):
+%  - Left vertical scale: y = 0.8 + (v - 1.9) * 4.2/13, with v the rolling SD in 1/yr. Ordinary
+%    days (median 1.9) sit at y = 0.8, the real peak (14.9) at y = 5.0, and the simulated
+%    plateau (7.2) at y = 2.5.
+%  - Left horizontal scale: 0.07 cm per trading day, with day 0 at x = 1.0. The box ends at
+%    x = 8.0 (lambda = 100 days). The real curve peaks near day 30 (x = 3.1), and it is back
+%    near 4.3 (y = 1.6) by day 60 (x = 5.2) and near 3 (y = 1.2) by day 100 (x = 8.0).
+%  - Right panel: real peak 14.9 on day 32; simulated mean about 7 from day 20 to day 90,
+%    6.3 on day 100, and 2.6 on day 150 (515 episodes from 2000 paths, the count in the
+%    legend). The six examples (columns ep1 to ep6) stay between 1.1 and 10.1, inside ymax = 16.
+\documentclass[tikz,border=6pt]{standalone}
+\input{jumphmm-diagram.tex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+\begin{tikzpicture}
+
+  % ================= left: the schematic =================
+  \node[font=\sffamily\bfseries] at (5.5, 6.25) {Schematic};
+
+  % axes and the level of ordinary days
+  \draw[axis] (-0.15, 0) -- (11.2, 0);
+  \draw[axis] (0, -0.15) -- (0, 5.8);
+  \node[anchor=north] at (5.5, -0.12) {trading days since the start};
+  \node[rotate=90, anchor=south] at (-0.2, 2.8) {volatility};
+  \draw[drop] (0, 0.8) -- (10.9, 0.8);
+  \node[note, anchor=north east] at (10.9, 0.76) {ordinary days};
+
+  % simulated episode: a flat box for about lambda days
+  \fill[redfill] (1.0, 0.8) rectangle (8.0, 2.5);
+  \draw[draw=gdred, line width=1.6pt, line join=round] (1.0, 0.8) -- (1.0, 2.5) -- (8.0, 2.5) -- (8.0, 0.8);
+  \node[text=gdred, align=center, anchor=south] at (6.4, 2.55) {simulated episode:\\flat for about $\lambda$ days};
+  \draw[draw=gdred, line width=0.8pt, {Latex[length=2.0mm, width=1.4mm]}-{Latex[length=2.0mm, width=1.4mm]}] (1.0, 0.4) -- (8.0, 0.4);
+  \node[text=gdred, fill=white, inner sep=2pt, font=\sffamily\footnotesize] at (4.5, 0.4) {about $\lambda$ days};
+
+  % real crash: spikes, then fades
+  \draw[curve] plot[smooth, tension=0.6] coordinates {
+    (1.0, 0.8) (1.6, 1.4) (2.1, 3.0) (2.5, 4.4) (3.1, 5.0) (3.5, 4.5) (3.9, 3.1)
+    (4.4, 2.1) (5.2, 1.6) (6.2, 1.4) (8.0, 1.2) (9.5, 1.0) (10.6, 0.9)};
+  \node[align=left, anchor=west] at (3.55, 4.75) {real crash (SPY, 2020):\\spikes, then fades};
+
+  % ================= right: the data =================
+  \node[font=\sffamily\bfseries] at (18.35, 6.25) {SPY in 2020 and the tuned model};
+  \begin{axis}[
+      at={(13.6cm, 0cm)}, anchor=south west, scale only axis, width=9.5cm, height=5.8cm,
+      set layers, % without layers, the x=1cm and y=1cm picture style of jumphmm-diagram.tex stretches the frame and the grid to data units
+      xmin=-35, xmax=205, ymin=0, ymax=16,
+      xtick={0, 50, 100, 150, 200}, ytick={0, 4, 8, 12, 16},
+      axis background/.style={fill=boxfill},
+      axis line style={draw=vnink, line width=0.8pt},
+      grid=major, grid style={draw=gridgray, line width=0.5pt},
+      tick style={draw=vnink}, tick align=inside,
+      every tick label/.append style={font=\sffamily\footnotesize, text=vnink},
+      /pgf/number format/assume math mode=true,
+      xlabel={trading days since the start}, ylabel={one-month rolling SD of $g$ (1/yr)},
+      every axis label/.append style={font=\sffamily\small, text=vnink},
+      legend pos=north east, legend style={draw=none, fill=none, font=\sffamily\footnotesize, text=vnink},
+      legend cell align=left,
+    ]
+    % six simulated episodes, one by one (the first one carries the legend entry)
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5] table[x=day, y=ep1, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addlegendentry{simulated episodes (six examples)}
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5, forget plot] table[x=day, y=ep2, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5, forget plot] table[x=day, y=ep3, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5, forget plot] table[x=day, y=ep4, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5, forget plot] table[x=day, y=ep5, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addplot[draw=gdred, line width=0.6pt, draw opacity=0.5, forget plot] table[x=day, y=ep6, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    % the mean over all episodes, and real SPY on top
+    \addplot[draw=gdred, line width=1.8pt] table[x=day, y=sim_mean, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addlegendentry{simulated episodes (mean of 515)}
+    \addplot[draw=vnink, line width=1.8pt] table[x=day, y=real, col sep=comma] {Fig-L13a-Episode-Shape-Data.csv};
+    \addlegendentry{real SPY, from February 20, 2020}
+    % the start of the episode
+    \draw[draw=vnink, line width=0.6pt, dash pattern=on 4pt off 3pt] (axis cs:0, 0) -- (axis cs:0, 16);
+  \end{axis}
+
+\end{tikzpicture}
+\end{document}
