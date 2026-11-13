@@ -1,16 +1,20 @@
 % L13a jump hidden Markov model, how the model is fit (November 12, 2026, at the instructor's
 % request: "we took a ticker, fit its growth rate series to a cumulative distribution, then
 % sliced up the distribution into states, and counted how many times we moved from state to
-% state"). Redrawn the same day in the style of the week-12 schematics.
+% state"). Redrawn the same day in the style of the week-12 schematics. Each slice is
+% labeled with a mood, at his request ("each sub-division is a mood"), extending the
+% lecture's investor moods (bullish, neutral, bearish) to five states.
 %
 % Left: the daily growth rates of a ticker. Middle: the fitted Laplace cumulative
 % distribution on the same growth-rate axis, cut into N = 5 slices of equal probability; the
-% dashed lines carry the slice boundaries across both plots, and the bar names the states.
-% Top: the state of each day. Right: the table of counted moves and the estimate of P.
+% dashed lines carry the slice boundaries across both plots, and the bar names the state
+% and the mood of each slice. Top: the state of each day. Right: the table of counted moves
+% and the estimate of P.
 %
 % Consistency checks (by hand):
-%  - Laplace scale b = 1.3 cm about the median at y = 2.9, so the boundaries F^{-1}(k/5) sit
-%    at 2.9 + 1.3 ln(0.4) = 1.71, 2.9 + 1.3 ln(0.8) = 2.61, 3.19, and 4.09.
+%  - Laplace scale b = 1.8 cm about the median at y = 2.9, so the boundaries F^{-1}(k/5) sit
+%    at 2.9 + 1.8 ln(0.4) = 1.25, 2.9 + 1.8 ln(0.8) = 2.50, 3.30, and 4.55. The middle
+%    slice is 0.80 cm tall, enough for two lines of text.
 %  - Every point lies in the band of the state written above it.
 %  - The 15 moves in the row of states give the counts in the table: 1->2 (1), 1->5 (1),
 %    2->3 (2), 3->2 (2), 3->3 (1), 3->4 (3), 4->3 (2), 4->5 (1), 5->1 (2). The three 3->4
@@ -22,7 +26,7 @@
 \begin{tikzpicture}
 
   % ================= the state boundaries, across both plots =================
-  \foreach \y/\px in {1.71/9.3, 2.61/10.0, 3.19/10.7, 4.09/11.4} {
+  \foreach \y/\px in {1.25/9.3, 2.50/10.0, 3.30/10.7, 4.55/11.4} {
     \draw[drop] (0, \y) -- (12.45, \y);
     \draw[drop] (\px, 0) -- (\px, \y);
   }
@@ -34,12 +38,12 @@
   \node[rotate=90, anchor=south] at (-0.2, 2.9) {growth rate $g_{t}$};
   \draw[series]
     (0.55, 2.95) -- (0.97, 3.60) -- (1.39, 2.82) -- (1.81, 2.15) -- (2.23, 3.00) --
-    (2.65, 3.70) -- (3.07, 4.75) -- (3.49, 0.70) -- (3.91, 4.55) -- (4.33, 1.10) --
+    (2.65, 3.70) -- (3.07, 5.05) -- (3.49, 0.55) -- (3.91, 4.85) -- (4.33, 0.90) --
     (4.75, 2.10) -- (5.17, 2.90) -- (5.59, 3.55) -- (6.01, 2.80) -- (6.43, 2.98) -- (6.85, 2.28);
   \foreach \x/\y/\s/\c in {
       0.55/2.95/3/vnink, 0.97/3.60/4/vnink, 1.39/2.82/3/vnink, 1.81/2.15/2/vnink,
-      2.23/3.00/3/vnink, 2.65/3.70/4/vnink, 3.07/4.75/5/gdblue, 3.49/0.70/1/gdred,
-      3.91/4.55/5/gdblue, 4.33/1.10/1/gdred, 4.75/2.10/2/vnink, 5.17/2.90/3/vnink,
+      2.23/3.00/3/vnink, 2.65/3.70/4/vnink, 3.07/5.05/5/gdblue, 3.49/0.55/1/gdred,
+      3.91/4.85/5/gdblue, 4.33/0.90/1/gdred, 4.75/2.10/2/vnink, 5.17/2.90/3/vnink,
       5.59/3.55/4/vnink, 6.01/2.80/3/vnink, 6.43/2.98/3/vnink, 6.85/2.28/2/vnink} {
     \node[pt, draw=\c] at (\x, \y) {};
   }
@@ -65,30 +69,30 @@
   \node[anchor=north] at (10.35, -0.5) {cumulative probability};
   \node[note, anchor=north] at (10.35, -0.95) {$N=5$ slices of equal probability};
   \draw[curve]
-    plot[domain=0:2.9, samples=50, smooth, variable=\y] ({8.6 + 3.5*0.5*exp((\y-2.9)/1.3)}, {\y});
+    plot[domain=0:2.9, samples=50, smooth, variable=\y] ({8.6 + 3.5*0.5*exp((\y-2.9)/1.8)}, {\y});
   \draw[curve]
-    plot[domain=2.9:5.8, samples=50, smooth, variable=\y] ({8.6 + 3.5*(1 - 0.5*exp(-(\y-2.9)/1.3))}, {\y});
-  \foreach \y/\px in {1.71/9.3, 2.61/10.0, 3.19/10.7, 4.09/11.4} {
+    plot[domain=2.9:5.8, samples=50, smooth, variable=\y] ({8.6 + 3.5*(1 - 0.5*exp(-(\y-2.9)/1.8))}, {\y});
+  \foreach \y/\px in {1.25/9.3, 2.50/10.0, 3.30/10.7, 4.55/11.4} {
     \node[pt] at (\px, \y) {};
   }
   \node[anchor=west, align=left] at (8.75, 5.2) {fitted Laplace\\[-1pt]distribution};
 
-  % ================= each slice is a state =================
+  % ================= each slice is a state and a mood =================
   \begin{scope}
-    \clip[rounded corners=2pt] (12.45, 0) rectangle (14.6, 5.8);
-    \fill[redfill]  (12.45, 0)    rectangle (14.6, 1.71);
-    \fill[boxfill]  (12.45, 1.71) rectangle (14.6, 2.61);
-    \fill[white]    (12.45, 2.61) rectangle (14.6, 3.19);
-    \fill[boxfill]  (12.45, 3.19) rectangle (14.6, 4.09);
-    \fill[bluefill] (12.45, 4.09) rectangle (14.6, 5.8);
+    \clip[rounded corners=2pt] (12.45, 0) rectangle (14.75, 5.8);
+    \fill[redfill]  (12.45, 0)    rectangle (14.75, 1.25);
+    \fill[boxfill]  (12.45, 1.25) rectangle (14.75, 2.50);
+    \fill[white]    (12.45, 2.50) rectangle (14.75, 3.30);
+    \fill[boxfill]  (12.45, 3.30) rectangle (14.75, 4.55);
+    \fill[bluefill] (12.45, 4.55) rectangle (14.75, 5.8);
   \end{scope}
-  \foreach \y in {1.71, 2.61, 3.19, 4.09} {\draw[draw=vnink, line width=0.6pt] (12.45, \y) -- (14.6, \y);}
-  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (12.45, 0) rectangle (14.6, 5.8);
-  \node[align=center] at (13.525, 0.855) {\textcolor{gdred}{state $1$}\\[-1pt]{\footnotesize\color{gdgray}most negative}};
-  \node at (13.525, 2.16) {state $2$};
-  \node at (13.525, 2.90) {state $3$};
-  \node at (13.525, 3.64) {state $4$};
-  \node[align=center] at (13.525, 4.945) {\textcolor{gdblue}{state $5$}\\[-1pt]{\footnotesize\color{gdgray}most positive}};
+  \foreach \y in {1.25, 2.50, 3.30, 4.55} {\draw[draw=vnink, line width=0.6pt] (12.45, \y) -- (14.75, \y);}
+  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (12.45, 0) rectangle (14.75, 5.8);
+  \foreach \y/\s/\c/\m in {
+      0.625/1/gdred/very bearish, 1.875/2/vnink/bearish, 2.90/3/vnink/neutral,
+      3.925/4/vnink/bullish, 5.175/5/gdblue/very bullish} {
+    \node[align=center] at (13.6, \y) {\textcolor{\c}{state $\s$}\\[-1pt]{\footnotesize\color{gdgray}\m}};
+  }
 
   % ================= right: the counted moves =================
   % columns: header at x = 16.3, then states 1..5 at 16.9, 17.5, 18.1, 18.7, 19.3

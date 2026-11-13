@@ -20,5 +20,5 @@ the SVG, so changing the editor theme repaints the figure. If the palette in
 `jumphmm-diagram.tex` changes, update the color mapping in `theme_svg.py`; an unmapped
 color fails the build on purpose.
 
-`Fig-TransitionMatrix-Schematic.svg` is the 2025 transition-matrix schematic and has
-no source here. `vnfigure.sty` is no longer used by these figures.
+`Fig-TransitionMatrix-Schematic.svg` is the 2025 transition-matrix schematic, copied from
+the CHEME 5800 L11a figures, which add the dark screen palette. It has no source here. `vnfigure.sty` is no longer used by these figures.
