@@ -117,6 +117,26 @@ text in lecture or example notebooks:
   $\gamma_{ij}$, because L13b uses $\gamma_i$ for the stock score. The sector loading
   $\delta_i$ is then the sensitivity to the stock's own sector factor. The sum is
   $\sum_{j}$ with no count $m$, which would clash with the market subscript in $g_{m}$.
+- November 13, 2026: he called the old own draw a hack and made the "factor, sized" version
+  the standard. The own model of each stock is now fit to its single index residual after
+  the sector term, $\varepsilon_i-\delta_i f_s$, the way the sector model is fit to the
+  sector's average residual. Its scale is
+  $\psi_i^2=(\operatorname{Var}(\varepsilon_i)-\delta_i^2\operatorname{Var}(f_s))/\operatorname{Var}(\varepsilon_i-\delta_i f_s)$,
+  so the sector and own terms keep the residual's variance. With a drifting β, `JumpHMM.jl`
+  0.4.1 also subtracts the drift's variance, $k_i^2\frac{a}{2-a}\operatorname{Var}(g_m)$,
+  from the numerator, because the single index residual already holds the real β's wander
+  (his choice, same day). The lecture and deck use a fixed β, so their formula has no drift
+  term; the FAQ entry and the SectorFactor example's Task 3 each say it in one sentence.
+  The old version drew the whole
+  stock's model and shrank it by $\sqrt{1-\bar\rho}$, with a 10% floor that shrank the
+  loadings and an $R^2\geq 0.80$ branch; all of that is gone from the lecture, the deck,
+  the examples, and `JumpHMM.jl` 0.4.0 and later (`own_models`, `own_levels`, `ψ`, `β_path`; no
+  `name_models`, `σ²_gen`, `floor`, `r2_threshold`, or `n_clipped`). Do not describe the
+  own draw as a shrunk copy of the stock. With two stocks per sector, $\psi_i$ runs 1.04 to
+  1.51, because half of each sector factor is the stock's own residual. In L13b's
+  373-stock universe, with the drift, it runs 0.71 to 1.03 (median 0.98). The INFORMS
+  paper's generator uses the same method and gives the same L13b numbers. A scratch test on the 22-stock example matched
+  the old version on variance, $R^2$, and correlations with no clipped stocks.
 
 ## Week 12: JumpHMM synthetic markets and the INFORMS study replace bandits — November 3, 2026
 
@@ -128,7 +148,8 @@ text in lecture or example notebooks:
   `private/specs/2026-11-03-week12-jumphmm-informs-design.md`.
 - The multi-asset generator lives in `varnerlab/JumpHMM.jl` (`SectorFactorModel`;
   0.2.0 added it, 0.3.0 added the calibration tools `sample_draws`, `compose`,
-  `compose_name`, `with_parameters`, and fitting from given models), pinned at
+  `compose_name`, `with_parameters`, and fitting from given models, 0.4.0 fits each
+  own model to the residual after the sector term), pinned at
   `efadb711724af20e65bfe1112e48c5574213cbda` in the root `Project.toml`
   (`[sources]`), `code/Project.toml` (`[sources]`), and both manifests. Notebooks
   `import JumpHMM` and call it qualified. A fresh install fetches it from GitHub.

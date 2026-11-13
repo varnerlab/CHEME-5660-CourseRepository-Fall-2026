@@ -167,7 +167,8 @@ synthetic names reproduces `targets.sd_β` (one per name) and `targets.acf252` (
 
 For each h in `h_grid` and each name (threaded): if the bank-mean SD of β̂ at k = 0 already reaches the name's
 target, k = 0. Otherwise bisect, with 30 halvings, on the stationary drift SD σₓ ∈ [0, `sd_max`], with
-k = σₓ/√(a/(2−a)) and a = 1 − 2^(−1/h). Then pick the h whose median over names of the bank-mean acf252 is
+k = σₓ/√(a/(2−a)) and a = 1 − 2^(−1/h). A σₓ with σₓ²·`gen0.σ²_m` ≥ `gen0.σ²_own[i]` counts as too much drift,
+since it would leave no variance for the own draw (JumpHMM's `own_scale`). Then pick the h whose median over names of the bank-mean acf252 is
 closest to `targets.acf252`. `table` has one row per h: `h`, `k_median`, `zero_share` (share of names with
 k = 0) and `acf252` (median synthetic acf252).
 """
@@ -197,14 +198,24 @@ function fit_beta_drift(gen0::JumpHMM.SectorFactorModel, bank::Vector, targets, 
                 hi = Float64(sd_max)
                 for _ in 1:30
                     mid = (lo + hi) / 2
-                    st = _name_bank_beta_stats(gen0, bank, i, rows, h, mid / unit_sd)
-                    if st.sd < target
-                        lo = mid
-                    else
+                    if mid^2 * gen0.σ²_m >= gen0.σ²_own[i]
+                        # this drift would leave no variance for the own draw: too much drift
                         hi = mid
+                    else
+                        st = _name_bank_beta_stats(gen0, bank, i, rows, h, mid / unit_sd)
+                        if st.sd < target
+                            lo = mid
+                        else
+                            hi = mid
+                        end
                     end
                 end
-                k = ((lo + hi) / 2) / unit_sd
+                σx = (lo + hi) / 2
+                if σx^2 * gen0.σ²_m >= gen0.σ²_own[i]
+                    # the midpoint is still too much drift: keep the largest drift that fits
+                    σx = lo
+                end
+                k = σx / unit_sd
                 K[q, i] = k
                 A[q, i] = _name_bank_beta_stats(gen0, bank, i, rows, h, k).acf252
             end
@@ -275,10 +286,12 @@ end
 
 Fit the synthetic-market generator to the real market `md`, following the INFORMS study's generator fit, with
 JumpHMM.jl doing every composition:
-1. a JumpHMM model of each name on its training closes (`fit_name_model`, tuned when `tune`), checked with
-   `model_sd_ratio` against `sd_gate` (a ratio outside it throws `ArgumentError` naming the names);
-2. single-index residuals on the training window, the sector factors (`JumpHMM.sector_factors`), and a JumpHMM
-   model of each compounded sector factor;
+1. single-index residuals on the training closes, the sector factors and loadings (`JumpHMM.sector_factors`,
+   `JumpHMM.sector_loadings`), and each name's residual after its sector term (`JumpHMM.own_residuals`), computed
+   as `JumpHMM.fit(SectorFactorModel, ...)` computes them;
+2. a JumpHMM model of each compounded sector factor, and an own model of each name's compounded residual after
+   its sector term (`fit_name_model`, tuned when `tune`), checked with `model_sd_ratio` against `sd_gate` (a
+   ratio outside it throws `ArgumentError` naming the names);
 3. `JumpHMM.fit(SectorFactorModel, ...)` on the training closes with those models and the given `market_model`;
 4. the β drift fitted to the method's own EWLS β̂ (`fit_beta_drift`) on a bank of draws (`bank_seeds`, on the
    whole calendar `md.dates`), then the α pull φ (`fit_alpha_pull`), stored with `JumpHMM.with_parameters`.
@@ -295,39 +308,41 @@ function fit_generator(md::MyMarketData, calib::MyCalibration; market_model, tra
     tickers = md.tickers
     M = length(tickers)
     i0, i1 = index_of(md, train[1]), index_of(md, train[2])
-    rows = growth_window(md.dates, train[1], train[2])
-    G = growth_rates(md.close)
-    g_m = growth_rates(md.spy_close)
 
-    # 1. name models on the training closes, and their SD gate
-    names = Vector{JumpHMM.JumpHiddenMarkovModel}(undef, M)
-    ratio = zeros(Float64, M)
-    Threads.@threads for j in 1:M
-        names[j] = fit_name_model(md.close[i0:i1, j]; seed=5660 + j, N=N, tune=tune)
-        ratio[j] = model_sd_ratio(names[j], G[rows, j]; seed=5660 + j)
-    end
-    bad = [j for j in 1:M if !(sd_gate[1] <= ratio[j] <= sd_gate[2])]
-    isempty(bad) || throw(ArgumentError("model SD gate: $(length(bad)) ratios outside $(sd_gate): " *
-        join(["$(tickers[j]) $(round(ratio[j]; digits=4))" for j in bad], ", ")))
-
-    # 2. single-index residuals, sector factors, and the sector models
-    ols = fit_base_sim(md, train[1], train[2])
-    E = zeros(Float64, length(rows), M)
+    # 1. single-index residuals, sector factors and loadings, and each name's residual after its sector term,
+    #    computed as JumpHMM.fit(SectorFactorModel, ...) computes them on the training closes
+    P = hcat(md.spy_close[i0:i1], md.close[i0:i1, :])
+    Gt = JumpHMM.excess_growth_rates(P; rf=SYNTH_HMM.rf, dt=SYNTH_HMM.dt)
+    X = hcat(ones(size(Gt, 1)), Gt[:, 1])
+    E = zeros(Float64, size(Gt, 1), M)
     for j in 1:M
-        p = ols.params[tickers[j]]
-        E[:, j] = G[rows, j] .- p.α .- p.β .* g_m[rows]
+        coef = X \ Gt[:, j + 1]
+        E[:, j] = Gt[:, j + 1] .- X * coef
     end
     sf = JumpHMM.sector_factors(E, md.sector)
+    δ = JumpHMM.sector_loadings(E, md.sector)
+    sector_index = [findfirst(==(s), sf.sectors) for s in md.sector]
+    U = JumpHMM.own_residuals(E, sf.F, δ, sector_index)
+
+    # 2. a model of each sector factor, and an own model of each name's residual, with the own models' SD gate
     S = length(sf.sectors)
     factors = Vector{JumpHMM.JumpHiddenMarkovModel}(undef, S)
     Threads.@threads for s in 1:S
         factors[s] = fit_name_model(exp.(vcat(0.0, cumsum(sf.F[:, s] .* Δt))); seed=7000 + s, N=N, tune=tune)
     end
+    owns = Vector{JumpHMM.JumpHiddenMarkovModel}(undef, M)
+    ratio = zeros(Float64, M)
+    Threads.@threads for j in 1:M
+        owns[j] = fit_name_model(exp.(vcat(0.0, cumsum(U[:, j] .* Δt))); seed=5660 + j, N=N, tune=tune)
+        ratio[j] = model_sd_ratio(owns[j], U[:, j]; seed=5660 + j)
+    end
+    bad = [j for j in 1:M if !(sd_gate[1] <= ratio[j] <= sd_gate[2])]
+    isempty(bad) || throw(ArgumentError("model SD gate: $(length(bad)) ratios outside $(sd_gate): " *
+        join(["$(tickers[j]) $(round(ratio[j]; digits=4))" for j in bad], ", ")))
 
     # 3. the generator with no drift (β_halflife is a placeholder that the β fit replaces)
-    gen0, _ = JumpHMM.fit(JumpHMM.SectorFactorModel, ["SPY"; tickers], hcat(md.spy_close[i0:i1], md.close[i0:i1, :]),
-        "SPY", md.sector; N=N, ν=SYNTH_HMM.ν, rf=SYNTH_HMM.rf, dt=SYNTH_HMM.dt, center_steps=center_steps,
-        β_halflife=252.0, market_model=market_model, name_models=names, sector_models=factors)
+    gen0, _ = JumpHMM.fit(JumpHMM.SectorFactorModel, ["SPY"; tickers], P, "SPY", md.sector; N=N, ν=SYNTH_HMM.ν, rf=SYNTH_HMM.rf, dt=SYNTH_HMM.dt, center_steps=center_steps,
+        β_halflife=252.0, market_model=market_model, own_models=owns, sector_models=factors)
 
     # 4. targets, the bank of draws, the β drift, and the α pull
     targets = real_drift_targets(md, calib; train=train, alpha_windows=alpha_windows)

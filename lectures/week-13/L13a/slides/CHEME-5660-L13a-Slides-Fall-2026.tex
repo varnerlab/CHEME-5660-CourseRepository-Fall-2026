@@ -60,7 +60,7 @@
     \item \hilite{A jump hidden Markov model of one asset}: binned states, counted
       transitions, Student-t emissions, jump episodes.
     \item \hilite{A synthetic market of many stocks}: shared market and sector draws
-      plus each stock's own draw.
+      plus a draw of each stock's own residual.
   \end{itemize}
 \end{frame}
 
@@ -307,8 +307,9 @@
   \end{equation*}
   Here $\alpha_{i}$ and $\beta_{i}$ are the single index estimates, held fixed. The sector
   draw $f_{s}$ models the sector's average residual, with loading $\delta_{i}$. The own draw
-  $\tilde{\varepsilon}_{i}$ models the stock, centered and scaled by $\psi_{i}$ so its
-  variance matches the real one on average. Each draw is a jump hidden Markov model, and
+  $\tilde{\varepsilon}_{i}$ models the stock's residual left after the sector term, centered
+  and sized by $\psi_{i}$ so the sector and own terms keep the residual's variance. Each draw
+  is a jump hidden Markov model, and
   the shared draws are the only link between stocks.
 \end{frame}
 
