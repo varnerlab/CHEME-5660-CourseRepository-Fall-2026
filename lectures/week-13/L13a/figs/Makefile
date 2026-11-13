@@ -1,7 +1,7 @@
 # Build standalone L13a figures to PDF (for slides) and SVG (for notebooks).
-# Both figures share the style file jumphmm-diagram.tex (the week-12 schematic style).
+# All figures share the style file jumphmm-diagram.tex (the week-12 schematic style).
 
-FIGURES := Fig-L13a-JumpHMM-Schematic Fig-L13a-JumpHMM-Fit-Schematic
+FIGURES := Fig-L13a-JumpHMM-Schematic Fig-L13a-JumpHMM-Fit-Schematic Fig-L13a-Episode-Shape
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
