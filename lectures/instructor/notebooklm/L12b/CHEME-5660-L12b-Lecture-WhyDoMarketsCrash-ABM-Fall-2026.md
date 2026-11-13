@@ -1,0 +1,276 @@
+# L12b: Why do Markets Crash?
+In this lecture, we study how a small change in the rule that individual traders follow can turn a calm market into a falling one. We build a simple agent-based market in which traders on a grid act on their neighbors' intentions and trade through a dealer, and we change a single entry of the rule that some traders follow.
+
+> __Learning Objectives:__
+>
+> By the end of this lecture, you should be able to:
+> * __Read a rule as a lookup table:__ Explain how a trader uses its four neighbors' intentions to pick its next intention, and how the table's nine entries give the rule its number.
+> * __Connect trades to the price:__ Explain how the dealer sets the price from its cash and shares, and why net buying raises the price and net selling lowers it.
+> * __Interpret a rule-switch experiment:__ Compare a market in which some traders switch rules with a control that never switches, and use the fraction of interior traders who intend to Sell and the price to say what the switch changed.
+
+Some results in this lecture are core, and some are here to build understanding:
+
+> __What you need to know:__
+>
+> __Core concepts:__
+> * A rule is a lookup table: a trader sums its four neighbors' intentions (Buy $=0$, Hold $=1$, Sell $=2$) and reads its next intention from the entry for that sum. Reading the nine entries as a base-3 number gives the rule number. A rule switch moves some traders from a baseline rule $R$ to a switch rule $\bar{R}$.
+> * The dealer acts as the market maker and quotes the price as its cash divided by its shares. Net buying raises the price, and net selling lowers it.
+> * We compare every switched market, in which a fraction of the traders change rules, with a control that has the same history and never switches. After the switch, the Sell intention can spread from neighbor to neighbor, and the price falls while the sellers have shares. This is an analogy for a crash, not an explanation of one.
+>
+> __For understanding__ (you will not need to reproduce or memorize these):
+> * The dealer's price update and the two algorithms: one step of the market and the dealer's clearing of the orders.
+> * The band rule of the technical traders, and their active, held, and random-signal conditions.
+> * The Q-learning material in the optional advanced notebook.
+
+__Notation:__ The [course notation page](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/notation.html#L12b) lists this lecture's symbols with their meanings and units.
+
+Let's get started!
+___
+
+## Examples
+__We will work through these examples in lecture:__
+
+> [▶ See what one rule does in a Wolfram market](CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb). In this example, we read the table of one rule and run a market in which every interior trader follows it. We then run a second market under a different rule, and compare the two grids and the two share prices.
+
+> [▶ Switch one entry of a Wolfram market rule](CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb). In this example, we run a switched market and its control, and watch the Sell intention spread across the grid. We then follow the share price as it falls and levels off, and bring in fresh players to move the share price again.
+
+__Review these examples on your own:__
+
+> [▶ Measure the stylized facts of a Wolfram market's price](CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb). In this example, we compute the growth rates of the dealer's price in a market that never switches, and compare their tails and autocorrelations with a real ticker and the Farmer–Joshi market. We then vary the edge traders and the dealer's depth to see what the loop from price to traders changes.
+
+> [▶ Compare a closed and an open Wolfram market](CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb). In this example, we run a rule switch in a closed market, in which the same traders stay on the grid, and in an open market, in which traders leave and new players take their places. We then let a fraction of the players follow a contrarian rule, and compare the share price and the filled orders with and without the contrarian players.
+
+Optional advanced notebooks that extend today's material are listed in the Optional Advanced Material section at the end of this lecture.
+___
+
+## Why do markets crash?
+Market crashes are sudden, large declines in asset prices across a broad market. What causes them is an open question for investors, policymakers, and economists.
+
+Let's look at a timeline of crashes and selloffs:
+
+*Figure: A horizontal timeline of seventeen market crashes and selloffs from October 1929 to November 2025, evenly spaced along an axis with the year under each dot. Cards alternate above and below the axis and step down in cascades of three heights, each joined to its dot by a vertical leader and giving the date and a one-line description. The cards are: October 1929 Black Thursday and Tuesday; the 1937 to 1938 recession; the end of the Second World War in 1945; the 1962 flash crash; Black Monday, 19 October 1987; the Friday 13th mini-crash of October 1989; the 1990 to 1991 recession; the dot-com peak of March 2000; September 2001; the Lehman failure of September 2008; the May 2010 flash crash; the 2011 bear market; the February to March 2020 pandemic crash; the 2022 bear market; DeepSeek in January 2025; the April 2025 tariff shock; and the November 2025 AI-valuation selloff. The 1929, 1987, and April 2025 cards and dots are teal, marking the three episodes described in the box below.*
+
+Here are three landmark episodes that show how investor psychology swings from euphoria to panic:
+
+> __Historical Market Crashes__
+>
+> Markets are man-made systems, and like all man-made systems, they can fail.
+>
+> - **1929 Wall Street Crash (Oct 1929)**: Many investors had bought shares with borrowed money (on margin). When confidence broke and prices fell, brokers demanded more cash (margin calls), and many of these investors had to sell. The reforms that followed the crash and the Depression created the SEC and stricter disclosure rules. [Federal Reserve History](https://www.federalreservehistory.org/essays/stock-market-crash-of-1929) · [FRASER archival docs](https://fraser.stlouisfed.org/title/stock-market-1929-revisited-3599)  · [The lessons of the Stock Market crash of 1929 - CBS News](https://varnerlab.org/watch.html?v=26WMF7Xdb0E).
+> - **1987 Black Monday (Oct 19, 1987)**: Portfolio insurance, often done by selling futures contracts on a stock index as prices fell, added selling to a falling market. The Brady Report argued that index arbitrage carried that selling into the stock market, as traders bought the cheap futures and sold the stocks. The Dow fell 22.6% in one day, and exchanges later added circuit breakers, which halt trading after large drops. [Presidential Task Force on Market Mechanisms, 1988 (Brady Report)](https://fraser.stlouisfed.org/title/report-presidential-task-force-market-mechanisms-5732)
+> - **April 2025 Tariff Mini-Crash**: Tariff announcements and fears of retaliation brought several days of sharp declines and a jump in volatility. Stocks recovered much of the loss after the administration paused the higher tariff rates for most countries on April 9. [USTR press releases, April 2025](https://ustr.gov/about-us/policy-offices/press-office/press-releases/2025/april) · [Federal Reserve Financial Stability Report, April 2025](https://www.federalreserve.gov/publications/April-2025-financial-stability-report-Asset-Valuations.htm)
+>
+> In each episode, a change in what investors believed, or an outside shock, led many of them to sell at the same time.
+
+___
+
+## Review: Agent-Based Markets
+Previously, we studied two classical agent-based models, [the minority game](https://arxiv.org/abs/adap-org/9708006) and the [Farmer–Joshi market](https://arxiv.org/abs/cond-mat/0012419). 
+
+Farmer–Joshi had two types of traders, each acting on a single signal. Value investors acted on the gap between the price and the value, and trend followers acted on the recent change in the price. In the minority game, agents had randomly generated policies that mapped the market history to their next action.
+
+Two other models show how interaction among traders can produce large moves:
+
+> __Other Agent-Based Financial Models__
+>
+> - **Iori Microsimulation Model (2002)**: Heterogeneous interacting traders with communication and imitation generate synchronization effects and large fluctuations in returns. A trade friction mechanism responds to price movements and creates feedback that generates volatility clustering. [arXiv:adap-org/9905005](https://arxiv.org/abs/adap-org/9905005)
+> - **Lux-Marchesi Model (1999)**: Agents switch between fundamentalist and chartist strategies based on profitability. The model generates bubbles and crashes through herding behavior and strategy imitation. [Nature 397, 498-500 (1999)](https://doi.org/10.1038/17290)
+
+
+
+ __Today:__ Each interior trader has one rule: a table from the sum of its four neighbors' intentions to its next intention. Traders are handed their tables and do not learn them.
+ 
+ The optional advanced notebook shows how Q-learning could learn such a table. Our question is the one in the title: can a small change in the psychology that drives individual traders' actions produce a crash?
+___
+
+## Wolfram Markets
+Wolfram markets are agent-based models in which simple rules and local interactions produce market-level behavior, inspired by Stephen Wolfram's three-color cellular automata ([A New Kind of Science, Chapter 3](https://cornell.box.com/s/10md9xuf184a6s3c25n6005uuia7da1e)). A cellular automaton is a grid in which each cell updates its color from its neighbors' colors by a fixed rule.
+
+The version we use follows [our paper on rule switches in Wolfram markets](https://github.com/varnerlab/Wolfram-markets-abm-paper).
+
+*Figure: On the left, a seven-by-seven grid of trader tiles colored Buy (blue), Hold (gray), or Sell (orange). The outer ring of edge cells sits on a teal background that marks the technical traders, and trader i is outlined in the interior. A note below the grid says interior trader i reads its four neighbors and its rule table R_i. An arrow labeled net trade x_t leads from the grid to a dealer box that lists cash W_t, shares Q_t, and the price S_t = W_t/Q_t. An arrow labeled price S_t drops from the dealer to technical trader j's band, drawn as three stacked zones: Sell above mu_t + k_j sigma_t, Hold inside with a dashed line at mu_t, and Buy below mu_t - k_j sigma_t. An arrow labeled edge intention z_j(t) leads from the band back to the edge of the grid. A legend at the bottom shows the Buy, Hold, and Sell tiles and the teal edge ring.*
+
+### Traders and Their Rules
+Traders sit on the cells of a square grid. Each trader $j$ holds one of three __intentions__ at step $t$, written $z_{j}(t)$: Buy ($0$), Hold ($1$), or Sell ($2$). Each interior trader $i$ adds up the intentions of its four neighbors $\partial i$, then reads its next intention from its __rule__ $R_{i}$, a table with one entry $a_{c}$ for each neighbor sum $c$:
+
+$$
+c_{i}(t)=\sum_{j\in\partial i}z_{j}\in\{0,1,\dots,8\}\qquad z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}
+$$
+
+Following [Packard and Wolfram (1985)](https://doi.org/10.1007/BF01010423), we write the nine entries as the digits of one number in base $b=3$, the number of intentions, to get the __rule number__:
+
+$$
+\boxed{R=\left(a_{8}a_{7}\cdots a_{1}a_{0}\right)_{b}=\sum_{c=0}^{8}a_{c}\,b^{c}}
+$$
+
+There are $3^{9}=19{,}683$ possible rules. Let's look at one of them, Rule 19280:
+
+*Figure: A table with nine columns, one for each neighbor sum c from 8 on the left to 0 on the right. Each column shows one arrangement of four neighbor tiles around a center tile marked i, each labeled with its code: Buy 0 in blue, Hold 1 in gray, and Sell 2 in orange. The arrangements, listed as top, left, right, bottom, are 2, 2, 2, 2 for c = 8; 1, 2, 2, 2 for c = 7; 1, 1, 2, 2 for c = 6; 1, 1, 1, 2 for c = 5; 1, 1, 1, 1 for c = 4; 0, 1, 1, 1 for c = 3; 0, 0, 1, 1 for c = 2; 0, 0, 0, 1 for c = 1; and 0, 0, 0, 0 for c = 0. An arrow leads from each arrangement down to the next intention a_c that Rule 19280 gives for that sum: 2, 2, 2, 1, 1, 0, 0, 0, 2. Under each digit is its place value, 3^8 down to 3^0. A brace under the columns points to (222110002)_3 = 19280. The column c = 1 is highlighted in pale yellow. A legend at the bottom shows the Buy, Hold, and Sell tiles.*
+
+In the highlighted column, three Buy neighbors and one Hold neighbor give $c=1$, and the entry $a_{1}=0$ gives Buy. Rule 19280 gives Buy for sums 1 to 3, Hold for sums 4 and 5, and Sell for sums 6 to 8. The rule also gives Sell for sum 0, when all four neighbors intend to Buy.
+
+### The Dealer
+A __dealer__ acts as the market maker: it takes the other side of the trade when buy and sell orders do not balance. It holds cash $W_{t}$ and shares $Q_{t}$, and quotes the price $S_{t}=W_{t}/Q_{t}$.
+
+Each Buy or Sell intention is an order for one share. The dealer fills the __net trade__ $x_{t}$, the shares bought minus the shares sold, and its shares become $Q_{t}=Q_{t-1}-x_{t}$. The dealer prices each trade so that its cash times its shares stays the same, the constant-product rule of automated market makers ([Angeris et al., 2022](https://doi.org/10.1007/978-3-031-07535-3_13)):
+
+$$
+\boxed{W_{t}Q_{t}=W_{t-1}Q_{t-1}}
+$$
+
+The constant-product rule gives the dealer's cash and the quoted price after the trade:
+
+$$
+\begin{align*}
+W_{t} &= W_{t-1}\frac{Q_{t-1}}{Q_{t}} &&\quad\text{divide both sides of the constant-product rule by }Q_{t}\\
+&= W_{t-1}\frac{Q_{t-1}}{Q_{t-1}-x_{t}} &&\quad\text{substitute the shares after the trade, }Q_{t}=Q_{t-1}-x_{t}\\
+S_{t} &= \frac{W_{t}}{Q_{t}} &&\quad\text{quoted price after the trade: cash over shares}\\
+&= W_{t-1}\frac{Q_{t-1}}{\left(Q_{t-1}-x_{t}\right)^{2}} &&\quad\text{substitute }W_{t}\text{ from the second line and }Q_{t}=Q_{t-1}-x_{t}\\
+&= S_{t-1}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}\Bigr)^{2} &&\quad\text{substitute }W_{t-1}=S_{t-1}Q_{t-1}\text{, from the quoted price }S_{t-1}=W_{t-1}/Q_{t-1}
+\end{align*}
+$$
+
+For a nonzero net trade, every share changes hands at one __execution price__ $F_{t}$. It is the cash the dealer collects, or pays, for each share of the net trade:
+
+$$
+\begin{align*}
+F_{t} &= \frac{W_{t}-W_{t-1}}{x_{t}} &&\quad\text{change in the dealer's cash per share of the net trade}\\
+&= \frac{W_{t-1}}{x_{t}}\Bigl(\frac{Q_{t-1}}{Q_{t-1}-x_{t}}-1\Bigr) &&\quad\text{substitute the cash after the trade, }W_{t}=W_{t-1}Q_{t-1}/(Q_{t-1}-x_{t})\\
+&= \frac{W_{t-1}}{x_{t}}\cdot\frac{Q_{t-1}-\left(Q_{t-1}-x_{t}\right)}{Q_{t-1}-x_{t}} &&\quad\text{write }1\text{ as }(Q_{t-1}-x_{t})/(Q_{t-1}-x_{t})\\
+&= \frac{W_{t-1}}{Q_{t-1}-x_{t}} &&\quad\text{the numerator is }x_{t}\text{, which cancels the }1/x_{t}
+\end{align*}
+$$
+
+The execution price is the dealer's cash before the trade divided by its shares after the trade. It is also the geometric mean of the quoted prices before and after the trade, $F_{t}=\sqrt{S_{t-1}S_{t}}$. It always lies between the old and the new quoted price.
+
+We also add noise to the quoted price, a course addition for price moves that the model leaves out. Each step lasts $\Delta t$ years, such as $\Delta t=1/(252\times 390)$ for one minute of a trading day. The draw $Z_{t}\sim\mathcal{N}(0,1)$ is independent at each step, and $\sigma_{S}$ is the annualized volatility of the price noise.
+
+We multiply the dealer's cash $W_{t-1}$ by $\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)$ before the trade. The constant-product rule and the execution price then hold with this cash in place of $W_{t-1}$. For a given net trade, this multiplies $W_{t}$ and $S_{t}$ by the same factor, which gives the price update:
+
+$$
+\boxed{S_{t} = S_{t-1}\Bigl(\underbrace{\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\substack{\text{shares before}\\\text{over shares after}}}\Bigr)^{2}\,\underbrace{\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)}_{\text{price noise}}}
+$$
+
+The growth rate over step $t$ follows directly from the price update:
+
+$$
+g_{t}=\frac{1}{\Delta t}\ln\frac{S_{t}}{S_{t-1}}=\underbrace{\frac{2}{\Delta t}\ln\frac{Q_{t-1}}{Q_{t-1}-x_{t}}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t}}_{\text{price noise}}
+$$
+
+Apart from the noise, net buying ($x_{t}>0$) raises the price, and net selling lowers it. When the net trade is small compared with the dealer's shares, $\ln\left(Q_{t-1}/(Q_{t-1}-x_{t})\right)\approx x_{t}/Q_{t-1}$ (first-order Taylor expansion).
+
+The growth rate then has the same form as in the Farmer–Joshi market, with half of the dealer's shares as the __liquidity__ $\lambda_{t}=Q_{t-1}/2$:
+
+$$
+g_{t}\approx\underbrace{\frac{x_{t}}{\lambda_{t}\,\Delta t}}_{\text{traders}}+\underbrace{\frac{\sigma_{S}}{\sqrt{\Delta t}}\,Z_{t}}_{\text{price noise}}
+$$
+
+The dealer starts with $Q_{0}=hN_{\text{tr}}$ shares, where $N_{\text{tr}}$ is the number of traders and the __depth__ $h$ is the dealer's starting shares per trader. A larger depth gives a larger liquidity and a smaller price move.
+
+### Technical Traders
+On the edge of the grid, __technical traders__ track a moving average $\mu_{t}$ and a moving departure $\sigma_{t}$ of the price, with smoothing $0<\alpha<1$:
+
+$$
+\boxed{\mu_{t}=\mu_{t-1}+\alpha\left(S_{t}-\mu_{t-1}\right)\qquad\sigma_{t}=\sigma_{t-1}+\alpha\left(|S_{t}-\mu_{t}|-\sigma_{t-1}\right)}
+$$
+
+Each technical trader $j$ has a band $\mu_{t}\pm k_{j}\sigma_{t}$ with its own multiplier $k_{j}$. Trader $j$ intends Buy when the price is below the band, Sell when the price is above the band, and Hold when the price is inside the band.
+
+In a run, the technical traders follow this rule (__active__), stay in Hold (__held__), or draw at random (__random signal__, a course addition).
+
+### Algorithm
+
+Putting the pieces together, one run of the Wolfram market with a rule switch goes as follows. We adapt Algorithm S1 of our paper, without transaction fees and with the price noise added:
+
+__Initialize__: Given an $L\times L$ grid with $(L-2)^{2}$ interior traders, the baseline rule $R$ and the switch rule $\bar{R}\neq R$, two rule numbers from $0$ to $3^{9}-1$, the fraction $f$ of interior traders who switch, the switch step $t_{s}$, the number of steps $T$, the dealer depth $h>0$, the starting price $S_{0}$, the band smoothing parameter $\alpha$, the annualized volatility $\sigma_{S}$ of the price noise, and the time step $\Delta t$.
+
+* __Grid:__ Choose the technical traders among the edge positions; the other edge positions stay in Hold. Give each technical trader $j$ a band multiplier $k_{j}$. Choose the $\text{round}\left(f(L-2)^{2}\right)$ interior traders who will switch.
+* __Traders:__ Set every interior rule $R_{i}\gets R$. Set the starting intentions $z_{i}(0)$ of the interior traders: a few Buy, a few Sell, the rest Hold. Give each interior and technical trader $i$ starting cash $w_{i}$ and shares $q_{i}$.
+* __Dealer and band:__ Let $N_{\text{tr}}$ count the interior and technical traders. Give the dealer $Q_{0}\gets\text{round}(hN_{\text{tr}})$ shares and $W_{0}\gets S_{0}Q_{0}$ cash. Set $\mu_{0}\gets S_{0}$ and $\sigma_{0}\gets 0$.
+
+For each step $t=1,2,\dots,T$ __do__:
+
+1. __Switch:__ If $t=t_{s}$, __then__ set $R_{i}\gets\bar{R}$ for the chosen interior traders. They keep their intentions, cash, and shares.
+2. __Clear:__ Draw $Z_{t}\sim\mathcal{N}(0,1)$ and set the dealer's cash $W_{t-1}\gets W_{t-1}\exp\left(\sigma_{S}\sqrt{\Delta t}\,Z_{t}\right)$, the price noise. Then run the dealer clearing algorithm below on the intentions $z_{i}(t-1)$ of the interior and technical traders. It settles the trades and returns the net trade $x_{t}$, the execution price $F_{t}$, the dealer's shares $Q_{t}$ and cash $W_{t}$, and the quoted price $S_{t}$.
+3. __Band:__ Update the moving average $\mu_{t}\gets\mu_{t-1}+\alpha\left(S_{t}-\mu_{t-1}\right)$ and the moving departure $\sigma_{t}\gets\sigma_{t-1}+\alpha\left(|S_{t}-\mu_{t}|-\sigma_{t-1}\right)$.
+4. __Edge:__ If the technical traders are active, __then__ each technical trader $j$ sets $z_{j}(t)\gets 0$ (Buy) if $S_{t}<\mu_{t}-k_{j}\sigma_{t}$, $z_{j}(t)\gets 2$ (Sell) if $S_{t}>\mu_{t}+k_{j}\sigma_{t}$, and $z_{j}(t)\gets 1$ (Hold) otherwise. If they are held, __then__ $z_{j}(t)\gets 1$ for every technical trader. If they draw at random, __then__ each $z_{j}(t)$ is drawn from the fixed probabilities.
+5. __Interior:__ For every interior trader $i$, at the same time: compute the neighbor sum $c_{i}(t)\gets\sum_{j\in\partial i}z_{j}$, using the interior intentions $z_{j}(t-1)$ and the technical intentions $z_{j}(t)$. Then set $z_{i}(t)\gets a^{(R_{i})}_{c_{i}(t)}$, the entry of trader $i$'s rule table at that sum.
+
+__Output__: The intentions $z_{i}(t)$, the fraction of interior traders with $z_{i}(t)=2$ (Sell), and the quoted prices $S_{0},\dots,S_{T}$.
+
+#### Dealer clearing at step $t$
+The dealer finds one execution price for every trade at step $t$. It follows Algorithm S2 of our paper, without transaction fees. We leave out bookkeeping that does not change the market, such as average purchase prices and order counts:
+
+__Initialize__: Given the intentions $z_{i}(t-1)$, each trader's cash $w_{i}$ and shares $q_{i}$, and the dealer's cash $W_{t-1}$ and shares $Q_{t-1}$. Collect the buyers $\mathcal{B}$, the traders with $z_{i}(t-1)=0$, and the sellers $\mathcal{S}$, the traders with $z_{i}(t-1)=2$; Hold submits no order. For a net trade $x$ with $Q_{t-1}-x\geq 1$, the price is $F(x)=W_{t-1}/(Q_{t-1}-x)$. Let $n_{B}(x)$ count the buyers with $w_{i}\geq F(x)$, let $n_{S}$ count the sellers with $q_{i}\geq 1$, and let $e(x)=n_{B}(x)-n_{S}$.
+
+1. __Compare buyers and sellers:__ Count who can trade at the current price. Set $d\gets\text{sign}\,e(0)$: $d=1$ means more buyers, and $d=-1$ means more sellers. If $d=0$, __then__ set $x_{t}\gets 0$ and go to step 4.
+2. __Bound the trade size:__ The net trade can't exceed the extra buyers or sellers, and the dealer keeps at least one share. Set $\ell\gets 0$, and $u\gets\min\left(e(0),\,Q_{t-1}-1\right)$ if $d>0$, __else__ $u\gets -e(0)$.
+3. __Search for the trade size:__ Find the largest net trade $m$ for which the extra buyers (or sellers) at the price $F(dm)$ still number at least $m$. A larger net buy raises the price, so fewer buyers can pay. While $\ell<u$ __do__: set $m\gets\lfloor(\ell+u+1)/2\rfloor$. If $d\cdot e(dm)\geq m$, __then__ $\ell\gets m$, __else__ $u\gets m-1$. Set $x_{t}\gets d\ell$.
+4. __Set the price:__ Set $F_{t}\gets F(x_{t})$. Every filled order trades at this price.
+5. __Fill the orders:__ Buyers and sellers trade with each other, and the dealer covers the difference $x_{t}$. If $x_{t}\geq 0$, __then__ fill every seller with a share and $n_{S}+x_{t}$ buyers who can pay $F_{t}$. Otherwise, fill every buyer who can pay and $n_{B}(x_{t})-x_{t}$ sellers. If more orders qualify than can fill, __then__ choose them in a pseudo-random order set by the seed, the step, the trader, and the side.
+6. __Settle the trades:__ Each filled buyer sets $q_{i}\gets q_{i}+1$ and $w_{i}\gets w_{i}-F_{t}$. Each filled seller sets $q_{i}\gets q_{i}-1$ and $w_{i}\gets w_{i}+F_{t}$.
+7. __Update the dealer:__ Set $Q_{t}\gets Q_{t-1}-x_{t}$, $W_{t}\gets W_{t-1}Q_{t-1}/Q_{t}$, and the quoted price $S_{t}\gets W_{t}/Q_{t}$.
+
+__Output__: The net trade $x_{t}$, the execution price $F_{t}$, the dealer's $Q_{t}$ and $W_{t}$, the quoted price $S_{t}$, and the settled cash and shares of every trader.
+
+<!-- 
+__Why does this work?__ Two facts make the search find the right net trade:
+* __The test changes once:__ A larger net trade moves the candidate price $F(x)$ against the side with excess orders. The test $d\cdot e(dm)\geq m$ holds for every $m$ up to some largest value and fails above it.
+* __Bisection is fast:__ Each check halves the interval $[\ell,u]$. The search needs only about $\log_{2}u$ checks of the excess demand. -->
+
+Let's see what one rule does to the grid and to the price:
+
+> __Example__
+>
+> [▶ See what one rule does in a Wolfram market](CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb). In this example, we read the table of one rule and run a market in which every interior trader follows it. We then run a second market under a different rule, and compare the two grids and the two share prices.
+
+Does the price this market produces look like a real one? Let's measure it:
+
+> __Review on your own:__
+>
+> [▶ Measure the stylized facts of a Wolfram market's price](CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb). In this example, we compute the growth rates of the dealer's price in a market that never switches, and compare their tails and autocorrelations with a real ticker and the Farmer–Joshi market. We then vary the edge traders and the dealer's depth to see what the loop from price to traders changes.
+___
+
+## The Rule Switch
+A rule switch moves some traders from a baseline rule $R$ to a switch rule $\bar{R}$. The algorithm accepts any two different rules. We study pairs that differ in one entry, such as the pair below.
+
+Rule 19286, $(222110022)_{3}$, differs from Rule 19280 only at $c=1$. With three Buy neighbors and one Hold neighbor, Rule 19280 buys and Rule 19286 sells:
+
+*Figure: On the left, trader i sits in the center of a plus-shaped neighborhood: Buy (z = 0) above, to the left, and to the right, and Hold (z = 1) below. A squared-off arrow leads from the top neighbor to a box reading c_i = 0 + 0 + 0 + 1 = 1, and a short arrow drops from that box into the column c = 1 of two lookup tables, highlighted in pale yellow. The tables list the next intention for each neighbor sum c = 8 down to 0: Rule 19280 (before the switch) reads 2, 2, 2, 1, 1, 0, 0, 0, 2, and Rule 19286 (after the switch) reads 2, 2, 2, 1, 1, 0, 0, 2, 2, so they differ only at c = 1. Buy tiles are blue, Hold tiles gray, and Sell tiles orange, with a legend below the tables.*
+
+We use this one-entry difference as a model of a change in psychology. The experiment has three parts:
+* __Switch:__ All interior traders follow the baseline rule $R$ until the switch step. Then a fraction $f$ of them, chosen in advance, receive the switch rule $\bar{R}$ and keep their intentions, cash, and shares.
+* __Control:__ A second market shares the history and never switches. Differences after the switch come from the rule change.
+* __Edge:__ The technical traders are active, held, or random. When they are held, any cascade comes from traders reading their neighbors.
+
+Let's see the experiment run. The example starts from a second pair of rules that also differ in one entry:
+
+> __Example__
+>
+> [▶ Switch one entry of a Wolfram market rule](CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb). In this example, we run a switched market and its control, and watch the Sell intention spread across the grid. We then follow the share price as it falls and levels off, and bring in fresh players to move the share price again.
+
+This market is closed: the same traders stay on the grid for the whole run. Let's see what changes in an open market, in which players come and go and some of them act against their neighbors:
+
+> __Review on your own:__
+>
+> [▶ Compare a closed and an open Wolfram market](CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb). In this example, we run a rule switch in a closed market, in which the same traders stay on the grid, and in an open market, in which traders leave and new players take their places. We then let a fraction of the players follow a contrarian rule, and compare the share price and the filled orders with and without the contrarian players.
+
+___
+
+## Optional Advanced Material
+> [▶ Learn a policy with Q-learning](advanced/qlearning/CHEME-5660-L12b-Advanced-QLearning-Fall-2026.ipynb). In this notebook, we ask how a trader could learn a policy table from experience instead of being handed one. We write the Q-learning update for the value of each action in each state, lay out the algorithm step by step, and describe the conditions under which it converges to the best policy.
+___
+
+## Summary
+In this lecture, we built a simple agent-based market and used it to ask whether a small change in how traders respond to their neighbors can produce a Sell majority.
+
+> __Key Takeaways:__
+>
+> * __A trading rule is a lookup table:__ We wrote each trader's rule as a table from the sum of its four neighbors' intentions to its next intention, and read the nine entries as a base-3 rule number. We then switched some traders from a baseline rule $R$ to a switch rule $\bar{R}$ to model a change in trader psychology.
+> * __The dealer turns net trades into a price:__ We used a dealer, acting as the market maker, that quotes the price as its cash divided by its shares. Net buying raised the price, net selling lowered it, and a shallow dealer moved the price further for each net order.
+> * __A rule switch for some traders can produce a Sell majority:__ We gave the changed rule to a fraction of the traders and compared each switched market with its control. The Sell intention spread from neighbor to neighbor, and the price fell until the sellers ran out of shares. Fresh players moved the price again, and contrarian players, who buy when most neighbors sell, took the other side of many Sell orders.
+
+A simulation does not show that a change in some traders' rules causes real crashes. Our results also depend on modeling choices, such as the four-neighbor grid, the order in which traders update, and parameters that are not fit to market data. Real markets also face common shocks, such as news that affects many traders at once.
+
+Agent-based models give us a way to ask how the rules of individual traders add up to the behavior of a market.
+___

@@ -1,0 +1,13 @@
+L12b Self-Check: Why Do Markets Crash?
+
+This is an ungraded self-check on the three core concepts from L12b:
+
+1. A Wolfram rule is a lookup table. A trader sums its four neighbors' intentions and reads its next intention from the table. The nine entries, read from sum 8 to sum 0, give the rule number in base 3.
+2. The dealer quotes the price as its cash divided by its shares. Net buying raises the price and net selling lowers it, apart from the added noise. An intention becomes a filled order only when the trader has the cash or shares needed to trade.
+3. A rule-switch experiment compares a switched market with a control that shares its history and never switches. Sell intentions can spread beyond the traders whose rules change. The simulation is an analogy for a crash, not an explanation of a historical one.
+
+There are 12 multiple-choice questions, each with a short explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the two in-class examples open while you work. Every rule entry or number used in a calculation is given in the question. You will not need to reproduce the dealer's price-update formula, the technical-trader band, either algorithm, or the optional Q-learning material.
+
+The questions were written from the course materials. If you think an answer is wrong, post it on the course discussion board.

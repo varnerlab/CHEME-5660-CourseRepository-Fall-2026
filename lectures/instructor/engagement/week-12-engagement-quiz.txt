@@ -1,0 +1,16 @@
+CHEME 5660 Engagement Quiz: Week 12 (L12a and L12b)
+
+Instructions:
+Please complete this short survey after the L12a and L12b lectures. There are no right or wrong answers. Your responses tell us how you are thinking about the models and what needs more time in class.
+
+Question 1 title:
+Choosing a Market Model
+
+Question 1 text:
+If you wanted to model a sudden wave of selling, would you start from the Farmer-Joshi market, the minority game, or the Wolfram market, and why?
+
+Question 2 title:
+What Is Still Confusing?
+
+Question 2 text:
+What is one thing from L12a or L12b that is still confusing to you?
