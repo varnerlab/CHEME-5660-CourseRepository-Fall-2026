@@ -222,6 +222,13 @@ corrections: return immediately on termination and distinguish convergence from 
 iteration limit. This preference concerns pseudocode formatting and does not call
 for rewriting already accepted surrounding sections.
 
+On November 13, 2026, the instructor approved this format for the five L13a
+algorithms, after saying the earlier versions were "not formatted the way I like."
+Each step opens with a bold run-in label (`1. __Laplace:__ …`). A loop inside a step
+gets its own line, `For each day $t = 1,2,\dots,T$ __do__:`, followed by sub-steps
+`- a.` and `- b.`. Do not hide a loop inside a step's text. Write `If …, __then__ …`
+with a comma, and use `Otherwise, …` for the other branch.
+
 ## Voice-calibration experiment — protocol for both courses
 
 Started September 25, 2026, for CHEME 5800 and CHEME 5660, for both Codex and

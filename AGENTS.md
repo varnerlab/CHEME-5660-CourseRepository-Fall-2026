@@ -84,6 +84,39 @@ text in lecture or example notebooks:
   ($T$, $X_t$, $N$, $\mu$, $b$, $F_L$, $\mathcal S_\pm$, $N_{\text{tail}}$,
   $p_{\text{neg}}$) and Context rows for $\mu$, $b$, and $T$, rebuilt with the
   pinned Pandoc.
+- November 13, 2026: he asked for alternatives to the fit schematic. Of four mock-ups
+  (`build/notebook-previews/fit-schematic-2026-11-13/`, gitignored), he chose D: one row,
+  each marker shows the state of its day, the moves 3 → 4 are orange segments of the line,
+  and the slices are equal areas under the sideways Laplace density in place of the
+  cumulative curve. He liked the density better than the cumulative curve, and he liked
+  the numbered markers and keeping the count table in the same row.
+- November 13, 2026, later: asked to make D "even better," he chose G over E and F
+  (`compare-D-E-F-G.png` in the same folder). G widens the range to the 5% and 95%
+  quantiles so the tail slices look like 20%. It replaces the top count bracket with an
+  orange key and a short count arrow, and adds headers that match the fitting algorithm's
+  step labels (1. Laplace, 2. States, 3. Count, 4. Transitions).
+- November 13, 2026, restructure at his request. The lecture now has one markdown cell per
+  `##` section, because separate cells left a gap he did not like. A new "Review: Wolfram
+  Markets" section holds a placeholder for panels he will make himself and states today's
+  goal: a trade management system that adapts, making money when it can and at a minimum
+  preserving cash. The new company profile is Two Sigma, built on its 2021 regime article.
+  Venn is left out because Two Sigma agreed in January 2026 to sell it to Insight Partners
+  and `venn.twosigma.com` no longer resolves. The 2026 founders' dispute is left out under
+  the profile rule. The Markov chain and hidden Markov model background (about 1,560 words)
+  became one short section with a link to the advanced Markov notebook. The lecture's
+  polished Markov text replaced the older copies in that notebook, and the themed
+  transition-matrix figure moved there. The deck mirrors the new order.
+- November 13, 2026: at his request, the short Markov section is "theorem like": a
+  definition of the Markov chain, a proposition for the maximum likelihood estimate of
+  $\mathbf{P}$ with a one-sentence reason, and a definition of the hidden Markov model,
+  with one lead-in sentence between boxes. He then asked for it "as tight as possible"
+  (399 to 313 words). Probability is a plain $P$, matching the notation FAQ and the
+  advanced notebook. The deck has three matching frames.
+- November 13, 2026: the sector section opens with a review of the general factor model
+  (as L6b opens), at his request. The factor sensitivities are $\delta_{ij}$, not L6b's
+  $\gamma_{ij}$, because L13b uses $\gamma_i$ for the stock score. The sector loading
+  $\delta_i$ is then the sensitivity to the stock's own sector factor. The sum is
+  $\sum_{j}$ with no count $m$, which would clash with the market subscript in $g_{m}$.
 
 ## Week 12: JumpHMM synthetic markets and the INFORMS study replace bandits — November 3, 2026
 

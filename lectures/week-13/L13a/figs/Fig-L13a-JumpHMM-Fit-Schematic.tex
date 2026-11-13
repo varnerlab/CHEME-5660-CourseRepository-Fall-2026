@@ -1,134 +1,165 @@
 % L13a jump hidden Markov model, how the model is fit (November 12, 2026, at the instructor's
 % request: "we took a ticker, fit its growth rate series to a cumulative distribution, then
 % sliced up the distribution into states, and counted how many times we moved from state to
-% state"). Redrawn the same day in the style of the week-12 schematics. Each slice is
-% labeled with a mood, at his request ("each sub-division is a mood"), extending the
-% lecture's investor moods (bullish, neutral, bearish) to five states.
+% state"). Each slice is labeled with a mood, at his request ("each sub-division is a mood").
+% Redrawn on November 13, 2026, as variant D of four mock-ups, which he chose: one row, each
+% marker shows the state of its day, the moves are drawn on the plot, and the slices are
+% equal areas under the fitted Laplace density.
+% Redrawn again the same day as variant G, which he chose over D, E, and F:
+%  - a wider growth-rate range (F = 0.05 to 0.95), so the tail slices are mostly drawn and
+%    look like 20%, and the jump days sit farther out (E);
+%  - no count bracket across the top: an orange key in the plot and a short orange count
+%    arrow from the state bar to the table (F);
+%  - headers that match the step labels of the fitting algorithm: 1. Laplace, 2. States,
+%    3. Count, and 4. Transitions on the estimate box.
 %
-% Left: the daily growth rates of a ticker. Middle: the fitted Laplace cumulative
-% distribution on the same growth-rate axis, cut into N = 5 slices of equal probability; the
-% dashed lines carry the slice boundaries across both plots, and the bar names the state
-% and the mood of each slice. Top: the state of each day. Right: the table of counted moves
-% and the estimate of P.
+% Left: the daily growth rates of a ticker, with the five state bands shaded behind them.
+% Each marker shows the state of its day, and the three moves 3 -> 4 are the orange segments
+% of the line. Middle: the fitted Laplace density, drawn sideways on the same growth-rate
+% axis and cut into N = 5 slices of equal area (20% each). The bar names the state and the
+% mood of each slice. Right: the table of counted moves and the estimate of P.
 %
 % Consistency checks (by hand):
-%  - Laplace scale b = 1.8 cm about the median at y = 2.9, so the boundaries F^{-1}(k/5) sit
-%    at 2.9 + 1.8 ln(0.4) = 1.25, 2.9 + 1.8 ln(0.8) = 2.50, 3.30, and 4.55. The middle
-%    slice is 0.80 cm tall, enough for two lines of text.
-%  - Every point lies in the band of the state written above it.
-%  - The 15 moves in the row of states give the counts in the table: 1->2 (1), 1->5 (1),
-%    2->3 (2), 3->2 (2), 3->3 (1), 3->4 (3), 4->3 (2), 4->5 (1), 5->1 (2). The three 3->4
-%    moves are the three highlighted pairs (days 1-2, 5-6, 12-13), and row 3 sums to 6.
+%  - Laplace scale b = 1.8 about the median at y = 1.8 ln 10 = 4.1447. The boundaries
+%    F^{-1}(k/5) sit at the median -/+ 1.8 ln 2.5 = 1.6493 and -/+ 1.8 ln 1.25 = 0.4017:
+%    2.4953, 3.7430, 4.5463, and 5.7940. These quantiles make the five slices equal in area.
+%    The plot ends at y = 0 and y = 8.2893 (the median -/+ 1.8 ln 10), where F = 0.05 and
+%    0.95, so the drawn part of each tail slice holds 15% of its 20%.
+%  - Every marker lies in the band of the state written in it (checked by script).
+%  - The 15 moves in the sequence 3 4 3 2 3 4 5 1 5 1 2 3 4 3 3 2 give the counts in the
+%    table: 1->2 (1), 1->5 (1), 2->3 (2), 3->2 (2), 3->3 (1), 3->4 (3), 4->3 (2), 4->5 (1),
+%    5->1 (2). The three 3->4 moves are the orange segments (days 1-2, 5-6, 12-13), and
+%    row 3 sums to 6.
+%
+% Geometry: the plot and the density are drawn in data units under yscale = 0.91, so the
+% plot is 7.54 cm tall, as in D. The table and the estimate are drawn in plain centimeters.
+% Days sit 0.53 cm apart and the markers are 3.0 mm wide.
 \documentclass[tikz,border=6pt]{standalone}
 \input{jumphmm-diagram.tex}
+
+\tikzset{
+  daypt/.style={circle, draw=#1, text=#1, fill=white, line width=0.9pt, inner sep=0pt,
+    minimum size=3.0mm, font=\sffamily\scriptsize},
+  move/.style={draw=saorange, line width=2.0pt, line cap=round},
+  boundary/.style={draw=gdgray, line width=0.5pt},
+}
 
 \begin{document}
 \begin{tikzpicture}
 
-  % ================= the state boundaries, across both plots =================
-  \foreach \y/\px in {1.25/9.3, 2.50/10.0, 3.30/10.7, 4.55/11.4} {
-    \draw[drop] (0, \y) -- (12.45, \y);
-    \draw[drop] (\px, 0) -- (\px, \y);
-  }
+  \begin{scope}[yscale=0.91]
 
-  % ================= left: the growth rates of a ticker =================
-  \draw[axis] (-0.15, 0) -- (7.65, 0);
-  \draw[axis] (0, -0.15) -- (0, 6.15);
-  \node[anchor=north] at (3.7, -0.12) {trading day $t$};
-  \node[rotate=90, anchor=south] at (-0.2, 2.9) {growth rate $g_{t}$};
-  \draw[series]
-    (0.55, 2.95) -- (0.97, 3.60) -- (1.39, 2.82) -- (1.81, 2.15) -- (2.23, 3.00) --
-    (2.65, 3.70) -- (3.07, 5.05) -- (3.49, 0.55) -- (3.91, 4.85) -- (4.33, 0.90) --
-    (4.75, 2.10) -- (5.17, 2.90) -- (5.59, 3.55) -- (6.01, 2.80) -- (6.43, 2.98) -- (6.85, 2.28);
-  \foreach \x/\y/\s/\c in {
-      0.55/2.95/3/vnink, 0.97/3.60/4/vnink, 1.39/2.82/3/vnink, 1.81/2.15/2/vnink,
-      2.23/3.00/3/vnink, 2.65/3.70/4/vnink, 3.07/5.05/5/gdblue, 3.49/0.55/1/gdred,
-      3.91/4.85/5/gdblue, 4.33/0.90/1/gdred, 4.75/2.10/2/vnink, 5.17/2.90/3/vnink,
-      5.59/3.55/4/vnink, 6.01/2.80/3/vnink, 6.43/2.98/3/vnink, 6.85/2.28/2/vnink} {
-    \node[pt, draw=\c] at (\x, \y) {};
-  }
+    % ================= the five state bands, across the plot and the distribution =================
+    \fill[redfill]  (0, 0)      rectangle (8.75, 2.4953);
+    \fill[boxfill]  (0, 2.4953) rectangle (8.75, 3.743);
+    \fill[boxfill]  (0, 4.5463) rectangle (8.75, 5.794);
+    \fill[bluefill] (0, 5.794)  rectangle (8.75, 8.2893);
+    \foreach \y in {2.4953, 3.743, 4.5463, 5.794} {\draw[boundary] (0, \y) -- (12.3, \y);}
 
-  % ================= top: the state of each day; the three moves 3 -> 4 are highlighted =================
-  \foreach \xa/\xb in {0.34/1.18, 2.02/2.86, 4.96/5.80} {
-    \draw[draw=saorange, fill=orangefill, line width=0.9pt, rounded corners=2pt] (\xa, 6.5) rectangle (\xb, 7.04);
-  }
-  \foreach \x/\s/\c in {
-      0.55/3/vnink, 0.97/4/vnink, 1.39/3/vnink, 1.81/2/vnink, 2.23/3/vnink, 2.65/4/vnink,
-      3.07/5/gdblue, 3.49/1/gdred, 3.91/5/gdblue, 4.33/1/gdred, 4.75/2/vnink, 5.17/3/vnink,
-      5.59/4/vnink, 6.01/3/vnink, 6.43/3/vnink, 6.85/2/vnink} {
-    \node[text=\c, inner sep=0pt] at (\x, 6.77) {$\s$};
-  }
-  \node[anchor=east] at (0.2, 6.77) {state $X_{t}$};
+    % ================= left: the growth rates of a ticker =================
+    \draw[axis] (-0.15, 0) -- (8.75, 0);
+    \draw[axis] (0, -0.1714) -- (0, 8.575);
+    \node[anchor=north] at (4.4, -0.1429) {trading day $t$};
+    \node[rotate=90, anchor=south] at (-0.2, 4.1447) {growth rate $g_{t}$};
 
-  % ================= middle: the fitted Laplace cumulative distribution =================
-  \draw[spine] (8.6, 5.8) -- (8.6, 0) -- (12.1, 0);
-  \foreach \p/\t in {8.6/0, 9.3/0.2, 10.0/0.4, 10.7/0.6, 11.4/0.8, 12.1/1} {
-    \draw[spine] (\p, 0) -- (\p, -0.09);
-    \node[anchor=north, font=\sffamily\footnotesize, inner sep=2pt] at (\p, -0.09) {$\t$};
-  }
-  \node[anchor=north] at (10.35, -0.5) {cumulative probability};
-  \node[note, anchor=north] at (10.35, -0.95) {$N=5$ slices of equal probability};
-  \draw[curve]
-    plot[domain=0:2.9, samples=50, smooth, variable=\y] ({8.6 + 3.5*0.5*exp((\y-2.9)/1.8)}, {\y});
-  \draw[curve]
-    plot[domain=2.9:5.8, samples=50, smooth, variable=\y] ({8.6 + 3.5*(1 - 0.5*exp(-(\y-2.9)/1.8))}, {\y});
-  \foreach \y/\px in {1.25/9.3, 2.50/10.0, 3.30/10.7, 4.55/11.4} {
-    \node[pt] at (\px, \y) {};
-  }
-  \node[anchor=west, align=left] at (8.75, 5.2) {fitted Laplace\\[-1pt]distribution};
+    \foreach \i/\x/\y/\s/\c in {
+        1/0.40/4.1947/3/vnink,  2/0.93/4.8447/4/vnink,  3/1.46/4.0647/3/vnink,  4/1.99/3.3947/2/vnink,
+        5/2.52/4.2447/3/vnink,  6/3.05/4.9447/4/vnink,  7/3.58/7.0947/5/gdblue, 8/4.11/0.8947/1/gdred,
+        9/4.64/6.5947/5/gdblue, 10/5.17/1.4947/1/gdred, 11/5.70/3.3447/2/vnink, 12/6.23/4.1447/3/vnink,
+        13/6.76/4.7947/4/vnink, 14/7.29/4.0447/3/vnink, 15/7.82/4.2247/3/vnink, 16/8.35/3.5247/2/vnink} {
+      \node[daypt=\c] (d\i) at (\x, \y) {$\s$};
+    }
+    % the series line, with the three moves 3 -> 4 in orange
+    \foreach \a/\b in {2/3, 3/4, 4/5, 6/7, 7/8, 8/9, 9/10, 10/11, 11/12, 13/14, 14/15, 15/16} {
+      \draw[series] (d\a) -- (d\b);
+    }
+    \foreach \a/\b in {1/2, 5/6, 12/13} {\draw[move] (d\a) -- (d\b);}
 
-  % ================= each slice is a state and a mood =================
-  \begin{scope}
-    \clip[rounded corners=2pt] (12.45, 0) rectangle (14.75, 5.8);
-    \fill[redfill]  (12.45, 0)    rectangle (14.75, 1.25);
-    \fill[boxfill]  (12.45, 1.25) rectangle (14.75, 2.50);
-    \fill[white]    (12.45, 2.50) rectangle (14.75, 3.30);
-    \fill[boxfill]  (12.45, 3.30) rectangle (14.75, 4.55);
-    \fill[bluefill] (12.45, 4.55) rectangle (14.75, 5.8);
+    % ================= middle: the fitted Laplace density, sideways, cut into equal areas =================
+    % spine at x0 = 9.2, peak width A = 2.8 cm: x = x0 + A exp(-|y - 4.1447|/1.8)
+    \foreach \ya/\yb/\f in {0/2.4953/redfill, 2.4953/3.743/boxfill, 4.5463/5.794/boxfill,
+        5.794/8.2893/bluefill, 3.743/4.5463/white} {
+      \fill[\f] (9.2, \ya) --
+        plot[domain=\ya:\yb, samples=40, variable=\y] ({9.2 + 2.8*exp(-abs(\y-4.1447)/1.8)}, \y) --
+        (9.2, \yb) -- cycle;
+    }
+    \foreach \y/\w in {2.4953/10.32, 3.743/11.44, 4.5463/11.44, 5.794/10.32} {
+      \draw[draw=vnink, line width=0.6pt] (9.2, \y) -- (\w, \y);
+    }
+    \draw[spine] (9.2, 0) -- (9.2, 8.2893);
+    \draw[curve]
+      plot[domain=0:4.1447, samples=60, smooth, variable=\y] ({9.2 + 2.8*exp(-abs(\y-4.1447)/1.8)}, \y);
+    \draw[curve]
+      plot[domain=4.1447:8.2893, samples=60, smooth, variable=\y] ({9.2 + 2.8*exp(-abs(\y-4.1447)/1.8)}, \y);
+    % equal areas: each slice holds 20% of the probability
+    \foreach \x/\y in {9.636/2.0447, 10/3.1447, 10.45/4.1447, 10/5.1447, 9.636/6.2447} {
+      \node[font=\sffamily\footnotesize, inner sep=0pt] at (\x, \y) {20\%};
+    }
+
+    % ================= each slice is a state and a mood =================
+    \begin{scope}
+      \clip[rounded corners=2pt] (12.3, 0) rectangle (14.5, 8.2893);
+      \fill[redfill]  (12.3, 0)      rectangle (14.5, 2.4953);
+      \fill[boxfill]  (12.3, 2.4953) rectangle (14.5, 3.743);
+      \fill[white]    (12.3, 3.743)  rectangle (14.5, 4.5463);
+      \fill[boxfill]  (12.3, 4.5463) rectangle (14.5, 5.794);
+      \fill[bluefill] (12.3, 5.794)  rectangle (14.5, 8.2893);
+    \end{scope}
+    \foreach \y in {2.4953, 3.743, 4.5463, 5.794} {\draw[draw=vnink, line width=0.6pt] (12.3, \y) -- (14.5, \y);}
+    \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (12.3, 0) rectangle (14.5, 8.2893);
+    \foreach \y/\s/\c/\m in {
+        1.2477/1/gdred/very bearish, 3.1192/2/vnink/bearish, 4.1447/3/vnink/neutral,
+        5.1701/4/vnink/bullish, 7.0416/5/gdblue/very bullish} {
+      \node[align=center] at (13.4, \y) {\textcolor{\c}{state $\s$}\\[-1pt]{\footnotesize\color{gdgray}\m}};
+    }
+
+    % the key for the orange moves
+    \draw[move] (0.3, 7.7948) -- (0.75, 7.7948);
+    \node[anchor=west, text=saorange, font=\sffamily\footnotesize] at (0.82, 7.7948) {a move $3\rightarrow4$};
   \end{scope}
-  \foreach \y in {1.25, 2.50, 3.30, 4.55} {\draw[draw=vnink, line width=0.6pt] (12.45, \y) -- (14.75, \y);}
-  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (12.45, 0) rectangle (14.75, 5.8);
-  \foreach \y/\s/\c/\m in {
-      0.625/1/gdred/very bearish, 1.875/2/vnink/bearish, 2.90/3/vnink/neutral,
-      3.925/4/vnink/bullish, 5.175/5/gdblue/very bullish} {
-    \node[align=center] at (13.6, \y) {\textcolor{\c}{state $\s$}\\[-1pt]{\footnotesize\color{gdgray}\m}};
-  }
+
+  % ================= the count arrow (plain centimeters from here on) =================
+  \draw[feedback] (14.62, 4.3) -- (15.73, 4.3);
+  \node[anchor=north, text=saorange, font=\sffamily\footnotesize] at (15.175, 4.24) {$n_{ij}$};
 
   % ================= right: the counted moves =================
-  % columns: header at x = 16.3, then states 1..5 at 16.9, 17.5, 18.1, 18.7, 19.3
-  % rows:    header at y = 5.3,  then states 1..5 at 4.7, 4.1, 3.5, 2.9, 2.3
+  % columns: header at x = 16.5, then states 1..5 at 17.1, 17.7, 18.3, 18.9, 19.5
+  % rows:    header at y = 6.1,  then states 1..5 at 5.5, 4.9, 4.3, 3.7, 3.1
   \begin{scope}
-    \clip[rounded corners=2pt] (16.0, 2.0) rectangle (19.6, 5.6);
-    \fill[boxfill] (16.0, 5.0) rectangle (19.6, 5.6);
-    \fill[boxfill] (16.0, 2.0) rectangle (16.6, 5.6);
+    \clip[rounded corners=2pt] (16.2, 2.8) rectangle (19.8, 6.4);
+    \fill[boxfill] (16.2, 5.8) rectangle (19.8, 6.4);
+    \fill[boxfill] (16.2, 2.8) rectangle (16.8, 6.4);
   \end{scope}
   \foreach \k in {1,...,4} {
-    \draw[draw=gridgray, line width=0.6pt] (16.6, {5.0 - 0.6*\k}) -- (19.6, {5.0 - 0.6*\k});
-    \draw[draw=gridgray, line width=0.6pt] ({16.6 + 0.6*\k}, 2.0) -- ({16.6 + 0.6*\k}, 5.0);
+    \draw[draw=gridgray, line width=0.6pt] (16.8, {5.8 - 0.6*\k}) -- (19.8, {5.8 - 0.6*\k});
+    \draw[draw=gridgray, line width=0.6pt] ({16.8 + 0.6*\k}, 2.8) -- ({16.8 + 0.6*\k}, 5.8);
   }
-  \draw[draw=vnink, line width=0.6pt] (16.0, 5.0) -- (19.6, 5.0) (16.6, 2.0) -- (16.6, 5.6);
-  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (16.0, 2.0) rectangle (19.6, 5.6);
+  \draw[draw=vnink, line width=0.6pt] (16.2, 5.8) -- (19.8, 5.8) (16.8, 2.8) -- (16.8, 6.4);
+  \draw[draw=vnink, line width=0.8pt, rounded corners=2pt] (16.2, 2.8) rectangle (19.8, 6.4);
   \foreach \k in {1,...,5} {
-    \node[font=\sffamily\footnotesize] at ({16.3 + 0.6*\k}, 5.3) {$\k$};
-    \node[font=\sffamily\footnotesize] at (16.3, {5.3 - 0.6*\k}) {$\k$};
+    \node[font=\sffamily\footnotesize] at ({16.5 + 0.6*\k}, 6.1) {$\k$};
+    \node[font=\sffamily\footnotesize] at (16.5, {6.1 - 0.6*\k}) {$\k$};
   }
-  \draw[draw=saorange, fill=orangefill, line width=1.0pt] (18.4, 3.2) rectangle (19.0, 3.8);
+  \draw[draw=saorange, fill=orangefill, line width=1.0pt] (18.6, 4.0) rectangle (19.2, 4.6);
   \foreach \r/\c/\n in {1/2/1, 1/5/1, 2/3/2, 3/2/2, 3/3/1, 3/4/3, 4/3/2, 4/5/1, 5/1/2} {
-    \node at ({16.3 + 0.6*\c}, {5.3 - 0.6*\r}) {$\n$};
+    \node at ({16.5 + 0.6*\c}, {6.1 - 0.6*\r}) {$\n$};
   }
-  \node[anchor=south, font=\sffamily\footnotesize] at (18.1, 5.65) {state on day $t+1$};
-  \node[rotate=90, anchor=south, font=\sffamily\footnotesize] at (15.95, 3.5) {state on day $t$};
-
-  % the highlighted moves are counted in the highlighted cell
-  \foreach \x in {0.76, 2.44, 5.38} {\draw[draw=saorange, line width=1.2pt] (\x, 7.04) -- (\x, 7.6);}
-  \draw[feedback] (0.76, 7.6) -- (17.8, 7.6) -- (17.8, 6.45);
-  \node[anchor=south, text=saorange, font=\sffamily\footnotesize] at (11.6, 7.65) {count every move between consecutive days, such as $3\rightarrow4$};
-  \node[anchor=east, font=\sffamily\footnotesize, text=saorange, inner sep=0pt] at (17.6, 6.72) {counts $n_{ij}$};
+  \node[anchor=south, font=\sffamily\footnotesize] at (18.3, 6.45) {state on day $t+1$};
+  \node[rotate=90, anchor=south, font=\sffamily\footnotesize] at (16.15, 4.3) {state on day $t$};
 
   % the estimate of the transition matrix
-  \node[sumbox, minimum width=3.6cm] (phat) at (17.8, 0.45)
-    {$\hat{p}_{ij}=\dfrac{n_{ij}}{\sum_{k}n_{ik}}$\\[3pt]{\footnotesize\color{gdgray}row 3: $\hat{p}_{34}=3/6$}};
-  \draw[flow] (17.8, 2.0) -- (phat.north);
+  \node[sumbox, minimum width=3.6cm, anchor=north] (phat) at (18.0, 2.0)
+    {{\bfseries 4. Transitions}\\[3pt]$\hat{p}_{ij}=\dfrac{n_{ij}}{\sum_{k}n_{ik}}$\\[3pt]{\footnotesize\color{gdgray}row 3: $\hat{p}_{34}=3/6$}};
+  \draw[flow] (18.0, 2.8) -- (phat.north);
+
+  % ================= the step labels of the fitting algorithm =================
+  \node[anchor=base, font=\sffamily\bfseries] at (10.6, 7.85) {1. Laplace};
+  \node[anchor=base, font=\sffamily\bfseries] at (13.4, 7.85) {2. States};
+  \node[anchor=base, font=\sffamily\bfseries] at (18.0, 7.85) {3. Count};
+
+  % the name of the distribution, below it
+  \node[anchor=north] at (10.6, -0.25) {fitted Laplace distribution};
+  \node[note, anchor=north] at (10.6, -0.7) {cut into $N=5$ slices of equal probability};
 
 \end{tikzpicture}
 \end{document}

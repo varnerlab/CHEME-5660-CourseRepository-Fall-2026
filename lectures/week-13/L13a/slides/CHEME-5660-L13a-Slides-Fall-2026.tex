@@ -1,11 +1,18 @@
 % L13a student companion deck: synthetic markets with jump hidden Markov models.
-% Markov chains and hidden Markov models (from the 2025 lecture text), the jump hidden
-% Markov model of one asset, and the sector factor model of many stocks.
+% A review of Wolfram markets (placeholder panels), the Two Sigma company profile, a short
+% section on Markov chains and hidden Markov models (the full version is the advanced Markov
+% notebook), the jump hidden Markov model of one asset, and the sector factor model of many
+% stocks. Restructured November 13, 2026, to mirror the restructured lecture.
+% Same day: the Markov section mirrors the lecture's theorem-style boxes: a Markov chain
+% definition, a proposition for the maximum likelihood estimate of P (its own frame),
+% and a hidden Markov model definition.
+% Same day: a "Review: Factor Models" frame (the general factor model and the single index
+% model's uncorrelated residuals) opens the Many Assets section, as in the lecture.
 %
 % November 3, 2026. The frame order mirrors the lecture notebook. The disclaimer is
 % slide 2, by instructor preference. Notation follows the lecture: state space
 % \mathcal{S}, transition matrix \mathbf{P} with entries p_{ij}, estimate \hat{p}_{ij},
-% stationary distribution \bar{\pi}, emission matrix \mathbf{E}, daily growth rate g_t
+% stationary distribution \bar{\pi}, daily growth rate g_t
 % (1/yr), jump probability \epsilon and mean episode length \lambda, and the sector
 % factor model g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i eps_i.
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -72,11 +79,12 @@
       shared market and sector draws make stocks move together.
   \end{itemize}
 
-  \vspace{0.5em}
+  \vspace{0.3em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item Power iteration, the tuning objective for $\epsilon$ and $\lambda$, and how
-      the sector loadings and own-draw scale are chosen.
+  \begin{itemize}\setlength{\itemsep}{0.15em}
+    \item The fitting and sampling algorithms of the jump hidden Markov model.
+    \item The tuning objective for $\epsilon$ and $\lambda$, and the shape of an episode.
+    \item How the sector loadings and own-draw scale are chosen, and a drifting $\beta$.
   \end{itemize}
 \end{frame}
 
@@ -89,6 +97,45 @@
   {\normalsize\textbf{\ink{Examples:}}\par\small
   \href{\repo/CHEME-5660-L13a-Example-JumpHMM-SPY-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Example-JumpHMM-SPY-Fall-2026.ipynb}}\par
   \href{\repo/CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  Optional advanced notebooks are listed on the Optional Advanced Material frame.
+\end{frame}
+
+% ========== Review: Wolfram markets
+\begin{frame}{Review: Wolfram Markets}
+  Previously, each trader in a Wolfram market followed a rule: a table from the sum of
+  its four neighbors' intentions to its next intention. A small change in that table can
+  turn a calm market into a crash.
+
+  \vspace{0.6em}
+  \begin{center}
+    \dimmed{[Placeholder: panels of simulated Wolfram markets]}
+  \end{center}
+
+  \vspace{0.6em}
+  \textbf{\ink{Today:}} our goal is a trade management system that makes money when it
+  can and, at a minimum, preserves cash when it cannot. The system has to adapt as the
+  market changes, and we need many plausible paths of a changing market to test it.
+\end{frame}
+
+% ========== Company profile: Two Sigma
+\begin{frame}{Company Profile: Two Sigma}
+  \href{https://www.twosigma.com/}{\hilite{Two Sigma}}: a quantitative investment manager
+  founded in 2001 by David Siegel and John Overdeck, based in New York. In 2021, its
+  researchers let the data define market regimes:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Four regimes}: a Gaussian mixture model fit to 17 drivers of returns,
+      1971--2020: Steady State (47\%), Inflation (20\%), Crisis (17\%), and Walking
+      on Ice (16\%).
+    \item \hilite{Quick switches}: in 2020, Crisis in February and March, then Walking
+      on Ice, then Steady State.
+    \item \hilite{No memory}: the model sorts each period on its own, and the authors
+      say ``this model is not predictive.''
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{\ink{Connection:}} the regimes play the role of our hidden states. Our
+  transition matrix adds the probability of moving from today's mood to tomorrow's.
 \end{frame}
 
 % ========== Why Synthetic Markets?
@@ -109,67 +156,46 @@
   neither fat tails nor volatility clustering.
 \end{frame}
 
-% ========== Markov Chains
+% ========== Markov Chains and Hidden Markov Models
 \begin{frame}{Markov Chains}
-  A discrete Markov model $\mathcal{M}=(\Sc,\Pb)$ has a state space $\Sc$, the set of
-  values the system can take, and a transition matrix $\Pb$. It has the
-  \hilite{Markov property}: given the present state, the past does not matter:
-  \begin{equation*}
-    P(X_{n+1}=s_{n+1}\mid X_{0}=s_{0},\dotsc,X_{n}=s_{n}) = P(X_{n+1}=s_{n+1}\mid X_{n}=s_{n})
-  \end{equation*}
-  The one-step transition probability from $s_{i}$ to $s_{j}$ is
-  $p_{ij}=P(X_{n+1}=s_{j}\mid X_{n}=s_{i})$, the same for every $n$ (time-homogeneous).
-\end{frame}
+  A \hilite{Markov chain} is a stochastic (random) process that moves between states. The
+  next state depends only on the present state. Example: the moods of an investor,
+  bullish, neutral, or bearish.
 
-\begin{frame}{The Transition Matrix}
-  The $p_{ij}$ fill the transition matrix $\Pb\in\mathbb{R}^{|\Sc|\times|\Sc|}$: rows
-  are current states, columns next states, $p_{ij}\geq 0$, and each row sums to one.
-  For weather with $\Sc=\{\text{Sunny},\text{Rainy}\}$:
+  \vspace{0.5em}
+  \textbf{\ink{Definition:}} a Markov chain has states $\Sc=\{s_{1},\dotsc,s_{N}\}$ and a
+  transition matrix $\Pb\in\mathbb{R}^{N\times{N}}$. With $X_{t}$ the state on day $t$, entry $p_{ij}$ is the
+  probability of moving from $s_{i}$ today to $s_{j}$ tomorrow:
   \begin{equation*}
-    \Pb=\begin{bmatrix}0.8 & 0.2\\ 0.4 & 0.6\end{bmatrix}
-    \qquad
-    \pi_{1}=\pi_{0}\Pb=[1,\,0]\begin{bmatrix}0.8 & 0.2\\ 0.4 & 0.6\end{bmatrix}=[0.8,\,0.2]
+    p_{ij}=P\left(X_{t+1}=s_{j}\mid X_{t}=s_{i}\right)
   \end{equation*}
-  If today is Sunny, tomorrow is Sunny with probability 0.8. The distribution
-  $\pi$ is a row vector: $\pi^{\prime}_{j}=\sum_{i}\pi_{i}p_{ij}$.
+  Each row of $\Pb$ sums to one and is a categorical distribution over tomorrow's state.
+  The \hilite{stationary distribution} $\bar{\pi}$ solves $\bar{\pi}=\bar{\pi}\Pb$ and gives
+  the long-run share of time the chain spends in each state.
 \end{frame}
 
 \begin{frame}{Estimating the Transition Matrix}
-  We do not know $\Pb$; we estimate it from observed states $X_{1},\dotsc,X_{T}$. With
-  $n_{ij}$ the number of days in $s_{i}$ followed by a day in $s_{j}$:
+  We estimate $\Pb$ from data. \textbf{\ink{Proposition:}} in a sequence of observed states
+  $X_{1},\dotsc,X_{T}$, let $n_{ij}$ count the days in state $s_{i}$ followed by a day in
+  state $s_{j}$. The maximum likelihood estimate of $p_{ij}$ is the share of the days in
+  state $s_{i}$ that moved to state $s_{j}$:
   \begin{equation*}
-    \hat{p}_{ij}=\frac{n_{ij}}{\sum_{k=1}^{|\Sc|}n_{ik}}
+    \boxed{\hat{p}_{ij}=\frac{n_{ij}}{\sum_{k=1}^{N}n_{ik}}}
   \end{equation*}
-  the share of days in $s_{i}$ that moved to $s_{j}$. Each row sums to one by
-  construction; this is the maximum likelihood estimate, and how a market
-  generator estimates its transition matrix.
+  This estimate maximizes the log-likelihood $\sum_{i,j}n_{ij}\ln p_{ij}$, subject to each
+  row of $\Pb$ summing to one.
 \end{frame}
 
-\begin{frame}{The Stationary Distribution}
-  The \hilite{stationary distribution} $\bar{\pi}$ is unchanged by a step,
-  $\bar{\pi}=\bar{\pi}\Pb$: the long-run share of time in each state, and where a
-  generator starts its paths. \hilite{Power iteration} applies $\Pb$ until nothing changes:
-  \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item Start from the uniform $\pi=[1/N,\dotsc,1/N]$ over the $N$ states.
-    \item Repeat $\pi^{\prime}\gets\pi\Pb$ until $\lVert\pi^{\prime}-\pi\rVert_{1}\leq\text{tol}$ or
-      $T$ iterations; return $\bar{\pi}\gets\pi^{\prime}$.
-  \end{itemize}
-  \vspace{0.2em}
-  This needs an ergodic $\Pb$; software often solves $\bar{\pi}=\bar{\pi}\Pb$ directly instead.
-\end{frame}
-
-% ========== Hidden Markov Models
 \begin{frame}{Hidden Markov Models}
-  In a \hilite{hidden Markov model} $\mathcal{M}=(\Sc,\mathcal{O},\Pb,\mathbf{E})$ we do
-  not see the states, only what they emit: observations $\mathcal{O}$ with emission
-  probabilities $e_{ij}=P(O_{n}=o_{j}\mid X_{n}=s_{i})$, rows summing to one. To sample:
-  draw $X_{0}\sim\bar{\pi}$; then each step draws $X_{n}$ from row $X_{n-1}$ of $\Pb$
-  and $O_{n}$ from row $X_{n}$ of $\mathbf{E}$.
+  A \hilite{hidden Markov model} adds observable outputs to the chain.
+  \textbf{\ink{Definition:}} the states $X_{t}$ of the chain are hidden. Each day, we observe
+  an output (emission) drawn from a distribution that depends on that day's hidden state.
 
-  \vspace{0.5em}
-  \textbf{\ink{Continuous emissions:}} a growth rate is a number, so each state has an
-  emission \emph{distribution} instead of a row of $\mathbf{E}$:
-  $g_{n}\mid X_{n}=s_{k}\sim$ emission distribution of $s_{k}$.
+  \vspace{0.6em}
+  For a market generator, the hidden state sets how volatile the market is today, and
+  the emission turns the state into a growth rate. A generator draws the first state of
+  each path from $\bar{\pi}$.
+  \slidenote{Full version:}{the Markov models notebook (Markov property, power iteration, sampling)}
 \end{frame}
 
 % ========== The Jump Hidden Markov Model
@@ -260,16 +286,30 @@
 \end{frame}
 
 % ========== Many Assets
+\begin{frame}{Review: Factor Models}
+  Previously, we studied \hilite{factor models}, which explain how stocks move together
+  with a few common factors:
+  \begin{equation*}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{firm}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\textstyle\sum_{j}\delta_{ij}\,f_{j}(t)}_{\textstyle\text{other factors}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{residual}}
+  \end{equation*}
+  The \hilite{single index model} keeps only the market factor. It assumes that the
+  residuals of different stocks are uncorrelated, which means that only the market links
+  two stocks. In the data, the residuals of stocks in the same sector, such as two banks,
+  are correlated.
+\end{frame}
+
 \begin{frame}{Many Assets: The Sector Factor Model}
-  Each synthetic stock $i$ in sector $s$ is built from draws it shares with other
-  stocks and a draw of its own:
+  \textbf{\ink{Definition:}} in the \hilite{sector factor model}, each stock has one other
+  factor besides the market, the factor $f_{s}$ of its sector $s$. The daily growth rate
+  of stock $i$ in sector $s$ is given by:
   \begin{equation*}
     g_{i}(t)=\alpha_{i}+\beta_{i}\,\underbrace{g_{m}(t)}_{\textstyle\text{market}}+\delta_{i}\,\underbrace{f_{s}(t)}_{\textstyle\text{sector}}+\psi_{i}\,\underbrace{\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{own}}
   \end{equation*}
-  $\alpha_{i}$, $\beta_{i}$: single index estimates, held fixed. $f_{s}$: a model of the
-  sector's average residual, with loading $\delta_{i}$. $\tilde{\varepsilon}_{i}$: a model of
-  the stock, centered and scaled by $\psi_{i}$ so its variance matches the real one on
-  average. Each piece is a jump hidden Markov model.
+  Here $\alpha_{i}$ and $\beta_{i}$ are the single index estimates, held fixed. The sector
+  draw $f_{s}$ models the sector's average residual, with loading $\delta_{i}$. The own draw
+  $\tilde{\varepsilon}_{i}$ models the stock, centered and scaled by $\psi_{i}$ so its
+  variance matches the real one on average. Each draw is a jump hidden Markov model, and
+  the shared draws are the only link between stocks.
 \end{frame}
 
 \begin{frame}{What the Model Keeps and Gives Up}
@@ -294,6 +334,18 @@
   A trading method that re-estimates $\beta$ as it trades then faces the same problem
   in the synthetic market as in the real one.
   \slidenote{Example:}{\href{\repo/CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
+\end{frame}
+
+% ========== Optional advanced material
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.4em}
+  {\normalsize\textbf{\ink{Markov models:}} \dimmed{advanced/markov/}\par
+  \href{\repo/advanced/markov/CHEME-5660-L13a-Lecture-MarkovModels-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Lecture-MarkovModels-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  The Markov property, the stationary distribution by power iteration, and the sampling
+  algorithm of a hidden Markov model. Two examples apply a hidden Markov model to a
+  person's mood and to the daily growth rate of \texttt{SPY}.
 \end{frame}
 
 \begin{frame}{Summary}
