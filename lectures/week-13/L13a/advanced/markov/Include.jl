@@ -29,3 +29,4 @@ using JLD2
 using HypothesisTests
 using StatsPlots
 using LinearAlgebra
+using Random # reproducible simulation paths

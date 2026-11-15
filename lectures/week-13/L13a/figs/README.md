@@ -22,3 +22,53 @@ the SVG, so changing the editor theme repaints the figure. If the palette in
 color fails the build on purpose.
 
 `vnfigure.sty` is no longer used by these figures.
+
+## Wolfram-market review
+
+`Fig-L13a-Wolfram-Markets` shows three rows of actual simulation snapshots at
+the same six steps: 1000, 1250, 1500, 1600, 2000, and 4000. The rows are R19280
+alone, the closed-market switch from R19280 to R19286, and the switch in an open
+market with continuous refresh and R0 buyers after step 1500. Each panel also
+gives the Sell percentage and share price in USD/share. Blue is Buy, gray is
+Hold, and orange is Sell, matching L12b.
+
+The figure uses the L12b RuleSwitch example's constants: a 64 by 64 grid, seed 1,
+active edge traders, dealer depth 100, 25% switching after step 1000, and price
+noise with annual volatility 0.40 at one-minute steps. The third row uses the
+Viewport example's `refresh_rate = 0.001`, beginning after step 1500: each
+interior trader then leaves with that probability at every step, and a new
+player takes its place with fresh cash and shares. A quarter of new arrivals,
+on average, follow R0; the other players follow the baseline or switch rule of
+their seats. There are no R0 players before refresh starts. The two switched
+markets have identical grids and prices through step 1500, when 65.2% of their
+traders intend to sell. At step 1600, the open market has 3.1% R0 players and
+63.6% Sell intentions; by step 2000 those percentages are 9.9% and 24.3%.
+
+All figure-specific source and saved data are in this folder. The Julia data
+script calls the existing L12b helpers and the course package, preserving one
+implementation of the market. A small observer adapter delays refresh while
+leaving price noise active; the L12b observer still handles all replacement and
+rule logic. The script checks the shared history through step 1500, the Sell
+majority, the empty initial R0 population, and later R0 entry before exporting.
+The Python script draws the PDF, PNG, and SVG;
+the SVG adapts text and outlines to dark screens while keeping intention colors.
+
+From this folder, `make wolfram-data` reruns the simulations. Then run
+`make Fig-L13a-Wolfram-Markets.pdf PYTHON=/path/to/python-with-matplotlib` to draw
+all three formats. The lecture's "Review: Wolfram Markets" section shows this
+figure after the three-rule figure, both at width 1000 with the notebook's
+existing theme wrapper.
+
+## Three Wolfram rules
+
+`Fig-L13a-Wolfram-Rules` follows the L12b rule-number figure: one example of four
+neighbors for each sum, in columns from 8 down to 0, above three colored lookup
+tables. The rows are R19280 (baseline), R19286 (switch), and R0 (new buyers).
+The highlighted sum-1 column shows the only change at the switch, Buy to Sell.
+A brace below R0 shows that it buys at every sum. Each output gives both its
+intention and its code, with the Buy/Hold/Sell key below.
+
+The TikZ source decodes each output directly from the rule number with exact
+integer division. The tables read `222110002`, `222110022`, and `000000000` in
+base 3. Build the PDF, themed SVG, and PNG with
+`make Fig-L13a-Wolfram-Rules.pdf Fig-L13a-Wolfram-Rules.svg Fig-L13a-Wolfram-Rules.png`.

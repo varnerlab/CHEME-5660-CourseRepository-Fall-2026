@@ -1,7 +1,7 @@
 # Build standalone L13a figures to PDF (for slides) and SVG (for notebooks).
-# All figures share the style file jumphmm-diagram.tex (the week-12 schematic style).
+# TikZ figures share jumphmm-diagram.tex (the week-12 schematic style).
 
-FIGURES := Fig-L13a-JumpHMM-Schematic Fig-L13a-JumpHMM-Fit-Schematic Fig-L13a-Episode-Shape
+FIGURES := Fig-L13a-JumpHMM-Schematic Fig-L13a-JumpHMM-Fit-Schematic Fig-L13a-Episode-Shape Fig-L13a-Wolfram-Markets Fig-L13a-Wolfram-Rules
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
@@ -9,6 +9,8 @@ SVGS := $(addsuffix .svg,$(FIGURES))
 XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg
 PYTHON ?= python3
+JULIA ?= julia
+PDFTOPPM ?= pdftoppm
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 STYLE := jumphmm-diagram.tex
 
@@ -19,6 +21,21 @@ all: pdf svg
 
 pdf: $(PDFS)
 svg: $(SVGS)
+
+# The review figure uses actual L12b simulations. Recompute its data explicitly
+# with `make wolfram-data`; ordinary figure builds only redraw the saved frames.
+.PHONY: wolfram-data
+wolfram-data:
+	cd ../../../.. && $(JULIA) --project=. lectures/week-13/L13a/figs/Fig-L13a-Wolfram-Markets-Data.jl
+
+Fig-L13a-Wolfram-Markets.pdf: generate-wolfram-markets.py Fig-L13a-Wolfram-Markets-Data.json
+	$(PYTHON) generate-wolfram-markets.py
+
+Fig-L13a-Wolfram-Markets.svg Fig-L13a-Wolfram-Markets.png: Fig-L13a-Wolfram-Markets.pdf
+	@test -f "$@" || $(PYTHON) generate-wolfram-markets.py
+
+Fig-L13a-Wolfram-Rules.png: Fig-L13a-Wolfram-Rules.pdf
+	$(PDFTOPPM) -png -scale-to 2200 -singlefile $< $(@:.png=)
 
 %.pdf: %.tex $(STYLE)
 	$(XELATEX) $(LATEX_FLAGS) $<

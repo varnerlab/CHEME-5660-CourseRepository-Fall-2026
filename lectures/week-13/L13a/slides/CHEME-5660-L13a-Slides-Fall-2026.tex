@@ -1,8 +1,10 @@
 % L13a student companion deck: synthetic markets with jump hidden Markov models.
-% A review of Wolfram markets (placeholder panels), the Two Sigma company profile, a short
+% A review of Wolfram markets, the Two Sigma company profile, a short
 % section on Markov chains and hidden Markov models (the full version is the advanced Markov
 % notebook), the jump hidden Markov model of one asset, and the sector factor model of many
 % stocks. Restructured November 13, 2026, to mirror the restructured lecture.
+% November 15: added the Wolfram review figures, episode-shape comparison, and
+% own-residual construction; made the sampler's state branches exclusive.
 % Same day: the Markov section mirrors the lecture's theorem-style boxes: a Markov chain
 % definition, a proposition for the maximum likelihood estimate of P (its own frame),
 % and a hidden Markov model definition.
@@ -104,19 +106,30 @@
 
 % ========== Review: Wolfram markets
 \begin{frame}{Review: Wolfram Markets}
-  Previously, each trader in a Wolfram market followed a rule: a table from the sum of
-  its four neighbors' intentions to its next intention. A small change in that table can
-  turn a calm market into a crash.
-
-  \vspace{0.6em}
+  Each trader uses the sum of its four neighbors' intentions to choose its next intention:
   \begin{center}
-    \dimmed{[Placeholder: panels of simulated Wolfram markets]}
+    \includegraphics[width=\textwidth,height=0.74\textheight,keepaspectratio]{../figs/Fig-L13a-Wolfram-Rules.pdf}
   \end{center}
+\end{frame}
 
-  \vspace{0.6em}
+\begin{frame}{Review: Closed and Open Markets}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{../figs/Fig-L13a-Wolfram-Markets.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Review: Adapting to Change}
+  After the switch, Sell intentions spread across the grid. By step 1500, 65\% of
+  traders intend to sell. Continuous refresh with R0 buyers then breaks up that
+  majority in the open market.
+
+  \vspace{0.7em}
   \textbf{\ink{Today:}} our goal is a trade management system that makes money when it
-  can and, at a minimum, preserves cash when it cannot. The system has to adapt as the
-  market changes, and we need many plausible paths of a changing market to test it.
+  can and, at a minimum, preserves cash when it cannot.
+
+  \vspace{0.7em}
+  The system has to adapt as the market changes. To test it, we need many plausible
+  paths of a changing market.
 \end{frame}
 
 % ========== Company profile: Two Sigma
@@ -264,11 +277,13 @@
   \begin{enumerate}\setlength{\itemsep}{0.3em}
     \item \hilite{New episode}: if $\texttt{remaining}=0$, draw $u\sim\text{Uniform}(0,1)$.
       If $u<\epsilon$, draw $\texttt{remaining}\sim\text{Poisson}(\lambda)$.
-    \item \hilite{Episode day}: if $\texttt{remaining}>0$, draw $X_{t}$ uniformly from the
-      most negative states $\Sc_{-}$ with probability $p_{\text{neg}}$, otherwise from the
-      most positive states $\Sc_{+}$. Set $\texttt{remaining}\gets\texttt{remaining}-1$.
-    \item \hilite{Ordinary day}: if $\texttt{remaining}=0$, draw $X_{t}$ from row
-      $X_{t-1}$ of $\hat{\Pb}$.
+    \item \hilite{State}: choose exactly one branch:
+      \begin{itemize}\setlength{\itemsep}{0.2em}
+        \item If $\texttt{remaining}>0$, draw $X_{t}$ uniformly from $\Sc_{-}$ with
+          probability $p_{\text{neg}}$, otherwise from $\Sc_{+}$. Set
+          $\texttt{remaining}\gets\texttt{remaining}-1$.
+        \item \textbf{Else}, draw $X_{t}$ from row $X_{t-1}$ of $\hat{\Pb}$.
+      \end{itemize}
     \item \hilite{Emission}: $g_{t}\gets\mu_{k}+\sigma_{k}\,T_{\nu}$, where $X_{t}=s_{k}$.
   \end{enumerate}
   \slidenote{Full version:}{the lecture notebook}
@@ -282,6 +297,13 @@
     J(\epsilon,\lambda)=\frac{1}{M}\sum_{m=1}^{M}\Bigl[\sum_{k=1}^{25}\left(\rho_{k}-\hat{\rho}_{m,k}\right)^{2}+0.2\left(\kappa-\hat{\kappa}_{m}\right)^{2}\Bigr]
   \end{equation*}
   The score is noisy, so the chosen pair can change with the seed.
+\end{frame}
+
+\begin{frame}{What the Episodes Add and What They Miss}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.56\textheight,keepaspectratio]{../figs/Fig-L13a-Episode-Shape.pdf}
+  \end{center}
+  Stress tests on these paths meet long, moderate volatile periods.
   \slidenote{Example:}{\href{\repo/CHEME-5660-L13a-Example-JumpHMM-SPY-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Example-JumpHMM-SPY-Fall-2026.ipynb}}}
 \end{frame}
 
@@ -311,6 +333,59 @@
   and sized by $\psi_{i}$ so the sector and own terms keep the residual's variance. Each draw
   is a jump hidden Markov model, and
   the shared draws are the only link between stocks.
+\end{frame}
+
+\begin{frame}{The Stock's Own Error Term}
+  In the data, subtract the market fit and then the sector contribution:
+  \begin{equation*}
+    \begin{aligned}
+      \varepsilon_i(t)&=g_i(t)-\alpha_i-\beta_i g_m(t)
+        &&\text{after the market fit}\\
+      u_i(t)&=\varepsilon_i(t)-\delta_i f_s(t)
+        &&\text{after market and sector}.
+    \end{aligned}
+  \end{equation*}
+  Fit a jump hidden Markov model to $u_i(t)$. Center its draw on the model's
+  long-run mean $\bar{u}_i$:
+  \begin{equation*}
+    \tilde{\varepsilon}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
+  \end{equation*}
+  The own model describes the stock's residual after its sector term.
+\end{frame}
+
+\begin{frame}{Sizing the Own Draw (Fixed $\beta$)}
+  Independent sector and own draws have variances that add. Set their target using
+  the real data:
+  \begin{equation*}
+    \underbrace{\delta_i^2\operatorname{Var}(f_s)}_{\text{sector}}
+    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{own}}
+    =\underbrace{\operatorname{Var}(\varepsilon_i)}_{\text{after the market fit}}.
+  \end{equation*}
+  Solving for the scale gives:
+  \begin{equation*}
+    \boxed{\psi_i^2=
+      \frac{\operatorname{Var}(\varepsilon_i)-\delta_i^2\operatorname{Var}(f_s)}
+           {\operatorname{Var}(u_i)}},\qquad\psi_i\geq0.
+  \end{equation*}
+  The sector factor includes stock $i$ in its average. The scale compensates for
+  covariance lost when we draw sector and own paths independently.
+  \slidenote{A target:}{the fitted models reproduce the data variances only approximately.}
+\end{frame}
+
+\begin{frame}{Algorithm: Sample the Synthetic Universe}
+  Given the fitted component models, coefficients, own scales, and starting prices:
+  \begin{enumerate}\setlength{\itemsep}{0.4em}
+    \item \hilite{Shared draws}: draw one market path $g_m(t)$ and an independent path
+      $f_s(t)$ for each sector.
+    \item \hilite{Own draws}: for each stock, draw its own path and subtract its
+      model's long-run mean to obtain $\tilde{\varepsilon}_i(t)$.
+    \item \hilite{Compose}: on each day, calculate
+      \begin{equation*}
+        g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{\varepsilon}_i(t),
+      \end{equation*}
+      then compound $S_i(t)=S_i(t-1)\exp\!\left(g_i(t)\Delta t\right)$.
+  \end{enumerate}
+  Here $\Delta t$ is the time step in years.
 \end{frame}
 
 \begin{frame}{What the Model Keeps and Gives Up}
@@ -357,12 +432,12 @@
   \vspace{0.4em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Markov chains}: states, a transition matrix estimated by counting,
-      and a stationary distribution; hidden states emit what we observe.
-    \item \hilite{Jump hidden Markov model}: fat tails from binned Student-t states, and
-      part of the volatility clustering from tuned jump episodes.
-    \item \hilite{Sector factor model}: shared market and sector draws make synthetic
-      stocks move together.
+    \item \hilite{Markov chains and hidden states}: we estimated transitions by
+      counting. Hidden states and their emissions produced the values we observe.
+    \item \hilite{Jump episodes}: we added runs of extreme states to restore part of
+      the clustering. Their volatility stays flat where a real crash spikes and fades.
+    \item \hilite{Shared draws}: we composed stocks from market, sector, and own draws.
+      The shared draws made stocks move together, and the own scale targeted residual variance.
   \end{itemize}
   \vspace{0.3em}
   Synthetic markets let us test a method on many paths, not one.

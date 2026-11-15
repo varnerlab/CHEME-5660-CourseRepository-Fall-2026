@@ -27,6 +27,14 @@ DARK_COLORS = {
     (229, 243, 255): "#123a5c",  # bluefill: the most positive states
     (253, 232, 232): "#4a1c1c",  # redfill: the most negative states
     (227, 229, 232): "#3a3d42",  # gridgray: table grid lines, emission base lines
+    # The Wolfram-rule table keeps the L12b Buy/Hold/Sell palette.
+    (0, 114, 178): "#56b4e9",    # Buy tile borders and labels
+    (170, 170, 170): "#9aa0a6",  # Hold tile borders
+    (213, 94, 0): "#f28e3d",     # Sell tile borders and labels
+    (224, 238, 246): "#17324a",  # Buy tile fill
+    (245, 245, 245): "#2c2e31",  # Hold tile fill
+    (249, 231, 217): "#3d2614",  # Sell tile fill
+    (255, 253, 214): "#3a3718",  # Highlight on the changed rule entry
 }
 TOLERANCE = 2
 
