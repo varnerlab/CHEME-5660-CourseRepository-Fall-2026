@@ -381,8 +381,9 @@
 \begin{frame}{Algorithm: Sample the Synthetic Universe}
   Given the fitted component models, coefficients, residual scales, and starting prices:
   \begin{enumerate}\setlength{\itemsep}{0.4em}
-    \item \hilite{Shared draws}: draw one market path $g_m(t)$ and an independent path
-      $f_s(t)$ for each sector.
+    \item \hilite{Shared draws}: draw one market path $g_m(t)$ for all stocks and one
+      sector path $f_s(t)$ for the stocks in each sector. Use independent random draws
+      to generate the different paths.
     \item \hilite{Residual draws}: for each stock, draw a path from the model of its
       remaining residual and subtract that model's long-run mean to obtain $\tilde{\varepsilon}_i(t)$.
     \item \hilite{Compose}: on each day, calculate
@@ -395,13 +396,18 @@
 \end{frame}
 
 \begin{frame}{An Option: A Drifting $\beta$}
-  Holding $\beta_{i}$ fixed is a simplification: real $\beta$ wanders. The model can let
-  $\beta_{i}(t)$ drift around $\hat{\beta}_{i}$ as an exponential moving average of random
-  shocks, sized by how much the online estimate of $\beta$ wanders in the real data.
+  This optional extension tests a trading method under changing market sensitivity.
+  Let $\beta_i(t)$ vary around its single index estimate $\hat{\beta}_i$:
+  \begin{equation*}
+    \beta_i(t)=\hat{\beta}_i+(1-a)\bigl(\beta_i(t-1)-\hat{\beta}_i\bigr)+a k_i z_i(t).
+  \end{equation*}
+  Here $0<a<1$ is the exponential moving average weight. The independent standard
+  normal shocks $z_i(t)$ are scaled by $k_i\geq0$.
 
   \vspace{0.5em}
-  A trading method that re-estimates $\beta$ as it trades then faces the same problem
-  in the synthetic market as in the real one.
+  We size the variation using $\beta$ estimates updated daily from real data.
+  These estimates also contain sampling noise. The trading method must track the
+  changing sensitivity from the simulated growth rates.
   \slidenote{Example:}{\href{\repo/CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
 \end{frame}
 
