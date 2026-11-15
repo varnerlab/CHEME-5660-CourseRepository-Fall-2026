@@ -61,14 +61,14 @@ existing theme wrapper.
 
 ## Three Wolfram rules
 
-`Fig-L13a-Wolfram-Rules` follows the L12b rule-number figure: one example of four
-neighbors for each sum, in columns from 8 down to 0, above three colored lookup
-tables. The rows are R19280 (baseline), R19286 (switch), and R0 (new buyers).
-The highlighted sum-1 column shows the only change at the switch, Buy to Sell.
-A brace below R0 shows that it buys at every sum. Each output gives both its
-intention and its code, with the Buy/Hold/Sell key below.
+`Fig-L13a-Wolfram-Rules` copies the L12b rule-switch drawing, with one additional
+Rule 0 row. The single trader-and-neighbors cross, neighbor-sum arrow, two original
+lookup rows, fonts, colors, and highlighted sum-1 column retain the L12b layout.
+All lookup cells contain numeric intention codes only. The added Rule 0 row is
+all zeros (Buy), and the original legend moves down to leave room for that row.
 
 The TikZ source decodes each output directly from the rule number with exact
 integer division. The tables read `222110002`, `222110022`, and `000000000` in
-base 3. Build the PDF, themed SVG, and PNG with
+base 3. This figure uses pdfLaTeX to match the reference's Computer Modern font.
+Build the PDF, themed SVG, and PNG with
 `make Fig-L13a-Wolfram-Rules.pdf Fig-L13a-Wolfram-Rules.svg Fig-L13a-Wolfram-Rules.png`.

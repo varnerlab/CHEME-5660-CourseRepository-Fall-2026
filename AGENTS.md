@@ -117,6 +117,16 @@ text in lecture or example notebooks:
   $\gamma_{ij}$, because L13b uses $\gamma_i$ for the stock score. The sector loading
   $\delta_i$ is then the sensitivity to the stock's own sector factor. The sum is
   $\sum_{j}$ with no count $m$, which would clash with the market subscript in $g_{m}$.
+- November 15, 2026: at his request, State Street Investment Management replaces Two
+  Sigma as the L13a company profile. The lecture and deck connect SPY and the firm's
+  documented use of hidden Markov models for tactical asset allocation to the lecture,
+  using its January 2026 investment-modeling article. The profile includes the firm's
+  history, official careers and career-video resources, and its cited 2023 credit-spread
+  paper. The former profile's claim that markets have no memory is removed.
+- Same day, at his request, the standalone "Why Synthetic Markets?" section and deck
+  frame were removed. The introduction and Wolfram review retain the motivation.
+  Fat tails, volatility clustering, and the GBM limitations move into the JumpHMM
+  section; co-movement is defined in the sector-factor opening.
 - November 13, 2026: he called the old own draw a hack and made the "factor, sized" version
   the standard. The own model of each stock is now fit to its single index residual after
   the sector term, $\varepsilon_i-\delta_i f_s$, the way the sector model is fit to the

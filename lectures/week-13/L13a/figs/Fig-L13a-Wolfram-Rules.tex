@@ -1,71 +1,68 @@
-% Three Wolfram rules for the review, following the L12b rule-number figure:
-% one example of four neighbors for each sum, then the three lookup tables.
-% Columns run from c = 8 to c = 0, the order of the base-3 rule digits.
-% Every output is decoded from its rule number, not typed independently.
-% Checks: R19280 = (222110002)_3; R19286 = (222110022)_3; R0 = (000000000)_3.
-% Only c = 1 differs between the first two rules. R0 gives Buy at every sum.
-\documentclass[tikz,border=6pt]{standalone}
-\input{jumphmm-diagram.tex}
+% L13a review: the L12b rule-switch drawing with one additional Rule 0 row.
+% Source: week-12/L12b/figs/Fig-L12b-RuleSwitch.tex.
+% Original L12b rule-switch schematic (November 2026 redesign, same drawing as panels
+% A and B of Figure 1 in the Wolfram markets paper, commit 5cee50d). The table
+% columns run from c = 8 down to c = 0, unlike the paper, so that each row reads
+% as the base-3 rule number (Fig-L12b-RuleNumber uses the same order).
+%
+% A trader whose four neighbors are Buy, Buy, Buy, Hold has neighbor sum
+% c = 0+0+0+1 = 1. The two lookup tables (Rule 19280 before the switch, Rule
+% 19286 after) agree at every c except c = 1, where 19280 gives Buy (0) and
+% 19286 gives Sell (2). The table digits are decoded here from the rule
+% numbers, floor(R/3^c) mod 3, so the drawing cannot drift from the rules.
+%
+% Style: plain pdflatex standalone with the default Computer Modern font, and
+% pastel fills with borders in the paper palette (Buy blue, Hold gray, Sell
+% orange), matching the plots in the example. The notebook SVG gets a dark
+% palette from theme_svg.py; add any new color to its mapping.
+\documentclass[border=4pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,calc}
 \definecolor{buyblue}{HTML}{0072B2}
 \definecolor{holdgray}{HTML}{AAAAAA}
 \definecolor{sellorange}{HTML}{D55E00}
-\definecolor{switchfill}{HTML}{FFFDD6}
+\definecolor{ink}{HTML}{252525}
 \newcount\ruledigit
 \newcount\rulequotient
 \newcount\ruledivisor
 
-\tikzset{
-  tile/.style={rectangle,rounded corners=2pt,line width=.8pt,inner sep=0pt,align=center},
-  buy/.style={tile,draw=buyblue,fill=buyblue!12},
-  hold/.style={tile,draw=holdgray,fill=holdgray!12},
-  sell/.style={tile,draw=sellorange,fill=sellorange!15},
-  me/.style={tile,draw=vnink,fill=white},
-  nb/.style={minimum width=.38cm,minimum height=.38cm,font=\sffamily\scriptsize},
-  output/.style={minimum width=.92cm,minimum height=.69cm,font=\sffamily\small},
-  lookup/.style={draw=gdgray,line width=.7pt,-{Latex[length=1.7mm,width=1.2mm]}},
-}
-
 \begin{document}
-\begin{tikzpicture}
-\def\pitch{1.34}
-\def\ns{.41}
-\def\ysum{5.85}
-\def\ynb{4.77}
-\def\ya{2.95}
-\def\yb{1.86}
-\def\yc{.77}
-\pgfmathsetmacro{\hx}{7*\pitch}
+\begin{tikzpicture}[
+  x=1cm,y=1cm,
+  every node/.style={font=\small,text=ink},
+  note/.style={font=\scriptsize,text=ink!60},
+  box/.style={rectangle,rounded corners=3pt,thick,inner sep=2pt,align=center},
+  buy/.style={box,draw=buyblue,fill=buyblue!12},
+  hold/.style={box,draw=holdgray,fill=holdgray!12,text=ink!70},
+  sell/.style={box,draw=sellorange,fill=sellorange!15},
+  me/.style={box,draw=ink!75,fill=white,line width=1.1pt},
+  nb/.style={minimum width=1.05cm,minimum height=.82cm},
+  cell/.style={minimum width=.56cm,minimum height=.56cm},
+  arr/.style={-{Stealth[length=2mm]},thick,ink!60},
+]
+% ---- trader i and its four neighbors ----
+\def\nx{1.15}\def\ny{2.45}\def\ns{1.13}
+\node[me,nb]   (C) at (\nx,\ny) {$i$};
+\node[buy,nb]  (N) at (\nx,\ny+\ns) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[buy,nb]  (W) at (\nx-\ns,\ny) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[buy,nb]  (E) at (\nx+\ns,\ny) {Buy\\[-3pt]\scriptsize $z=0$};
+\node[hold,nb] (S) at (\nx,\ny-\ns) {Hold\\[-3pt]\scriptsize $z=1$};
+\node[note,anchor=north,align=center] at (\nx,\ny-\ns-.5) {trader $i$ reads only\\its four neighbors};
 
-% One quiet band links the worked neighbor pattern to the only changed entry.
-\fill[switchfill,rounded corners=4pt] (\hx-.62,1.33) rectangle (\hx+.62,6.18);
-\node[anchor=east,font=\sffamily\footnotesize,text=gdgray] at (-.84,\ysum) {neighbor sum $c$};
-\node[anchor=east,align=right,font=\sffamily\footnotesize,text=gdgray] at (-.84,\ynb)
-  {four neighbors\\one example per sum};
-\node[anchor=east,align=right,font=\sffamily\footnotesize,text=gdgray] at (-.84,3.65)
-  {next intention};
-
-% The same neighbor crosses as the L12b lecture, with the trader in the center.
-\foreach \col/\c/\north/\west/\east/\south in {
-  0/8/2/2/2/2,
-  1/7/1/2/2/2,
-  2/6/1/1/2/2,
-  3/5/1/1/1/2,
-  4/4/1/1/1/1,
-  5/3/0/1/1/1,
-  6/2/0/0/1/1,
-  7/1/0/0/0/1,
-  8/0/0/0/0/0} {
-  \pgfmathsetmacro{\xc}{\col*\pitch}
-  \node[font=\sffamily\bfseries\small] at (\xc,\ysum) {$\c$};
-  \foreach \dg/\dx/\dy in {\north/0/1,\west/-1/0,\east/1/0,\south/0/-1} {
-    \ifcase\dg\def\st{buy}\or\def\st{hold}\or\def\st{sell}\fi
-    \node[\st,nb] at (\xc+\dx*\ns,\ynb+\dy*\ns) {$\dg$};
-  }
-  \node[me,nb] at (\xc,\ynb) {$i$};
-  \draw[lookup] (\xc,\ynb-.76) -- (\xc,\ya+.48);
-
-  % Decode each rule at this sum using exact integer division.
-  \foreach \ruleindex/\yy in {19280/\ya,19286/\yb,0/\yc} {
+% ---- the three lookup tables: digits floor(R/3^c) mod 3 ----
+\def\tx{6.35}\def\tp{.74}\def\ra{2.85}\def\rb{2.05}\def\rc{1.25}\def\hy{3.6}
+\pgfmathsetmacro{\cx}{\tx+7*\tp}
+\fill[yellow!16,rounded corners=4pt] (\cx-.38,\rb-.44) rectangle (\cx+.38,\hy+.32);
+\node[note,anchor=east] at (\tx-.5,\hy) {neighbor sum $c$};
+\node[anchor=east,align=right] at (\tx-.5,\ra) {Rule 19280\\[-3pt]{\scriptsize\color{ink!60}before the switch}};
+\node[anchor=east,align=right] at (\tx-.5,\rb) {Rule 19286\\[-3pt]{\scriptsize\color{ink!60}after the switch}};
+\node[anchor=east,align=right] at (\tx-.5,\rc) {Rule 0\\[-3pt]{\scriptsize\color{ink!60}new buyers}};
+\foreach \c in {0,...,8} {
+  \pgfmathsetmacro{\px}{\tx+\tp*(8-\c)}
+  \node at (\px,\hy) {\c};
+  \foreach \ruleindex/\yy in {19280/\ra,19286/\rb,0/\rc} {
+    % TeX integer division avoids PGF's dimension limit for rule IDs >16383.
     \pgfmathtruncatemacro{\power}{pow(3,\c)}
     \ruledivisor=\power\relax
     \ruledigit=\ruleindex\relax
@@ -75,31 +72,25 @@
     \multiply\rulequotient by 3
     \advance\ruledigit by -\rulequotient
     \edef\state{\the\ruledigit}
-    \ifcase\state\def\style{buy}\def\word{Buy}\or
-      \def\style{hold}\def\word{Hold}\or
-      \def\style{sell}\def\word{Sell}\fi
-    \node[\style,output] at (\xc,\yy) {\word\\[-2pt]{\scriptsize $\state$}};
+    \ifcase\state
+      \node[buy,cell] at (\px,\yy) {\state};
+    \or
+      \node[hold,cell] at (\px,\yy) {\state};
+    \or
+      \node[sell,cell] at (\px,\yy) {\state};
+    \fi
   }
 }
 
-% Rule names and roles share the same baseline and left edge.
-\foreach \yy/\ruleindex/\role in {\ya/19280/baseline,\yb/19286/switch,\yc/0/new buyers} {
-  \node[anchor=east,align=right] at (-.84,\yy)
-    {\textbf{R\ruleindex}\\[-1pt]{\footnotesize\color{gdgray}\role}};
-}
+% ---- the neighbor sum feeds the c = 1 column ----
+\node[box,draw=holdgray!80,fill=holdgray!8,inner xsep=6pt,inner ysep=3.5pt,anchor=east] (sum) at (\tx+8*\tp+.28,4.45) {$c_{i}=0+0+0+1=1$};
+\draw[arr] (N.north) |- (sum.west);
+\draw[arr] (sum.south -| \cx,0) -- (\cx,\hy+.34);
 
-% The highlighted entry explains the switch; the third row explains R0 directly.
-\node[align=center,font=\sffamily\scriptsize,text=sellorange]
-  at (\hx,2.405) {Buy $\to$ Sell};
-\draw[draw=buyblue,line width=.8pt,decorate,decoration={brace,mirror,amplitude=4pt}]
-  (-.46,.27) -- (8*\pitch+.46,.27);
-\node[font=\sffamily\small,text=buyblue] at (4*\pitch,-.15)
-  {R0 buys at every neighbor sum.};
-
-% A compact key keeps the numeric intention codes explicit.
-\foreach \xx/\st/\label in {1.35/buy/Buy ($z=0$),4.1/hold/Hold ($z=1$),7.1/sell/Sell ($z=2$)} {
-  \node[\st,minimum width=.37cm,minimum height=.28cm] at (\xx,-.86) {};
-  \node[anchor=west,font=\sffamily\footnotesize] at (\xx+.3,-.86) {\label};
+% ---- legend ----
+\foreach \xx/\st/\label in {-0.9/buy/Buy ($z=0$),1.65/hold/Hold ($z=1$),4.2/sell/Sell ($z=2$)} {
+  \node[\st,minimum width=.42cm,minimum height=.3cm] at (\tx+\xx+.21,.15) {};
+  \node[note,text=ink,anchor=west] at (\tx+\xx+.52,.15) {\label};
 }
 \end{tikzpicture}
 \end{document}

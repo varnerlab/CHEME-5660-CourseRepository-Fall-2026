@@ -1,10 +1,10 @@
 % L13a student companion deck: synthetic markets with jump hidden Markov models.
-% A review of Wolfram markets, the Two Sigma company profile, a short
+% A review of Wolfram markets, the State Street company profile, a short
 % section on Markov chains and hidden Markov models (the full version is the advanced Markov
 % notebook), the jump hidden Markov model of one asset, and the sector factor model of many
 % stocks. Restructured November 13, 2026, to mirror the restructured lecture.
 % November 15: added the Wolfram review figures, episode-shape comparison, and
-% own-residual construction; made the sampler's state branches exclusive.
+% stock residual construction; made the sampler's state branches exclusive.
 % Same day: the Markov section mirrors the lecture's theorem-style boxes: a Markov chain
 % definition, a proposition for the maximum likelihood estimate of P (its own frame),
 % and a hidden Markov model definition.
@@ -60,33 +60,41 @@
     \item \hilite{Markov chains and hidden Markov models}: states, transition
       matrices, stationary distributions, emissions.
     \item \hilite{A jump hidden Markov model of one asset}: binned states, counted
-      transitions, Student-t emissions, jump episodes.
-    \item \hilite{A synthetic market of many stocks}: shared market and sector draws
-      plus a draw of each stock's own residual.
+      transitions, Student-t emissions, and runs of large daily moves (jump episodes).
+    \item \hilite{A synthetic market of many stocks}: a stock-specific baseline
+      plus market, sector, and stock-specific residual components.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{What You Need to Know}
-  \vspace{0.3em}
-  {\large\textbf{\ink{Core concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item A Markov chain is a set of states $\Sc$ and a transition matrix $\Pb$ whose
       rows sum to one; its stationary distribution satisfies $\bar{\pi}=\bar{\pi}\Pb$.
     \item The jump hidden Markov model bins the daily growth rate into states,
       estimates $\Pb$ by counting, and draws each day from a Student-t of the day's
-      state. Jump episodes (probability $\epsilon$, mean length $\lambda$) keep
-      volatility clustering.
-    \item A synthetic stock is
-      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{\varepsilon}_{i}$:
-      shared market and sector draws make stocks move together.
+      state. Jump episodes are runs of large daily moves (probability $\epsilon$,
+      mean length $\lambda$) that keep volatility clustering.
+    \item We model a synthetic stock's growth rate as
+      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{\varepsilon}_{i}$,
+      with a stock-specific baseline $\alpha_i$. Shared market and sector components
+      capture correlations between stocks.
+      The residual draw $\tilde{\varepsilon}_i$ is centered on zero and represents the
+      movement left after subtracting the baseline, market, and sector contributions.
+
+      The residual scale $\psi_i$ targets the stock's volatility. A drifting $\beta_i$
+      lets its market sensitivity change over time.
   \end{itemize}
 
-  \vspace{0.3em}
-  {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
+\end{frame}
+
+\begin{frame}{For Understanding}
+  These details build understanding; you will not need to reproduce or memorize them.
+  \vspace{0.5em}
   \begin{itemize}\setlength{\itemsep}{0.15em}
     \item The fitting and sampling algorithms of the jump hidden Markov model.
-    \item The tuning objective for $\epsilon$ and $\lambda$, and the shape of an episode.
-    \item How the sector loadings and own-draw scale are chosen, and a drifting $\beta$.
+    \item How periods of high volatility develop and fade in simulated markets
+      compared with market data.
+    \item How the sector loadings and scale of the residual component are chosen, and a drifting $\beta$.
   \end{itemize}
 \end{frame}
 
@@ -120,8 +128,11 @@
 
 \begin{frame}{Review: Adapting to Change}
   After the switch, Sell intentions spread across the grid. By step 1500, 65\% of
-  traders intend to sell. Continuous refresh with R0 buyers then breaks up that
-  majority in the open market.
+  traders intend to sell.
+
+  After step 1500, investors are randomly replaced at each step in the open market.
+  On average, one quarter of the new arrivals follow R0. Their Buy intentions break
+  up the Sell majority.
 
   \vspace{0.7em}
   \textbf{\ink{Today:}} our goal is a trade management system that makes money when it
@@ -132,41 +143,23 @@
   paths of a changing market.
 \end{frame}
 
-% ========== Company profile: Two Sigma
-\begin{frame}{Company Profile: Two Sigma}
-  \href{https://www.twosigma.com/}{\hilite{Two Sigma}}: a quantitative investment manager
-  founded in 2001 by David Siegel and John Overdeck, based in New York. In 2021, its
-  researchers let the data define market regimes:
+% ========== Company profile: State Street
+\begin{frame}{Company Profile: State Street}
+  \href{https://www.ssga.com/us/en/about-us}{\hilite{State Street Investment Management}}:
+  the asset management business of State Street Corporation. Established in 1978,
+  it was known as State Street Global Advisors until 2025.
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Four regimes}: a Gaussian mixture model fit to 17 drivers of returns,
-      1971--2020: Steady State (47\%), Inflation (20\%), Crisis (17\%), and Walking
-      on Ice (16\%).
-    \item \hilite{Quick switches}: in 2020, Crisis in February and March, then Walking
-      on Ice, then Steady State.
-    \item \hilite{No memory}: the model sorts each period on its own, and the authors
-      say ``this model is not predictive.''
+    \item \hilite{Investment management}: index funds and active strategies. Its SPDR
+      ETF family includes \textbf{SPY}, launched in 1993 to track the S\&P 500.
+    \item \hilite{Regime modeling}: regimes have different patterns of risk and return.
+      A hidden Markov model treats the regime as an unobserved state and models
+      transitions between regimes. State Street uses these models to guide trading
+      in commodities, credit, and broader markets as regimes change.
   \end{itemize}
   \vspace{0.3em}
-  \textbf{\ink{Connection:}} the regimes play the role of our hidden states. Our
-  transition matrix adds the probability of moving from today's mood to tomorrow's.
-\end{frame}
-
-% ========== Why Synthetic Markets?
-\begin{frame}{Why Synthetic Markets?}
-  A backtest runs a method on one historical path, and a method that did well may
-  have been lucky. A \hilite{synthetic market} generates many plausible paths. For
-  stress tests, its paths need:
-  \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Fat tails}: large daily moves are far more common than a normal
-      distribution predicts.
-    \item \hilite{Volatility clustering}: large moves follow large moves, so the size
-      of the daily move stays correlated for weeks.
-    \item \hilite{Co-movement}: stocks move together, through the market and their
-      sectors.
-  \end{itemize}
-  \vspace{0.3em}
-  Geometric Brownian motion can have co-movement through correlated shocks, but
-  neither fat tails nor volatility clustering.
+  \textbf{\ink{Connection:}} we use hidden states and transition probabilities to
+  generate synthetic price histories with changing behavior.
+  \slidenote{Source:}{\href{https://www.ssga.com/us/en/institutional/insights/how-ai-is-transforming-investment-management-state-street-strategic-approach}{State Street's investment-modeling article, January 2026.}}
 \end{frame}
 
 % ========== Markov Chains and Hidden Markov Models
@@ -213,7 +206,9 @@
 
 % ========== The Jump Hidden Markov Model
 \begin{frame}{The Jump Hidden Markov Model}
-  For the daily growth rate $g_{t}=\frac{1}{\Delta t}\ln(S_{t}/S_{t-1})$ (1/yr) of one asset:
+  Geometric Brownian motion assumes normal growth rates and constant volatility.
+  We build a generator for the daily growth rate
+  $g_{t}=\frac{1}{\Delta t}\ln(S_{t}/S_{t-1})$ (1/yr) of one asset:
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item \hilite{States}: fit a Laplace distribution to the growth rates and cut it into
       $N$ bins of equal probability; state 1 holds the most negative growth rates.
@@ -221,6 +216,7 @@
     \item \hilite{Emissions}: in state $s_{k}$,
       $g_{t}\mid X_{t}=s_{k}\sim\mu_{k}+\sigma_{k}\,T_{\nu}$: $\mu_{k}$, $\sigma_{k}$ the mean and
       standard deviation of the days in that state, $T_{\nu}$ a Student-t with $\nu$ fixed.
+      Its \hilite{fat tails} make large moves more common than a normal distribution predicts.
   \end{itemize}
   \vspace{0.2em}
   In the data the states are observed bins; in simulation they are hidden, and only
@@ -252,8 +248,14 @@
 \end{frame}
 
 \begin{frame}{Why Add Jumps?}
-  The counted chain forgets quickly: after a volatile day, a few transitions usually
-  return it to the middle states, so $|g_{t}|$ is correlated for only a few days.
+  Growth rates have \hilite{near-zero autocorrelation}: past growth rates offer little
+  help in a linear forecast of the next growth rate.
+
+  \hilite{Volatility clustering} means that large moves of either sign tend to follow
+  large moves. In real markets, the absolute growth rate stays correlated for weeks.
+
+  The counted chain usually returns to the middle states after a few transitions.
+  Its $|g_t|$ stays correlated for only a few days.
   \hilite{Jump episodes} keep volatile periods going:
   \begin{itemize}\setlength{\itemsep}{0.35em}
     \item With no episode under way, an episode starts with probability $\epsilon$.
@@ -309,11 +311,13 @@
 
 % ========== Many Assets
 \begin{frame}{Review: Factor Models}
-  Previously, we studied \hilite{factor models}, which explain how stocks move together
-  with a few common factors:
+  Previously, we studied \hilite{factor models}, which explain \hilite{co-movement}:
+  how stocks move together through a few common factors:
   \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{firm}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\textstyle\sum_{j}\delta_{ij}\,f_{j}(t)}_{\textstyle\text{other factors}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{residual}}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\textstyle\sum_{j}\delta_{ij}\,f_{j}(t)}_{\textstyle\text{other factors}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{residual}}
   \end{equation*}
+  Here $\alpha_i$ is the stock-specific baseline (intercept).
+
   The \hilite{single index model} keeps only the market factor. It assumes that the
   residuals of different stocks are uncorrelated, which means that only the market links
   two stocks. In the data, the residuals of stocks in the same sector, such as two banks,
@@ -325,17 +329,19 @@
   factor besides the market, the factor $f_{s}$ of its sector $s$. The daily growth rate
   of stock $i$ in sector $s$ is given by:
   \begin{equation*}
-    g_{i}(t)=\alpha_{i}+\beta_{i}\,\underbrace{g_{m}(t)}_{\textstyle\text{market}}+\delta_{i}\,\underbrace{f_{s}(t)}_{\textstyle\text{sector}}+\psi_{i}\,\underbrace{\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{own}}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{\psi_{i}\,\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{stock residual}}
   \end{equation*}
-  Here $\alpha_{i}$ and $\beta_{i}$ are the single index estimates, held fixed. The sector
-  draw $f_{s}$ models the sector's average residual, with loading $\delta_{i}$. The own draw
-  $\tilde{\varepsilon}_{i}$ models the stock's residual left after the sector term, centered
-  and sized by $\psi_{i}$ so the sector and own terms keep the residual's variance. Each draw
-  is a jump hidden Markov model, and
-  the shared draws are the only link between stocks.
+  The stock-specific baseline $\alpha_i$ and market sensitivity $\beta_i$ are the
+  single index estimates, held fixed. The sector draw $f_s$ models the sector's
+  average residual, with loading $\delta_i$.
+
+  The stock-specific residual component $\psi_i\tilde{\varepsilon}_i$ is a centered,
+  scaled draw from a model of what remains after the baseline, market, and sector
+  contributions. Each draw comes from a jump hidden Markov model. Shared market and
+  sector draws link the stocks.
 \end{frame}
 
-\begin{frame}{The Stock's Own Error Term}
+\begin{frame}{The Stock-Specific Residual Component}
   In the data, subtract the market fit and then the sector contribution:
   \begin{equation*}
     \begin{aligned}
@@ -350,15 +356,15 @@
   \begin{equation*}
     \tilde{\varepsilon}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
   \end{equation*}
-  The own model describes the stock's residual after its sector term.
+  The scale $\psi_i$ sizes this centered draw to give the stock-specific residual component.
 \end{frame}
 
-\begin{frame}{Sizing the Own Draw (Fixed $\beta$)}
-  Independent sector and own draws have variances that add. Set their target using
+\begin{frame}{Sizing the Residual Component (Fixed $\beta$)}
+  Independent sector and stock residual draws have variances that add. Set their target using
   the real data:
   \begin{equation*}
     \underbrace{\delta_i^2\operatorname{Var}(f_s)}_{\text{sector}}
-    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{own}}
+    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{stock residual}}
     =\underbrace{\operatorname{Var}(\varepsilon_i)}_{\text{after the market fit}}.
   \end{equation*}
   Solving for the scale gives:
@@ -368,17 +374,17 @@
            {\operatorname{Var}(u_i)}},\qquad\psi_i\geq0.
   \end{equation*}
   The sector factor includes stock $i$ in its average. The scale compensates for
-  covariance lost when we draw sector and own paths independently.
+  covariance lost when we draw sector and stock residual paths independently.
   \slidenote{A target:}{the fitted models reproduce the data variances only approximately.}
 \end{frame}
 
 \begin{frame}{Algorithm: Sample the Synthetic Universe}
-  Given the fitted component models, coefficients, own scales, and starting prices:
+  Given the fitted component models, coefficients, residual scales, and starting prices:
   \begin{enumerate}\setlength{\itemsep}{0.4em}
     \item \hilite{Shared draws}: draw one market path $g_m(t)$ and an independent path
       $f_s(t)$ for each sector.
-    \item \hilite{Own draws}: for each stock, draw its own path and subtract its
-      model's long-run mean to obtain $\tilde{\varepsilon}_i(t)$.
+    \item \hilite{Residual draws}: for each stock, draw a path from the model of its
+      remaining residual and subtract that model's long-run mean to obtain $\tilde{\varepsilon}_i(t)$.
     \item \hilite{Compose}: on each day, calculate
       \begin{equation*}
         g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{\varepsilon}_i(t),
@@ -386,19 +392,6 @@
       then compound $S_i(t)=S_i(t-1)\exp\!\left(g_i(t)\Delta t\right)$.
   \end{enumerate}
   Here $\Delta t$ is the time step in years.
-\end{frame}
-
-\begin{frame}{What the Model Keeps and Gives Up}
-  Composing stocks from shared draws on the same day has consequences:
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Keeps}: fat tails and clustered volatility in every draw; stocks in a
-      sector move together through their shared sector draw, all stocks through the
-      market draw.
-    \item \hilite{Gives up}: sector draws are independent, so stocks in different
-      sectors are linked only through the market.
-    \item \hilite{No copula}: a copula reorders each stock's draws across days and would
-      scramble the timing of the volatile periods and jump episodes in them.
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{An Option: A Drifting $\beta$}
@@ -436,8 +429,10 @@
       counting. Hidden states and their emissions produced the values we observe.
     \item \hilite{Jump episodes}: we added runs of extreme states to restore part of
       the clustering. Their volatility stays flat where a real crash spikes and fades.
-    \item \hilite{Shared draws}: we composed stocks from market, sector, and own draws.
-      The shared draws made stocks move together, and the own scale targeted residual variance.
+    \item \hilite{Shared components}: we combined each stock's baseline with market, sector,
+      and stock-specific residual components. Shared draws made stocks move together.
+      We set the residual scale to target the variance left after the market fit when
+      combined with the sector component.
   \end{itemize}
   \vspace{0.3em}
   Synthetic markets let us test a method on many paths, not one.

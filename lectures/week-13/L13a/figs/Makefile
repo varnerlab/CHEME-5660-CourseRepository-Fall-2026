@@ -7,6 +7,7 @@ PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
 
 XELATEX ?= xelatex
+PDFLATEX ?= pdflatex
 PDF2SVG ?= pdf2svg
 PYTHON ?= python3
 JULIA ?= julia
@@ -36,6 +37,10 @@ Fig-L13a-Wolfram-Markets.svg Fig-L13a-Wolfram-Markets.png: Fig-L13a-Wolfram-Mark
 
 Fig-L13a-Wolfram-Rules.png: Fig-L13a-Wolfram-Rules.pdf
 	$(PDFTOPPM) -png -scale-to 2200 -singlefile $< $(@:.png=)
+
+# Match the L12b rule-switch drawing's original font and TeX engine.
+Fig-L13a-Wolfram-Rules.pdf: Fig-L13a-Wolfram-Rules.tex
+	$(PDFLATEX) $(LATEX_FLAGS) $<
 
 %.pdf: %.tex $(STYLE)
 	$(XELATEX) $(LATEX_FLAGS) $<

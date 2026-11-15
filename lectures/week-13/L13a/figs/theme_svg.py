@@ -35,6 +35,13 @@ DARK_COLORS = {
     (245, 245, 245): "#2c2e31",  # Hold tile fill
     (249, 231, 217): "#3d2614",  # Sell tile fill
     (255, 253, 214): "#3a3718",  # Highlight on the changed rule entry
+    # Original L12b rule-switch drawing, retained for the three-row review.
+    (37, 37, 37): "#e3e6ea",     # ink: labels and digits
+    (92, 92, 92): "#c9cdd2",     # ink!75: trader tile outline
+    (102, 102, 102): "#a9aeb4",  # ink!70: Hold labels
+    (124, 124, 124): "#a9aeb4",  # ink!60: notes and arrows
+    (187, 187, 187): "#6b7075",  # holdgray!80: neighbor-sum box border
+    (248, 248, 248): "#2a2c2f",  # holdgray!8: neighbor-sum box fill
 }
 TOLERANCE = 2
 
