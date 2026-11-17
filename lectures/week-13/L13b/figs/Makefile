@@ -1,7 +1,7 @@
-# Build the L13b figures (market state, forecast band, real-data dot plot, synthetic-market dot plots) with XeLaTeX
+# Build the L13b feedback schematic and study figures with XeLaTeX
 # to PDF (deck), SVG (notebook), and PNG. The PNG is rendered from the light PDF.
 
-FIGURES := Fig-L13b-MarketState Fig-L13b-ForecastBand Fig-L13b-RealData-Selection Fig-L13b-Synthetic-Sets
+FIGURES := Fig-L13b-MarketState Fig-L13b-ForecastBand Fig-L13b-RealData-Selection Fig-L13b-Synthetic-Sets Fig-L13b-Portfolio-Feedback
 
 PDFS := $(addsuffix .pdf,$(FIGURES))
 SVGS := $(addsuffix .svg,$(FIGURES))
@@ -14,7 +14,7 @@ PYTHON ?= python3
 LATEX_FLAGS ?= -interaction=nonstopmode -halt-on-error
 
 # Every figure is redrawn when the style, a drawing file from the talk, or a data file changes.
-SOURCES := vntalkfigure.sty vnsf.tex market_state.tex mpc.tex dotplot.tex $(wildcard data/*.csv)
+SOURCES := vntalkfigure.sty vnsf.tex market_state.tex forecast_band.tex dotplot.tex $(wildcard data/*.csv)
 
 .PHONY: all pdf svg png clean distclean
 .DEFAULT_GOAL := all

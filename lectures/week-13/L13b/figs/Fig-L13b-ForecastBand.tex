@@ -1,15 +1,51 @@
-% L13b forecast-band figure (November 2026): the figure on the rebalancing slide of the INFORMS 2026 talk.
-% One stretch of the real-data run (the 13 hand-picked names, Cobb–Douglas, hedge off), October 10 to December 22,
-% 2025. The red line is the book's wealth divided by its starting wealth. Each blue fan is the forecast made at a
-% re-plan: the mean ± 1, 1.96, and 2.576 standard deviations of the forecast wealth (the 68%, 95%, and 99% bands).
-% A gold ring marks each re-plan, with its reason above the plot.
-%
-% The drawing code is the talk's own, mpc.tex, with the same sizes as on the slide. The data are
-% data/mpc_path.csv, data/mpc_cone_1.csv to data/mpc_cone_3.csv, and data/mpc_events.csv.
-\documentclass[11pt,border=3pt]{standalone}
+% L13b forecast-band figure (November 16, 2026), redrawn for the lecture from the talk's data.
+% One stretch of the real-data run (13 names picked by hand without 2025 data, Cobb–Douglas, hedge off),
+% October 10 to December 22, 2025. The red line is the book's wealth divided by its starting wealth.
+% Each blue region is the 95% forecast band (mean ± 1.96 SD) of one plan, with its edges drawn and its
+% mean dashed. A gold ring marks each re-plan, and its reason sits under the date axis.
+% Data: data/mpc_path.csv and data/mpc_cone_1.csv to data/mpc_cone_3.csv. Commands: forecast_band.tex.
+\documentclass[11pt,border=4pt]{standalone}
 \usepackage{vntalkfigure}
-\input{mpc.tex}
-
+\input{forecast_band.tex}
+\def\fbdata{data}
 \begin{document}
-\vnmpcfigure{11.5cm}{3.55cm}%
+\begin{tikzpicture}
+  \begin{axis}[fbaxis,
+    width=12cm, height=6cm,
+    xmin=0, xmax=50, ymin=0.955, ymax=1.205,
+    xtick={0,21,29,50}, xticklabels={Oct 10, Nov 10, Nov 20, Dec 22},
+    ytick={0.95,1.00,1.05,1.10,1.15,1.20},
+    xlabel={date, 2025}, xlabel style={yshift=-15pt},
+  ]
+    \fbband{\fbdata/mpc_cone_1.csv}{a}{0}{21}
+    \fbband{\fbdata/mpc_cone_2.csv}{b}{21}{29}
+    \fbband{\fbdata/mpc_cone_3.csv}{c}{29}{50}
+    % band 2's lower edge at the exit, extended a little so the exit point reads as below it
+    \draw[vnband, line width=0.9pt] (axis cs:28,1.0556) -- (axis cs:29,1.0538);
+    \draw[vnband, line width=0.9pt, dash pattern=on 1pt off 1pt] (axis cs:29,1.0538) -- (axis cs:31,1.0502);
+    % dotted gold leaders from each re-plan ring down to the axis
+    \foreach \d/\w in {21/1.101039, 29/1.048885, 50/1.148073}{
+      \edef\fbcmd{\noexpand\draw[vnfigaccent, line width=0.6pt, dash pattern=on 1pt off 1.5pt]
+        (axis cs:\d,0.955) -- (axis cs:\d,\w);}\fbcmd
+    }
+    \addplot[color=vnmpcred, line width=1.6pt, line join=round, mark=none]
+      table[col sep=comma, x=day, y=w] {\fbdata/mpc_path.csv};
+    \fbring{21}{1.101039}
+    \node[circle, draw=vnfigaccent, line width=1.1pt, fill=vnplotpanel, inner sep=0pt, minimum size=4pt] at (axis cs:29,1.048885) {};
+    \fbring{50}{1.148073}
+    % re-plan reasons, one line under each date
+    \node[anchor=north, font=\fbsmall, text=vnfigaccent, yshift=-13pt] at (axis cs:21,0.955) {21 days};
+    \node[anchor=north, font=\fbsmall, text=vnfigaccent, yshift=-13pt, align=center] at (axis cs:29,0.955)
+      {left the band};
+    \node[anchor=north, font=\fbsmall, text=vnfigaccent, yshift=-13pt] at (axis cs:50,0.955) {21 days};
+    % how far outside the band the exit was, in the empty panel under plan 2's band
+    \draw[vnfigaccent, line width=0.6pt] (axis cs:28.55,1.0462) -- (axis cs:27.6,1.022);
+    \node[anchor=north east, font=\fbsmall, text=vnfigaccent, align=right, inner sep=1pt] at (axis cs:28.3,1.022)
+      {2.1 SD below\\the mean};
+    % direct labels at the right end
+    \node[anchor=west, xshift=4pt, font=\fbsmall, text=vnslidebody] at (axis cs:50,1.1965) {95\% band};
+    \node[anchor=west, xshift=4pt, font=\fbsmall, text=vnmpcred] at (axis cs:50,1.1481) {wealth};
+    \node[anchor=west, xshift=4pt, font=\fbsmall, text=vnslidelink] at (axis cs:50,1.0875) {forecast mean};
+  \end{axis}
+\end{tikzpicture}
 \end{document}

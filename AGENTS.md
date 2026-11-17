@@ -63,6 +63,58 @@ text in lecture or example notebooks:
   and the cash-revisit trigger of the notes. The notation table for L13b was rewritten
   to the lecture's symbols and rebuilt with the pinned Pandoc.
 
+- November 16, 2026: he found the eCornell autotrading material stronger as a teaching
+  narrative and approved rebuilding L13b around constructing one adaptive trading
+  system. The notebook now follows an account through updated estimates, stock
+  scores, constrained targets, forecast-triggered rebalancing, orders, and matched
+  tests. The INFORMS study supplies the application and evidence. The compact
+  theorem-style allocation section and the LaTeX utilities table inside its problem
+  definition are retained. The controller pseudocode follows L12a/L12b: numbered
+  prose, with occasional nesting for meaningful branches. The deck still follows
+  the original talk and has not been synchronized to this notebook draft.
+- November 16, 2026, later: he found the rebuilt draft disconnected and approved a
+  restructure. Allocation now comes before the input updates, and the algorithm
+  follows the triggers. He then had the two-stock toy book removed everywhere,
+  including its score table, because its equal 6% drops and uncorrelated forecast
+  did not match its betas. Do not restore it. Each
+  MPC and testing H3 has its own cell, and most recap-and-preview paragraphs are cut.
+  He cut the updated-vs-frozen-input and fixed-schedule-vs-triggered comparisons
+  because neither example runs them. Do not restore them. The study is introduced
+  in the first section, and the testing H2 is now "Testing the Controller".
+- November 16, 2026, evening: after a student-perspective review he approved these fixes.
+  The testing section now reports the study's findings, with numbers checked against
+  `figs/data/`. The repeated "update every close, trade on a trigger" statements were cut
+  to two. The symbols are consistent, with `n_i^prev` defined in the problem box. The score
+  gets a plain "How does the score work?" reading. The utilities table now sits after the
+  problem box, which reverses the earlier keep-inside decision. Each limit gets one plain
+  sentence. He removed the talk's forecast-band figure because he "really hates" it.
+  Of three redraws (real episode, schematic, schematic with braces), he chose the real
+  episode (A). It now has one 95% band per plan, with edges and a dashed mean, and the
+  reasons sit under the dates. It sits after the trigger list. Its source is
+  `figs/forecast_band.tex`, and the variants are in
+  `build/notebook-previews/L13b-forecast-band-2026-11-16/`. The L13b notation rows were reworded to match and
+  rebuilt with Pandoc 3.1.11.1.
+- November 16, 2026, night: he asked for a JumpHMM review and an AQR company profile, in that
+  order after Examples, as in L13a. The review recaps the states, the counted transitions,
+  the Student-t draws, the jump episodes, and the shared market and sector draws. It shows
+  `figs/Fig-L13b-JumpHMM-Schematic`, a copy of L13a's figure, because links into another
+  meeting's folder break in the release bundles. Its "Today" line picks up L13a's goal
+  sentence. The profile ties AQR to the lecture through Betting Against Beta (2014) and
+  Trading Costs (2018). Every link was checked on 2026-11-16, and the two videos were
+  checked with oEmbed as AQR's own channel. AUM is left out because AQR's site gives no
+  firm-wide figure.
+- November 16, 2026, night (later): he called "Testing the Controller" weak. It was rewritten
+  around the goal question (make money when it can, preserve cash when it cannot). It has two
+  H3s: "The test markets" (real path, generator, three sets) and "What the tests show". That
+  H3 has one table of median R ranges over the seven weighting rules, hedge off, for four
+  baskets plus SPY and equal weight in four market sets (from `figs/data/`). Five bold
+  questions read the table. The "luck" reading (real SPY at percentile 70 of typical
+  synthetic SPY) and the below-one average betas come from the paper's results section, and
+  "62 to 71%" is now verified (62.3 to 71.2%). The 130/30 definition was cut. The talk's two
+  dot plots stay out of the lecture because their rows name selection rules the lecture
+  never introduces. Before/after:
+  `build/notebook-previews/L13b-testing-2026-11-16/testing-before-after.png`.
+
 ## L13a: JumpHMM fit schematic and two algorithms — November 12, 2026
 
 - His request: "We need the JumpHMM p-code, and we need to show a JumpHMM schematic",

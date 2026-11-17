@@ -229,6 +229,13 @@ gets its own line, `For each day $t = 1,2,\dots,T$ __do__:`, followed by sub-ste
 `- a.` and `- b.`. Do not hide a loop inside a step's text. Write `If …, __then__ …`
 with a comma, and use `Otherwise, …` for the other branch.
 
+On November 16, 2026, he clarified the balance using the L12a and L12b lecture
+algorithms as references. Keep the main steps as connected, numbered paragraphs.
+He allows "a few nested things" where they clarify branches. Do not expand every
+action into lettered sub-steps or treat this preference as a ban on all nesting.
+The L13b controller uses one nested group for the drawdown, horizon, and band-exit
+choices; the other steps remain numbered prose.
+
 ## Voice-calibration experiment — protocol for both courses
 
 Started September 25, 2026, for CHEME 5800 and CHEME 5660, for both Codex and

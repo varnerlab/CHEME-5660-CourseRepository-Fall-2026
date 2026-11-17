@@ -36,10 +36,10 @@ DARK_COLORS = {
     (237, 241, 245): "#2a333d",  # vndotgrid (screen): grid of the dot plots; the navy slide uses #14283c
 }
 # Light fill opacity -> dark fill opacity, by figure. The talk's navy theme sets the
-# three forecast bands more opaque than the white theme does, so that they stand
-# apart on the dark panel. Other figures keep their opacities.
+# forecast band more opaque than the white theme does, so that it stands apart on
+# the dark panel. Other figures keep their opacities.
 DARK_OPACITY = {
-    "Fig-L13b-ForecastBand": {"0.12": "0.20", "0.16": "0.26", "0.26": "0.38"},
+    "Fig-L13b-ForecastBand": {"0.26": "0.38"},
 }
 TOLERANCE = 2
 

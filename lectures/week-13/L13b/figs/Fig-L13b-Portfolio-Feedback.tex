@@ -1,0 +1,36 @@
+% Portfolio feedback schematic for the lecture, independent of the study results.
+% Build: make Fig-L13b-Portfolio-Feedback.{pdf,svg,png}
+\documentclass[11pt,border=5pt]{standalone}
+\usepackage{vntalkfigure}
+\begin{document}
+\begin{tikzpicture}[
+  panel/.style={draw=vnslideink,line width=.7pt,minimum width=3.65cm,
+                minimum height=1.55cm,align=center,text=vnslidebody},
+  flow/.style={-{Stealth[length=2mm]},draw=vnslideink,line width=.8pt},
+  feedback/.style={-{Stealth[length=2mm]},draw=vnslidelink,line width=.9pt}
+]
+  \node[panel] (measure) at (0,3)
+    {\vnkey{Measure}\\[4pt]\small Prices, shares, cash\\\small Compute wealth};
+  \node[panel] (update) at (5,3)
+    {\vnkey{Update inputs}\\[4pt]\small Refresh model estimates\\\small Compute stock scores};
+  \node[panel] (check) at (10,3)
+    {\vnkey{Check the plan}\\[4pt]\small Horizon, forecast band\\\small Drawdown from the peak};
+  \node[panel] (allocate) at (10,0)
+    {\vnkey{Allocate}\\[4pt]\small Solve for target shares\\\small Apply trading limits};
+  \node[panel] (forecast) at (5,0)
+    {\vnkey{Forecast}\\[4pt]\small Hold target shares fixed\\\small Predict a wealth band};
+  \node[panel] (orders) at (0,0)
+    {\vnkey{Orders}\\[4pt]\small Queue changes in shares\\\small Fill at the next open};
+  \draw[flow] (measure.east) -- (update.west);
+  \draw[flow] (update.east) -- (check.west);
+  \draw[flow,draw=vnfigaccent] (check.south) --
+    node[right,text=vnfigaccent,font=\small,xshift=3pt]{Trigger} (allocate.north);
+  \draw[flow] (allocate.west) -- (forecast.east);
+  \draw[flow] (forecast.west) -- (orders.east);
+  \draw[feedback] (orders.north) --
+    node[left,text=vnslidelink,font=\small,xshift=-3pt]{Next close} (measure.south);
+  \draw[feedback] (check.north) -- ++(0,1.05) -| (measure.north);
+  \node[text=vnslidelink,font=\small,anchor=south] at (5,4.95)
+    {No trigger: keep the shares and the active forecast};
+\end{tikzpicture}
+\end{document}
