@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How do we read a Wolfram market rule number? · CHEME 5660</title>
+  <meta name="description" content="A rule number is a short name for a table with nine entries: the next intention for each possible sum of the four neighbors&#x27; intentions. Written in base 3, each digit of the rule number is one entry. The trader does no other math. It adds up its neighbors&#x27; codes and looks up the entry for that sum.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>How do we read a Wolfram market rule number?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>A rule number is a short name for a table with nine entries: the next intention for each possible sum of the four neighbors’ intentions. Written in base 3, each digit of the rule number is one entry. The trader does no other math. It adds up its neighbors’ codes and looks up the entry for that sum.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What does a trader look up?</strong> Each interior trader codes its four neighbors’ intentions as Buy <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">=0</annotation></semantics></math>, Hold <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">=1</annotation></semantics></math>, and Sell <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">=2</annotation></semantics></math>, and adds them up. The neighbor sum <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_{i}(t)</annotation></semantics></math> runs from 0 (four Buy neighbors) to 8 (four Sell neighbors). The trader’s rule is a table with one entry <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>c</mi></msub><annotation encoding="application/x-tex">a_{c}</annotation></semantics></math> for each sum, which gives its next intention:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mi>a</mi><mrow><msub><mi>c</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>R</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">
+z_{i}(t)=a^{(R_{i})}_{c_{i}(t)}
+</annotation></semantics></math></div>
+<p><strong>How do nine entries become one number?</strong> Write them as the digits of a base-3 number, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>8</mn></msub><annotation encoding="application/x-tex">a_{8}</annotation></semantics></math> on the left and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>0</mn></msub><annotation encoding="application/x-tex">a_{0}</annotation></semantics></math> on the right:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>a</mi><mn>8</mn></msub><msub><mi>a</mi><mn>7</mn></msub><mi>⋯</mi><msub><mi>a</mi><mn>1</mn></msub><msub><mi>a</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>0</mn></mrow><mn>8</mn></munderover><msub><mi>a</mi><mi>c</mi></msub><mspace width="0.167em"></mspace><msup><mn>3</mn><mi>c</mi></msup></mrow><annotation encoding="application/x-tex">
+R=\left(a_{8}a_{7}\cdots a_{1}a_{0}\right)_{3}=\sum_{c=0}^{8}a_{c}\,3^{c}
+</annotation></semantics></math></div>
+<p>For example, Rule 19280 is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>222110002</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msub><annotation encoding="application/x-tex">(222110002)_{3}</annotation></semantics></math>:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table style="width:100%;">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Neighbor sum <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math></th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">0</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Entry <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>c</mi></msub><annotation encoding="application/x-tex">a_{c}</annotation></semantics></math></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Next intention</td>
+<td style="text-align: center;">Sell</td>
+<td style="text-align: center;">Sell</td>
+<td style="text-align: center;">Sell</td>
+<td style="text-align: center;">Hold</td>
+<td style="text-align: center;">Hold</td>
+<td style="text-align: center;">Buy</td>
+<td style="text-align: center;">Buy</td>
+<td style="text-align: center;">Buy</td>
+<td style="text-align: center;">Sell</td>
+</tr>
+</tbody>
+</table></div>
+<p>To check:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>R</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>2</mn><mo>⋅</mo><msup><mn>3</mn><mn>8</mn></msup><mo>+</mo><mn>2</mn><mo>⋅</mo><msup><mn>3</mn><mn>7</mn></msup><mo>+</mo><mn>2</mn><mo>⋅</mo><msup><mn>3</mn><mn>6</mn></msup><mo>+</mo><msup><mn>3</mn><mn>5</mn></msup><mo>+</mo><msup><mn>3</mn><mn>4</mn></msup><mo>+</mo><mn>2</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>13</mn><mo>,</mo><mn>122</mn><mo>+</mo><mn>4</mn><mo>,</mo><mn>374</mn><mo>+</mo><mn>1</mn><mo>,</mo><mn>458</mn><mo>+</mo><mn>243</mn><mo>+</mo><mn>81</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>19</mn><mo>,</mo><mn>280</mn></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+R&amp;=2\cdot 3^{8}+2\cdot 3^{7}+2\cdot 3^{6}+3^{5}+3^{4}+2\\
+&amp;=13{,}122+4{,}374+1{,}458+243+81+2=19{,}280
+\end{aligned}
+</annotation></semantics></math></div>
+<p><strong>How do we get the digits back from the number?</strong> Divide by 3 and keep the remainder, then repeat with the quotient. The remainders are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>0</mn></msub><mo>,</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">a_{0},a_{1},\dots</annotation></semantics></math> in order. For Rule 19280, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>,</mo><mn>280</mn><mo>=</mo><mn>3</mn><mo>⋅</mo><mn>6</mn><mo>,</mo><mn>426</mn><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">19{,}280=3\cdot 6{,}426+2</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>0</mn></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">a_{0}=2</annotation></semantics></math>. Next, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>,</mo><mn>426</mn><mo>=</mo><mn>3</mn><mo>⋅</mo><mn>2</mn><mo>,</mo><mn>142</mn><mo>+</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">6{,}426=3\cdot 2{,}142+0</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a_{1}=0</annotation></semantics></math>, and so on. The nine remainders are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2,0,0,0,1,1,2,2,2</annotation></semantics></math> for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>0</mn></msub><annotation encoding="application/x-tex">a_{0}</annotation></semantics></math> through <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>8</mn></msub><annotation encoding="application/x-tex">a_{8}</annotation></semantics></math>. The <code>rule_table(...)</code> function in the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb">rules example</a> does this for us.</p>
+<p><strong>Why does Rule 19280 buy at sum 1 while Rule 19286 sells?</strong> Because their tables say so; there is nothing to calculate. Rule 19286 is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>222110022</mn><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msub><annotation encoding="application/x-tex">(222110022)_{3}</annotation></semantics></math>. It differs from Rule 19280 only in the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>3</mn><mn>1</mn></msup><annotation encoding="application/x-tex">3^{1}</annotation></semantics></math> place, where 0 (Buy) becomes 2 (Sell). Raising that digit by 2 adds <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><msup><mn>3</mn><mn>1</mn></msup><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">2\cdot 3^{1}=6</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>,</mo><mn>280</mn><mo>+</mo><mn>6</mn><mo>=</mo><mn>19</mn><mo>,</mo><mn>286</mn></mrow><annotation encoding="application/x-tex">19{,}280+6=19{,}286</annotation></semantics></math>. We choose the table, and the rule number is just its name.</p>
+<p><strong>Why only the sum?</strong> A trader sees only the sum of its neighbors’ codes. It does not see which neighbor intends what, or even how many intend each action. For example, two Sell and two Buy neighbors give a sum of 4, the same as four Hold neighbors. Using the sum keeps the table to nine entries, so there are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>3</mn><mn>9</mn></msup><mo>=</mo><mn>19</mn><mo>,</mo><mn>683</mn></mrow><annotation encoding="application/x-tex">3^{9}=19{,}683</annotation></semantics></math> possible rules.</p>
+<p><strong>How were these rules chosen?</strong> They were chosen, not fit to data. Under Rule 19280, the market settles into a mix of all three intentions. The lecture compares pairs of rules that differ in one entry, as a model of a small change in how traders behave. The rules example lists all 18 rules that differ from Rule 19280 in one entry. Each trader could have its own rule <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>i</mi></msub><annotation encoding="application/x-tex">R_{i}</annotation></semantics></math>, but the lecture uses only two rules. For what a switch does, see <a href="rule-switch-spread.html">how many traders must switch</a>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Rule 19280 gives Hold at sum 4. What is the rule number if that entry becomes Sell? What if it becomes Buy? </p><details><summary>Show the answer</summary><div> The digit in the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>3</mn><mn>4</mn></msup><mo>=</mo><mn>81</mn></mrow><annotation encoding="application/x-tex">3^{4}=81</annotation></semantics></math> place changes from 1 to 2, or from 1 to 0. The rule number becomes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>,</mo><mn>280</mn><mo>+</mo><mn>81</mn><mo>=</mo><mn>19</mn><mo>,</mo><mn>361</mn></mrow><annotation encoding="application/x-tex">19{,}280+81=19{,}361</annotation></semantics></math> or <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>,</mo><mn>280</mn><mo>−</mo><mn>81</mn><mo>=</mo><mn>19</mn><mo>,</mo><mn>199</mn></mrow><annotation encoding="application/x-tex">19{,}280-81=19{,}199</annotation></semantics></math>. Both appear in the example’s list.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb">L12b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb">L12b example: what one rule does</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12b">L12b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

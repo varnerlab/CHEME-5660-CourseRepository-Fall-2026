@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Farmer–Joshi, minority game, or Wolfram market: which model answers which question? · CHEME 5660</title>
+  <meta name="description" content="Each model asks a different question. Farmer–Joshi asks what happens when traders react to the price. The minority game asks what happens when agents learn which policy keeps them in the minority. The Wolfram market asks how a change in some traders&#x27; rules spreads to their neighbors. None is fit to data, and none matches every stylized fact of real prices.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>Farmer–Joshi, minority game, or Wolfram market: which model answers which question?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Each model asks a different question. Farmer–Joshi asks what happens when traders react to the price. The minority game asks what happens when agents learn which policy keeps them in the minority. The Wolfram market asks how a change in some traders’ rules spreads to their neighbors. None is fit to data, and none matches every stylized fact of real prices.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How do the models differ?</strong> Every agent-based model in L12a and L12b has five parts: agents, the information they see, a decision rule, an aggregate of their actions, and feedback. The three models fill in these parts differently:</p>
+<ul>
+<li><strong>Farmer–Joshi market.</strong> Value investors and trend followers watch the price, and value investors also watch an estimate of the value. A trader trades when its signal crosses a threshold. The net order moves the price through a market maker with liquidity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>, and the new price sets the next signals. Traders have no cash or share balances, and any trader can go short.</li>
+<li><strong>Minority game.</strong> Agents see the last <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math> minority actions and choose among fixed random policies, either greedily or with the Boltzmann rule. The aggregate is the attendance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>t</mi></msub><annotation encoding="application/x-tex">A_{t}</annotation></semantics></math>, and the feedback is the policy scores and the history. The price is an instructor’s extension, and the agents never see it.</li>
+<li><strong>Wolfram market.</strong> Traders on a grid read their four neighbors’ intentions and look up their next intention in a rule table. Each trader has limited cash and shares, and a dealer fills the net trade. Only the edge traders watch the price.</li>
+</ul>
+<p><strong>What did each one show?</strong> In Farmer–Joshi, enough trend followers produce fat tails and volatility clustering, although neither is built into the model. In the minority game, the volatility per agent depends on the number of histories per agent, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>, and on the temperature. In the Wolfram market, a rule switch for some traders can spread into a Sell majority, and the price falls until the sellers run out of shares.</p>
+<p><strong>Which would we use to model a sudden wave of selling?</strong> Either of two, depending on what drives the selling:</p>
+<ul>
+<li><strong>Farmer–Joshi</strong>, if the price itself drives the selling. A drop crosses trend followers’ thresholds, their selling causes the next drop, and value investors push back. See <a href="fj-drop.html">what decides whether a drop fades or turns into a crash</a>.</li>
+<li><strong>The Wolfram market</strong>, if the selling spreads because traders change how they react to their neighbors. See <a href="rule-switch-spread.html">how many traders must switch</a>.</li>
+</ul>
+<p>The minority game is a weaker choice. Its crowded game swings hard in both directions. But with unbiased policies, the average growth rate is close to zero, and the agents never see the price, so a fall cannot feed on itself.</p>
+<p><strong>Can we combine models?</strong> Yes, and the course models already share parts. The minority game’s price uses the Farmer–Joshi market maker. For small trades, the Wolfram dealer’s growth rate has the Farmer–Joshi form with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda_{t}=Q_{t-1}/2</annotation></semantics></math>. The Wolfram market’s edge traders add a price signal to a grid of neighbors. The Lux–Marchesi model, mentioned in L12b, lets agents switch between value and trend strategies depending on which has paid off.</p>
+<p><strong>How close are they to real markets?</strong> We compared Farmer–Joshi and the Wolfram market with the daily growth rates of SPY, and measured the same statistics for the minority game:</p>
+<ul>
+<li>Farmer–Joshi had fat tails, but its volatility clustering faded within about five steps. The clustering in SPY lasted for weeks.</li>
+<li>The crowded minority game had mild fat tails (excess kurtosis about 1) and almost no volatility clustering.</li>
+<li>The Wolfram market had tails close to Normal and little clustering. It was built to study rule switches, not price statistics (<a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb">stylized facts example</a>).</li>
+</ul>
+<p>None of the models is fit to market data, and none matched every stylized fact at once. We use them to see which trading rules produce which patterns, not to forecast prices. They also leave out news that reaches many traders at once, which plays a part in real crashes.</p>
+<div class="answer-check"><p><strong>Try it.</strong> In which model can traders run out of shares to sell? In which model do the agents never see the price? </p><details><summary>Show the answer</summary><div> Only Wolfram-market traders can run out, because each has limited cash and shares. Farmer–Joshi traders have no cash or share balances. Minority-game agents never see the price; they see only the history of minority actions.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb">L12a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb">L12b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb">L12b example: stylized facts of a Wolfram market</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12a">L12a symbols and units</a></li><li><a href="../notation.html#L12b">L12b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

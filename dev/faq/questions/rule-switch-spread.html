@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why can a one-entry rule switch produce a Sell majority, and how many traders must switch? · CHEME 5660</title>
+  <meta name="description" content="Under Rule 19280, a trader sells only at sum 0 or at sums 6 to 8, and a sum of 6 needs at least two Sell neighbors. Switched traders also sell at sum 1, in the middle of buyers. If only a few traders switch, these new sellers rarely share a neighbor, and the selling stays local. In our runs of the lecture&#x27;s example, a Sell majority needed 15% to 25% of the interior traders to switch.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>Why can a one-entry rule switch produce a Sell majority, and how many traders must switch?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>Under Rule 19280, a trader sells only at sum 0 or at sums 6 to 8, and a sum of 6 needs at least two Sell neighbors. Switched traders also sell at sum 1, in the middle of buyers. If only a few traders switch, these new sellers rarely share a neighbor, and the selling stays local. In our runs of the lecture’s example, a Sell majority needed 15% to 25% of the interior traders to switch.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>When does a trader sell?</strong> Rules 19280 and 19286 both give Sell for neighbor sums 6 to 8. A Sell neighbor adds 2 to the sum, so a sum of 6 needs at least two Sell neighbors:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Neighbors</th>
+<th style="text-align: center;">Sum</th>
+<th style="text-align: left;">Next intention</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Sell, Buy, Buy, Buy</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Buy</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sell, Hold, Hold, Hold</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Hold</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sell, Sell, Buy, Buy</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">Hold</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sell, Sell, Hold, Hold</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">Sell</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sell, Sell, Sell, Buy</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">Sell</td>
+</tr>
+</tbody>
+</table></div>
+<p>With only one Sell neighbor, the largest possible sum is 5, so under Rule 19280 one Sell neighbor never makes a trader sell. Both rules also give Sell at sum 0, when all four neighbors intend to buy.</p>
+<p><strong>Why can the switch spread?</strong> The lecture shows that it spreads, and the rule table suggests why. Under Rule 19286, a trader with three Buy neighbors and one Hold neighbor (sum 1) sells instead of buying. So the switched traders start selling in the middle of buyers. Each new seller adds 2 to its neighbors’ sums, compared with a buyer.</p>
+<p>If the switched traders are few and far apart, their neighbors rarely get a second Sell neighbor, and the selling dies out. If enough traders switch, some traders end up next to two sellers, with their other neighbors holding or selling. Their sum reaches 6, so they sell too, even though their own rule did not change. Their selling then raises the sums of the next traders. This is like models of how behavior spreads in a social network, where a person acts once enough of their neighbors have acted.</p>
+<p><strong>How many traders must switch?</strong> The lecture does not say, so we ran the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb">rule-switch example</a> with its settings: a deep dealer, active edge traders, 1,000 steps before the switch, and 3,000 after. We used its <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mo>×</mo><mn>32</mn></mrow><annotation encoding="application/x-tex">32\times 32</annotation></semantics></math> grid and 20 starting markets for each fraction <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math> of interior traders who switch. A market has a Sell majority if at least half of its interior traders intend to sell at some step after the switch. The last column is the median over the 20 markets:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Fraction <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math></th>
+<th style="text-align: center;">Sell majority</th>
+<th style="text-align: center;">Final price, % of control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0.10</td>
+<td style="text-align: center;">0 of 20</td>
+<td style="text-align: center;">98.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.15</td>
+<td style="text-align: center;">0 of 20</td>
+<td style="text-align: center;">97.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.20</td>
+<td style="text-align: center;">7 of 20</td>
+<td style="text-align: center;">95.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.25</td>
+<td style="text-align: center;">20 of 20</td>
+<td style="text-align: center;">75.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.30</td>
+<td style="text-align: center;">20 of 20</td>
+<td style="text-align: center;">74.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.50</td>
+<td style="text-align: center;">20 of 20</td>
+<td style="text-align: center;">73.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>No control market reached a Sell majority. The change is sharp: at 15% or fewer, no market tipped, and at 25% or more, every market did.</p>
+<p>The result held when we changed the setup. On the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64\times 64</annotation></semantics></math> grid, none of 10 markets tipped at 15%, and all 10 tipped at 20%. With held edge traders, which ignore the price, 2 of 20 tipped at 20%, and 19 of 20 at 25%. So the selling can spread through neighbors alone.</p>
+<p>In our runs, the rule pair mattered more than the grid size or the edge traders. Another pair listed in the example, Rule 19289 to Rule 19298, differs at sum 2, where Hold becomes Sell. With that pair, 17 of 20 markets tipped at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0.05</mn></mrow><annotation encoding="application/x-tex">f=0.05</annotation></semantics></math>, and all 20 at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0.10</mn></mrow><annotation encoding="application/x-tex">f=0.10</annotation></semantics></math>. The tipping point depends on the rules, the starting grid, and the edge traders, so we find it by running the experiment.</p>
+<p><strong>Why does the price stop at about 75% of the control?</strong> The price falls only while the sellers still have shares. Each trader starts with 10 shares. Once the sellers have sold them, their Sell orders fail, and the price levels off. So every market that tipped ends at about the same fraction of its control’s price. In the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb">open-market example</a>, new players bring fresh cash and shares, and the price keeps moving.</p>
+<p><strong>What would a rule switch mean in a real market?</strong> It stands for a change in how some traders react to the same situation. Under Rule 19286, a trader with three Buy neighbors and one Hold neighbor now sells instead of buying. L12b treats the switch as an analogy for a crash, not an explanation. Real sell-offs also involve shared shocks, such as news that reaches every trader at once.</p>
+<div class="answer-check"><p><strong>Try it.</strong> A trader follows Rule 19280, and its neighbors intend Sell, Sell, Hold, and Buy. What is its next intention? What if the Buy neighbor changes to Hold? </p><details><summary>Show the answer</summary><div> The sum is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mn>0</mn><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">2+2+1+0=5</annotation></semantics></math>, so it holds. After the change, the sum is 6, so it sells.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb">L12b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb">L12b example: switch one entry of a rule</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb">L12b example: closed and open markets</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12b">L12b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
