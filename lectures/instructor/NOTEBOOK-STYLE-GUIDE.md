@@ -226,7 +226,7 @@ On November 13, 2026, the instructor approved this format for the five L13a
 algorithms, after saying the earlier versions were "not formatted the way I like."
 Each step opens with a bold run-in label (`1. __Laplace:__ …`). A loop inside a step
 gets its own line, `For each day $t = 1,2,\dots,T$ __do__:`, followed by sub-steps
-`- a.` and `- b.`. Do not hide a loop inside a step's text. Write `If …, __then__ …`
+`- a.` and `- b.` (superseded November 17; see below). Write `If …, __then__ …`
 with a comma, and use `Otherwise, …` for the other branch.
 
 On November 16, 2026, he clarified the balance using the L12a and L12b lecture
@@ -235,6 +235,17 @@ He allows "a few nested things" where they clarify branches. Do not expand every
 action into lettered sub-steps or treat this preference as a ban on all nesting.
 The L13b controller uses one nested group for the drawdown, horizon, and band-exit
 choices; the other steps remain numbered prose.
+
+On November 17, 2026, the instructor said the L13a fitting algorithm had "too many
+bullet points" and did not match earlier lectures. Write a short loop inside its step,
+as L12b does: `2. __States:__ For each day $t = 1,2,\dots,T$ __do__: compute …, and set …`.
+Keep sub-bullets only for branches that need their own lines, such as the
+`If … __then__` cases in L12a step 2 and the L13a sampling algorithm.
+
+Later that day, the instructor could not see the loop over episode days in the L13a
+sampling algorithm, because a countdown counter in a day-by-day loop had hidden it.
+Give a loop with a longer body its own `While … __do__:` step with `- a.` and `- b.`
+sub-steps. Mirror the loop structure of the package code the algorithm describes.
 
 ## Voice-calibration experiment — protocol for both courses
 

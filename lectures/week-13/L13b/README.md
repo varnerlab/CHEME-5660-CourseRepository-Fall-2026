@@ -7,6 +7,10 @@ book was removed on November 16, 2026. The talk's forecast-band figure was redra
 band per plan, with the re-plan reasons under the date axis. A JumpHMM review (with a copy of
 L13a's schematic) and an AQR Capital Management company profile were added after the examples.
 
+On November 17, 2026, the extension of the L13a jump hidden Markov model to many assets moved here from L13a.
+The Many Assets section (the sector factor model and a drifting β) follows the JumpHMM review, and the
+`CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb` example opens the Examples list.
+
 The allocation section explains the score in plain words, gives each trading limit one sentence,
 and shows the four utilities in a table after the problem box. The controller pseudocode uses numbered
 prose with one nested group for its three triggers.
@@ -30,6 +34,8 @@ study's repository; synthetic markets come from `JumpHMM.jl`.
   (`code/src/data/`, commit fa50240).
 - `data/MPC-SyntheticGenerator-2014-2024.jld2` and its `-summary.toml`: the synthetic-market generator fitted to
   the 373-name universe on 2014–2024, written by `scripts/fit_generator.jl`.
+- `data/JumpHMM-SPY-2014-2024.jld2`: the tuned SPY model from the L13a single-asset example (a copy), read by the
+  SectorFactor example; `data/JumpHMM-SectorFactor-Universe-2014-2024.jld2`: the universe that example saves.
 - `scripts/fit_generator.jl`: refits the generator (run once, with threads; see the file).
 - `figs/`: the lecture's portfolio feedback schematic and the four figures of the talk. The notebook uses
   the new schematic and the forecast-band episode; the talk's results figures remain available for the

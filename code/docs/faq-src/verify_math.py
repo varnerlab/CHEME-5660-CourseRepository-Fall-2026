@@ -403,6 +403,71 @@ for tl,ccs,cols in [(.25,[97.3,84.9,73.2,59.1,44.3,20.1],[20.0,40.5,44.2,41.8,34
     check(f'Net Delta table, {tl:.4f} years left',[[v[2] for v in vals],[v[3] for v in vals]],[ccs,cols],.05)
 check('Call Delta at 105 with 5 days left',net_delta(105,5/365)[0],.06,.005)
 
+# Agent-based markets (L12a/L12b survey, November 17, 2026).
+WEEK12=ROOT.parents[2]/'lectures/week-12'
+def notebook_outputs(path):
+    cells=json.loads(path.read_text())['cells']
+    return '\n'.join(''.join(o.get('text',''))+''.join(o.get('data',{}).get('text/plain',''))
+                     for c in cells if c['cell_type']=='code' for o in c.get('outputs',[]))
+def table_rows(text,first_column):
+    return {r[0]:r[1:] for r in ([x for x in line.split()] for line in text.splitlines())
+            if r and r[0] in first_column and len(r)>1 and all(x.replace('.','',1).replace('-','',1).isdigit() for x in r)}
+# The Boltzmann rule with two policies depends only on the ratio of the score gap to the temperature.
+p_best=lambda gap,T:1/(1+math.exp(-gap/T))
+mg_out=notebook_outputs(WEEK12/'L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb')
+check('Thermal example agent gap as written','gap between the two highest scores Δ = 4.84' in mg_out,True)
+for label,temp,T,written in [('0.1','0.48',.1,1.0),('1','4.84',1,.7311),('10','48.44',10,.5250)]:
+    row=next(line.split() for line in mg_out.splitlines() if line.split()[:2]==[label,temp])
+    check(f'Boltzmann best-policy probability at T = {label} gap',[p_best(1,T),float(row[2])],[written,written],.00005)
+check('Score change for A = +41 with P = 64',41/64,.64,.005)
+check('Boltzmann check answers',[p_best(1.5,1.5),p_best(1.5,15),p_best(3.0,1.5)],[.731,.525,.881],.0005)
+check('Crowded game alpha',2**6/641,.0998,.00005)
+mg_vol=lambda v:100*math.sqrt(641*v/(1000**2/252)+.03**2)
+check('Price volatility from volatility per agent (greedy, random, T=100, coin flips)',[mg_vol(v) for v in (2.72,1.08,.46,1)],[66.4,41.9,27.4,40.3],.05)
+check('Coin-flip volatility matches the thermal example',' 40.3' in mg_out,True)
+check('L12a slides present for the temperature values',(WEEK12/'L12a/slides/CHEME-5660-L12a-Slides-Fall-2026.pdf').exists(),True)
+# Farmer-Joshi: the mix sweep as printed by the example, and the check's price change.
+fj_out=notebook_outputs(WEEK12/'L12a/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb')
+mix={k:[float(x) for x in v] for k,v in table_rows(fj_out,{'0','300','600','900','1200','1500'}).items()}
+check('Farmer-Joshi mix sweep: excess kurtosis and lag-1 |g| autocorrelation',
+      [[mix[n][1],mix[n][2]] for n in ('0','600','900','1200','1500')],
+      [[.076,.014],[.181,.025],[31.3,.253],[46.5,.675],[41.3,.700]],.05)
+check('Farmer-Joshi mix sweep, small values to three decimals',[mix['0'][1],mix['0'][2],mix['600'][1],mix['600'][2],mix['900'][2],mix['1200'][2],mix['1500'][2]],[.076,.014,.181,.025,.253,.675,.700],.0005)
+check('Farmer-Joshi check: net order and price falls',[(8-20)*.005,100*(1-math.exp(-.06)),100*(1-math.exp(-.03))],[-.06,5.8,3.0],.05)
+# Wolfram rule numbers, the neighbor-sum table, and the two-Sell-neighbor threshold.
+def rule_digits(R): return [(R//3**c)%3 for c in range(9)]
+check('Rule 19280 digits a8..a0',rule_digits(19280)[::-1],[2,2,2,1,1,0,0,0,2])
+check('Rule 19286 digits a8..a0',rule_digits(19286)[::-1],[2,2,2,1,1,0,0,2,2])
+check('Rule 19280 from its digits',[2*3**8+2*3**7+2*3**6+3**5+3**4+2,13122+4374+1458+243+81+2],[19280,19280])
+check('Remainders of 19280 divided by 3',[divmod(19280,3),divmod(6426,3)],[(6426,2),(2142,0)])
+check('One-entry neighbors of 19280',[19280+2*3,19280+3**4,19280-3**4,19289+3**2],[19286,19361,19199,19298])
+check('19289 and 19298 differ only at sum 2, Hold then Sell',[c for c in range(9) if rule_digits(19289)[c]!=rule_digits(19298)[c]]+[rule_digits(19289)[2],rule_digits(19298)[2]],[2,1,2])
+check('Number of rules',3**9,19683)
+code={'Buy':0,'Hold':1,'Sell':2}
+for nb,s,nxt in [(('Sell','Buy','Buy','Buy'),2,'Buy'),(('Sell','Hold','Hold','Hold'),5,'Hold'),(('Sell','Sell','Buy','Buy'),4,'Hold'),(('Sell','Sell','Hold','Hold'),6,'Sell'),(('Sell','Sell','Sell','Buy'),6,'Sell'),(('Sell','Sell','Hold','Buy'),5,'Hold')]:
+    c_=sum(code[x] for x in nb)
+    check(f'Neighbor sum {nb}',[c_,rule_digits(19280)[c_],rule_digits(19286)[c_]],[s,code[nxt],code[nxt]])
+for R,extra in [(19280,{0}),(19286,{0,1})]:
+    ok=all(sum(n==2 for n in nb)>=2 or sum(nb) in extra for nb in product(range(3),repeat=4) if rule_digits(R)[sum(nb)]==2)
+    check(f'Rule {R}: Sell needs two Sell neighbors outside sums {sorted(extra)}',ok,True)
+check('Rules 19280 and 19286 differ only at sum 1',[c for c in range(9) if rule_digits(19280)[c]!=rule_digits(19286)[c]],[1])
+# The constant-product dealer: quote, execution price, geometric mean, and depth.
+def dealer(W,Q,x):
+    Qt=Q-x;Wt=W*Q/Qt;return Qt,Wt,Wt/Qt,W/Qt
+Qt,Wt,St,F=dealer(10000,100,-10)
+check('Dealer net sale: shares, cash, quote, execution price',[Qt,Wt,St,F],[110,9090.91,82.64,90.91],.005)
+check('Dealer net sale: percentage drop of the quote',100*(1-St/100),17.4,.05)
+check('Dealer net sale: cash paid and geometric mean',[10000-Wt,math.sqrt(100*St),(Wt-10000)/-10],[909.09,90.91,90.91],.005)
+check('Execution price is the geometric mean of the quotes',F,math.sqrt(100*St),1e-12)
+_,_,St2,F2=dealer(100000,1000,-10)
+check('Deep dealer quote and execution price',[St2,F2],[98.03,99.01],.005)
+check('Log price change and x/lambda, shallow and deep',[math.log(St/100),-10/50,math.log(St2/100),-10/500],[-.191,-.200,-.0199,-.0200],.0005)
+check('Quote update formula',[100*(100/110)**2,100*(1000/1010)**2],[St,St2],1e-9)
+Qt,Wt,St,F=dealer(20000,200,10)
+check('Dealer check answer',[Qt,Wt,St,F,math.sqrt(100*St)],[190,21052.63,110.80,105.26,105.26],.005)
+# Model comparison: the crowded minority game's excess kurtosis, as printed by its example.
+check('Crowded minority game excess kurtosis about 1',float(next(l.split()[5] for l in mg_out.splitlines() if 'crowded game, m = 6' in l)),1.08,.005)
+
 assert all(c['status']=='passed' for c in checks), 'Correct the reported discrepancies before publishing.'
 report={'status':'passed','checks':len(checks),'results':checks}
 (ROOT/'qa').mkdir(exist_ok=True)

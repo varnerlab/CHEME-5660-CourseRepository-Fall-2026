@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>How does the dealer in the Wolfram market set the price, and why do traders pay a different price than the quote? · CHEME 5660</title>
+  <meta name="description" content="The dealer quotes its cash divided by its shares. When traders sell more shares than they buy, the dealer takes the extra shares and pays cash, keeping its cash times its shares constant, so the quote falls. All shares in that step trade at one execution price, which lies between the quotes before and after the trade. A dealer with more shares moves its quote less for the same net trade.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>How does the dealer in the Wolfram market set the price, and why do traders pay a different price than the quote?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The dealer quotes its cash divided by its shares. When traders sell more shares than they buy, the dealer takes the extra shares and pays cash, keeping its cash times its shares constant, so the quote falls. All shares in that step trade at one execution price, which lies between the quotes before and after the trade. A dealer with more shares moves its quote less for the same net trade.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How does a net sale move the quote?</strong> The dealer holds cash <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mi>t</mi></msub><annotation encoding="application/x-tex">W_{t}</annotation></semantics></math> and shares <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>t</mi></msub><annotation encoding="application/x-tex">Q_{t}</annotation></semantics></math> and quotes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><msub><mi>W</mi><mi>t</mi></msub><mi>/</mi><msub><mi>Q</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">S_{t}=W_{t}/Q_{t}</annotation></semantics></math>. Buy and Sell orders are matched with each other at the same price, and the dealer takes the other side of what is left over, the net trade <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>t</mi></msub><annotation encoding="application/x-tex">x_{t}</annotation></semantics></math> (shares bought minus shares sold). Its shares become <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>x</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">Q_{t}=Q_{t-1}-x_{t}</annotation></semantics></math>, and it keeps <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>t</mi></msub><msub><mi>Q</mi><mi>t</mi></msub><mo>=</mo><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">W_{t}Q_{t}=W_{t-1}Q_{t-1}</annotation></semantics></math>.</p>
+<p>Take a dealer with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">Q_{t-1}=100</annotation></semantics></math> shares and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>10</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">W_{t-1}=10{,}000</annotation></semantics></math> USD, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">S_{t-1}=100</annotation></semantics></math> USD/share. Suppose traders sell 10 more shares than they buy, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>t</mi></msub><mo>=</mo><mo>−</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">x_{t}=-10</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Q</mi><mi>t</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>100</mn><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>110</mn></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">the dealer takes the 10 shares</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>W</mi><mi>t</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>10</mn><mo>,</mo><mn>000</mn><mo>⋅</mo><mfrac displaystyle="true"><mn>100</mn><mn>110</mn></mfrac><mo>=</mo><mn>9</mn><mo>,</mo><mn>090.91</mn><mspace width="0.222em"></mspace><mtext mathvariant="normal">USD</mtext></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">cash times shares stays at </mtext><mspace width="0.333em"></mspace></mrow><mn>1</mn><mo>,</mo><mn>000</mn><mo>,</mo><mn>000</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>S</mi><mi>t</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac displaystyle="true"><mrow><mn>9</mn><mo>,</mo><mn>090.91</mn></mrow><mn>110</mn></mfrac><mo>=</mo><mn>82.64</mn><mspace width="0.222em"></mspace><mtext mathvariant="normal">USD/share</mtext></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">the new quote</mtext></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+Q_{t}&amp;=100-(-10)=110 &amp;&amp;\text{the dealer takes the 10 shares}\\
+W_{t}&amp;=10{,}000\cdot\dfrac{100}{110}=9{,}090.91\ \text{USD} &amp;&amp;\text{cash times shares stays at }1{,}000{,}000\\
+S_{t}&amp;=\dfrac{9{,}090.91}{110}=82.64\ \text{USD/share} &amp;&amp;\text{the new quote}
+\end{aligned}
+</annotation></semantics></math></div>
+<p>The quote falls by 17.4%.</p>
+<p><strong>What price do the sellers get?</strong> The dealer paid <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>,</mo><mn>000</mn><mo>−</mo><mn>9</mn><mo>,</mo><mn>090.91</mn><mo>=</mo><mn>909.09</mn></mrow><annotation encoding="application/x-tex">10{,}000-9{,}090.91=909.09</annotation></semantics></math> USD for 10 shares, so each share traded at the execution price</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>t</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>W</mi><mi>t</mi></msub><mo>−</mo><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><msub><mi>x</mi><mi>t</mi></msub></mfrac><mo>=</mo><mfrac><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mi>t</mi></msub></mfrac><mo>=</mo><mfrac><mrow><mn>10</mn><mo>,</mo><mn>000</mn></mrow><mn>110</mn></mfrac><mo>=</mo><mn>90.91</mn><mspace width="0.222em"></mspace><mtext mathvariant="normal">USD/share</mtext></mrow><annotation encoding="application/x-tex">
+F_{t}=\frac{W_{t}-W_{t-1}}{x_{t}}=\frac{W_{t-1}}{Q_{t}}=\frac{10{,}000}{110}=90.91\ \text{USD/share}
+</annotation></semantics></math></div>
+<p>The quote is the price for a very small trade. As the dealer takes on shares, its quote slides down, so the 10 shares trade at one price between the starting quote, 100, and the ending quote, 82.64. That price is the geometric mean of the two quotes. Using <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><msubsup><mi>Q</mi><mi>t</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">S_{t}=W_{t-1}Q_{t-1}/Q_{t}^{2}</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mfrac><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mfrac><mo>⋅</mo><mfrac><mrow><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><msubsup><mi>Q</mi><mi>t</mi><mn>2</mn></msubsup></mfrac><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msub><mi>Q</mi><mi>t</mi></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><msubsup><mi>F</mi><mi>t</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">
+S_{t-1}S_{t}=\frac{W_{t-1}}{Q_{t-1}}\cdot\frac{W_{t-1}Q_{t-1}}{Q_{t}^{2}}=\left(\frac{W_{t-1}}{Q_{t}}\right)^{2}=F_{t}^{2}
+</annotation></semantics></math></div>
+<p>and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mn>100</mn><mo>×</mo><mn>82.64</mn></mrow></msqrt><mo>=</mo><mn>90.91</mn></mrow><annotation encoding="application/x-tex">\sqrt{100\times 82.64}=90.91</annotation></semantics></math>.</p>
+<p><strong>How does the dealer’s depth change the drop?</strong> Give the dealer ten times as many shares and as much cash: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>1</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">Q_{t-1}=1{,}000</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>100</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">W_{t-1}=100{,}000</annotation></semantics></math> USD. The quote is still 100 USD/share, and the net sale is still 10 shares. The last column uses the liquidity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda_{t}=Q_{t-1}/2</annotation></semantics></math>:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dealer’s shares</th>
+<th style="text-align: center;">New quote</th>
+<th style="text-align: center;">Execution price</th>
+<th style="text-align: center;">Change in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">\ln S</annotation></semantics></math></th>
+<th style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>t</mi></msub><mi>/</mi><msub><mi>λ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">x_{t}/\lambda_{t}</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">100</td>
+<td style="text-align: center;">82.64</td>
+<td style="text-align: center;">90.91</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.191</mn></mrow><annotation encoding="application/x-tex">-0.191</annotation></semantics></math></td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.200</mn></mrow><annotation encoding="application/x-tex">-0.200</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1,000</td>
+<td style="text-align: center;">98.03</td>
+<td style="text-align: center;">99.01</td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.0199</mn></mrow><annotation encoding="application/x-tex">-0.0199</annotation></semantics></math></td>
+<td style="text-align: center;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.0200</mn></mrow><annotation encoding="application/x-tex">-0.0200</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table></div>
+<p>Ignoring the noise, the quote follows <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>x</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">S_{t}=S_{t-1}\left(Q_{t-1}/(Q_{t-1}-x_{t})\right)^{2}</annotation></semantics></math>. The same 10 shares are a smaller part of a deeper dealer’s shares, so the quote moves less. When the net trade is small compared with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">Q_{t-1}</annotation></semantics></math>, the change in the log price is close to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>t</mi></msub><mi>/</mi><msub><mi>λ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">x_{t}/\lambda_{t}</annotation></semantics></math>, the same form as in Farmer–Joshi. The dealer starts with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>0</mn></msub><mo>=</mo><mi>h</mi><msub><mi>N</mi><mtext mathvariant="normal">tr</mtext></msub></mrow><annotation encoding="application/x-tex">Q_{0}=hN_{\text{tr}}</annotation></semantics></math> shares, so a larger depth <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math> means smaller price moves.</p>
+<p><strong>When does an intention become a trade?</strong> Each Buy or Sell intention is an order for one share, and Hold sends no order. A Sell order fills only if the trader has a share. A Buy order fills only if the trader has enough cash to pay <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>t</mi></msub><annotation encoding="application/x-tex">F_{t}</annotation></semantics></math>. A larger net purchase raises <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>t</mi></msub><annotation encoding="application/x-tex">F_{t}</annotation></semantics></math>, so fewer buyers can pay. The dealer finds the largest net trade that enough traders can still complete. Orders that do not fill do not move the price. When the sellers run out of shares, the price stops falling, even if most traders still intend to sell.</p>
+<p><strong>Does the grid set the price, or does the price change the grid?</strong> Both, through different traders. All traders’ orders, interior and edge, set the price through the dealer. The price affects the grid only through the technical traders on the edge, and only when they are active. They compare the price with their band <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>t</mi></msub><mo>±</mo><msub><mi>k</mi><mi>j</mi></msub><msub><mi>σ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\mu_{t}\pm k_{j}\sigma_{t}</annotation></semantics></math>, where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>t</mi></msub><mo>=</mo><msub><mi>μ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>α</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>−</mo><msub><mi>μ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_{t}=\mu_{t-1}+\alpha\left(S_{t}-\mu_{t-1}\right)</annotation></semantics></math> is a moving average of the dealer’s price. Their intentions then enter their neighbors’ sums. When the edge traders are held, the price has no effect on the grid.</p>
+<div class="answer-check"><p><strong>Try it.</strong> A dealer holds 200 shares and 20,000 USD, and the traders buy a net 10 shares. Find the new quote and the execution price. </p><details><summary>Show the answer</summary><div> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>t</mi></msub><mo>=</mo><mn>190</mn></mrow><annotation encoding="application/x-tex">Q_{t}=190</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>t</mi></msub><mo>=</mo><mn>20</mn><mo>,</mo><mn>000</mn><mo>⋅</mo><mn>200</mn><mi>/</mi><mn>190</mn><mo>=</mo><mn>21</mn><mo>,</mo><mn>052.63</mn></mrow><annotation encoding="application/x-tex">W_{t}=20{,}000\cdot 200/190=21{,}052.63</annotation></semantics></math> USD, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mn>110.80</mn></mrow><annotation encoding="application/x-tex">S_{t}=110.80</annotation></semantics></math> USD/share. The execution price is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>t</mi></msub><mo>=</mo><mn>20</mn><mo>,</mo><mn>000</mn><mi>/</mi><mn>190</mn><mo>=</mo><mn>105.26</mn></mrow><annotation encoding="application/x-tex">F_{t}=20{,}000/190=105.26</annotation></semantics></math> USD/share, between 100 and 110.80, and equal to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mrow><mn>100</mn><mo>×</mo><mn>110.80</mn></mrow></msqrt><annotation encoding="application/x-tex">\sqrt{100\times 110.80}</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb">L12b lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb">L12b example: switch one entry of a rule</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb">L12b example: stylized facts of a Wolfram market</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12b">L12b symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

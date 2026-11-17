@@ -1,12 +1,13 @@
 % L13a jump hidden Markov model, how the model is fit (November 12, 2026, at the instructor's
 % request: "we took a ticker, fit its growth rate series to a cumulative distribution, then
 % sliced up the distribution into states, and counted how many times we moved from state to
-% state"). Each slice is labeled with a mood, at his request ("each sub-division is a mood").
+% state"). Each bin is labeled with a mood, at his request ("each sub-division is a mood").
 % Redrawn on November 13, 2026, as variant D of four mock-ups, which he chose: one row, each
-% marker shows the state of its day, the moves are drawn on the plot, and the slices are
+% marker shows the state of its day, the moves are drawn on the plot, and the bins are
 % equal areas under the fitted Laplace density.
+% November 17, 2026: "slices" became "bins" in the label and notes, the word the lecture uses.
 % Redrawn again the same day as variant G, which he chose over D, E, and F:
-%  - a wider growth-rate range (F = 0.05 to 0.95), so the tail slices are mostly drawn and
+%  - a wider growth-rate range (F = 0.05 to 0.95), so the tail bins are mostly drawn and
 %    look like 20%, and the jump days sit farther out (E);
 %  - no count bracket across the top: an orange key in the plot and a short orange count
 %    arrow from the state bar to the table (F);
@@ -16,15 +17,15 @@
 % Left: the daily growth rates of a ticker, with the five state bands shaded behind them.
 % Each marker shows the state of its day, and the three moves 3 -> 4 are the orange segments
 % of the line. Middle: the fitted Laplace density, drawn sideways on the same growth-rate
-% axis and cut into N = 5 slices of equal area (20% each). The bar names the state and the
-% mood of each slice. Right: the table of counted moves and the estimate of P.
+% axis and cut into N = 5 bins of equal area (20% each). The bar names the state and the
+% mood of each bin. Right: the table of counted moves and the estimate of P.
 %
 % Consistency checks (by hand):
 %  - Laplace scale b = 1.8 about the median at y = 1.8 ln 10 = 4.1447. The boundaries
 %    F^{-1}(k/5) sit at the median -/+ 1.8 ln 2.5 = 1.6493 and -/+ 1.8 ln 1.25 = 0.4017:
-%    2.4953, 3.7430, 4.5463, and 5.7940. These quantiles make the five slices equal in area.
+%    2.4953, 3.7430, 4.5463, and 5.7940. These quantiles make the five bins equal in area.
 %    The plot ends at y = 0 and y = 8.2893 (the median -/+ 1.8 ln 10), where F = 0.05 and
-%    0.95, so the drawn part of each tail slice holds 15% of its 20%.
+%    0.95, so the drawn part of each tail bin holds 15% of its 20%.
 %  - Every marker lies in the band of the state written in it (checked by script).
 %  - The 15 moves in the sequence 3 4 3 2 3 4 5 1 5 1 2 3 4 3 3 2 give the counts in the
 %    table: 1->2 (1), 1->5 (1), 2->3 (2), 3->2 (2), 3->3 (1), 3->4 (3), 4->3 (2), 4->5 (1),
@@ -91,12 +92,12 @@
       plot[domain=0:4.1447, samples=60, smooth, variable=\y] ({9.2 + 2.8*exp(-abs(\y-4.1447)/1.8)}, \y);
     \draw[curve]
       plot[domain=4.1447:8.2893, samples=60, smooth, variable=\y] ({9.2 + 2.8*exp(-abs(\y-4.1447)/1.8)}, \y);
-    % equal areas: each slice holds 20% of the probability
+    % equal areas: each bin holds 20% of the probability
     \foreach \x/\y in {9.636/2.0447, 10/3.1447, 10.45/4.1447, 10/5.1447, 9.636/6.2447} {
       \node[font=\sffamily\footnotesize, inner sep=0pt] at (\x, \y) {20\%};
     }
 
-    % ================= each slice is a state and a mood =================
+    % ================= each bin is a state and a mood =================
     \begin{scope}
       \clip[rounded corners=2pt] (12.3, 0) rectangle (14.5, 8.2893);
       \fill[redfill]  (12.3, 0)      rectangle (14.5, 2.4953);
@@ -159,7 +160,7 @@
 
   % the name of the distribution, below it
   \node[anchor=north] at (10.6, -0.25) {fitted Laplace distribution};
-  \node[note, anchor=north] at (10.6, -0.7) {cut into $N=5$ slices of equal probability};
+  \node[note, anchor=north] at (10.6, -0.7) {cut into $N=5$ bins of equal probability};
 
 \end{tikzpicture}
 \end{document}

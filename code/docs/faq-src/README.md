@@ -1,6 +1,6 @@
 # CHEME 5660 course FAQ
 
-The course companion contains 37 questions across eight themes and a separate notation lookup with 367 entries through L9a. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
+The course companion contains 52 questions across ten themes and a separate notation lookup organized by lecture. The maintained content source is `content.json`: synthesized questions, short answers, Markdown explanations, lecture links, and notation tables. No individual survey responses or student identifiers are included.
 
 The FAQ is published with the course's existing Documenter/GitHub Pages site at [Course questions](https://varnerlab.org/CHEME-5660-CourseRepository-Fall-2026/dev/faq/). Its HTML templates and base stylesheet were designed with Claude. Search, build, integration, and local refinements are maintained alongside them.
 
@@ -32,6 +32,14 @@ python3 code/docs/faq-src/verify_site.py --site code/docs/build/faq
 
 These checks cover internal links and anchors, search/filter state, notation symbols, keyboard controls, no-JavaScript navigation, and page overflow at 360 pixels. Reports and screenshots are written to the ignored `qa` directory beside the scripts.
 
+One answer reports a simulation that is not in the lecture notebooks: the sweep over the fraction of switching traders in the rule-switch answer. It reruns with the L12b example code and checks every written value (about a minute, with the course Julia environment):
+
+```sh
+julia code/docs/faq-src/verify_rule_switch.jl
+```
+
 All fourteen question areas in the earlier survey FAQ are represented: drift versus mean growth; growth/return/volatility units; correlated shocks; independence; covariance scaling; forecasting versus pricing; lattice calibration; volatility's purpose; model limitations; prediction-band coverage; terminal NPV probabilities; EMA updates; portfolio weights; and daily leveraged compounding. Additional questions follow the Weeks 1–6 course reference. This is thematic coverage, not a claim that each individual response has its own page.
 
 The Options & premiums theme (October 27, 2026) answers the most frequent requests in the L9a/L9b engagement survey: why options are priced with the risk-neutral probability, how the continuation value is computed at a lattice node, why early exercise can pay for a put but not for a call, where the CRR up and down factors come from, what each term in the BSM formula means, and how implied volatility is found. Requests about selling options are left to the lectures that cover them.
+
+The Agent-based markets theme (November 17, 2026) answers the most frequent confusions in the L12a/L12b engagement survey: what the temperature does in the Boltzmann choice rule, why a middle temperature lowers the minority game's volatility, what decides whether a Farmer–Joshi price drop fades or turns into a crash, how to read a Wolfram rule number, how many traders a rule switch needs to produce a Sell majority, how the dealer sets the quote and the execution price, and which of the three models answers which question.

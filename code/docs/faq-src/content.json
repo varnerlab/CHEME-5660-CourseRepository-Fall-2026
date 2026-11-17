@@ -1,7 +1,7 @@
 {
   "course": "CHEME 5660",
   "semester": "Fall 2026",
-  "updated": "2026-11-12",
+  "updated": "2026-11-17",
   "themes": [
     {
       "id": "models",
@@ -47,6 +47,11 @@
       "id": "strategies",
       "name": "Option strategies",
       "description": "What composite contracts, covered calls, and collars can earn and lose, and how to manage them."
+    },
+    {
+      "id": "abm",
+      "name": "Agent-based markets",
+      "description": "Build a market from the rules of individual traders, and see how those rules move the price and spread selling."
     }
   ],
   "articles": [
@@ -1219,6 +1224,209 @@
         }
       ],
       "body": "**What does the number mean?** For $n$ contracts on $m=100$ shares each, L11b gives:\n\n$$\n\\begin{aligned}\n\\Delta_{\\text{net}}&=mn\\left(1-\\Delta_{c}\\right)&&\\text{(covered call)}\\\\\n\\Delta_{\\text{net}}&=mn\\left(1+\\Delta_{p}-\\Delta_{c}\\right)&&\\text{(collar)}\n\\end{aligned}\n$$\n\nIts unit is shares: for a small move of $\\Delta S$ USD/share, the position gains or loses about $\\Delta_{\\text{net}}\\cdot\\Delta S$ USD, as if it held $\\Delta_{\\text{net}}$ shares. The shares contribute $mn$, the short call $-mn\\,\\Delta_{c}$, and the long put $mn\\,\\Delta_{p}$. Because $0\\leq\\Delta_{c}\\leq1$ and $-1\\leq\\Delta_{p}\\leq0$, both options lower the net Delta: the short call gives up part of each rise, and the long put gains when the shares fall.\n\n**One collar at entry.** Take the 95/110 collar from [the collar strikes answer](collar-strikes.html), one contract on 100 shares at $S=100$ USD/share with three months left, $\\sigma=0.25\\,\\mathrm{yr}^{-1/2}$, and BSM Deltas $\\Delta_{c}=0.268$ and $\\Delta_{p}=-0.290$:\n\n$$\n\\begin{aligned}\n\\Delta_{\\text{net}}&=100\\,(1-0.268)=73.2&&\\text{(covered call)}\\\\\n\\Delta_{\\text{net}}&=100\\,(1-0.290-0.268)=44.2&&\\text{(collar)}\n\\end{aligned}\n$$\n\nIf the share price rises 2 USD/share, the 100 shares alone gain 200 USD, the covered call about 146 USD, and the collar about 88 USD.\n\n**How does it change with the share price and time?** Recomputing the BSM Deltas at other share prices gives the net Delta (shares):\n\n| Share price | 85 | 95 | 100 | 105 | 110 | 120 |\n|:--|:--|:--|:--|:--|:--|:--|\n| Covered call, 3 months left | 97.3 | 84.9 | 73.2 | 59.1 | 44.3 | 20.1 |\n| Collar, 3 months left | 20.0 | 40.5 | 44.2 | 41.8 | 34.9 | 17.9 |\n| Covered call, 5 days left | 100.0 | 100.0 | 99.9 | 94.0 | 48.7 | 0.1 |\n| Collar, 5 days left | 0.0 | 51.3 | 96.2 | 94.0 | 48.7 | 0.1 |\n\nNear expiration, between the strikes, both options are almost worthless and barely move, so the collar behaves like the 100 shares. Beyond a strike, the deep in-the-money option cancels the shares: below 95 USD/share, the put gains what the shares lose, and above 110 USD/share, the call loses what the shares gain. The value is then locked at the floor or the cap, and the net Delta is close to zero. At a strike, the net Delta swings quickly between these values; Gamma measures how fast.\n\n**Is this Delta a probability?** Not for a position. A single call's Delta is close to, and slightly above, its probability of exercise under $\\mathbb{Q}$ ([why](delta-poe-gap.html)); for a put the match is rougher. Each option's Delta is also its sensitivity to the share price. The net Delta adds shares and option Deltas, so only the sensitivity meaning carries over: 44.2 is a number of shares, not a probability.\n\n**Does a net Delta of zero mean no risk?** No. Delta is the slope of the position's value at today's share price. Gamma changes it as the share price moves, and Theta, Vega, and Rho change the value through time, volatility, and the rate (L10a). For a large move, we reprice the legs instead of relying on Delta.\n\n**Check.** With 5 days left at $S=105$ USD/share, why do the covered call and the collar have the same net Delta, 94.0? **Answer:** The put at 95 USD/share is far out of the money, so $\\Delta_{p}\\approx0$, and the collar behaves like the covered call. Its call at 110 USD/share still has a small Delta, 0.06."
+    },
+    {
+      "id": "boltzmann-temperature",
+      "theme": "abm",
+      "title": "What does the temperature do in the Boltzmann choice rule?",
+      "answer": "The temperature sets how much the gap between an agent's scores matters. If the temperature is much smaller than the gap, the agent almost always uses its best policy. If it is much larger, the agent picks almost at random. In between, the agent usually uses its best policy and sometimes uses the others.",
+      "lectures": [
+        "L12a"
+      ],
+      "keywords": "minority game thermal Boltzmann choice rule temperature T greedy random policy score gap partition function probability best policy maximum entropy estimate temperature real traders",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12a example: the thermal minority game",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12a derivation: the maximum-entropy choice rule",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**How are the policies scored?** In the minority game, agent $i$ holds $J$ fixed policies. After each round, every policy gets a new score, whether the agent used it or not:\n\n$$\nU_{ij,t+1}=U_{ij,t}-\\frac{\\pi_{ij}(\\mu_{t})A_{t}}{P}\n$$\n\nA policy that chose the side opposite to the attendance $A_{t}$ would have put the agent in the minority, so its score goes up. For example, with $P=64$ histories and $A_{t}=+41$ (41 more buyers than sellers), each policy that said sell gains $41/64=0.64$, and each policy that said buy loses $0.64$. A high score means the policy has often been on the winning side.\n\n**How does the temperature turn scores into choices?** The Boltzmann rule gives the probability that the agent uses policy $j$:\n\n$$\np_{j}=\\frac{1}{\\mathcal{Z}}\\exp\\left(\\frac{U_{j}}{T}\\right)\\qquad\\text{where}\\qquad\\mathcal{Z}=\\sum_{k=1}^{J}\\exp\\left(\\frac{U_{k}}{T}\\right)\n$$\n\nOnly score differences matter. With $J=2$ policies and a gap $\\Delta=U_{\\text{best}}-U_{\\text{other}}\\geq 0$, divide the top and bottom by $\\exp(U_{\\text{best}}/T)$:\n\n$$\np_{\\text{best}}=\\frac{1}{1+\\exp(-\\Delta/T)}\n$$\n\nIf $\\Delta/T$ is large, $\\exp(-\\Delta/T)$ is near 0, and $p_{\\text{best}}$ is near 1: the agent is greedy. If $\\Delta/T$ is near 0, $\\exp(-\\Delta/T)$ is near 1, and $p_{\\text{best}}$ is near $1/2=1/J$: the agent chooses at random.\n\n**An example.** In the [thermal minority game example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb), one agent ends the greedy game with a gap of $\\Delta=4.84$ between its two scores:\n\n| Temperature $T$ | $\\Delta/T$ | $p_{\\text{best}}$ | $p_{\\text{other}}$ |\n|:--|:--|:--|:--|\n| $0.48$ ($0.1\\Delta$) | 10 | 1.0000 | 0.0000 |\n| $4.84$ ($\\Delta$) | 1 | 0.7311 | 0.2689 |\n| $48.4$ ($10\\Delta$) | 0.1 | 0.5250 | 0.4750 |\n| $\\infty$ | 0 | 0.5000 | 0.5000 |\n\nA temperature is only low or high relative to the score gap. At the same $T$, an agent with a large gap is almost certain, and an agent with a small gap is almost undecided.\n\n**What does $T$ mean for real traders?** One reading: $T$ measures how much a trader trusts the past scores of its policies. At a low $T$, it always uses the policy with the best score. At a high $T$, it mostly ignores the scores. In between, it usually uses the best policy but sometimes tries another, for example because a short record is a noisy guide. The optional [maximum-entropy derivation](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb) makes this precise: for a given expected score, the Boltzmann rule spreads the choice as evenly as possible.\n\n**How do we choose $T$?** In the course, $T$ is a model setting that we vary. We do not estimate it from market data. The example tries values of $T$ from $0.01$ to $100{,}000$ and measures the volatility at each. The limit $T\\to\\infty$ is a baseline in which the scores have no effect. The results are in [why a middle temperature gives the lowest volatility](middle-temperature.html).\n\n**Check.** An agent has two policies with scores $2.0$ and $0.5$. What is the probability that it uses the better one at $T=1.5$ and at $T=15$? A second agent has a gap of $3.0$. What is its probability at $T=1.5$? **Answer:** The gap is $1.5$. At $T=1.5$, $p_{\\text{best}}=1/(1+e^{-1})=0.731$. At $T=15$, $p_{\\text{best}}=1/(1+e^{-0.1})=0.525$, close to random. The second agent has $\\Delta/T=2$, so $p_{\\text{best}}=1/(1+e^{-2})=0.881$."
+    },
+    {
+      "id": "middle-temperature",
+      "theme": "abm",
+      "title": "Why does a middle temperature give lower volatility than greedy or random choice?",
+      "answer": "When agents are greedy, those with similar policies tend to switch at the same time, so many end up on the same side. When agents choose at random, they ignore the scores and do about as well as coin flips. In the example, a middle temperature gave lower volatility than both. A likely reason: agents still favor their better policies, but they do not all switch at once.",
+      "lectures": [
+        "L12a"
+      ],
+      "keywords": "minority game thermal temperature volatility per agent crowded phase greedy random choice coin flips intermediate moderate temperature herding switch together alpha histories per agent best temperature",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12a example: the thermal minority game",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12a slides",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/slides/CHEME-5660-L12a-Slides-Fall-2026.pdf"
+        }
+      ],
+      "body": "**What did the example measure?** The crowded game in the [thermal minority game example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb) has $N=641$ agents, each with $J=2$ policies. The memory is $m=6$, so there are $P=64$ histories and $\\alpha=P/N\\approx 0.1$. The [L12a slides](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/slides/CHEME-5660-L12a-Slides-Fall-2026.pdf) report the volatility per agent, $\\sigma_{A}^{2}/N$, averaged over three games.\n\nTo convert each value to the annualized volatility of the growth rates, we use the lecture's formula with the example's $\\lambda=1{,}000$, $\\sigma_{S}=0.03$, and $\\Delta t=1/252$:\n\n$$\n\\text{annualized volatility}\\approx\\sqrt{\\frac{N}{\\lambda^{2}\\,\\Delta t}\\cdot\\frac{\\sigma_{A}^{2}}{N}+\\sigma_{S}^{2}}\n$$\n\n| How agents choose | $\\sigma_{A}^{2}/N$ | Annualized volatility |\n|:--|:--|:--|\n| Greedy ($T\\to 0$) | 2.72 | 66.4% |\n| Random ($T=\\infty$) | 1.08 | 41.9% |\n| $T=100$ | 0.46 | 27.4% |\n| Coin flips | 1 | 40.3% |\n\n**Why are greedy agents so volatile?** There are many more agents than histories, so many agents hold policies that act alike. Those policies get the same score updates, so the agents holding them tend to switch at the same time. A large group lands on the same side, the attendance swings far from zero, and that side loses. Then the scores shift back, and much of the group switches back together. The attendance keeps swinging from one side to the other.\n\n**Why doesn't random choice fix this?** At $T=\\infty$, each agent picks one of its two policies at random every round. No group moves together, so the crowding goes away, and the volatility per agent falls to about 1, the coin-flip value. But random choice also ignores the scores, which track which policies tend to land in the minority.\n\n**Why is a middle temperature better than both?** The example shows that it is, but not why. A likely reason: at $T=100$, each agent still favors its higher-scoring policy, so the scores still guide its choice. But when the scores change, only some of the agents with similar policies switch in a given round. The switches are spread over many rounds, so the swings are smaller. In the example, the volatility per agent fell to 0.46, below the coin-flip value.\n\nA traffic analogy: drivers choose between two roads every morning, and the less crowded road is faster. If every driver takes the road with the better record, drivers with the same record all pick the same road, and it jams. If every driver flips a coin, the roads split about evenly, give or take chance. If each driver usually takes the road with the better record but sometimes takes the other, the records still guide the drivers, but they do not all switch at once.\n\n**What is the best temperature?** We ran the sweep only at $\\alpha\\approx 0.1$ with $J=2$. The volatility stays near the greedy value up to about $T=0.3$, drops between $T=1$ and $T=10$, is lowest near $T=100$, and climbs back toward the random-choice value above about $T=1{,}000$. The course gives no formula for the best temperature. To find it for another $\\alpha$ or $J$, change the constants and rerun Task 3 of the example. For what $T$ means, see [what the temperature does](boltzmann-temperature.html).\n\n**Check.** Rank the greedy game, random choice, and $T=100$ by how far the attendance moves from zero. Which of them keeps buyers and sellers closer to balanced than coin flips? **Answer:** The greedy game moves it most (2.72), then random choice (1.08), then $T=100$ (0.46). Only $T=100$ is below the coin-flip value of 1."
+    },
+    {
+      "id": "fj-drop",
+      "theme": "abm",
+      "title": "In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?",
+      "answer": "After a drop, the two groups trade in opposite directions. Trend followers who see a large enough fall sell, which pushes the price down further. Value investors who now see the asset as underpriced buy, which pushes it back up. If the selling outweighs the buying, the fall reaches more trend followers and keeps going. In the example, the mix of the two groups decided which side won.",
+      "lectures": [
+        "L12a"
+      ],
+      "keywords": "Farmer-Joshi value investors trend followers market maker liquidity lambda price impact net order threshold entry exit chi crash snowball feedback damp fat tails volatility clustering mix calibrate infinitely patient short",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12a example: the Farmer–Joshi market",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**How does one step work?** Each trader holds a position $x_{t}^{(i)}$ of $-c_{i}$, $0$, or $+c_{i}$, and places an order only when that position changes, $\\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}$. The market maker moves the log price by the net order divided by the liquidity $\\lambda$:\n\n$$\n\\ln S_{t+1}=\\ln S_{t}+\\frac{1}{\\lambda}\\sum_{i}\\omega_{t+1}^{(i)}+\\sigma_{S}\\sqrt{\\Delta t}\\,Z_{t+1}\n$$\n\nThe new price changes every trader's signal, and the next step starts. When the price falls, traders with no position enter:\n\n| Trader | Signal after a fall | Below $-\\chi^{\\text{in}}_{i}$ | Effect on the price |\n|:--|:--|:--|:--|\n| Trend follower | $\\ln S_{t}-\\ln S_{t-\\theta_{i}}$ turns negative | sells | pushes it down |\n| Value investor | $\\ln S_{t}-(\\ln V_{t}+v^{(i)})$ falls | buys | pushes it back up |\n\nExits add orders on both sides. A trend follower with a long position sells to exit once its signal falls below $\\chi^{\\text{out}}_{i}$, which is zero or negative. A value investor with a short position buys to exit once its signal falls below $\\chi^{\\text{out}}_{i}$.\n\n**When does a drop keep going?** Each order moves the price only once, in the step it is placed. A trend follower that has sold has nothing more to sell until it exits. A value investor that has bought has nothing more to buy. Each step of the fall pushes some new trend followers past their entry thresholds, and some new value investors past theirs. If the new sellers outweigh the new buyers, their selling causes the next fall, which reaches the next trend followers. The drop stops when the buying outweighs the selling, or when no trend followers are left to sell.\n\n**How does the mix of traders matter?** The [Farmer–Joshi example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb) keeps 1,200 value investors and changes the number of trend followers. The table shows averages over three markets:\n\n| Trend followers | Excess kurtosis | Lag-1 autocorrelation of $\\lvert g\\rvert$ |\n|:--|:--|:--|\n| 0 | 0.076 | 0.014 |\n| 600 | 0.181 | 0.025 |\n| 900 | 31.3 | 0.253 |\n| 1,200 | 46.5 | 0.675 |\n| 1,500 | 41.3 | 0.700 |\n\nWith 600 or fewer trend followers, the value investors absorb the drops, and the growth rates look Normal. With 1,200 or more, large moves are common (fat tails), and large moves tend to follow large moves (volatility clustering). At 900, some markets have large moves and some do not.\n\n**What should the other settings do?** The example changes only the mix. The price rule tells us what to expect from two other settings:\n\n* **Liquidity $\\lambda$.** An order of size $c$ moves the log price by $c/\\lambda$. A larger $\\lambda$ means each order moves the price less, so each step of a fall should reach fewer new thresholds.\n* **Thresholds.** Trend followers with small entry thresholds react to small falls. In the example, the entry thresholds are drawn between 0.2 and 4, so traders join a fall at different points, not all at once.\n\n**Can value investors make a fall worse?** Not because of the price. A falling price lowers every value investor's signal, so it can only make them buy or close a short. But not all of them buy. Each value investor compares the price with its own estimate of the value, $\\ln V_{t}+v^{(i)}$, and the offsets $v^{(i)}$ differ. An investor with a low estimate may still think the asset is overpriced after a drop, so it does not buy, and if it is short, it stays short. Value investors sell during a fall only if the value itself falls.\n\n**Does a trend follower close a short if the price stays flat?** It can. Once the fall is more than $\\theta_{i}$ steps old, the trader's signal compares two prices from after the fall, so it returns to about zero. A short trend follower exits when its signal rises above $-\\chi^{\\text{out}}_{i}$. With $\\chi^{\\text{out}}_{i}$ near zero, noise alone can trigger the exit. With $\\chi^{\\text{out}}_{i}=-0.2$, the trader waits until the log price has risen by 0.2 over its lag.\n\n**What does the model leave out?** The market maker fills every net order at the price the rule sets, so a large imbalance only costs a large price move. Traders have no cash or share balances, and any trader can go short. In the L12b Wolfram market, by contrast, traders can run out of cash or shares (see [how the dealer sets the price](dealer-price.html)). We also do not fit $\\lambda$ in the course. Farmer and Joshi chose their parameters to keep the price near the value and to match the volatility of real prices. To fit $\\lambda$ to a real market, we would measure how far prices move for a given net order in trade data.\n\n**Check.** With $\\lambda=1$, 20 trend followers each sell $c=0.005$ in one step, and 8 value investors each buy $c=0.005$. Ignoring the noise, by what percentage does the price change? What if $\\lambda=2$? **Answer:** The net order is $(8-20)\\times 0.005=-0.06$, so $\\ln S$ falls by $0.06/\\lambda$. With $\\lambda=1$, the price falls by $1-e^{-0.06}=5.8\\%$. With $\\lambda=2$, it falls by $1-e^{-0.03}=3.0\\%$."
+    },
+    {
+      "id": "rule-number",
+      "theme": "abm",
+      "title": "How do we read a Wolfram market rule number?",
+      "answer": "A rule number is a short name for a table with nine entries: the next intention for each possible sum of the four neighbors' intentions. Written in base 3, each digit of the rule number is one entry. The trader does no other math. It adds up its neighbors' codes and looks up the entry for that sum.",
+      "lectures": [
+        "L12b"
+      ],
+      "keywords": "Wolfram market rule number base 3 ternary lookup table neighbor sum intention buy hold sell 19280 19286 digit entry cellular automaton totalistic how rules chosen",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: what one rule does",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**What does a trader look up?** Each interior trader codes its four neighbors' intentions as Buy $=0$, Hold $=1$, and Sell $=2$, and adds them up. The neighbor sum $c_{i}(t)$ runs from 0 (four Buy neighbors) to 8 (four Sell neighbors). The trader's rule is a table with one entry $a_{c}$ for each sum, which gives its next intention:\n\n$$\nz_{i}(t)=a^{(R_{i})}_{c_{i}(t)}\n$$\n\n**How do nine entries become one number?** Write them as the digits of a base-3 number, with $a_{8}$ on the left and $a_{0}$ on the right:\n\n$$\nR=\\left(a_{8}a_{7}\\cdots a_{1}a_{0}\\right)_{3}=\\sum_{c=0}^{8}a_{c}\\,3^{c}\n$$\n\nFor example, Rule 19280 is $(222110002)_{3}$:\n\n| Neighbor sum $c$ | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |\n|:--|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|\n| Entry $a_{c}$ | 2 | 2 | 2 | 1 | 1 | 0 | 0 | 0 | 2 |\n| Next intention | Sell | Sell | Sell | Hold | Hold | Buy | Buy | Buy | Sell |\n\nTo check:\n\n$$\n\\begin{aligned}\nR&=2\\cdot 3^{8}+2\\cdot 3^{7}+2\\cdot 3^{6}+3^{5}+3^{4}+2\\\\\n&=13{,}122+4{,}374+1{,}458+243+81+2=19{,}280\n\\end{aligned}\n$$\n\n**How do we get the digits back from the number?** Divide by 3 and keep the remainder, then repeat with the quotient. The remainders are $a_{0},a_{1},\\dots$ in order. For Rule 19280, $19{,}280=3\\cdot 6{,}426+2$, so $a_{0}=2$. Next, $6{,}426=3\\cdot 2{,}142+0$, so $a_{1}=0$, and so on. The nine remainders are $2,0,0,0,1,1,2,2,2$ for $a_{0}$ through $a_{8}$. The `rule_table(...)` function in the [rules example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Rules-Fall-2026.ipynb) does this for us.\n\n**Why does Rule 19280 buy at sum 1 while Rule 19286 sells?** Because their tables say so; there is nothing to calculate. Rule 19286 is $(222110022)_{3}$. It differs from Rule 19280 only in the $3^{1}$ place, where 0 (Buy) becomes 2 (Sell). Raising that digit by 2 adds $2\\cdot 3^{1}=6$, so $19{,}280+6=19{,}286$. We choose the table, and the rule number is just its name.\n\n**Why only the sum?** A trader sees only the sum of its neighbors' codes. It does not see which neighbor intends what, or even how many intend each action. For example, two Sell and two Buy neighbors give a sum of 4, the same as four Hold neighbors. Using the sum keeps the table to nine entries, so there are $3^{9}=19{,}683$ possible rules.\n\n**How were these rules chosen?** They were chosen, not fit to data. Under Rule 19280, the market settles into a mix of all three intentions. The lecture compares pairs of rules that differ in one entry, as a model of a small change in how traders behave. The rules example lists all 18 rules that differ from Rule 19280 in one entry. Each trader could have its own rule $R_{i}$, but the lecture uses only two rules. For what a switch does, see [how many traders must switch](rule-switch-spread.html).\n\n**Check.** Rule 19280 gives Hold at sum 4. What is the rule number if that entry becomes Sell? What if it becomes Buy? **Answer:** The digit in the $3^{4}=81$ place changes from 1 to 2, or from 1 to 0. The rule number becomes $19{,}280+81=19{,}361$ or $19{,}280-81=19{,}199$. Both appear in the example's list."
+    },
+    {
+      "id": "rule-switch-spread",
+      "theme": "abm",
+      "title": "Why can a one-entry rule switch produce a Sell majority, and how many traders must switch?",
+      "answer": "Under Rule 19280, a trader sells only at sum 0 or at sums 6 to 8, and a sum of 6 needs at least two Sell neighbors. Switched traders also sell at sum 1, in the middle of buyers. If only a few traders switch, these new sellers rarely share a neighbor, and the selling stays local. In our runs of the lecture's example, a Sell majority needed 15% to 25% of the interior traders to switch.",
+      "lectures": [
+        "L12b"
+      ],
+      "keywords": "Wolfram market rule switch critical fraction tipping point how many traders spread contagion threshold cascade Sell majority local global 19280 19286 neighbors control freeze shares run out psychology",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: switch one entry of a rule",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: closed and open markets",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**When does a trader sell?** Rules 19280 and 19286 both give Sell for neighbor sums 6 to 8. A Sell neighbor adds 2 to the sum, so a sum of 6 needs at least two Sell neighbors:\n\n| Neighbors | Sum | Next intention |\n|:--|:-:|:--|\n| Sell, Buy, Buy, Buy | 2 | Buy |\n| Sell, Hold, Hold, Hold | 5 | Hold |\n| Sell, Sell, Buy, Buy | 4 | Hold |\n| Sell, Sell, Hold, Hold | 6 | Sell |\n| Sell, Sell, Sell, Buy | 6 | Sell |\n\nWith only one Sell neighbor, the largest possible sum is 5, so under Rule 19280 one Sell neighbor never makes a trader sell. Both rules also give Sell at sum 0, when all four neighbors intend to buy.\n\n**Why can the switch spread?** The lecture shows that it spreads, and the rule table suggests why. Under Rule 19286, a trader with three Buy neighbors and one Hold neighbor (sum 1) sells instead of buying. So the switched traders start selling in the middle of buyers. Each new seller adds 2 to its neighbors' sums, compared with a buyer.\n\nIf the switched traders are few and far apart, their neighbors rarely get a second Sell neighbor, and the selling dies out. If enough traders switch, some traders end up next to two sellers, with their other neighbors holding or selling. Their sum reaches 6, so they sell too, even though their own rule did not change. Their selling then raises the sums of the next traders. This is like models of how behavior spreads in a social network, where a person acts once enough of their neighbors have acted.\n\n**How many traders must switch?** The lecture does not say, so we ran the [rule-switch example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb) with its settings: a deep dealer, active edge traders, 1,000 steps before the switch, and 3,000 after. We used its $32\\times 32$ grid and 20 starting markets for each fraction $f$ of interior traders who switch. A market has a Sell majority if at least half of its interior traders intend to sell at some step after the switch. The last column is the median over the 20 markets:\n\n| Fraction $f$ | Sell majority | Final price, % of control |\n|:--|:-:|:-:|\n| 0.10 | 0 of 20 | 98.4 |\n| 0.15 | 0 of 20 | 97.4 |\n| 0.20 | 7 of 20 | 95.6 |\n| 0.25 | 20 of 20 | 75.0 |\n| 0.30 | 20 of 20 | 74.7 |\n| 0.50 | 20 of 20 | 73.4 |\n\nNo control market reached a Sell majority. The change is sharp: at 15% or fewer, no market tipped, and at 25% or more, every market did.\n\nThe result held when we changed the setup. On the $64\\times 64$ grid, none of 10 markets tipped at 15%, and all 10 tipped at 20%. With held edge traders, which ignore the price, 2 of 20 tipped at 20%, and 19 of 20 at 25%. So the selling can spread through neighbors alone.\n\nIn our runs, the rule pair mattered more than the grid size or the edge traders. Another pair listed in the example, Rule 19289 to Rule 19298, differs at sum 2, where Hold becomes Sell. With that pair, 17 of 20 markets tipped at $f=0.05$, and all 20 at $f=0.10$. The tipping point depends on the rules, the starting grid, and the edge traders, so we find it by running the experiment.\n\n**Why does the price stop at about 75% of the control?** The price falls only while the sellers still have shares. Each trader starts with 10 shares. Once the sellers have sold them, their Sell orders fail, and the price levels off. So every market that tipped ends at about the same fraction of its control's price. In the [open-market example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-Viewport-Fall-2026.ipynb), new players bring fresh cash and shares, and the price keeps moving.\n\n**What would a rule switch mean in a real market?** It stands for a change in how some traders react to the same situation. Under Rule 19286, a trader with three Buy neighbors and one Hold neighbor now sells instead of buying. L12b treats the switch as an analogy for a crash, not an explanation. Real sell-offs also involve shared shocks, such as news that reaches every trader at once.\n\n**Check.** A trader follows Rule 19280, and its neighbors intend Sell, Sell, Hold, and Buy. What is its next intention? What if the Buy neighbor changes to Hold? **Answer:** The sum is $2+2+1+0=5$, so it holds. After the change, the sum is 6, so it sells."
+    },
+    {
+      "id": "dealer-price",
+      "theme": "abm",
+      "title": "How does the dealer in the Wolfram market set the price, and why do traders pay a different price than the quote?",
+      "answer": "The dealer quotes its cash divided by its shares. When traders sell more shares than they buy, the dealer takes the extra shares and pays cash, keeping its cash times its shares constant, so the quote falls. All shares in that step trade at one execution price, which lies between the quotes before and after the trade. A dealer with more shares moves its quote less for the same net trade.",
+      "lectures": [
+        "L12b"
+      ],
+      "keywords": "Wolfram market dealer market maker quoted price execution price geometric mean constant product cash shares inventory depth liquidity net trade intention filled order unfilled run out technical traders band moving average feedback",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: switch one entry of a rule",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-RuleSwitch-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: stylized facts of a Wolfram market",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**How does a net sale move the quote?** The dealer holds cash $W_{t}$ and shares $Q_{t}$ and quotes $S_{t}=W_{t}/Q_{t}$. Buy and Sell orders are matched with each other at the same price, and the dealer takes the other side of what is left over, the net trade $x_{t}$ (shares bought minus shares sold). Its shares become $Q_{t}=Q_{t-1}-x_{t}$, and it keeps $W_{t}Q_{t}=W_{t-1}Q_{t-1}$.\n\nTake a dealer with $Q_{t-1}=100$ shares and $W_{t-1}=10{,}000$ USD, so $S_{t-1}=100$ USD/share. Suppose traders sell 10 more shares than they buy, $x_{t}=-10$:\n\n$$\n\\begin{aligned}\nQ_{t}&=100-(-10)=110 &&\\text{the dealer takes the 10 shares}\\\\\nW_{t}&=10{,}000\\cdot\\dfrac{100}{110}=9{,}090.91\\ \\text{USD} &&\\text{cash times shares stays at }1{,}000{,}000\\\\\nS_{t}&=\\dfrac{9{,}090.91}{110}=82.64\\ \\text{USD/share} &&\\text{the new quote}\n\\end{aligned}\n$$\n\nThe quote falls by 17.4%.\n\n**What price do the sellers get?** The dealer paid $10{,}000-9{,}090.91=909.09$ USD for 10 shares, so each share traded at the execution price\n\n$$\nF_{t}=\\frac{W_{t}-W_{t-1}}{x_{t}}=\\frac{W_{t-1}}{Q_{t}}=\\frac{10{,}000}{110}=90.91\\ \\text{USD/share}\n$$\n\nThe quote is the price for a very small trade. As the dealer takes on shares, its quote slides down, so the 10 shares trade at one price between the starting quote, 100, and the ending quote, 82.64. That price is the geometric mean of the two quotes. Using $S_{t}=W_{t-1}Q_{t-1}/Q_{t}^{2}$:\n\n$$\nS_{t-1}S_{t}=\\frac{W_{t-1}}{Q_{t-1}}\\cdot\\frac{W_{t-1}Q_{t-1}}{Q_{t}^{2}}=\\left(\\frac{W_{t-1}}{Q_{t}}\\right)^{2}=F_{t}^{2}\n$$\n\nand $\\sqrt{100\\times 82.64}=90.91$.\n\n**How does the dealer's depth change the drop?** Give the dealer ten times as many shares and as much cash: $Q_{t-1}=1{,}000$ and $W_{t-1}=100{,}000$ USD. The quote is still 100 USD/share, and the net sale is still 10 shares. The last column uses the liquidity $\\lambda_{t}=Q_{t-1}/2$:\n\n| Dealer's shares | New quote | Execution price | Change in $\\ln S$ | $x_{t}/\\lambda_{t}$ |\n|:--|:-:|:-:|:-:|:-:|\n| 100 | 82.64 | 90.91 | $-0.191$ | $-0.200$ |\n| 1,000 | 98.03 | 99.01 | $-0.0199$ | $-0.0200$ |\n\nIgnoring the noise, the quote follows $S_{t}=S_{t-1}\\left(Q_{t-1}/(Q_{t-1}-x_{t})\\right)^{2}$. The same 10 shares are a smaller part of a deeper dealer's shares, so the quote moves less. When the net trade is small compared with $Q_{t-1}$, the change in the log price is close to $x_{t}/\\lambda_{t}$, the same form as in Farmer–Joshi. The dealer starts with $Q_{0}=hN_{\\text{tr}}$ shares, so a larger depth $h$ means smaller price moves.\n\n**When does an intention become a trade?** Each Buy or Sell intention is an order for one share, and Hold sends no order. A Sell order fills only if the trader has a share. A Buy order fills only if the trader has enough cash to pay $F_{t}$. A larger net purchase raises $F_{t}$, so fewer buyers can pay. The dealer finds the largest net trade that enough traders can still complete. Orders that do not fill do not move the price. When the sellers run out of shares, the price stops falling, even if most traders still intend to sell.\n\n**Does the grid set the price, or does the price change the grid?** Both, through different traders. All traders' orders, interior and edge, set the price through the dealer. The price affects the grid only through the technical traders on the edge, and only when they are active. They compare the price with their band $\\mu_{t}\\pm k_{j}\\sigma_{t}$, where $\\mu_{t}=\\mu_{t-1}+\\alpha\\left(S_{t}-\\mu_{t-1}\\right)$ is a moving average of the dealer's price. Their intentions then enter their neighbors' sums. When the edge traders are held, the price has no effect on the grid.\n\n**Check.** A dealer holds 200 shares and 20,000 USD, and the traders buy a net 10 shares. Find the new quote and the execution price. **Answer:** $Q_{t}=190$ and $W_{t}=20{,}000\\cdot 200/190=21{,}052.63$ USD, so $S_{t}=110.80$ USD/share. The execution price is $F_{t}=20{,}000/190=105.26$ USD/share, between 100 and 110.80, and equal to $\\sqrt{100\\times 110.80}$."
+    },
+    {
+      "id": "which-abm",
+      "theme": "abm",
+      "title": "Farmer–Joshi, minority game, or Wolfram market: which model answers which question?",
+      "answer": "Each model asks a different question. Farmer–Joshi asks what happens when traders react to the price. The minority game asks what happens when agents learn which policy keeps them in the minority. The Wolfram market asks how a change in some traders' rules spreads to their neighbors. None is fit to data, and none matches every stylized fact of real prices.",
+      "lectures": [
+        "L12a",
+        "L12b"
+      ],
+      "keywords": "compare models Farmer-Joshi minority game Wolfram market which model when to use sudden wave of selling crash combine models stylized facts real market evidence calibrate fat tails volatility clustering five parts",
+      "origin": {
+        "kind": "engagement-survey",
+        "survey": "L12a/L12b",
+        "date": "2026-11-17"
+      },
+      "sources": [
+        {
+          "label": "L12a lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b lecture",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Lecture-WhyDoMarketsCrash-ABM-Fall-2026.ipynb"
+        },
+        {
+          "label": "L12b example: stylized facts of a Wolfram market",
+          "url": "https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb"
+        }
+      ],
+      "body": "**How do the models differ?** Every agent-based model in L12a and L12b has five parts: agents, the information they see, a decision rule, an aggregate of their actions, and feedback. The three models fill in these parts differently:\n\n* **Farmer–Joshi market.** Value investors and trend followers watch the price, and value investors also watch an estimate of the value. A trader trades when its signal crosses a threshold. The net order moves the price through a market maker with liquidity $\\lambda$, and the new price sets the next signals. Traders have no cash or share balances, and any trader can go short.\n* **Minority game.** Agents see the last $m$ minority actions and choose among fixed random policies, either greedily or with the Boltzmann rule. The aggregate is the attendance $A_{t}$, and the feedback is the policy scores and the history. The price is an instructor's extension, and the agents never see it.\n* **Wolfram market.** Traders on a grid read their four neighbors' intentions and look up their next intention in a rule table. Each trader has limited cash and shares, and a dealer fills the net trade. Only the edge traders watch the price.\n\n**What did each one show?** In Farmer–Joshi, enough trend followers produce fat tails and volatility clustering, although neither is built into the model. In the minority game, the volatility per agent depends on the number of histories per agent, $\\alpha$, and on the temperature. In the Wolfram market, a rule switch for some traders can spread into a Sell majority, and the price falls until the sellers run out of shares.\n\n**Which would we use to model a sudden wave of selling?** Either of two, depending on what drives the selling:\n\n* **Farmer–Joshi**, if the price itself drives the selling. A drop crosses trend followers' thresholds, their selling causes the next drop, and value investors push back. See [what decides whether a drop fades or turns into a crash](fj-drop.html).\n* **The Wolfram market**, if the selling spreads because traders change how they react to their neighbors. See [how many traders must switch](rule-switch-spread.html).\n\nThe minority game is a weaker choice. Its crowded game swings hard in both directions. But with unbiased policies, the average growth rate is close to zero, and the agents never see the price, so a fall cannot feed on itself.\n\n**Can we combine models?** Yes, and the course models already share parts. The minority game's price uses the Farmer–Joshi market maker. For small trades, the Wolfram dealer's growth rate has the Farmer–Joshi form with $\\lambda_{t}=Q_{t-1}/2$. The Wolfram market's edge traders add a price signal to a grid of neighbors. The Lux–Marchesi model, mentioned in L12b, lets agents switch between value and trend strategies depending on which has paid off.\n\n**How close are they to real markets?** We compared Farmer–Joshi and the Wolfram market with the daily growth rates of SPY, and measured the same statistics for the minority game:\n\n* Farmer–Joshi had fat tails, but its volatility clustering faded within about five steps. The clustering in SPY lasted for weeks.\n* The crowded minority game had mild fat tails (excess kurtosis about 1) and almost no volatility clustering.\n* The Wolfram market had tails close to Normal and little clustering. It was built to study rule switches, not price statistics ([stylized facts example](https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12b/CHEME-5660-L12b-Example-Wolfram-StylizedFacts-Fall-2026.ipynb)).\n\nNone of the models is fit to market data, and none matched every stylized fact at once. We use them to see which trading rules produce which patterns, not to forecast prices. They also leave out news that reaches many traders at once, which plays a part in real crashes.\n\n**Check.** In which model can traders run out of shares to sell? In which model do the agents never see the price? **Answer:** Only Wolfram-market traders can run out, because each has limited cash and shares. Farmer–Joshi traders have no cash or share balances. Minority-game agents never see the price; they see only the history of minority actions."
     }
   ],
   "notation": [
@@ -1535,8 +1743,9 @@
       "L9a/L9b",
       "L10a/L10b",
       "L11a",
-      "L11b"
+      "L11b",
+      "L12a/L12b"
     ],
-    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks. The six options answers (October 27, 2026) follow the themes of the L9a/L9b engagement survey and the L9a, L9b, and L10a lecture notebooks. The eight answers added on November 12, 2026 follow the themes of the L10a/L10b, L11a, and L11b engagement surveys and the L10a, L10b, L11a, and L11b lecture, example, and derivation notebooks."
+    "note": "Questions are synthesized from course material and survey themes. Week 6 and early-lecture additions follow the course reference. No individual survey text or identifiers are included. Week 7 notation follows the L7a and L7b lecture notebooks. The six options answers (October 27, 2026) follow the themes of the L9a/L9b engagement survey and the L9a, L9b, and L10a lecture notebooks. The eight answers added on November 12, 2026 follow the themes of the L10a/L10b, L11a, and L11b engagement surveys and the L10a, L10b, L11a, and L11b lecture, example, and derivation notebooks. The seven answers added on November 17, 2026 follow the themes of the L12a/L12b engagement survey and the L12a and L12b lecture, example, and derivation notebooks; the rule-switch sweep in one answer was run with the L12b example code."
   }
 }
