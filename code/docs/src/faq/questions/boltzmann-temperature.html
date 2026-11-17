@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>What does the temperature do in the Boltzmann choice rule? · CHEME 5660</title>
+  <meta name="description" content="The temperature sets how much the gap between an agent&#x27;s scores matters. If the temperature is much smaller than the gap, the agent almost always uses its best policy. If it is much larger, the agent picks almost at random. In between, the agent usually uses its best policy and sometimes uses the others.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>What does the temperature do in the Boltzmann choice rule?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>The temperature sets how much the gap between an agent’s scores matters. If the temperature is much smaller than the gap, the agent almost always uses its best policy. If it is much larger, the agent picks almost at random. In between, the agent usually uses its best policy and sometimes uses the others.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How are the policies scored?</strong> In the minority game, agent <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> holds <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math> fixed policies. After each round, every policy gets a new score, whether the agent used it or not:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mrow><mi>i</mi><mi>j</mi><mo>,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>U</mi><mrow><mi>i</mi><mi>j</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>A</mi><mi>t</mi></msub></mrow><mi>P</mi></mfrac></mrow><annotation encoding="application/x-tex">
+U_{ij,t+1}=U_{ij,t}-\frac{\pi_{ij}(\mu_{t})A_{t}}{P}
+</annotation></semantics></math></div>
+<p>A policy that chose the side opposite to the attendance <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>t</mi></msub><annotation encoding="application/x-tex">A_{t}</annotation></semantics></math> would have put the agent in the minority, so its score goes up. For example, with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">P=64</annotation></semantics></math> histories and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>=</mo><mo>+</mo><mn>41</mn></mrow><annotation encoding="application/x-tex">A_{t}=+41</annotation></semantics></math> (41 more buyers than sellers), each policy that said sell gains <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>41</mn><mi>/</mi><mn>64</mn><mo>=</mo><mn>0.64</mn></mrow><annotation encoding="application/x-tex">41/64=0.64</annotation></semantics></math>, and each policy that said buy loses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.64</mn><annotation encoding="application/x-tex">0.64</annotation></semantics></math>. A high score means the policy has often been on the winning side.</p>
+<p><strong>How does the temperature turn scores into choices?</strong> The Boltzmann rule gives the probability that the agent uses policy <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>j</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>𝒵</mi></mfrac><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>U</mi><mi>j</mi></msub><mi>T</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="2.0em"></mspace><mtext mathvariant="normal">where</mtext><mspace width="2.0em"></mspace><mi>𝒵</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>U</mi><mi>k</mi></msub><mi>T</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+p_{j}=\frac{1}{\mathcal{Z}}\exp\left(\frac{U_{j}}{T}\right)\qquad\text{where}\qquad\mathcal{Z}=\sum_{k=1}^{J}\exp\left(\frac{U_{k}}{T}\right)
+</annotation></semantics></math></div>
+<p>Only score differences matter. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">J=2</annotation></semantics></math> policies and a gap <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mo>=</mo><msub><mi>U</mi><mtext mathvariant="normal">best</mtext></msub><mo>−</mo><msub><mi>U</mi><mtext mathvariant="normal">other</mtext></msub><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta=U_{\text{best}}-U_{\text{other}}\geq 0</annotation></semantics></math>, divide the top and bottom by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mtext mathvariant="normal">best</mtext></msub><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\exp(U_{\text{best}}/T)</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>Δ</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+p_{\text{best}}=\frac{1}{1+\exp(-\Delta/T)}
+</annotation></semantics></math></div>
+<p>If <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>/</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\Delta/T</annotation></semantics></math> is large, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>Δ</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\exp(-\Delta/T)</annotation></semantics></math> is near 0, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><annotation encoding="application/x-tex">p_{\text{best}}</annotation></semantics></math> is near 1: the agent is greedy. If <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>/</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\Delta/T</annotation></semantics></math> is near 0, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>Δ</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\exp(-\Delta/T)</annotation></semantics></math> is near 1, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><annotation encoding="application/x-tex">p_{\text{best}}</annotation></semantics></math> is near <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>2</mn><mo>=</mo><mn>1</mn><mi>/</mi><mi>J</mi></mrow><annotation encoding="application/x-tex">1/2=1/J</annotation></semantics></math>: the agent chooses at random.</p>
+<p><strong>An example.</strong> In the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb">thermal minority game example</a>, one agent ends the greedy game with a gap of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mo>=</mo><mn>4.84</mn></mrow><annotation encoding="application/x-tex">\Delta=4.84</annotation></semantics></math> between its two scores:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Temperature <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>/</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\Delta/T</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><annotation encoding="application/x-tex">p_{\text{best}}</annotation></semantics></math></th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">other</mtext></msub><annotation encoding="application/x-tex">p_{\text{other}}</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.48</mn><annotation encoding="application/x-tex">0.48</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.1</mn><mi>Δ</mi></mrow><annotation encoding="application/x-tex">0.1\Delta</annotation></semantics></math>)</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">1.0000</td>
+<td style="text-align: left;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4.84</mn><annotation encoding="application/x-tex">4.84</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math>)</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0.7311</td>
+<td style="text-align: left;">0.2689</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>48.4</mn><annotation encoding="application/x-tex">48.4</annotation></semantics></math> (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mi>Δ</mi></mrow><annotation encoding="application/x-tex">10\Delta</annotation></semantics></math>)</td>
+<td style="text-align: left;">0.1</td>
+<td style="text-align: left;">0.5250</td>
+<td style="text-align: left;">0.4750</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.5000</td>
+<td style="text-align: left;">0.5000</td>
+</tr>
+</tbody>
+</table></div>
+<p>A temperature is only low or high relative to the score gap. At the same <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, an agent with a large gap is almost certain, and an agent with a small gap is almost undecided.</p>
+<p><strong>What does <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> mean for real traders?</strong> One reading: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> measures how much a trader trusts the past scores of its policies. At a low <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, it always uses the policy with the best score. At a high <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, it mostly ignores the scores. In between, it usually uses the best policy but sometimes tries another, for example because a short record is a noisy guide. The optional <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb">maximum-entropy derivation</a> makes this precise: for a given expected score, the Boltzmann rule spreads the choice as evenly as possible.</p>
+<p><strong>How do we choose <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>?</strong> In the course, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> is a model setting that we vary. We do not estimate it from market data. The example tries values of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> from <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.01</mn><annotation encoding="application/x-tex">0.01</annotation></semantics></math> to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">100{,}000</annotation></semantics></math> and measures the volatility at each. The limit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">T\to\infty</annotation></semantics></math> is a baseline in which the scores have no effect. The results are in <a href="middle-temperature.html">why a middle temperature gives the lowest volatility</a>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> An agent has two policies with scores <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.0</mn><annotation encoding="application/x-tex">2.0</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.5</mn><annotation encoding="application/x-tex">0.5</annotation></semantics></math>. What is the probability that it uses the better one at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1.5</mn></mrow><annotation encoding="application/x-tex">T=1.5</annotation></semantics></math> and at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">T=15</annotation></semantics></math>? A second agent has a gap of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3.0</mn><annotation encoding="application/x-tex">3.0</annotation></semantics></math>. What is its probability at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1.5</mn></mrow><annotation encoding="application/x-tex">T=1.5</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> The gap is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.5</mn><annotation encoding="application/x-tex">1.5</annotation></semantics></math>. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1.5</mn></mrow><annotation encoding="application/x-tex">T=1.5</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><mo>=</mo><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.731</mn></mrow><annotation encoding="application/x-tex">p_{\text{best}}=1/(1+e^{-1})=0.731</annotation></semantics></math>. At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">T=15</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><mo>=</mo><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>0.1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.525</mn></mrow><annotation encoding="application/x-tex">p_{\text{best}}=1/(1+e^{-0.1})=0.525</annotation></semantics></math>, close to random. The second agent has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>/</mi><mi>T</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\Delta/T=2</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">best</mtext></msub><mo>=</mo><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>2</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.881</mn></mrow><annotation encoding="application/x-tex">p_{\text{best}}=1/(1+e^{-2})=0.881</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb">L12a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb">L12a example: the thermal minority game</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/advanced/max_entropy/CHEME-5660-L12a-Derivation-MaxEntropyChoice-Fall-2026.ipynb">L12a derivation: the maximum-entropy choice rule</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12a">L12a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li><li><a href="rule-number.html">How do we read a Wolfram market rule number?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

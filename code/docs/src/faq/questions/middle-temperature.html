@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Why does a middle temperature give lower volatility than greedy or random choice? · CHEME 5660</title>
+  <meta name="description" content="When agents are greedy, those with similar policies tend to switch at the same time, so many end up on the same side. When agents choose at random, they ignore the scores and do about as well as coin flips. In the example, a middle temperature gave lower volatility than both. A likely reason: agents still favor their better policies, but they do not all switch at once.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>Why does a middle temperature give lower volatility than greedy or random choice?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>When agents are greedy, those with similar policies tend to switch at the same time, so many end up on the same side. When agents choose at random, they ignore the scores and do about as well as coin flips. In the example, a middle temperature gave lower volatility than both. A likely reason: agents still favor their better policies, but they do not all switch at once.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>What did the example measure?</strong> The crowded game in the <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb">thermal minority game example</a> has <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>641</mn></mrow><annotation encoding="application/x-tex">N=641</annotation></semantics></math> agents, each with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">J=2</annotation></semantics></math> policies. The memory is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">m=6</annotation></semantics></math>, so there are <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">P=64</annotation></semantics></math> histories and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mi>P</mi><mi>/</mi><mi>N</mi><mo>≈</mo><mn>0.1</mn></mrow><annotation encoding="application/x-tex">\alpha=P/N\approx 0.1</annotation></semantics></math>. The <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/slides/CHEME-5660-L12a-Slides-Fall-2026.pdf">L12a slides</a> report the volatility per agent, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>σ</mi><mi>A</mi><mn>2</mn></msubsup><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">\sigma_{A}^{2}/N</annotation></semantics></math>, averaged over three games.</p>
+<p>To convert each value to the annualized volatility of the growth rates, we use the lecture’s formula with the example’s <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">\lambda=1{,}000</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mi>S</mi></msub><mo>=</mo><mn>0.03</mn></mrow><annotation encoding="application/x-tex">\sigma_{S}=0.03</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>252</mn></mrow><annotation encoding="application/x-tex">\Delta t=1/252</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">annualized volatility</mtext><mo>≈</mo><msqrt><mrow><mfrac><mi>N</mi><mrow><msup><mi>λ</mi><mn>2</mn></msup><mspace width="0.167em"></mspace><mi>Δ</mi><mi>t</mi></mrow></mfrac><mo>⋅</mo><mfrac><msubsup><mi>σ</mi><mi>A</mi><mn>2</mn></msubsup><mi>N</mi></mfrac><mo>+</mo><msubsup><mi>σ</mi><mi>S</mi><mn>2</mn></msubsup></mrow></msqrt></mrow><annotation encoding="application/x-tex">
+\text{annualized volatility}\approx\sqrt{\frac{N}{\lambda^{2}\,\Delta t}\cdot\frac{\sigma_{A}^{2}}{N}+\sigma_{S}^{2}}
+</annotation></semantics></math></div>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">How agents choose</th>
+<th style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>σ</mi><mi>A</mi><mn>2</mn></msubsup><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">\sigma_{A}^{2}/N</annotation></semantics></math></th>
+<th style="text-align: left;">Annualized volatility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Greedy (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T\to 0</annotation></semantics></math>)</td>
+<td style="text-align: left;">2.72</td>
+<td style="text-align: left;">66.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Random (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">T=\infty</annotation></semantics></math>)</td>
+<td style="text-align: left;">1.08</td>
+<td style="text-align: left;">41.9%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math></td>
+<td style="text-align: left;">0.46</td>
+<td style="text-align: left;">27.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Coin flips</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">40.3%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Why are greedy agents so volatile?</strong> There are many more agents than histories, so many agents hold policies that act alike. Those policies get the same score updates, so the agents holding them tend to switch at the same time. A large group lands on the same side, the attendance swings far from zero, and that side loses. Then the scores shift back, and much of the group switches back together. The attendance keeps swinging from one side to the other.</p>
+<p><strong>Why doesn’t random choice fix this?</strong> At <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">T=\infty</annotation></semantics></math>, each agent picks one of its two policies at random every round. No group moves together, so the crowding goes away, and the volatility per agent falls to about 1, the coin-flip value. But random choice also ignores the scores, which track which policies tend to land in the minority.</p>
+<p><strong>Why is a middle temperature better than both?</strong> The example shows that it is, but not why. A likely reason: at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math>, each agent still favors its higher-scoring policy, so the scores still guide its choice. But when the scores change, only some of the agents with similar policies switch in a given round. The switches are spread over many rounds, so the swings are smaller. In the example, the volatility per agent fell to 0.46, below the coin-flip value.</p>
+<p>A traffic analogy: drivers choose between two roads every morning, and the less crowded road is faster. If every driver takes the road with the better record, drivers with the same record all pick the same road, and it jams. If every driver flips a coin, the roads split about evenly, give or take chance. If each driver usually takes the road with the better record but sometimes takes the other, the records still guide the drivers, but they do not all switch at once.</p>
+<p><strong>What is the best temperature?</strong> We ran the sweep only at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>≈</mo><mn>0.1</mn></mrow><annotation encoding="application/x-tex">\alpha\approx 0.1</annotation></semantics></math> with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">J=2</annotation></semantics></math>. The volatility stays near the greedy value up to about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0.3</mn></mrow><annotation encoding="application/x-tex">T=0.3</annotation></semantics></math>, drops between <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T=1</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">T=10</annotation></semantics></math>, is lowest near <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math>, and climbs back toward the random-choice value above about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">T=1{,}000</annotation></semantics></math>. The course gives no formula for the best temperature. To find it for another <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math> or <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>, change the constants and rerun Task 3 of the example. For what <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> means, see <a href="boltzmann-temperature.html">what the temperature does</a>.</p>
+<div class="answer-check"><p><strong>Try it.</strong> Rank the greedy game, random choice, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math> by how far the attendance moves from zero. Which of them keeps buyers and sellers closer to balanced than coin flips? </p><details><summary>Show the answer</summary><div> The greedy game moves it most (2.72), then random choice (1.08), then <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math> (0.46). Only <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">T=100</annotation></semantics></math> is below the coin-flip value of 1.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb">L12a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-ThermalMinorityGame-Fall-2026.ipynb">L12a example: the thermal minority game</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/slides/CHEME-5660-L12a-Slides-Fall-2026.pdf">L12a slides</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12a">L12a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="fj-drop.html">In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</a></li><li><a href="rule-number.html">How do we read a Wolfram market rule number?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>

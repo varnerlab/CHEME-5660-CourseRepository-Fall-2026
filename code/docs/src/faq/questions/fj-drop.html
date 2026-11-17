@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash? · CHEME 5660</title>
+  <meta name="description" content="After a drop, the two groups trade in opposite directions. Trend followers who see a large enough fall sell, which pushes the price down further. Value investors who now see the asset as underpriced buy, which pushes it back up. If the selling outweighs the buying, the fall reaches more trend followers and keeps going. In the example, the mix of the two groups decided which side won.">
+  <meta name='color-scheme' content='light'>
+  <meta name='theme-color' content='#faf7f2'>
+  <link rel='stylesheet' href='../assets/faq.css'>
+
+<script defer src="../assets/search-index.js"></script>
+</head>
+<body class='article-page'>
+  <a class='skip-link' href='#main-content'>Skip to content</a>
+
+  <header class='site-header'>
+    <div class='site-header-inner'>
+      <a class='brand' href='../index.html'>
+        <span class='brand-course'>CHEME 5660</span>
+        <span class='brand-sep' aria-hidden='true'>/</span>
+        <span class='brand-sub'>Course companion</span>
+      </a>
+      <nav class='site-nav' aria-label='Primary'>
+        <ul>
+          <li><a class='nav-link nav-questions' href='../index.html' aria-current="page">Questions</a></li>
+          <li><a class='nav-link nav-notation' href='../notation.html'>Notation</a></li>
+          <li><a class='nav-link nav-docs' href='../../index.html'>Course docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id='main-content' class='site-main' tabindex='-1'>
+<article class='page article' aria-labelledby='article-title'>
+
+  <header class='article-header'>
+    <p class='breadcrumb'>
+      <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+      <span class='breadcrumb-theme'>Agent-based markets</span>
+    </p>
+    <h1 id='article-title'>In the Farmer–Joshi market, what decides whether a price drop fades or turns into a crash?</h1>
+    <nav class='article-steps' aria-label='On this page'>
+      <ol>
+        <li><a href='#faq-answer'>Short answer</a></li>
+        <li><a href='#faq-explanation'>Worked explanation</a></li>
+        <li><a href='#faq-sources'>Notes and sources</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <div class='article-layout'>
+    <div class='article-main'>
+      <section id='faq-answer' class='answer' aria-labelledby='faq-answer-label'>
+        <h2 id='faq-answer-label' class='section-label'><span class='step-num'>1</span> Short answer</h2>
+        <div class='answer-body'><p>After a drop, the two groups trade in opposite directions. Trend followers who see a large enough fall sell, which pushes the price down further. Value investors who now see the asset as underpriced buy, which pushes it back up. If the selling outweighs the buying, the fall reaches more trend followers and keeps going. In the example, the mix of the two groups decided which side won.</p>
+</div>
+      </section>
+
+      <!-- BODY slot: h2, h3, p, lists, math, table, figure, details, blockquote.
+           For contained horizontal scrolling, wrap each display equation in div.equation and each wide table in div.table-wrap (both with tabindex=0). -->
+      <section id='faq-explanation' class='explanation' aria-labelledby='faq-explanation-label'>
+        <h2 id='faq-explanation-label' class='section-label'><span class='step-num'>2</span> Worked explanation</h2>
+        <div class='prose'><p><strong>How does one step work?</strong> Each trader holds a position <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>x</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">x_{t}^{(i)}</annotation></semantics></math> of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">-c_{i}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>, or <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><msub><mi>c</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">+c_{i}</annotation></semantics></math>, and places an order only when that position changes, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ω</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msubsup><mi>x</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>−</mo><msubsup><mi>x</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">\omega_{t+1}^{(i)}=x_{t+1}^{(i)}-x_{t}^{(i)}</annotation></semantics></math>. The market maker moves the log price by the net order divided by the liquidity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>:</p>
+<div class="equation" tabindex="0" aria-label="Equation"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mo>ln</mo><msub><mi>S</mi><mi>t</mi></msub><mo>+</mo><mfrac><mn>1</mn><mi>λ</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mi>ω</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>+</mo><msub><mi>σ</mi><mi>S</mi></msub><msqrt><mrow><mi>Δ</mi><mi>t</mi></mrow></msqrt><mspace width="0.167em"></mspace><msub><mi>Z</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">
+\ln S_{t+1}=\ln S_{t}+\frac{1}{\lambda}\sum_{i}\omega_{t+1}^{(i)}+\sigma_{S}\sqrt{\Delta t}\,Z_{t+1}
+</annotation></semantics></math></div>
+<p>The new price changes every trader’s signal, and the next step starts. When the price falls, traders with no position enter:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Trader</th>
+<th style="text-align: left;">Signal after a fall</th>
+<th style="text-align: left;">Below <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">in</mtext></msubsup></mrow><annotation encoding="application/x-tex">-\chi^{\text{in}}_{i}</annotation></semantics></math></th>
+<th style="text-align: left;">Effect on the price</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Trend follower</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><msub><mi>S</mi><mi>t</mi></msub><mo>−</mo><mo>ln</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>−</mo><msub><mi>θ</mi><mi>i</mi></msub></mrow></msub></mrow><annotation encoding="application/x-tex">\ln S_{t}-\ln S_{t-\theta_{i}}</annotation></semantics></math> turns negative</td>
+<td style="text-align: left;">sells</td>
+<td style="text-align: left;">pushes it down</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Value investor</td>
+<td style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><msub><mi>S</mi><mi>t</mi></msub><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>ln</mo><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msup><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ln S_{t}-(\ln V_{t}+v^{(i)})</annotation></semantics></math> falls</td>
+<td style="text-align: left;">buys</td>
+<td style="text-align: left;">pushes it back up</td>
+</tr>
+</tbody>
+</table></div>
+<p>Exits add orders on both sides. A trend follower with a long position sells to exit once its signal falls below <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">out</mtext></msubsup><annotation encoding="application/x-tex">\chi^{\text{out}}_{i}</annotation></semantics></math>, which is zero or negative. A value investor with a short position buys to exit once its signal falls below <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">out</mtext></msubsup><annotation encoding="application/x-tex">\chi^{\text{out}}_{i}</annotation></semantics></math>.</p>
+<p><strong>When does a drop keep going?</strong> Each order moves the price only once, in the step it is placed. A trend follower that has sold has nothing more to sell until it exits. A value investor that has bought has nothing more to buy. Each step of the fall pushes some new trend followers past their entry thresholds, and some new value investors past theirs. If the new sellers outweigh the new buyers, their selling causes the next fall, which reaches the next trend followers. The drop stops when the buying outweighs the selling, or when no trend followers are left to sell.</p>
+<p><strong>How does the mix of traders matter?</strong> The <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb">Farmer–Joshi example</a> keeps 1,200 value investors and changes the number of trend followers. The table shows averages over three markets:</p>
+<div class="table-wrap" tabindex="0" aria-label="Comparison table"><table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Trend followers</th>
+<th style="text-align: left;">Excess kurtosis</th>
+<th style="text-align: left;">Lag-1 autocorrelation of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>g</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\lvert g\rvert</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.076</td>
+<td style="text-align: left;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">600</td>
+<td style="text-align: left;">0.181</td>
+<td style="text-align: left;">0.025</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">900</td>
+<td style="text-align: left;">31.3</td>
+<td style="text-align: left;">0.253</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1,200</td>
+<td style="text-align: left;">46.5</td>
+<td style="text-align: left;">0.675</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1,500</td>
+<td style="text-align: left;">41.3</td>
+<td style="text-align: left;">0.700</td>
+</tr>
+</tbody>
+</table></div>
+<p>With 600 or fewer trend followers, the value investors absorb the drops, and the growth rates look Normal. With 1,200 or more, large moves are common (fat tails), and large moves tend to follow large moves (volatility clustering). At 900, some markets have large moves and some do not.</p>
+<p><strong>What should the other settings do?</strong> The example changes only the mix. The price rule tells us what to expect from two other settings:</p>
+<ul>
+<li><strong>Liquidity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.</strong> An order of size <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> moves the log price by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>/</mi><mi>λ</mi></mrow><annotation encoding="application/x-tex">c/\lambda</annotation></semantics></math>. A larger <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> means each order moves the price less, so each step of a fall should reach fewer new thresholds.</li>
+<li><strong>Thresholds.</strong> Trend followers with small entry thresholds react to small falls. In the example, the entry thresholds are drawn between 0.2 and 4, so traders join a fall at different points, not all at once.</li>
+</ul>
+<p><strong>Can value investors make a fall worse?</strong> Not because of the price. A falling price lowers every value investor’s signal, so it can only make them buy or close a short. But not all of them buy. Each value investor compares the price with its own estimate of the value, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msup><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\ln V_{t}+v^{(i)}</annotation></semantics></math>, and the offsets <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">v^{(i)}</annotation></semantics></math> differ. An investor with a low estimate may still think the asset is overpriced after a drop, so it does not buy, and if it is short, it stays short. Value investors sell during a fall only if the value itself falls.</p>
+<p><strong>Does a trend follower close a short if the price stays flat?</strong> It can. Once the fall is more than <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_{i}</annotation></semantics></math> steps old, the trader’s signal compares two prices from after the fall, so it returns to about zero. A short trend follower exits when its signal rises above <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">out</mtext></msubsup></mrow><annotation encoding="application/x-tex">-\chi^{\text{out}}_{i}</annotation></semantics></math>. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">out</mtext></msubsup><annotation encoding="application/x-tex">\chi^{\text{out}}_{i}</annotation></semantics></math> near zero, noise alone can trigger the exit. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>χ</mi><mi>i</mi><mtext mathvariant="normal">out</mtext></msubsup><mo>=</mo><mo>−</mo><mn>0.2</mn></mrow><annotation encoding="application/x-tex">\chi^{\text{out}}_{i}=-0.2</annotation></semantics></math>, the trader waits until the log price has risen by 0.2 over its lag.</p>
+<p><strong>What does the model leave out?</strong> The market maker fills every net order at the price the rule sets, so a large imbalance only costs a large price move. Traders have no cash or share balances, and any trader can go short. In the L12b Wolfram market, by contrast, traders can run out of cash or shares (see <a href="dealer-price.html">how the dealer sets the price</a>). We also do not fit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> in the course. Farmer and Joshi chose their parameters to keep the price near the value and to match the volatility of real prices. To fit <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> to a real market, we would measure how far prices move for a given net order in trade data.</p>
+<div class="answer-check"><p><strong>Try it.</strong> With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda=1</annotation></semantics></math>, 20 trend followers each sell <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>0.005</mn></mrow><annotation encoding="application/x-tex">c=0.005</annotation></semantics></math> in one step, and 8 value investors each buy <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>0.005</mn></mrow><annotation encoding="application/x-tex">c=0.005</annotation></semantics></math>. Ignoring the noise, by what percentage does the price change? What if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda=2</annotation></semantics></math>? </p><details><summary>Show the answer</summary><div> The net order is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>8</mn><mo>−</mo><mn>20</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mn>0.005</mn><mo>=</mo><mo>−</mo><mn>0.06</mn></mrow><annotation encoding="application/x-tex">(8-20)\times 0.005=-0.06</annotation></semantics></math>, so <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">\ln S</annotation></semantics></math> falls by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.06</mn><mi>/</mi><mi>λ</mi></mrow><annotation encoding="application/x-tex">0.06/\lambda</annotation></semantics></math>. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda=1</annotation></semantics></math>, the price falls by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>0.06</mn></mrow></msup><mo>=</mo><mn>5.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1-e^{-0.06}=5.8\%</annotation></semantics></math>. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda=2</annotation></semantics></math>, it falls by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>0.03</mn></mrow></msup><mo>=</mo><mn>3.0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1-e^{-0.03}=3.0\%</annotation></semantics></math>.</div></details></div>
+</div>
+      </section>
+    </div>
+
+    <!-- LECTURES and NOTATION_LINKS slots: each a complete ul of li items containing links. -->
+    <aside id='faq-sources' class='article-rail' aria-labelledby='faq-sources-label'>
+      <h2 id='faq-sources-label' class='section-label'><span class='step-num'>3</span> Notes and sources</h2>
+      <section class='rail-block' aria-labelledby='rail-lectures-label'>
+        <h3 id='rail-lectures-label'>Lecture notes</h3>
+        <div class='rail-list'><ul><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Lecture-AgentBasedMarkets-Fall-2026.ipynb">L12a lecture</a></li><li><a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-12/L12a/CHEME-5660-L12a-Example-FarmerJoshi-Fall-2026.ipynb">L12a example: the Farmer–Joshi market</a></li></ul></div>
+      </section>
+      <section class='rail-block' aria-labelledby='rail-notation-label'>
+        <h3 id='rail-notation-label'>Notation used here</h3>
+        <div class='rail-list'><ul><li><a href="../notation.html#L12a">L12a symbols and units</a></li></ul></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- RELATED slot: a complete ul of li items, each containing one link to a question. -->
+  <nav class='related' aria-labelledby='related-label'>
+    <h2 id='related-label' class='section-label'>Related questions</h2>
+    <div class='related-list'><ul><li><a href="boltzmann-temperature.html">What does the temperature do in the Boltzmann choice rule?</a></li><li><a href="middle-temperature.html">Why does a middle temperature give lower volatility than greedy or random choice?</a></li><li><a href="rule-number.html">How do we read a Wolfram market rule number?</a></li></ul></div>
+  </nav>
+
+  <p class='article-end'>
+    <a class='back-link' href='../index.html'><span aria-hidden='true'>←</span> All questions</a>
+  </p>
+
+</article>
+
+  </main>
+
+  <footer class='site-footer'>
+    <div class='site-footer-inner'>
+      <p>CHEME 5660 Quantitative Finance, Cornell University. Fall 2026.</p>
+      <p><a href='../../index.html'>Course materials</a></p>
+    </div>
+  </footer>
+<script defer src="../assets/faq.js"></script>
+</body>
+</html>
