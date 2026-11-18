@@ -14,7 +14,7 @@ using Dates
         "high", "low", "timestamp", "number_of_transactions"]
     snapshots = [
         (year = 2025, stop = Date(2025, 12, 31), tickers = 483, days = 250, complete = 473),
-        (year = 2026, stop = Date(2026, 9, 4), tickers = 475, days = 170, complete = 465),
+        (year = 2026, stop = Date(2026, 11, 13), tickers = 475, days = 219, complete = 464),
     ]
 
     for snapshot in snapshots

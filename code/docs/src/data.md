@@ -6,7 +6,7 @@ average prices for stocks and exchange-traded funds. The training dataset covers
 | Testing year | Available dates | Tickers | Tickers with a complete history |
 | --- | --- | ---: | ---: |
 | 2025 | January 2–December 31, 2025 | 483 | 473 with 250 observations |
-| 2026 | January 2–September 4, 2026 | 475 | 465 with 170 observations |
+| 2026 | January 2–November 13, 2026 | 475 | 464 with 219 observations |
 
 Select the testing year when loading the data:
 
@@ -20,7 +20,7 @@ spy_2026 = testing_2026["SPY"] # daily observations for one ticker
 The loaders return the bundled observations without filling missing dates or
 filtering tickers. Match parameters and prices by ticker and inspect each price
 series' dates before an out-of-sample comparison. The 2026 snapshot ends on
-September 4; loading it does not download more recent observations.
+November 13; loading it does not download more recent observations.
 
 ```@docs
 VLQuantitativeFinancePackage.MyTrainingMarketDataSet

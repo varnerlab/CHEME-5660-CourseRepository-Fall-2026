@@ -26,7 +26,7 @@ data provided by [Polygon.io](https://polygon.io/).
 
 ### Arguments
 - `year::Int`: select 2025 (January 2 through December 31) or 2026 (January 2
-  through September 4). Defaults to 2025, the testing period of the existing
+  through November 13). Defaults to 2025, the testing period of the existing
   course examples. Other years raise an `ArgumentError`.
 
 ### Returns
@@ -45,7 +45,7 @@ function MyTestingMarketDataSet(; year::Int = 2025)::Dict{String,Any}
     filename = if year == 2025
         "SP500-Daily-OHLC-1-2-2025-to-12-31-2025.jld2"
     elseif year == 2026
-        "SP500-Daily-OHLC-1-2-2026-to-09-04-2026.jld2"
+        "SP500-Daily-OHLC-1-2-2026-to-11-13-2026.jld2"
     else
         throw(ArgumentError("no testing market data for $(year); 2025 and 2026 are available"))
     end

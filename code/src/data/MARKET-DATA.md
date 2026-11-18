@@ -6,6 +6,24 @@ mapping ticker symbols to DataFrames. The source download configuration requests
 adjusted daily bars in ascending time order. No rows are filled, filtered, or
 modified when these files are copied into the course package.
 
+## November 18, 2026 update
+
+The 2026 snapshot was refreshed through November 13 and added unchanged.
+It has the same 475 tickers as the September 4 snapshot, and its closing prices
+match that snapshot on every shared date. Eleven tickers have incomplete
+histories, one more than before: QRVO stops after 189 observations.
+`MyTestingMarketDataSet(year = 2026)` now loads this file. The September 4 file
+stays in the package because the INFORMS study code in `code/src/mpc/Data.jl`
+loads it by name.
+
+| File | Date range | Tickers | Complete histories | SHA-256 |
+| --- | --- | ---: | --- | --- |
+| `SP500-Daily-OHLC-1-2-2026-to-11-13-2026.jld2` | 2026-01-02–2026-11-13 | 475 | 464 with 219 observations | `de2138eb9827f1e590c4881611b95d77efaebfd1c1c85a3a128da8d6f0bc603d` |
+
+The import check found the same eight columns and no empty histories, missing
+values, duplicate dates, unsorted timestamps, or nonpositive/nonfinite VWAP
+values. The complete histories share one observation-date grid.
+
 ## September 13, 2026 update
 
 The 2025 source file was already identical to the bundled copy. The latest 2026
