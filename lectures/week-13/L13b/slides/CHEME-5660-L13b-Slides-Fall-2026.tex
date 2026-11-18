@@ -16,8 +16,8 @@
 % text. The disclaimer is slide 2, by instructor preference.
 % November 17, 2026: the Many Assets frames (sector factor model, drifting beta) moved here
 % from L13a.
-% Notation follows the lecture: g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i eps~_i, the
-% stock-specific residual u_i with its centered draw eps~_i, the drift weight a, the shock size
+% Notation follows the lecture: g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i u~_i, the
+% stock-specific residual u_i with its centered draw u~_i, the drift weight a, the shock size
 % k_i, and the standard normal shocks z_i.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
@@ -75,7 +75,7 @@
       period. We test the \texttt{SPY} model, with and without jump episodes, on the growth
       rates of 2025 and 2026.
     \item We model a synthetic stock's growth rate as
-      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{\varepsilon}_{i}$.
+      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{u}_{i}$.
       Shared market and sector components capture correlations between stocks.
     \item The residual scale $\psi_i$ targets the stock's volatility. A drifting $\beta_i$
       lets the stock's market sensitivity change over time.
@@ -170,35 +170,75 @@
   \begin{equation*}
     g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}
   \end{equation*}
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{Market}: the market factor $g_m(t)$ is the growth rate of \texttt{SPY}. The
-      single index fit gives $\alpha_i$, $\beta_i$, and the residual
-      $\varepsilon_i(t)=g_i(t)-\alpha_i-\beta_i g_m(t)$.
-    \item \hilite{Sector}: the sector factor $f_s(t)=\tfrac{1}{n_s}\sum_{j\in s}\varepsilon_j(t)$
-      averages the residuals of the $n_s$ stocks in sector $s$. The loading $\delta_i$
-      measures how strongly $\varepsilon_i$ moves with it.
-    \item \hilite{Stock-specific}: the stock-specific residual
-      $u_i(t)=\varepsilon_i(t)-\delta_i f_s(t)$ is the growth left after the market and sector parts.
-  \end{itemize}
+  Here $g_m(t)$ is the growth rate of \texttt{SPY}, $f_s(t)$ is the growth rate of sector $s$
+  with the market part removed, and $u_i(t)$ is the growth that neither the market nor the
+  sector explains.
+
+  \vspace{0.5em}
+  We compute the parts in four steps: the market split, the sector factor, the sector
+  loading, and the stock-specific residual.
+\end{frame}
+
+\begin{frame}{The Market Split}
+  The single index fit of stock $i$ splits its growth rate into a baseline, a market part,
+  and a single index residual:
+  \begin{equation*}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{single index residual}}
+  \end{equation*}
+  The market factor $g_m(t)$ is the growth rate of \texttt{SPY}. The single index residual
+  $\varepsilon_i(t)$ is the growth that the market does not explain.
+\end{frame}
+
+\begin{frame}{The Sector Factor}
+  The sector factor $f_s(t)$ is the growth rate of sector $s$ with the market part removed. We average
+  the single index residuals of the $n_s$ stocks in the sector and substitute the market split of each stock:
+  \begin{align*}
+    f_{s}(t) &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\varepsilon_{j}(t) && \text{definition}\\
+    &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\left(g_{j}(t)-\alpha_{j}-\beta_{j}\,g_{m}(t)\right) && \text{market split of each stock}\\
+    &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}g_{j}(t)-\tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\alpha_{j}-\Big(\tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\beta_{j}\Big)g_{m}(t) && \text{split the sum}\\
+    &= \boxed{\bar{g}_{s}(t)-\bar{\alpha}_{s}-\bar{\beta}_{s}\,g_{m}(t)} && \text{name the averages}
+  \end{align*}
+  Each bar is an average over the $n_s$ stocks in the sector: $\bar{g}_s(t)$ of their growth
+  rates, $\bar{\alpha}_s$ of their baselines, and $\bar{\beta}_s$ of their market sensitivities.
+  The $\beta_i g_m(t)$ term already carries the market part. If $f_s$ kept it, a market move
+  would enter the growth rate twice.
 \end{frame}
 
 \begin{frame}{Estimating the Sector Loading}
-  We estimate $\delta_i$ by least squares, as for $\alpha_i$ and $\beta_i$. The regressor is the
-  average residual of the other stocks in the sector,
-  $\bar{\varepsilon}_{-i}(t)=\tfrac{1}{n_s-1}\sum_{j\in s,\,j\neq i}\varepsilon_j(t)$:
+  The loading $\delta_i$ measures how strongly $\varepsilon_i$ moves with $f_s$. We estimate it by
+  least squares against $f_{s,-i}(t)=\tfrac{1}{n_s-1}\sum_{j\in s,\,j\neq i}\varepsilon_j(t)$:
   \begin{equation*}
-    \underbrace{\begin{bmatrix}\varepsilon_i(1)\\ \vdots\\ \varepsilon_i(T)\end{bmatrix}}_{\mathbf{y}}
-    =\underbrace{\begin{bmatrix}\bar{\varepsilon}_{-i}(1)\\ \vdots\\ \bar{\varepsilon}_{-i}(T)\end{bmatrix}}_{\hat{\mathbf{X}}}\,\hat{\delta}_i
-    +\underbrace{\begin{bmatrix}e_i(1)\\ \vdots\\ e_i(T)\end{bmatrix}}_{\mathbf{e}}
+    \underbrace{\begin{bmatrix}\varepsilon_i(1)\\ \vdots\\ \varepsilon_i(T)\end{bmatrix}}_{\substack{\mathbf{y}\\ \text{single index residual of stock } i}}
+    =\underbrace{\begin{bmatrix}f_{s,-i}(1)\\ \vdots\\ f_{s,-i}(T)\end{bmatrix}}_{\substack{\hat{\mathbf{X}}\\ \text{sector factor without stock } i}}\,\hat{\delta}_i
+    +\underbrace{\mathbf{e}}_{\text{fit errors}}
   \end{equation*}
-  Both residual series average zero, so the fit needs no intercept:
+  Both $\varepsilon_i$ and $f_{s,-i}$ average zero, so the fit needs no intercept:
   \begin{equation*}
     \boxed{\hat{\delta}_i=\arg\min_{\delta}\lVert\mathbf{y}-\hat{\mathbf{X}}\,\delta\rVert_2^2
       =\left(\hat{\mathbf{X}}^{\top}\hat{\mathbf{X}}\right)^{-1}\hat{\mathbf{X}}^{\top}\mathbf{y}
-      =\frac{\widehat{\operatorname{Cov}}(\varepsilon_i,\bar{\varepsilon}_{-i})}{\widehat{\operatorname{Var}}(\bar{\varepsilon}_{-i})}}
+      =\frac{\widehat{\operatorname{Cov}}(\varepsilon_i,f_{s,-i})}{\widehat{\operatorname{Var}}(f_{s,-i})}}
   \end{equation*}
-  The sector loading is $\delta_i=c_s\hat{\delta}_i$. One scale $c_s$ per sector matches the
-  average residual covariance of two stocks in the sector to the data.
+  We keep only the slope. The loading is $\delta_i=c_s\hat{\delta}_i$, where one scale $c_s$ per
+  sector matches the average residual covariance of two stocks in the sector to the data.
+\end{frame}
+
+\begin{frame}{The Stock-Specific Residual}
+  With the loading $\delta_i$, we remove the sector part from the single index residual of stock $i$. What is
+  left is the \hilite{stock-specific residual}:
+  \begin{equation*}
+    u_{i}(t)=\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{single index residual}}-\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector part}}
+  \end{equation*}
+  The stock-specific residual $u_i(t)$ is the growth that neither the market nor the sector
+  explains.
+
+  \vspace{0.5em}
+  For example, if every bank rises on a day the market is flat, the move goes into the sector
+  factor of Financials. If one bank rises alone after an earnings surprise, most of the move
+  goes into the stock-specific residual $u_i$ of that bank.
+
+  \vspace{0.5em}
+  Rearranging gives $\varepsilon_i(t)=\delta_i f_s(t)+u_i(t)$. Substituting this into the market
+  split gives the four parts of the sector factor model.
 \end{frame}
 
 \begin{frame}{Simulating the Parts}
@@ -211,7 +251,7 @@
   \end{itemize}
   We draw one path from each model, independently, and add the parts back together:
   \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market draw}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector draw}}+\underbrace{\psi_{i}\,\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{stock-specific draw}}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market draw}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector draw}}+\underbrace{\psi_{i}\,\tilde{u}_{i}(t)}_{\textstyle\text{stock-specific draw}}
   \end{equation*}
   In this equation, $g_m(t)$ and $f_s(t)$ are the market and sector draws, not the data.
   The shared draws are the only link between stocks.
@@ -221,7 +261,7 @@
   Center a draw $u_i^{\mathrm{draw}}(t)$ from the stock-specific model on the model's
   long-run mean $\bar{u}_i$:
   \begin{equation*}
-    \tilde{\varepsilon}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
+    \tilde{u}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
   \end{equation*}
   In the data, the sector factor includes stock $i$'s own residual. Independent draws drop
   the movement that $u_i$ shares with $f_s$. Choose the residual scale $\psi_i$ so the
@@ -246,10 +286,10 @@
       market model, and one sector path $f_s(t)$ for the stocks in each sector from its
       sector model. Use independent random draws to generate the different paths.
     \item \hilite{Stock-specific draws}: for each stock, draw a path from its stock-specific
-      model and subtract the model's long-run mean $\bar{u}_i$ to obtain $\tilde{\varepsilon}_i(t)$.
+      model and subtract the model's long-run mean $\bar{u}_i$ to obtain $\tilde{u}_i(t)$.
     \item \hilite{Compose}: on each day, calculate
       \begin{equation*}
-        g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{\varepsilon}_i(t),
+        g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{u}_i(t),
       \end{equation*}
       then compound $S_i(t)=S_i(t-1)\exp\!\left(g_i(t)\Delta t\right)$.
   \end{enumerate}
