@@ -7,7 +7,7 @@ What to hold (the γ score and the pickers), how to weight it (maximum-utility a
 limits, solved with Clarabel and SCS as the fallback), when to trade (a 21-day horizon, a GBM forecast
 band, and a drawdown stop), the β-cap hedge, and the study loop that replays a run day by day. The code
 is ported from the study's repository (`varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab`, commit
-2fc998c); synthetic markets come from `JumpHMM.jl`.
+2fc998c).
 
 It is a submodule because the course package already defines different `MySIMParameterEstimate`,
 `MyEWLSState`, `estimate_sim`, `ewls_init`, and `ewls_update!` (the adaptive portfolio of L7b). Use it
@@ -33,7 +33,6 @@ module MPCPortfolio
     using JuMP
     using Clarabel
     using SCS
-    import JumpHMM
 
     # the engine, in the study's include order -
     include(joinpath(@__DIR__, "Types.jl"))
@@ -61,9 +60,8 @@ module MPCPortfolio
     include(joinpath(@__DIR__, "StudyBacktest.jl"))
     include(joinpath(@__DIR__, "Limits.jl"))
 
-    # course additions: default settings, universe selection, synthetic markets -
+    # course additions: default settings, universe selection -
     include(joinpath(@__DIR__, "Course.jl"))
-    include(joinpath(@__DIR__, "Synthetic.jl"))
 
     # exports (the study's names for the ported files, plus the course additions) -
     export MyMarketData, load_market_data, growth_rates, index_of, DATA_FILES,
@@ -88,7 +86,4 @@ module MPCPortfolio
         growth_scorecard, MyStudyRun, MyStudyResult, make_rule, make_screen, run_study, limits_row,
         limits_day, limits_failures
     export default_study_path, select_universe, subset_universe
-    export SYNTH_HMM, SYNTH_TRAIN, SYNTH_ALPHA_WINDOWS, growth_window, fit_name_model, model_sd_ratio,
-        ewls_beta_path, beta_path_stats, real_drift_targets, fit_beta_drift, fit_alpha_pull, fit_generator,
-        NonFiniteCloseError, market_data_from_growth, synthetic_market_data, market_path_stats, path_sets, run_synthetic_path
 end

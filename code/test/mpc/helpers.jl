@@ -191,5 +191,4 @@ function hand_result(; dates::Vector{Date}, equity=fill(1e5, length(dates)), xi=
         targets=targets, projections=Dict{Date,MyProjection}()))
 end
 
-# (The INFORMS toy_generator fixture is not ported: synthetic markets come from JumpHMM.jl; see test_synthetic.jl.)
 

@@ -17,10 +17,6 @@ The method has three parts:
 - **When to trade.** The book re-plans after 21 trading days, when its value leaves a GBM forecast band, or after
   an 8% drawdown from its peak. An optional hedge caps the book's β, more tightly as the market turns bearish.
 
-Synthetic markets for testing the method come from [JumpHMM.jl](https://github.com/varnerlab/JumpHMM.jl)'s
-`SectorFactorModel`; `fit_generator` fits its drift to the method's own β estimate, and `path_sets` chooses
-typical, burst and bear markets, as the study does.
-
 The submodule has its own namespace, because the course package's adaptive-portfolio routines use some of the
 same names. Use it qualified:
 
@@ -44,8 +40,7 @@ Threaded runs: SCS needs `OMP_NUM_THREADS=1` and `KMP_GTID_MODE=2` set before Ju
 ## Reference
 
 The reference is split by part of the method: [data, the single-index model, and settings](mpc-data.md),
-[allocation](mpc-allocation.md), [trading and the study loop](mpc-trading.md), and
-[synthetic markets](mpc-synthetic.md).
+[allocation](mpc-allocation.md), and [trading and the study loop](mpc-trading.md).
 
 ```@docs
 VLQuantitativeFinancePackage.MPCPortfolio

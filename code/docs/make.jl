@@ -25,7 +25,6 @@ makedocs(
             "MPC: data and settings" => "mpc-data.md",
             "MPC: allocation" => "mpc-allocation.md",
             "MPC: trading" => "mpc-trading.md",
-            "MPC: synthetic markets" => "mpc-synthetic.md",
         ],
         "Decisions" => [
             "Markov models" => "markov.md",
