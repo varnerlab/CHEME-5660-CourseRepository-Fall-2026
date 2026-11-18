@@ -3,9 +3,9 @@
 The lecture extends the jump hidden Markov model from one asset to a universe of stocks. It opens with a review
 of the single-asset model, a stop at the out-of-sample example, and an AQR Capital Management company profile.
 The Many Assets section then teaches the sector factor model: each stock's daily growth rate is a baseline plus
-market, sector, and stock-specific residual components, with the market, sector, and residual draws taken from
-jump hidden Markov models. The section covers the scale of the residual component, the sampling algorithm, and
-the option of a drifting β. The deck mirrors the lecture.
+market, sector, and stock-specific parts computed from the data. A single-asset jump hidden Markov model fitted to
+each part supplies the market, sector, and stock-specific draws. The section covers the residual scale, the
+sampling algorithm, and the option of a drifting β. The deck mirrors the lecture.
 
 ## Examples
 

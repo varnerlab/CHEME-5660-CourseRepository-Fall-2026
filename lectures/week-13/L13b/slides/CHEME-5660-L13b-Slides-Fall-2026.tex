@@ -1,8 +1,12 @@
 % L13b student companion deck: synthetic markets of many stocks.
 % A review of the jump hidden Markov model of one asset with its out-of-sample example, the
-% AQR Capital Management company profile, the sector factor model of many stocks (the residual
-% component, the sampling algorithm, and the drifting beta option), and the summary.
+% AQR Capital Management company profile, the sector factor model of many stocks (its parts,
+% simulating them, the stock-specific draw, the sampling algorithm, and the drifting beta option),
+% and the summary.
 %
+% November 18, 2026 (later): the sector factor frames were rewritten to match the lecture's new
+% section, which computes the parts from the data first and then fits a single-asset jump hidden
+% Markov model to each part.
 % November 18, 2026: L13b became the multi-asset lecture only. The trading frames (allocation,
 % rebalancing, the market generator, and the INFORMS study's results) left with the trading
 % material, parked in lectures/archive/week-13-L13b-trading-2026-11-18/, whose copy of the
@@ -13,7 +17,7 @@
 % November 17, 2026: the Many Assets frames (sector factor model, drifting beta) moved here
 % from L13a.
 % Notation follows the lecture: g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i eps~_i, the
-% remaining residual u_i with its centered draw eps~_i, the drift weight a, the shock size
+% stock-specific residual u_i with its centered draw eps~_i, the drift weight a, the shock size
 % k_i, and the standard normal shocks z_i.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
@@ -81,7 +85,7 @@
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.2em}
     \item The tests that compare the \texttt{SPY} model with the out-of-sample data.
-    \item How the sector loadings and residual scale are chosen, and the drifting $\beta$ option.
+    \item How the sector loadings and residual scales are chosen, and the drifting $\beta$ option.
     \item The sampling algorithm of the sector factor model, step by step.
   \end{itemize}
 \end{frame}
@@ -156,67 +160,70 @@
 \end{frame}
 
 \begin{frame}{Many Assets: The Sector Factor Model}
-  \textbf{\ink{Definition:}} in the \hilite{sector factor model}, each stock has one other
-  factor besides the market, the factor $f_{s}$ of its sector $s$. The daily growth rate
-  of stock $i$ in sector $s$ is given by:
+  The single index residuals of stocks in the same sector, such as two banks, still move
+  together. The \hilite{sector factor model} adds one factor for each GICS sector:
   \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{\psi_{i}\,\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{stock residual}}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}
   \end{equation*}
-  The stock-specific baseline $\alpha_i$ and market sensitivity $\beta_i$ are the
-  single index estimates, held fixed. The sector draw $f_s$ models the sector's
-  average residual, with loading $\delta_i$.
-
-  The stock-specific residual component $\psi_i\tilde{\varepsilon}_i$ is a centered,
-  scaled draw from a model of what remains after the baseline, market, and sector
-  contributions. Each draw comes from a jump hidden Markov model. Shared market and
-  sector draws link the stocks.
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hilite{Market}: the market factor $g_m(t)$ is the growth rate of \texttt{SPY}. The
+      single index fit gives $\alpha_i$, $\beta_i$, and the residual
+      $\varepsilon_i(t)=g_i(t)-\alpha_i-\beta_i g_m(t)$.
+    \item \hilite{Sector}: the sector factor $f_s(t)=\tfrac{1}{n_s}\sum_{j\in s}\varepsilon_j(t)$
+      averages the residuals of the $n_s$ stocks in sector $s$. The loading $\delta_i$
+      measures how strongly $\varepsilon_i$ moves with it.
+    \item \hilite{Stock-specific}: the stock-specific residual
+      $u_i(t)=\varepsilon_i(t)-\delta_i f_s(t)$ is the growth left after the market and sector parts.
+  \end{itemize}
+  \slidenote{Sector loading:}{a least-squares slope, scaled per sector to match the residual covariance in the data.}
 \end{frame}
 
-\begin{frame}{The Stock-Specific Residual Component}
-  In the data, subtract the market fit and then the sector contribution:
+\begin{frame}{Simulating the Parts}
+  Each part is a daily series in the data. We fit each series with the same single-asset
+  jump hidden Markov model that we fit to \texttt{SPY}:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item \hilite{Market model}: the \texttt{SPY} model tested out of sample, fit to $g_m(t)$.
+    \item \hilite{Sector models}: one model for each sector factor $f_s(t)$.
+    \item \hilite{Stock-specific models}: one model for each stock-specific residual $u_i(t)$.
+  \end{itemize}
+  We draw one path from each model, independently, and add the parts back together:
   \begin{equation*}
-    \begin{aligned}
-      \varepsilon_i(t)&=g_i(t)-\alpha_i-\beta_i g_m(t)
-        &&\text{after the market fit}\\
-      u_i(t)&=\varepsilon_i(t)-\delta_i f_s(t)
-        &&\text{after market and sector}.
-    \end{aligned}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market draw}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector draw}}+\underbrace{\psi_{i}\,\tilde{\varepsilon}_{i}(t)}_{\textstyle\text{stock-specific draw}}
   \end{equation*}
-  Fit a jump hidden Markov model to $u_i(t)$. Center its draw on the model's
+  In this equation, $g_m(t)$ and $f_s(t)$ are the market and sector draws, not the data.
+  The shared draws are the only link between stocks.
+\end{frame}
+
+\begin{frame}{The Stock-Specific Draw (Fixed $\beta$)}
+  Center a draw $u_i^{\mathrm{draw}}(t)$ from the stock-specific model on the model's
   long-run mean $\bar{u}_i$:
   \begin{equation*}
     \tilde{\varepsilon}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
   \end{equation*}
-  The scale $\psi_i$ sizes this centered draw to give the stock-specific residual component.
-\end{frame}
-
-\begin{frame}{Sizing the Residual Component (Fixed $\beta$)}
-  Independent sector and stock residual draws have variances that add. Set their target using
-  the real data:
+  In the data, the sector factor includes stock $i$'s own residual. Independent draws drop
+  the movement that $u_i$ shares with $f_s$. Choose the residual scale $\psi_i$ so the
+  variances add up to the data's:
   \begin{equation*}
     \underbrace{\delta_i^2\operatorname{Var}(f_s)}_{\text{sector}}
-    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{stock residual}}
-    =\underbrace{\operatorname{Var}(\varepsilon_i)}_{\text{after the market fit}}.
-  \end{equation*}
-  Solving for the scale gives:
-  \begin{equation*}
+    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{stock-specific}}
+    =\underbrace{\operatorname{Var}(\varepsilon_i)}_{\text{after the market fit}}
+    \ \Longrightarrow\ 
     \boxed{\psi_i^2=
       \frac{\operatorname{Var}(\varepsilon_i)-\delta_i^2\operatorname{Var}(f_s)}
-           {\operatorname{Var}(u_i)}},\qquad\psi_i\geq0.
+           {\operatorname{Var}(u_i)}},\ \psi_i\geq0
   \end{equation*}
-  The sector factor includes stock $i$ in its average. The scale compensates for
-  covariance lost when we draw sector and stock residual paths independently.
   \slidenote{A target:}{the fitted models reproduce the data variances only approximately.}
 \end{frame}
 
 \begin{frame}{Algorithm: Sample the Synthetic Universe}
-  Given the fitted component models, coefficients, residual scales, and starting prices:
+  Given the fitted market, sector, and stock-specific models, the coefficients, residual
+  scales, and starting prices:
   \begin{enumerate}\setlength{\itemsep}{0.4em}
-    \item \hilite{Shared draws}: draw one market path $g_m(t)$ for all stocks and one
-      sector path $f_s(t)$ for the stocks in each sector. Use independent random draws
-      to generate the different paths.
-    \item \hilite{Residual draws}: for each stock, draw a path from the model of its
-      remaining residual and subtract that model's long-run mean to obtain $\tilde{\varepsilon}_i(t)$.
+    \item \hilite{Shared draws}: draw one market path $g_m(t)$ for all stocks from the
+      market model, and one sector path $f_s(t)$ for the stocks in each sector from its
+      sector model. Use independent random draws to generate the different paths.
+    \item \hilite{Stock-specific draws}: for each stock, draw a path from its stock-specific
+      model and subtract the model's long-run mean $\bar{u}_i$ to obtain $\tilde{\varepsilon}_i(t)$.
     \item \hilite{Compose}: on each day, calculate
       \begin{equation*}
         g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{\varepsilon}_i(t),
@@ -256,7 +263,7 @@
     \item \hilite{Shared components}: we combined each stock's baseline with market, sector,
       and stock-specific residual components. Shared draws made stocks move together.
     \item \hilite{Variance targets}: we set the residual scale to target the variance left
-      after the market fit when combined with the sector component. As an option, we let
+      after the market fit when combined with the sector draw. As an option, we let
       each stock's market sensitivity drift.
   \end{itemize}
   \vspace{0.3em}
