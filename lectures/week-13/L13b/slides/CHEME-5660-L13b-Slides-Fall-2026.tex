@@ -148,6 +148,11 @@
 
 % ========== Many Assets
 \begin{frame}{Review: Factor Models}
+  We extend the single-asset jump hidden Markov model to many stocks with a factor model.
+  We simulate its market, sector, and stock-specific parts, each with its own single-asset
+  jump hidden Markov model.
+
+  \vspace{0.5em}
   Previously, we studied \hilite{factor models}, which describe the growth rate in terms of
   factors. For stock $i$ on day $t$, a general factor model is given by:
   \begin{equation*}
@@ -182,9 +187,9 @@
   Each part is a daily series in the data. We fit each series with the same single-asset
   jump hidden Markov model that we fit to \texttt{SPY}:
   \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Market model}: the \texttt{SPY} model tested out of sample, fit to $g_m(t)$.
-    \item \hilite{Sector models}: one model for each sector factor $f_s(t)$.
-    \item \hilite{Stock-specific models}: one model for each stock-specific residual $u_i(t)$.
+    \item \hilite{Market model}: the jump hidden Markov model of \texttt{SPY}, tested out of sample, for $g_m(t)$.
+    \item \hilite{Sector models}: a jump hidden Markov model fitted to each sector factor $f_s(t)$.
+    \item \hilite{Stock-specific models}: a jump hidden Markov model fitted to each stock-specific residual $u_i(t)$.
   \end{itemize}
   We draw one path from each model, independently, and add the parts back together:
   \begin{equation*}
