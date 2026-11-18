@@ -38,7 +38,7 @@ end
 # real SPY: the daily growth rate and the date of each growth rate -
 spy = MyTrainingMarketDataSet()["dataset"]["SPY"];
 prices = Float64.(spy.close); # USD/share
-g = JumpHMM.excess_growth_rates(prices; rf = 0.0, dt = Δt); # daily growth rate (1/yr)
+g = JumpHMM.excess_growth_rates(prices; rf = 0.0, Δt = Δt); # daily growth rate (1/yr)
 dates = spy.timestamp[2:end]; # the date of each growth rate
 number_of_days = length(g);
 
@@ -55,13 +55,13 @@ real_curve = [rolling_sd(g, t0 + k, window) for k ∈ -days_before:days_after];
 
 # simulated: the tuned model saved by the SPY example -
 model = load(joinpath(_PATH_TO_DATA, "JumpHMM-SPY-2014-2024.jld2"), "model");
-result = JumpHMM.simulate(model, number_of_days; n_paths = number_of_paths, seed = random_seed);
+result = JumpHMM.simulate(model, number_of_days; number_of_paths = number_of_paths, seed = random_seed);
 
 # simulated: the rolling standard deviation around the first day of every episode with room on both sides -
 curves = Array{Float64,1}[];
-for path ∈ result.paths
-    x = path.observations;
-    e = path.jumps; # true on the episode days
+for p ∈ 1:number_of_paths
+    x = result.growth_rates[:, p];
+    e = result.episodes[:, p]; # true on the episode days
     for t ∈ 2:number_of_days
         if e[t] == true && e[t - 1] == false && t - days_before - window + 1 >= 1 && t + days_after <= number_of_days
             push!(curves, [rolling_sd(x, t + k, window) for k ∈ -days_before:days_after]);
@@ -91,7 +91,7 @@ close(io);
 
 # report: the numbers the figure header and the lecture rely on -
 m = vec(mean(C; dims = 2));
-println("model ϵ = $(model.jump.ϵ), λ = $(model.jump.λ); episodes: $(size(C, 2)) from $(number_of_paths) paths")
+println("model ϵ = $(model.ϵ), λ = $(model.λ); episodes: $(size(C, 2)) from $(number_of_paths) paths")
 println("real: start $(Date(dates[t0])), peak $(round(maximum(real_curve), digits = 1)) on day $(argmax(real_curve) - days_before - 1), ordinary days (median over 2014-2024) $(round(median([rolling_sd(g, t, window) for t ∈ window:number_of_days]), digits = 1))")
 println("simulated mean: peak $(round(maximum(m), digits = 1)), at day 60 $(round(m[days_before + 61], digits = 1)), at day 100 $(round(m[days_before + 101], digits = 1)), at day 150 $(round(m[days_before + 151], digits = 1))")
 println("real: at day 60 $(round(real_curve[days_before + 61], digits = 1)), at day 100 $(round(real_curve[days_before + 101], digits = 1))")
