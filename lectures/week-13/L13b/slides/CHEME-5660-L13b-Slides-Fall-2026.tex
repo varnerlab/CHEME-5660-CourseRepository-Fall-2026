@@ -180,7 +180,25 @@
     \item \hilite{Stock-specific}: the stock-specific residual
       $u_i(t)=\varepsilon_i(t)-\delta_i f_s(t)$ is the growth left after the market and sector parts.
   \end{itemize}
-  \slidenote{Sector loading:}{a least-squares slope, scaled per sector to match the residual covariance in the data.}
+\end{frame}
+
+\begin{frame}{Estimating the Sector Loading}
+  We estimate $\delta_i$ by least squares, as for $\alpha_i$ and $\beta_i$. The regressor is the
+  average residual of the other stocks in the sector,
+  $\bar{\varepsilon}_{-i}(t)=\tfrac{1}{n_s-1}\sum_{j\in s,\,j\neq i}\varepsilon_j(t)$:
+  \begin{equation*}
+    \underbrace{\begin{bmatrix}\varepsilon_i(1)\\ \vdots\\ \varepsilon_i(T)\end{bmatrix}}_{\mathbf{y}}
+    =\underbrace{\begin{bmatrix}\bar{\varepsilon}_{-i}(1)\\ \vdots\\ \bar{\varepsilon}_{-i}(T)\end{bmatrix}}_{\hat{\mathbf{X}}}\,\hat{\delta}_i
+    +\underbrace{\begin{bmatrix}e_i(1)\\ \vdots\\ e_i(T)\end{bmatrix}}_{\mathbf{e}}
+  \end{equation*}
+  Both residual series average zero, so the fit needs no intercept:
+  \begin{equation*}
+    \boxed{\hat{\delta}_i=\arg\min_{\delta}\lVert\mathbf{y}-\hat{\mathbf{X}}\,\delta\rVert_2^2
+      =\left(\hat{\mathbf{X}}^{\top}\hat{\mathbf{X}}\right)^{-1}\hat{\mathbf{X}}^{\top}\mathbf{y}
+      =\frac{\widehat{\operatorname{Cov}}(\varepsilon_i,\bar{\varepsilon}_{-i})}{\widehat{\operatorname{Var}}(\bar{\varepsilon}_{-i})}}
+  \end{equation*}
+  The sector loading is $\delta_i=c_s\hat{\delta}_i$. One scale $c_s$ per sector matches the
+  average residual covariance of two stocks in the sector to the data.
 \end{frame}
 
 \begin{frame}{Simulating the Parts}
