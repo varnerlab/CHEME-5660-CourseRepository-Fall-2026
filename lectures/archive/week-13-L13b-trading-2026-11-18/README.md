@@ -14,12 +14,13 @@ examples, and its code.
 | `data/pretrained-jumphmm-market-surrogate.jld2` | `lectures/week-13/L13b/data/` (moved). It is the SPY model that `fit_generator.jl` reads. |
 | `environment/mpc/Synthetic.jl` | `code/src/mpc/Synthetic.jl` (removed from the course package). It holds the generator fit, the stress and typical path sets, and the runner for one synthetic path. |
 | `environment/mpc/test_synthetic.jl` | `code/test/mpc/test_synthetic.jl` (removed from the package tests). |
+| `figs/` | `lectures/week-13/L13b/figs/` (moved by the lecture rewrite). The portfolio feedback schematic, the four INFORMS talk figures, their drawing files, data, and Makefile. `figs/README.md` describes them. |
 
 The rest of `code/src/mpc` stays in the course package. `environment/mpc/` is a copy of that folder
 from before the change.
 
-The figures, the figure data, and the two JumpHMM data files in `lectures/week-13/L13b/` stay in place,
-because the lecture, the deck, or the sector factor example still uses them.
+The two JumpHMM data files in `lectures/week-13/L13b/` stay in place, because the examples use them. The
+JumpHMM schematic of the lecture's review also stays in `lectures/week-13/L13b/figs/`.
 
 ## Running the parked material
 

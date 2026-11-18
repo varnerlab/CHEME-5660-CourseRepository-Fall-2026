@@ -19,6 +19,18 @@ text in lecture or example notebooks:
   Output) may run longer than the paragraph limit. They list inputs and
   actions and have a purpose. Do not split them or flag them in reviews.
 
+## L13b split: synthetic markets of many stocks — November 18, 2026
+
+- His decision (spec: `lectures/instructor/L13b-SPLIT-SPEC.md`): L13b is only the multi-asset
+  extension of the jump hidden Markov model. The lecture is
+  `CHEME-5660-L13b-Lecture-JumpHMM-ManyStocks-Fall-2026.ipynb`, "L13b: Synthetic Markets of Many
+  Stocks": the single-asset review with a stop at the new out-of-sample `SPY` example, the sector
+  factor model with its sampling algorithm and the drifting β option, the AQR profile, and the summary.
+- The trading material (the controller sections, the two MPC examples, their data, the generator
+  script, `code/src/mpc/Synthetic.jl`, and the talk figures with their drawing files) is parked in
+  `lectures/archive/week-13-L13b-trading-2026-11-18/`. Older notes below that name these files
+  describe where they were before the move. Week 13 runs on JumpHMM.jl 0.5.0.
+
 ## Weeks 12 and 13 swapped — November 5, 2026
 
 - His decision: the agent-based week comes first, so that JumpHMM and
@@ -54,7 +66,8 @@ text in lecture or example notebooks:
 - Figures: the talk's four figures (market state, forecast band, real-data dot plot,
   synthetic dot plot) are built in `L13b/figs/` from copies of the talk's drawing
   files and CSVs (commit `3bc41cf`), with XeLaTeX. They match the slides. The dark
-  palette is the talk's navy theme. See `L13b/figs/README.md`.
+  palette is the talk's navy theme. See `L13b/figs/README.md`. (Parked on November 18
+  in `lectures/archive/week-13-L13b-trading-2026-11-18/figs/`.)
 - Wording: the lecture says "stock", "selection rule", "weighting rule", "score", and
   "re-plan". The examples still say "name" and "picker", and the lecture says so once.
   Lecture-number references were removed from the lecture, the deck, and the two
@@ -232,7 +245,8 @@ text in lecture or example notebooks:
   (`code/src/mpc/`, ported from the study's repository at `2fc998c`, with its tests;
   notebooks `import ... MPCPortfolio as MPC`, because the course package has its own
   `MySIMParameterEstimate` and EWLS functions for L7b). The synthetic-market
-  composition lives only in JumpHMM.jl; `code/src/mpc/Synthetic.jl` holds the
+  composition lives only in JumpHMM.jl; `code/src/mpc/Synthetic.jl` (parked on
+  November 18 in `lectures/archive/week-13-L13b-trading-2026-11-18/environment/mpc/`) held the
   method-specific calibration (β drift fitted to the method's online β, α pull),
   the typical/burst/bear path sets, and the runner. The risk-free rate is FRED
   DTB3 (`code/src/data/DTB3.csv`). The real-data pipeline reproduces the study's
@@ -240,7 +254,8 @@ text in lecture or example notebooks:
   decisions; a package test), and the 373-name generator fit reproduces the study's
   (h_β 126, median k 4.9745, φ 0.6); it is saved in `L12b/data/` with its summary,
   refit by `L12b/scripts/fit_generator.jl`. Lecture, two examples (real data, about
-  1 minute; synthetic data, about 4 minutes), and deck. The bandit lecture, the BBBP
+  1 minute; synthetic data, about 4 minutes), and deck. (On November 18, the generator, its
+  script, and the two examples were parked in `lectures/archive/week-13-L13b-trading-2026-11-18/`.) The bandit lecture, the BBBP
   example, and the HMM out-of-sample example are in
   `lectures/archive/week-12-L12b-bandits-2026-11-04/`; the L12b Notes were deleted.
 
