@@ -72,9 +72,11 @@ into `quiz.md`. Then:
 2. Report the fixes, apply them once the user agrees, and have Codex check the result.
 3. Build the Canvas package:
    `python3 scripts/notebooklm-quiz-to-qti.py quiz.md <id>-quiz-canvas-qti.zip "<id> Self-Check: <topic>"`.
-   The user imports it (Settings > Import Course Content > QTI .zip file). In New Quizzes
-   the Quiz Type is locked, so the user sets Points to 0 and checks "Do not count this
-   assignment towards the final grade", then previews the math.
+   The user imports it (Settings > Import Course Content > QTI .zip file), then previews
+   the math. The zip includes Canvas's `assessment_meta.xml`, which makes the quiz a
+   practice quiz: ungraded, unlimited attempts, no gradebook column. Without that file,
+   Canvas imports it as a graded quiz (fixed and confirmed on L13a, 2026-11-18). Zips
+   built before then (L10a to L12b) lack the file and had to be set to 0 points by hand.
 4. Write `quiz-instructions.txt` (PLAIN TEXT, no markdown; copying from chat adds
    artifacts) for the quiz's Instructions box, following
    `lectures/instructor/notebooklm/L10a/quiz-instructions.txt`: the three must-know
