@@ -1,7 +1,7 @@
 % L13b student companion deck: synthetic markets of many stocks.
 % A review of the jump hidden Markov model of one asset with its out-of-sample example, the
-% sector factor model of many stocks (the residual component, the sampling algorithm, and the
-% drifting beta option), the AQR Capital Management company profile, and the summary.
+% AQR Capital Management company profile, the sector factor model of many stocks (the residual
+% component, the sampling algorithm, and the drifting beta option), and the summary.
 %
 % November 18, 2026: L13b became the multi-asset lecture only. The trading frames (allocation,
 % rebalancing, the market generator, and the INFORMS study's results) left with the trading
@@ -58,8 +58,8 @@
       and without jump episodes, against the growth rates that came after its fitting period.
     \item \hilite{A synthetic market of many stocks}: a stock-specific baseline plus market,
       sector, and stock-specific residual components.
-    \item \hilite{Sampling the universe}: a residual scale that keeps the variance left after
-      the market fit, with a fixed or drifting market sensitivity.
+    \item \hilite{Sampling the universe}: a residual scale that targets each stock's
+      volatility, with a fixed or drifting market sensitivity.
   \end{itemize}
 \end{frame}
 
@@ -124,6 +124,22 @@
   \vspace{0.8em}
   \textbf{\ink{Today:}} we extend the jump hidden Markov model from one asset to many stocks
   that move together.
+\end{frame}
+
+% ========== Company profile: AQR Capital Management
+\begin{frame}{Company Profile: AQR Capital Management}
+  \href{https://www.aqr.com/Our-Firm/About-Us}{\hilite{AQR Capital Management}}: a quantitative
+  investment management firm, founded in New York City in 1998. It moved its headquarters
+  to Greenwich, Connecticut, in 2004.
+  \begin{itemize}\setlength{\itemsep}{0.25em}
+    \item \hilite{Betting against beta}: in 2014, Andrea Frazzini and Lasse H. Pedersen found
+      that stocks with high beta tend to have low alpha. Buying low-beta stocks with borrowed
+      money and selling high-beta stocks short earned positive risk-adjusted returns.
+  \end{itemize}
+  \textbf{\ink{Connection:}} the betting-against-beta portfolio ranks stocks by their market
+  sensitivity $\beta_i$, which sets the market component of our sector factor model. With a
+  synthetic universe, we could test a betting-against-beta portfolio on many market paths.
+  \slidenote{Research:}{\href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{Betting Against Beta (2014)}.}
 \end{frame}
 
 % ========== Many Assets
@@ -227,25 +243,6 @@
   \slidenote{Example:}{\href{\repo/CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
 \end{frame}
 
-% ========== Company profile: AQR Capital Management
-\begin{frame}{Company Profile: AQR Capital Management}
-  \href{https://www.aqr.com/Our-Firm/About-Us}{\hilite{AQR Capital Management}}: a quantitative
-  investment management firm, founded in New York City in 1998. It moved its headquarters
-  to Greenwich, Connecticut, in 2004.
-  \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item \hilite{Betting against beta}: in 2014, Andrea Frazzini and Lasse H. Pedersen found
-      that stocks with high beta tend to have low alpha. Buying low-beta stocks with borrowed
-      money and selling high-beta stocks short earned positive risk-adjusted returns.
-    \item \hilite{Trading costs}: in 2018, Frazzini, Ronen Israel, and Tobias Moskowitz studied
-      1.7 trillion USD of trades in 21 developed markets over 19 years. Actual trading costs
-      were ``an order of magnitude smaller than previous studies suggest.''
-  \end{itemize}
-  \textbf{\ink{Connection:}} the betting-against-beta portfolio ranks stocks by their market
-  sensitivity $\beta_i$, which sets the market component of our sector factor model. With a
-  synthetic universe, we could test a betting-against-beta portfolio on many market paths.
-  \slidenote{Research:}{\href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{Betting Against Beta (2014)} and \href{https://www.aqr.com/Insights/Research/Working-Paper/Trading-Costs}{Trading Costs (2018)}.}
-\end{frame}
-
 \begin{frame}{Summary}
   \vspace{0.3em}
   We tested the jump hidden Markov model of \texttt{SPY} on data it had not seen. We then
@@ -254,8 +251,8 @@
   \vspace{0.4em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Out of sample}: we compared the \texttt{SPY} model, with and without jump
-      episodes, with the growth rates of 2025 and 2026.
+    \item \hilite{Out of sample}: we tested the \texttt{SPY} model, with and without jump
+      episodes, on the growth rates of 2025 and 2026.
     \item \hilite{Shared components}: we combined each stock's baseline with market, sector,
       and stock-specific residual components. Shared draws made stocks move together.
     \item \hilite{Variance targets}: we set the residual scale to target the variance left

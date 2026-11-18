@@ -24,8 +24,10 @@ text in lecture or example notebooks:
 - His decision (spec: `lectures/instructor/L13b-SPLIT-SPEC.md`): L13b is only the multi-asset
   extension of the jump hidden Markov model. The lecture is
   `CHEME-5660-L13b-Lecture-JumpHMM-ManyStocks-Fall-2026.ipynb`, "L13b: Synthetic Markets of Many
-  Stocks": the single-asset review with a stop at the new out-of-sample `SPY` example, the sector
-  factor model with its sampling algorithm and the drifting β option, the AQR profile, and the summary.
+  Stocks": the single-asset review with a stop at the new out-of-sample `SPY` example, the AQR
+  profile (moved ahead of the main content, the house order; its trading-costs bullet was cut and is
+  in the archive copy), the sector factor model with its sampling algorithm and the drifting β
+  option, and the summary.
 - The trading material (the controller sections, the two MPC examples, their data, the generator
   script, `code/src/mpc/Synthetic.jl`, and the talk figures with their drawing files) is parked in
   `lectures/archive/week-13-L13b-trading-2026-11-18/`. Older notes below that name these files

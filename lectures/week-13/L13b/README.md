@@ -1,18 +1,17 @@
 # L13b: Synthetic markets of many stocks
 
-The lecture extends the L13a jump hidden Markov model from one asset to a universe of stocks. It opens with a
-review of the single-asset model and a stop at the out-of-sample example. The Many Assets section then teaches
-the sector factor model: each stock's daily growth rate is a baseline plus market, sector, and stock-specific
-residual components, with the market, sector, and residual draws taken from jump hidden Markov models. The
-section covers the scale of the residual component, the sampling algorithm, and the option of a drifting β. An
-AQR Capital Management company profile and the summary close the lecture. The deck mirrors the lecture.
+The lecture extends the jump hidden Markov model from one asset to a universe of stocks. It opens with a review
+of the single-asset model, a stop at the out-of-sample example, and an AQR Capital Management company profile.
+The Many Assets section then teaches the sector factor model: each stock's daily growth rate is a baseline plus
+market, sector, and stock-specific residual components, with the market, sector, and residual draws taken from
+jump hidden Markov models. The section covers the scale of the residual component, the sampling algorithm, and
+the option of a drifting β. The deck mirrors the lecture.
 
 ## Examples
 
 - `CHEME-5660-L13b-Example-JumpHMM-SPY-OutOfSample-Fall-2026.ipynb` (the refresher of the single-asset model):
-  loads the `SPY` model of the L13a example (fitted to 2014–2024), compares its simulated paths with the 2025
-  and 2026 daily growth rates, turns the jump episodes off and compares both models, and compares volatility
-  clustering.
+  loads the `SPY` model fitted to 2014–2024, compares its simulated paths with the 2025 and 2026 daily growth
+  rates, turns the jump episodes off and compares both models, and compares volatility clustering.
 - `CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb`: builds a universe of two stocks from each
   sector plus `SPY` with the sector factor model, compares a synthetic path with the real data, lets β drift,
   and saves the generator.
