@@ -233,8 +233,8 @@ On November 16, 2026, he clarified the balance using the L12a and L12b lecture
 algorithms as references. Keep the main steps as connected, numbered paragraphs.
 He allows "a few nested things" where they clarify branches. Do not expand every
 action into lettered sub-steps or treat this preference as a ban on all nesting.
-The L13b controller uses one nested group for the drawdown, horizon, and band-exit
-choices; the other steps remain numbered prose.
+The L13b controller used one nested group for the drawdown, horizon, and band-exit
+choices (superseded November 17; see below).
 
 On November 17, 2026, the instructor said the L13a fitting algorithm had "too many
 bullet points" and did not match earlier lectures. Write a short loop inside its step,
@@ -246,6 +246,15 @@ Later that day, the instructor could not see the loop over episode days in the L
 sampling algorithm, because a countdown counter in a day-by-day loop had hidden it.
 Give a loop with a longer body its own `While … __do__:` step with `- a.` and `- b.`
 sub-steps. Mirror the loop structure of the package code the algorithm describes.
+
+On November 17, 2026, the instructor approved a restructured L13b controller after
+saying the earlier version "looks weird." Its allocate, forecast, and reset steps
+had read as daily steps, and only a "go to step 9" jump skipped them. Give a
+conditional with a longer body its own step, `6. __Re-plan:__ If no trigger holds,
+__then__ …. Otherwise, make a new plan:`, followed by `- a.` to `- c.` sub-steps,
+because the package runs that block only when a trigger fires. Do not write
+"go to step N" jumps. Write branch choices as `If …, __then__ …` lines, as in L12a
+step 2.
 
 ## Voice-calibration experiment — protocol for both courses
 
