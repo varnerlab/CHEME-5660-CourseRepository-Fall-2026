@@ -9,6 +9,7 @@ import json, re, sys
 from pathlib import Path
 
 MAX_LINES = 40
+MAX_LINE_CHARS = 400
 
 def strip_ansi(s):
     return re.sub(r'\x1b\[[0-9;]*m', '', s)
@@ -44,6 +45,9 @@ def export(src, dst):
                 # raw sample vectors are dropped; short result vectors (e.g., two breakevens) are kept
                 m = re.match(r'(\d+)(×\d+)?-element', lines[0])
                 if len(lines) > MAX_LINES or not txt.strip() or (m and (m.group(2) or int(m.group(1)) > 10)):
+                    continue
+                # matrices of simulated paths and one-line struct dumps (a fitted model) are dropped too
+                if re.match(r'\d+×\d+ (Matrix|Array)', lines[0]) or max(len(l) for l in lines) > MAX_LINE_CHARS:
                     continue
                 out.append('Output:\n```\n' + txt + '\n```')
     Path(dst).write_text('\n\n'.join(out) + '\n')
