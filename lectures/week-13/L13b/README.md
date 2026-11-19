@@ -4,17 +4,23 @@ The lecture extends the jump hidden Markov model from one asset to a universe of
 of the single-asset model, a stop at the out-of-sample example, and an AQR Capital Management company profile.
 The Many Assets section then teaches the sector factor model: each stock's daily growth rate is a baseline plus
 market, sector, and stock-specific parts computed from the data. A single-asset jump hidden Markov model fitted to
-each part supplies the market, sector, and stock-specific draws. The section covers the residual scale, the
-sampling algorithm, and the option of a drifting β. The deck mirrors the lecture.
+each part supplies the market, sector, and stock-specific draws. The section covers the residual scale and the
+sampling algorithm. The deck mirrors the lecture.
 
 ## Examples
 
 - `CHEME-5660-L13b-Example-JumpHMM-SPY-OutOfSample-Fall-2026.ipynb` (the refresher of the single-asset model):
   loads the `SPY` model fitted to 2014–2024, compares its simulated paths with the 2025 and 2026 daily growth
   rates, turns the jump episodes off and compares both models, and compares volatility clustering.
-- `CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb`: builds a universe of two stocks from each
-  sector plus `SPY` with the sector factor model, compares a synthetic path with the real data, lets β drift,
-  and saves the generator.
+- `CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb`: builds a universe of `SPY` and 375 stocks
+  from all 11 sectors with the sector factor model, compares a synthetic path with the real data, turns off the
+  sector part, and saves the generator.
+
+## Optional advanced material
+
+- `advanced/one_minute/CHEME-5660-L13b-Advanced-JumpHMM-SPY-OneMinute-Fall-2026.ipynb`: fits the hidden Markov
+  model of `SPY` to the one-minute growth rates of 2025, with and without tuned jump episodes, scores it one
+  trading day at a time on 2025 and 2026, and refits it before each day of 2026 on the trading days just before it. `advanced/README.md` lists its files.
 
 ## History
 

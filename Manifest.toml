@@ -1236,11 +1236,11 @@ version = "1.12.0"
 
 [[deps.JumpHMM]]
 deps = ["DataFrames", "Distributions", "HypothesisTests", "LinearAlgebra", "PDMats", "Random", "SpecialFunctions", "Statistics", "StatsBase"]
-git-tree-sha1 = "b1c2c34b87990415648a05855fd0c4700bdab0e4"
-repo-rev = "6b18ead3d90a82e4393160fe8c5840b7a7ab19ae"
+git-tree-sha1 = "ca7bc59741dca03e889e5804c0160c125ff75ddf"
+repo-rev = "886af373fa3e3eb7aa6d5deed88914fa8108b5cb"
 repo-url = "https://github.com/varnerlab/JumpHMM.jl"
 uuid = "6ee30eab-673b-484c-8b30-2cdb31ee1eb8"
-version = "0.5.0"
+version = "0.6.0"
 
 [[deps.KernelAbstractions]]
 deps = ["Adapt", "Atomix", "InteractiveUtils", "MacroTools", "PrecompileTools", "Requires", "StaticArrays", "UUIDs"]

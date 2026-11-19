@@ -32,6 +32,22 @@ text in lecture or example notebooks:
   script, `code/src/mpc/Synthetic.jl`, and the talk figures with their drawing files) is parked in
   `lectures/archive/week-13-L13b-trading-2026-11-18/`. Older notes below that name these files
   describe where they were before the move. Week 13 runs on JumpHMM.jl 0.5.0.
+- One-minute advanced notebook (November 18, 2026, his pick of the arc): `L13b/advanced/one_minute/` fits the
+  hidden Markov model to the `SPY` minutes of 2025 (Alpaca SIP bars, overnight move dropped), scores it one trading
+  day at a time on 2025 and 2026 (whole-year KS tests reject every path at about 97,000 minutes), and refits it
+  before each day of 2026 on the `window_days` days before it. At this time step, `JumpHMM.tune` with the default
+  `w_κ` is decided by its squared kurtosis error (data excess kurtosis 177, driven by a few minutes of April 7 and
+  9, 2025) and picks episodes too rare to matter. Task 1 therefore tunes with `w_κ = 0`: the episodes restore most
+  of the clustering for one trading day, but they fill about 36% of the minutes, raise the standard deviation from
+  48 to 83 (data 46), and drop the excess kurtosis to 15. Tasks 2 and 3 score the model without jumps (ϵ = 0) on
+  purpose. Pass rates appear in tables only (his call, November 18: "too big of a deal"). The figures show growth-rate
+  distributions (2025: real minutes against both models, from histograms, because one 2,498 1/yr minute stretches
+  the 200-point grid of `density(...)`; Task 2: one day of 2026 chosen by `day_to_visualize`) and the
+  autocorrelations of g and |g|. With 780 lags, the data are drawn as a line, because sticks merge into a block.
+  Task 1 opens with a candlestick chart of the bars (`start_time_to_visualize`, `number_of_minutes_to_visualize`;
+  bodies are thick lines, since the Plots.jl `ohlc` series draws tick bars). From November 18 on, the instructor edits this
+  notebook: edit it in place, never regenerate it from the scratch builder. The pull scripts are in
+  `lectures/instructor/one-minute-data/`. The L13b lecture lists it under Optional Advanced Material (November 19).
 
 ## Weeks 12 and 13 swapped — November 5, 2026
 

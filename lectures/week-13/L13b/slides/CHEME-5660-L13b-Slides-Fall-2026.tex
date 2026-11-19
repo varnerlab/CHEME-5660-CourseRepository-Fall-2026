@@ -1,9 +1,22 @@
 % L13b student companion deck: synthetic markets of many stocks.
 % A review of the jump hidden Markov model of one asset with its out-of-sample example, the
-% AQR Capital Management company profile, the sector factor model of many stocks (its parts,
-% simulating them, the stock-specific draw, the sampling algorithm, and the drifting beta option),
-% and the summary.
+% AQR Capital Management company profile, the sector factor model of many stocks (the single
+% index model and why it is not enough, the sector factor and its covariance, the stock-specific
+% part, the two covariance matrices, the sampling algorithm, and the example), the optional
+% advanced material, and the summary.
 %
+% November 19, 2026 (sync): the deck mirrors the instructor's hand-edited lecture. The drifting
+% beta frame and the drift clauses are gone. The sector factor derivation follows the definition,
+% the Computing the Parts frames were removed with that lecture section, and the stock-specific
+% part has two frames (the residual and its draw, then the sizing). New frames: the example
+% and the optional advanced material.
+% November 19, 2026 (later): the four computation frames (sector factor, sector loading, stock-specific
+% draw, sizing) became one results frame. Their derivations moved to
+% advanced/sector_factor/CHEME-5660-L13b-Derivation-SectorFactor-Parts-Fall-2026.ipynb.
+% November 19, 2026: the Many Assets frames now tell the story of the lecture: the single index
+% model and its covariance, why the single index model is not enough (the first published version
+% of the method), the sector factor model, and its block covariance matrix. The Single Index Fit
+% frame was removed, because the new opening frame shows the same fit.
 % November 18, 2026 (later): the sector factor frames were rewritten to match the lecture's new
 % section, which computes the parts from the data first and then fits a single-asset jump hidden
 % Markov model to each part.
@@ -16,9 +29,8 @@
 % text. The disclaimer is slide 2, by instructor preference.
 % November 17, 2026: the Many Assets frames (sector factor model, drifting beta) moved here
 % from L13a.
-% Notation follows the lecture: g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i u~_i, the
-% stock-specific residual u_i with its centered draw u~_i, the drift weight a, the shock size
-% k_i, and the standard normal shocks z_i.
+% Notation follows the lecture: g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i u_i, with the
+% single index residual epsilon_i = delta_i f_s + u_i and the residual scale psi_i.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
@@ -61,9 +73,9 @@
     \item \hilite{An out-of-sample test}: paths simulated from the \texttt{SPY} model, with
       and without jump episodes, against the growth rates that came after its fitting period.
     \item \hilite{A synthetic market of many stocks}: a stock-specific baseline plus market,
-      sector, and stock-specific residual components.
-    \item \hilite{Sampling the universe}: a residual scale that targets each stock's
-      volatility, with a fixed or drifting market sensitivity.
+      sector, and stock-specific parts.
+    \item \hilite{Sampling the universe}: a residual scale that keeps each stock's
+      variance, and one synthetic path of every stock.
   \end{itemize}
 \end{frame}
 
@@ -75,17 +87,18 @@
       period. We test the \texttt{SPY} model, with and without jump episodes, on the growth
       rates of 2025 and 2026.
     \item We model a synthetic stock's growth rate as
-      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,\tilde{u}_{i}$.
-      Shared market and sector components capture correlations between stocks.
-    \item The residual scale $\psi_i$ targets the stock's volatility. A drifting $\beta_i$
-      lets the stock's market sensitivity change over time.
+      $g_{i}=\alpha_{i}+\beta_{i}\,g_{m}+\delta_{i}\,f_{s}+\psi_{i}\,u_{i}$, where $\alpha_i$ is the
+      stock's baseline. The shared market and sector parts make stocks move together. The
+      stock-specific draw $u_i$ averages zero and is the growth that neither the market nor the
+      sector explains.
+    \item The residual scale $\psi_i$ matches each stock's variance to the data.
   \end{itemize}
 
   \vspace{0.3em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.2em}
     \item The tests that compare the \texttt{SPY} model with the out-of-sample data.
-    \item How the sector loadings and residual scales are chosen, and the drifting $\beta$ option.
+    \item How we compute the sector loadings and the residual scales.
     \item The sampling algorithm of the sector factor model, step by step.
   \end{itemize}
 \end{frame}
@@ -99,6 +112,9 @@
   {\normalsize\textbf{\ink{Examples:}}\par\small
   \href{\repo/CHEME-5660-L13b-Example-JumpHMM-SPY-OutOfSample-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-JumpHMM-SPY-OutOfSample-Fall-2026.ipynb}}\par
   \href{\repo/CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
+
+  \vspace{0.6em}
+  Optional advanced notebooks are listed on the Optional Advanced Material frame.
 \end{frame}
 
 % ========== Review: the jump hidden Markov model of one asset
@@ -107,10 +123,11 @@
   transition matrix by counting moves between states. Each day, the chain takes one step,
   and the model draws the growth rate from the new state:
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.47\textheight,keepaspectratio]{../figs/Fig-L13b-JumpHMM-Schematic.pdf}
+    \includegraphics[width=\textwidth,height=0.42\textheight,keepaspectratio]{../figs/Fig-L13b-JumpHMM-Schematic.pdf}
   \end{center}
-  Jump episodes start at random and last several days. These runs of large moves add the
-  volatility clustering that the chain alone misses.
+  Jump episodes start at random and last several days. On each episode day, the state comes from
+  the most negative or the most positive states. These runs of large moves add the volatility
+  clustering that the chain alone misses.
 \end{frame}
 
 \begin{frame}{Example: The \texttt{SPY} Model Out of Sample}
@@ -141,176 +158,239 @@
       money and selling high-beta stocks short earned positive risk-adjusted returns.
   \end{itemize}
   \textbf{\ink{Connection:}} the betting-against-beta portfolio ranks stocks by their market
-  sensitivity $\beta_i$, which sets the market component of our sector factor model. With a
+  sensitivity $\beta_i$, which sets the market part of our sector factor model. With a
   synthetic universe, we could test a betting-against-beta portfolio on many market paths.
   \slidenote{Research:}{\href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{Betting Against Beta (2014)}.}
 \end{frame}
 
 % ========== Many Assets
-\begin{frame}{Review: Factor Models}
-  We extend the single-asset jump hidden Markov model to many stocks with a factor model.
-  We simulate its market, sector, and stock-specific parts, each with its own single-asset
-  jump hidden Markov model.
-
-  \vspace{0.5em}
-  Previously, we studied \hilite{factor models}, which describe the growth rate in terms of
-  factors. For stock $i$ on day $t$, a general factor model is given by:
-  \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\textstyle\sum_{j}\delta_{ij}\,f_{j}(t)}_{\textstyle\text{other factors}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{residual}}
-  \end{equation*}
-  Here $\alpha_i$ is the stock-specific baseline (intercept), $g_m(t)$ is market growth, and
-  $f_j(t)$ are other factors, such as interest rates or inflation. The coefficients $\beta_i$
-  and $\delta_{ij}$ measure sensitivity to these factors. The \hilite{residual}
-  $\varepsilon_i(t)$ is the growth left after subtracting the baseline and factor contributions.
-\end{frame}
-
 \begin{frame}{Many Assets: The Sector Factor Model}
-  The single index residuals of stocks in the same sector, such as two banks, still move
-  together. The \hilite{sector factor model} adds one factor for each GICS sector:
-  \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}
-  \end{equation*}
-  Here $g_m(t)$ is the growth rate of \texttt{SPY}, $f_s(t)$ is the growth rate of sector $s$
-  with the market part removed, and $u_i(t)$ is the growth that neither the market nor the
-  sector explains.
+  The central challenge today is how to extend the single-asset jump hidden Markov model to many
+  stocks that move together. We want to simulate a synthetic universe of stocks that captures the
+  correlations, volatilities, and market sensitivities of the real data.
 
-  \vspace{0.5em}
-  We compute the parts in four steps: the market split, the sector factor, the sector
-  loading, and the stock-specific residual.
+  \vspace{0.45em}
+  Previously, the multiple asset GBM model mixed independent Gaussian shocks through a loading matrix.
+
+  \vspace{0.45em}
+  {\large\textbf{\ink{Is there a way to mix independent jump hidden Markov models to produce many
+  stocks that move together?}}}
+
+  \vspace{0.45em}
+  The answer is yes, with a sector factor model. Let's review the single index model and its
+  covariance matrix, then add a sector factor to capture the covariance that the single index
+  model misses.
+  \slidenote{Derivations:}{\href{\repo/advanced/sector_factor/CHEME-5660-L13b-Derivation-SectorFactor-Parts-Fall-2026.ipynb}{Computing the parts of the sector factor model}.}
 \end{frame}
 
-\begin{frame}{The Market Split}
-  The single index fit of stock $i$ splits its growth rate into a baseline, a market part,
-  and a single index residual:
+\begin{frame}{Review: The Single Index Model}
+  The single index model splits the growth rate of stock $i$ on day $t$ into a baseline, a market
+  factor, and a residual:
   \begin{equation*}
     g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{single index residual}}
   \end{equation*}
-  The market factor $g_m(t)$ is the growth rate of \texttt{SPY}. The single index residual
-  $\varepsilon_i(t)$ is the growth that the market does not explain.
+  Here $g_m(t)$ is the growth rate of \texttt{SPY}, and the single index residual $\varepsilon_i(t)$
+  is the growth that the market does not explain. The model assumes that the residuals have zero
+  mean, are uncorrelated with the market, and are uncorrelated across stocks.
+\end{frame}
+
+\begin{frame}{The Single Index Covariance}
+  On the diagonal, and off the diagonal for two different stocks $i\neq j$, the second and third
+  assumptions give:
+  \begin{align*}
+    \operatorname{Var}(g_{i}) &= \beta_{i}^{2}\operatorname{Var}(g_{m})+2\beta_{i}\underbrace{\operatorname{Cov}(g_{m},\varepsilon_{i})}_{=0}+\operatorname{Var}(\varepsilon_{i})\\
+    \operatorname{Cov}(g_{i},g_{j}) &= \beta_{i}\beta_{j}\operatorname{Var}(g_{m})+\beta_{i}\underbrace{\operatorname{Cov}(g_{m},\varepsilon_{j})}_{=0}+\beta_{j}\underbrace{\operatorname{Cov}(\varepsilon_{i},g_{m})}_{=0}+\underbrace{\operatorname{Cov}(\varepsilon_{i},\varepsilon_{j})}_{=0}
+  \end{align*}
+  Placing these entries in a matrix gives:
+  \begin{equation*}
+    \boxed{\symbf{\Sigma}_{g}=\underbrace{\operatorname{Var}(g_{m})\,\boldsymbol{\beta}\boldsymbol{\beta}^{\top}}_{\textstyle\text{market}}+\underbrace{\symbf{\Sigma}_{\varepsilon}}_{\textstyle\text{residual}}}
+    \qquad
+    \symbf{\Sigma}_{\varepsilon}=\begin{bmatrix}\operatorname{Var}(\varepsilon_{1}) & 0 & \cdots\\ 0 & \operatorname{Var}(\varepsilon_{2}) & \cdots\\ \vdots & \vdots & \ddots\end{bmatrix}
+  \end{equation*}
+  Every entry has a market part. The residual matrix $\symbf{\Sigma}_{\varepsilon}$ is the covariance
+  matrix of the single index residuals.
+\end{frame}
+
+\begin{frame}{Why Not the Single Index Model?}
+  The first version of the JumpHMM method used the single index model to simulate 424 stocks
+  (\href{https://arxiv.org/abs/2603.10202}{\hilite{Alswaidan and Varner, 2026}}). On the fitting
+  data, the simulated stocks passed the Kolmogorov–Smirnov test much less often than the simulated
+  \texttt{SPY} did.
+
+  \vspace{0.6em}
+  The paper traced this gap to the single index model and its residual draws, which did not fully
+  capture each stock's growth rates. In the data, the single index residuals of two stocks in the
+  same sector, such as two banks, usually move together, with
+  $\operatorname{Cov}(\varepsilon_i,\varepsilon_j)>0$.
+
+  \vspace{0.6em}
+  However, the independent residual assumption (the third assumption of the single index model)
+  does not hold in practice. Simulated stocks in the same sector move together less than real
+  stocks do.
+\end{frame}
+
+\begin{frame}{Adding a Sector Factor}
+  We need to capture the co-movement between stocks in the same sector. Let's build a new factor
+  model that adds a sector factor to the single index model. Previously, we studied
+  \hilite{factor models}, which describe the growth rate in terms of factors. For stock $i$ on day
+  $t$, a general factor model is given by:
+  \begin{equation*}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\textstyle\sum_{j}\delta_{ij}\,f_{j}(t)}_{\textstyle\text{other factors}}+\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{residual}}
+  \end{equation*}
+  Here $\alpha_i$ is the stock-specific baseline (intercept), $g_m(t)$ is the market growth rate, and
+  $f_j(t)$ are other factors, such as interest rates or inflation. The coefficients $\beta_i$
+  and $\delta_{ij}$ measure sensitivity to these factors. The \hilite{residual}
+  $\varepsilon_i(t)$ is the growth rate left after subtracting the baseline and factor contributions.
+\end{frame}
+
+\begin{frame}{Definition: The Sector Factor Model}
+  A \hilite{sector factor model} adds one factor for each sector of the
+  \href{https://www.msci.com/our-solutions/indexes/gics}{Global Industry Classification Standard (GICS)}.
+  Each sector factor describes how the single index residuals of the stocks in its sector move
+  together. Let's model the daily growth rate of stock $i$ in sector $s$ as:
+  \begin{equation*}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\overbrace{\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}}^{\textstyle\text{single index residual }\varepsilon_{i}(t)}
+  \end{equation*}
+  Here $g_m(t)$ is the growth rate of \texttt{SPY}, $f_s(t)$ is the growth rate of sector $s$
+  (with the market part removed), and $u_i(t)$ is the growth rate that neither the market nor the
+  sector explains.
 \end{frame}
 
 \begin{frame}{The Sector Factor}
-  The sector factor $f_s(t)$ is the growth rate of sector $s$ with the market part removed. We average
-  the single index residuals of the $n_s$ stocks in the sector and substitute the market split of each stock:
+  The sector factor is the average single index residual of the $n_s$ stocks in sector $s$.
+  Substituting the single index model of each stock into this average gives:
   \begin{align*}
-    f_{s}(t) &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\varepsilon_{j}(t) && \text{definition}\\
-    &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\left(g_{j}(t)-\alpha_{j}-\beta_{j}\,g_{m}(t)\right) && \text{market split of each stock}\\
-    &= \tfrac{1}{n_{s}}\textstyle\sum_{j\in s}g_{j}(t)-\tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\alpha_{j}-\Big(\tfrac{1}{n_{s}}\textstyle\sum_{j\in s}\beta_{j}\Big)g_{m}(t) && \text{split the sum}\\
-    &= \boxed{\bar{g}_{s}(t)-\bar{\alpha}_{s}-\bar{\beta}_{s}\,g_{m}(t)} && \text{name the averages}
+    f_{s}(t) &= \frac{1}{n_{s}}\sum_{j\in s}\varepsilon_{j}(t)
+    = \frac{1}{n_{s}}\sum_{j\in s}\left(g_{j}(t)-\alpha_{j}-\beta_{j}\,g_{m}(t)\right)\\
+    &= \frac{1}{n_{s}}\sum_{j\in s}g_{j}(t)-\frac{1}{n_{s}}\sum_{j\in s}\alpha_{j}-\left(\frac{1}{n_{s}}\sum_{j\in s}\beta_{j}\right)g_{m}(t)\\
+    &= \underbrace{\bar{g}_{s}(t)}_{\textstyle\text{sector average}}-\underbrace{\bar{\alpha}_{s}}_{\textstyle\text{baseline}}-\underbrace{\bar{\beta}_{s}\,g_{m}(t)}_{\textstyle\text{market}}
   \end{align*}
-  Each bar is an average over the $n_s$ stocks in the sector: $\bar{g}_s(t)$ of their growth
-  rates, $\bar{\alpha}_s$ of their baselines, and $\bar{\beta}_s$ of their market sensitivities.
-  The $\beta_i g_m(t)$ term already carries the market part. If $f_s$ kept it, a market move
-  would enter the growth rate twice.
+  Each bar is an average over the $n_s$ stocks in the sector. The sector factor is the sector's
+  average growth rate with the baseline and the market part removed. A market move therefore
+  enters the growth rate only once, through $\beta_i g_m(t)$.
 \end{frame}
 
-\begin{frame}{Estimating the Sector Loading}
-  The loading $\delta_i$ measures how strongly $\varepsilon_i$ moves with $f_s$. We estimate it by
-  least squares against $f_{s,-i}(t)=\tfrac{1}{n_s-1}\sum_{j\in s,\,j\neq i}\varepsilon_j(t)$:
-  \begin{equation*}
-    \underbrace{\begin{bmatrix}\varepsilon_i(1)\\ \vdots\\ \varepsilon_i(T)\end{bmatrix}}_{\substack{\mathbf{y}\\ \text{single index residual of stock } i}}
-    =\underbrace{\begin{bmatrix}f_{s,-i}(1)\\ \vdots\\ f_{s,-i}(T)\end{bmatrix}}_{\substack{\hat{\mathbf{X}}\\ \text{sector factor without stock } i}}\,\hat{\delta}_i
-    +\underbrace{\mathbf{e}}_{\text{fit errors}}
-  \end{equation*}
-  Both $\varepsilon_i$ and $f_{s,-i}$ average zero, so the fit needs no intercept:
-  \begin{equation*}
-    \boxed{\hat{\delta}_i=\arg\min_{\delta}\lVert\mathbf{y}-\hat{\mathbf{X}}\,\delta\rVert_2^2
-      =\left(\hat{\mathbf{X}}^{\top}\hat{\mathbf{X}}\right)^{-1}\hat{\mathbf{X}}^{\top}\mathbf{y}
-      =\frac{\widehat{\operatorname{Cov}}(\varepsilon_i,f_{s,-i})}{\widehat{\operatorname{Var}}(f_{s,-i})}}
-  \end{equation*}
-  We keep only the slope. The loading is $\delta_i=c_s\hat{\delta}_i$, where one scale $c_s$ per
-  sector matches the average residual covariance of two stocks in the sector to the data.
+\begin{frame}{The Covariance of the Sector Factor Model}
+  The sector factor model splits the single index residual of stock $i$ into a sector part and a
+  stock-specific part, $\varepsilon_i(t)=\delta_i f_s(t)+u_i(t)$. This gives us a way to model
+  $\operatorname{Cov}(\varepsilon_i,\varepsilon_j)$ for two stocks in the same sector, which the single
+  index model cannot do. For stock $i$ in sector $s$ and a different stock $j$ in sector $r$,
+  taking the covariance of their sector splits gives:
+  {\small\begin{align*}
+    \operatorname{Cov}(\varepsilon_{i},\varepsilon_{j}) &= \operatorname{Cov}\left(\delta_{i}\,f_{s}+u_{i},\;\delta_{j}\,f_{r}+u_{j}\right)\\
+    &= \delta_{i}\delta_{j}\operatorname{Cov}(f_{s},f_{r})+\delta_{i}\underbrace{\operatorname{Cov}(f_{s},u_{j})}_{=0}\\
+    &\qquad+\delta_{j}\underbrace{\operatorname{Cov}(u_{i},f_{r})}_{=0}+\underbrace{\operatorname{Cov}(u_{i},u_{j})}_{=0} && \text{independent draws}\\
+    &= \begin{cases}\delta_{i}\delta_{j}\operatorname{Var}(f_{s}) & \text{same sector, } r=s\\ 0 & \text{different sectors, } r\neq s\end{cases} && \text{independent sector draws}
+  \end{align*}}%
 \end{frame}
 
-\begin{frame}{The Stock-Specific Residual}
-  With the loading $\delta_i$, we remove the sector part from the single index residual of stock $i$. What is
-  left is the \hilite{stock-specific residual}:
+\begin{frame}{Example: The Sector Blocks}
+  \textbf{\ink{Example:}} Suppose stocks 1 and 2 are in sector $s$, and stocks 3 and 4 are in
+  sector $r$. The residual covariance matrix of the four stocks is given by:
   \begin{equation*}
-    u_{i}(t)=\underbrace{\varepsilon_{i}(t)}_{\textstyle\text{single index residual}}-\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector part}}
+    \symbf{\Sigma}_{\varepsilon}=
+    \left[\begin{array}{cc|cc}
+    {\color[HTML]{1F6FB4} \operatorname{Var}(\varepsilon_{1})} & {\color[HTML]{1F6FB4} \delta_{1}\delta_{2}\operatorname{Var}(f_{s})} & {\color[HTML]{999999} 0} & {\color[HTML]{999999} 0}\\
+    {\color[HTML]{1F6FB4} \delta_{1}\delta_{2}\operatorname{Var}(f_{s})} & {\color[HTML]{1F6FB4} \operatorname{Var}(\varepsilon_{2})} & {\color[HTML]{999999} 0} & {\color[HTML]{999999} 0}\\ \hline
+    {\color[HTML]{999999} 0} & {\color[HTML]{999999} 0} & {\color[HTML]{D4720F} \operatorname{Var}(\varepsilon_{3})} & {\color[HTML]{D4720F} \delta_{3}\delta_{4}\operatorname{Var}(f_{r})}\\
+    {\color[HTML]{999999} 0} & {\color[HTML]{999999} 0} & {\color[HTML]{D4720F} \delta_{3}\delta_{4}\operatorname{Var}(f_{r})} & {\color[HTML]{D4720F} \operatorname{Var}(\varepsilon_{4})}
+    \end{array}\right]
+    \begin{array}{l}\left.\vphantom{\begin{matrix}\operatorname{Var}(\varepsilon_{1})\\\operatorname{Var}(\varepsilon_{1})\end{matrix}}\right\}{\color[HTML]{1F6FB4} \text{ sector } s}\\ \left.\vphantom{\begin{matrix}\operatorname{Var}(\varepsilon_{1})\\\operatorname{Var}(\varepsilon_{1})\end{matrix}}\right\}{\color[HTML]{D4720F} \text{ sector } r}\end{array}
   \end{equation*}
-  The stock-specific residual $u_i(t)$ is the growth that neither the market nor the sector
-  explains.
-
-  \vspace{0.5em}
-  For example, if every bank rises on a day the market is flat, the move goes into the sector
-  factor of Financials. If one bank rises alone after an earnings surprise, most of the move
-  goes into the stock-specific residual $u_i$ of that bank.
-
-  \vspace{0.5em}
-  Rearranging gives $\varepsilon_i(t)=\delta_i f_s(t)+u_i(t)$. Substituting this into the market
-  split gives the four parts of the sector factor model.
+  The single index model has the same diagonal and zeros everywhere else. We now have off-diagonal
+  entries $\delta_i\delta_j\operatorname{Var}(f_s)$ for pairs of stocks in the same sector. The sector
+  factor model therefore captures the covariance that the single index model misses.
 \end{frame}
 
-\begin{frame}{Simulating the Parts}
-  Each part is a daily series in the data. We fit each series with the same single-asset
-  jump hidden Markov model that we fit to \texttt{SPY}:
-  \begin{itemize}\setlength{\itemsep}{0.3em}
-    \item \hilite{Market model}: the jump hidden Markov model of \texttt{SPY}, tested out of sample, for $g_m(t)$.
-    \item \hilite{Sector models}: a jump hidden Markov model fitted to each sector factor $f_s(t)$.
-    \item \hilite{Stock-specific models}: a jump hidden Markov model fitted to each stock-specific residual $u_i(t)$.
-  \end{itemize}
-  We draw one path from each model, independently, and add the parts back together:
+\begin{frame}{The Stock-Specific Part}
+  The last part of the sector factor model is the stock-specific residual $u_i(t)$. This residual is
+  what is left of the stock's daily growth rate after we remove the baseline, the market part, and
+  the sector part:
   \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market draw}}+\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector draw}}+\underbrace{\psi_{i}\,\tilde{u}_{i}(t)}_{\textstyle\text{stock-specific draw}}
+    u_{i}(t)=\underbrace{g_{i}(t)-\alpha_{i}-\beta_{i}\,g_{m}(t)}_{\textstyle\text{single index residual }\varepsilon_{i}(t)}-\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}
   \end{equation*}
-  In this equation, $g_m(t)$ and $f_s(t)$ are the market and sector draws, not the data.
-  The shared draws are the only link between stocks.
+  We fit a single-asset jump hidden Markov model to the daily values of $u_i(t)$, the same way we
+  fit the model of \texttt{SPY}. A path simulated from this model is the \hilite{stock-specific
+  draw}. We multiply the draw by the residual scale $\psi_i$ and add $\psi_i\,u_i(t)$ to the growth
+  rate of stock $i$.
 \end{frame}
 
-\begin{frame}{The Stock-Specific Draw (Fixed $\beta$)}
-  Center a draw $u_i^{\mathrm{draw}}(t)$ from the stock-specific model on the model's
-  long-run mean $\bar{u}_i$:
+\begin{frame}{Sizing the Stock-Specific Draw}
+  The residual scale keeps $\operatorname{Var}(\varepsilon_i)$, the diagonal entry of the residual
+  matrix. In the data, the two terms of $\varepsilon_i=\delta_i f_s+u_i$ can be correlated. In the
+  simulation, the sector draw and the stock-specific draw are independent:
+  \begin{align*}
+    \operatorname{Var}(\varepsilon_{i}) &= \delta_{i}^{2}\operatorname{Var}(f_{s})+\operatorname{Var}(u_{i})+\underbrace{2\,\delta_{i}\operatorname{Cov}(f_{s},u_{i})}_{=\,0\text{ in the simulation}} && \text{data}\\
+    \operatorname{Var}(\varepsilon_{i}) &= \delta_{i}^{2}\operatorname{Var}(f_{s})+\psi_{i}^{2}\operatorname{Var}(u_{i}) && \text{simulation, independent draws}
+  \end{align*}
+  We choose $\psi_i$ to put the dropped covariance term back into the stock-specific draw:
   \begin{equation*}
-    \tilde{u}_i(t)=u_i^{\mathrm{draw}}(t)-\bar{u}_i.
+    \boxed{\psi_i^2=\frac{\operatorname{Var}(\varepsilon_i)-\delta_i^2\operatorname{Var}(f_s)}{\operatorname{Var}(u_i)}}
   \end{equation*}
-  In the data, the sector factor includes stock $i$'s own residual. Independent draws drop
-  the movement that $u_i$ shares with $f_s$. Choose the residual scale $\psi_i$ so the
-  variances add up to the data's:
-  \begin{equation*}
-    \underbrace{\delta_i^2\operatorname{Var}(f_s)}_{\text{sector}}
-    +\underbrace{\psi_i^2\operatorname{Var}(u_i)}_{\text{stock-specific}}
-    =\underbrace{\operatorname{Var}(\varepsilon_i)}_{\text{after the market fit}}
-    \ \Longrightarrow\ 
-    \boxed{\psi_i^2=
-      \frac{\operatorname{Var}(\varepsilon_i)-\delta_i^2\operatorname{Var}(f_s)}
-           {\operatorname{Var}(u_i)}},\ \psi_i\geq0
-  \end{equation*}
-  \slidenote{A target:}{the fitted models reproduce the data variances only approximately.}
+  The numerator is the variance that the sector part leaves to the stock-specific draw. If $f_s(t)$
+  and $u_i(t)$ are uncorrelated in the data, the residual scale is one.
+\end{frame}
+
+\begin{frame}{Comparing the Two Covariance Matrices}
+  In general, each sector adds one block. With the residual scales chosen, the covariance matrices
+  of the growth rates of the two models are:
+  {\small\begin{align*}
+    \text{single index:}\;\symbf{\Sigma}_{g} &= \underbrace{\operatorname{Var}(g_{m})\,\boldsymbol{\beta}\boldsymbol{\beta}^{\top}}_{\textstyle\text{market}} + \underbrace{\operatorname{diag}\big(\operatorname{Var}(\varepsilon_{1}),\dotsc,\operatorname{Var}(\varepsilon_{n})\big)}_{\textstyle\text{residual}}\\[4pt]
+    \text{sector factor:}\;\symbf{\Sigma}_{g} &= \underbrace{\operatorname{Var}(g_{m})\,\boldsymbol{\beta}\boldsymbol{\beta}^{\top}}_{\textstyle\text{market}} + \underbrace{\textstyle\sum_{s}\operatorname{Var}(f_{s})\,\boldsymbol{\delta}_{s}\boldsymbol{\delta}_{s}^{\top}}_{\textstyle\text{sector}} + \underbrace{\operatorname{diag}\big(\psi_{1}^{2}\operatorname{Var}(u_{1}),\dotsc,\psi_{n}^{2}\operatorname{Var}(u_{n})\big)}_{\textstyle\text{stock-specific}}
+  \end{align*}}%
+  \noindent The vector $\boldsymbol{\delta}_s$ holds $\delta_i$ for the stocks in sector $s$ and zeros for the
+  others. Both matrices have the same market term. They also have the same diagonal, because
+  $\delta_i^2\operatorname{Var}(f_s)+\psi_i^2\operatorname{Var}(u_i)=\operatorname{Var}(\varepsilon_i)$.
 \end{frame}
 
 \begin{frame}{Algorithm: Sample the Synthetic Universe}
-  Given the fitted market, sector, and stock-specific models, the coefficients, residual
+  Given the market model, the fitted sector and stock-specific models, the coefficients, residual
   scales, and starting prices:
   \begin{enumerate}\setlength{\itemsep}{0.4em}
     \item \hilite{Shared draws}: draw one market path $g_m(t)$ for all stocks from the
       market model, and one sector path $f_s(t)$ for the stocks in each sector from its
-      sector model. Use independent random draws to generate the different paths.
-    \item \hilite{Stock-specific draws}: for each stock, draw a path from its stock-specific
-      model and subtract the model's long-run mean $\bar{u}_i$ to obtain $\tilde{u}_i(t)$.
+      sector model.
+    \item \hilite{Stock-specific draws}: for each stock, draw a path $u_i(t)$ from its
+      stock-specific model.
     \item \hilite{Compose}: on each day, calculate
       \begin{equation*}
-        g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i\tilde{u}_i(t),
+        g_i(t)=\alpha_i+\beta_i g_m(t)+\delta_i f_s(t)+\psi_i u_i(t),
       \end{equation*}
       then compound $S_i(t)=S_i(t-1)\exp\!\left(g_i(t)\Delta t\right)$.
   \end{enumerate}
   Here the time step $\Delta t=1/252$ year is one trading day.
 \end{frame}
 
-\begin{frame}{An Option: A Drifting $\beta$}
-  Holding $\beta_i$ fixed assumes that the stock's sensitivity to market growth stays
-  constant throughout a synthetic path. Alternatively, we let the sensitivity change over
-  time around its single index estimate $\hat{\beta}_i$:
-  \begin{equation*}
-    \beta_i(t)=\hat{\beta}_i+(1-a)\bigl(\beta_i(t-1)-\hat{\beta}_i\bigr)+a k_i z_i(t).
-  \end{equation*}
-  Here $0<a<1$ is the exponential moving average weight. The independent standard
-  normal shocks $z_i(t)$ are scaled by $k_i\geq0$.
+\begin{frame}{Example: A Synthetic Market of Many Stocks}
+  \vspace{0.3em}
+  {\normalsize\textbf{\ink{Example:}}\par\small
+  \href{\repo/CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
 
-  \vspace{0.5em}
-  In the example, we choose $k_i$ using $\beta$ estimates updated daily from real data.
-  These estimates also contain sampling noise. The market contribution is now
-  $\beta_i(t)g_m(t)$.
-  \slidenote{Example:}{\href{\repo/CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
+  \vspace{0.8em}
+  In this example, we use the sector factor model to build a universe of \texttt{SPY} and 375
+  stocks from all 11 sectors. We compare the correlations, volatilities, and market sensitivities
+  of a synthetic path with the real data, turn off the sector part, and save the fitted model.
+\end{frame}
+
+% ========== Optional advanced material
+\begin{frame}{Optional Advanced Material}
+  \vspace{0.2em}
+  {\normalsize\textbf{\ink{The parts of the sector factor model:}} \dimmed{advanced/sector\_factor/}\par
+  \href{\repo/advanced/sector_factor/CHEME-5660-L13b-Derivation-SectorFactor-Parts-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Derivation-SectorFactor-Parts-Fall-2026.ipynb}}}
+
+  \vspace{0.3em}
+  We show that the sector factor, the average single index residual of a sector, has no market
+  part. We derive the least-squares sector loading with its one scale per sector, and the
+  residual scale that sizes the stock-specific draw.
+
+  \vspace{0.6em}
+  {\normalsize\textbf{\ink{The \texttt{SPY} model at one minute:}} \dimmed{advanced/one\_minute/}\par
+  \href{\repo/advanced/one_minute/CHEME-5660-L13b-Advanced-JumpHMM-SPY-OneMinute-Fall-2026.ipynb}{\dimmed{CHEME-5660-L13b-Advanced-JumpHMM-SPY-OneMinute-Fall-2026.ipynb}}}
+
+  \vspace{0.3em}
+  We fit the hidden Markov model of \texttt{SPY} to the one-minute growth rates of 2025, with
+  and without jump episodes. We score the model one trading day at a time on 2025 and 2026, and
+  refit it before each day of 2026 on the trading days just before it.
 \end{frame}
 
 \begin{frame}{Summary}
@@ -323,14 +403,15 @@
   \begin{itemize}\setlength{\itemsep}{0.4em}
     \item \hilite{Out of sample}: we tested the \texttt{SPY} model on the growth rates of 2025
       and 2026. Paths with a jump episode failed the tests more often and stayed volatile longer.
-    \item \hilite{Shared components}: we combined each stock's baseline with market, sector,
-      and stock-specific residual components. Shared draws made stocks move together.
-    \item \hilite{Variance targets}: we set the residual scale to target the variance left
-      after the market fit when combined with the sector draw. As an option, we let
-      each stock's market sensitivity drift.
+    \item \hilite{Single-asset models}: we built the universe from single-asset jump hidden Markov
+      models for the market, each sector, and each stock. The shared sector draw adds the
+      same-sector residual covariance that the single index model sets to zero.
+    \item \hilite{Residual scale}: we sized the stock-specific draw so that, with the sector
+      draw, it keeps the variance of each stock's single index residual.
   \end{itemize}
   \vspace{0.3em}
-  Synthetic markets of many stocks let us test a trading method on many paths, not one.
+  Synthetic markets of many stocks let us test a trading method on many plausible paths, rather
+  than on one historical path. Stocks in different sectors move together only through the market draw.
 \end{frame}
 
 \end{document}
