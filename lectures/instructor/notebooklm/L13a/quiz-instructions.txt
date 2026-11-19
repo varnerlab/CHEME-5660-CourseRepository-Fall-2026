@@ -1,0 +1,13 @@
+L13a Self-Check: Synthetic Markets with Jump Hidden Markov Models
+
+This is an ungraded self-check on the three core concepts from L13a:
+
+1. A Markov chain is a set of states and a transition matrix whose rows sum to one. We estimate each entry by counting moves between states on consecutive days. The stationary distribution gives the long-run share of time in each state.
+2. The jump hidden Markov model bins the daily growth rate into states of equal probability under a fitted Laplace distribution, estimates the transition matrix by counting, and draws each day's growth rate from a Student-t distribution of the day's state. Jump episodes start with probability epsilon and last lambda days on average. They keep volatile periods going.
+3. Jump episodes add volatility clustering, but more or longer episodes thin the simulated tails.
+
+There are 13 multiple-choice questions, each with a short explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the SPY example open while you work. Every number used in a question is given in the question. In this lecture, the bold P is the transition matrix, not a probability measure. You will not need to reproduce the fitting or sampling algorithm, the tuning score, or the optional Markov models notebook.
+
+The questions were written from the course materials. If you think an answer is wrong, post it on the course discussion board.

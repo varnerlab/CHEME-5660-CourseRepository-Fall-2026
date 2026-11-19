@@ -89,18 +89,35 @@ def build(md_path, zip_path, title):
 </assessment>
 </questestinterop>
 '''
+    # Canvas settings file. Without a quiz_type, Canvas imports the quiz as a graded
+    # quiz ("assignment"); practice_quiz keeps it ungraded and out of the gradebook.
+    meta = f'''<?xml version="1.0" encoding="UTF-8"?>
+<quiz identifier="{quiz_id}" xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
+<title>{escape(title)}</title>
+<quiz_type>practice_quiz</quiz_type>
+<points_possible>{float(len(questions))}</points_possible>
+<scoring_policy>keep_highest</scoring_policy>
+<allowed_attempts>-1</allowed_attempts>
+<shuffle_answers>false</shuffle_answers>
+<show_correct_answers>true</show_correct_answers>
+<one_question_at_a_time>false</one_question_at_a_time>
+<cant_go_back>false</cant_go_back>
+</quiz>
+'''
     manifest = f'''<?xml version="1.0" encoding="UTF-8"?>
 <manifest identifier="{quiz_id}_manifest" xmlns="http://www.imsglobal.org/xsd/imsccv1p1/imscp_v1p1">
 <metadata><schema>IMS Content</schema><schemaversion>1.1.3</schemaversion></metadata>
 <organizations/>
 <resources>
-<resource identifier="{quiz_id}" type="imsqti_xmlv1p2"><file href="{quiz_id}/{quiz_id}.xml"/></resource>
+<resource identifier="{quiz_id}" type="imsqti_xmlv1p2"><file href="{quiz_id}/{quiz_id}.xml"/><dependency identifierref="{quiz_id}_meta"/></resource>
+<resource identifier="{quiz_id}_meta" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="{quiz_id}/assessment_meta.xml"><file href="{quiz_id}/assessment_meta.xml"/></resource>
 </resources>
 </manifest>
 '''
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
         z.writestr('imsmanifest.xml', manifest)
         z.writestr(f'{quiz_id}/{quiz_id}.xml', assessment)
+        z.writestr(f'{quiz_id}/assessment_meta.xml', meta)
     print(f'{len(questions)} questions -> {zip_path}')
 
 

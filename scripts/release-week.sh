@@ -62,6 +62,11 @@ if (( WEEK_NUM >= MEETING_CADENCE_FROM_WEEK )); then
 else
   COUNT=${#MEETINGS[@]}
 fi
+# One-off exceptions to the rule. week-13.1 was re-cut on November 17, 2026 as
+# an L13a-only update; L13b first ships in week-13.2 with the complete week.
+case "$TAG" in
+  week-13.1) COUNT=1 ;;
+esac
 INCLUDED=("${MEETINGS[@]:0:$COUNT}")
 if (( COUNT == ${#MEETINGS[@]} )); then COMPLETE=true; else COMPLETE=false; fi
 if (( COUNT == 1 )); then
@@ -77,7 +82,9 @@ RSYNC_EXCLUDES=()
 LATER=()
 for (( i = COUNT; i < ${#MEETINGS[@]}; i++ )); do
   RSYNC_EXCLUDES+=(--exclude "/week-$WEEK_NUM/${MEETINGS[$i]}/")
-  LATER+=("\`week-${WEEK_PAD}.$i\`")
+  # Meeting i arrives in the release after this one. Under the rule REV is
+  # COUNT - 1, so this is week-NN.i; an exception shifts it.
+  LATER+=("\`week-${WEEK_PAD}.$(( REV + 1 + i - COUNT ))\`")
 done
 
 OUT="$REPO/artifacts"
