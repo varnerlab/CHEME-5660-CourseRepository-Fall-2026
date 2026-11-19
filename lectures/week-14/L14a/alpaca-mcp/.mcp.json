@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "alpaca": {
+      "command": "julia",
+      "args": ["--startup-file=no", "server.jl"],
+      "env": {
+        "ALPACA_CREDENTIALS": "${ALPACA_CREDENTIALS:-}"
+      }
+    }
+  }
+}

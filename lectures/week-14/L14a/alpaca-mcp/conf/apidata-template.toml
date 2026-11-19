@@ -1,0 +1,13 @@
+# Alpaca paper trading credentials for the L14a server.
+#
+# 1. Copy this file to apidata.toml, in this folder.
+# 2. In apidata.toml, replace the text between the quotes on the key and secret lines with the key and secret of
+#    your paper account. Alpaca shows them on the paper dashboard, under API Keys.
+#
+# Your key and secret are like a password: do not share them. apidata.toml is listed in the .gitignore file of this
+# folder, so git does not track it. The server works only with the paper endpoint below.
+
+[Credentials]
+endpoint = "https://paper-api.alpaca.markets/v2"
+key      = "YOUR_PAPER_KEY_ID"
+secret   = "YOUR_PAPER_SECRET_KEY"

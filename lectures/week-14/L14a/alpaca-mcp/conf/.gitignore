@@ -1,0 +1,2 @@
+# The credentials file holds a private Alpaca key and secret. Git must never track it.
+apidata.toml
