@@ -1,0 +1,13 @@
+L13b Self-Check: Synthetic Markets of Many Stocks
+
+This is an ungraded self-check on the three core concepts from L13b:
+
+1. An out-of-sample test compares a fitted model with data from after its fitting period. We tested the jump hidden Markov model of SPY, with and without jump episodes, on the growth rates of 2025 and 2026.
+2. We model a synthetic stock's growth rate as g_i = alpha_i + beta_i g_m + delta_i f_s + psi_i u_i, where alpha_i is the stock's baseline. The shared market and sector parts make stocks move together. The stock-specific draw u_i averages zero and is the growth that neither the market nor the sector explains.
+3. The residual scale psi_i matches each stock's variance to the data.
+
+There are 13 multiple-choice questions, each with a short explanation. Take it as many times as you like; it does not count toward your grade.
+
+Keep the lecture and the SPY out-of-sample example open while you work. Every number used in a question is given in the question. You will not need to reproduce the distribution tests, how we compute the sector loadings and the residual scales, or the sampling algorithm step by step. The questions do not use the results of the sector factor example.
+
+The questions were written from the course materials. If you think an answer is wrong, post it on the course discussion board.

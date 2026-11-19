@@ -22,6 +22,8 @@ def export(src, dst):
             s = ''.join(c['source'])
             if s.lstrip().startswith('## Disclaimer'):
                 continue
+            # drop HTML comments (hidden draft text in the rendered notebook)
+            s = re.sub(r'<!--.*?-->[ \t]*\n?', '', s, flags=re.S)
             # drop HTML image blocks; the alt text is kept as a sentence
             s = re.sub(r'<div>\s*<center>\s*<img[^>]*alt="([^"]*)"[^>]*/>\s*</center>\s*</div>',
                        r'*Figure: \1*', s, flags=re.S)

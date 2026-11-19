@@ -1,0 +1,16 @@
+CHEME 5660 Engagement Quiz: Week 13 (L13a and L13b)
+
+Instructions:
+Please complete this short survey after the L13a and L13b lectures. There are no right or wrong answers. Your responses tell us how you are thinking about the models and what needs more time in class.
+
+Question 1 title:
+Synthetic or Historical Paths?
+
+Question 1 text:
+If you wanted to test a trading method, would you use the one historical path, synthetic paths from a jump hidden Markov model, or both, and why?
+
+Question 2 title:
+What Is Still Confusing?
+
+Question 2 text:
+What is one thing from L13a or L13b that is still confusing to you?
