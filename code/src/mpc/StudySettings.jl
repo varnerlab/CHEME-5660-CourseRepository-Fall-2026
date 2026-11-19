@@ -18,6 +18,19 @@ than on every day below the peak (user, 2026-10-25; `false` keeps the trial's ne
 `vol_cap_annual` means the SPY volatility over the calibration window. The zero-argument constructor
 fills the defaults. `turnover_frac` sets each decision's spread-cost budget, c̄·Σ|Δnᵢ| ≤ `turnover_frac`·W with c̄ the half-spread cost per share at the basket's mean price. It is kept from the trial; at 5 bps, for a long-only book, it can bind only when a basket's mean share price is more than 100 times its cheapest name's.
 Field names are ASCII so TOML keys equal field names **(plan decision)**.
+
+Method v2 switches (design 2026-11-13). Each default is the v1 behavior, so the v1 results reproduce exactly:
+- `forecast_model`: `"gbm"` (v1, multi-asset GBM) or `"factor"` (v2, the JumpHMM factor model).
+- `forecast_band`: `"sigma"` (v1, mean ± z·σ) or `"quantile"` (v2, the 2.5% and 97.5% quantiles of simulated wealth).
+- `market_turn` (flag): re-plan when ξ changes sign, and, with the SPY short on, when ξ crosses 1.
+- `beta_over_cap` (dimensionless): re-plan when the book's β is more than this margin over its β limit; `Inf` is off.
+- `spy_short` (flag): with the hedge on, short SPY to cover the part of the β limit below zero.
+- `repick_on_market_turn` (flag): re-pick the basket when the market-turn condition holds.
+`beta_min` is the floor of the β limit: `0` in v1, between `-1` and `0` only with `spy_short = true`.
+
+Course addition (CHEME 5660, 2026-11-19):
+- `covariance_model`: `"shrunk"` (v1 and v2: the single index covariance plus the shrunk residual covariance) or
+  `"sector_factor"` (the single index covariance plus the sector blocks of the factor forecast's models).
 """
 mutable struct MyStudySettings
     start::Date; stop::Date; train_start::Date; train_stop::Date
@@ -36,6 +49,10 @@ mutable struct MyStudySettings
     hedge::Bool; beta_ref::Float64; kappa_beta::Float64; beta_min::Float64; pool_H::Int; downday_lookback::Int
     basket_K::Int; liquidity_shortlist::Int; liquidity_window::Int; corr_max::Float64; corr_window::Int
     w_max_scale::Float64; fixed_tickers::Vector{String}
+    forecast_model::String; forecast_band::String
+    market_turn::Bool; beta_over_cap::Float64
+    spy_short::Bool; repick_on_market_turn::Bool
+    covariance_model::String
     function MyStudySettings()
         return new(Date(2025, 1, 2), Date(2026, 9, 4), Date(2014, 1, 3), Date(2024, 12, 31),
             100_000.0,
@@ -50,7 +67,11 @@ mutable struct MyStudySettings
             5.0, 0.001,
             true, 1.0, 1.0, 0.0, 5, 252,
             13, 100, 63, 0.7, 252,
-            1.5, ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"])
+            1.5, ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"],
+            "gbm", "sigma",          # v1 forecast and band
+            false, Inf,              # v1: no market-turn trigger, no β trigger
+            false, false,            # v1: no SPY short, no re-pick at a market turn
+            "shrunk")                # v1 and v2: the shrunk residual covariance
     end
 end
 
@@ -61,7 +82,32 @@ function _validate_settings(s::MyStudySettings)
     end
     s.xi_short < s.xi_long || throw(ArgumentError("MyStudySettings: xi_short must be < xi_long"))
     0 < s.xi_quantile < 1 || throw(ArgumentError("MyStudySettings: xi_quantile must be in (0, 1)"))
-    s.beta_min ≥ 0 || throw(ArgumentError("MyStudySettings: beta_min must be ≥ 0"))
+    # the floor of the β limit: 0 in v1; below 0 only when the SPY short covers the part below zero (v2)
+    if s.beta_min < -1.0
+        throw(ArgumentError("MyStudySettings: beta_min must be ≥ -1, got $(s.beta_min)"));
+    end
+    if s.beta_min < 0.0 && s.spy_short == false
+        throw(ArgumentError("MyStudySettings: beta_min < 0 needs spy_short = true, got beta_min = $(s.beta_min)"));
+    end
+    # the forecast model and its band
+    if !(s.forecast_model in ("gbm", "factor"))
+        throw(ArgumentError("MyStudySettings: forecast_model must be \"gbm\" or \"factor\", got $(repr(s.forecast_model))"));
+    end
+    if !(s.forecast_band in ("sigma", "quantile"))
+        throw(ArgumentError("MyStudySettings: forecast_band must be \"sigma\" or \"quantile\", got $(repr(s.forecast_band))"));
+    end
+    # the GBM forecast keeps no quantiles, so the quantile band needs the factor forecast
+    if s.forecast_band == "quantile" && s.forecast_model != "factor"
+        throw(ArgumentError("MyStudySettings: forecast_band = \"quantile\" needs forecast_model = \"factor\", got $(repr(s.forecast_model))"));
+    end
+    # the covariance model (course addition)
+    if !(s.covariance_model in ("shrunk", "sector_factor"))
+        throw(ArgumentError("MyStudySettings: covariance_model must be \"shrunk\" or \"sector_factor\", got $(repr(s.covariance_model))"));
+    end
+    # the β trigger's margin (Inf turns the trigger off; NaN is rejected)
+    if !(s.beta_over_cap >= 0.0)
+        throw(ArgumentError("MyStudySettings: beta_over_cap must be ≥ 0 (Inf = off), got $(s.beta_over_cap)"));
+    end
     0 < s.w_max ≤ 1 || throw(ArgumentError("MyStudySettings: w_max must be in (0, 1]"))
     0 < s.corr_max ≤ 1 || throw(ArgumentError("MyStudySettings: corr_max must be in (0, 1]"))
     s.w_max_scale > 0 || throw(ArgumentError("MyStudySettings: w_max_scale must be > 0"))
@@ -78,8 +124,16 @@ end
 
 Start from the defaults and override the fields in `data` (each converted to its field type).
 Throws `ArgumentError` on an unknown field, an unconvertible value, or a failed validation:
-windows and counts ≥ 1, `xi_short < xi_long`, `0 < xi_quantile < 1`, `beta_min ≥ 0`,
+windows and counts ≥ 1, `xi_short < xi_long`, `0 < xi_quantile < 1`, `-1 ≤ beta_min`, `beta_min < 0` only with
+`spy_short`, `forecast_model ∈ ("gbm", "factor")`, `forecast_band ∈ ("sigma", "quantile")`, the quantile band only
+with the factor forecast, `beta_over_cap ≥ 0`,
 `0 < w_max ≤ 1`, `ces_eta > 0`, `0 < corr_max ≤ 1`, `w_max_scale > 0`, `fixed_tickers` non-empty and unique, `train_stop < start ≤ stop`.
+
+### Arguments
+- `data::NamedTuple`: the fields to override, by field name.
+
+### Returns
+- `MyStudySettings`: the validated settings.
 """
 function build(::Type{MyStudySettings}, data::NamedTuple)::MyStudySettings
     s = MyStudySettings()
@@ -104,6 +158,36 @@ A validated copy of `s` with the keyword fields replaced; `s` is unchanged. Unit
 function with_settings(s::MyStudySettings; kw...)::MyStudySettings
     base = NamedTuple{fieldnames(MyStudySettings)}(Tuple(getfield(s, f) for f in fieldnames(MyStudySettings)))
     return build(MyStudySettings, merge(base, NamedTuple(kw)))
+end
+
+"""
+    uses_v1_method(s::MyStudySettings)::Bool
+
+Whether every method-v2 switch of `s` is at its v1 value. The scripts write v1 results to `results/` and every
+other run to `results/v2/`, so that a v2 run never reuses or overwrites a v1 file (spec §11, item 1).
+
+### Arguments
+- `s::MyStudySettings`: the settings.
+
+### Returns
+- `Bool`: `true` when `forecast_model = "gbm"`, `forecast_band = "sigma"`, `market_turn = false`,
+  `beta_over_cap = Inf`, `beta_min ≥ 0`, `spy_short = false`, `repick_on_market_turn = false` and
+  `covariance_model = "shrunk"`.
+"""
+function uses_v1_method(s::MyStudySettings)::Bool
+    if s.forecast_model != "gbm" || s.forecast_band != "sigma"
+        return false;
+    end
+    if s.market_turn || isfinite(s.beta_over_cap) || s.repick_on_market_turn
+        return false;
+    end
+    if s.beta_min < 0.0 || s.spy_short
+        return false;
+    end
+    if s.covariance_model != "shrunk"
+        return false;
+    end
+    return true;
 end
 
 """

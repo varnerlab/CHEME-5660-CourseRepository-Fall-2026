@@ -6,8 +6,8 @@ same(a, b) = all(isequal(getfield(a, f), getfield(b, f)) for f in fieldnames(MyS
     s = MyStudySettings()
     @test (s.xi_short, s.xi_long, s.gtilde_window, s.N_per_sector, s.w_max, s.ces_eta, s.pool_H) == (21, 63, 252, 3, 0.10, 0.5, 5)
     @test isnan(s.lambda) && isnan(s.vol_cap_annual) && s.hedge && s.repick_on_band_exit
-    cfg = load_study(default_study_path())
-    @test same(cfg.settings, s)                                        # the file holds the spec defaults
+    cfg = load_study(default_study_v1_path())
+    @test same(cfg.settings, s)                                        # the v1 file holds the spec defaults
     @test cfg.grid.n_seeds == 30 && cfg.grid.base_seed == 5660
     @test cfg.grid.allocators == ["CD", "CES", "CESw", "SG", "MinVar", "Tangent", "LS"]
     @test cfg.grid.screens == [:bandit, :gamma, :random] && cfg.grid.hedge == [true, false]
@@ -40,7 +40,7 @@ end
     s = MyStudySettings()
     @test (s.basket_K, s.liquidity_shortlist, s.liquidity_window, s.corr_max, s.corr_window, s.w_max_scale) == (13, 100, 63, 0.7, 252, 1.5)
     @test s.fixed_tickers == ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"]
-    cfg = load_study(default_study_path())
+    cfg = load_study(default_study_v1_path())
     @test same(cfg.settings, s)
     @test cfg.grid.K == [5, 8, 13, 21, 34] && length(cfg.grid.universe_screens) == 5
     @test first.(cfg.grid.fixed_lists) == ["l8b_13", "l8b_15"] && last(cfg.grid.fixed_lists[2])[14:15] == ["WMT", "PG"]
@@ -54,4 +54,66 @@ end
     end
     @test_throws ArgumentError build(MyStudySettings, (corr_max=1.5,))
     @test_throws ArgumentError build(MyStudySettings, (fixed_tickers=String[],))
+end
+
+# Method v2 (design 2026-11-13, plan Task 1): six new switches, each defaulting to the v1 behavior, and the
+# β limit the allocators see.
+@testset "v2 switches: defaults, config keys, validation" begin
+    s = MyStudySettings()
+    # every new field defaults to the v1 behavior
+    @test s.forecast_model == "gbm"
+    @test s.forecast_band == "sigma"
+    @test s.market_turn == false
+    @test s.beta_over_cap == Inf
+    @test s.spy_short == false
+    @test s.repick_on_market_turn == false
+    @test s.beta_min == 0.0
+
+    # the loader reads each new key from its table (keys equal field names)
+    text = read(default_study_v1_path(), String)
+    text = replace(text, "forecast_model = \"gbm\"" => "forecast_model = \"factor\"")
+    text = replace(text, "forecast_band = \"sigma\"" => "forecast_band = \"quantile\"")
+    text = replace(text, "market_turn = false" => "market_turn = true")
+    text = replace(text, "beta_over_cap = inf" => "beta_over_cap = 0.1")
+    text = replace(text, "spy_short = false" => "spy_short = true")
+    text = replace(text, "repick_on_market_turn = false" => "repick_on_market_turn = true")
+    text = replace(text, "beta_min = 0.0" => "beta_min = -0.5")
+    path = joinpath(mktempdir(), "v2.toml")
+    write(path, text)
+    v2 = load_study(path).settings
+    @test v2.forecast_model == "factor"
+    @test v2.forecast_band == "quantile"
+    @test v2.market_turn == true
+    @test v2.beta_over_cap == 0.1
+    @test v2.spy_short == true
+    @test v2.repick_on_market_turn == true
+    @test v2.beta_min == -0.5
+
+    # config/study.toml is the v1 file with the seven v2 switches on, and the two files share one grid
+    v1_file = load_study(default_study_v1_path())
+    v2_file = load_study(default_study_path())
+    @test same(v2_file.settings, v2)
+    @test v2_file.grid == v1_file.grid
+
+    # validation of the new fields
+    @test_throws ArgumentError build(MyStudySettings, (forecast_model="garch",))
+    @test_throws ArgumentError build(MyStudySettings, (forecast_band="wide",))
+    @test_throws ArgumentError build(MyStudySettings, (beta_over_cap=-0.1,))
+    @test_throws ArgumentError build(MyStudySettings, (beta_min=-0.5,))                  # a negative floor needs the SPY short
+    @test_throws ArgumentError build(MyStudySettings, (beta_min=-1.5, spy_short=true))   # the floor is at least -1
+    @test build(MyStudySettings, (beta_min=-0.5, spy_short=true)).beta_min == -0.5
+end
+
+@testset "v2: the beta limit the allocators see" begin
+    s = build(MyStudySettings, (beta_min=-0.5, spy_short=true))
+    # the allocators never see a negative limit: the SPY short covers the part below zero
+    @test allocator_beta_max(s, 1.3) == 0.0
+    @test allocator_beta_max(s, 0.4) ≈ 0.6
+    @test allocator_beta_max(s, -0.5) ≈ 1.5
+    # with the hedge off there is no limit
+    @test allocator_beta_max(with_settings(s; hedge=false), 0.4) == Inf
+    # with the v1 floor of 0 it equals the v1 cap
+    v1 = MyStudySettings()
+    @test allocator_beta_max(v1, 0.4) == beta_cap(0.4; β_ref=1.0, κ_β=1.0, β_min=0.0)
+    @test allocator_beta_max(v1, 1.3) == 0.0
 end

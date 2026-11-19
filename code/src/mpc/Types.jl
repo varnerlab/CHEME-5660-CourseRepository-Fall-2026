@@ -60,3 +60,36 @@ mutable struct MyEWVarState
     η::Float64
     MyEWVarState() = new()
 end
+
+"""
+    MyForecastModels
+
+The JumpHMM models of the method-v2 factor forecast and their standardizing moments. Built with
+`build_forecast_models` from the synthetic-market generator, or with `build(MyForecastModels, nt)`.
+
+Fields:
+- `tickers::Vector{String}`: the tickers that have a name model.
+- `market`, `factors::Vector`, `names::Vector`: the JumpHMM models of SPY, of each sector factor and of each
+  ticker (any type with a `forecast_draws` method).
+- `sector_index::Vector{Int}`: the sector of each ticker (an index into `factors`).
+- `δ::Vector{Float64}`: each ticker's sector loading (dimensionless).
+- `ρ::Vector{Float64}`: the sector share of each ticker's non-market variance (dimensionless, in [0, 1]).
+- `m_market`, `s_market`, `m_factor`, `s_factor`, `m_name`, `s_name`: the long-run mean and standard deviation
+  (yr⁻¹) of each model's draws, which turn its draws into standardized draws.
+"""
+mutable struct MyForecastModels
+    tickers::Vector{String}
+    market::Any
+    factors::Vector
+    names::Vector
+    sector_index::Vector{Int}
+    δ::Vector{Float64}
+    ρ::Vector{Float64}
+    m_market::Float64
+    s_market::Float64
+    m_factor::Vector{Float64}
+    s_factor::Vector{Float64}
+    m_name::Vector{Float64}
+    s_name::Vector{Float64}
+    MyForecastModels() = new()
+end

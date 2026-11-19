@@ -3,8 +3,9 @@
 `VLQuantitativeFinancePackage.MPCPortfolio` is the portfolio method of the INFORMS Annual Meeting 2026 study,
 J. D. Varner, ["Interpretable Allocation and Model-Predictive Rebalancing of Equity Portfolios, Tested on Real
 and Synthetic Markets"](https://arxiv.org/abs/2611.03022) (arXiv:2611.03022). The code is ported from the
-study's repository, [varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab](https://github.com/varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab)
-(commit 2fc998c), and reproduces its real-data results on the course's S&P 500 files.
+study's repository, [varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab](https://github.com/varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab):
+v1 from commit 2fc998c, and method v2 from branch `feat/method-v2` (commit 5d31b74). With the same inputs, it
+reproduces the study's real-data results on the course's S&P 500 files.
 
 The method has three parts:
 
@@ -14,8 +15,15 @@ The method has three parts:
 - **How to weight it.** Maximum-utility allocation (Cobb–Douglas, CES, Stone–Geary, minimum variance, the
   tangency portfolio, or a 130/30 book) under a per-name cap, a volatility cap, sector caps and a spread-cost
   turnover budget, solved with Clarabel (SCS as the fallback).
-- **When to trade.** The book re-plans after 21 trading days, when its value leaves a GBM forecast band, or after
-  an 8% drawdown from its peak. An optional hedge caps the book's β, more tightly as the market turns bearish.
+- **When to trade.** The book re-plans after 21 trading days, when its value leaves a forecast band, or after
+  an 8% drawdown from its peak. Method v2 forecasts with the JumpHMM factor model and also re-plans when the
+  market state ξ changes sign or the book's β goes over its limit. An optional hedge limits the book's β, more
+  tightly as the market turns bearish, and in v2 a limit below zero is met by shorting SPY.
+
+`data/mpc/study.toml` holds the v2 settings (`default_study_path()`), and `data/mpc/study_v1.toml` the v1 settings
+(`default_study_v1_path()`). The v2 forecast needs the fitted JumpHMM models of a sector factor model, passed to
+`build_context` as `fm = build_forecast_models(model)`. The course adds a `covariance_model` setting, betting
+against beta (`run_bab`) and the buy-and-hold references for L14a.
 
 The submodule has its own namespace, because the course package's adaptive-portfolio routines use some of the
 same names. Use it qualified:
@@ -29,7 +37,7 @@ import VLQuantitativeFinancePackage.MPCPortfolio as MPC
 dir = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data")
 md = MPC.load_market_data(dir; start = Date(2014, 1, 3), stop = Date(2026, 9, 4))   # 373 names
 calib = MPC.calibrate(md; train_start = Date(2014, 1, 3), train_stop = Date(2024, 12, 31))
-s = MPC.with_settings(MPC.load_study(MPC.default_study_path()).settings; hedge = false)
+s = MPC.with_settings(MPC.load_study(MPC.default_study_v1_path()).settings; hedge = false)   # v1: the GBM forecast
 ctx = MPC.build_context(md, calib, s)
 run = build(MPC.MyStudyRun, (settings = s, allocator = "CD", screen = :gamma, seed = 5660))
 result = MPC.run_study(ctx, run)     # equity, trades, decisions, re-picks, day by day

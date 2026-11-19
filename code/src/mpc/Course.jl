@@ -5,10 +5,20 @@
     default_study_path()::String
 
 Path of the study's default settings, `data/mpc/study.toml` in the course package: a copy of the INFORMS
-study's `config/study.toml` (windows, limits, costs, triggers, hedge, pickers). Read it with `load_study`
+study's method-v2 `config/study.toml` (windows, limits, costs, triggers, hedge, pickers, forecast), plus the
+course's `covariance_model` key. Read it with `load_study`
 and change single values with `with_settings`.
 """
 default_study_path()::String = joinpath(@__DIR__, "..", "data", "mpc", "study.toml")
+
+"""
+    default_study_v1_path()::String
+
+Path of the study's v1 settings, `data/mpc/study_v1.toml` in the course package: `study.toml` with every method-v2
+switch at its v1 value (the GBM forecast and its σ band, no market-turn or β trigger, no SPY short). Read it with
+`load_study`.
+"""
+default_study_v1_path()::String = joinpath(@__DIR__, "..", "data", "mpc", "study_v1.toml")
 
 """
     select_universe(md::MyMarketData, n_tickers::Int; stop::Date=Date(2024, 12, 31))::Vector{String}

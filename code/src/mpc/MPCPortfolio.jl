@@ -4,10 +4,16 @@ the INFORMS Annual Meeting 2026 study (J. D. Varner, "Interpretable Allocation a
 Rebalancing of Equity Portfolios, Tested on Real and Synthetic Markets", arXiv:2611.03022).
 
 What to hold (the γ score and the pickers), how to weight it (maximum-utility allocation under trading
-limits, solved with Clarabel and SCS as the fallback), when to trade (a 21-day horizon, a GBM forecast
-band, and a drawdown stop), the β-cap hedge, and the study loop that replays a run day by day. The code
-is ported from the study's repository (`varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab`, commit
-2fc998c).
+limits, solved with Clarabel and SCS as the fallback), when to trade (a 21-day horizon, a forecast band,
+a drawdown stop, and the method-v2 market-turn and β triggers), the β-limit hedge with its SPY short, and
+the study loop that replays a run day by day. The code is ported from the study's repository
+(`varnerlab/INFORMS-Annual-Meeting-2026-Varnerlab`): v1 from commit 2fc998c, and the method-v2 files
+(the JumpHMM factor forecast, the triggers, the SPY short, and the v2 settings) from branch
+`feat/method-v2`, commit 5d31b74. The factor forecast reads JumpHMM 0.6.0 models (the generator of the
+L14a sector factor example), without a package dependency on JumpHMM.
+
+`data/mpc/study.toml` holds the v2 settings, and `data/mpc/study_v1.toml` the v1 settings. The course adds
+one setting, `covariance_model`, which lets the Markowitz rules use the sector factor covariance.
 
 It is a submodule because the course package already defines different `MySIMParameterEstimate`,
 `MyEWLSState`, `estimate_sim`, `ewls_init`, and `ewls_update!` (the adaptive portfolio of L7b). Use it
@@ -33,6 +39,7 @@ module MPCPortfolio
     using JuMP
     using Clarabel
     using SCS
+    import Distributions
 
     # the engine, in the study's include order -
     include(joinpath(@__DIR__, "Types.jl"))
@@ -44,6 +51,7 @@ module MPCPortfolio
     include(joinpath(@__DIR__, "AllocatorsMeanVariance.jl"))
     include(joinpath(@__DIR__, "AllocatorsLongShort.jl"))
     include(joinpath(@__DIR__, "Projection.jl"))
+    include(joinpath(@__DIR__, "ForecastFactor.jl"))
     include(joinpath(@__DIR__, "Costs.jl"))
     include(joinpath(@__DIR__, "Triggers.jl"))
     include(joinpath(@__DIR__, "Metrics.jl"))
@@ -58,13 +66,15 @@ module MPCPortfolio
     include(joinpath(@__DIR__, "Context.jl"))
     include(joinpath(@__DIR__, "GrowthScorecard.jl"))
     include(joinpath(@__DIR__, "StudyBacktest.jl"))
+    include(joinpath(@__DIR__, "StudyScoring.jl"))
     include(joinpath(@__DIR__, "Limits.jl"))
 
-    # course additions: default settings, universe selection -
+    # course additions: default settings, universe selection, and the L14a strategies -
     include(joinpath(@__DIR__, "Course.jl"))
+    include(joinpath(@__DIR__, "CourseStrategies.jl"))
 
     # exports (the study's names for the ported files, plus the course additions) -
-    export MyMarketData, load_market_data, growth_rates, index_of, DATA_FILES,
+    export MyMarketData, load_market_data, growth_rates, index_of, DATA_FILES, DATA_FILES_NOV2026,
         boundary_split_factor, split_adjustments, MySIMParameterEstimate, MyEWLSState, MyEWVarState,
         estimate_sim, fit_base_sim, ewls_init, ewls_update!, ewvar_init, ewvar_update!,
         market_state, preference_weights, AbstractCovarianceModel, MySIMCovariance,
@@ -85,5 +95,12 @@ module MPCPortfolio
         MyStudySettings, load_study, with_settings, context_key, MyStudyContext, build_context,
         growth_scorecard, MyStudyRun, MyStudyResult, make_rule, make_screen, run_study, limits_row,
         limits_day, limits_failures
-    export default_study_path, select_universe, subset_universe
+    # method v2 (INFORMS branch feat/method-v2) -
+    export load_results_file, trigger_flags, uses_v1_method, allocator_beta_max, study_beta_limit,
+        spy_overlay_share, MyForecastModels, build_forecast_models, project_factor, forecast_draws
+    # course additions to the engine -
+    export study_stats, regime_stats, score_study
+    export sector_factor_covariance, sector_factor_variances
+    export default_study_path, default_study_v1_path, select_universe, subset_universe
+    export market_data_from_growth, bab_betas, bab_weights, bab_rebalance_rows, run_bab, buy_and_hold_equity
 end

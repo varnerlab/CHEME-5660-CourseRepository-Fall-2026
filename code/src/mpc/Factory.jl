@@ -53,3 +53,25 @@ function build(::Type{MyEWVarState}, data::NamedTuple)::MyEWVarState
     end
     return model
 end
+
+"""
+    build(::Type{MyForecastModels}, data::NamedTuple)::MyForecastModels
+
+Build a `MyForecastModels` from a NamedTuple holding every field (units as in the type docstring).
+
+### Arguments
+- `data::NamedTuple`: one entry per field of `MyForecastModels`.
+
+### Returns
+- `MyForecastModels`: the forecast models. Throws `ArgumentError` naming a missing field.
+"""
+function build(::Type{MyForecastModels}, data::NamedTuple)::MyForecastModels
+    model = MyForecastModels();
+    for f in fieldnames(MyForecastModels)
+        if haskey(data, f) == false
+            throw(ArgumentError("Cannot build MyForecastModels: missing field $(f)"));
+        end
+        setfield!(model, f, data[f]);
+    end
+    return model;
+end

@@ -7,6 +7,7 @@ Market-data-only precomputation for one settings group. `rows` are the run's mar
 `G` is the ξ gain (dimensionless); `ξ` (dimensionless) and `g̃` (yr⁻¹) are per market-data row;
 `sim` is the online SIM path; `γ` (yr⁻¹) is `length(rows) × tickers`; `pool` holds, per run row,
 the hedge-pool ticker indices; `X` is the excess-growth window matrix (yr⁻¹) for the bandit.
+`fm` holds the forecast models of the factor forecast (method v2), or `nothing` for runs that use the GBM forecast.
 """
 mutable struct MyStudyContext
     md::MyMarketData
@@ -20,6 +21,7 @@ mutable struct MyStudyContext
     γ::Matrix{Float64}
     pool::Vector{Vector{Int}}
     X::Matrix{Float64}
+    fm::Union{Nothing,MyForecastModels}
     MyStudyContext() = new()
 end
 
@@ -38,15 +40,27 @@ function build(::Type{MyStudyContext}, data::NamedTuple)::MyStudyContext
 end
 
 """
-    build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySettings)::MyStudyContext
+    build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySettings;
+        fm::Union{Nothing,MyForecastModels}=nothing)::MyStudyContext
 
 Compute G (from SPY closes over the training rows), ξ and g̃ per row, the online SIM path, γ and the
 hedge pool per run row, and the bandit excess-growth matrix. Row s of `γ`/`pool` uses data dated
 ≤ `rows[s]` only. Throws `ArgumentError` when `first(rows) ≤ max(omega_window, downday_lookback)`
 (trading days), or when `calib`'s training window (`train_start`, `train_stop`) differs from `s`'s.
-`omega_window` is not part of `context_key`, so `run_study` checks it again for each run.
+`omega_window` is not part of `context_key`, so `run_study` checks it again for each run. `fm` is stored as the
+context's forecast models (`nothing` when the runs use the GBM forecast).
+
+### Arguments
+- `md::MyMarketData`: the market data.
+- `calib::MyCalibration`: the calibration on the settings' training window.
+- `s::MyStudySettings`: the study settings.
+- `fm::Union{Nothing,MyForecastModels}`: the factor forecast's models, or `nothing` for the GBM forecast.
+
+### Returns
+- `MyStudyContext`: the context that every run with these settings shares.
 """
-function build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySettings)::MyStudyContext
+function build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySettings;
+        fm::Union{Nothing,MyForecastModels}=nothing)::MyStudyContext
     (calib.train_start == s.train_start && calib.train_stop == s.train_stop) ||
         throw(ArgumentError("calibration window $(calib.train_start) → $(calib.train_stop) differs from the " *
             "settings' training window $(s.train_start) → $(s.train_stop)"))
@@ -70,5 +84,5 @@ function build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySetting
     end
     X = excess_growth_windows(md; horizon = s.bandit_horizon)
     return build(MyStudyContext, (md = md, calib = calib, settings = s, rows = rows, G = G, ξ = ξ, g̃ = g̃,
-        sim = sim, γ = γ, pool = pool, X = X))
+        sim = sim, γ = γ, pool = pool, X = X, fm = fm))
 end

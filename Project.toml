@@ -1,5 +1,7 @@
 [deps]
+Alpaca = "c1a5797d-a1e1-4ff9-a0c8-9ae1b3a2bac1"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
@@ -36,7 +38,7 @@ UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 VLQuantitativeFinancePackage = "4119e0bf-20d0-4785-913e-5ebdb0caa218"
 
 [sources]
-JumpHMM = {url = "https://github.com/varnerlab/JumpHMM.jl", rev = "886af373fa3e3eb7aa6d5deed88914fa8108b5cb"}
+JumpHMM = {rev = "886af373fa3e3eb7aa6d5deed88914fa8108b5cb", url = "https://github.com/varnerlab/JumpHMM.jl"}
 
 [compat]
 julia = "1.12"

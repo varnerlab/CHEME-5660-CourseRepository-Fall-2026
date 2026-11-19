@@ -153,10 +153,21 @@ function study_md(; seed::Int=5660)
         volume=fill(1e6, n, 48), spy_open=spy_op, spy_close=spy, sector=sectors, g_f=fill(0.04, n)))
 end
 
-# (md, ctx) for the study-loop tests: calibration from fit_base_sim on 2014-01-01 → 2017-12-29 with
-# λ = 0.5; settings start = first trading day ≥ 2018-07-02, stop = 2018-12-31, that training window.
-# `md` (default study_md()) is the market to build on; every other keyword overrides a setting.
-function study_ctx(; md::Union{Nothing,MyMarketData}=nothing, kw...)
+"""
+    study_ctx(; md=nothing, fm=nothing, kw...)
+
+(md, ctx) for the study-loop tests: calibration from fit_base_sim on 2014-01-01 → 2017-12-29 with λ = 0.5;
+settings start = first trading day ≥ 2018-07-02, stop = 2018-12-31, that training window.
+
+### Arguments
+- `md::Union{Nothing,MyMarketData}`: the market to build on (`nothing` means `study_md()`).
+- `fm::Union{Nothing,MyForecastModels}`: the context's forecast models (`nothing` for the GBM forecast).
+- `kw...`: settings overrides, by field name.
+
+### Returns
+- `Tuple{MyMarketData,MyStudyContext}`: the market and the context.
+"""
+function study_ctx(; md::Union{Nothing,MyMarketData}=nothing, fm::Union{Nothing,MyForecastModels}=nothing, kw...)
     md = something(md, study_md())
     tr0, tr1 = Date(2014, 1, 1), Date(2017, 12, 29)
     fit = fit_base_sim(md, tr0, tr1)
@@ -165,7 +176,7 @@ function study_ctx(; md::Union{Nothing,MyMarketData}=nothing, kw...)
     start = md.dates[searchsortedfirst(md.dates, Date(2018, 7, 2))]
     s = build(MyStudySettings, merge((start=start, stop=Date(2018, 12, 31), train_start=tr0, train_stop=tr1),
         NamedTuple(kw)))
-    return md, build_context(md, calib, s)
+    return md, build_context(md, calib, s; fm=fm)
 end
 
 # One study run on ctx's settings.
@@ -175,11 +186,97 @@ study_run(ctx::MyStudyContext, allocator::String, screen::Symbol; seed::Int=5660
 # The 13 tickers of the user's fixed list stand in as the first 13 fixture tickers (deterministic).
 md_tickers_13() = study_md().tickers[1:13]
 
-# A hand-built `MyStudyResult` for the statistics tests: `dates`, `decisions` and `targets` as given,
-# equity (USD) and ξ (dimensionless) per date; every other field is empty or zero, and the repicks hold
-# one `:initial` row with basket ["A"].
+"""
+    v1_fixture_cases()::Vector{NamedTuple}
+
+The study runs saved in `fixtures/v1_run_study.jld2` (written by `fixtures/make_v1_run_study.jl` with the v1
+code). Each case names a run (`label`), its settings overrides (`settings`), its allocator and its screen.
+Together the cases reach every v1 path of `run_study`: buys only, 130/30 shorts with borrow fees, failed solves
+that keep the book, band exits with re-picks, and a binding β limit.
+
+### Arguments
+- none.
+
+### Returns
+- `Vector{NamedTuple}`: one `(label, settings, allocator, screen)` per run.
+"""
+function v1_fixture_cases()::Vector{NamedTuple}
+    cases = NamedTuple[];
+    push!(cases, (label="cd_gamma", settings=NamedTuple(), allocator="CD", screen=:gamma));
+    push!(cases, (label="ls_gamma", settings=NamedTuple(), allocator="LS", screen=:gamma));
+    push!(cases, (label="sg_failed", settings=(sg_baseline=0.07,), allocator="SG", screen=:gamma));
+    push!(cases, (label="cd_band_exit", settings=(z=0.0,), allocator="CD", screen=:random));
+    push!(cases, (label="minvar_limit", settings=(beta_ref=0.0,), allocator="MinVar", screen=:random));
+    return cases;
+end
+
+"""
+    spy_short_ctx(; ξ::Float64=1.3, kw...)
+
+(md, ctx) for the SPY-short tests: the study fixture with the v2 short switches on (`beta_min = -0.5`,
+`spy_short = true`), a run from 2018-07-02 to 2018-07-13 (10 trading days), and ξ set to `ξ` on every run row,
+so the β limit is 1 − ξ on every day. `z = 1e6` and `D_max = 1` keep the band and drawdown triggers quiet, and
+the run is shorter than the horizon and the re-pick timer, so the first day's decision is the only one. Other
+keywords override settings.
+
+### Arguments
+- `ξ::Float64`: the market state on every run row (dimensionless).
+- `kw...`: settings overrides, by field name (`fm` passes forecast models to `study_ctx`).
+
+### Returns
+- `Tuple{MyMarketData,MyStudyContext}`: the market and the context.
+"""
+function spy_short_ctx(; ξ::Float64=1.3, kw...)
+    settings = merge((beta_min=-0.5, spy_short=true, stop=Date(2018, 7, 13), z=1e6, D_max=1.0), NamedTuple(kw));
+    md, ctx = study_ctx(; settings...);
+    for t in ctx.rows
+        ctx.ξ[t] = ξ;
+    end
+    return md, ctx;
+end
+
+"""
+    ticker_columns(md::MyMarketData)::Dict{String,Int}
+
+The column of each ticker in `md`.
+
+### Arguments
+- `md::MyMarketData`: the market data.
+
+### Returns
+- `Dict{String,Int}`: the column of each ticker.
+"""
+function ticker_columns(md::MyMarketData)::Dict{String,Int}
+    col = Dict{String,Int}();
+    for j in eachindex(md.tickers)
+        col[md.tickers[j]] = j;
+    end
+    return col;
+end
+
+"""
+    hand_result(; dates, equity, xi, decisions, targets, book_beta, book_beta_limit, spy_gain, spy_rose)::MyStudyResult
+
+A hand-built `MyStudyResult` for the statistics tests. Every other field is empty or zero, and the repicks hold one
+`:initial` row with basket ["A"].
+
+### Arguments
+- `dates::Vector{Date}`: the run's dates.
+- `equity`: the equity on each date (USD; default 100,000).
+- `xi`: ξ on each date (dimensionless; default 0).
+- `decisions::DataFrame`: the decision rows.
+- `targets`: the target weights of each decision (default none).
+- `book_beta`: the whole book's β on each date (dimensionless; default 0).
+- `book_beta_limit`: the whole book's β limit on each date (dimensionless; default `Inf`, the hedge off).
+- `spy_gain`: the SPY position's gain on each date (USD; default 0).
+- `spy_rose`: whether SPY closed above its previous close on each date (default `false`).
+
+### Returns
+- `MyStudyResult`: the result.
+"""
 function hand_result(; dates::Vector{Date}, equity=fill(1e5, length(dates)), xi=zeros(length(dates)),
-        decisions::DataFrame, targets=Dict{Date,Dict{String,Float64}}())
+        decisions::DataFrame, targets=Dict{Date,Dict{String,Float64}}(), book_beta=zeros(length(dates)),
+        book_beta_limit=fill(Inf, length(dates)), spy_gain=zeros(length(dates)), spy_rose=falses(length(dates)))
     n = length(dates)
     return build(MyStudyResult, (dates=dates, equity=Float64.(equity), cash=zeros(n), borrow_fees=zeros(n),
         trades=DataFrame(date=Date[], ticker=String[], qty=Float64[], price=Float64[], cost=Float64[], scale=Float64[]),
@@ -187,8 +284,100 @@ function hand_result(; dates::Vector{Date}, equity=fill(1e5, length(dates)), xi=
         repicks=DataFrame(date=[dates[1]], trigger=[:initial], basket=[["A"]], pool=[String[]], shorts=[String[]],
             changed=[true]),
         daily=DataFrame(date=dates, xi=Float64.(xi), beta_max=fill(Inf, n), portfolio_beta=zeros(n),
-            hedge_weight=zeros(n), pool_size=zeros(Int, n)),
+            hedge_weight=zeros(n), pool_size=zeros(Int, n), book_beta=Float64.(book_beta),
+            book_beta_limit=Float64.(book_beta_limit), spy_gain=Float64.(spy_gain), spy_rose=Bool.(spy_rose)),
         targets=targets, projections=Dict{Date,MyProjection}()))
 end
 
+# ---- Method v2: stand-in forecast models (Tasks 4 and 5) ----
 
+"""
+    MyGaussianStubModel
+
+A stand-in forecast model whose draws are independent standard normals. With it, the factor forecast is a
+multi-asset GBM, which `project_gbm` can check.
+"""
+struct MyGaussianStubModel end
+
+"""
+    MyConstantStubModel
+
+A stand-in forecast model whose draws never change, so its standard deviation is zero.
+"""
+struct MyConstantStubModel end
+
+# the Gaussian stub's draws: T days × N paths of standard normals from the stream's seed
+function VLQuantitativeFinancePackage.MPCPortfolio.forecast_draws(model::MyGaussianStubModel, T::Int, N::Int, seed::Int)::Matrix{Float64}
+    return randn(Xoshiro(seed), T, N)
+end
+
+# the constant stub's draws: every value is 0.3
+function VLQuantitativeFinancePackage.MPCPortfolio.forecast_draws(model::MyConstantStubModel, T::Int, N::Int, seed::Int)::Matrix{Float64}
+    return fill(0.3, T, N)
+end
+
+"""
+    stub_forecast_models(tickers, sector_index, ρ)::MyForecastModels
+
+Forecast models where every model is a `MyGaussianStubModel`, with standardizing moments 0 and 1.
+
+### Arguments
+- `tickers::Vector{String}`: the tickers.
+- `sector_index::Vector{Int}`: the sector of each ticker.
+- `ρ::Vector{Float64}`: the sector share of each ticker (dimensionless).
+
+### Returns
+- `MyForecastModels`: the stub models.
+"""
+function stub_forecast_models(tickers::Vector{String}, sector_index::Vector{Int}, ρ::Vector{Float64})::MyForecastModels
+    n_sectors = maximum(sector_index)
+    factors = Any[]
+    names = Any[]
+    for s in 1:n_sectors
+        push!(factors, MyGaussianStubModel())
+    end
+    for i in eachindex(tickers)
+        push!(names, MyGaussianStubModel())
+    end
+    K = length(tickers)
+    return build(MyForecastModels, (tickers=tickers, market=MyGaussianStubModel(), factors=factors, names=names,
+        sector_index=sector_index, δ=zeros(K), ρ=ρ, m_market=0.0, s_market=1.0, m_factor=zeros(n_sectors),
+        s_factor=ones(n_sectors), m_name=zeros(K), s_name=ones(K)))
+end
+
+"""
+    fixture_forecast_models(md::MyMarketData)::MyForecastModels
+
+Stand-in forecast models for every ticker of `md`: Gaussian stubs, with each name in its `md.sector` sector (numbered
+in order of first appearance) and a sector share ρ = 0.3.
+
+### Arguments
+- `md::MyMarketData`: the fixture market.
+
+### Returns
+- `MyForecastModels`: the stub models for every ticker of `md`.
+"""
+function fixture_forecast_models(md::MyMarketData)::MyForecastModels
+    sectors = unique(md.sector)
+    sector_index = Int[]
+    for j in eachindex(md.tickers)
+        push!(sector_index, findfirst(isequal(md.sector[j]), sectors))
+    end
+    return stub_forecast_models(md.tickers, sector_index, fill(0.3, length(md.tickers)))
+end
+
+"""
+    v2_settings()::NamedTuple
+
+The seven method-v2 settings at their v2 values (plan, Global Constraints).
+
+### Arguments
+- none.
+
+### Returns
+- `NamedTuple`: the seven settings, by field name.
+"""
+function v2_settings()::NamedTuple
+    return (forecast_model="factor", forecast_band="quantile", market_turn=true, beta_over_cap=0.1,
+        beta_min=-0.5, spy_short=true, repick_on_market_turn=true)
+end

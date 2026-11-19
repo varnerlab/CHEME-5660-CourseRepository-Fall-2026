@@ -15,7 +15,7 @@
     # calibrate on 2014–2024 and run one book on 2025-01-02 to 2026-09-04 with 30 names
     calib = calibrate(md; train_start = Date(2014, 1, 3), train_stop = Date(2024, 12, 31))
     small = subset_universe(md, select_universe(md, 30))
-    s = with_settings(load_study(default_study_path()).settings; hedge = false)
+    s = with_settings(load_study(default_study_v1_path()).settings; hedge = false)   # v1: the GBM forecast
     ctx = build_context(small, calib, s)
     res = run_study(ctx, build(MyStudyRun, (settings = s, allocator = "CD", screen = :gamma, seed = 5660)))
     @test length(res.equity) == length(res.dates) && all(isfinite, res.equity) && all(res.equity .> 0)

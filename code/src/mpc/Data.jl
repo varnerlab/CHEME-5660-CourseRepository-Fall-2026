@@ -5,6 +5,13 @@ const DATA_FILES = [
     "SP500-Daily-OHLC-1-2-2026-to-09-04-2026.jld2",
 ]
 
+"""Course addition: the same price files, with the 2026 file through 2026-11-13 (the L14a backtest window)."""
+const DATA_FILES_NOV2026 = [
+    "SP500-Daily-OHLC-1-3-2014-to-12-31-2024.jld2",
+    "SP500-Daily-OHLC-1-2-2025-to-12-31-2025.jld2",
+    "SP500-Daily-OHLC-1-2-2026-to-11-13-2026.jld2",
+]
+
 const SECTORS_FILE = "sp500-sectors.csv"
 const DTB3_FILE = "DTB3.csv"
 const DEFAULT_G_F = 0.04   # yr⁻¹, used when DTB3.csv is absent
@@ -136,9 +143,10 @@ function _risk_free(dir::String, dates::Vector{Date})::Vector{Float64}
 end
 
 """
-    load_market_data(dir::String; start::Date, stop::Date)::MyMarketData
+    load_market_data(dir::String; start::Date, stop::Date, files::Vector{String}=DATA_FILES)::MyMarketData
 
-Load the three price files and the sector CSV from `dir`, over dates in [start, stop].
+Load the three price files `files` (in chronological order; course addition, default `DATA_FILES`, and
+`DATA_FILES_NOV2026` extends 2026 to November 13) and the sector CSV from `dir`, over dates in [start, stop].
 Trading days are SPY's. The universe is the tickers present in all three files, with a row on
 every trading day, all opens and closes > 0, and a sector in the CSV (sorted, SPY excluded).
 Prices are USD/share, volume is shares/day, g_f is yr⁻¹.
@@ -151,8 +159,8 @@ rates within a file and dollar volume are unchanged). Each adjustment is logged 
 [start, stop], a remaining boundary jump |log(open_b/close_{b−1})| > $(SPLIT_GATE) and any one-day
 |log close move| > $(LARGE_MOVE_WARN) (likely a spin-off or ticker reuse) are logged with `@warn` and not adjusted.
 """
-function load_market_data(dir::String; start::Date, stop::Date)::MyMarketData
-    sets = [JLD2.load(joinpath(dir, f))["dataset"] for f in DATA_FILES]
+function load_market_data(dir::String; start::Date, stop::Date, files::Vector{String}=DATA_FILES)::MyMarketData
+    sets = [JLD2.load(joinpath(dir, f))["dataset"] for f in files]
     spy = merge((_slice(s["SPY"], start, stop) for s in sets)...)
     dates = sort!(collect(keys(spy)))
     isempty(dates) && throw(ArgumentError("no SPY trading days in [$(start), $(stop)]"))
