@@ -10,6 +10,10 @@
 % sentence comes from it. The review copies the L13b review frame and the L13b sector factor
 % definition frame. The paper trading figure is figs/Fig-L14a-PaperTrading-Schematic.pdf.
 % The disclaimer is slide 2, by instructor preference.
+% November 20, 2026: the EWLS frames follow the rewritten lecture box: days counted from the
+% end of 2024 (day 0 = December 31, 2024), the residual r_i(k), and the prior as a sum over the
+% 2,766 days of 2014 to 2024. The EWLS section now spans three frames, and the recursion
+% sentence sits under the problem (the parts frame had no room for it).
 % Notation follows the lecture: the EWLS decay phi = 2^(-1/63), the prior weight N_0 = 63,
 % the updated estimates alpha_i(t) and beta_i(t), and the preference weight gamma_i(t).
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -167,43 +171,69 @@
 
 % ========== Updating the single index model
 \begin{frame}{Updating the Single Index Model}
-  A stock's market sensitivity changes over time. We update the estimates with each new trading
-  day, giving recent days the most weight.
-
-  \vspace{0.3em}
-  \textbf{\ink{Exponentially weighted least squares (EWLS):}} on trading day $t$, the updated
-  baseline $\alpha_{i}(t)$ and market sensitivity $\beta_{i}(t)$ of stock $i$ solve:
-  {\small\begin{equation*}
-    \left(\alpha_{i}(t),\beta_{i}(t)\right)=\arg\min_{a,\,b}\Biggl[\underbrace{\sum_{k=t_{0}+1}^{t}\phi^{\,t-k}\left(g_{i}(k)-a-b\,g_{m}(k)\right)^{2}}_{\textstyle\text{weighted data}}+\underbrace{\phi^{\,t-t_{0}}N_{0}\,\mathbb{E}_{0}\left[\left(g_{i}-a-b\,g_{m}\right)^{2}\right]}_{\textstyle\text{prior}}\Biggr]
-  \end{equation*}}
-  where $g_{i}(k)$ and $g_{m}(k)$ are the daily growth rates of stock $i$ and \texttt{SPY} on day $k$
-  (1/yr), $a$ and $b$ are a candidate baseline and market sensitivity, and $t_{0}$ is the last day of
-  the fitting period. The prior weight $N_{0}=63$ counts the 2014 to 2024 fit as 63 days of data, and
-  $\mathbb{E}_{0}$ is the expected value under that fit.
+  A stock's market sensitivity changes over time. By late 2026, most stocks in our universe moved
+  less with the market than their 2014 to 2024 estimates say:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L14a-EWLS-JPM.pdf}
+  \end{center}
+  We keep the estimates current by updating them with each new trading day, giving recent days
+  the most weight.
 \end{frame}
 
-\begin{frame}{The Parts of the Update}
-  Each part of the problem has a job:
-  \begin{itemize}\setlength{\itemsep}{0.45em}
-    \item \hilite{Weighted data}: each day, the weight of every earlier day shrinks by
-      $\phi=2^{-1/63}$, which halves it every 63 trading days. The new day enters with weight one.
-    \item \hilite{Prior}: the prior term is the expected squared residual under the 2014 to 2024 fit.
-      On the first day, the prior alone gives the 2014 to 2024 estimates, and after a year of
-      trading it carries little weight.
-    \item \hilite{No look-ahead}: the estimates on day $t$ use the growth rates through day $t$.
-      The trading method decides after the close of day $t$ and trades at the next open.
+\begin{frame}{Exponentially Weighted Least Squares (EWLS)}
+  Least squares counts every training day the same. EWLS multiplies the squared residual of each
+  day by a weight that shrinks as the day gets older. The 2014 to 2024 days, the \hilite{prior},
+  stay in the sum with a small total weight.
+
+  \vspace{0.6em}
+  We number the trading days from the end of 2024:
+  \begin{itemize}\setlength{\itemsep}{0.3em}
+    \item Days $-2765$ to $0$: the 2,766 days of 2014 to 2024, ending December 31, 2024.
+    \item Days $1$ to $469$: January 2, 2025, to November 13, 2026, the last day of our data.
   \end{itemize}
-  \vspace{0.3em}
-  We use the EWLS recursion, which updates the estimates from a few running sums instead of
-  storing every past day.
+\end{frame}
+
+\begin{frame}{The EWLS Problem}
+  On day $t$, the updated baseline $\alpha_{i}(t)$ and market sensitivity $\beta_{i}(t)$ of stock
+  $i$ solve:
+  \begin{equation*}
+    \left(\alpha_{i}(t),\beta_{i}(t)\right)=\arg\min_{a,\,b}\Biggl[\underbrace{\sum_{k=1}^{t}\phi^{\,t-k}\,\bigl(\overbrace{g_{i}(k)-a-b\,g_{m}(k)}^{\textstyle\text{residual }r_{i}(k)}\bigr)^{2}}_{\textstyle\text{new days}}+\underbrace{\phi^{\,t}\,\frac{N_{0}}{2766}\sum_{k=-2765}^{0}r_{i}(k)^{2}}_{\textstyle\text{prior}}\Biggr]
+  \end{equation*}
+  where $g_{i}(k)$ and $g_{m}(k)$ are the daily growth rates of stock $i$ and \texttt{SPY} (1/yr),
+  and $a$ and $b$ are a candidate baseline and market sensitivity.
+
+  \vspace{0.6em}
+  The EWLS recursion updates the estimates from a few running sums, without storing past days.
   \slidenote{Derivation:}{\href{\repo/advanced/ewls/CHEME-5660-L14a-Derivation-EWLS-Update-Fall-2026.ipynb}{The EWLS recursion (advanced notebook)}.}
 \end{frame}
 
+\begin{frame}{The Parts of the Update}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{New days}: day $k$ has the weight $\phi^{\,t-k}$, the decay
+      $\phi=2^{-1/63}\approx 0.989$ raised to the day's age. On day $3$, January 6, 2025, the
+      first sum is $\phi^{2}\,r_{i}(1)^{2}+\phi\,r_{i}(2)^{2}+r_{i}(3)^{2}$. The weight halves every 63
+      trading days, about three months.
+    \item \hilite{Prior}: the factor $N_{0}/2766$, with $N_{0}=63$, counts the 2,766 old days as
+      63 days of data. This weight shrinks like the weight of day $0$, and on day $0$ the prior
+      alone gives the 2014 to 2024 fit.
+    \item \hilite{No look-ahead}: day $t$ uses the growth rates through day $t$. The trading
+      method decides after the close and trades at the next open.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Preference Weights with Updated Estimates}
-  Previously, we computed the preference weight $\gamma_{i}(t)$ from the single index estimates,
-  the recent market growth rate $\tilde{g}_{M,t}$, and the market state $\xi_{t}$. The trading
-  method of \href{https://arxiv.org/abs/2611.03022}{Varner (2026)} uses it with the updated
-  estimates:
+  The trading method of \href{https://arxiv.org/abs/2611.03022}{Varner (2026)} uses the preference
+  weight $\gamma_{i}(t)$ to choose its stocks, with the updated estimates in place of the fixed ones:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{../figs/Fig-L14a-Gamma-Picks.pdf}
+  \end{center}
+  The \hilite{$\gamma$ basket} holds the three stocks with the highest preference weights in each
+  sector. The method picks a new basket every 21 trading days, and whenever the market turns.
+\end{frame}
+
+\begin{frame}{The Preference Model with Updated Estimates}
+  Previously, we computed the preference weight from the fixed estimates, the recent market
+  growth rate $\tilde{g}_{M,t}$, and the market state $\xi_{t}$. With the updated estimates:
   \begin{equation*}
     \boxed{\gamma_{i}(t)=\tanh\left(h\,\frac{\alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)}
   \end{equation*}
@@ -213,22 +243,29 @@
   \begin{itemize}\setlength{\itemsep}{0.1em}
     \item \hilite{Floor}: the denominator uses $|\beta_{i}(t)|$ with a floor, which keeps the
       preference weight defined for every stock.
-    \item \hilite{Picks at market turns}: the \hilite{$\gamma$ basket} holds the three stocks with
-      the highest preference weights in each sector. The method picks a new basket every 21 trading
-      days, and whenever $\xi_{t}$ moves to the other side of zero.
+    \item \hilite{Market turns}: the market turns on the day $\xi_{t}$ moves to the other side of
+      zero from its value on the last pick day.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{The Market Hedge}
-  With a \hilite{market hedge}, the trading method limits the market sensitivity of the whole
-  portfolio on each day it sets its holdings:
+  The trading method can also run with a \hilite{market hedge}. The hedge limits the market
+  sensitivity of the whole portfolio, and the limit drops as the market falls:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L14a-Market-Hedge.pdf}
+  \end{center}
+  Because $|\xi_{t}|\leq 1$ on 99\% of training days, only a steep fall takes the limit below zero.
+\end{frame}
+
+\begin{frame}{The Market Hedge Limit}
+  On each day $t$ that the trading method sets its holdings, the hedge requires:
   \begin{equation*}
     \boxed{\beta_{P}(t)=\sum_{i}w_{i}(t)\,\beta_{i}(t)\leq\max\left(1-\xi_{t},\,-0.5\right)}
   \end{equation*}
   where $w_{i}(t)$ is the fraction of the portfolio's value in holding $i$, negative for a short.
   \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{The limit}: one in a flat market ($\xi_{t}=0$) and zero at $\xi_{t}=1$. Because
-      $|\xi_{t}|\leq 1$ on 99\% of training days, only a steep fall takes the limit below zero.
+    \item \hilite{The limit}: one at $\xi_{t}=0$, the market sensitivity of \texttt{SPY}, and zero
+      at $\xi_{t}=1$.
     \item \hilite{Meeting the limit}: the method can shift value toward the basket's stocks with a
       low market sensitivity, hold cash, which has a market sensitivity of zero, or buy up to five
       stocks whose market sensitivity is zero or negative.

@@ -1,0 +1,50 @@
+% L14a the market hedge. The limit on the market sensitivity of the portfolio,
+% beta_P(t) <= max(1 - xi_t, -0.5), against the market state xi_t. At xi_t = 0 the limit
+% is 1, the market sensitivity of SPY; at xi_t = 1 it is 0, the market sensitivity of the
+% betting-against-beta portfolio; below zero the method sells SPY short; the floor is -0.5.
+% The gray band marks |xi_t| <= 1, where xi_t lies on 99% of training days.
+%
+% November 20, 2026: drawn in the style of the L13a schematics (schematic-style.tex).
+% Scale: 3 cm per unit of xi_t, 2 cm per unit of the limit.
+\documentclass[tikz,border=6pt]{standalone}
+\input{schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}[x=3cm, y=2cm, label/.style={font=\sffamily\small\bfseries, align=center}]
+  % where xi_t lies on 99% of training days
+  \fill[boxfill] (-1, -0.85) rectangle (1, 2.15);
+  \node[note, anchor=north] at (0, 2.12) {$|\xi_{t}|\leq$ 1 on 99\% of training days};
+
+  % below zero: the method sells SPY short to cover the part below zero
+  \fill[redfill] (1, 0) -- (1.5, -0.5) -- (2.4, -0.5) -- (2.4, 0) -- cycle;
+  \node[font=\sffamily\footnotesize, text=gdred] at (1.95, -0.25) {sell \texttt{SPY} short};
+
+  % axes
+  \draw[spine, draw=gdgray] (-1.25, 0) -- (2.4, 0);
+  \draw[axis] (-1.25, -0.85) -- (-1.25, 2.3);
+  \draw[axis] (-1.25, -0.85) -- (2.55, -0.85);
+  \foreach \x/\lab in {-1/−1, 0/0, 1/1, 2/2} {
+    \draw[spine] (\x, -0.85) -- (\x, -0.92);
+    \node[anchor=north, font=\sffamily\footnotesize] at (\x, -0.94) {\lab};
+  }
+  \foreach \y/\lab in {-0.5/−0.5, 0/0, 1/1, 2/2} {
+    \draw[spine] (-1.25, \y) -- (-1.29, \y);
+    \node[anchor=east, font=\sffamily\footnotesize] at (-1.3, \y) {\lab};
+  }
+  \node[font=\sffamily\small, anchor=north] at (0.5, -1.2) {market state $\xi_{t}$};
+  \node[note, anchor=north west] at (-1.25, -1.2) {$\leftarrow$ market rising};
+  \node[note, anchor=north east] at (2.4, -1.2) {market falling $\rightarrow$};
+  \node[font=\sffamily\small, rotate=90, anchor=south, align=center] at (-1.55, 0.65) {limit on the market sensitivity\\of the portfolio, $\beta_{P}(t)$};
+
+  % the limit
+  \draw[curve, draw=gdblue] (-1, 2) -- (1.5, -0.5) -- (2.4, -0.5);
+  \draw[flow, draw=gdblue] (-0.5, 1.5) -- (-0.5, 1.12);
+  \draw[flow, draw=gdblue] (-0.7, 1.7) -- (-0.7, 1.32);
+  \node[font=\sffamily\footnotesize, anchor=north, align=center] at (-0.6, 1.08) {$\beta_{P}(t)$ stays\\on or below the line};
+  \node[pt] at (0, 1) {};
+  \node[pt] at (1, 0) {};
+  \node[font=\sffamily\footnotesize, anchor=south west, align=left] at (0.07, 1.03) {limit 1: the market\\sensitivity of \texttt{SPY}};
+  \node[font=\sffamily\footnotesize, anchor=south west, align=left] at (1.07, 0.05) {limit 0: the market sensitivity\\of betting against beta};
+  \node[font=\sffamily\footnotesize, anchor=north, align=center] at (1.95, -0.55) {floor −0.5};
+\end{tikzpicture}
+\end{document}

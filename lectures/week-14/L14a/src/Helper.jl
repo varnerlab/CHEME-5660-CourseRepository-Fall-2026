@@ -10,7 +10,7 @@ After that, we pick again on a day when one of two things happens:
 - __Market turn:__ the market state is on the other side of zero from its value on the last pick day. A falling
   market has ξ > 0, and a rising market has ξ ≤ 0, so a market state of exactly zero counts as rising.
 
-When both happen on the same day, the pick counts as scheduled.
+When both happen on the same day, the pick counts as a market turn.
 
 ### Arguments
 - `ξ::Vector{Float64}`: the market state on each trading day of the run, in order (dimensionless).
@@ -51,14 +51,14 @@ function pick_days(ξ::Vector{Float64}; repick_interval::Int)::NamedTuple
     for k ∈ 2:length(ξ)
         days_since_last_pick = k - last_pick; # trading days since the last pick
         falling_now = ξ[k] > 0; # true when the market is falling today
-        if days_since_last_pick >= repick_interval
-            push!(day, k);
-            push!(reason, "scheduled");
-            last_pick = k;
-            falling_at_last_pick = falling_now;
-        elseif falling_now != falling_at_last_pick
+        if falling_now != falling_at_last_pick
             push!(day, k);
             push!(reason, "market turn"); # the market turned from rising to falling, or from falling to rising
+            last_pick = k;
+            falling_at_last_pick = falling_now;
+        elseif days_since_last_pick >= repick_interval
+            push!(day, k);
+            push!(reason, "scheduled");
             last_pick = k;
             falling_at_last_pick = falling_now;
         end

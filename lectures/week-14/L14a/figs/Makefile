@@ -1,7 +1,7 @@
-# Build the L14a schematic to PDF (for slides), themed SVG (for the notebook), and PNG (preview).
-# The figure shares schematic-style.tex, a copy of the L13a style (week-12 schematics).
+# Build the L14a figures to PDF (for slides), themed SVG (for the notebook), and PNG (preview).
+# Each figure shares schematic-style.tex, a copy of the L13a style (week-12 schematics).
 
-FIGURES := Fig-L14a-PaperTrading-Schematic
+FIGURES := Fig-L14a-EWLS-JPM Fig-L14a-Gamma-Picks Fig-L14a-Market-Hedge Fig-L14a-PaperTrading-Schematic
 
 XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg
