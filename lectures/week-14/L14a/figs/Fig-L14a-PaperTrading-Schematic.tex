@@ -1,0 +1,98 @@
+% L14a paper trading with an AI assistant. Top: a laptop running the AI assistant (Claude
+% Code) sends a tool call to the MCP server, a rack whose units are three of its eleven tools;
+% the server holds the key and secret and sends an API request to the Alpaca paper account,
+% which fills each order against the latest quotes (IEX). Gray arrows carry the result and
+% the order status back. Bottom: the life of an order, with the statuses of the lecture's
+% list: new, partially_filled, filled (open to done), canceled, and rejected.
+%
+% November 19, 2026: drawn in the style of the L13a schematics (schematic-style.tex).
+% Checks: the tool names match src/Catalog.jl of alpaca-mcp; the statuses match the
+% lecture's "Open", "Done", and "Rejected" bullets; an unfilled day order is canceled at
+% the close (Alpaca's orders documentation), not expired.
+\documentclass[tikz,border=6pt]{standalone}
+\input{schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  unit/.style={draw=vnink, fill=white, line width=1.0pt, rounded corners=3pt},
+  bubble/.style={rounded corners=6pt, line width=0.8pt, font=\sffamily\footnotesize, align=left, inner sep=4pt},
+  status/.style={draw=vnink, fill=white, line width=0.9pt, rounded corners=3pt, inner sep=5pt, font=\ttfamily\small},
+  back/.style={draw=gdgray, line width=0.9pt, -{Latex[length=2.4mm, width=1.7mm]}},
+  label/.style={font=\sffamily\small\bfseries, align=center},
+]
+  % ---------------------------------------------------------------- the AI assistant
+  % the laptop: bezel, screen, camera, and keyboard base
+  \draw[draw=vnink, fill=white, line width=1.4pt, rounded corners=6pt] (0.0, 3.0) rectangle (4.6, 6.6);
+  \fill[boxfill, rounded corners=3pt] (0.22, 3.22) rectangle (4.38, 6.38);
+  \fill[gdgray] (2.3, 6.49) circle (0.04);
+  \draw[draw=vnink, fill=gridgray, line width=1.2pt, line join=round]
+    (-0.15, 3.0) -- (4.75, 3.0) -- (5.1, 2.6) -- (-0.5, 2.6) -- cycle;
+  \draw[draw=gdgray, line width=0.8pt] (1.9, 2.6) -- (2.7, 2.6);
+
+  % the chat on the screen: our request, and the assistant asking for approval
+  \node[bubble, draw=gdblue, fill=bluefill, anchor=north east, text width=2.7cm] (ask) at (4.2, 6.2)
+    {Buy 1 share of KO with a limit order at the bid.};
+  \node[bubble, draw=gdgray, fill=white, anchor=north west, text width=2.9cm] (reply) at (0.4, 4.75)
+    {Approve the tool call \texttt{submit\_order}?};
+  \node[label] at (2.3, 2.1) {AI assistant};
+  \node[note] at (2.3, 1.68) {Claude Code};
+
+  % ---------------------------------------------------------------- the MCP server
+  % a rack of three units, each one tool, with a status light and vents
+  \foreach \y/\tool in {5.5/get\_latest\_quotes, 4.4/submit\_order, 3.3/get\_order} {
+    \draw[unit] (7.0, \y) rectangle (11.0, \y + 0.85);
+    \fill[gdblue] (7.3, \y + 0.425) circle (0.075);
+    \node[anchor=west, font=\ttfamily\footnotesize] at (7.5, \y + 0.425) {\tool};
+    \draw[draw=gridgray, line width=1.2pt] (10.62, \y + 0.2) -- (10.62, \y + 0.65);
+    \draw[draw=gridgray, line width=1.2pt] (10.78, \y + 0.2) -- (10.78, \y + 0.65);
+  }
+  % the key and secret stay in the server
+  \draw[draw=saorange, line width=1.6pt] (11.35, 3.05) circle (0.17);
+  \draw[draw=saorange, line width=1.6pt, line cap=round] (11.52, 3.05) -- (12.15, 3.05);
+  \draw[draw=saorange, line width=1.6pt, line cap=round] (11.95, 3.05) -- (11.95, 2.85);
+  \draw[draw=saorange, line width=1.6pt, line cap=round] (12.1, 3.05) -- (12.1, 2.85);
+  \node[note, anchor=north] at (11.75, 2.72) {key + secret};
+  \node[label] at (9.0, 2.6) {MCP server};
+  \node[note] at (9.0, 2.18) {one tool for each request};
+
+  % ---------------------------------------------------------------- the paper account
+  \draw[draw=vnink, fill=white, line width=1.0pt, rounded corners=4pt] (13.7, 3.6) rectangle (18.0, 6.35);
+  \fill[boxfill, rounded corners=4pt] (13.7, 5.55) rectangle (18.0, 6.35);
+  \draw[draw=vnink, line width=1.0pt, rounded corners=4pt] (13.7, 3.6) rectangle (18.0, 6.35);
+  \node[label] at (15.85, 5.95) {Alpaca paper account};
+  \node[font=\sffamily\footnotesize, align=center] at (15.85, 4.6)
+    {simulated cash\\[3pt] fills each order against\\the latest quotes};
+  \node[sumbox, font=\sffamily\footnotesize] (quotes) at (15.85, 7.55) {market quotes (IEX)};
+  \draw[flow, dash pattern=on 3pt off 2pt] (quotes.south) -- (15.85, 6.45);
+
+  % ---------------------------------------------------------------- the calls between them
+  \draw[flow] (5.0, 5.95) -- (6.85, 5.95) node[midway, above=3pt, font=\sffamily\footnotesize] {tool call};
+  \draw[back] (6.85, 3.95) -- (5.0, 3.95) node[midway, below=3pt, note] {result};
+  \draw[flow] (11.15, 5.95) -- (13.55, 5.95) node[midway, above=3pt, font=\sffamily\footnotesize] {API request};
+  \draw[back] (13.55, 3.95) -- (11.15, 3.95) node[midway, above=3pt, note] {order status};
+
+  % ---------------------------------------------------------------- the life of an order
+  \draw[draw=gridgray, line width=0.8pt] (-0.5, 1.15) -- (18.0, 1.15);
+  \node[label, anchor=west] at (-0.5, 0.65) {The life of an order};
+
+  \fill[vnink] (0.0, -0.45) circle (0.09);
+  \node[note, anchor=south] at (0.0, -0.33) {sent};
+  \node[status] (new) at (2.6, -0.45) {new};
+  \node[status] (part) at (7.4, -0.45) {partially\_filled};
+  \node[status, draw=gdblue, fill=bluefill] (filled) at (12.6, -0.45) {filled};
+  \node[status, draw=gdgray, fill=boxfill] (canceled) at (7.4, -1.85) {canceled};
+  \node[status, draw=gdred, fill=redfill] (rejected) at (2.6, -1.85) {rejected};
+
+  \draw[flow] (0.12, -0.45) -- (new.west);
+  \draw[flow] (new.east) -- (part.west);
+  \draw[flow] (part.east) -- (filled.west);
+  \draw[flow] (new.north east) to[bend left=12] (filled.north west);
+  \draw[flow] (new.south east) -- (canceled.north west);
+  \draw[flow] (part.south) -- (canceled.north);
+  \draw[flow, rounded corners=4pt] (0.0, -0.57) |- (rejected.west);
+
+  \node[note, anchor=west, align=left] at (canceled.east) {\ we cancel the order, or\\\ a \texttt{day} order reaches the close};
+  \node[note, anchor=west, align=left] at (rejected.east) {\ fails a check};
+  \node[note, anchor=west, align=left] at (filled.east) {\ all of its shares\\\ have traded};
+\end{tikzpicture}
+\end{document}

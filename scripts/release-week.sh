@@ -120,6 +120,7 @@ rsync -a \
   --exclude '*.toc' \
   --exclude '*.xdv' \
   --exclude 'tmp/' \
+  --exclude 'apidata.toml' \
   ${RSYNC_EXCLUDES[@]+"${RSYNC_EXCLUDES[@]}"} \
   "$WEEK_DIR" "$BUILD/lectures/"
 
@@ -198,6 +199,13 @@ for path in week_dir.rglob("*.ipynb"):
     if changed:
         path.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n")
 PY
+
+# A credentials file holds a private API key and secret. The rsync above skips
+# apidata.toml, and this check stops the release if any copy reaches the bundle.
+if find "$BUILD" -name 'apidata.toml' | grep -q .; then
+  echo "error: a credentials file (apidata.toml) is in the bundle; remove it before release" >&2
+  exit 1
+fi
 
 ARCHIVE="$OUT/$BUNDLE.zip"
 rm -f "$ARCHIVE"

@@ -1,0 +1,35 @@
+written = "2026-11-19T13:56:14.082"
+strategies = ["CD | hedge on", "CES | hedge on", "CESw | hedge on", "SG | hedge on", "MinVar | hedge on", "Tangent | hedge on", "MinVar-SF | hedge on", "Tangent-SF | hedge on", "LS | hedge on", "CD | hedge off", "CES | hedge off", "CESw | hedge off", "SG | hedge off", "MinVar | hedge off", "Tangent | hedge off", "MinVar-SF | hedge off", "Tangent-SF | hedge off", "LS | hedge off", "BAB", "SPY buy-and-hold", "Equal-weight buy-and-hold"]
+
+[synthetic]
+seeds = "1 to paths (JumpHMM.sample_dependence)"
+paths = 1000
+beta_scale = "data/L14a-Synthetic-Drift-Settings.csv (INFORMS method-v2 generator, sha1 a0732f54)"
+generator = "data/JumpHMM-SectorFactor-Universe-2014-2024.jld2"
+beta_halflife = 126.0
+alpha_pull = 0.62
+
+[windows]
+train_start = "2014-01-03"
+run_stop = "2026-11-13"
+run_start = "2025-01-02"
+train_stop = "2024-12-31"
+
+[bab]
+rebalance = "first trading day of each month"
+shrink = 0.6
+universe = "every stock of the market"
+
+[engine]
+beta_over_cap = 0.1
+beta_min = -0.5
+forecast_band = "quantile"
+N_per_sector = 3
+screen = "gamma"
+forecast_model = "factor"
+half_spread_bps = 5.0
+spy_short = true
+config = "code/src/data/mpc/study.toml (method v2)"
+market_turn = true
+borrow_rate = 0.0075
+seed = 5660

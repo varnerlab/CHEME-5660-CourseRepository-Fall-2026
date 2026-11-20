@@ -3,6 +3,51 @@
 These are brainstorm notes, not an approved design. Jeff will build L14a on his other machine, which has
 v2 of the INFORMS methods. **Do not build on the v1 INFORMS engine in this repo's `code/src/mpc`.**
 
+## Built on 2026-11-19 (the machine with v2), on disk, not committed
+
+Jeff chose option A: port v2 into the course package, run every strategy once, and cache the results. The
+examples load the cache and do cheap analysis only.
+
+- **The v2 port.** `code/src/mpc` now holds the v2 engine from INFORMS `feat/method-v2` (commit 5d31b74): the factor
+  forecast, the market-turn and β triggers, the SPY short, and the v2 settings. `data/mpc/study.toml` is the v2
+  config, and `data/mpc/study_v1.toml` is the v1 config. The factor forecast reads the JumpHMM 0.6.0 models of the
+  sector factor example, so the package has no JumpHMM dependency.
+- **Checks.** All 2,191 engine tests pass, including the v2 tests and the v1 regression gate. On identical inputs
+  (the GBM forecast, every other v2 switch on), the course port and INFORMS v2 give the same ending equity to every
+  digit for CD, MinVar, 130/30 and SG.
+- **Course additions.**
+  - A `covariance_model` setting. `"sector_factor"` gives the Markowitz rules the sector factor covariance: the
+    market part, the residual variance, and σ_res,i·σ_res,j·√(ρᵢρⱼ) within a sector. This is the factor
+    forecast's own covariance.
+  - Betting against beta (`run_bab`), as Frazzini and Pedersen built it. It uses their β estimate (one-year
+    volatilities, a five-year correlation of 3-day returns), shrinks β 0.6/0.4 toward 1, builds rank-weighted
+    low and high portfolios scaled to β = 1, and rebalances monthly. It holds every stock of the universe.
+  - The buy-and-hold references, a market built from growth rates, and a loader option for prices through
+    2026-11-13.
+- **The run.** `lectures/week-14/L14a/scripts/run_strategies.jl` runs 21 strategies on the real market and on 1,000
+  synthetic markets. The strategies are CD, CES, CESw, SG, MinVar, Tangent, MinVar and Tangent with the sector
+  factor covariance (`-SF`), and 130/30, each with the hedge on and off. Then come betting against beta, SPY
+  buy-and-hold and equal-weight buy-and-hold. All strategies use the γ screen and seed 5660.
+- **The universe** is 371 stocks: the generator's 375 minus AVB, BK, EA and EQR, which have gaps in the 2025–26
+  prices. The run calibrates on 2014–2024 and trades 2025-01-02 to 2026-11-13.
+- **The synthetic markets** are full 2014–2026 histories drawn from the saved sector factor model (seeds 1 to
+  1,000). They use two settings from the INFORMS v2 generator: α pulled toward the average (φ = 0.62), and β
+  drifting with a 126-day half-life and the study's drift scale for each stock
+  (`data/L14a-Synthetic-Drift-Settings.csv`). Each market is recalibrated on its own 2014–2024 part.
+- **The output** is in `lectures/week-14/L14a/data/L14a-Strategies-*`, and the run's settings are in
+  `L14a-Strategies-Settings.toml`.
+- **CodecZlib** is now a direct dependency of the course environment. The sector factor example saves its
+  generator compressed, and loading that file without CodecZlib fails.
+
+First real-market numbers (growth rate, 1/yr): SPY buy-and-hold 0.137, equal weight 0.136, the best managed book
+Tangent-SF with the hedge off 0.097, CD with the hedge on 0.055. Betting against beta lost 0.084/yr: the high-β
+half rose about 25%/yr against SPY's 15%, and the low-β half's realized β was 0.21 against an estimate of 0.50.
+
+The paper's window stops on 2026-09-04. On that window the course run gives CD with the hedge on 0.106/yr and 36
+decisions, the paper's numbers. September to November 2026 cut CD to 0.055/yr and SPY from 0.166 to 0.137/yr.
+The factor forecast and the GBM forecast give nearly the same CD growth on both windows (0.106 against 0.099, and
+0.055 against 0.057).
+
 ## What Jeff asked for
 
 - **Review first:** start L14a with a JumpHMM review, maybe the same as L13b's. It points to the sector factor
