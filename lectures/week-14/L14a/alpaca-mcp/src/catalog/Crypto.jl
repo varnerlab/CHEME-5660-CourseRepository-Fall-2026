@@ -24,7 +24,7 @@ function _crypto_history(arguments::AbstractDict, configuration::AbstractDict, k
     # read the arguments -
     _check_argument_names(arguments, names);
     symbols = _symbols_argument(arguments, "symbols");
-    start = _time_argument(arguments, "start");
+    start = _time_argument(arguments, "start"; required = true);
     finish = _time_argument(arguments, "end");
     sort = _choice_argument(arguments, "sort", ["asc", "desc"]);
     loc = _choice_argument(arguments, "loc", CRYPTO_LOCS; default = "us");
@@ -148,7 +148,7 @@ function _add_crypto_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     push!(tools, build(MyMCPToolModel, (name = "get_crypto_bars",
         description = "The open, high, low, close (USD per coin), and volume (coins) of each crypto pair, one bar for each " *
             "timeframe, with the time of each bar in UTC. " * cap_text,
-        inputschema = _input_schema(properties, ["symbols"]), handler = _get_crypto_bars)));
+        inputschema = _input_schema(properties, ["symbols", "start"]), handler = _get_crypto_bars)));
 
     properties = _crypto_properties();
     properties["start"] = _property("string", start_text);
@@ -157,7 +157,7 @@ function _add_crypto_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     push!(tools, build(MyMCPToolModel, (name = "get_crypto_quotes",
         description = "The historical bid and ask price and size of each crypto pair, with the time of each quote in UTC. " *
             unit_text * " " * cap_text,
-        inputschema = _input_schema(properties, ["symbols"]), handler = _get_crypto_quotes)));
+        inputschema = _input_schema(properties, ["symbols", "start"]), handler = _get_crypto_quotes)));
 
     properties = _crypto_properties();
     properties["start"] = _property("string", start_text);
@@ -166,7 +166,7 @@ function _add_crypto_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     push!(tools, build(MyMCPToolModel, (name = "get_crypto_trades",
         description = "The historical trades of each crypto pair: the price and size of each, with the time in UTC. " *
             unit_text * " " * cap_text,
-        inputschema = _input_schema(properties, ["symbols"]), handler = _get_crypto_trades)));
+        inputschema = _input_schema(properties, ["symbols", "start"]), handler = _get_crypto_trades)));
 
     properties = _crypto_properties();
     push!(tools, build(MyMCPToolModel, (name = "get_crypto_latest_bars",

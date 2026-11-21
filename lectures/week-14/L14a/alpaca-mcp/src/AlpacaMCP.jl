@@ -1,7 +1,7 @@
 module L14aAlpacaMCP
 
     # load external packages -
-    import Alpaca # the Alpaca SDK: one endpoint model for each read endpoint, api(...) for the calls, submit(...) and cancel(...) for orders
+    import Alpaca # the Alpaca SDK: one endpoint model for each endpoint, api(...) for the calls, and submit(...), cancel(...), and close(...) for orders and positions
     import JSON # write JSON text: the MCP messages
     import TOML # read the credentials file
     import Dates # parse the dates of a request, and write the times of a result as text
@@ -18,7 +18,7 @@ module L14aAlpacaMCP
     include("Factory.jl") # build(...) for tools and servers
     include("Utility.jl") # read the credentials file, and check that it names a paper account
     include("Tools.jl")   # what every tool needs: the arguments, the input schema, and the rows of a result
-    include(joinpath("catalog", "Account.jl"))    # the tools of the account and the clock
+    include(joinpath("catalog", "Account.jl"))    # the tools of the account, the clock, the assets, and the option contracts
     include(joinpath("catalog", "Orders.jl"))     # the tools of the orders and positions
     include(joinpath("catalog", "Watchlists.jl")) # the tools of the watchlists
     include(joinpath("catalog", "Stocks.jl"))     # the tools of stock market data

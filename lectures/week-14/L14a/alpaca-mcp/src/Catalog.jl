@@ -16,7 +16,7 @@ const SERVER_INSTRUCTIONS = """
 Tools for one Alpaca paper trading account. A paper account trades simulated money at real market prices.
 Read the account, the market clock, the positions, the orders, the watchlists, and the market data of stocks,
 options, and crypto, and submit, replace, and cancel orders. Share counts are in shares, and stock prices are in USD
-per share. Option quantities are in contracts, and option prices are in USD per contract unit, where one contract
+per share. Option quantities are in contracts, and option prices are in USD per share of the underlying, where one contract
 covers 100 shares. Crypto quantities are in coins, and crypto prices are in USD per coin. Times are in UTC (New York
 time is UTC minus 5 hours in winter and UTC minus 4 hours in summer). A paper account receives stock quotes from one
 exchange (IEX), so its bid-ask spreads can be wider than the market's.

@@ -174,6 +174,81 @@ function _check_image_result()::Array{String,1}
     end
     return failures;
 end
+# The handler of the test tool for the redaction check: an image result whose text holds the test key -
+function _leaky_image_handler(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+
+    return Dict{String,Any}("image_png" => UInt8[0x89, 0x50, 0x4e, 0x47], "note" => "the key is test-key");
+end
+
+# Check that the text block of an image result does not hold the key -
+function _check_image_redaction()::Array{String,1}
+
+    failures = Array{String,1}();
+    tool = build(MyMCPToolModel, (name = "leaky_image", description = "Return a test image.",
+        inputschema = Dict{String,Any}("type" => "object", "properties" => Dict{String,Any}(), "required" => String[],
+        "additionalProperties" => false), handler = _leaky_image_handler));
+    configuration = Dict{String,Any}("key" => "test-key", "secret" => "test-secret");
+    server = build(MyMCPServerModel, (name = "leaky-test", version = "0.0.0", instructions = "", tools = [tool],
+        configuration = configuration));
+    result = _request(server, "tools/call", Dict{String,Any}("name" => "leaky_image"));
+    text = result["content"][2]["text"];
+    if (occursin("test-key", text) == true)
+        push!(failures, "image redaction: the text block of an image result holds the key");
+    end
+    if (occursin("<your Alpaca key>", text) == false)
+        push!(failures, "image redaction: the text block does not hold the placeholder of the key");
+    end
+    return failures;
+end
+
+# Check that a table with a next page token is refused, and that a table without one is not -
+function _check_next_page_token()::Array{String,1}
+
+    failures = Array{String,1}();
+    df = L14aAlpacaMCP.DataFrames.DataFrame(a = [1, 2]);
+    L14aAlpacaMCP.DataFrames.metadata!(df, "next_page_token", "p2"; style = :note);
+    refused = false;
+    try
+        L14aAlpacaMCP._check_one_page(df; advice = "Narrow the type.");
+    catch exception
+        refused = occursin("does not fit in one page", sprint(showerror, exception)) &&
+            occursin("Narrow the type.", sprint(showerror, exception));
+    end
+    if (refused == false)
+        push!(failures, "next page token: a table with a next page token is not refused with the advice");
+    end
+    complete = L14aAlpacaMCP.DataFrames.DataFrame(a = [1, 2]);
+    try
+        L14aAlpacaMCP._check_one_page(complete);
+    catch exception
+        push!(failures, "next page token: a table without a token is refused");
+    end
+    return failures;
+end
+
+# Check that a news result with too much article text is refused, and that a short one is not -
+function _check_text_budget_refusal()::Array{String,1}
+
+    failures = Array{String,1}();
+    long_text = repeat("x", L14aAlpacaMCP.MAX_TEXT_CHARACTERS);
+    df = L14aAlpacaMCP.DataFrames.DataFrame(content = [long_text, long_text]);
+    refused = false;
+    try
+        L14aAlpacaMCP._check_text_budget(df, "content"; advice = "Leave out include_content.");
+    catch exception
+        refused = occursin("characters", sprint(showerror, exception));
+    end
+    if (refused == false)
+        push!(failures, "text budget: an over-budget list of article texts is not refused");
+    end
+    short = L14aAlpacaMCP.DataFrames.DataFrame(content = ["a short article", missing]);
+    try
+        L14aAlpacaMCP._check_text_budget(short, "content");
+    catch exception
+        push!(failures, "text budget: a short list of article texts is refused");
+    end
+    return failures;
+end
 # --- PRIVATE METHODS ABOVE HERE ------------------------------------------------------------------------------- #
 
 # build the server with no credentials. Every tool reports the setup error, so no call goes to Alpaca -
@@ -227,8 +302,21 @@ else
     end
 end
 
-# the image result -
+# every tool that writes to the account is listed by the server, so a renamed write tool fails here -
+tool_names_listed = String[tool["name"] for tool ∈ tools];
+for name ∈ WRITE_TOOLS
+    if ((name in tool_names_listed) == false)
+        push!(failures, "the write tool $(name) is not listed by the server");
+    end
+end
+
+# the image result, and the redaction of its text block -
 append!(failures, _check_image_result());
+append!(failures, _check_image_redaction());
+
+# the guards on the size of a result: a next page token, and the article text -
+append!(failures, _check_next_page_token());
+append!(failures, _check_text_budget_refusal());
 
 # the number of tools. Raise this number when a task adds tools -
 expected_tools = 74;

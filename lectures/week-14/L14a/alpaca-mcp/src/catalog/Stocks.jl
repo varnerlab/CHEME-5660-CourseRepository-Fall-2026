@@ -367,7 +367,7 @@ function _add_stocks_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     properties["sort"] = _property("string", "The order of the prints in time. The default is asc."; allowed = ["asc", "desc"]);
     push!(tools, build(MyMCPToolModel, (name = "get_auctions",
         description = "The opening and closing auction prints of each symbol (USD per share, shares), with times in UTC. " *
-            "Alpaca has auctions from the sip feed only, which the free paper plan can lack. " * cap_text,
+            "Alpaca has auctions from the sip feed only. " * cap_text,
         inputschema = _input_schema(properties, ["symbols"]), handler = _get_auctions)));
 
     properties = Dict{String,Any}();

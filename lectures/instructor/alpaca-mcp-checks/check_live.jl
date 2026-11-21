@@ -342,6 +342,11 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
                 order_id = call["data"]["order"]["id"];
             end
         end
+        if (bid <= 0.0)
+            for step_name ∈ ["submit_crypto_order", "replace_order", "cancel_order"]
+                _skip_tool!(counts, step_name, "no BTC/USD bid");
+            end
+        end
         if (isempty(order_id) == false)
             sleep(ORDER_WAIT_SECONDS);
             _check_tool!(server, counts, "get_order", Dict{String,Any}("order_id" => order_id); label = "get_order (the new order)");
