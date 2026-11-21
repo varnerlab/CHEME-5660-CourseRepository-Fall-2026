@@ -33,8 +33,7 @@ function _get_watchlists(arguments::AbstractDict, configuration::AbstractDict)::
 
     # read the arguments, and call Alpaca -
     _check_argument_names(arguments, String[]);
-    df = Alpaca.api(_client(configuration), Alpaca.MyWatchlistsEndpointModel());
-    return _table_result(df, "watchlists");
+    return _plain_table(configuration, Alpaca.MyWatchlistsEndpointModel(), "watchlists");
 end
 
 # get_watchlist: one watchlist with its assets, by identifier or by name -
@@ -46,8 +45,7 @@ function _get_watchlist(arguments::AbstractDict, configuration::AbstractDict)::D
 
     # call Alpaca -
     model = Alpaca.MyWatchlistEndpointModel(id = watchlist_id, name = name);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "assets");
+    return _plain_table(configuration, model, "assets");
 end
 
 # create_watchlist: a new watchlist, with a name and a list of symbols -
@@ -63,8 +61,7 @@ function _create_watchlist(arguments::AbstractDict, configuration::AbstractDict)
 
     # call Alpaca -
     model = Alpaca.MyCreateWatchlistEndpointModel(name = name, symbols = symbols);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "assets");
+    return _plain_table(configuration, model, "assets");
 end
 
 # update_watchlist: a new name, a new list of symbols, or both. Alpaca replaces the whole watchlist, so a rename
@@ -89,8 +86,7 @@ function _update_watchlist(arguments::AbstractDict, configuration::AbstractDict)
 
     # call Alpaca -
     model = Alpaca.MyUpdateWatchlistEndpointModel(id = watchlist_id, name = name, new_name = new_name, symbols = symbols);
-    df = Alpaca.api(client, model);
-    return _table_result(df, "assets");
+    return _plain_table(configuration, model, "assets");
 end
 
 # add_to_watchlist: one symbol, added to a watchlist -
@@ -103,8 +99,7 @@ function _add_to_watchlist(arguments::AbstractDict, configuration::AbstractDict)
 
     # call Alpaca -
     model = Alpaca.MyAddWatchlistAssetEndpointModel(id = watchlist_id, name = name, symbol = symbol);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "assets");
+    return _plain_table(configuration, model, "assets");
 end
 
 # remove_from_watchlist: one symbol, removed from a watchlist. Alpaca removes by identifier only, so a call with
@@ -127,8 +122,7 @@ function _remove_from_watchlist(arguments::AbstractDict, configuration::Abstract
     end
 
     # call Alpaca -
-    df = Alpaca.api(client, Alpaca.MyRemoveWatchlistAssetEndpointModel(id = watchlist_id, symbol = symbol));
-    return _table_result(df, "assets");
+    return _plain_table(configuration, Alpaca.MyRemoveWatchlistAssetEndpointModel(id = watchlist_id, symbol = symbol), "assets");
 end
 
 # delete_watchlist: a watchlist, by identifier or by name. Alpaca answers with no body, so the result is a confirmation -

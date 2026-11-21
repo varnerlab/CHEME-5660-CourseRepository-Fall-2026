@@ -4,8 +4,8 @@
 # Every tool of the server works in the same three steps:
 #
 #   1. check the arguments of the call, and read them into Julia values,
-#   2. call Alpaca through the Alpaca SDK, which returns a DataFrame (a read)
-#      or an Alpaca.Order (an order), and
+#   2. call Alpaca through the Alpaca SDK, which returns a DataFrame (a table),
+#      an Alpaca.Order (an order), PNG bytes (a logo), or no body (a delete), and
 #   3. turn the result into rows of JSON values that the language model reads.
 #
 # This file holds the helpers of the three steps and the helpers that write the
@@ -15,6 +15,8 @@
 # a language model reads the whole result of a tool, so the server keeps each result short -
 const MAX_ROWS = 300; # the most rows that one tool returns
 const MAX_SYMBOLS = 50; # the most symbols in one request
+const MAX_TEXT_CHARACTERS = 50000; # the most characters of article text that one result returns
+const DEFAULT_ROW_ADVICE = "Ask for fewer symbols or a shorter date range."; # how to ask for fewer rows
 
 # --- PRIVATE METHODS BELOW HERE ------------------------------------------------------------------------------- #
 # The Alpaca client of the server. When the server could not read its credentials file, the configuration holds the
@@ -251,13 +253,14 @@ end
 
 # Turn a DataFrame from the Alpaca SDK into rows: one dictionary for each row, keyed by the column names. A result
 # with too many rows is an error, and the message tells the language model how to ask for less -
-function _rows(df::DataFrames.DataFrame)::Array{Dict{String,Any},1}
+# The advice names the arguments of the tool that the language model can change to get fewer rows -
+function _rows(df::DataFrames.DataFrame; advice::String = DEFAULT_ROW_ADVICE)::Array{Dict{String,Any},1}
 
     # check the length -
     number_of_rows = DataFrames.nrow(df);
     if (number_of_rows > MAX_ROWS)
         throw(ArgumentError("the result has $(number_of_rows) rows, more than the $(MAX_ROWS) that this server returns. " *
-            "Ask for fewer symbols or a shorter date range."));
+            advice));
     end
 
     # one dictionary for each row -
@@ -273,27 +276,70 @@ function _rows(df::DataFrames.DataFrame)::Array{Dict{String,Any},1}
     return rows;
 end
 
-# A result that is one table: the rows under the given key, and the number of rows -
-function _table_result(df::DataFrames.DataFrame, key::String)::Dict{String,Any}
+# Check that the text in one column of a table fits the budget of the server. The article text of a news result can
+# be far longer than its rows suggest, so we add up the lengths of the texts, and a total over the budget is an
+# error that tells the language model how to ask for less -
+function _check_text_budget(df::DataFrames.DataFrame, column::String; advice::String = DEFAULT_ROW_ADVICE)::Nothing
 
-    rows = _rows(df);
+    # a table without the column has no text to add up -
+    if ((column in names(df)) == false)
+        return nothing;
+    end
+
+    # add up the lengths of the texts, and leave out the missing ones -
+    total = 0;
+    for i ∈ 1:DataFrames.nrow(df)
+        value = df[i, column];
+        if (ismissing(value) == false && isnothing(value) == false)
+            total = total + length(string(value));
+        end
+    end
+
+    # compare the total with the budget -
+    if (total > MAX_TEXT_CHARACTERS)
+        throw(ArgumentError("the text of the result has $(total) characters, more than the $(MAX_TEXT_CHARACTERS) " *
+            "that this server returns. " * advice));
+    end
+    return nothing;
+end
+
+# A result that is one table: the rows under the given key, and the number of rows -
+function _table_result(df::DataFrames.DataFrame, key::String; advice::String = DEFAULT_ROW_ADVICE)::Dict{String,Any}
+
+    rows = _rows(df; advice = advice);
     return Dict{String,Any}(key => rows, "count" => length(rows));
 end
 
 # Call Alpaca for a table that comes in pages, and keep the first page. The models ask for one row more than the
 # server returns, so a page that is full has more rows than the cap, and the result is the message that tells the
-# language model to ask for less. Without max_pages = 1, the SDK would download every page -
-function _paged_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
+# language model to ask for less. A page that is not full can still have a next page, and the SDK then keeps the
+# next page token in the metadata of the table. That table does not fit in one page either, so it gets the same
+# message. Without max_pages = 1, the SDK would download every page -
+function _paged_table(configuration::AbstractDict, model, key::String;
+    advice::String = DEFAULT_ROW_ADVICE)::Dict{String,Any}
 
     df = Alpaca.api(_client(configuration), model; max_pages = 1);
-    return _table_result(df, key);
+    _check_one_page(df; advice = advice);
+    return _table_result(df, key; advice = advice);
+end
+
+# Check that a table from a call with max_pages = 1 is the whole result. A table with a next page token in its
+# metadata is not, and it is an error that tells the language model how to ask for less -
+function _check_one_page(df::DataFrames.DataFrame; advice::String = DEFAULT_ROW_ADVICE)::Nothing
+
+    token = DataFrames.metadata(df, "next_page_token", nothing);
+    if (isnothing(token) == false)
+        throw(ArgumentError("the result does not fit in one page of at most $(MAX_ROWS) rows. " * advice));
+    end
+    return nothing;
 end
 
 # Call Alpaca for a table that comes in one piece, e.g., the latest bars -
-function _plain_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
+function _plain_table(configuration::AbstractDict, model, key::String;
+    advice::String = DEFAULT_ROW_ADVICE)::Dict{String,Any}
 
     df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, key);
+    return _table_result(df, key; advice = advice);
 end
 
 # The fields of an order that the language model needs: what was ordered, its status, and how much of it filled -
@@ -314,6 +360,19 @@ function _order_summary(order::Alpaca.Order)::Dict{String,Any}
     summary["status"] = order.status;
     summary["submitted_at"] = _json_value(order.submitted_at);
     summary["filled_at"] = _json_value(order.filled_at);
+    return summary;
+end
+
+# The fields of an order that the language model needs, from one row of the orders table that a replace returns.
+# The row is a dictionary from _rows, so the values are already JSON values -
+function _order_row_summary(row::Dict{String,Any})::Dict{String,Any}
+
+    summary = Dict{String,Any}();
+    fields = ["id", "client_order_id", "symbol", "side", "type", "time_in_force", "qty", "filled_qty", "limit_price",
+        "filled_avg_price", "status", "submitted_at", "filled_at"];
+    for field ∈ fields
+        summary[field] = get(row, field, nothing);
+    end
     return summary;
 end
 

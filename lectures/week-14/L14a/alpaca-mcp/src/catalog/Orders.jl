@@ -11,18 +11,13 @@ function _get_orders(arguments::AbstractDict, configuration::AbstractDict)::Dict
 
     # read the arguments -
     _check_argument_names(arguments, ["status", "limit", "symbols"]);
-    status = _text_argument(arguments, "status"; default = "open");
-    if ((status in ("open", "closed", "all")) == false)
-        throw(ArgumentError("the status must be open, closed, or all"));
-    end
-    limit = _integer_argument(arguments, "limit", 50, 1, 500);
+    status = _choice_argument(arguments, "status", ["open", "closed", "all"]; default = "open");
+    limit = _integer_argument(arguments, "limit", 50, 1, MAX_ROWS);
     symbols = _symbols_argument(arguments, "symbols"; required = false);
 
     # call Alpaca -
     model = Alpaca.MyOrdersEndpointModel(status = status, limit = limit, symbols = symbols);
-    df = Alpaca.api(_client(configuration), model);
-    rows = _rows(df);
-    return Dict{String,Any}("orders" => rows, "count" => length(rows));
+    return _plain_table(configuration, model, "orders"; advice = "Ask for a smaller limit, or for one status or fewer symbols.");
 end
 
 # Read a number argument that can be negative, e.g., the net price of an option structure. A credit is a negative price -
@@ -126,7 +121,7 @@ function _submit_option_order(arguments::AbstractDict, configuration::AbstractDi
     end
     qty = _integer_argument(arguments, "qty", 1, 1, 1000); # contracts
     type = _choice_argument(arguments, "type", ["market", "limit"]; default = "limit");
-    limit_price = _signed_number_argument(arguments, "limit_price"); # USD per contract unit
+    limit_price = _signed_number_argument(arguments, "limit_price"); # USD per share of the underlying
     time_in_force = _choice_argument(arguments, "time_in_force", ["day", "gtc", "ioc", "fok"]; default = "day");
     client_order_id = _text_argument(arguments, "client_order_id");
     extended_hours = _boolean_argument(arguments, "extended_hours"; default = false);
@@ -146,7 +141,7 @@ function _submit_option_order(arguments::AbstractDict, configuration::AbstractDi
 
     # check the order before any request -
     if (type == "limit" && isnothing(limit_price) == true)
-        throw(ArgumentError("a limit order needs a limit_price (USD per contract unit)"));
+        throw(ArgumentError("a limit order needs a limit_price (USD per share of the underlying)"));
     end
     if (type == "market" && isnothing(limit_price) == false)
         throw(ArgumentError("a market order takes no limit_price. Use type limit to set a price"));
@@ -200,7 +195,7 @@ function _replace_order(arguments::AbstractDict, configuration::AbstractDict)::D
     order_id = _text_argument(arguments, "order_id"; required = true);
     qty = _number_argument(arguments, "qty"); # shares, contracts, or coins
     time_in_force = _choice_argument(arguments, "time_in_force", ["day", "gtc", "opg", "cls", "ioc", "fok"]);
-    limit_price = _number_argument(arguments, "limit_price"); # USD per share, contract unit, or coin
+    limit_price = _number_argument(arguments, "limit_price"); # USD per share, USD per share of the underlying, or USD per coin
     stop_price = _number_argument(arguments, "stop_price"); # USD per share or coin
     trail = _number_argument(arguments, "trail"); # USD per share, or percent
     client_order_id = _text_argument(arguments, "client_order_id");
@@ -215,7 +210,7 @@ function _replace_order(arguments::AbstractDict, configuration::AbstractDict)::D
         limit_price = limit_price, stop_price = stop_price, trail = trail, client_order_id = client_order_id);
     df = Alpaca.api(_client(configuration), model);
     rows = _rows(df);
-    return Dict{String,Any}("order" => rows[1]);
+    return Dict{String,Any}("order" => _order_row_summary(rows[1]));
 end
 
 # cancel_order: cancel one open order, by its identifier -
@@ -288,8 +283,8 @@ end
 # exercise_option: ask Alpaca to exercise an option position. Alpaca answers with no body -
 function _exercise_option(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    _check_argument_names(arguments, ["symbol_or_contract_id"]);
-    symbol = _text_argument(arguments, "symbol_or_contract_id"; required = true);
+    _check_argument_names(arguments, ["symbol"]);
+    symbol = _text_argument(arguments, "symbol"; required = true);
     Alpaca.api(_client(configuration), Alpaca.MyExerciseOptionEndpointModel(symbol = symbol));
     return Dict{String,Any}("exercise_requested" => symbol);
 end
@@ -297,8 +292,8 @@ end
 # do_not_exercise_option: tell Alpaca not to exercise an option position at expiration. Alpaca answers with no body -
 function _do_not_exercise_option(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    _check_argument_names(arguments, ["symbol_or_contract_id"]);
-    symbol = _text_argument(arguments, "symbol_or_contract_id"; required = true);
+    _check_argument_names(arguments, ["symbol"]);
+    symbol = _text_argument(arguments, "symbol"; required = true);
     Alpaca.api(_client(configuration), Alpaca.MyDoNotExerciseOptionEndpointModel(symbol = symbol));
     return Dict{String,Any}("do_not_exercise_requested" => symbol);
 end
@@ -311,7 +306,7 @@ function _add_orders_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     properties = Dict{String,Any}();
     properties["status"] = _property("string", "Which orders: open (the default), closed, or all.";
         allowed = ["open", "closed", "all"]);
-    properties["limit"] = _property("integer", "The most orders to return, from 1 to 500. The default is 50.");
+    properties["limit"] = _property("integer", "The most orders to return, from 1 to $(MAX_ROWS). The default is 50.");
     properties["symbols"] = _symbols_property("Only the orders of these ticker symbols. Leave out for every symbol.");
     push!(tools, build(MyMCPToolModel, (name = "get_orders",
         description = "The orders of the account, newest first, with their status and filled quantities.",
@@ -365,7 +360,7 @@ function _add_orders_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     properties["qty"] = _property("integer", "The number of units of the structure, in whole contracts. The default is 1.");
     properties["type"] = _property("string", "limit (the default) fills at the limit_price or better. market fills at the best available price.";
         allowed = ["market", "limit"]);
-    properties["limit_price"] = _property("number", "The limit price (USD per contract unit, as Alpaca quotes option prices). " *
+    properties["limit_price"] = _property("number", "The limit price (USD per share of the underlying, as Alpaca quotes option prices, and one contract covers 100 shares). " *
         "For two or more legs it is the net price of one unit: positive is a debit, negative is a credit.");
     properties["time_in_force"] = _property("string", "day (the default) cancels the order at the close if it has not filled.";
         allowed = ["day", "gtc", "ioc", "fok"]);
@@ -398,7 +393,7 @@ function _add_orders_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     properties["qty"] = _property("number", "The new quantity (shares, contracts, or coins).");
     properties["time_in_force"] = _property("string", "The new time in force.";
         allowed = ["day", "gtc", "opg", "cls", "ioc", "fok"]);
-    properties["limit_price"] = _property("number", "The new limit price (USD per share, per contract unit, or per coin).");
+    properties["limit_price"] = _property("number", "The new limit price (USD per share, USD per share of the underlying for an option, or USD per coin).");
     properties["stop_price"] = _property("number", "The new stop price (USD per share or per coin).");
     properties["trail"] = _property("number", "The new trail of a trailing stop order (USD per share, or percent).");
     properties["client_order_id"] = _property("string", "A new identifier of your own for the order.");
@@ -447,14 +442,14 @@ function _add_orders_tools!(tools::Array{MyMCPToolModel,1})::Nothing
         inputschema = _input_schema(properties, String[]), handler = _close_all_positions)));
 
     properties = Dict{String,Any}();
-    properties["symbol_or_contract_id"] = _property("string", "The option contract symbol, or the contract identifier, of the position.");
+    properties["symbol"] = _property("string", "The option symbol or the contract id of the position.");
     push!(tools, build(MyMCPToolModel, (name = "exercise_option",
         description = "Exercise an option position of the paper account. The position is in contracts.",
-        inputschema = _input_schema(properties, ["symbol_or_contract_id"]), handler = _exercise_option)));
+        inputschema = _input_schema(properties, ["symbol"]), handler = _exercise_option)));
 
     push!(tools, build(MyMCPToolModel, (name = "do_not_exercise_option",
         description = "Tell Alpaca not to exercise an option position of the paper account at expiration.",
-        inputschema = _input_schema(properties, ["symbol_or_contract_id"]), handler = _do_not_exercise_option)));
+        inputschema = _input_schema(properties, ["symbol"]), handler = _do_not_exercise_option)));
 
     return nothing;
 end

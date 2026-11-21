@@ -1,7 +1,7 @@
 # =============================================================================
 # CHEME 5660 | L14a Alpaca server: the Account tools
 # =============================================================================
-# The handlers of the tools for the account and the clock, followed by _add_account_tools!(...),
+# The handlers of the tools for the account, the clock, the calendar, the assets, and the option contracts, followed by _add_account_tools!(...),
 # which lists each tool's name, description, input schema, and handler.
 # =============================================================================
 
@@ -111,8 +111,7 @@ function _get_account_activities(arguments::AbstractDict, configuration::Abstrac
     model = Alpaca.MyAccountActivitiesEndpointModel(activity_type = activity_type, activity_types = activity_types,
         category = category, date = date, after = after, until = until, direction = direction, page_size = page_size,
         page_token = page_token, order_id = order_id);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "activities");
+    return _plain_table(configuration, model, "activities");
 end
 
 # get_portfolio_history: the equity and the profit and loss of the account over a period -
@@ -135,8 +134,8 @@ function _get_portfolio_history(arguments::AbstractDict, configuration::Abstract
     model = Alpaca.MyPortfolioHistoryEndpointModel(period = period, timeframe = timeframe,
         intraday_reporting = intraday_reporting, start = start, finish = finish, pnl_reset = pnl_reset,
         extended_hours = extended_hours, cashflow_types = cashflow_types);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "history");
+    return _plain_table(configuration, model, "history";
+        advice = "Ask for a shorter period or a wider timeframe.");
 end
 
 # get_calendar: the trading days of the US stock market, with the open and close time of each day -
@@ -148,8 +147,7 @@ function _get_calendar(arguments::AbstractDict, configuration::AbstractDict)::Di
     finish = _date_argument(arguments, "end"; required = false);
 
     # call Alpaca -
-    df = Alpaca.api(_client(configuration), Alpaca.MyCalendarEndpointModel(start = start, finish = finish));
-    return _table_result(df, "calendar");
+    return _plain_table(configuration, Alpaca.MyCalendarEndpointModel(start = start, finish = finish), "calendar");
 end
 
 # get_market_calendar: the trading days and the session times of one market -
@@ -164,8 +162,7 @@ function _get_market_calendar(arguments::AbstractDict, configuration::AbstractDi
 
     # call Alpaca -
     model = Alpaca.MyMarketCalendarEndpointModel(market = market, start = start, finish = finish, timezone = timezone);
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, "calendar");
+    return _plain_table(configuration, model, "calendar");
 end
 
 # get_market_clocks: whether each of several markets is open, and when each opens and closes next -
@@ -177,8 +174,7 @@ function _get_market_clocks(arguments::AbstractDict, configuration::AbstractDict
     time = _time_argument(arguments, "time");
 
     # call Alpaca -
-    df = Alpaca.api(_client(configuration), Alpaca.MyMarketClocksEndpointModel(markets = markets, time = time));
-    return _table_result(df, "clocks");
+    return _plain_table(configuration, Alpaca.MyMarketClocksEndpointModel(markets = markets, time = time), "clocks");
 end
 
 # get_assets: the assets of one class and status. The full list is far longer than one result can be, so the
@@ -211,12 +207,8 @@ function _get_assets(arguments::AbstractDict, configuration::AbstractDict)::Dict
     end
 
     # a result that is too long is an error that tells the language model to search -
-    number_of_rows = DataFrames.nrow(df);
-    if (number_of_rows > MAX_ROWS)
-        throw(ArgumentError("the result has $(number_of_rows) assets, more than the $(MAX_ROWS) that this server " *
-            "returns. Use the search argument to keep only the assets whose symbol or name contains a text."));
-    end
-    return _table_result(df, "assets");
+    return _table_result(df, "assets";
+        advice = "Use the search argument to keep only the assets whose symbol or name contains a text.");
 end
 
 # get_option_contracts: the option contracts of one or more underlying symbols that match the filters -
@@ -240,8 +232,8 @@ function _get_option_contracts(arguments::AbstractDict, configuration::AbstractD
         expiration_date = expiration_date, expiration_date_gte = expiration_date_gte,
         expiration_date_lte = expiration_date_lte, strike_price_gte = strike_price_gte,
         strike_price_lte = strike_price_lte, type = type, style = style, limit = MAX_ROWS + 1);
-    df = Alpaca.api(_client(configuration), model; max_pages = 1);
-    return _table_result(df, "contracts");
+    return _paged_table(configuration, model, "contracts";
+        advice = "Narrow the expiration dates, the strike prices, or the type.");
 end
 
 # get_option_contract: one option contract, by its symbol or its identifier -

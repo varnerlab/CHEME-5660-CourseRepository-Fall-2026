@@ -3,7 +3,7 @@
 # =============================================================================
 # The handlers of the tools for option market data, followed by _add_options_tools!(...), which lists each tool's
 # name, description, input schema, and handler. An option is named by its OCC symbol, e.g., AAPL251219C00200000.
-# One contract covers 100 shares, and the prices are in USD per contract unit.
+# One contract covers 100 shares, and the prices are in USD per share of the underlying.
 # =============================================================================
 
 # --- PRIVATE METHODS BELOW HERE ------------------------------------------------------------------------------- #
@@ -110,7 +110,8 @@ function _get_option_chain(arguments::AbstractDict, configuration::AbstractDict)
     model = Alpaca.MyOptionChainEndpointModel(underlying = underlying, type = type, strike_price_gte = strike_price_gte,
         strike_price_lte = strike_price_lte, expiration_date = expiration_date,
         expiration_date_gte = expiration_date_gte, expiration_date_lte = expiration_date_lte, limit = MAX_ROWS + 1);
-    return _paged_table(configuration, model, "chain");
+    return _paged_table(configuration, model, "chain";
+        advice = "Narrow the expiration dates, the strike prices, or the type.");
 end
 
 # get_option_exchanges: the name of each exchange code in the option data -
@@ -144,7 +145,7 @@ function _add_options_tools!(tools::Array{MyMCPToolModel,1})::Nothing
 
     # the sentences that several descriptions share -
     cap_text = "At most $(MAX_ROWS) rows: ask for fewer contracts or a shorter range when the result is too long.";
-    unit_text = "Prices are in USD per contract unit, one contract covers 100 shares, and sizes are in contracts.";
+    unit_text = "Prices are in USD per share of the underlying, one contract covers 100 shares, and sizes are in contracts.";
     start_text = "The first time, as a date (yyyy-mm-dd) or an RFC 3339 time in UTC, e.g., 2026-11-20T14:30:00Z.";
     end_text = "The last time, in the same form as start. Leave out for the latest data.";
 

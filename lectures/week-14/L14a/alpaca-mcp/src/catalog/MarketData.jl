@@ -28,7 +28,11 @@ function _get_news(arguments::AbstractDict, configuration::AbstractDict)::Dict{S
     # call Alpaca -
     model = Alpaca.MyNewsEndpointModel(symbols = symbols, start = start, finish = finish, sort = sort, limit = limit,
         include_content = include_content, exclude_contentless = exclude_contentless);
-    return _plain_table(configuration, model, "articles");
+    df = Alpaca.api(_client(configuration), model);
+
+    # the article text must fit the text budget of the server -
+    _check_text_budget(df, "content"; advice = "Ask for a smaller limit, or leave out include_content.");
+    return _table_result(df, "articles"; advice = "Ask for a smaller limit.");
 end
 
 # get_most_actives: the most active stocks of the day, ranked by share volume or by number of trades -
