@@ -4,7 +4,7 @@
 # 2026-07-28 over the stdio transport: server/discover, tools/list, and
 # tools/call. It also answers the initialize request of the older version
 # 2025-06-18, which some hosts still use, e.g., the Codex command-line tool.
-# The tools themselves are in src/Catalog.jl. This file is the one of the
+# The tools themselves are in src/catalog/. This file is the one of the
 # CHEME 5800 L13d FRED server, except that it hides the Alpaca key and secret.
 # =============================================================================
 
@@ -121,8 +121,32 @@ function _call_tool(server::MyMCPServerModel, id, params::AbstractDict)::Dict{St
     result = Dict{String,Any}();
     try
         data = tool.handler(arguments, server.configuration);
-        result["content"] = [Dict{String,Any}("type" => "text", "text" => JSON.json(data))]; # the result as JSON text
-        result["structuredContent"] = data; # the same result as a JSON object
+        if (haskey(data, "image_png") == true)
+
+            # an image result: the image block holds the PNG bytes as text, and a text block holds the other keys.
+            # The result has no structuredContent. The key and secret are hidden in the text block, as in an error -
+            png = data["image_png"];
+            others = Dict{String,Any}();
+            for (key_name, value) ∈ data
+                if (key_name != "image_png")
+                    others[key_name] = value;
+                end
+            end
+            text = JSON.json(others);
+            key = get(server.configuration, "key", "");
+            if (isempty(key) == false)
+                text = replace(text, key => "<your Alpaca key>");
+            end
+            secret = get(server.configuration, "secret", "");
+            if (isempty(secret) == false)
+                text = replace(text, secret => "<your Alpaca secret>");
+            end
+            image = Dict{String,Any}("type" => "image", "data" => Base64.base64encode(png), "mimeType" => "image/png");
+            result["content"] = [image, Dict{String,Any}("type" => "text", "text" => text)];
+        else
+            result["content"] = [Dict{String,Any}("type" => "text", "text" => JSON.json(data))]; # the result as JSON text
+            result["structuredContent"] = data; # the same result as a JSON object
+        end
         result["isError"] = false;
     catch exception
         text = sprint(showerror, exception); # the error message as text, e.g., "ArgumentError: ..."

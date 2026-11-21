@@ -26,7 +26,9 @@ end
 #   src/Factory.jl   build(...) for the tools and the server
 #   src/Utility.jl   read the credentials file, and check that it names a paper account
 #   src/Tools.jl     what every tool needs: the arguments, the input schema, and the rows of a result
-#   src/Catalog.jl   the tools of the server
+#   src/catalog/     the tools of the server, one file for each area: Account.jl, Orders.jl, Watchlists.jl,
+#                    Stocks.jl, Options.jl, Crypto.jl, and MarketData.jl
+#   src/Catalog.jl   the instructions of the server, and build_alpaca_server(...), which collects the tools
 #   src/Server.jl    the MCP server
 if !isdefined(@__MODULE__, :L14aAlpacaMCP)
     include(joinpath(L14A_ALPACA_MCP_ROOT, "src", "AlpacaMCP.jl"))

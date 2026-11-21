@@ -6,6 +6,7 @@ module L14aAlpacaMCP
     import TOML # read the credentials file
     import Dates # parse the dates of a request, and write the times of a result as text
     import DataFrames # the Alpaca SDK returns each result as a DataFrame
+    import Base64 # write the bytes of an image result as text
 
     # what do we want to export?
     export MyMCPToolModel, MyMCPServerModel
@@ -17,6 +18,13 @@ module L14aAlpacaMCP
     include("Factory.jl") # build(...) for tools and servers
     include("Utility.jl") # read the credentials file, and check that it names a paper account
     include("Tools.jl")   # what every tool needs: the arguments, the input schema, and the rows of a result
-    include("Catalog.jl") # the tools of the Alpaca server
+    include(joinpath("catalog", "Account.jl"))    # the tools of the account and the clock
+    include(joinpath("catalog", "Orders.jl"))     # the tools of the orders and positions
+    include(joinpath("catalog", "Watchlists.jl")) # the tools of the watchlists
+    include(joinpath("catalog", "Stocks.jl"))     # the tools of stock market data
+    include(joinpath("catalog", "Options.jl"))    # the tools of options
+    include(joinpath("catalog", "Crypto.jl"))     # the tools of crypto
+    include(joinpath("catalog", "MarketData.jl")) # the tools of news, movers, and other market data
+    include("Catalog.jl") # the instructions of the server, and build_alpaca_server(...), which collects the tools
     include("Server.jl")  # the MCP server: process one message, and the server loop
 end

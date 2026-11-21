@@ -9,7 +9,7 @@
 #   3. turn the result into rows of JSON values that the language model reads.
 #
 # This file holds the helpers of the three steps and the helpers that write the
-# input schema of a tool. The tools themselves are in src/Catalog.jl.
+# input schema of a tool. The tools themselves are in src/catalog/.
 # =============================================================================
 
 # a language model reads the whole result of a tool, so the server keeps each result short -
@@ -133,6 +133,102 @@ function _date_argument(arguments::AbstractDict, name::String; required::Bool = 
     return date;
 end
 
+# Read a true or false argument. A missing argument gets its default -
+function _boolean_argument(arguments::AbstractDict, name::String;
+    default::Union{Nothing,Bool} = nothing)::Union{Nothing,Bool}
+
+    if (haskey(arguments, name) == false)
+        return default;
+    end
+    value = arguments[name];
+    if (isa(value, Bool) == false)
+        throw(ArgumentError("the $(name) must be true or false"));
+    end
+    return value;
+end
+
+# Read a text argument that must be one of a list of values. The error message lists the allowed values -
+function _choice_argument(arguments::AbstractDict, name::String, allowed::Array{String,1};
+    default::Union{Nothing,String} = nothing, required::Bool = false)::Union{Nothing,String}
+
+    value = _text_argument(arguments, name; required = required, default = default);
+    if (isnothing(value) == true)
+        return nothing;
+    end
+    if ((value in allowed) == false)
+        throw(ArgumentError("the $(name) must be one of: $(join(allowed, ", "))"));
+    end
+    return value;
+end
+
+# Read a time argument, written as a date (yyyy-mm-dd) or as an RFC 3339 time, e.g., 2026-11-20T14:30:00Z or
+# 2026-11-20T09:30:00-05:00. The text goes to Alpaca unchanged, after we check it -
+function _time_argument(arguments::AbstractDict, name::String; required::Bool = false)::Union{Nothing,String}
+
+    text = _text_argument(arguments, name; required = required);
+    if (isnothing(text) == true)
+        return nothing;
+    end
+
+    # the two forms that the argument can take -
+    is_date = occursin(r"^\d{4}-\d{2}-\d{2}$", text);
+    is_time = occursin(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$", text);
+    valid = is_date || is_time;
+
+    # the numbers must be a real date and time of day -
+    if (valid == true)
+        try
+            Dates.Date(text[1:10], Dates.dateformat"yyyy-mm-dd");
+            if (is_time == true)
+                hour = parse(Int64, text[12:13]);
+                minute = parse(Int64, text[15:16]);
+                second = parse(Int64, text[18:19]);
+                if (hour > 23 || minute > 59 || second > 59)
+                    valid = false;
+                end
+            end
+        catch
+            valid = false;
+        end
+    end
+    if (valid == false)
+        throw(ArgumentError("the $(name) must be a date written as yyyy-mm-dd, e.g., 2026-11-20, or an RFC 3339 " *
+            "time, e.g., 2026-11-20T14:30:00Z or 2026-11-20T09:30:00-05:00"));
+    end
+    return text;
+end
+
+# Read a list of text values that are not ticker symbols, e.g., ISINs, markets, and activity types -
+function _text_list_argument(arguments::AbstractDict, name::String; required::Bool = true,
+    uppercase_items::Bool = false)::Union{Nothing,Array{String,1}}
+
+    if (haskey(arguments, name) == false)
+        if (required == true)
+            throw(ArgumentError("the $(name) argument is required"));
+        end
+        return nothing;
+    end
+    value = arguments[name];
+    if (isa(value, AbstractVector) == false || isempty(value) == true)
+        throw(ArgumentError("the $(name) must be a list of text values"));
+    end
+    if (length(value) > MAX_SYMBOLS)
+        throw(ArgumentError("ask for at most $(MAX_SYMBOLS) entries of $(name) in one call"));
+    end
+    items = Array{String,1}();
+    for item ∈ value
+        if (isa(item, AbstractString) == false)
+            throw(ArgumentError("each entry of $(name) must be text"));
+        end
+        if (uppercase_items == true)
+            push!(items, uppercase(String(item)));
+        else
+            push!(items, String(item));
+        end
+    end
+    return items;
+end
+
 # Turn one value of a result into a JSON value: numbers, text, true or false, or null. Times become text -
 function _json_value(value)
 
@@ -175,6 +271,13 @@ function _rows(df::DataFrames.DataFrame)::Array{Dict{String,Any},1}
         push!(rows, row);
     end
     return rows;
+end
+
+# A result that is one table: the rows under the given key, and the number of rows -
+function _table_result(df::DataFrames.DataFrame, key::String)::Dict{String,Any}
+
+    rows = _rows(df);
+    return Dict{String,Any}(key => rows, "count" => length(rows));
 end
 
 # The fields of an order that the language model needs: what was ordered, its status, and how much of it filled -
