@@ -46,8 +46,9 @@ function _get_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{S
     return _paged_table(configuration, model, "bars");
 end
 
-# get_quotes: the bid and ask quotes of each symbol over a range of times -
-function _get_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+# The shared steps of get_quotes and get_trades. The kind is "quotes" or "trades". The helper reads the arguments,
+# builds the model of the kind, and returns the first page of the table -
+function _us_stock_history(arguments::AbstractDict, configuration::AbstractDict, kind::String)::Dict{String,Any}
 
     # read the arguments -
     _check_argument_names(arguments, ["symbols", "start", "end", "feed"]);
@@ -56,30 +57,36 @@ function _get_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict
     finish = _time_argument(arguments, "end");
     feed = _choice_argument(arguments, "feed", STOCK_FEEDS; default = "iex");
 
-    # call Alpaca -
-    model = Alpaca.MyStockQuotesEndpointModel(symbols = symbols, start = start, finish = finish, limit = MAX_ROWS + 1,
-        feed = feed);
-    return _paged_table(configuration, model, "quotes");
+    # build the model of the kind -
+    model = nothing;
+    if (kind == "quotes")
+        model = Alpaca.MyStockQuotesEndpointModel(symbols = symbols, start = start, finish = finish,
+            limit = MAX_ROWS + 1, feed = feed);
+    elseif (kind == "trades")
+        model = Alpaca.MyStockTradesEndpointModel(symbols = symbols, start = start, finish = finish,
+            limit = MAX_ROWS + 1, feed = feed);
+    else
+        throw(ArgumentError("the kind must be quotes or trades"));
+    end
+    return _paged_table(configuration, model, kind);
+end
+
+# get_quotes: the bid and ask quotes of each symbol over a range of times -
+function _get_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+
+    return _us_stock_history(arguments, configuration, "quotes");
 end
 
 # get_trades: the trades of each symbol over a range of times -
 function _get_trades(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["symbols", "start", "end", "feed"]);
-    symbols = _symbols_argument(arguments, "symbols");
-    start = _time_argument(arguments, "start"; required = true);
-    finish = _time_argument(arguments, "end");
-    feed = _choice_argument(arguments, "feed", STOCK_FEEDS; default = "iex");
-
-    # call Alpaca -
-    model = Alpaca.MyStockTradesEndpointModel(symbols = symbols, start = start, finish = finish, limit = MAX_ROWS + 1,
-        feed = feed);
-    return _paged_table(configuration, model, "trades");
+    return _us_stock_history(arguments, configuration, "trades");
 end
 
-# get_latest_bars: the latest bar of each symbol -
-function _get_latest_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+# The shared steps of get_latest_bars, get_latest_quotes, and get_latest_trades. The kind is "bars", "quotes", or
+# "trades". The helper reads the arguments, builds the model of the kind, and returns the table that Alpaca sends,
+# with one row for each symbol that has data -
+function _us_stock_latest(arguments::AbstractDict, configuration::AbstractDict, kind::String)::DataFrames.DataFrame
 
     # read the arguments -
     _check_argument_names(arguments, ["symbols", "feed", "currency"]);
@@ -87,27 +94,37 @@ function _get_latest_bars(arguments::AbstractDict, configuration::AbstractDict):
     feed = _choice_argument(arguments, "feed", STOCK_FEEDS; default = "iex");
     currency = _text_argument(arguments, "currency");
 
-    # call Alpaca -
-    model = Alpaca.MyStockLatestBarsEndpointModel(symbols = symbols, feed = feed, currency = currency);
-    return _plain_table(configuration, model, "bars");
+    # build the model of the kind -
+    model = nothing;
+    if (kind == "bars")
+        model = Alpaca.MyStockLatestBarsEndpointModel(symbols = symbols, feed = feed, currency = currency);
+    elseif (kind == "quotes")
+        model = Alpaca.MyStockLatestQuotesEndpointModel(symbols = symbols, feed = feed, currency = currency);
+    elseif (kind == "trades")
+        model = Alpaca.MyStockLatestTradesEndpointModel(symbols = symbols, feed = feed, currency = currency);
+    else
+        throw(ArgumentError("the kind must be bars, quotes, or trades"));
+    end
+    return Alpaca.api(_client(configuration), model);
+end
+
+# get_latest_bars: the latest bar of each symbol -
+function _get_latest_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+
+    df = _us_stock_latest(arguments, configuration, "bars");
+    return _table_result(df, "bars");
 end
 
 # get_latest_quotes: the latest bid and ask of each symbol, in one request. A symbol without a quote is reported,
 # and the other symbols still come back -
 function _get_latest_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["symbols", "feed", "currency"]);
-    symbols = _symbols_argument(arguments, "symbols");
-    feed = _choice_argument(arguments, "feed", STOCK_FEEDS; default = "iex");
-    currency = _text_argument(arguments, "currency");
-
     # call Alpaca, which returns one row for each symbol that has a quote -
-    model = Alpaca.MyStockLatestQuotesEndpointModel(symbols = symbols, feed = feed, currency = currency);
-    df = Alpaca.api(_client(configuration), model);
+    df = _us_stock_latest(arguments, configuration, "quotes");
     quotes = _rows(df);
 
-    # the symbols that came back with no row -
+    # the symbols that came back with no row. The arguments are checked, so the symbols can be read again -
+    symbols = _symbols_argument(arguments, "symbols");
     quoted = Dict{String,Bool}();
     for row ∈ quotes
         quoted[string(row["symbol"])] = true;
@@ -124,15 +141,8 @@ end
 # get_latest_trades: the latest trade of each symbol -
 function _get_latest_trades(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["symbols", "feed", "currency"]);
-    symbols = _symbols_argument(arguments, "symbols");
-    feed = _choice_argument(arguments, "feed", STOCK_FEEDS; default = "iex");
-    currency = _text_argument(arguments, "currency");
-
-    # call Alpaca -
-    model = Alpaca.MyStockLatestTradesEndpointModel(symbols = symbols, feed = feed, currency = currency);
-    return _plain_table(configuration, model, "trades");
+    df = _us_stock_latest(arguments, configuration, "trades");
+    return _table_result(df, "trades");
 end
 
 # get_snapshots: the latest trade, quote, and bars of each symbol -
@@ -186,108 +196,108 @@ function _get_stock_exchanges(arguments::AbstractDict, configuration::AbstractDi
     return _plain_table(configuration, Alpaca.MyStockExchangesEndpointModel(), "exchanges");
 end
 
-# get_global_stock_bars: the bars of stocks on non-US exchanges over a range of times -
-function _get_global_stock_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+# The shared steps of get_global_stock_bars, get_global_stock_quotes, and get_global_stock_trades. The kind is "bars",
+# "quotes", or "trades". Only the bars have a timeframe. The helper reads the arguments, builds the model of the kind,
+# and returns the first page of the table -
+function _global_stock_history(arguments::AbstractDict, configuration::AbstractDict, kind::String)::Dict{String,Any}
+
+    # the names of the arguments that the kind takes -
+    names = ["feed", "symbols", "start", "end", "sort"];
+    if (kind == "bars")
+        names = ["feed", "symbols", "start", "end", "timeframe", "sort"];
+    end
 
     # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols", "start", "end", "timeframe", "sort"]);
+    _check_argument_names(arguments, names);
     feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
     symbols = _symbols_argument(arguments, "symbols");
     start = _time_argument(arguments, "start"; required = true);
     finish = _time_argument(arguments, "end");
-    timeframe = _choice_argument(arguments, "timeframe", BAR_TIMEFRAMES; default = "1Day");
     sort = _choice_argument(arguments, "sort", ["asc", "desc"]);
 
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockBarsEndpointModel(feed = feed, symbols = symbols, timeframe = timeframe, start = start,
-        finish = finish, page_size = MAX_ROWS + 1, sort = sort);
-    return _paged_table(configuration, model, "bars");
+    # build the model of the kind -
+    model = nothing;
+    if (kind == "bars")
+        timeframe = _choice_argument(arguments, "timeframe", BAR_TIMEFRAMES; default = "1Day");
+        model = Alpaca.MyGlobalStockBarsEndpointModel(feed = feed, symbols = symbols, timeframe = timeframe,
+            start = start, finish = finish, page_size = MAX_ROWS + 1, sort = sort);
+    elseif (kind == "quotes")
+        model = Alpaca.MyGlobalStockQuotesEndpointModel(feed = feed, symbols = symbols, start = start,
+            finish = finish, page_size = MAX_ROWS + 1, sort = sort);
+    elseif (kind == "trades")
+        model = Alpaca.MyGlobalStockTradesEndpointModel(feed = feed, symbols = symbols, start = start,
+            finish = finish, page_size = MAX_ROWS + 1, sort = sort);
+    else
+        throw(ArgumentError("the kind must be bars, quotes, or trades"));
+    end
+    return _paged_table(configuration, model, kind);
+end
+
+# get_global_stock_bars: the bars of stocks on non-US exchanges over a range of times -
+function _get_global_stock_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
+
+    return _global_stock_history(arguments, configuration, "bars");
 end
 
 # get_global_stock_quotes: the quotes of stocks on non-US exchanges over a range of times -
 function _get_global_stock_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols", "start", "end", "sort"]);
-    feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
-    symbols = _symbols_argument(arguments, "symbols");
-    start = _time_argument(arguments, "start"; required = true);
-    finish = _time_argument(arguments, "end");
-    sort = _choice_argument(arguments, "sort", ["asc", "desc"]);
-
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockQuotesEndpointModel(feed = feed, symbols = symbols, start = start, finish = finish,
-        page_size = MAX_ROWS + 1, sort = sort);
-    return _paged_table(configuration, model, "quotes");
+    return _global_stock_history(arguments, configuration, "quotes");
 end
 
 # get_global_stock_trades: the trades of stocks on non-US exchanges over a range of times -
 function _get_global_stock_trades(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
+    return _global_stock_history(arguments, configuration, "trades");
+end
+
+# The shared steps of the four latest-data tools for stocks on non-US exchanges. The kind is "bars", "quotes",
+# "trades", or "snapshots". The helper reads the arguments, builds the model of the kind, and returns the table -
+function _global_stock_latest(arguments::AbstractDict, configuration::AbstractDict, kind::String)::Dict{String,Any}
+
     # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols", "start", "end", "sort"]);
+    _check_argument_names(arguments, ["feed", "symbols"]);
     feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
     symbols = _symbols_argument(arguments, "symbols");
-    start = _time_argument(arguments, "start"; required = true);
-    finish = _time_argument(arguments, "end");
-    sort = _choice_argument(arguments, "sort", ["asc", "desc"]);
 
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockTradesEndpointModel(feed = feed, symbols = symbols, start = start, finish = finish,
-        page_size = MAX_ROWS + 1, sort = sort);
-    return _paged_table(configuration, model, "trades");
+    # build the model of the kind -
+    model = nothing;
+    if (kind == "bars")
+        model = Alpaca.MyGlobalStockLatestBarsEndpointModel(feed = feed, symbols = symbols);
+    elseif (kind == "quotes")
+        model = Alpaca.MyGlobalStockLatestQuotesEndpointModel(feed = feed, symbols = symbols);
+    elseif (kind == "trades")
+        model = Alpaca.MyGlobalStockLatestTradesEndpointModel(feed = feed, symbols = symbols);
+    elseif (kind == "snapshots")
+        model = Alpaca.MyGlobalStockSnapshotsEndpointModel(feed = feed, symbols = symbols);
+    else
+        throw(ArgumentError("the kind must be bars, quotes, trades, or snapshots"));
+    end
+    return _plain_table(configuration, model, kind);
 end
 
 # get_global_stock_latest_bars: the latest bar of each stock on a non-US exchange -
 function _get_global_stock_latest_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols"]);
-    feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
-    symbols = _symbols_argument(arguments, "symbols");
-
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockLatestBarsEndpointModel(feed = feed, symbols = symbols);
-    return _plain_table(configuration, model, "bars");
+    return _global_stock_latest(arguments, configuration, "bars");
 end
 
 # get_global_stock_latest_quotes: the latest quote of each stock on a non-US exchange -
 function _get_global_stock_latest_quotes(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols"]);
-    feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
-    symbols = _symbols_argument(arguments, "symbols");
-
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockLatestQuotesEndpointModel(feed = feed, symbols = symbols);
-    return _plain_table(configuration, model, "quotes");
+    return _global_stock_latest(arguments, configuration, "quotes");
 end
 
 # get_global_stock_latest_trades: the latest trade of each stock on a non-US exchange -
 function _get_global_stock_latest_trades(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols"]);
-    feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
-    symbols = _symbols_argument(arguments, "symbols");
-
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockLatestTradesEndpointModel(feed = feed, symbols = symbols);
-    return _plain_table(configuration, model, "trades");
+    return _global_stock_latest(arguments, configuration, "trades");
 end
 
 # get_global_stock_snapshots: the latest trade, quote, and bars of each stock on a non-US exchange -
 function _get_global_stock_snapshots(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
-    # read the arguments -
-    _check_argument_names(arguments, ["feed", "symbols"]);
-    feed = _choice_argument(arguments, "feed", GLOBAL_STOCK_FEEDS; required = true);
-    symbols = _symbols_argument(arguments, "symbols");
-
-    # call Alpaca -
-    model = Alpaca.MyGlobalStockSnapshotsEndpointModel(feed = feed, symbols = symbols);
-    return _plain_table(configuration, model, "snapshots");
+    return _global_stock_latest(arguments, configuration, "snapshots");
 end
 
 # The properties of a tool of US stock market data that reads a list of symbols and a feed. The caller adds the rest -
