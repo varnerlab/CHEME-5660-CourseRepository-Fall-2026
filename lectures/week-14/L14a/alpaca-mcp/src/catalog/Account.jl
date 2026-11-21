@@ -5,6 +5,13 @@
 # which lists each tool's name, description, input schema, and handler.
 # =============================================================================
 
+# The markets that Alpaca keeps a calendar for. The market calendar and the market clocks use these names -
+const CALENDAR_MARKETS = [
+     "BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ",
+    "NYSE", "OCEA", "OPRA", "OTC", "OTCM", "SIFMA", "TADAWUL", "XAMS", "XBRU", "XDUB", "XETR", "XETRA",
+    "XHKG", "XLIS", "XLON", "XNAS", "XNYS", "XPAR", "XSAU"
+];
+
 # --- PRIVATE METHODS BELOW HERE ------------------------------------------------------------------------------- #
 # get_account: the cash, buying power, equity, and status of the account -
 function _get_account(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
@@ -150,8 +157,7 @@ function _get_market_calendar(arguments::AbstractDict, configuration::AbstractDi
 
     # read the arguments -
     _check_argument_names(arguments, ["market", "start", "end", "timezone"]);
-    markets = ["BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ", "NYSE", "OCEA", "OPRA", "OTC", "OTCM", "SIFMA", "TADAWUL", "XAMS", "XBRU", "XDUB", "XETR", "XETRA", "XHKG", "XLIS", "XLON", "XNAS", "XNYS", "XPAR", "XSAU"]; # the markets of the Alpaca calendar
-    market = _choice_argument(arguments, "market", markets; default = "NYSE");
+    market = _choice_argument(arguments, "market", CALENDAR_MARKETS; default = "NYSE");
     start = _date_argument(arguments, "start");
     finish = _date_argument(arguments, "end"; required = false);
     timezone = _choice_argument(arguments, "timezone", ["UTC"]);
@@ -328,7 +334,7 @@ function _add_account_tools!(tools::Array{MyMCPToolModel,1})::Nothing
 
     properties = Dict{String,Any}();
     properties["market"] = _property("string", "The market, e.g., NYSE, NASDAQ, or XLON. The default is NYSE.";
-        allowed = ["BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ", "NYSE", "OCEA", "OPRA", "OTC", "OTCM", "SIFMA", "TADAWUL", "XAMS", "XBRU", "XDUB", "XETR", "XETRA", "XHKG", "XLIS", "XLON", "XNAS", "XNYS", "XPAR", "XSAU"]);
+        allowed = CALENDAR_MARKETS);
     properties["start"] = _property("string", "The first day, as yyyy-mm-dd.");
     properties["end"] = _property("string", "The last day, as yyyy-mm-dd.");
     properties["timezone"] = _property("string", "The time zone of the session times. Leave out for the market's own time zone.";
