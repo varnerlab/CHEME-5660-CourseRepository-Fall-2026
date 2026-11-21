@@ -137,7 +137,7 @@ function _get_calendar(arguments::AbstractDict, configuration::AbstractDict)::Di
 
     # read the arguments -
     _check_argument_names(arguments, ["start", "end"]);
-    start = _date_argument(arguments, "start"; required = false);
+    start = _date_argument(arguments, "start");
     finish = _date_argument(arguments, "end"; required = false);
 
     # call Alpaca -
@@ -150,8 +150,9 @@ function _get_market_calendar(arguments::AbstractDict, configuration::AbstractDi
 
     # read the arguments -
     _check_argument_names(arguments, ["market", "start", "end", "timezone"]);
-    market = uppercase(_text_argument(arguments, "market"; default = "NYSE"));
-    start = _date_argument(arguments, "start"; required = false);
+    markets = ["BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ", "NYSE", "OCEA", "OPRA", "OTC", "OTCM", "SIFMA", "TADAWUL", "XAMS", "XBRU", "XDUB", "XETR", "XETRA", "XHKG", "XLIS", "XLON", "XNAS", "XNYS", "XPAR", "XSAU"]; # the markets of the Alpaca calendar
+    market = _choice_argument(arguments, "market", markets; default = "NYSE");
+    start = _date_argument(arguments, "start");
     finish = _date_argument(arguments, "end"; required = false);
     timezone = _choice_argument(arguments, "timezone", ["UTC"]);
 
@@ -319,25 +320,26 @@ function _add_account_tools!(tools::Array{MyMCPToolModel,1})::Nothing
 
     properties = Dict{String,Any}();
     properties["start"] = _property("string", "The first day, as yyyy-mm-dd.");
-    properties["end"] = _property("string", "The last day, as yyyy-mm-dd.");
+    properties["end"] = _property("string", "The last day, as yyyy-mm-dd. Leave out for no last day.");
     push!(tools, build(MyMCPToolModel, (name = "get_calendar",
         description = "The trading days of the US stock market, with the open and close time of each day (US Eastern time). " *
-            "At most $(MAX_ROWS) rows: ask for a shorter range when the result is too long.",
-        inputschema = _input_schema(properties, String[]), handler = _get_calendar)));
+            "Ask for a range of at most about one year: the result has at most $(MAX_ROWS) rows.",
+        inputschema = _input_schema(properties, ["start"]), handler = _get_calendar)));
 
     properties = Dict{String,Any}();
-    properties["market"] = _property("string", "The market, e.g., XNYS. The default is NYSE.");
+    properties["market"] = _property("string", "The market, e.g., NYSE, NASDAQ, or XLON. The default is NYSE.";
+        allowed = ["BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ", "NYSE", "OCEA", "OPRA", "OTC", "OTCM", "SIFMA", "TADAWUL", "XAMS", "XBRU", "XDUB", "XETR", "XETRA", "XHKG", "XLIS", "XLON", "XNAS", "XNYS", "XPAR", "XSAU"]);
     properties["start"] = _property("string", "The first day, as yyyy-mm-dd.");
     properties["end"] = _property("string", "The last day, as yyyy-mm-dd.");
     properties["timezone"] = _property("string", "The time zone of the session times. Leave out for the market's own time zone.";
         allowed = ["UTC"]);
     push!(tools, build(MyMCPToolModel, (name = "get_market_calendar",
         description = "The trading days and the session times of one market. Ask for UTC with the timezone argument. " *
-            "At most $(MAX_ROWS) rows: ask for a shorter range when the result is too long.",
-        inputschema = _input_schema(properties, String[]), handler = _get_market_calendar)));
+            "Ask for a range of at most about one year: the result has at most $(MAX_ROWS) rows.",
+        inputschema = _input_schema(properties, ["start"]), handler = _get_market_calendar)));
 
     properties = Dict{String,Any}();
-    properties["markets"] = _property("array", "The markets, e.g., [\"XNYS\", \"XNAS\"]. Leave out for all markets.");
+    properties["markets"] = _property("array", "The markets, using the same names as get_market_calendar, e.g., [\"NYSE\", \"XLON\"]. Leave out for all markets.");
     properties["markets"]["items"] = Dict{String,Any}("type" => "string");
     properties["time"] = _property("string", "Read the clocks at this time (UTC), as yyyy-mm-dd or an RFC 3339 time. Leave out for now.");
     push!(tools, build(MyMCPToolModel, (name = "get_market_clocks",
