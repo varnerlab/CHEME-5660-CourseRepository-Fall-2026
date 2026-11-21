@@ -13,11 +13,17 @@ Let's get started!
 ___
 
 ## Setup and Prerequisites
-The server in this folder offers eleven tools. Each tool makes one request to the paper account through the [Alpaca SDK](https://github.com/varnerlab/alpaca-markets-sdk):
+The server in this folder offers 74 tools, which reach the paper account through the [Alpaca SDK](https://github.com/varnerlab/alpaca-markets-sdk). The tools fall into seven areas:
 
-* __Account:__ The `get_account`, `get_clock`, `get_positions`, `get_orders`, and `get_order` tools read the cash, the market hours, the open positions, and the orders of the account.
-* __Market:__ The `get_asset`, `get_latest_quotes`, and `get_daily_bars` tools read whether a stock can be traded, its latest bid and ask, and its daily prices.
-* __Orders:__ The `submit_order`, `cancel_order`, and `cancel_all_orders` tools place market and limit orders for stocks, and cancel open orders.
+* __Account:__ The `get_account`, `get_clock`, `get_calendar`, and `get_portfolio_history` tools read the cash, the market hours, the trading days, and the value of the account over time. The `update_account_configurations` tool changes the settings of the account.
+* __Orders and positions:__ The `submit_order`, `submit_option_order`, and `submit_crypto_order` tools place orders for stocks, option contracts, and crypto pairs. The `get_orders`, `replace_order`, `cancel_order`, `get_positions`, and `close_position` tools read, change, and cancel the orders, and read and close the positions.
+* __Watchlists:__ The `create_watchlist`, `get_watchlists`, and `add_to_watchlist` tools keep named lists of symbols in the account.
+* __Stocks:__ The `get_latest_quotes`, `get_bars`, and `get_snapshots` tools read the latest quotes, the prices over time, and a summary of each stock. The seven tools whose names start with `get_global_stock_` read stocks on exchanges outside the US.
+* __Options:__ The `get_option_contracts`, `get_option_chain`, and `get_option_latest_quotes` tools find option contracts and read their quotes.
+* __Crypto:__ The `get_crypto_latest_quotes`, `get_crypto_bars`, and `get_crypto_orderbooks` tools read the quotes, the prices over time, and the order book of crypto pairs such as `BTC/USD`. Crypto trades around the clock, every day of the week.
+* __News and other market data:__ The `get_news`, `get_most_actives`, `get_movers`, and `get_corporate_actions` tools read news articles, the most active stocks, the largest gainers and losers, and dividends and splits.
+
+The tools for stocks outside the US, company logos, and bond prices need a paid market-data subscription, and they return an error on a free paper account.
 
 Before you start, set up the course environment, your credentials, and Claude Code:
 
@@ -85,7 +91,8 @@ ___
 
 ## The Server Code
 * The [server.jl](server.jl) file loads the code, reads the credentials file, builds the server, and runs the server loop.
-* The [src/Catalog.jl](src/Catalog.jl) file holds the eleven tools: the handler of each tool, and the name, description, and input schema in `build_alpaca_server(...)`.
+* The [src/Catalog.jl](src/Catalog.jl) file holds the instructions that the server sends to Claude Code, and builds the server from the tools of each area.
+* The files in [src/catalog](src/catalog) hold the tools of one area each: the handler of each tool, and its name, description, and input schema.
 * The [src/Tools.jl](src/Tools.jl) file checks the arguments of a call and turns each result into rows that the language model reads.
 * The [src/Utility.jl](src/Utility.jl) file reads the credentials file and checks the paper endpoint.
 * The [src/Server.jl](src/Server.jl), [src/Types.jl](src/Types.jl), and [src/Factory.jl](src/Factory.jl) files hold the server loop and the models of a tool and a server.
