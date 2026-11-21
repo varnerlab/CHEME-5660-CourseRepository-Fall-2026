@@ -117,6 +117,25 @@ function _check_write_description(tool::AbstractDict)::Array{String,1}
     end
     return failures;
 end
+# Check that a call with arguments that are wrong for the tool is a tool execution error, with a message that names
+# the problem. The offline server has a setup error, so a message about the arguments shows that the tool checked
+# the arguments before it asked for the client -
+function _check_argument_error(server::MyMCPServerModel, name::String, arguments::Dict{String,Any},
+    expected::String)::Array{String,1}
+
+    failures = Array{String,1}();
+    result = _request(server, "tools/call", Dict{String,Any}("name" => name, "arguments" => arguments));
+    if (get(result, "isError", false) != true)
+        push!(failures, "$(name): a call with wrong arguments is not an error");
+        return failures;
+    end
+    text = result["content"][1]["text"];
+    if (occursin(expected, text) == false)
+        push!(failures, "$(name): the message is \"$(text)\", and it does not contain \"$(expected)\"");
+    end
+    return failures;
+end
+
 # The handler of the test tool for the image check: a result with PNG bytes and one more key -
 function _image_test_handler(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 
@@ -171,11 +190,21 @@ for tool ∈ tools
     append!(failures, _check_write_description(tool));
 end
 
+# the order tools check their arguments before any request -
+legs = Any[];
+for i ∈ 1:5
+    push!(legs, Dict{String,Any}("symbol" => "AAPL261218C00200000", "side" => "buy"));
+end
+append!(failures, _check_argument_error(server, "submit_option_order", Dict{String,Any}("legs" => legs, "qty" => 1,
+    "type" => "limit", "limit_price" => 1.0), "4 legs"));
+append!(failures, _check_argument_error(server, "submit_crypto_order", Dict{String,Any}("symbol" => "BTC/USD",
+    "side" => "buy", "qty" => 0.1, "time_in_force" => "day"), "time_in_force"));
+
 # the image result -
 append!(failures, _check_image_result());
 
 # the number of tools. Raise this number when a task adds tools -
-expected_tools = 21;
+expected_tools = 29;
 if (length(tools) != expected_tools)
     push!(failures, "the server lists $(length(tools)) tools, and the check expects $(expected_tools)");
 end
