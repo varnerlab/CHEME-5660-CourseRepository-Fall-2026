@@ -99,6 +99,20 @@ function _list_tools(server::MyMCPServerModel, id)::Dict{String,Any}
     return _result_message(server, id, result);
 end
 
+# Hide the Alpaca key and secret in a text that goes into an MCP message. Each one becomes a placeholder -
+function _hide_credentials(text::String, configuration::AbstractDict)::String
+
+    key = get(configuration, "key", "");
+    if (isempty(key) == false)
+        text = replace(text, key => "<your Alpaca key>");
+    end
+    secret = get(configuration, "secret", "");
+    if (isempty(secret) == false)
+        text = replace(text, secret => "<your Alpaca secret>");
+    end
+    return text;
+end
+
 # tools/call: run the handler of the named tool with the arguments of the request -
 function _call_tool(server::MyMCPServerModel, id, params::AbstractDict)::Dict{String,Any}
 
@@ -133,14 +147,7 @@ function _call_tool(server::MyMCPServerModel, id, params::AbstractDict)::Dict{St
                 end
             end
             text = JSON.json(others);
-            key = get(server.configuration, "key", "");
-            if (isempty(key) == false)
-                text = replace(text, key => "<your Alpaca key>");
-            end
-            secret = get(server.configuration, "secret", "");
-            if (isempty(secret) == false)
-                text = replace(text, secret => "<your Alpaca secret>");
-            end
+            text = _hide_credentials(text, server.configuration);
             image = Dict{String,Any}("type" => "image", "data" => Base64.base64encode(png), "mimeType" => "image/png");
             result["content"] = [image, Dict{String,Any}("type" => "text", "text" => text)];
         else
@@ -152,14 +159,7 @@ function _call_tool(server::MyMCPServerModel, id, params::AbstractDict)::Dict{St
         text = sprint(showerror, exception); # the error message as text, e.g., "ArgumentError: ..."
 
         # the Alpaca key and secret never go into an MCP message, even when an error message holds them -
-        key = get(server.configuration, "key", "");
-        if (isempty(key) == false)
-            text = replace(text, key => "<your Alpaca key>");
-        end
-        secret = get(server.configuration, "secret", "");
-        if (isempty(secret) == false)
-            text = replace(text, secret => "<your Alpaca secret>");
-        end
+        text = _hide_credentials(text, server.configuration);
         result["content"] = [Dict{String,Any}("type" => "text", "text" => text)];
         result["isError"] = true;
     end

@@ -37,16 +37,25 @@ function _request(server::MyMCPServerModel, method::String, params::Dict{String,
     return response["result"];
 end
 
-# Check that the tool names are unique -
-function _check_unique_names(tools::Array{Dict{String,Any},1})::Array{String,1}
+# Check that the tool names are unique. The server keeps its tools in a dictionary, where a second tool of the
+# same name replaces the first. So we collect the tools of the seven areas into one array, and count the names there -
+function _check_unique_names()::Array{String,1}
 
+    tools = Array{MyMCPToolModel,1}();
+    L14aAlpacaMCP._add_account_tools!(tools);
+    L14aAlpacaMCP._add_orders_tools!(tools);
+    L14aAlpacaMCP._add_watchlists_tools!(tools);
+    L14aAlpacaMCP._add_stocks_tools!(tools);
+    L14aAlpacaMCP._add_options_tools!(tools);
+    L14aAlpacaMCP._add_crypto_tools!(tools);
+    L14aAlpacaMCP._add_marketdata_tools!(tools);
     failures = Array{String,1}();
     seen = Dict{String,Bool}();
     for tool ∈ tools
-        if (haskey(seen, tool["name"]) == true)
-            push!(failures, "the tool name $(tool["name"]) is used twice");
+        if (haskey(seen, tool.name) == true)
+            push!(failures, "the tool name $(tool.name) is used twice");
         end
-        seen[tool["name"]] = true;
+        seen[tool.name] = true;
     end
     return failures;
 end
@@ -155,7 +164,7 @@ tools = listing["tools"];
 
 # run the checks, and collect the failures -
 failures = Array{String,1}();
-append!(failures, _check_unique_names(tools));
+append!(failures, _check_unique_names());
 for tool ∈ tools
     append!(failures, _check_schema(tool));
     append!(failures, _check_unknown_argument(server, tool));
