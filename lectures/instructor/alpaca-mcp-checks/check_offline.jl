@@ -200,11 +200,38 @@ append!(failures, _check_argument_error(server, "submit_option_order", Dict{Stri
 append!(failures, _check_argument_error(server, "submit_crypto_order", Dict{String,Any}("symbol" => "BTC/USD",
     "side" => "buy", "qty" => 0.1, "time_in_force" => "day"), "time_in_force"));
 
+# the stock and watchlist tools check their arguments before any request -
+append!(failures, _check_argument_error(server, "get_bars", Dict{String,Any}("symbols" => ["AAPL"],
+    "start" => "2026-11-02", "timeframe" => "2Years"), "timeframe"));
+append!(failures, _check_argument_error(server, "get_quotes", Dict{String,Any}("symbols" => ["AAPL"],
+    "start" => "2026-11-02", "feed" => "nasdaq"), "feed"));
+append!(failures, _check_argument_error(server, "get_global_stock_bars", Dict{String,Any}("feed" => "xetr",
+    "symbols" => ["SAP:XETR"]), "start"));
+append!(failures, _check_argument_error(server, "get_watchlist", Dict{String,Any}("watchlist_id" => "a",
+    "name" => "b"), "exactly one"));
+append!(failures, _check_argument_error(server, "update_watchlist", Dict{String,Any}("name" => "tech"),
+    "new_name or symbols"));
+
+# get_daily_bars is gone, and get_bars takes a timeframe -
+tool_names = String[tool["name"] for tool ∈ tools];
+if (("get_daily_bars" in tool_names) == true)
+    push!(failures, "get_daily_bars is still a tool. get_bars replaces it");
+end
+if (("get_bars" in tool_names) == false)
+    push!(failures, "the server has no get_bars tool");
+else
+    for tool ∈ tools
+        if (tool["name"] == "get_bars" && haskey(tool["inputSchema"]["properties"], "timeframe") == false)
+            push!(failures, "get_bars has no timeframe argument");
+        end
+    end
+end
+
 # the image result -
 append!(failures, _check_image_result());
 
 # the number of tools. Raise this number when a task adds tools -
-expected_tools = 29;
+expected_tools = 51;
 if (length(tools) != expected_tools)
     push!(failures, "the server lists $(length(tools)) tools, and the check expects $(expected_tools)");
 end
