@@ -12,22 +12,6 @@ const BAR_TIMEFRAMES = ["1Min", "5Min", "15Min", "30Min", "1Hour", "4Hour", "1Da
 const BAR_ADJUSTMENTS = ["raw", "split", "dividend", "spin-off", "all"];
 
 # --- PRIVATE METHODS BELOW HERE ------------------------------------------------------------------------------- #
-# Call Alpaca for a table that comes in pages, and keep the first page. The models ask for one row more than the
-# server returns, so a page that is full has more rows than the cap, and the result is the message that tells the
-# language model to ask for less. Without max_pages = 1, the SDK would download every page -
-function _paged_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
-
-    df = Alpaca.api(_client(configuration), model; max_pages = 1);
-    return _table_result(df, key);
-end
-
-# Call Alpaca for a table that comes in one piece, e.g., the latest bars -
-function _plain_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
-
-    df = Alpaca.api(_client(configuration), model);
-    return _table_result(df, key);
-end
-
 # get_bars: the open, high, low, close, and volume of each symbol over a range of times, for one width of bar -
 function _get_bars(arguments::AbstractDict, configuration::AbstractDict)::Dict{String,Any}
 

@@ -231,7 +231,7 @@ end
 append!(failures, _check_image_result());
 
 # the number of tools. Raise this number when a task adds tools -
-expected_tools = 51;
+expected_tools = 74;
 if (length(tools) != expected_tools)
     push!(failures, "the server lists $(length(tools)) tools, and the check expects $(expected_tools)");
 end

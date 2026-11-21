@@ -280,6 +280,22 @@ function _table_result(df::DataFrames.DataFrame, key::String)::Dict{String,Any}
     return Dict{String,Any}(key => rows, "count" => length(rows));
 end
 
+# Call Alpaca for a table that comes in pages, and keep the first page. The models ask for one row more than the
+# server returns, so a page that is full has more rows than the cap, and the result is the message that tells the
+# language model to ask for less. Without max_pages = 1, the SDK would download every page -
+function _paged_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
+
+    df = Alpaca.api(_client(configuration), model; max_pages = 1);
+    return _table_result(df, key);
+end
+
+# Call Alpaca for a table that comes in one piece, e.g., the latest bars -
+function _plain_table(configuration::AbstractDict, model, key::String)::Dict{String,Any}
+
+    df = Alpaca.api(_client(configuration), model);
+    return _table_result(df, key);
+end
+
 # The fields of an order that the language model needs: what was ordered, its status, and how much of it filled -
 function _order_summary(order::Alpaca.Order)::Dict{String,Any}
 
