@@ -26,7 +26,7 @@ open.
 A tool returns at most 300 rows. When a result is longer, the tool says so: ask for fewer symbols or a shorter time
 range. The tools for stocks outside the US, company logos, and bond prices need a paid market-data subscription,
 and they return an error on a free paper account.
-Submit, replace, cancel, close, or exercise, and change settings or watchlists, only after the user asks for it.""";;
+Submit, replace, cancel, close, or exercise, and change settings or watchlists, only after the user asks for it.""";
 
 # --- PUBLIC METHODS BELOW HERE -------------------------------------------------------------------------------- #
 """

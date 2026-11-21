@@ -55,11 +55,11 @@ function _call(server::MyMCPServerModel, name::String, arguments::Dict{String,An
     return Dict{String,Any}("error" => result["isError"], "text" => text, "data" => data);
 end
 
-# Is the error text a 403 for a data subscription that the paper plan lacks? -
+# Is the error text a 403 for a data subscription that the paper plan lacks? The SDK prints a failed request as
+# AlpacaError(status=403, code=...): <message> -
 function _is_subscription_error(text::String)::Bool
 
-    lowered = lowercase(text);
-    return occursin("subscription", lowered) && occursin("403", lowered);
+    return occursin("status=403", text) && occursin("subscription", lowercase(text));
 end
 
 # Record the outcome of one call in the counts, and print one line for the tool. A call whose error text contains
@@ -67,14 +67,17 @@ end
 function _record!(counts::Dict{String,Int64}, label::String, call::Dict{String,Any};
     expected_error::String = "")::Nothing
 
-    if (call["error"] == false)
+    if (call["error"] == false && isempty(expected_error) == false)
+        counts["FAIL"] += 1;
+        println(rpad(label, 34), "FAIL expected the row-cap error, and the call returned a result");
+    elseif (call["error"] == false)
         counts["ok"] += 1;
         println(rpad(label, 34), "ok");
     elseif (isempty(expected_error) == false && occursin(expected_error, call["text"]) == true)
         counts["ok"] += 1;
         println(rpad(label, 34), "ok (the row-cap message: ", first(call["text"], 60), "...)");
     elseif (_is_subscription_error(call["text"]) == true)
-        counts["skipped"] += 1;
+        counts["skipped for subscription"] += 1;
         println(rpad(label, 34), "skipped (403: ", call["text"], ")");
     else
         counts["FAIL"] += 1;
@@ -97,21 +100,20 @@ function _check_tool!(server::MyMCPServerModel, counts::Dict{String,Int64}, name
     return call;
 end
 
-# Record a tool that we could not call because the account holds nothing to ask about -
+# Record a tool that we could not call, and count it as not exercised, because the account holds nothing to ask about -
 function _skip_tool!(counts::Dict{String,Int64}, name::String, reason::String)::Nothing
 
-    counts["skipped"] += 1;
-    println(rpad(name, 34), "skipped (", reason, ")");
+    counts["not exercised"] += 1;
+    println(rpad(name, 34), "not exercised (", reason, ")");
     return nothing;
 end
 
-# The first row of the first list in a result, or an empty dictionary when the list is empty -
-function _first_row(data::Dict{String,Any})::Dict{String,Any}
+# The first row of the list under key_name in a result, or an empty dictionary when the list is empty -
+function _first_row(data::Dict{String,Any}, key_name::String)::Dict{String,Any}
 
-    for (key_name, value) ∈ data
-        if (isa(value, AbstractVector) == true && isempty(value) == false)
-            return Dict{String,Any}(value[1]);
-        end
+    rows = get(data, key_name, Any[]);
+    if (isempty(rows) == false)
+        return Dict{String,Any}(rows[1]);
     end
     return Dict{String,Any}();
 end
@@ -158,21 +160,21 @@ function _check_reads!(server::MyMCPServerModel, counts::Dict{String,Int64})::No
     # account, so we read the id or the symbol from the list first -
     println("--- the orders, positions, and watchlists");
     orders = _check_tool!(server, counts, "get_orders", Dict{String,Any}("status" => "all", "limit" => 5));
-    order_row = _first_row(orders["data"]);
+    order_row = _first_row(orders["data"], "orders");
     if (haskey(order_row, "id") == true)
         _check_tool!(server, counts, "get_order", Dict{String,Any}("order_id" => order_row["id"]));
     else
         _skip_tool!(counts, "get_order", "the account has no order to read");
     end
     positions = _check_tool!(server, counts, "get_positions", Dict{String,Any}());
-    position_row = _first_row(positions["data"]);
+    position_row = _first_row(positions["data"], "positions");
     if (haskey(position_row, "symbol") == true)
         _check_tool!(server, counts, "get_position", Dict{String,Any}("symbol" => position_row["symbol"]));
     else
         _skip_tool!(counts, "get_position", "the account has no position to read");
     end
     watchlists = _check_tool!(server, counts, "get_watchlists", Dict{String,Any}());
-    watchlist_row = _first_row(watchlists["data"]);
+    watchlist_row = _first_row(watchlists["data"], "watchlists");
     if (haskey(watchlist_row, "id") == true)
         _check_tool!(server, counts, "get_watchlist", Dict{String,Any}("watchlist_id" => watchlist_row["id"]));
     else
@@ -213,7 +215,7 @@ function _check_reads!(server::MyMCPServerModel, counts::Dict{String,Int64})::No
     println("--- the options");
     strike_low = 600.0;
     strike_high = 800.0;
-    trade_row = _first_row(latest_trades["data"]);
+    trade_row = _first_row(latest_trades["data"], "trades");
     if (haskey(trade_row, "price") == true)
         strike_low = floor(trade_row["price"]) - 1.0;
         strike_high = floor(trade_row["price"]) + 1.0;
@@ -222,7 +224,7 @@ function _check_reads!(server::MyMCPServerModel, counts::Dict{String,Int64})::No
         "strike_price_gte" => strike_low, "strike_price_lte" => strike_high, "expiration_date_gte" => expiration_start,
         "expiration_date_lte" => expiration_end);
     contracts = _check_tool!(server, counts, "get_option_contracts", option_arguments);
-    contract_row = _first_row(contracts["data"]);
+    contract_row = _first_row(contracts["data"], "contracts");
     if (haskey(contract_row, "symbol") == true)
         option_symbol = contract_row["symbol"];
         _check_tool!(server, counts, "get_option_contract", Dict{String,Any}("symbol" => option_symbol));
@@ -273,21 +275,6 @@ function _check_reads!(server::MyMCPServerModel, counts::Dict{String,Int64})::No
     return nothing;
 end
 
-# Does the list of a read tool hold a row with the given name? The key of the list and the column of the name are
-# arguments. A failed read counts as a row that is still there, so a failed check never hides a leftover -
-function _list_has_name(call::Dict{String,Any}, key_name::String, column::String, name::String)::Bool
-
-    if (call["error"] == true)
-        return true;
-    end
-    for row ∈ get(call["data"], key_name, Any[])
-        if (get(row, column, "") == name)
-            return true;
-        end
-    end
-    return false;
-end
-
 # Run the write block: the watchlist lifecycle, the crypto order, and the account configuration. A step that fails
 # is a FAIL, and the cleanup at the end removes what the block created. The function returns nothing -
 function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::Nothing
@@ -296,6 +283,7 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
     watchlist_name = "mcp-live-" * Dates.format(Dates.now(), "yyyymmddHHMMSS");
     renamed_name = watchlist_name * "-renamed";
     watchlist_exists = false;
+    client_id = "mcp-live-" * Dates.format(Dates.now(), "yyyymmddHHMMSS"); # marks every order of this run
     order_id = "";
     order_open = false;
 
@@ -348,17 +336,17 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
         if (bid > 0.0)
             call = _check_tool!(server, counts, "submit_crypto_order", Dict{String,Any}("symbol" => "BTC/USD",
                 "side" => "buy", "type" => "limit", "time_in_force" => "gtc", "qty" => 0.001,
-                "limit_price" => round(0.5 * bid; digits = 2)));
+                "limit_price" => round(0.5 * bid; digits = 2), "client_order_id" => client_id));
             if (call["error"] == false)
+                order_open = true; # set first, so the cleanup finds the order even when we cannot read its id
                 order_id = call["data"]["order"]["id"];
-                order_open = true;
             end
         end
         if (isempty(order_id) == false)
             sleep(ORDER_WAIT_SECONDS);
             _check_tool!(server, counts, "get_order", Dict{String,Any}("order_id" => order_id); label = "get_order (the new order)");
             call = _check_tool!(server, counts, "replace_order", Dict{String,Any}("order_id" => order_id,
-                "limit_price" => round(0.45 * bid; digits = 2)));
+                "limit_price" => round(0.45 * bid; digits = 2), "client_order_id" => client_id * "-replaced"));
             if (call["error"] == false)
                 order_id = call["data"]["order"]["id"]; # a replacement is a new order with a new id
             end
@@ -392,11 +380,16 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
                 println(rpad("cleanup: delete_watchlist", 34), "FAIL ", sprint(showerror, exception));
             end
         end
-        if (order_open == true && isempty(order_id) == false)
+        if (order_open == true)
             try
                 sleep(ORDER_WAIT_SECONDS);
-                _check_tool!(server, counts, "cancel_order", Dict{String,Any}("order_id" => order_id);
-                    label = "cleanup: cancel_order");
+                open_orders = _call(server, "get_orders", Dict{String,Any}("status" => "open", "symbols" => ["BTC/USD"]));
+                for row ∈ get(open_orders["data"], "orders", Any[])
+                    if (startswith(string(get(row, "client_order_id", "")), "mcp-live-") == true)
+                        _check_tool!(server, counts, "cancel_order", Dict{String,Any}("order_id" => row["id"]);
+                            label = "cleanup: cancel_order");
+                    end
+                end
             catch exception
                 counts["FAIL"] += 1;
                 println(rpad("cleanup: cancel_order", 34), "FAIL ", sprint(showerror, exception));
@@ -404,7 +397,7 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
         end
     end
 
-    # the cleanup check: no watchlist of this run and no open BTC/USD order from this run remain -
+    # the cleanup check: no mcp-live- watchlist and no open BTC/USD order with an mcp-live- client order id remain -
     sleep(ORDER_WAIT_SECONDS);
     watchlists = _call(server, "get_watchlists", Dict{String,Any}());
     leftover_watchlist = false;
@@ -416,7 +409,7 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
     orders = _call(server, "get_orders", Dict{String,Any}("status" => "open", "symbols" => ["BTC/USD"]));
     leftover_order = false;
     for row ∈ get(orders["data"], "orders", Any[])
-        if (isempty(order_id) == false && get(row, "id", "") == order_id)
+        if (startswith(string(get(row, "client_order_id", "")), "mcp-live-") == true)
             leftover_order = true;
         end
     end
@@ -447,7 +440,7 @@ end
 server = build_alpaca_server(configuration);
 
 # run the checks -
-counts = Dict{String,Int64}("ok" => 0, "skipped" => 0, "FAIL" => 0);
+counts = Dict{String,Int64}("ok" => 0, "skipped for subscription" => 0, "not exercised" => 0, "FAIL" => 0);
 _check_reads!(server, counts);
 if (get(ENV, "ALPACA_LIVE_WRITE", "") == "1")
     _check_writes!(server, counts);
@@ -456,7 +449,8 @@ else
 end
 
 # report -
-println("ok: ", counts["ok"], ", skipped: ", counts["skipped"], ", FAIL: ", counts["FAIL"]);
+println("ok: ", counts["ok"], ", skipped for subscription: ", counts["skipped for subscription"],
+    ", not exercised: ", counts["not exercised"], ", FAIL: ", counts["FAIL"]);
 if (counts["FAIL"] > 0)
     exit(1);
 end
