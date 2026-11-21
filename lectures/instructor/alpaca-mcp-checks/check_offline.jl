@@ -11,7 +11,7 @@
 # The script prints the number of tools, and exits with a non-zero code when a
 # check fails.
 # =============================================================================
-include(joinpath(@__DIR__, "dev_env.jl"));
+include(joinpath(@__DIR__, "course_env.jl"));
 include(joinpath(COURSE_ROOT, "lectures", "week-14", "L14a", "alpaca-mcp", "src", "AlpacaMCP.jl"));
 import JSON
 using .L14aAlpacaMCP

@@ -7,6 +7,7 @@
 #
 #   ok                        the tool returned a result
 #   skipped (403: <message>)  the paper plan has no subscription for this data
+#   not exercised (<reason>)  the account has no data for this tool, e.g., no watchlist
 #   FAIL <message>            the tool returned any other error
 #
 #   julia --startup-file=no lectures/instructor/alpaca-mcp-checks/check_live.jl
@@ -20,8 +21,11 @@
 # them. The script ends with the counts, and exits with a non-zero code when
 # any tool fails.
 # =============================================================================
-include(joinpath(@__DIR__, "dev_env.jl"));
+include(joinpath(@__DIR__, "course_env.jl"));
 include(joinpath(COURSE_ROOT, "lectures", "week-14", "L14a", "alpaca-mcp", "src", "AlpacaMCP.jl"));
+
+# the credentials file of the Alpaca SDK checkout, used when ALPACA_CREDENTIALS is not set -
+const ALPACA_SDK_CREDENTIALS = expanduser("~/Desktop/julia_work/alpaca-markets-sdk/conf/apidata.toml");
 import JSON
 import Dates
 using .L14aAlpacaMCP
@@ -435,7 +439,7 @@ end
 # the credentials: ALPACA_CREDENTIALS, or the file of the SDK checkout. The server code checks the paper endpoint -
 credentials = get(ENV, "ALPACA_CREDENTIALS", "");
 if (isempty(credentials) == true)
-    credentials = joinpath(ALPACA_SDK_PATH, "conf", "apidata.toml");
+    credentials = ALPACA_SDK_CREDENTIALS;
 end
 configuration = load_server_configuration(expanduser(credentials));
 if (haskey(configuration, "setup_error") == true)
