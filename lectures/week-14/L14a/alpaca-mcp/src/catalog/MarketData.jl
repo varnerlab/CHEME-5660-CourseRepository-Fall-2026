@@ -107,8 +107,14 @@ function _fixed_income(arguments::AbstractDict, configuration::AbstractDict, kin
     _check_argument_names(arguments, names);
     isins = _text_list_argument(arguments, "isins"; uppercase_items = true);
     trade_size = nothing;
-    if (kind == "quotes" && haskey(arguments, "trade_size") == true)
-        trade_size = _integer_argument(arguments, "trade_size", 1, 1, 1000000000);
+    if (kind == "quotes")
+        size_value = _number_argument(arguments, "trade_size"); # a positive number, or nothing
+        if (isnothing(size_value) == false)
+            if (size_value != floor(size_value))
+                throw(ArgumentError("the trade_size must be a whole number"));
+            end
+            trade_size = Int64(size_value);
+        end
     end
 
     # build the model of the kind -
@@ -210,18 +216,20 @@ function _add_marketdata_tools!(tools::Array{MyMCPToolModel,1})::Nothing
     properties["isins"]["items"] = Dict{String,Any}("type" => "string");
     properties["isins"]["maxItems"] = MAX_SYMBOLS;
     push!(tools, build(MyMCPToolModel, (name = "get_fixed_income_prices",
-        description = "The latest price (USD per bond unit, as Alpaca quotes it), the yield to maturity, and the yield to " *
-            "worst of each bond (percent per year), with the time in UTC. " * paid_text,
+        description = "The latest price (p), yield to maturity (ytm), and yield to worst (ytw) of each bond, with the time " *
+            "of the price (t) in UTC. " * paid_text,
         inputschema = _input_schema(properties, ["isins"]), handler = _get_fixed_income_prices)));
 
     properties = Dict{String,Any}();
     properties["isins"] = _property("array", "The ISINs of the bonds, e.g., [\"US912810TW84\"].");
     properties["isins"]["items"] = Dict{String,Any}("type" => "string");
     properties["isins"]["maxItems"] = MAX_SYMBOLS;
-    properties["trade_size"] = _property("integer", "The trade size that the quotes are for. Leave out for the default of Alpaca.");
+    properties["trade_size"] = _property("integer", "The trade size that the quotes are for, a positive whole number. Leave out for the default of Alpaca.");
     push!(tools, build(MyMCPToolModel, (name = "get_fixed_income_quotes",
-        description = "The latest bid and ask quotes of each bond: the bid and ask price (USD per bond unit, as Alpaca " *
-            "quotes it) and size, with the time in UTC. " * paid_text,
+        description = "The latest quote of each bond: the best bid price (bp) and ask price (ap), where 0 means there is no " *
+            "active bid or ask, the bid size (bs) and ask size (as) and the minimum bid size (bms) and ask size (ams) " *
+            "to trade, all in par value, the bid yields (bytm, bytw) and ask yields (aytm, aytw) to maturity and to " *
+            "worst, and the time of the quote (t) in UTC. " * paid_text,
         inputschema = _input_schema(properties, ["isins"]), handler = _get_fixed_income_quotes)));
 
     return nothing;
