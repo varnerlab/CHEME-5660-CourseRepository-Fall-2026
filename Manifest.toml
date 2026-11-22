@@ -80,7 +80,7 @@ version = "1.1.3"
 
 [[deps.Alpaca]]
 deps = ["DataFrames", "Dates", "HTTP", "JSON3", "TOML", "URIs"]
-git-tree-sha1 = "e427a9de7219be1375ab8d1715302a0332d6f843"
+git-tree-sha1 = "76d378babbbe307a9cb364cbd2fc367aa6f0db6b"
 repo-rev = "main"
 repo-url = "https://github.com/varnerlab/alpaca-markets-sdk.git"
 uuid = "c1a5797d-a1e1-4ff9-a0c8-9ae1b3a2bac1"
