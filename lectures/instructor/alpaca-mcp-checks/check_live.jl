@@ -16,10 +16,12 @@
 # of the Alpaca SDK checkout. The script never prints the key or the secret.
 # When you set ALPACA_LIVE_WRITE=1, the script also runs the write block: a
 # watchlist from create to delete, a crypto limit order that it submits,
-# replaces, and cancels, and an update of the account configuration with its
-# current value. These calls change the paper account, and the script undoes
-# them. The script ends with the counts, and exits with a non-zero code when
-# any tool fails.
+# replaces, and cancels, an update of the account configuration with its
+# current value, and a 10 USD market buy of BTC/USD that it reads as a position
+# and closes. These calls change the paper account, and the script undoes
+# them. The buy and the close leave a few cents of fees and price change in
+# the cash. The script ends with the counts, and exits with a non-zero code
+# when any tool fails.
 # =============================================================================
 include(joinpath(@__DIR__, "course_env.jl"));
 include(joinpath(COURSE_ROOT, "lectures", "week-14", "L14a", "alpaca-mcp", "src", "AlpacaMCP.jl"));
@@ -33,6 +35,10 @@ using .L14aAlpacaMCP
 # the pause between a submit, a replace, and a cancel. Alpaca answers HTTP 422 "pending replacement" when an order
 # changes again before Alpaca has accepted the last change -
 const ORDER_WAIT_SECONDS = 3;
+
+# the crypto position block: the size of the market buy, and how many times we read the position before a FAIL -
+const POSITION_NOTIONAL_USD = 10.0;
+const POSITION_TRIES = 10;
 
 # --- PRIVATE METHODS BELOW HERE ------------------------------------------------------------------------------- #
 # Call one tool through the server. The result is a dictionary with the keys "error" (true when the tool failed),
@@ -434,6 +440,111 @@ function _check_writes!(server::MyMCPServerModel, counts::Dict{String,Int64})::N
     end
     return nothing;
 end
+
+# Read the BTC/USD position until it answers as we want: open (expect_open = true) or gone (expect_open = false).
+# The function asks up to POSITION_TRIES times, with a pause between tries, and returns the last call -
+function _wait_for_position(server::MyMCPServerModel, expect_open::Bool)::Dict{String,Any}
+
+    call = Dict{String,Any}();
+    for try_number ∈ 1:POSITION_TRIES
+
+        # read the position: an open position returns a result, and a closed one returns "position does not exist" -
+        sleep(ORDER_WAIT_SECONDS);
+        call = _call(server, "get_position", Dict{String,Any}("symbol" => "BTC/USD"));
+        if (expect_open == true && call["error"] == false)
+            return call;
+        end
+        if (expect_open == false && call["error"] == true && occursin("position does not exist", call["text"]) == true)
+            return call;
+        end
+    end
+    return call;
+end
+
+# Run the crypto position block: a market buy of POSITION_NOTIONAL_USD of BTC/USD, a read of the position, and a close
+# of the position. The block runs only when the account holds no crypto, so it never closes a position that it did
+# not open. The function returns nothing -
+function _check_crypto_position!(server::MyMCPServerModel, counts::Dict{String,Int64})::Nothing
+
+    println("--- the crypto position");
+    position_open = false;
+
+    # check that the account holds no crypto before we buy any -
+    call = _call(server, "get_positions", Dict{String,Any}());
+    if (call["error"] == true)
+        counts["FAIL"] += 1;
+        println(rpad("get_positions (before the buy)", 34), "FAIL ", call["text"]);
+        return nothing;
+    end
+    holds_crypto = false;
+    for row ∈ get(call["data"], "positions", Any[])
+        if (string(get(row, "asset_class", "")) == "crypto")
+            holds_crypto = true;
+        end
+    end
+    if (holds_crypto == true)
+        for step_name ∈ ["submit_crypto_order (market)", "get_position (BTC/USD)", "close_position (BTC/USD)"]
+            _skip_tool!(counts, step_name, "the account already holds crypto, and the check does not touch it");
+        end
+        return nothing;
+    end
+
+    try
+
+        # buy BTC/USD at market. The order fills within seconds, because crypto trades around the clock -
+        client_id = "mcp-live-" * Dates.format(Dates.now(), "yyyymmddHHMMSS") * "-buy";
+        call = _check_tool!(server, counts, "submit_crypto_order", Dict{String,Any}("symbol" => "BTC/USD",
+            "side" => "buy", "type" => "market", "time_in_force" => "gtc", "notional" => POSITION_NOTIONAL_USD,
+            "client_order_id" => client_id); label = "submit_crypto_order (market)");
+        if (call["error"] == true)
+            return nothing;
+        end
+        position_open = true; # set first, so the cleanup closes the position even when a later step fails
+
+        # read the position by its pair, BTC/USD. Alpaca names the position BTCUSD -
+        call = _wait_for_position(server, true);
+        if (call["error"] == false)
+            symbol = string(call["data"]["position"]["symbol"]);
+            counts["ok"] += 1;
+            println(rpad("get_position (BTC/USD)", 34), "ok (the position is ", symbol, ")");
+        else
+            counts["FAIL"] += 1;
+            println(rpad("get_position (BTC/USD)", 34), "FAIL ", call["text"]);
+        end
+
+        # close the position by its pair, and read it again until it is gone -
+        call = _check_tool!(server, counts, "close_position", Dict{String,Any}("symbol" => "BTC/USD");
+            label = "close_position (BTC/USD)");
+        if (call["error"] == false)
+            call = _wait_for_position(server, false);
+            if (call["error"] == true && occursin("position does not exist", call["text"]) == true)
+                position_open = false;
+                counts["ok"] += 1;
+                println(rpad("the position is closed", 34), "ok");
+            else
+                counts["FAIL"] += 1;
+                println(rpad("the position is closed", 34), "FAIL the BTC/USD position is still open");
+            end
+        end
+    catch exception
+        counts["FAIL"] += 1;
+        println(rpad("crypto position block", 34), "FAIL ", sprint(showerror, exception));
+    finally
+
+        # the cleanup: close the position if a step left it open -
+        if (position_open == true)
+            try
+                sleep(ORDER_WAIT_SECONDS);
+                _check_tool!(server, counts, "close_position", Dict{String,Any}("symbol" => "BTC/USD");
+                    label = "cleanup: close_position");
+            catch exception
+                counts["FAIL"] += 1;
+                println(rpad("cleanup: close_position", 34), "FAIL ", sprint(showerror, exception));
+            end
+        end
+    end
+    return nothing;
+end
 # --- PRIVATE METHODS ABOVE HERE ------------------------------------------------------------------------------- #
 
 # the credentials: ALPACA_CREDENTIALS, or the file of the SDK checkout. The server code checks the paper endpoint -
@@ -453,6 +564,7 @@ counts = Dict{String,Int64}("ok" => 0, "skipped for subscription" => 0, "not exe
 _check_reads!(server, counts);
 if (get(ENV, "ALPACA_LIVE_WRITE", "") == "1")
     _check_writes!(server, counts);
+    _check_crypto_position!(server, counts);
 else
     println("--- the write block is off. Set ALPACA_LIVE_WRITE=1 to run it");
 end
