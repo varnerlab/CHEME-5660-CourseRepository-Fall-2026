@@ -364,12 +364,13 @@ function _order_summary(order::Alpaca.Order)::Dict{String,Any}
 end
 
 # The fields of an order that the language model needs, from one row of the orders table that a replace returns.
-# The row is a dictionary from _rows, so the values are already JSON values -
+# The fields are the same as those of _order_summary. A field that the row lacks, e.g., notional (the orders table
+# has no notional column), is nothing. The row is a dictionary from _rows, so the values are already JSON values -
 function _order_row_summary(row::Dict{String,Any})::Dict{String,Any}
 
     summary = Dict{String,Any}();
-    fields = ["id", "client_order_id", "symbol", "side", "type", "time_in_force", "qty", "filled_qty", "limit_price",
-        "filled_avg_price", "status", "submitted_at", "filled_at"];
+    fields = ["id", "client_order_id", "symbol", "side", "type", "time_in_force", "qty", "notional", "filled_qty",
+        "limit_price", "filled_avg_price", "status", "submitted_at", "filled_at"];
     for field ∈ fields
         summary[field] = get(row, field, nothing);
     end

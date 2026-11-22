@@ -5,6 +5,9 @@
 # which lists each tool's name, description, input schema, and handler.
 # =============================================================================
 
+# How to ask a calendar tool for fewer rows -
+const CALENDAR_ROW_ADVICE = "Ask for a shorter range of dates: a later start date, or an earlier end date.";
+
 # The markets that Alpaca keeps a calendar for. The market calendar and the market clocks use these names -
 const CALENDAR_MARKETS = [
      "BMO", "BNYM", "BOATS", "CEUX", "CHIX", "HKEX", "IEX", "IEXG", "ISE", "LSE", "MTA", "MTAA", "NASDAQ",
@@ -147,7 +150,8 @@ function _get_calendar(arguments::AbstractDict, configuration::AbstractDict)::Di
     finish = _date_argument(arguments, "end"; required = false);
 
     # call Alpaca -
-    return _plain_table(configuration, Alpaca.MyCalendarEndpointModel(start = start, finish = finish), "calendar");
+    return _plain_table(configuration, Alpaca.MyCalendarEndpointModel(start = start, finish = finish), "calendar";
+        advice = CALENDAR_ROW_ADVICE);
 end
 
 # get_market_calendar: the trading days and the session times of one market -
@@ -162,7 +166,7 @@ function _get_market_calendar(arguments::AbstractDict, configuration::AbstractDi
 
     # call Alpaca -
     model = Alpaca.MyMarketCalendarEndpointModel(market = market, start = start, finish = finish, timezone = timezone);
-    return _plain_table(configuration, model, "calendar");
+    return _plain_table(configuration, model, "calendar"; advice = CALENDAR_ROW_ADVICE);
 end
 
 # get_market_clocks: whether each of several markets is open, and when each opens and closes next -
