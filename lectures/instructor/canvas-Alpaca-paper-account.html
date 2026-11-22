@@ -1,0 +1,218 @@
+<!--
+INSTRUCTOR-FACING CANVAS COPY
+
+Post this page before the L14a lecture. The practicum needs the paper account.
+Keep the inline styles: they carry the code colors and gray backgrounds into Canvas.
+
+1. Open this file on GitHub and select Download raw file.
+2. Open the downloaded .html file in a web browser; it will render as a page.
+3. Select the rendered page (Command+A on macOS or Ctrl+A on Windows).
+4. Copy it, then paste it into the ordinary Canvas page editor.
+5. Preview the Canvas page and verify the links before publishing.
+
+Check against your own dashboard before posting: Alpaca's docs put the API Keys
+section on the right sidebar of the dashboard Home page, with a Generate New Keys
+button. The Week 14 release must be published before students follow Step 3.
+-->
+
+<h2>Open an Alpaca paper account</h2>
+
+<p>
+  <strong>Needed for:</strong> the practicum (required), and the L14a paper trading example (optional)<br>
+  <strong>Cost:</strong> free<br>
+  <strong>Time:</strong> about 20 minutes
+</p>
+
+<p>
+  Alpaca is a brokerage built for programs that trade. A paper account at
+  Alpaca trades simulated money at real market prices, so you can test a
+  trading method before it risks real money. You need your own paper account
+  for the practicum.
+</p>
+
+<p>
+  A program sends its requests to Alpaca through Alpaca's RESTful API. Alpaca
+  identifies the program by two keys, an <strong>API key ID</strong> and a
+  <strong>secret key</strong>, and every request carries both. Our Julia
+  package, the <a href="https://varnerlab.github.io/alpaca-markets-sdk/dev/">Alpaca SDK</a>, builds and sends these requests.
+</p>
+
+<h3>Step 1: Open a paper account</h3>
+
+<ol>
+  <li>
+    Go to <a href="https://app.alpaca.markets/signup">app.alpaca.markets/signup</a>,
+    and sign up with your email address. Anyone, in any country, can open a
+    paper-only account.
+  </li>
+  <li>Confirm your email address if Alpaca sends you a confirmation link.</li>
+  <li>
+    Your paper account starts with 100,000 USD of simulated money. You do not
+    deposit any real money.
+  </li>
+</ol>
+
+<h3>Step 2: Generate your paper API keys</h3>
+
+<ol>
+  <li>Sign in to the <a href="https://app.alpaca.markets">Alpaca dashboard</a>, and open your paper account.</li>
+  <li>In the <strong>API Keys</strong> panel of the Home page, select <strong>Generate New Keys</strong>.</li>
+  <li>
+    Copy the API key ID and the secret key right away. Alpaca shows the secret
+    key only once. If you lose the secret key, generate a new pair of keys.
+  </li>
+</ol>
+
+<p>
+  Paper keys work only with your paper account. The keys of a live account do
+  not work with a paper account.
+</p>
+
+<h3>Step 3: Store your keys in a credentials file</h3>
+
+<p>
+  The Alpaca SDK and the L14a MCP server read your keys from a credentials
+  file, not from a notebook. A key typed into a notebook goes to everyone who
+  gets a copy of the notebook. The credentials file stays on your computer.
+</p>
+
+<ol>
+  <li>
+    Download and unzip the Week 14 release from the
+    <a href="https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/releases">course releases page</a>, and open its
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">lectures/week-14/L14a/alpaca-mcp/conf</code> folder.
+  </li>
+  <li>
+    Copy <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata-template.toml</code> to a new file named
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml</code> in the same folder.
+  </li>
+  <li>
+    In <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml</code>, replace the text between the quotes on the
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">key</code> and <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">secret</code> lines with your API key ID and
+    secret key, and save the file.
+  </li>
+</ol>
+
+<p>
+  Keep the quotes, and leave the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">endpoint</code> line as it is. The
+  <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">[Credentials]</code> section of the finished file looks like this, with
+  your own keys in place of the example keys:
+</p>
+
+<pre style="display: block; padding: 10px; margin: 0 0 10px; color: #333333; background-color: #f5f5f5; border: 1px solid #cccccc; border-radius: 4px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap;"><code style="color: #333333; background-color: #f5f5f5; padding: 0; font-family: inherit; font-size: inherit;">[Credentials]
+endpoint = "https://paper-api.alpaca.markets/v2"
+key      = "PKABCDEFGHIJKLMNOPQRSTUVWX"
+secret   = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGH"</code></pre>
+
+<h3>Step 4: Check your keys with the Alpaca SDK</h3>
+
+<ol>
+  <li>
+    Open a terminal in the Week 14 folder, the folder that holds
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">Project.toml</code>. Install the course packages, including the Alpaca
+    SDK, with this command. The first installation takes several minutes.
+    <pre style="display: block; padding: 10px; margin: 0 0 10px; color: #333333; background-color: #f5f5f5; border: 1px solid #cccccc; border-radius: 4px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap;"><code style="color: #333333; background-color: #f5f5f5; padding: 0; font-family: inherit; font-size: inherit;">julia --project=. -e "import Pkg; Pkg.instantiate()"</code></pre>
+  </li>
+  <li>
+    Start Julia in the same folder with <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">julia --project=.</code>, and run
+    these three lines:
+    <pre style="display: block; padding: 10px; margin: 0 0 10px; color: #333333; background-color: #f5f5f5; border: 1px solid #cccccc; border-radius: 4px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap;"><code style="color: #333333; background-color: #f5f5f5; padding: 0; font-family: inherit; font-size: inherit;">using Alpaca
+client = load_client("lectures/week-14/L14a/alpaca-mcp/conf/apidata.toml")
+account = api(client, MyAccountEndpointModel())</code></pre>
+  </li>
+</ol>
+
+<p>
+  The <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">account</code> table shows the cash and the buying power of your paper
+  account. The <a href="https://varnerlab.github.io/alpaca-markets-sdk/dev/">SDK documentation</a> shows how to read prices
+  and place orders in the same way.
+</p>
+
+<h3>Step 5 (optional): Talk to your paper account in Claude Code</h3>
+
+<p>
+  In the L14a example, we'll ask about the paper account and place orders in
+  plain English. Claude Code turns each request into calls to Alpaca's API
+  through a Model Context Protocol (MCP) server, a program in the
+  <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">alpaca-mcp</code> folder that offers one tool for each Alpaca endpoint.
+</p>
+
+<ol>
+  <li>
+    Install <a href="https://code.claude.com/docs/en/overview">Claude Code</a>.
+    Claude Code needs a Claude plan or a Claude Console account.
+  </li>
+  <li>
+    Open a terminal in the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">lectures/week-14/L14a/alpaca-mcp</code> folder,
+    and run <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">claude</code>.
+  </li>
+  <li>
+    Claude Code asks whether to use the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">alpaca</code> server. Choose
+    <strong>Use this MCP server</strong>, and type <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">/mcp</code> to check
+    that the server is connected.
+  </li>
+  <li>Ask a question, for example: <em>Is the market open? How much cash does my paper account have?</em></li>
+</ol>
+
+<p>
+  The server works only with the paper endpoint, and the language model never
+  sees your keys.
+</p>
+
+<h3>Keep your keys private</h3>
+
+<p>
+  Treat your keys like a password. Anyone with your keys can trade in your
+  paper account.
+</p>
+
+<ul>
+  <li>Do not paste your keys into a notebook, a Canvas submission, or a discussion post.</li>
+  <li>Do not share your keys with classmates. Each student needs their own paper account.</li>
+  <li>
+    Do not commit <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml</code> to GitHub. The
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">.gitignore</code> file in the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">conf</code> folder already tells git
+    to skip it.
+  </li>
+</ul>
+
+<p>
+  If you think your keys were exposed, generate new keys in the
+  <strong>API Keys</strong> panel, and paste the new keys into
+  <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml</code>.
+</p>
+
+<h3>If the check fails</h3>
+
+<p>The error message says what to fix. The most common problems are:</p>
+
+<ul>
+  <li>
+    <strong>credentials file not found.</strong> The file must be named exactly
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml</code> and sit in the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">conf</code> folder. On Windows,
+    check that the editor did not save it as <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata.toml.txt</code>.
+  </li>
+  <li>
+    <strong>AlpacaError(status=401, ...): unauthorized.</strong> Alpaca does not
+    accept the keys. Check that you copied the paper keys, without spaces
+    before or after them. If you lost the secret key, generate new keys.
+  </li>
+  <li>
+    <strong>This server trades only in a paper account.</strong> The MCP server
+    found another endpoint in the file. Copy the <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">endpoint</code> line from
+    <code style="color: #c7254e; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 90%;">apidata-template.toml</code> again.
+  </li>
+</ul>
+
+<p>
+  If you are still stuck, come to office hours. Describe the error message,
+  but do not share your keys.
+</p>
+
+<h3>Background reading (optional)</h3>
+
+<p>
+  If RESTful APIs or MCP servers are new to you, two CHEME 5800 lectures
+  introduce them: <a href="https://github.com/varnerlab/CHEME-5800-CourseRepository-Fall-2026/blob/main/weeks/week-13/L13a/CHEME-5800-L13a-Lecture-RESTJSONAndSchemas-Fall-2026.ipynb">RESTful Web Services and APIs</a> and
+  <a href="https://github.com/varnerlab/CHEME-5800-CourseRepository-Fall-2026/blob/main/weeks/week-13/L13c/CHEME-5800-L13c-Lecture-ModelContextProtocol-Fall-2026.ipynb">The Model Context Protocol</a>.
+</p>
