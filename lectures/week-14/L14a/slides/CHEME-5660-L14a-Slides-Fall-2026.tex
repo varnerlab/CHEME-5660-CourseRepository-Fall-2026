@@ -1,8 +1,8 @@
 % L14a student companion deck: updating the single index model and paper trading.
 % The review (jump hidden Markov models and the sector factor model, with the carried-over
-% sector factor example), the Alpaca company profile, the daily update of the single index
-% model by exponentially weighted least squares, the preference weights with the updated
-% estimates and their comparison with betting against beta, paper trading through an AI
+% sector factor example), the daily update of the single index model by exponentially
+% weighted least squares, the preference weights with the updated estimates and their
+% comparison with betting against beta, the Alpaca company profile, paper trading through an AI
 % assistant and the MCP server, the order types and the life of an order, the three examples,
 % the optional advanced material, and the summary.
 %
@@ -18,6 +18,8 @@
 % factor model frames (definition, fitting, sampling, three reasons), the preference weight
 % section in the lecture's order (market state, pick-day figure, two-line preference model, three
 % changes), the figure-first review and paper trading frames, and the new summary.
+% November 23, 2026: the Alpaca company profile moved to directly before paper trading, as in
+% the lecture.
 % Notation follows the lecture: the EWLS decay phi = 2^(-1/63), the prior weight N_0 = 63,
 % the updated estimates alpha_i(t) and beta_i(t), and the preference weight gamma_i(t).
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -245,24 +247,6 @@
   \slidenote{Problem Set 6:}{\href{https://github.com/varnerlab/PS6-CHEME-4660-5660-Fall-2026}{Does a synthetic market move together like the real market?}}
 \end{frame}
 
-% ========== Company profile: Alpaca
-\begin{frame}{Company Profile: Alpaca}
-  \href{https://alpaca.markets/about}{\hilite{Alpaca}}: a brokerage built for programs that
-  trade, founded in 2015 by Yoshi Yokokawa and Hitoshi Harada. Its customers send orders through
-  an application programming interface (API).
-  \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item \hilite{Trading for programs}: the Trading API lets a program check an account, read
-      prices, and send orders. Every user gets a free paper trading account.
-    \item \hilite{Brokerage for other apps}: in January 2026, Alpaca raised 150 million USD and
-      reported over 9 million brokerage accounts in more than 40 countries.
-    \item \hilite{AI assistants that trade}: Alpaca maintains an official Model Context Protocol
-      (MCP) server, and raised 135 million USD in July 2026 for ``agent-first'' brokerage.
-  \end{itemize}
-  \textbf{\ink{Connection:}} we'll send orders for the preference basket to an Alpaca paper account
-  through our own MCP server.
-  \slidenote{Video:}{\href{https://www.youtube.com/embed/KiWT1qq59Gc}{Backend Operations for a Trade (2023)}.}
-\end{frame}
-
 % ========== Updating the single index model
 \begin{frame}{Updating the Single Index Model}
   A stock's market sensitivity changes over time. By late 2026, most stocks in our universe moved
@@ -439,6 +423,24 @@
   \vspace{0.8em}
   The example ends with the preference basket of the last pick day in our data. Next, we send orders
   for the stocks of a basket to a paper trading account.
+\end{frame}
+
+% ========== Company profile: Alpaca
+\begin{frame}{Company Profile: Alpaca}
+  \href{https://alpaca.markets/about}{\hilite{Alpaca}}: a brokerage built for programs that
+  trade, founded in 2015 by Yoshi Yokokawa and Hitoshi Harada. Its customers send orders through
+  an application programming interface (API).
+  \begin{itemize}\setlength{\itemsep}{0.15em}
+    \item \hilite{Trading for programs}: the Trading API lets a program check an account, read
+      prices, and send orders. Every user gets a free paper trading account.
+    \item \hilite{Brokerage for other apps}: in January 2026, Alpaca raised 150 million USD and
+      reported over 9 million brokerage accounts in more than 40 countries.
+    \item \hilite{AI assistants that trade}: Alpaca maintains an official Model Context Protocol
+      (MCP) server, and raised a second round of 135 million USD in July 2026 for ``agent-first'' brokerage.
+  \end{itemize}
+  \textbf{\ink{Connection:}} we'll send orders for the preference basket to an Alpaca paper account
+  through our own MCP server.
+  \slidenote{Video:}{\href{https://varnerlab.org/watch.html?v=KiWT1qq59Gc}{Backend Operations for a Trade (2023)}.}
 \end{frame}
 
 % ========== Paper trading with Alpaca
