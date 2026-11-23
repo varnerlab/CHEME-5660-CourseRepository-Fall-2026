@@ -1,5 +1,5 @@
 # Example: Paper Trading the Preference Basket
-In this example, we connect [Claude Code](https://code.claude.com/docs/en/overview) to an [Alpaca](https://alpaca.markets/) paper trading account through a Model Context Protocol (MCP) server. We ask about the account and place orders in plain English, and Claude Code turns each request into calls to Alpaca's API.
+In this example, we connect an AI assistant, either [Claude Code](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca](https://alpaca.markets/) paper trading account through a Model Context Protocol (MCP) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to Alpaca's API.
 
 > __Learning Objectives:__
 >
@@ -25,21 +25,26 @@ The MCP server in this folder has 74 tools, which use the [Alpaca SDK](https://g
 
 The tools for stocks outside the US, company logos, and bond prices need a paid market-data plan. On a free paper account, these tools return an error.
 
-Before you start, set up the course environment, your credentials, and Claude Code:
+Before you start, set up the course environment, your credentials, and an assistant:
 
 1. __Install the course environment.__ Open a terminal at the root of the course repository, and run `julia --project=. -e "import Pkg; Pkg.instantiate()"`. The environment includes the Alpaca SDK.
 2. __Add your credentials.__ Copy `conf/apidata-template.toml` to `conf/apidata.toml`, and paste the key and secret of your paper account between the quotes. Git ignores this file, so your key and secret are never committed.
-3. __Install Claude Code.__ Claude Code needs a Claude plan or a Claude Console account.
+3. __Install an assistant.__ Install [Claude Code](https://code.claude.com/docs/en/overview) or [Codex](https://developers.openai.com/codex/cli). Claude Code needs a Claude plan or a Claude Console account. Codex needs a ChatGPT plan or an OpenAI API key.
 
-The server works only with paper accounts. It refuses a credentials file whose endpoint is not `https://paper-api.alpaca.markets/v2`. Your key and secret stay in the server, and Claude never sees them.
+The server works only with paper accounts. It refuses a credentials file whose endpoint is not `https://paper-api.alpaca.markets/v2`. Your key and secret stay in the server, and the assistant never sees them.
 
-Open a terminal in this folder, and start Claude Code. If your credentials file is in another folder, give its path when you start:
+Open a terminal in this folder, and start your assistant:
+
+* __Claude Code:__ Run `claude`. Claude Code finds the `alpaca` server in [.mcp.json](.mcp.json) and asks whether to use it. Choose __Use this MCP server__, and type `/mcp` to check that the server is connected.
+* __Codex:__ Run `codex`. If Codex asks whether to trust this folder, answer yes, so that Codex reads [.codex/config.toml](.codex/config.toml). Type `/mcp` to check that the server is connected.
+
+If your credentials file is in another folder, give its path when you start the assistant. For Claude Code, run:
 
 ```sh
 ALPACA_CREDENTIALS=path/to/apidata.toml claude
 ```
 
-Claude Code finds the `alpaca` server in [.mcp.json](.mcp.json) and asks whether to use it. Choose __Use this MCP server__, and type `/mcp` to check that the server is connected.
+For Codex, put `codex` in place of `claude`.
 
 ___
 
@@ -61,7 +66,7 @@ In this task, we place one `day` limit order for each stock in the preference ba
 
 > Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
 
-Claude Code shows each `submit_order` call and asks for your approval before it runs. You can approve each order, or tell Claude Code not to ask again for this tool in this folder. A buy limit order at the bid fills only if a seller accepts that price. Some orders may not fill.
+The assistant shows each `submit_order` call and asks for your approval before it runs. You can approve each order, or tell the assistant not to ask again for this tool. A buy limit order at the bid fills only if a seller accepts that price. Some orders may not fill.
 
 ___
 
@@ -83,19 +88,19 @@ In this example, we checked a paper account and the quotes of the preference bas
 
 > __Key Takeaways:__
 >
-> * __Plain-English requests:__ Each tool of the MCP server sends one kind of request to Alpaca. Claude Code picks the tools that answer our question, and we approve each order before it is sent.
+> * __Plain-English requests:__ Each tool of the MCP server sends one kind of request to Alpaca. The assistant picks the tools that answer our question, and we approve each order before it is sent.
 > * __Quotes set the limit price:__ The latest bid sets the limit price of each buy order. The free quotes come from IEX alone, and their spread can be wider than the spread of the national best bid and offer.
 > * __Limit orders may not fill:__ A buy limit order at the bid fills only if a seller accepts that price. We checked the status of each order and canceled the orders that did not fill.
 
 ___
 
 ## The Server Code
-* The [server.jl](server.jl) file loads the code, reads the credentials file, builds the server, and answers the messages from Claude Code.
-* The [src/Catalog.jl](src/Catalog.jl) file holds the instructions that the server sends to Claude Code, and builds the server from the tools of each group.
+* The [server.jl](server.jl) file loads the code, reads the credentials file, builds the server, and answers the messages from the assistant.
+* The [src/Catalog.jl](src/Catalog.jl) file holds the instructions that the server sends to the assistant, and builds the server from the tools of each group.
 * Each file in [src/catalog](src/catalog) holds the tools of one group: the name, description, and inputs of each tool, and the code that runs it.
-* The [src/Tools.jl](src/Tools.jl) file checks the inputs of each tool call and turns each result into table rows for Claude.
+* The [src/Tools.jl](src/Tools.jl) file checks the inputs of each tool call and turns each result into table rows for the assistant.
 * The [src/Utility.jl](src/Utility.jl) file reads the credentials file and checks that it uses the paper endpoint.
-* The [src/Server.jl](src/Server.jl), [src/Types.jl](src/Types.jl), and [src/Factory.jl](src/Factory.jl) files hold the code that answers each message and the types that describe a tool and a server.
+* The [src/Server.jl](src/Server.jl), [src/Types.jl](src/Types.jl), and [src/Factory.jl](src/Factory.jl) files hold the code that answers each message and the types that describe a tool and a server. The server answers the `initialize` request from Codex and the `server/discover` request from Claude Code.
 
 ___
 

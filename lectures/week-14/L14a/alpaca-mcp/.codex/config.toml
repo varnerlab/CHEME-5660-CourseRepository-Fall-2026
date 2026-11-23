@@ -1,0 +1,9 @@
+# The Alpaca server of the L14a example, for the Codex command-line tool. Codex reads
+# this file when you start it in this folder and trust the folder.
+[mcp_servers.alpaca]
+command = "julia"
+args = ["--startup-file=no", "server.jl"]
+env_vars = ["ALPACA_CREDENTIALS"] # pass the path of your credentials file, if you set one, to the server
+startup_timeout_sec = 120 # Julia loads its packages before the server answers
+tool_timeout_sec = 120
+default_tools_approval_mode = "prompt" # ask before each tool call

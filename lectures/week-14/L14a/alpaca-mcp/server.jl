@@ -1,7 +1,8 @@
 # =============================================================================
 # CHEME 5660 | L14a Alpaca server: the program that a host starts
 # =============================================================================
-# A host, e.g., Claude Code, starts this file as a subprocess, e.g.,
+# A host, e.g., Claude Code or the Codex command-line tool, starts this file as
+# a subprocess, e.g.,
 #
 #   julia --startup-file=no server.jl
 #
