@@ -1,9 +1,9 @@
-# Helper.jl: helpers for the L14a examples (the pick days and the γ basket). Loaded by Include.jl.
+# Helper.jl: helpers for the L14a examples (the pick days and the preference basket). Loaded by Include.jl.
 
 """
     pick_days(ξ::Vector{Float64}; repick_interval::Int)::NamedTuple
 
-The days on which we pick a new γ basket, and the reason for each pick. The first day is always a pick day.
+The days on which we pick a new preference basket, and the reason for each pick. The first day is always a pick day.
 After that, we pick again on a day when one of two things happens:
 
 - __Scheduled:__ `repick_interval` trading days have passed since the last pick.
@@ -76,7 +76,7 @@ end
 """
     gamma_basket(γ::Vector{Float64}, sector::Vector{String}; N::Int)::Vector{Int}
 
-The γ basket of one pick day: the `N` stocks with the highest γ score in each sector. A sector with `N` stocks
+The preference basket of one pick day: the `N` stocks with the highest γ score in each sector. A sector with `N` stocks
 or fewer gives all of its stocks. When two stocks in a sector have the same score, the one that comes first in
 `γ` goes first. The sign of the score does not matter here: the basket holds the `N` highest scores, even if
 some of them are negative.

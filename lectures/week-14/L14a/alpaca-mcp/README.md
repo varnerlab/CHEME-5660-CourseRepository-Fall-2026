@@ -4,8 +4,8 @@ In this example, we connect [Claude Code](https://code.claude.com/docs/en/overvi
 > __Learning Objectives:__
 >
 > By the end of this example, you should be able to:
-> * __Check the account and the market:__ Ask whether the market is open and how much the account can spend. Read the quotes of the stocks in the γ basket, and compare their bid-ask spreads.
-> * __Place limit orders:__ Place a `day` limit order for each stock in the γ basket, and approve each order before it is sent.
+> * __Check the account and the market:__ Ask whether the market is open and how much the account can spend. Read the quotes of the stocks in the preference basket, and compare their bid-ask spreads.
+> * __Place limit orders:__ Place a `day` limit order for each stock in the preference basket, and approve each order before it is sent.
 > * __Follow the orders:__ Read the status of each order, cancel the orders that have not filled, and read the positions of the account.
 
 Let's get started!
@@ -44,22 +44,22 @@ Claude Code finds the `alpaca` server in [.mcp.json](.mcp.json) and asks whether
 ___
 
 ## Task 1: Check the Account and the Market
-In this task, we check that the market is open, how much the account can spend, and how wide the bid-ask spread of each stock in the γ basket is.
+In this task, we check that the market is open, how much the account can spend, and how wide the bid-ask spread of each stock in the preference basket is.
 
-The γ basket is the last table of the [updating example](../CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb). Paste its tickers into the second prompt:
+The preference basket is the last table of the [updating example](../CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb). Paste its tickers into the second prompt:
 
 > Is the market open? How much cash and buying power does my paper account have?
 
-> Here are the stocks of the γ basket: <paste the tickers>. What are the latest bid and ask of each stock? How wide is each spread, as a percent of the price?
+> Here are the stocks of the preference basket: <paste the tickers>. What are the latest bid and ask of each stock? How wide is each spread, as a percent of the price?
 
 The quotes come from one exchange, IEX. A stock with few shares quoted on IEX can show a much wider spread than its national best bid and offer.
 
 ___
 
 ## Task 2: Place Limit Orders for the γ Basket
-In this task, we place one `day` limit order for each stock in the γ basket.
+In this task, we place one `day` limit order for each stock in the preference basket.
 
-> Buy 1 share of each stock in the γ basket with a day limit order at the latest bid price.
+> Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
 
 Claude Code shows each `submit_order` call and asks for your approval before it runs. You can approve each order, or tell Claude Code not to ask again for this tool in this folder. A buy limit order at the bid fills only when a seller accepts our price, and some of the orders may not fill.
 
@@ -79,7 +79,7 @@ A `day` order that has not filled by the close is canceled. Canceling the open o
 ___
 
 ## Summary
-In this example, we checked a paper account and the quotes of the γ basket, placed a limit order for each of its stocks, and followed each order until it filled or we canceled it.
+In this example, we checked a paper account and the quotes of the preference basket, placed a limit order for each of its stocks, and followed each order until it filled or we canceled it.
 
 > __Key Takeaways:__
 >
