@@ -27,7 +27,12 @@ The tools for stocks outside the US, company logos, and bond prices need a paid 
 
 Before you start, set up the course environment, your credentials, and an assistant:
 
-1. __Install the course environment.__ Open a terminal at the root of the course repository, and run `julia --project=. -e "import Pkg; Pkg.instantiate()"`. The environment includes the Alpaca SDK.
+1. __Install the course environment.__ Open a terminal at the root of the course repository, and run the command below. The environment includes the Alpaca SDK.
+
+   ```sh
+   julia --project=. -e "import Pkg; Pkg.instantiate()"
+   ```
+
 2. __Add your credentials.__ Copy `conf/apidata-template.toml` to `conf/apidata.toml`, and paste the key and secret from your [Alpaca paper dashboard](https://app.alpaca.markets/paper/dashboard/overview) between the quotes. Git ignores this file, so your key and secret are never committed.
 3. __Install an assistant.__ Install the [Claude Code](https://code.claude.com/docs/en/overview) or the [Codex](https://developers.openai.com/codex/cli) command-line tool. Claude Code needs a Claude plan or a Claude Console account. Codex needs a ChatGPT plan or an OpenAI API key.
 
@@ -53,9 +58,16 @@ In this task, we check whether the market is open, how much the account can spen
 
 The preference basket is the last table in the [example on updating the single index model](../CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb). Paste its tickers into the second prompt:
 
-> Is the market open? How much cash and buying power does my paper account have?
+```text
+Is the market open?
+How much cash and buying power does my paper account have?
+```
 
-> Here are the stocks of the preference basket: <paste the tickers>. What are the latest bid and ask of each stock? How wide is each spread, as a percent of the price?
+```text
+Here are the stocks of the preference basket: <paste the tickers>.
+What are the latest bid and ask of each stock?
+How wide is each spread, as a percent of the price?
+```
 
 The [free quotes](https://docs.alpaca.markets/docs/real-time-stock-pricing-data) come from one exchange, [IEX](https://www.iexexchange.io/). For a stock that trades little on IEX, the IEX spread can be much wider than the spread of the [national best bid and offer](https://www.investor.gov/introduction-investing/investing-basics/glossary/national-best-bid-and-offer-nbbo).
 
@@ -64,7 +76,9 @@ ___
 ## Task 2: Place Limit Orders for the Preference Basket
 In this task, we place one `day` [limit order](https://docs.alpaca.markets/docs/orders-at-alpaca#limit-order) for each stock in the preference basket.
 
-> Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
+```text
+Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
+```
 
 The assistant shows each `submit_order` call and asks for your approval before it runs. You can approve each order, or tell the assistant not to ask again for this tool. A buy limit order at the bid fills only if a seller accepts that price. Some orders may not fill.
 
@@ -73,11 +87,19 @@ ___
 ## Task 3: Track and Cancel the Orders
 In this task, we check the status of each order, cancel the orders that have not filled, and list the positions in the account.
 
-> What is the status of each order I placed today? How many shares of each order filled, and at what average price?
+```text
+What is the status of each order I placed today?
+How many shares of each order filled, and at what average price?
+```
 
-> Cancel the orders that have not filled.
+```text
+Cancel the orders that have not filled.
+```
 
-> What positions do I hold now? What is the unrealized profit or loss of each position?
+```text
+What positions do I hold now?
+What is the unrealized profit or loss of each position?
+```
 
 Alpaca cancels a [`day` order](https://docs.alpaca.markets/docs/orders-at-alpaca#time-in-force) that has not filled by the close. We cancel the open orders ourselves, so that the positions we read next are final.
 
