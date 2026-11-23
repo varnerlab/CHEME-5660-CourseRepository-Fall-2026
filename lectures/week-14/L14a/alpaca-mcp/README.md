@@ -1,5 +1,5 @@
 # Example: Paper Trading the Preference Basket
-In this example, we connect an AI assistant, either [Claude Code](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca](https://alpaca.markets/) paper trading account through a Model Context Protocol (MCP) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to Alpaca's API.
+In this example, we connect an AI assistant, either the [Claude Code command-line tool](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca](https://alpaca.markets/) paper trading account through a Model Context Protocol (MCP) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to Alpaca's API.
 
 > __Learning Objectives:__
 >
@@ -29,7 +29,7 @@ Before you start, set up the course environment, your credentials, and an assist
 
 1. __Install the course environment.__ Open a terminal at the root of the course repository, and run `julia --project=. -e "import Pkg; Pkg.instantiate()"`. The environment includes the Alpaca SDK.
 2. __Add your credentials.__ Copy `conf/apidata-template.toml` to `conf/apidata.toml`, and paste the key and secret of your paper account between the quotes. Git ignores this file, so your key and secret are never committed.
-3. __Install an assistant.__ Install [Claude Code](https://code.claude.com/docs/en/overview) or [Codex](https://developers.openai.com/codex/cli). Claude Code needs a Claude plan or a Claude Console account. Codex needs a ChatGPT plan or an OpenAI API key.
+3. __Install an assistant.__ Install the [Claude Code](https://code.claude.com/docs/en/overview) or the [Codex](https://developers.openai.com/codex/cli) command-line tool. Claude Code needs a Claude plan or a Claude Console account. Codex needs a ChatGPT plan or an OpenAI API key.
 
 The server works only with paper accounts. It refuses a credentials file whose endpoint is not `https://paper-api.alpaca.markets/v2`. Your key and secret stay in the server, and the assistant never sees them.
 
