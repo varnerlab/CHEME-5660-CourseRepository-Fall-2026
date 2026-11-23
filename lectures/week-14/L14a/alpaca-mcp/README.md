@@ -1,5 +1,5 @@
 # Example: Paper Trading the Preference Basket
-In this example, we connect an AI assistant, either the [Claude Code command-line tool](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca](https://alpaca.markets/) paper trading account through a Model Context Protocol (MCP) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to Alpaca's API.
+In this example, we connect an AI assistant, either the [Claude Code command-line tool](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca paper trading account](https://docs.alpaca.markets/docs/paper-trading) through a [Model Context Protocol (MCP)](https://github.com/varnerlab/CHEME-5800-CourseRepository-Fall-2026/blob/main/weeks/week-13/L13c/CHEME-5800-L13c-Lecture-ModelContextProtocol-Fall-2026.ipynb) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to [Alpaca's API](https://github.com/varnerlab/alpaca-markets-sdk).
 
 > __Learning Objectives:__
 >
@@ -28,7 +28,7 @@ The tools for stocks outside the US, company logos, and bond prices need a paid 
 Before you start, set up the course environment, your credentials, and an assistant:
 
 1. __Install the course environment.__ Open a terminal at the root of the course repository, and run `julia --project=. -e "import Pkg; Pkg.instantiate()"`. The environment includes the Alpaca SDK.
-2. __Add your credentials.__ Copy `conf/apidata-template.toml` to `conf/apidata.toml`, and paste the key and secret of your paper account between the quotes. Git ignores this file, so your key and secret are never committed.
+2. __Add your credentials.__ Copy `conf/apidata-template.toml` to `conf/apidata.toml`, and paste the key and secret from your [Alpaca paper dashboard](https://app.alpaca.markets/paper/dashboard/overview) between the quotes. Git ignores this file, so your key and secret are never committed.
 3. __Install an assistant.__ Install the [Claude Code](https://code.claude.com/docs/en/overview) or the [Codex](https://developers.openai.com/codex/cli) command-line tool. Claude Code needs a Claude plan or a Claude Console account. Codex needs a ChatGPT plan or an OpenAI API key.
 
 The server works only with paper accounts. It refuses a credentials file whose endpoint is not `https://paper-api.alpaca.markets/v2`. Your key and secret stay in the server, and the assistant never sees them.
@@ -49,7 +49,7 @@ For Codex, put `codex` in place of `claude`.
 ___
 
 ## Task 1: Check the Account and the Market
-In this task, we check whether the market is open, how much the account can spend, and the bid-ask spread of each stock in the preference basket.
+In this task, we check whether the market is open, how much the account can spend, and the [bid-ask spread](https://www.investor.gov/introduction-investing/investing-basics/glossary/bid-ask-spread) of each stock in the preference basket.
 
 The preference basket is the last table in the [example on updating the single index model](../CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb). Paste its tickers into the second prompt:
 
@@ -57,12 +57,12 @@ The preference basket is the last table in the [example on updating the single i
 
 > Here are the stocks of the preference basket: <paste the tickers>. What are the latest bid and ask of each stock? How wide is each spread, as a percent of the price?
 
-The free quotes come from one exchange, IEX. For a stock that trades little on IEX, the IEX spread can be much wider than the spread of the national best bid and offer.
+The [free quotes](https://docs.alpaca.markets/docs/real-time-stock-pricing-data) come from one exchange, [IEX](https://www.iexexchange.io/). For a stock that trades little on IEX, the IEX spread can be much wider than the spread of the [national best bid and offer](https://www.investor.gov/introduction-investing/investing-basics/glossary/national-best-bid-and-offer-nbbo).
 
 ___
 
 ## Task 2: Place Limit Orders for the Preference Basket
-In this task, we place one `day` limit order for each stock in the preference basket.
+In this task, we place one `day` [limit order](https://docs.alpaca.markets/docs/orders-at-alpaca#limit-order) for each stock in the preference basket.
 
 > Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
 
@@ -79,7 +79,7 @@ In this task, we check the status of each order, cancel the orders that have not
 
 > What positions do I hold now? What is the unrealized profit or loss of each position?
 
-Alpaca cancels a `day` order that has not filled by the close. We cancel the open orders ourselves, so that the positions we read next are final.
+Alpaca cancels a [`day` order](https://docs.alpaca.markets/docs/orders-at-alpaca#time-in-force) that has not filled by the close. We cancel the open orders ourselves, so that the positions we read next are final.
 
 ___
 
