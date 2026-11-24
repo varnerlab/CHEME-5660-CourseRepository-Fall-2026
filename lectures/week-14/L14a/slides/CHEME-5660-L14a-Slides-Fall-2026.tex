@@ -229,17 +229,17 @@
 \end{frame}
 
 \begin{frame}{Questions About the Algorithms, Continued}
-  \begin{itemize}\setlength{\itemsep}{0.8em}
-    \item \hilite{Why jump hidden Markov models?} Steps 1 to 4 match only the averages, variances,
-      and covariances of the data. A jump hidden Markov model adds fat tails, volatility clustering,
-      and jump episodes.
-    \item \hilite{Why no residual scale?} Previously, the residual scale $\psi_{i}$ corrected the
-      variance of each stock-specific draw. Here, the least-squares fits leave each stock-specific
-      residual uncorrelated with every factor. The variance needs no correction.
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Why jump hidden Markov models?} We need to draw new paths of each column of
+      $\mathbf{Z}$ and each stock-specific residual. Normal draws, as in the multiple-asset GBM model,
+      would have the right variance but thin tails and no volatility clustering. A jump hidden Markov
+      model fit to each series reproduces its fat tails, volatility clustering, and jump episodes.
+    \item \hilite{Why no residual scale?} In the sector factor model, a stock's sector part and
+      stock-specific part were correlated in the data, and the residual scale $\psi_{i}$ added back the
+      variance that independent draws lost. Here, the least-squares fit of step 3 makes the
+      stock-specific residual uncorrelated with every factor. Independent draws then lose no variance.
   \end{itemize}
 
-  \vspace{0.4em}
-  With these algorithms, you can build a synthetic market from the economic factors you choose.
   \slidenote{Problem Set 6:}{\href{https://github.com/varnerlab/PS6-CHEME-4660-5660-Fall-2026}{Does a synthetic market move together like the real market?}}
 \end{frame}
 
