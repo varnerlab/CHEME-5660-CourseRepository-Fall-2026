@@ -1,4 +1,4 @@
-# Helper.jl: helpers for the L14a examples (the pick days and the preference basket). Loaded by Include.jl.
+# Helper.jl: helpers for the L15a examples (the pick days and the preference basket). Loaded by Include.jl.
 
 """
     pick_days(ξ::Vector{Float64}; repick_interval::Int)::NamedTuple

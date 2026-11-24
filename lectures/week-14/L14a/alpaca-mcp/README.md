@@ -1,11 +1,11 @@
-# Example: Paper Trading the Preference Basket
+# Example: Paper Trading a Basket of Stocks
 In this example, we connect an AI assistant, either the [Claude Code command-line tool](https://code.claude.com/docs/en/overview) or the [Codex command-line tool](https://developers.openai.com/codex/cli), to an [Alpaca paper trading account](https://docs.alpaca.markets/docs/paper-trading) through a [Model Context Protocol (MCP)](https://github.com/varnerlab/CHEME-5800-CourseRepository-Fall-2026/blob/main/weeks/week-13/L13c/CHEME-5800-L13c-Lecture-ModelContextProtocol-Fall-2026.ipynb) server. We ask about the account and place orders in plain English, and the assistant turns each request into calls to [Alpaca's API](https://github.com/varnerlab/alpaca-markets-sdk).
 
 > __Learning Objectives:__
 >
 > By the end of this example, you should be able to:
-> * __Check the account and the market:__ Ask whether the market is open and how much the account can spend. Read the quotes of the stocks in the preference basket, and compare their bid-ask spreads.
-> * __Place limit orders:__ Place a `day` limit order for each stock in the preference basket, and approve each order before it is sent.
+> * __Check the account and the market:__ Ask whether the market is open and how much the account can spend. Read the quotes of the stocks in the basket, and compare their bid-ask spreads.
+> * __Place limit orders:__ Place a `day` limit order for each stock in the basket, and approve each order before it is sent.
 > * __Track the orders:__ Check the status of each order, cancel the orders that have not filled, and list the positions in the account.
 
 Let's get started!
@@ -54,9 +54,9 @@ For Codex, put `codex` in place of `claude`.
 ___
 
 ## Task 1: Check the Account and the Market
-In this task, we check whether the market is open, how much the account can spend, and the [bid-ask spread](https://www.investor.gov/introduction-investing/investing-basics/glossary/bid-ask-spread) of each stock in the preference basket.
+In this task, we check whether the market is open, how much the account can spend, and the [bid-ask spread](https://www.investor.gov/introduction-investing/investing-basics/glossary/bid-ask-spread) of each stock in the basket.
 
-The preference basket is the last table in the [example on updating the single index model](../CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb). Paste its tickers into the second prompt:
+Choose three to five stocks for the basket, for example the stocks with the highest preference weights that we computed previously from the fixed estimates. Paste their tickers into the second prompt:
 
 ```text
 Is the market open?
@@ -64,7 +64,7 @@ How much cash and buying power does my paper account have?
 ```
 
 ```text
-Here are the stocks of the preference basket: <paste the tickers>.
+Here are the stocks of the basket: <paste the tickers>.
 What are the latest bid and ask of each stock?
 How wide is each spread, as a percent of the price?
 ```
@@ -73,11 +73,11 @@ The [free quotes](https://docs.alpaca.markets/docs/real-time-stock-pricing-data)
 
 ___
 
-## Task 2: Place Limit Orders for the Preference Basket
-In this task, we place one `day` [limit order](https://docs.alpaca.markets/docs/orders-at-alpaca#limit-order) for each stock in the preference basket.
+## Task 2: Place Limit Orders for the Basket
+In this task, we place one `day` [limit order](https://docs.alpaca.markets/docs/orders-at-alpaca#limit-order) for each stock in the basket.
 
 ```text
-Buy 1 share of each stock in the preference basket with a day limit order at the latest bid price.
+Buy 1 share of each stock in the basket with a day limit order at the latest bid price.
 ```
 
 The assistant shows each `submit_order` call and asks for your approval before it runs. You can approve each order, or tell the assistant not to ask again for this tool. A buy limit order at the bid fills only if a seller accepts that price. Some orders may not fill.
@@ -106,7 +106,7 @@ Alpaca cancels a [`day` order](https://docs.alpaca.markets/docs/orders-at-alpaca
 ___
 
 ## Summary
-In this example, we checked a paper account and the quotes of the preference basket, placed a limit order for each stock in the basket, and tracked each order until it filled or we canceled it.
+In this example, we checked a paper account and the quotes of the basket, placed a limit order for each stock in the basket, and tracked each order until it filled or we canceled it.
 
 > __Key Takeaways:__
 >

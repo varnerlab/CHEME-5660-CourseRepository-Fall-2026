@@ -2,13 +2,11 @@
 % Code) sends a tool call to the MCP server, a rack whose units are three of its tools;
 % the server holds the key and secret and sends an API request to the Alpaca paper account,
 % which fills each order against the latest quotes (IEX). Gray arrows carry the result and
-% the order status back. Bottom: the life of an order, with the statuses of the lecture's
-% list: new, partially_filled, filled (open to done), canceled, and rejected.
+% the order status back.
 %
 % November 19, 2026: drawn in the style of the L13a schematics (schematic-style.tex).
-% Checks: the tool names match src/Catalog.jl of alpaca-mcp; the statuses match the
-% lecture's "Open", "Done", and "Rejected" bullets; an unfilled day order is canceled at
-% the close (Alpaca's orders documentation), not expired.
+% Checks: the tool names match src/Catalog.jl of alpaca-mcp.
+% November 23, 2026: the bottom panel (the life of an order) removed, with its lecture text.
 \documentclass[tikz,border=6pt]{standalone}
 \input{schematic-style.tex}
 
@@ -16,7 +14,6 @@
 \begin{tikzpicture}[
   unit/.style={draw=vnink, fill=white, line width=1.0pt, rounded corners=3pt},
   bubble/.style={rounded corners=6pt, line width=0.8pt, font=\sffamily\footnotesize, align=left, inner sep=4pt},
-  status/.style={draw=vnink, fill=white, line width=0.9pt, rounded corners=3pt, inner sep=5pt, font=\ttfamily\small},
   back/.style={draw=gdgray, line width=0.9pt, -{Latex[length=2.4mm, width=1.7mm]}},
   label/.style={font=\sffamily\small\bfseries, align=center},
 ]
@@ -70,29 +67,5 @@
   \draw[back] (6.85, 3.95) -- (5.0, 3.95) node[midway, below=3pt, note] {result};
   \draw[flow] (11.15, 5.95) -- (13.55, 5.95) node[midway, above=3pt, font=\sffamily\footnotesize] {API request};
   \draw[back] (13.55, 3.95) -- (11.15, 3.95) node[midway, above=3pt, note] {order status};
-
-  % ---------------------------------------------------------------- the life of an order
-  \draw[draw=gridgray, line width=0.8pt] (-0.5, 1.15) -- (18.0, 1.15);
-  \node[label, anchor=west] at (-0.5, 0.65) {The life of an order};
-
-  \fill[vnink] (0.0, -0.45) circle (0.09);
-  \node[note, anchor=south] at (0.0, -0.33) {sent};
-  \node[status] (new) at (2.6, -0.45) {new};
-  \node[status] (part) at (7.4, -0.45) {partially\_filled};
-  \node[status, draw=gdblue, fill=bluefill] (filled) at (12.6, -0.45) {filled};
-  \node[status, draw=gdgray, fill=boxfill] (canceled) at (7.4, -1.85) {canceled};
-  \node[status, draw=gdred, fill=redfill] (rejected) at (2.6, -1.85) {rejected};
-
-  \draw[flow] (0.12, -0.45) -- (new.west);
-  \draw[flow] (new.east) -- (part.west);
-  \draw[flow] (part.east) -- (filled.west);
-  \draw[flow] (new.north east) to[bend left=12] (filled.north west);
-  \draw[flow] (new.south east) -- (canceled.north west);
-  \draw[flow] (part.south) -- (canceled.north);
-  \draw[flow, rounded corners=4pt] (0.0, -0.57) |- (rejected.west);
-
-  \node[note, anchor=west, align=left] at (canceled.east) {\ we cancel the order, or\\\ a \texttt{day} order reaches the close};
-  \node[note, anchor=west, align=left] at (rejected.east) {\ fails a check};
-  \node[note, anchor=west, align=left] at (filled.east) {\ all of its shares\\\ have traded};
 \end{tikzpicture}
 \end{document}

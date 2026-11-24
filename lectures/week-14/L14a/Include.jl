@@ -1,6 +1,5 @@
 # setup paths -
 const _ROOT = @__DIR__;
-const _PATH_TO_SRC = joinpath(_ROOT, "src");
 const _PATH_TO_DATA = joinpath(_ROOT, "data");
 const _PATH_TO_FIGS = joinpath(_ROOT, "figs");
 
@@ -42,6 +41,3 @@ import VLQuantitativeFinancePackage.MPCPortfolio as MPC
 
 # the course's daily S&P 500 files, sector list, and 13-week bill rates (DTB3) -
 const _PATH_TO_MARKET_DATA = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data");
-
-# load the functions in the local src directory -
-include(joinpath(_PATH_TO_SRC, "Helper.jl"));

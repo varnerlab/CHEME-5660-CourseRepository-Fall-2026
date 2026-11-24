@@ -1,33 +1,29 @@
-% L14a student companion deck: updating the single index model and paper trading.
+% L14a student companion deck: a general factor model and paper trading.
 % The review (jump hidden Markov models and the sector factor model, with the carried-over
-% sector factor example), the daily update of the single index model by exponentially
-% weighted least squares, the preference weights with the updated estimates and their
-% comparison with betting against beta, the Alpaca company profile, paper trading through an AI
-% assistant and the MCP server, the order types and the life of an order, the three examples,
-% the optional advanced material, and the summary.
+% sector factor example), the general factor model (definition, fitting, sampling, three
+% reasons), the Alpaca company profile, paper trading through an AI assistant and the MCP
+% server, the market and limit orders, the two examples, a closing question on
+% estimates that drift, and the summary.
 %
 % November 19, 2026: first build. The frame order mirrors the lecture notebook, and every
 % sentence comes from it. The review copies the L13b review frame and the L13b sector factor
 % definition frame. The paper trading figure is figs/Fig-L14a-PaperTrading-Schematic.pdf.
 % The disclaimer is slide 2, by instructor preference.
-% November 20, 2026: the EWLS frames follow the rewritten lecture box: days counted from the
-% end of 2024 (day 0 = December 31, 2024), the residual r_i(k), and the prior as a sum over the
-% 2,766 days of 2014 to 2024. The EWLS section now spans three frames, and the recursion
-% sentence sits under the problem (the parts frame had no room for it).
-% November 23, 2026: synced to the lecture. New objectives and need-to-know box, the general
-% factor model frames (definition, fitting, sampling, three reasons), the preference weight
-% section in the lecture's order (market state, pick-day figure, two-line preference model, three
-% changes), the figure-first review and paper trading frames, and the new summary.
-% November 23, 2026: the Alpaca company profile moved to directly before paper trading, as in
-% the lecture.
-% Notation follows the lecture: the EWLS decay phi = 2^(-1/63), the prior weight N_0 = 63,
-% the updated estimates alpha_i(t) and beta_i(t), and the preference weight gamma_i(t).
+% November 23, 2026: synced to the lecture (objectives, need-to-know box, the general factor
+% model frames, the figure-first review and paper trading frames), and the Alpaca company
+% profile moved to directly before paper trading, as in the lecture.
+% November 23, 2026: the section on updating the single index model (EWLS, preference weights,
+% the market hedge, betting against beta) and its optional advanced frame moved to L15a, staged
+% in lectures/week-15/L15a/slides/frames-from-L14a.tex. The deck ends with the JPM figure and
+% the closing question, as in the lecture.
+% Notation follows the lecture: x_ell and eta_{i ell} for the economic factors, Y for the factor
+% matrix, and (A^{-1})^T in the Cholesky step.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage{vnslides}
 
 \newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-14/L14a}
 
-\title{\texorpdfstring{{\vnheavy L14a}}{L14a}: Updating the Single Index Model and Paper Trading}
+\title{\texorpdfstring{{\vnheavy L14a}}{L14a}: A General Factor Model and Paper Trading}
 \subtitle{CHEME 5660 Cornell University}
 \author{Copyright Jeffrey Varner 2026. All Rights Reserved}
 
@@ -54,45 +50,40 @@
 \end{frame}
 
 \begin{frame}{Objectives for Today}
-  How can we detect a regime change in the market, and how can we use that information to inform
-  our portfolio construction? We will also discuss how to use a trading API to place trades in a
-  paper trading account.
+  Today we check a synthetic market against the real one, extend the sector factor model, and
+  place trades in a paper account.
 
   \vspace{0.5em}
   {\large\textbf{\ink{Today's concepts}}}
   \begin{itemize}\setlength{\itemsep}{0.4em}
-    \item \hilite{Build a synthetic market from a general factor model}: fit a general factor model
-      with the market, economic factors, and sector factors. Use the Cholesky step to draw
-      correlated factors from independent jump hidden Markov models.
-    \item \hilite{Update the single index model and the preference weights}: update each stock's
-      $\alpha_{i}$ and $\beta_{i}$ with each new trading day by exponentially weighted least
-      squares, and compare the trading method with betting against beta.
-    \item \hilite{Place paper trades through a trading API}: send orders for the preference basket
-      to a paper account, and follow each order until it fills or we cancel it.
+    \item \hilite{Check a synthetic market against the real market}: compare correlations,
+      volatilities, market sensitivities, and the stylized facts of one stock.
+    \item \hilite{Build a synthetic market from a general factor model}: fit the market, economic,
+      and sector factors, and use the Cholesky step to draw correlated factors.
+    \item \hilite{Place paper trades through a trading API}: send orders, and follow each one until
+      it fills or we cancel it.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{What You Need to Know}
   \vspace{0.05em}
   {\large\textbf{\ink{Core concepts}}}
-  \begin{itemize}\setlength{\itemsep}{0.05em}
-    \item A general factor model explains each stock's daily growth rate with the market, economic
-      factors, sector factors, and a stock-specific part. The Cholesky step lets independent jump
-      hidden Markov models draw correlated factors.
-    \item Exponentially weighted least squares updates each stock's single index estimates every
-      trading day. When the market falls, the preference weight favors stocks with a low market
-      sensitivity, as betting against beta does.
-    \item A paper account trades simulated money at real market prices. A limit order may not fill,
-      so a trading method must monitor the status of each order.
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item A general factor model splits each stock's daily growth rate into market, economic,
+      sector, and stock-specific parts. The Cholesky step lets independent models draw
+      correlated factors.
+    \item A synthetic market from the sector factor model matches the real sector blocks and market
+      sensitivities. Different sectors are linked only through the market.
+    \item A paper account trades simulated money at real prices. A limit order may not fill. A
+      trading method checks the status of each order.
   \end{itemize}
 
-  \vspace{0.1em}
+  \vspace{0.2em}
   {\large\textbf{\ink{For understanding}} \dimmed{(you won't reproduce these)}}
   \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item The least-squares steps of the fitting algorithm and the EWLS derivation.
-    \item The trading method's rules: the number of stocks per sector, the floor on the market
-      sensitivity, the market-turn rule, and the market hedge.
-    \item How the MCP server turns a request in plain English into calls to Alpaca's API.
+    \item The least-squares steps of the fitting algorithm.
+    \item What the columns of $\mathbf{Z}$ represent.
+    \item How the MCP server turns a request into calls to Alpaca's API.
   \end{itemize}
 \end{frame}
 
@@ -105,44 +96,35 @@
   {\normalsize\textbf{\ink{Examples:}}\par\small
   \href{\repo/CHEME-5660-L14a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L14a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}\par
   \href{\repo/alpaca-mcp/README.md}{\dimmed{alpaca-mcp/README.md}}}
-
-  \vspace{0.6em}
-  {\normalsize\textbf{\ink{Review on your own:}}\par\small
-  \href{\repo/CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb}{\dimmed{CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb}}}
-
-  \vspace{0.6em}
-  Optional advanced notebooks are listed on the Optional Advanced Material frame.
 \end{frame}
 
 % ========== Review: jump hidden Markov models and the sector factor model
 \begin{frame}{Review: Jump Hidden Markov Models}
   Previously, we built synthetic markets from jump hidden Markov models:
   \begin{center}
-    \includegraphics[width=\textwidth,height=0.42\textheight,keepaspectratio]{../figs/Fig-L13b-JumpHMM-Schematic.pdf}
+    \includegraphics[width=\textwidth,height=0.36\textheight,keepaspectratio]{../figs/Fig-L13b-JumpHMM-Schematic.pdf}
   \end{center}
-  The model bins the daily growth rate into states of equal probability and estimates the
-  transition matrix by counting moves between states. Each day, the chain takes one step, and the
-  model draws the growth rate from the new state. Jump episodes start at random and last several
-  days. These runs of large moves add the volatility clustering that the chain alone misses.
+  \begin{itemize}\setlength{\itemsep}{0.15em}
+    \item \hilite{States}: we bin the daily growth rate into states of equal probability. The
+      transition matrix counts the moves between states.
+    \item \hilite{Daily step}: the chain takes one step. The model draws the day's growth rate from
+      the Student-t distribution of the new state.
+    \item \hilite{Jump episodes}: they start at random and last several days. They use the most
+      negative or most positive states, which adds volatility clustering.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Review: The Sector Factor Model}
-  Then we extended the jump hidden Markov model to many stocks that move together. A
-  \hilite{sector factor model} adds one factor for each sector of the
-  \href{https://www.msci.com/our-solutions/indexes/gics}{Global Industry Classification Standard (GICS)}.
-  Each sector factor describes how the single index residuals of the stocks in its sector move
-  together:
+  Then we extended the model to many stocks. A \hilite{sector factor model} adds one factor for
+  each sector of the \href{https://www.msci.com/our-solutions/indexes/gics}{Global Industry
+  Classification Standard (GICS)}. For stock $i$ in sector $s$:
   \begin{equation*}
     g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\overbrace{\underbrace{\delta_{i}\,f_{s}(t)}_{\textstyle\text{sector}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}}^{\textstyle\text{single index residual }\varepsilon_{i}(t)}
   \end{equation*}
-  Here $g_m(t)$ is the growth rate of \texttt{SPY}, $f_s(t)$ is the growth rate of sector $s$
-  (with the market part removed), and $u_i(t)$ is the growth rate that neither the market nor the
-  sector explains. The market sensitivity $\beta_{i}$ and the sector loading $\delta_{i}$ set how much
-  stock $i$ moves with the market and with its sector.
-
-  \vspace{0.4em}
-  We built the many-stock model from single-asset jump hidden Markov models: one for the market,
-  one for each sector, and one for each stock.
+  Here $g_{m}(t)$ is the growth rate of \texttt{SPY}, $f_{s}(t)$ is the growth rate of sector $s$
+  with the market part removed, and $u_{i}(t)$ is the stock-specific part. The market
+  sensitivity $\beta_{i}$ and the sector loading $\delta_{i}$ set how much stock $i$ moves with the
+  market and with its sector.
 \end{frame}
 
 \begin{frame}{Example: A Synthetic Market of Many Stocks}
@@ -151,34 +133,26 @@
   \href{\repo/CHEME-5660-L14a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}{\dimmed{CHEME-5660-L14a-Example-JumpHMM-SectorFactor-Fall-2026.ipynb}}}
 
   \vspace{0.8em}
-  In this example, we use the sector factor model to build a universe of \texttt{SPY} and 375
-  stocks from all 11 sectors. We compare the correlations, volatilities, and market sensitivities
-  of a synthetic path with the real data, and the stylized facts of one synthetic stock, with and
-  without jumps, with its real growth rates. Then we save the fitted model.
+  We build a universe of \texttt{SPY} and 375 stocks from all 11 sectors. We compare a synthetic
+  path with the real data: the correlations, volatilities, and market sensitivities, and the
+  stylized facts of one stock, with and without jumps.
 
   \vspace{0.8em}
   \textbf{\ink{Today:}} we extend the sector factor model with economic factors and pairs of
-  sectors. Then we update the single index model with each new trading day, pick stocks with the
-  updated preference weights, and send orders for those stocks to a paper account.
+  sectors. Then we send orders for a basket of stocks to a paper account.
 \end{frame}
 
 % ========== Building a general factor model
 \begin{frame}{Building a General Factor Model}
   We extend the sector factor model in two ways: we add economic factors, such as interest rates,
-  and we keep the covariance between pairs of sectors, such as utilities and real estate.
-
-  \vspace{0.2em}
-  \textbf{\ink{Definition:}} a \hilite{general factor model} explains the daily growth rate of
-  stock $i$ with the market, $K$ economic factors, and the 11 sector factors:
+  and we keep the covariance between pairs of sectors. A \hilite{general factor model} with $K$
+  economic factors and 11 sector factors is:
   \begin{equation*}
-    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\sum_{k=1}^{K}\eta_{ik}\,x_{k}(t)}_{\textstyle\text{economic factors}}+\underbrace{\sum_{s=1}^{11}\delta_{is}\,f_{s}(t)}_{\textstyle\text{sectors}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}
+    g_{i}(t)=\underbrace{\alpha_{i}}_{\textstyle\text{baseline}}+\underbrace{\beta_{i}\,g_{m}(t)}_{\textstyle\text{market}}+\underbrace{\sum_{\ell=1}^{K}\eta_{i\ell}\,x_{\ell}(t)}_{\textstyle\text{economic factors}}+\underbrace{\sum_{s=1}^{11}\delta_{is}\,f_{s}(t)}_{\textstyle\text{sectors}}+\underbrace{u_{i}(t)}_{\textstyle\text{stock-specific}}
   \end{equation*}
-  where $x_{k}(t)$ is economic factor $k$ on day $t$, such as the daily change in the 10-year
-  Treasury yield, and $\eta_{ik}$ is the sensitivity of stock $i$ to that factor. The sector loading
-  $\delta_{is}$ measures how much stock $i$ moves with sector $s$.
-
-  \vspace{0.2em}
-  Economic factors must be daily series, such as the 10-year breakeven inflation rate.
+  Here $x_{\ell}(t)$ is economic factor $\ell$, such as the daily change in the 10-year Treasury
+  yield, $\eta_{i\ell}$ is the stock's sensitivity to it, and $\delta_{is}$ is its loading on
+  sector $s$.
 \end{frame}
 
 \begin{frame}{Fitting Algorithm}
@@ -193,19 +167,19 @@
       for $\symbfit{\theta}_{i}=(\alpha_{i},\beta_{i},\eta_{i1},\dots,\eta_{iK})$, and set
       $\symbfit{\varepsilon}_{i}\gets\mathbf{g}_{i}-\hat{\mathbf{X}}\symbfit{\theta}_{i}$.
     \item \hilite{Sector factors}: for each day $t$, solve
-      $\mathbf{B}^{\top}\mathbf{B}\,\mathbf{f}(t)=\mathbf{B}^{\top}\symbfit{\varepsilon}(t)$, and stack
+      $\mathbf{B}^{\top}\mathbf{B}\,\mathbf{f}(t)=\mathbf{B}^{\top}\symbfit{\varepsilon}(t)$ for the sector averages, and stack
       the $\mathbf{f}(t)$ as the rows of the $T\times 11$ matrix $\mathbf{F}$.
     \item \hilite{Sector loadings}: for each stock $i$, solve
       $\mathbf{F}^{\top}\mathbf{F}\,\symbfit{\delta}_{i}=\mathbf{F}^{\top}\symbfit{\varepsilon}_{i}$,
       and set $\mathbf{u}_{i}\gets\symbfit{\varepsilon}_{i}-\mathbf{F}\symbfit{\delta}_{i}$.
     \item \hilite{The Cholesky step}: form
-      $\symbf{\Phi}\gets[\mathbf{g}_{m},\mathbf{x}_{1},\dots,\mathbf{x}_{K},\mathbf{F}]$ with column
-      averages $\symbfit{\mu}$ and covariance $\symbf{\Sigma}_{\Phi}=\mathbf{A}\mathbf{A}^{\top}$, and
-      set $\mathbf{Z}\gets(\symbf{\Phi}-\mathbf{1}\symbfit{\mu}^{\top})\mathbf{A}^{-\top}$.
+      $\mathbf{Y}\gets[\mathbf{g}_{m},\mathbf{x}_{1},\dots,\mathbf{x}_{K},\mathbf{F}]$ with column
+      averages $\symbfit{\mu}$ and covariance $\symbf{\Sigma}_{Y}=\mathbf{A}\mathbf{A}^{\top}$, and
+      set $\mathbf{Z}\gets(\mathbf{Y}-\mathbf{1}\symbfit{\mu}^{\top})(\mathbf{A}^{-1})^{\top}$.
     \item \hilite{Fit the jump hidden Markov models}: fit one model to each column
       $\mathbf{z}_{j}$ of $\mathbf{Z}$, and one to each stock-specific residual $\mathbf{u}_{i}$.
   \end{enumerate}
-  \textbf{\ink{Output:}} $\alpha_{i}$, $\beta_{i}$, $\eta_{ik}$, $\delta_{is}$, $\symbfit{\mu}$,
+  \textbf{\ink{Output:}} $\alpha_{i}$, $\beta_{i}$, $\eta_{i\ell}$, $\delta_{is}$, $\symbfit{\mu}$,
   $\mathbf{A}$, and the fitted jump hidden Markov models.
 \end{frame}
 
@@ -215,231 +189,73 @@
   \begin{enumerate}\setlength{\itemsep}{0.4em}
     \item \hilite{Factor draws}: for each column $j$, draw a path of $T_{\text{sim}}$ days from the
       model of $\mathbf{z}_{j}$ into column $j$ of $\mathbf{Z}^{\text{sim}}$. Mix the draws back:
-      $\symbf{\Phi}^{\text{sim}}\gets\mathbf{1}\symbfit{\mu}^{\top}+\mathbf{Z}^{\text{sim}}\mathbf{A}^{\top}$,
-      whose columns hold $g_{m}(t)$, $x_{k}(t)$, and $f_{s}(t)$.
+      $\mathbf{Y}^{\text{sim}}\gets\mathbf{1}\symbfit{\mu}^{\top}+\mathbf{Z}^{\text{sim}}\mathbf{A}^{\top}$,
+      whose columns hold $g_{m}(t)$, $x_{\ell}(t)$, and $f_{s}(t)$.
     \item \hilite{Stock-specific draws}: for each stock $i$, draw a path
       $u_{i}(1),\dots,u_{i}(T_{\text{sim}})$ from the model of $\mathbf{u}_{i}$.
     \item \hilite{Compose}: for each stock $i$ and each day $t$, compute
       \begin{equation*}
-        g_{i}(t)\gets\alpha_{i}+\beta_{i}\,g_{m}(t)+\sum_{k}\eta_{ik}\,x_{k}(t)+\sum_{s}\delta_{is}\,f_{s}(t)+u_{i}(t)
+        g_{i}(t)\gets\alpha_{i}+\beta_{i}\,g_{m}(t)+\sum_{\ell}\eta_{i\ell}\,x_{\ell}(t)+\sum_{s}\delta_{is}\,f_{s}(t)+u_{i}(t)
       \end{equation*}
       and compound the price $S_{i}(t)\gets S_{i}(t-1)\exp\left(g_{i}(t)\,\Delta t\right)$.
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Three Choices in the Algorithms}
-  \vspace{-0.2em}
-  \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{Why the Cholesky step?} The jump hidden Markov models draw their paths
-      independently. Step 4 turns the correlated factors, such as utilities and real estate, into
-      the uncorrelated columns of $\mathbf{Z}$, and the factor draws mix the paths back through
-      $\mathbf{A}$.
-    \item \hilite{Why jump hidden Markov models?} Steps 1 to 4 match only the averages, variances,
-      and covariances of the data. A jump hidden Markov model gives each series its fat tails,
-      volatility clustering, and jump episodes.
-    \item \hilite{Why no residual scale?} Every loading comes from a least-squares fit, which leaves
-      each stock-specific residual uncorrelated with the stock's factors. The simulated growth
-      rates then keep each stock's variance without a residual scale.
-  \end{itemize}
-
-  With these algorithms, you can build a synthetic market from the economic factors of your
-  choice, and test a trading method on many paths of that market.
-  \slidenote{Problem Set 6:}{\href{https://github.com/varnerlab/PS6-CHEME-4660-5660-Fall-2026}{Does a synthetic market move together like the real market?}}
-\end{frame}
-
-% ========== Updating the single index model
-\begin{frame}{Updating the Single Index Model}
-  A stock's market sensitivity changes over time. By late 2026, most stocks in our universe moved
-  less with the market than their 2014 to 2024 estimates say:
-  \begin{center}
-    \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L14a-EWLS-JPM.pdf}
+\begin{frame}{Where the Solves Come From}
+  As for the single index model, each solve in steps 1 to 3 is a least-squares fit written as its
+  normal equations:
+  \begin{center}\footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llll}
+    \textbf{Step} & \textbf{Fit over} & \textbf{Minimize} & \textbf{Normal equations}\\ \hline
+    1. Market and economic loadings & the $T$ days of stock $i$ & $\lVert\mathbf{g}_{i}-\hat{\mathbf{X}}\symbfit{\theta}_{i}\rVert_{2}^{2}$ & $\hat{\mathbf{X}}^{\top}\hat{\mathbf{X}}\,\symbfit{\theta}_{i}=\hat{\mathbf{X}}^{\top}\mathbf{g}_{i}$\\
+    2. Sector factors & the $n$ stocks on day $t$ & $\lVert\symbfit{\varepsilon}(t)-\mathbf{B}\,\mathbf{f}(t)\rVert_{2}^{2}$ & $\mathbf{B}^{\top}\mathbf{B}\,\mathbf{f}(t)=\mathbf{B}^{\top}\symbfit{\varepsilon}(t)$\\
+    3. Sector loadings & the $T$ days of stock $i$ & $\lVert\symbfit{\varepsilon}_{i}-\mathbf{F}\symbfit{\delta}_{i}\rVert_{2}^{2}$ & $\mathbf{F}^{\top}\mathbf{F}\,\symbfit{\delta}_{i}=\mathbf{F}^{\top}\symbfit{\varepsilon}_{i}$\\
+  \end{tabular}
   \end{center}
-  We keep the estimates current by updating them with each new trading day, giving recent days
-  the most weight.
+  In step 2, $\mathbf{B}^{\top}\mathbf{B}$ is a diagonal matrix with the number of stocks in each
+  sector. Each $f_{s}(t)$ is then the average residual of the stocks in sector $s$.
 \end{frame}
 
-\begin{frame}{Exponentially Weighted Least Squares (EWLS)}
-  Previously, we estimated $\alpha_{i}$ and $\beta_{i}$ by least squares, where we minimized the
-  sum of squared residuals with every training day counted the same.
-
-  \vspace{0.6em}
-  However, we could include \hilite{new information} as it arrives by weighting the new days more
-  than the old ones. Let's consider exponentially weighted least squares (EWLS).
-\end{frame}
-
-\begin{frame}{The EWLS Problem}
-  On day $t$, the updated baseline $\alpha_{i}(t)$ and market sensitivity $\beta_{i}(t)$ of stock
-  $i$ solve:
-  \begin{equation*}
-    \left(\alpha_{i}(t),\beta_{i}(t)\right)=\arg\min_{\alpha_{i},\,\beta_{i}}\Biggl[\underbrace{\sum_{k=1}^{t}\phi^{\,t-k}\,\bigl(\overbrace{g_{i}(k)-\alpha_{i}-\beta_{i}\,g_{m}(k)}^{\textstyle\text{residual }r_{i}(k)}\bigr)^{2}}_{\textstyle\text{new days}}+\underbrace{\phi^{\,t}\,\frac{N_{0}}{2766}\sum_{k=-2765}^{0}r_{i}(k)^{2}}_{\textstyle\text{prior}}\Biggr]
-  \end{equation*}
-  where $g_{i}(k)$ and $g_{m}(k)$ are the daily growth rates of stock $i$ and \texttt{SPY} (1/yr).
-  Day $0$ is December 31, 2024, the
-  last day of the 2014 to 2024 fit, day $1$ is January 2, 2025, and day $469$ is November 13, 2026,
-  the last day of our data.
-
-  \vspace{0.6em}
-  The implementation updates the estimates from a few running sums.
-  \slidenote{Derivation:}{\href{\repo/advanced/ewls/CHEME-5660-L14a-Derivation-EWLS-Update-Fall-2026.ipynb}{The EWLS recursion (advanced notebook)}.}
-\end{frame}
-
-\begin{frame}{The Parts of the Update}
+\begin{frame}{Questions About the Algorithms}
   \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{New days}: day $k$ has the weight $\phi^{\,t-k}$, the decay
-      $\phi=2^{-1/63}\approx 0.989$ raised to the day's age. On day $3$, January 6, 2025, the
-      first sum is $\phi^{2}\,r_{i}(1)^{2}+\phi\,r_{i}(2)^{2}+r_{i}(3)^{2}$. The weight halves every 63
-      trading days, about three months.
-    \item \hilite{Prior}: each of the 2,766 days of 2014 to 2024 gets the weight $N_{0}/2766$, with
-      $N_{0}=63$. On day $0$, the prior alone gives the 2014 to 2024 fit. After that, the factor
-      $\phi^{\,t}$ shrinks the prior's day $0$ weight.
-    \item \hilite{No look-ahead}: day $t$ uses the growth rates through day $t$. The trading
-      method decides after the close and trades at the next open. However, this is still a
-      backward-looking estimate.
+    \item \hilite{Why the Cholesky step?} The jump hidden Markov models draw independent paths, but
+      the factors are correlated. Step 4 removes the correlation, and the factor draws put it back
+      through $\mathbf{A}$. The multiple-asset GBM model used the same mixing.
+    \item \hilite{What do the columns of $\mathbf{Z}$ represent?} They are uncorrelated, with mean
+      zero and variance one. $\mathbf{z}_{1}$ is the market growth rate, centered and scaled. Each
+      later $\mathbf{z}_{j}$ is the part of column $j$ of $\mathbf{Y}$ that the earlier columns do
+      not explain.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Preference Weights with Updated Estimates}
-  Previously, we computed the preference weight $\gamma_{i}(t)$ of each stock and used it to rank
-  the stocks. The preference weight depends on the market state $\xi_{t}$, which compares a 21-day
-  and a 63-day EMA of the \texttt{SPY} price:
-  \begin{equation*}
-    \xi_{t}=-G\left(\frac{\bar{S}^{\text{short}}_{t}}{\bar{S}^{\text{long}}_{t}}-1\right)
-  \end{equation*}
-  where the gain $G>0$ scales $\xi_{t}$ so that $|\xi_{t}|\leq 1$ on 99\% of training days.
-
-  \vspace{0.5em}
-  When the market falls, recent prices sit below the quarter's average, and $\xi_{t}$ turns
-  positive. The day $\xi_{t}$ changes sign is a \hilite{market turn}, the regime change that the
-  trading method acts on.
-\end{frame}
-
-\begin{frame}{Pick Days}
-  The estimates and the preference weights update every trading day, but the basket of stocks we
-  hold changes only on pick days:
-  \begin{center}
-    \includegraphics[width=\textwidth,height=0.56\textheight,keepaspectratio]{../figs/Fig-L14a-Gamma-Picks.pdf}
-  \end{center}
-  The trading method of \href{https://arxiv.org/abs/2611.03022}{Varner (2026)} picks its stocks
-  with this preference weight.
-\end{frame}
-
-\begin{frame}{The Preference Model with Updated Estimates}
-  For stock $i$ on day $t$, the preference weight is given by:
-  \begin{equation*}
-    \boxed{\begin{aligned}
-      \gamma_{i}(t)&=\tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)\\
-      &=\tanh\left(h\,\frac{\alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
-    \end{aligned}}
-  \end{equation*}
-  where $\tilde{g}_{i,t}$ is the expected growth rate of stock $i$ in today's market (1/yr), the
-  horizon is $h=1$ year, and the floor is $\beta_{\text{floor}}=0.1$. With a fixed
-  $\beta_{i}\geq\beta_{\text{floor}}$, this is the preference weight we used before.
+\begin{frame}{Questions About the Algorithms, Continued}
+  \begin{itemize}\setlength{\itemsep}{0.6em}
+    \item \hilite{Why jump hidden Markov models?} Steps 1 to 4 match only the averages, variances,
+      and covariances. A jump hidden Markov model adds fat tails, volatility clustering, and jump
+      episodes.
+    \item \hilite{Why no residual scale?} Previously, the residual scale $\psi_{i}$ sized each
+      stock-specific draw. Here, the least-squares fits leave each residual uncorrelated with every
+      factor. No scale is needed.
+  \end{itemize}
 
   \vspace{0.4em}
-  The second line uses the single index model, where $\tilde{g}_{M,t}$ (1/yr) is a 252-day EMA of
-  the market growth rates. A different factor model, or the stock's past growth rates alone,
-  could give $\tilde{g}_{i,t}$ instead.
-\end{frame}
-
-\begin{frame}{The Trading Method Makes Three Changes}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Updated estimates}: $\alpha_{i}(t)$ and $\beta_{i}(t)$ come from the daily EWLS
-      update, so the preference weight follows the changes in each stock's market sensitivity.
-      AQR's \href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{betting-against-beta portfolio}
-      also re-estimates the market sensitivity of each stock from a rolling window of past returns.
-    \item \hilite{A floor on the market sensitivity}: some stocks have an updated market
-      sensitivity near or below zero. The denominator uses $|\beta_{i}(t)|$ with a floor, which
-      keeps the denominator positive for every stock. The sign of the preference weight is then
-      the sign of $\tilde{g}_{i,t}$.
-    \item \hilite{Picks at market turns}: the \hilite{preference basket} holds the stocks with the
-      highest preference weights in each sector, and we choose how many to keep. The method picks
-      a new basket every 21 trading days and whenever the market turns, but other triggers are
-      also possible.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{The Market Hedge}
-  The trading method can also run with a \hilite{market hedge}, which limits the market
-  sensitivity of the whole portfolio. The limit drops as the market falls:
-  \begin{center}
-    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../figs/Fig-L14a-Market-Hedge.pdf}
-  \end{center}
-  Because $|\xi_{t}|\leq 1$ on 99\% of training days, only a steep fall takes the limit below zero.
-\end{frame}
-
-\begin{frame}{The Market Hedge Limit}
-  On each day $t$ that the trading method sets its holdings, the hedge requires:
-  \begin{equation*}
-    \boxed{\beta_{P}(t)=\sum_{i}w_{i}(t)\,\beta_{i}(t)\leq\max\left(1-\xi_{t},\,-0.5\right)}
-  \end{equation*}
-  where $w_{i}(t)$ is the fraction of the portfolio's value in holding $i$, negative for a short.
-  \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{Market rise} ($\xi_{t}<0$): the limit is above one. With no borrowing,
-      $\beta_{P}(t)$ rises above one only when the stocks held move more than the market.
-    \item \hilite{Flat or falling market} ($0\leq\xi_{t}\leq 1$): the limit drops from one, the
-      market sensitivity of \texttt{SPY}, to zero. The method shifts value
-      toward low-sensitivity stocks, holds cash, or buys up to five stocks whose market sensitivity
-      is zero or negative.
-    \item \hilite{Steep fall} ($\xi_{t}>1$): the stocks and cash are uncorrelated or anti-correlated
-      with the market, and a \texttt{SPY} short worth 20\% of the portfolio lowers $\beta_{P}(t)$ by
-      $0.2$. The floor of $-0.5$ caps the short at half of the portfolio's value.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{The Trading Method and Betting Against Beta}
-  \vspace{0.05em}
-  {\large\textbf{\ink{How does the trading method compare with betting against beta?}}}
-
-  \vspace{0.2em}
-  Previously, we met \href{https://www.aqr.com/Our-Firm/About-Us}{AQR Capital Management}, where Andrea
-  Frazzini and Lasse H. Pedersen proposed the
-  \href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{betting-against-beta portfolio}
-  in 2014. Their portfolio always buys stocks with a low market sensitivity and sells stocks with
-  a high one, in amounts that make its market sensitivity zero. The trading method makes the same
-  bet only when the market falls:
-
-  \vspace{0.05em}
-  \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{Signal}: when the market falls ($\xi_{t}>0$), the preference weight favors stocks
-      with a positive expected growth rate that move less with the market. When the market rises ($\xi_{t}<0$), the tilt reverses.
-    \item \hilite{Long-only basket}: the preference basket keeps the stocks with the highest
-      preference weights in each sector. A low-weight stock is left out, not sold short.
-    \item \hilite{Market hedge}: at $\xi_{t}=1$, the limit on $\beta_{P}(t)$ is zero, the market
-      sensitivity of betting against beta. Betting against beta gets there by selling stocks with a
-      high market sensitivity. The method sells only \texttt{SPY} short, after a steeper fall.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Example: Updating the Single Index Model}
-  \vspace{0.3em}
-  {\normalsize\textbf{\ink{Review on your own:}}\par\small
-  \href{\repo/CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb}{\dimmed{CHEME-5660-L14a-Example-Updating-SIM-Gamma-Fall-2026.ipynb}}}
-
-  \vspace{0.8em}
-  In this example, we update the single index model of every stock with each trading day of 2025
-  and 2026, starting from the 2014 to 2024 fit. We pick the preference basket once a month and
-  whenever the market turns, and compare it with the basket that the fixed estimates pick.
-
-  \vspace{0.8em}
-  The example ends with the preference basket of the last pick day in our data. Next, we send orders
-  for the stocks of a basket to a paper trading account.
+  With these algorithms, you can build a synthetic market from the economic factors you choose.
+  \slidenote{Problem Set 6:}{\href{https://github.com/varnerlab/PS6-CHEME-4660-5660-Fall-2026}{Does a synthetic market move together like the real market?}}
 \end{frame}
 
 % ========== Company profile: Alpaca
 \begin{frame}{Company Profile: Alpaca}
-  \href{https://alpaca.markets/about}{\hilite{Alpaca}}: a brokerage built for programs that
-  trade, founded in 2015 by Yoshi Yokokawa and Hitoshi Harada. Its customers send orders through
-  an application programming interface (API).
+  \href{https://alpaca.markets/about}{\hilite{Alpaca}} is a brokerage for programs that trade
+  through an application programming interface (API). It was founded in 2015.
   \begin{itemize}\setlength{\itemsep}{0.15em}
-    \item \hilite{Trading for programs}: the Trading API lets a program check an account, read
-      prices, and send orders. Every user gets a free paper trading account.
-    \item \hilite{Brokerage for other apps}: in January 2026, Alpaca raised 150 million USD and
-      reported over 9 million brokerage accounts in more than 40 countries.
-    \item \hilite{AI assistants that trade}: Alpaca maintains an official Model Context Protocol
-      (MCP) server, and raised a second round of 135 million USD in July 2026 for ``agent-first'' brokerage.
+    \item \hilite{Trading for programs}: a program checks an account, reads prices, and sends
+      orders. Paper trading accounts are free.
+    \item \hilite{Brokerage for other apps}: other firms build trading apps on Alpaca. It reports
+      over 9 million accounts in more than 40 countries.
+    \item \hilite{AI assistants that trade}: Alpaca runs an official MCP server. It raised 135
+      million USD in July 2026 to build brokerage services for AI assistants.
   \end{itemize}
-  \textbf{\ink{Connection:}} we'll send orders for the preference basket to an Alpaca paper account
-  through our own MCP server.
+  \textbf{\ink{Connection:}} we'll send orders to an Alpaca paper account through our own MCP server.
   \slidenote{Video:}{\href{https://varnerlab.org/watch.html?v=KiWT1qq59Gc}{Backend Operations for a Trade (2023)}.}
 \end{frame}
 
@@ -454,84 +270,64 @@
 \end{frame}
 
 \begin{frame}{Paper Accounts and the MCP Server}
-  \textbf{\ink{Definition:}} a \hilite{paper account} trades simulated money at real market
-  prices. Alpaca fills each paper order against the latest quotes, but the order never reaches an
-  exchange. A live account sends the same orders to the market with real money.
+  \textbf{\ink{Definition:}} a \hilite{paper account} trades simulated money at real market prices.
+  Orders fill against the latest quotes but never reach an exchange.
 
-  \vspace{0.6em}
-  A paper account is a safe way to test a trading method, including the impact of market
-  friction, such as the bid-ask spread and limit orders that do not fill.
+  \vspace{0.4em}
+  It is a safe way to test a trading method, including market friction such as the bid-ask spread
+  and limit orders that do not fill.
 
-  \vspace{0.6em}
-  The assistant makes the calls to the Alpaca API through a \hilite{Model Context Protocol (MCP)
-  server}. An MCP server gives an AI assistant, such as Claude Code, one tool for each request to
-  Alpaca. The server holds the account's key and secret, which work like a user name and a
-  password, and the assistant never sees them.
+  \vspace{0.4em}
+  The assistant reaches the Alpaca API through a \hilite{Model Context Protocol (MCP) server},
+  which gives it one tool for each request. The server holds the account's key and secret. The
+  assistant never sees them.
 \end{frame}
 
-\begin{frame}{Orders and Their Status}
-  A \hilite{market order} fills right away at the best available price, but we do not know that
-  price in advance. A \hilite{limit order} sets the worst price we accept, but it may not fill.
+\begin{frame}{Market and Limit Orders}
+  A \hilite{market order} fills right away, at a price we do not know in advance. A \hilite{limit
+  order} sets the worst price we accept, but it may not fill.
 
-  \vspace{0.3em}
-  Each order also has a \hilite{time in force}. A \texttt{day} order is canceled at market close if it
-  has not filled, and a \texttt{gtc} order stays open until it fills, we cancel it, or Alpaca
-  cancels it after 90 days:
-  \begin{itemize}\setlength{\itemsep}{0.25em}
-    \item \hilite{Open}: an order is \texttt{new} once Alpaca accepts it, and
-      \texttt{partially\_filled} once some of its shares trade.
-    \item \hilite{Done}: an order is \texttt{filled} when all of its shares trade, and
-      \texttt{canceled} when we cancel it or a \texttt{day} order reaches the close.
-    \item \hilite{Rejected}: an order is \texttt{rejected} when it fails a check before it can
-      trade.
-  \end{itemize}
-  An unfilled limit order leaves the method holding fewer shares than it planned.
+  \vspace{0.6em}
+  An unfilled limit order leaves the method with fewer shares than it planned. A trading method
+  checks the status of each order before its next decision.
 \end{frame}
 
-\begin{frame}{Example: Paper Trade the Preference Basket}
+\begin{frame}{Example: Paper Trade a Basket of Stocks}
   \vspace{0.3em}
   {\normalsize\textbf{\ink{Example:}}\par\small
   \href{\repo/alpaca-mcp/README.md}{\dimmed{alpaca-mcp/README.md}}}
 
   \vspace{0.8em}
-  In this example, we connect Claude Code or Codex to an Alpaca paper account through an MCP server. We
-  check the account and the quotes of the preference basket, place some limit orders, and then
-  follow each order until it fills or we cancel it. This example assumes that the market is open
-  and that you have all the credentials to connect to the Alpaca paper account.
+  We connect Claude Code or Codex to an Alpaca paper account through an MCP server. We check the
+  account and the quotes, place limit orders, and follow each order until it fills or we cancel it.
+  The market must be open, and you need the credentials of an Alpaca paper account.
 \end{frame}
 
-% ========== Optional advanced material
-\begin{frame}{Optional Advanced Material}
-  \vspace{0.2em}
-  {\normalsize\textbf{\ink{The daily update of the single index model:}} \dimmed{advanced/ewls/}\par
-  \href{\repo/advanced/ewls/CHEME-5660-L14a-Derivation-EWLS-Update-Fall-2026.ipynb}{\dimmed{CHEME-5660-L14a-Derivation-EWLS-Update-Fall-2026.ipynb}}}
-
-  \vspace{0.3em}
-  We derive the running sums that the exponentially weighted least squares update carries from
-  one day to the next. We solve them for the updated estimates and the residual standard deviation,
-  and show how the 2014 to 2024 fit seeds the sums.
+\begin{frame}{Estimates That Drift}
+  Every estimate we used today was fit once, on the 2014 to 2024 data, and then held fixed. However,
+  a stock's market sensitivity changes over time. By late 2026, \texttt{JPM} moved less with the
+  market than its fixed estimate of 1.11 says:
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L14a-EWLS-JPM.pdf}
+  \end{center}
+  How should a trading method respond when the market sensitivity of a stock drifts?
 \end{frame}
 
 \begin{frame}{Summary}
-  We extended the sector factor model to a general factor model. Then we showed how to update the
-  single index model each trading day, pick the preference basket, and send orders to a paper
-  account.
+  We checked a synthetic market, built a general factor model, and placed paper trades.
 
   \vspace{0.2em}
   {\large\textbf{\ink{Key takeaways}}}
   \begin{itemize}\setlength{\itemsep}{0.2em}
-    \item \hilite{A general factor model}: adds economic factors and the covariance between pairs
-      of sectors to the sector factor model. The Cholesky step lets independent jump hidden Markov
-      models draw correlated factors.
-    \item \hilite{Updating the single index model and the preference weights}: over 2025 and 2026,
-      the market sensitivity of most stocks fell below their fixed estimates. When the market fell,
-      the preference basket favored stocks with a low market sensitivity.
-    \item \hilite{Paper trading}: because a limit order may not fill, we followed each order until it
+    \item \hilite{Checking a synthetic market}: one synthetic path of 375 stocks matched the real
+      sector blocks and market sensitivities. Different sectors were linked only through the market.
+    \item \hilite{A general factor model}: we added economic factors and the covariance between
+      sectors, and used the Cholesky step to draw correlated factors.
+    \item \hilite{Paper trading}: because limit orders may not fill, we followed each order until it
       filled or we canceled it.
   \end{itemize}
   \vspace{0.1em}
-  The preference basket says which stocks to consider. Deciding how many shares of each stock to buy,
-  and when to trade, is the rest of the trading method.
+  Every estimate we used was fixed at the end of 2024, but a stock's market sensitivity can drift.
 \end{frame}
 
 \end{document}
