@@ -212,30 +212,30 @@
     3. Sector loadings & the $T$ days of stock $i$ & $\lVert\symbfit{\varepsilon}_{i}-\mathbf{F}\symbfit{\delta}_{i}\rVert_{2}^{2}$ & $\mathbf{F}^{\top}\mathbf{F}\,\symbfit{\delta}_{i}=\mathbf{F}^{\top}\symbfit{\varepsilon}_{i}$\\
   \end{tabular}
   \end{center}
-  In step 2, $\mathbf{B}^{\top}\mathbf{B}$ is a diagonal matrix with the number of stocks in each
-  sector. Each $f_{s}(t)$ is then the average residual of the stocks in sector $s$.
 \end{frame}
 
 \begin{frame}{Questions About the Algorithms}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
-    \item \hilite{Why the Cholesky step?} The jump hidden Markov models draw independent paths, but
-      the factors are correlated. Step 4 removes the correlation, and the factor draws put it back
-      through $\mathbf{A}$. The multiple-asset GBM model used the same mixing.
-    \item \hilite{What do the columns of $\mathbf{Z}$ represent?} They are uncorrelated, with mean
-      zero and variance one. $\mathbf{z}_{1}$ is the market growth rate, centered and scaled. Each
-      later $\mathbf{z}_{j}$ is the part of column $j$ of $\mathbf{Y}$ that the earlier columns do
-      not explain.
+  \begin{itemize}\setlength{\itemsep}{0.8em}
+    \item \hilite{Why the Cholesky step?} Each jump hidden Markov model draws its own series,
+      independently of the others. Fit directly to the factors, the draws would lose the correlation
+      between factors, such as utilities and real estate. Instead, we fit the models to the
+      uncorrelated columns of $\mathbf{Z}$ and mix the draws back with $\mathbf{A}$, as in the
+      multiple-asset GBM model.
+    \item \hilite{What are the columns of $\mathbf{Z}$?} Each column is the residual of a regression of
+      one factor on the factors before it in $\mathbf{Y}$, scaled to mean zero and variance one. The first
+      column is the market growth rate, scaled. For example, the utilities column holds the moves of the
+      utilities factor that the market, the economic factors, and the earlier sectors do not explain.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Questions About the Algorithms, Continued}
-  \begin{itemize}\setlength{\itemsep}{0.6em}
+  \begin{itemize}\setlength{\itemsep}{0.8em}
     \item \hilite{Why jump hidden Markov models?} Steps 1 to 4 match only the averages, variances,
-      and covariances. A jump hidden Markov model adds fat tails, volatility clustering, and jump
-      episodes.
-    \item \hilite{Why no residual scale?} Previously, the residual scale $\psi_{i}$ sized each
-      stock-specific draw. Here, the least-squares fits leave each residual uncorrelated with every
-      factor. No scale is needed.
+      and covariances of the data. A jump hidden Markov model adds fat tails, volatility clustering,
+      and jump episodes.
+    \item \hilite{Why no residual scale?} Previously, the residual scale $\psi_{i}$ corrected the
+      variance of each stock-specific draw. Here, the least-squares fits leave each stock-specific
+      residual uncorrelated with every factor. The variance needs no correction.
   \end{itemize}
 
   \vspace{0.4em}
