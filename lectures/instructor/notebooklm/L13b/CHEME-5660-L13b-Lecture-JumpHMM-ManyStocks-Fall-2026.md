@@ -73,7 +73,7 @@ ___
 __Explore further:__
 
 * __Jobs and internships:__ AQR's [internships page](https://www.aqr.com/Our-Firm/Greenwich-Internships) describes a 10-week summer program in Greenwich. In November 2026, the [careers site](https://careers.aqr.com/) listed 2027 summer analyst roles in research, engineering, and business development.
-* __Video:__ Watch [About AQR](https://www.youtube.com/embed/946GJrhyZtM) and [Internships at AQR](https://www.youtube.com/embed/Oow2UktGKcY) on the firm's YouTube channel.
+* __Video:__ Watch [About AQR](https://varnerlab.org/watch.html?v=946GJrhyZtM) and [Internships at AQR](https://varnerlab.org/watch.html?v=Oow2UktGKcY) on the firm's YouTube channel.
 
 __Connection to today's lecture:__ The betting-against-beta portfolio ranks stocks by their market sensitivity $\beta_{i}$, which sets the market part of our sector factor model. With a synthetic universe, we could test a betting-against-beta portfolio on many plausible market paths.
 
