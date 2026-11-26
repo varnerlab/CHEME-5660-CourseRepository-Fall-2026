@@ -1,17 +1,16 @@
 # L15a: Testing a Trading Strategy
 
-The lecture updates the estimates of the trading method every trading day. Then it tests strategies from the menu
-with a backtest on the real market and a stress test on synthetic markets with the five gates. The updating section
-moved here from L14a on 2026-11-23.
+The lecture introduces the trading engine and follows one betting-against-beta strategy through a backtest on the
+real market and a stress test on synthetic markets. The stress test applies the five gates.
 
 - [`CHEME-5660-L15a-Lecture-Testing-Trading-Strategies-Fall-2026.ipynb`](CHEME-5660-L15a-Lecture-Testing-Trading-Strategies-Fall-2026.ipynb)
   is the lecture.
 - [`CHEME-5660-L15a-Example-Strategy-Backtest-Fall-2026.ipynb`](CHEME-5660-L15a-Example-Strategy-Backtest-Fall-2026.ipynb)
-  backtests one strategy from the menu on the real market, places it among the saved backtests of the menu, and
-  runs it again with updated estimates.
+  shows one portfolio of long and short positions and backtests it on the real market. The later tasks place it
+  among the saved backtests and run it again with updated estimates.
 - [`CHEME-5660-L15a-Example-Strategy-Stress-Test-Fall-2026.ipynb`](CHEME-5660-L15a-Example-Strategy-Stress-Test-Fall-2026.ipynb)
-  runs one strategy on 200 synthetic markets, tests it with the five gates, and tests it again with the market
-  hedge on.
+  uses the same strategy on 200 synthetic markets and tests it with the five gates. The last task turns on the
+  market hedge.
 - [`CHEME-5660-L15a-Example-Updating-SIM-Gamma-Fall-2026.ipynb`](CHEME-5660-L15a-Example-Updating-SIM-Gamma-Fall-2026.ipynb)
   updates the single index model of every stock with each trading day of 2025 and 2026, and picks the
   preference basket. It uses `src/Helper.jl` (`pick_days`, `gamma_basket`).
@@ -21,7 +20,8 @@ moved here from L14a on 2026-11-23.
   rules by name.
 - [`src/Helper.jl`](src/Helper.jl) holds the helpers of the examples: the pick days, the preference basket, the
   60/40 benchmark, the five gates, and the lookup of saved stress-test runs.
-- [`advanced/`](advanced/) holds the EWLS derivation and the policy-gradient derivation.
+- [`advanced/`](advanced/) holds the trading engine reference, the EWLS derivation, and the policy-gradient
+  derivation.
 - [`data/`](data/) holds the saved results of the menu, the backtests and the stress test, and the practicum's
   data. [`data/SOURCE.md`](data/SOURCE.md) gives the source and the checksum of each copied file.
 - [`scripts/`](scripts/) is for the instructor. `run_strategies.jl` runs every strategy on the real market and on

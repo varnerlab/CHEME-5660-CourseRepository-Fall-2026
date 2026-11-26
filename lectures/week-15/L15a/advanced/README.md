@@ -1,8 +1,10 @@
 # L15a optional advanced material
 
+- [Trading Engine Details](CHEME-5660-L15a-Reference-Trading-Engine-Fall-2026.ipynb) shows how the estimates enter
+  the preference score and the optional market hedge.
 - [`ewls/CHEME-5660-L15a-Derivation-EWLS-Update-Fall-2026.ipynb`](ewls/CHEME-5660-L15a-Derivation-EWLS-Update-Fall-2026.ipynb)
-  is the derivation companion to the lecture's section on updating the single index model. It writes the
-  lecture's EWLS problem as one weighted sum, solves its normal equations for the updated baseline, market
+  derives the daily update of the single index model. It writes the EWLS problem as one weighted sum,
+  solves its normal equations for the updated baseline, market
   sensitivity, and residual standard deviation, updates the weighted sums in those equations from one
   trading day to the next, and shows how the 2016 to 2024 fit sets their starting values. It is a
   derivation notebook with no code. It moved here from L14a on 2026-11-23. It was adapted from the August
