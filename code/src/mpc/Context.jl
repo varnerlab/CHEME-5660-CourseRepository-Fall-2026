@@ -43,7 +43,7 @@ end
     build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySettings;
         fm::Union{Nothing,MyForecastModels}=nothing)::MyStudyContext
 
-Compute G (from SPY closes over the training rows), ξ and g̃ per row, the online SIM path, γ and the
+Compute G (from SPY closes over the training rows), ξ and g̃ per row, the SIM estimates, γ and the
 hedge pool per run row, and the bandit excess-growth matrix. Row s of `γ`/`pool` uses data dated
 ≤ `rows[s]` only. Throws `ArgumentError` when `first(rows) ≤ max(omega_window, downday_lookback)`
 (trading days), or when `calib`'s training window (`train_start`, `train_stop`) differs from `s`'s.
@@ -72,8 +72,14 @@ function build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySetting
     G = xi_gain(md.spy_close[tr]; short = s.xi_short, long = s.xi_long, q = s.xi_quantile)
     ξ = xi_series(md.spy_close; short = s.xi_short, long = s.xi_long, G = G)
     g̃ = gtilde_series(md.spy_close; window = s.gtilde_window)
-    sim = online_sim(md, calib; start = s.start, stop = s.stop,
-        half_life = s.ewls_half_life, prior_weight = s.ewls_prior_weight)
+    if s.estimates == "fixed"
+        rows = i0:searchsortedlast(md.dates, s.stop)
+        sim = _fixed_sim(md, calib, rows)
+    else
+        estimates_start = something(s.estimates_start, s.start)
+        sim = online_sim(md, calib; start = s.start, stop = s.stop, estimates_start,
+            half_life = s.ewls_half_life, prior_weight = s.ewls_prior_weight)
+    end
     rows = sim.rows
     n = length(md.tickers)
     γ = Matrix{Float64}(undef, length(rows), n)

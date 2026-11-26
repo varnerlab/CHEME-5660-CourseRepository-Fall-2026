@@ -7,7 +7,7 @@
 % ========== Updating the single index model
 \begin{frame}{Updating the Single Index Model}
   A stock's market sensitivity changes over time. By late 2026, most stocks in our universe moved
-  less with the market than their 2014 to 2024 estimates say:
+  less with the market than their 2016 to 2024 estimates say:
   \begin{center}
     \includegraphics[width=\textwidth,height=0.53\textheight,keepaspectratio]{../figs/Fig-L15a-EWLS-JPM.pdf}
   \end{center}
@@ -28,11 +28,11 @@
   On day $t$, the updated baseline $\alpha_{i}(t)$ and market sensitivity $\beta_{i}(t)$ of stock
   $i$ solve:
   \begin{equation*}
-    \left(\alpha_{i}(t),\beta_{i}(t)\right)=\arg\min_{\alpha_{i},\,\beta_{i}}\Biggl[\underbrace{\sum_{k=1}^{t}\phi^{\,t-k}\,\bigl(\overbrace{g_{i}(k)-\alpha_{i}-\beta_{i}\,g_{m}(k)}^{\textstyle\text{residual }r_{i}(k)}\bigr)^{2}}_{\textstyle\text{new days}}+\underbrace{\phi^{\,t}\,\frac{N_{0}}{2766}\sum_{k=-2765}^{0}r_{i}(k)^{2}}_{\textstyle\text{prior}}\Biggr]
+    \left(\alpha_{i}(t),\beta_{i}(t)\right)=\arg\min_{\alpha_{i},\,\beta_{i}}\Biggl[\underbrace{\sum_{k=1}^{t}\phi^{\,t-k}\,\bigl(\overbrace{g_{i}(k)-\alpha_{i}-\beta_{i}\,g_{m}(k)}^{\textstyle\text{residual }r_{i}(k)}\bigr)^{2}}_{\textstyle\text{new days}}+\underbrace{\phi^{\,t}\,\frac{N_{0}}{2263}\sum_{k=-2262}^{0}r_{i}(k)^{2}}_{\textstyle\text{prior}}\Biggr]
   \end{equation*}
   where $g_{i}(k)$ and $g_{m}(k)$ are the daily growth rates of stock $i$ and \texttt{SPY} (1/yr).
   Day $0$ is December 31, 2024, the
-  last day of the 2014 to 2024 fit, day $1$ is January 2, 2025, and day $469$ is November 13, 2026,
+  last day of the 2016 to 2024 fit, day $1$ is January 2, 2025, and day $476$ is November 24, 2026,
   the last day of our data.
 
   \vspace{0.6em}
@@ -46,8 +46,8 @@
       $\phi=2^{-1/63}\approx 0.989$ raised to the day's age. On day $3$, January 6, 2025, the
       first sum is $\phi^{2}\,r_{i}(1)^{2}+\phi\,r_{i}(2)^{2}+r_{i}(3)^{2}$. The weight halves every 63
       trading days, about three months.
-    \item \hilite{Prior}: each of the 2,766 days of 2014 to 2024 gets the weight $N_{0}/2766$, with
-      $N_{0}=63$. On day $0$, the prior alone gives the 2014 to 2024 fit. After that, the factor
+    \item \hilite{Prior}: each of the 2,263 days of 2016 to 2024 gets the weight $N_{0}/2263$, with
+      $N_{0}=63$. On day $0$, the prior alone gives the 2016 to 2024 fit. After that, the factor
       $\phi^{\,t}$ shrinks the prior's day $0$ weight.
     \item \hilite{No look-ahead}: day $t$ uses the growth rates through day $t$. The trading
       method decides after the close and trades at the next open. However, this is still a
@@ -174,7 +174,7 @@
 
   \vspace{0.8em}
   In this example, we update the single index model of every stock with each trading day of 2025
-  and 2026, starting from the 2014 to 2024 fit. We pick the preference basket once a month and
+  and 2026, starting from the 2016 to 2024 fit. We pick the preference basket once a month and
   whenever the market turns, and compare it with the basket that the fixed estimates pick.
 
   \vspace{0.8em}
@@ -190,5 +190,5 @@
   \vspace{0.3em}
   We derive the running sums that the exponentially weighted least squares update carries from
   one day to the next. We solve them for the updated estimates and the residual standard deviation,
-  and show how the 2014 to 2024 fit seeds the sums.
+  and show how the 2016 to 2024 fit seeds the sums.
 \end{frame}

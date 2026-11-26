@@ -5,7 +5,7 @@ same(a, b) = all(isequal(getfield(a, f), getfield(b, f)) for f in fieldnames(MyS
 @testset "settings and config file" begin
     s = MyStudySettings()
     @test (s.xi_short, s.xi_long, s.gtilde_window, s.N_per_sector, s.w_max, s.ces_eta, s.pool_H) == (21, 63, 252, 3, 0.10, 0.5, 5)
-    @test isnan(s.lambda) && isnan(s.vol_cap_annual) && s.hedge && s.repick_on_band_exit
+    @test isnan(s.lambda) && isnan(s.vol_cap_annual) && s.hedge
     cfg = load_study(default_study_v1_path())
     @test same(cfg.settings, s)                                        # the v1 file holds the spec defaults
     @test cfg.grid.n_seeds == 30 && cfg.grid.base_seed == 5660
@@ -34,6 +34,35 @@ end
     # the calibration must come from the settings' training window
     @test_throws ArgumentError build_context(md, c, with_settings(s; train_stop=md.dates[799]))
     @test_throws ArgumentError build_context(md, c, with_settings(s; train_start=md.dates[2]))
+end
+
+@testset "fixed fits and carried EWLS estimates" begin
+    md = synthetic_md(ρ=0.3)
+    train_start, train_stop = md.dates[[1, 800]]
+    fit = fit_base_sim(md, train_start, train_stop)
+    c = build(MyCalibration, (base_sim=fit.params, σ_m=fit.σ_m, m_m=fit.m_m, v_m=fit.v_m, λ=0.5,
+        train_start=train_start, train_stop=train_stop))
+    s = build(MyStudySettings, (train_start=train_start, train_stop=train_stop,
+        start=md.dates[801], stop=md.dates[900]))
+    updated = build_context(md, c, s)
+    carried = build_context(md, c, with_settings(s; start=md.dates[851], estimates_start=md.dates[801]))
+    fixed = build_context(md, c, with_settings(s; estimates="fixed"))
+
+    @test carried.rows == 851:900
+    for field in (:α, :β, :σ_ε, :σ_m)
+        @test getproperty(carried.sim, field) == selectdim(getproperty(updated.sim, field), 1, 51:100)
+    end
+    @test carried.γ == updated.γ[51:end, :]
+    @test carried.pool == updated.pool[51:end]
+    for (j, ticker) in enumerate(md.tickers)
+        params = c.base_sim[ticker]
+        @test all(==(params.α), fixed.sim.α[:, j])
+        @test all(==(params.β), fixed.sim.β[:, j])
+        @test all(==(params.σ_ε), fixed.sim.σ_ε[:, j])
+    end
+    @test all(==(c.σ_m), fixed.sim.σ_m)
+    @test context_key(fixed.settings) != context_key(updated.settings)
+    @test_throws ArgumentError with_settings(s; estimates_start=train_stop)
 end
 
 @testset "addendum settings and grid" begin
@@ -66,7 +95,6 @@ end
     @test s.market_turn == false
     @test s.beta_over_cap == Inf
     @test s.spy_short == false
-    @test s.repick_on_market_turn == false
     @test s.beta_min == 0.0
 
     # the loader reads each new key from its table (keys equal field names)
@@ -76,7 +104,6 @@ end
     text = replace(text, "market_turn = false" => "market_turn = true")
     text = replace(text, "beta_over_cap = inf" => "beta_over_cap = 0.1")
     text = replace(text, "spy_short = false" => "spy_short = true")
-    text = replace(text, "repick_on_market_turn = false" => "repick_on_market_turn = true")
     text = replace(text, "beta_min = 0.0" => "beta_min = -0.5")
     path = joinpath(mktempdir(), "v2.toml")
     write(path, text)
@@ -86,10 +113,9 @@ end
     @test v2.market_turn == true
     @test v2.beta_over_cap == 0.1
     @test v2.spy_short == true
-    @test v2.repick_on_market_turn == true
     @test v2.beta_min == -0.5
 
-    # config/study.toml is the v1 file with the seven v2 switches on, and the two files share one grid
+    # The two configurations share one grid.
     v1_file = load_study(default_study_v1_path())
     v2_file = load_study(default_study_path())
     @test same(v2_file.settings, v2)

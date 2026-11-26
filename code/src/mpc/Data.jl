@@ -127,7 +127,12 @@ function _risk_free(dir::String, dates::Vector{Date})::Vector{Float64}
         @warn "DTB3.csv not found; using constant risk-free rate $(DEFAULT_G_F) yr⁻¹"
         return fill(DEFAULT_G_F, length(dates))
     end
-    df = CSV.read(path, DataFrame; missingstring=[".", "", "NA"])
+    return _dtb3_growth_rates(path, dates)
+end
+
+# Use the same rate conversion and publication lag for both course and practicum DTB3 files.
+function _dtb3_growth_rates(path::AbstractString, dates::Vector{Date})::Vector{Float64}
+    df = CSV.read(path, DataFrame; comment="#", missingstring=[".", "", "NA"])
     obs = Date.(df[!, 1])
     rate = df[!, 2]
     ok = findall(!ismissing, rate)
@@ -136,7 +141,7 @@ function _risk_free(dir::String, dates::Vector{Date})::Vector{Float64}
     g_f = Vector{Float64}(undef, length(dates))
     for (k, t) in enumerate(dates)
         i = searchsortedlast(obs, t - Day(1))
-        i == 0 && throw(ArgumentError("$(DTB3_FILE) has no observation before $(t)"))
+        i == 0 && throw(ArgumentError("$(basename(path)) has no observation before $(t)"))
         g_f[k] = -log(1 - d[i] * D / 360) * 365 / D
     end
     return g_f

@@ -40,9 +40,6 @@ forecast_band = "quantile" # forecast band: "sigma" (v1, mean +/- z sd) or "quan
 
 [screens]
 N_per_sector = 3          # names picked per sector (count)
-repick_interval = 21      # days between re-picks (trading days)
-repick_on_band_exit = true  # re-pick when the band is exited (flag)
-repick_on_market_turn = true   # v2: re-pick when the market-turn condition holds (flag)
 bandit_lookback = 252     # bandit training lookback (trading days)
 bandit_horizon = 21       # reward window (trading days)
 bandit_eps_floor = 0.05   # exploration floor (probability)

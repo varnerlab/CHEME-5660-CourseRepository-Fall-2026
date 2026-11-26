@@ -1,0 +1,518 @@
+# The universe: the current S&P 500 with at least 504 trading days of prices before 2025-01-01, plus 16 ETFs.
+# Pull end date: 2026-11-24 (last trading day of the data). Pulled 2026-11-25.
+# Prices: Alpaca daily bars, feed sip, adjustment all (total return). META carries the history of FB. BRK.B and BF.B use the Alpaca dotted symbols.
+# APTV starts on 2017-12-05: spin-off of Delphi Technologies. The closes before that day are removed.
+# EQT starts on 2018-11-13: spin-off of Equitrans Midstream. The closes before that day are removed.
+# EXE starts on 2021-02-10: the old Chesapeake stock was cancelled in bankruptcy and the new stock listed. The closes before that day are removed.
+# RTX starts on 2020-04-03: Raytheon merger with United Technologies and the Carrier and Otis spin-offs. The closes before that day are removed.
+# SW starts on 2016-05-16: the adjusted series of the predecessor stock is scaled wrongly before this day. The closes before that day are removed.
+# BK in the S&P 500 list is BNY on Alpaca (the Bank of New York Mellon ticker change); the table uses BNY.
+# shortable and easy_to_borrow are the Alpaca asset flags on the pull date. filled_days counts the days a halt repeated the previous close.
+ticker,kind,sector,first_date,shortable,easy_to_borrow,filled_days
+SPY,etf,ETF,2016-01-04,true,true,0
+QQQ,etf,ETF,2016-01-04,true,true,0
+IWM,etf,ETF,2016-01-04,true,true,0
+XLB,etf,ETF,2016-01-04,true,true,0
+XLC,etf,ETF,2018-06-19,true,true,0
+XLE,etf,ETF,2016-01-04,true,true,0
+XLF,etf,ETF,2016-01-04,true,true,0
+XLI,etf,ETF,2016-01-04,true,true,0
+XLK,etf,ETF,2016-01-04,true,true,0
+XLP,etf,ETF,2016-01-04,true,true,0
+XLRE,etf,ETF,2016-01-04,true,true,0
+XLU,etf,ETF,2016-01-04,true,true,0
+XLV,etf,ETF,2016-01-04,true,true,0
+XLY,etf,ETF,2016-01-04,true,true,0
+TLT,etf,ETF,2016-01-04,true,true,0
+SGOV,etf,ETF,2020-05-28,true,true,0
+MMM,stock,Industrials,2016-01-04,true,true,0
+AOS,stock,Industrials,2016-01-04,true,true,0
+ABT,stock,Health Care,2016-01-04,true,true,0
+ABBV,stock,Health Care,2016-01-04,true,true,0
+ACN,stock,Information Technology,2016-01-04,true,true,0
+ADBE,stock,Information Technology,2016-01-04,true,true,0
+AMD,stock,Information Technology,2016-01-04,true,true,0
+AES,stock,Utilities,2016-01-04,true,true,0
+AFL,stock,Financials,2016-01-04,true,true,0
+A,stock,Health Care,2016-01-04,true,true,0
+APD,stock,Materials,2016-01-04,true,true,0
+ABNB,stock,Consumer Discretionary,2020-12-10,true,true,0
+AKAM,stock,Information Technology,2016-01-04,true,true,0
+ALB,stock,Materials,2016-01-04,true,true,0
+ARE,stock,Real Estate,2016-01-04,true,true,0
+ALGN,stock,Health Care,2016-01-04,true,true,0
+ALLE,stock,Industrials,2016-01-04,true,true,0
+LNT,stock,Utilities,2016-01-04,true,true,0
+ALL,stock,Financials,2016-01-04,true,true,0
+GOOGL,stock,Communication Services,2016-01-04,true,true,0
+GOOG,stock,Communication Services,2016-01-04,true,true,0
+MO,stock,Consumer Staples,2016-01-04,true,true,0
+AMZN,stock,Consumer Discretionary,2016-01-04,true,true,0
+AMCR,stock,Materials,2019-06-11,true,true,0
+AEE,stock,Utilities,2016-01-04,true,true,0
+AEP,stock,Utilities,2016-01-04,true,true,0
+AXP,stock,Financials,2016-01-04,true,true,0
+AIG,stock,Financials,2016-01-04,true,true,0
+AMT,stock,Real Estate,2016-01-04,true,true,0
+AWK,stock,Utilities,2016-01-04,true,true,0
+AMP,stock,Financials,2016-01-04,true,true,0
+AME,stock,Industrials,2016-01-04,true,true,0
+AMGN,stock,Health Care,2016-01-04,true,true,0
+APH,stock,Information Technology,2016-01-04,true,true,0
+ADI,stock,Information Technology,2016-01-04,true,true,0
+AON,stock,Financials,2016-01-04,true,true,0
+APA,stock,Energy,2016-01-04,true,true,0
+APO,stock,Financials,2016-01-04,true,true,0
+AAPL,stock,Information Technology,2016-01-04,true,true,0
+AMAT,stock,Information Technology,2016-01-04,true,true,0
+APP,stock,Information Technology,2021-04-15,true,true,0
+APTV,stock,Consumer Discretionary,2017-12-05,true,true,0
+ACGL,stock,Financials,2016-01-04,true,true,0
+ADM,stock,Consumer Staples,2016-01-04,true,true,0
+ARES,stock,Financials,2016-01-04,true,true,0
+ANET,stock,Information Technology,2016-01-04,true,true,0
+AJG,stock,Financials,2016-01-04,true,true,0
+AIZ,stock,Financials,2016-01-04,true,true,0
+T,stock,Communication Services,2016-01-04,true,true,0
+ATO,stock,Utilities,2016-01-04,true,true,0
+ADSK,stock,Information Technology,2016-01-04,true,true,0
+ADP,stock,Industrials,2016-01-04,true,true,0
+AZO,stock,Consumer Discretionary,2016-01-04,true,true,0
+AVY,stock,Materials,2016-01-04,true,true,0
+AXON,stock,Industrials,2016-01-04,true,true,0
+BKR,stock,Energy,2017-07-05,true,true,0
+BALL,stock,Materials,2016-01-04,true,true,0
+BAC,stock,Financials,2016-01-04,true,true,0
+BAX,stock,Health Care,2016-01-04,true,true,0
+BDX,stock,Health Care,2016-01-04,true,true,0
+BRK.B,stock,Financials,2016-01-04,true,true,0
+BBY,stock,Consumer Discretionary,2016-01-04,true,true,0
+TECH,stock,Health Care,2016-01-04,true,true,0
+BIIB,stock,Health Care,2016-01-04,true,true,0
+BLK,stock,Financials,2016-01-04,true,true,0
+BX,stock,Financials,2016-01-04,true,true,0
+XYZ,stock,Financials,2016-01-04,true,true,0
+BNY,stock,Financials,2016-01-04,true,true,0
+BA,stock,Industrials,2016-01-04,true,true,0
+BKNG,stock,Consumer Discretionary,2016-01-04,true,true,0
+BSX,stock,Health Care,2016-01-04,true,true,0
+BMY,stock,Health Care,2016-01-04,true,true,0
+AVGO,stock,Information Technology,2016-01-04,true,true,0
+BR,stock,Industrials,2016-01-04,true,true,0
+BRO,stock,Financials,2016-01-04,true,true,0
+BF.B,stock,Consumer Staples,2016-01-04,true,true,0
+BLDR,stock,Industrials,2016-01-04,true,true,0
+BG,stock,Consumer Staples,2016-01-04,true,true,0
+BXP,stock,Real Estate,2016-01-04,true,true,0
+CHRW,stock,Industrials,2016-01-04,true,true,0
+CDNS,stock,Information Technology,2016-01-04,true,true,0
+CPT,stock,Real Estate,2016-01-04,true,true,0
+CPB,stock,Consumer Staples,2016-01-04,true,true,0
+COF,stock,Financials,2016-01-04,true,true,0
+CAH,stock,Health Care,2016-01-04,true,true,0
+CCL,stock,Consumer Discretionary,2016-01-04,true,true,0
+CARR,stock,Industrials,2020-04-03,true,true,0
+CVNA,stock,Consumer Discretionary,2017-04-28,true,true,0
+CASY,stock,Consumer Staples,2016-01-04,true,true,0
+CAT,stock,Industrials,2016-01-04,true,true,0
+CBOE,stock,Financials,2016-01-04,true,true,0
+CBRE,stock,Real Estate,2016-01-04,true,true,0
+CDW,stock,Information Technology,2016-01-04,true,true,0
+COR,stock,Health Care,2016-01-04,true,true,0
+CNC,stock,Health Care,2016-01-04,true,true,0
+CNP,stock,Utilities,2016-01-04,true,true,0
+CF,stock,Materials,2016-01-04,true,true,0
+CRL,stock,Health Care,2016-01-04,true,true,0
+SCHW,stock,Financials,2016-01-04,true,true,0
+CHTR,stock,Communication Services,2016-01-04,true,true,0
+CVX,stock,Energy,2016-01-04,true,true,0
+CMG,stock,Consumer Discretionary,2016-01-04,true,true,0
+CB,stock,Financials,2016-01-04,true,true,0
+CHD,stock,Consumer Staples,2016-01-04,true,true,0
+CIEN,stock,Information Technology,2016-01-04,true,true,0
+CI,stock,Health Care,2016-01-04,true,true,0
+CINF,stock,Financials,2016-01-04,true,true,0
+CTAS,stock,Industrials,2016-01-04,true,true,0
+CSCO,stock,Information Technology,2016-01-04,true,true,0
+C,stock,Financials,2016-01-04,true,true,0
+CFG,stock,Financials,2016-01-04,true,true,0
+CLX,stock,Consumer Staples,2016-01-04,true,true,0
+CME,stock,Financials,2016-01-04,true,true,0
+CMS,stock,Utilities,2016-01-04,true,true,0
+KO,stock,Consumer Staples,2016-01-04,true,true,0
+CTSH,stock,Information Technology,2016-01-04,true,true,0
+COHR,stock,Information Technology,2016-01-04,true,true,0
+COIN,stock,Financials,2021-04-14,true,true,0
+CL,stock,Consumer Staples,2016-01-04,true,true,0
+CMCSA,stock,Communication Services,2016-01-04,true,true,0
+FIX,stock,Industrials,2016-01-04,true,true,0
+CAG,stock,Consumer Staples,2016-01-04,true,true,0
+COP,stock,Energy,2016-01-04,true,true,0
+ED,stock,Utilities,2016-01-04,true,true,0
+STZ,stock,Consumer Staples,2016-01-04,true,true,0
+CEG,stock,Utilities,2022-02-02,true,true,0
+COO,stock,Health Care,2016-01-04,true,true,0
+CPRT,stock,Industrials,2016-01-04,true,true,0
+GLW,stock,Information Technology,2016-01-04,true,true,0
+CPAY,stock,Financials,2016-01-04,true,true,0
+CTVA,stock,Materials,2019-06-03,true,true,0
+CSGP,stock,Real Estate,2016-01-04,true,true,0
+COST,stock,Consumer Staples,2016-01-04,true,true,0
+CRH,stock,Materials,2016-01-04,true,true,0
+CRWD,stock,Information Technology,2019-06-12,true,true,0
+CCI,stock,Real Estate,2016-01-04,true,true,0
+CSX,stock,Industrials,2016-01-04,true,true,0
+CMI,stock,Industrials,2016-01-04,true,true,0
+CVS,stock,Health Care,2016-01-04,true,true,0
+DHR,stock,Health Care,2016-01-04,true,true,0
+DRI,stock,Consumer Discretionary,2016-01-04,true,true,0
+DDOG,stock,Information Technology,2019-09-19,true,true,0
+DVA,stock,Health Care,2016-01-04,true,true,0
+DECK,stock,Consumer Discretionary,2016-01-04,true,true,0
+DE,stock,Industrials,2016-01-04,true,true,0
+DELL,stock,Information Technology,2018-12-28,true,true,0
+DAL,stock,Industrials,2016-01-04,true,true,0
+DVN,stock,Energy,2016-01-04,true,true,0
+DXCM,stock,Health Care,2016-01-04,true,true,0
+FANG,stock,Energy,2016-01-04,true,true,0
+DLR,stock,Real Estate,2016-01-04,true,true,0
+DG,stock,Consumer Staples,2016-01-04,true,true,0
+DLTR,stock,Consumer Staples,2016-01-04,true,true,0
+D,stock,Utilities,2016-01-04,true,true,0
+DPZ,stock,Consumer Discretionary,2016-01-04,true,true,0
+DASH,stock,Consumer Discretionary,2020-12-09,true,true,0
+DOV,stock,Industrials,2016-01-04,true,true,0
+DOW,stock,Materials,2016-01-04,true,true,0
+DHI,stock,Consumer Discretionary,2016-01-04,true,true,0
+DTE,stock,Utilities,2016-01-04,true,true,0
+DUK,stock,Utilities,2016-01-04,true,true,0
+DD,stock,Materials,2016-01-04,true,true,0
+ETN,stock,Industrials,2016-01-04,true,true,0
+EBAY,stock,Consumer Discretionary,2016-01-04,true,true,0
+ECL,stock,Materials,2016-01-04,true,true,0
+EIX,stock,Utilities,2016-01-04,true,true,0
+EW,stock,Health Care,2016-01-04,true,true,0
+ELV,stock,Health Care,2016-01-04,true,true,0
+EME,stock,Industrials,2016-01-04,true,true,0
+EMR,stock,Industrials,2016-01-04,true,true,0
+ETR,stock,Utilities,2016-01-04,true,true,0
+EOG,stock,Energy,2016-01-04,true,true,0
+EPAM,stock,Information Technology,2016-01-04,true,true,0
+EQT,stock,Energy,2018-11-13,true,true,0
+EFX,stock,Industrials,2016-01-04,true,true,0
+EQIX,stock,Real Estate,2016-01-04,true,true,0
+ERIE,stock,Financials,2016-01-04,true,true,0
+ESS,stock,Real Estate,2016-01-04,true,true,0
+EL,stock,Consumer Staples,2016-01-04,true,true,0
+EG,stock,Financials,2016-01-04,true,true,0
+EVRG,stock,Utilities,2018-06-05,true,true,0
+ES,stock,Utilities,2016-01-04,true,true,0
+EXC,stock,Utilities,2016-01-04,true,true,0
+EXE,stock,Energy,2021-02-10,true,true,0
+EXPE,stock,Consumer Discretionary,2016-01-04,true,true,0
+EXPD,stock,Industrials,2016-01-04,true,true,0
+EXR,stock,Real Estate,2016-01-04,true,true,0
+XOM,stock,Energy,2016-01-04,true,true,0
+FFIV,stock,Information Technology,2016-01-04,true,true,0
+FDS,stock,Financials,2016-01-04,true,true,0
+FICO,stock,Information Technology,2016-01-04,true,true,0
+FAST,stock,Industrials,2016-01-04,true,true,0
+FRT,stock,Real Estate,2016-01-04,true,true,0
+FDX,stock,Industrials,2016-01-04,true,true,0
+FIS,stock,Financials,2016-01-04,true,true,0
+FITB,stock,Financials,2016-01-04,true,true,0
+FSLR,stock,Information Technology,2016-01-04,true,true,0
+FE,stock,Utilities,2016-01-04,true,true,0
+FISV,stock,Financials,2016-01-04,true,true,0
+F,stock,Consumer Discretionary,2016-01-04,true,true,0
+FTNT,stock,Information Technology,2016-01-04,true,true,0
+FTV,stock,Industrials,2016-07-05,true,true,0
+FOXA,stock,Communication Services,2016-01-04,true,true,0
+FOX,stock,Communication Services,2016-01-04,true,true,0
+BEN,stock,Financials,2016-01-04,true,true,0
+FCX,stock,Materials,2016-01-04,true,true,0
+GRMN,stock,Consumer Discretionary,2016-01-04,true,true,0
+IT,stock,Information Technology,2016-01-04,true,true,0
+GE,stock,Industrials,2016-01-04,true,true,0
+GEHC,stock,Health Care,2022-12-15,true,true,0
+GEN,stock,Information Technology,2016-01-04,true,true,0
+GNRC,stock,Industrials,2016-01-04,true,true,0
+GD,stock,Industrials,2016-01-04,true,true,0
+GIS,stock,Consumer Staples,2016-01-04,true,true,0
+GM,stock,Consumer Discretionary,2016-01-04,true,true,0
+GPC,stock,Consumer Discretionary,2016-01-04,true,true,0
+GILD,stock,Health Care,2016-01-04,true,true,0
+GPN,stock,Financials,2016-01-04,true,true,0
+GL,stock,Financials,2016-01-04,true,true,0
+GDDY,stock,Information Technology,2016-01-04,true,true,0
+GS,stock,Financials,2016-01-04,true,true,0
+HAL,stock,Energy,2016-01-04,true,true,0
+HIG,stock,Financials,2016-01-04,true,true,0
+HAS,stock,Consumer Discretionary,2016-01-04,true,true,0
+HCA,stock,Health Care,2016-01-04,true,true,0
+DOC,stock,Real Estate,2016-01-04,true,true,0
+HSIC,stock,Health Care,2016-01-04,true,true,0
+HSY,stock,Consumer Staples,2016-01-04,true,true,0
+HPE,stock,Information Technology,2016-01-04,true,true,0
+HLT,stock,Consumer Discretionary,2016-01-04,true,true,0
+HD,stock,Consumer Discretionary,2016-01-04,true,true,0
+HON,stock,Industrials,2016-01-04,true,true,0
+HRL,stock,Consumer Staples,2016-01-04,true,true,0
+HST,stock,Real Estate,2016-01-04,true,true,0
+HWM,stock,Industrials,2020-04-01,true,true,0
+HPQ,stock,Information Technology,2016-01-04,true,true,0
+HUBB,stock,Industrials,2016-01-04,true,true,0
+HUM,stock,Health Care,2016-01-04,true,true,0
+HBAN,stock,Financials,2016-01-04,true,true,0
+HII,stock,Industrials,2016-01-04,true,true,0
+IBM,stock,Information Technology,2016-01-04,true,true,0
+IEX,stock,Industrials,2016-01-04,true,true,0
+IDXX,stock,Health Care,2016-01-04,true,true,0
+ITW,stock,Industrials,2016-01-04,true,true,0
+INCY,stock,Health Care,2016-01-04,true,true,0
+IR,stock,Industrials,2017-05-12,true,true,0
+PODD,stock,Health Care,2016-01-04,true,true,0
+INTC,stock,Information Technology,2016-01-04,true,true,0
+IBKR,stock,Financials,2016-01-04,true,true,0
+ICE,stock,Financials,2016-01-04,true,true,0
+IFF,stock,Materials,2016-01-04,true,true,0
+IP,stock,Materials,2016-01-04,true,true,0
+INTU,stock,Information Technology,2016-01-04,true,true,0
+ISRG,stock,Health Care,2016-01-04,true,true,0
+IVZ,stock,Financials,2016-01-04,true,true,0
+INVH,stock,Real Estate,2017-02-01,true,true,0
+IQV,stock,Health Care,2016-01-04,true,true,0
+IRM,stock,Real Estate,2016-01-04,true,true,0
+JBHT,stock,Industrials,2016-01-04,true,true,0
+JBL,stock,Information Technology,2016-01-04,true,true,0
+JKHY,stock,Financials,2016-01-04,true,true,0
+J,stock,Industrials,2016-01-04,true,true,0
+JNJ,stock,Health Care,2016-01-04,true,true,0
+JCI,stock,Industrials,2016-01-04,true,true,0
+JPM,stock,Financials,2016-01-04,true,true,0
+KDP,stock,Consumer Staples,2016-01-04,true,true,0
+KEY,stock,Financials,2016-01-04,true,true,0
+KEYS,stock,Information Technology,2016-01-04,true,true,0
+KMB,stock,Consumer Staples,2016-01-04,true,true,0
+KIM,stock,Real Estate,2016-01-04,true,true,0
+KMI,stock,Energy,2016-01-04,true,true,0
+KKR,stock,Financials,2016-01-04,true,true,0
+KLAC,stock,Information Technology,2016-01-04,true,true,0
+KHC,stock,Consumer Staples,2016-01-04,true,true,0
+KR,stock,Consumer Staples,2016-01-04,true,true,0
+LHX,stock,Industrials,2016-01-04,true,true,0
+LH,stock,Health Care,2016-01-04,true,true,0
+LRCX,stock,Information Technology,2016-01-04,true,true,0
+LVS,stock,Consumer Discretionary,2016-01-04,true,true,0
+LDOS,stock,Industrials,2016-01-04,true,true,0
+LEN,stock,Consumer Discretionary,2016-01-04,true,true,0
+LII,stock,Industrials,2016-01-04,true,true,0
+LLY,stock,Health Care,2016-01-04,true,true,0
+LIN,stock,Materials,2018-10-31,true,true,0
+LYV,stock,Communication Services,2016-01-04,true,true,0
+LMT,stock,Industrials,2016-01-04,true,true,0
+L,stock,Financials,2016-01-04,true,true,0
+LOW,stock,Consumer Discretionary,2016-01-04,true,true,0
+LULU,stock,Consumer Discretionary,2016-01-04,true,true,0
+LITE,stock,Information Technology,2016-01-04,true,true,0
+LYB,stock,Materials,2016-01-04,true,true,0
+MTB,stock,Financials,2016-01-04,true,true,0
+MPC,stock,Energy,2016-01-04,true,true,0
+MAR,stock,Consumer Discretionary,2016-01-04,true,true,0
+MRSH,stock,Financials,2016-01-04,true,true,0
+MLM,stock,Materials,2016-01-04,true,true,0
+MAS,stock,Industrials,2016-01-04,true,true,0
+MA,stock,Financials,2016-01-04,true,true,0
+MKC,stock,Consumer Staples,2016-01-04,true,true,0
+MCD,stock,Consumer Discretionary,2016-01-04,true,true,0
+MCK,stock,Health Care,2016-01-04,true,true,0
+MDT,stock,Health Care,2016-01-04,true,true,0
+MRK,stock,Health Care,2016-01-04,true,true,0
+META,stock,Communication Services,2016-01-04,true,true,0
+MET,stock,Financials,2016-01-04,true,true,0
+MTD,stock,Health Care,2016-01-04,true,true,0
+MGM,stock,Consumer Discretionary,2016-01-04,true,true,0
+MCHP,stock,Information Technology,2016-01-04,true,true,0
+MU,stock,Information Technology,2016-01-04,true,true,0
+MSFT,stock,Information Technology,2016-01-04,true,true,0
+MAA,stock,Real Estate,2016-01-04,true,true,0
+MRNA,stock,Health Care,2018-12-07,true,true,0
+TAP,stock,Consumer Staples,2016-01-04,true,true,0
+MDLZ,stock,Consumer Staples,2016-01-04,true,true,0
+MPWR,stock,Information Technology,2016-01-04,true,true,0
+MNST,stock,Consumer Staples,2016-01-04,true,true,0
+MCO,stock,Financials,2016-01-04,true,true,0
+MS,stock,Financials,2016-01-04,true,true,0
+MOS,stock,Materials,2016-01-04,true,true,0
+MSI,stock,Information Technology,2016-01-04,true,true,0
+MSCI,stock,Financials,2016-01-04,true,true,0
+NDAQ,stock,Financials,2016-01-04,true,true,0
+NTAP,stock,Information Technology,2016-01-04,true,true,0
+NFLX,stock,Communication Services,2016-01-04,true,true,0
+NEM,stock,Materials,2016-01-04,true,true,0
+NWSA,stock,Communication Services,2016-01-04,true,true,0
+NWS,stock,Communication Services,2016-01-04,true,true,0
+NEE,stock,Utilities,2016-01-04,true,true,0
+NKE,stock,Consumer Discretionary,2016-01-04,true,true,0
+NI,stock,Utilities,2016-01-04,true,true,0
+NDSN,stock,Industrials,2016-01-04,true,true,0
+NSC,stock,Industrials,2016-01-04,true,true,0
+NTRS,stock,Financials,2016-01-04,true,true,0
+NOC,stock,Industrials,2016-01-04,true,true,0
+NCLH,stock,Consumer Discretionary,2016-01-04,true,true,0
+NRG,stock,Utilities,2016-01-04,true,true,0
+NUE,stock,Materials,2016-01-04,true,true,0
+NVDA,stock,Information Technology,2016-01-04,true,true,0
+NVR,stock,Consumer Discretionary,2016-01-04,true,true,0
+NXPI,stock,Information Technology,2016-01-04,true,true,0
+ORLY,stock,Consumer Discretionary,2016-01-04,true,true,0
+OXY,stock,Energy,2016-01-04,true,true,0
+ODFL,stock,Industrials,2016-01-04,true,true,0
+OMC,stock,Communication Services,2016-01-04,true,true,0
+ON,stock,Information Technology,2016-01-04,true,true,0
+OKE,stock,Energy,2016-01-04,true,true,0
+ORCL,stock,Information Technology,2016-01-04,true,true,0
+OTIS,stock,Industrials,2020-04-03,true,true,0
+PCAR,stock,Industrials,2016-01-04,true,true,0
+PKG,stock,Materials,2016-01-04,true,true,0
+PLTR,stock,Information Technology,2020-09-30,true,true,0
+PANW,stock,Information Technology,2016-01-04,true,true,0
+PH,stock,Industrials,2016-01-04,true,true,0
+PAYX,stock,Industrials,2016-01-04,true,true,0
+PYPL,stock,Financials,2016-01-04,true,true,0
+PNR,stock,Industrials,2016-01-04,true,true,0
+PEP,stock,Consumer Staples,2016-01-04,true,true,0
+PFE,stock,Health Care,2016-01-04,true,true,0
+PCG,stock,Utilities,2016-01-04,true,true,0
+PM,stock,Consumer Staples,2016-01-04,true,true,0
+PSX,stock,Energy,2016-01-04,true,true,0
+PNW,stock,Utilities,2016-01-04,true,true,0
+PNC,stock,Financials,2016-01-04,true,true,0
+POOL,stock,Consumer Discretionary,2016-01-04,true,true,0
+PPG,stock,Materials,2016-01-04,true,true,0
+PPL,stock,Utilities,2016-01-04,true,true,0
+PFG,stock,Financials,2016-01-04,true,true,0
+PG,stock,Consumer Staples,2016-01-04,true,true,0
+PGR,stock,Financials,2016-01-04,true,true,0
+PLD,stock,Real Estate,2016-01-04,true,true,0
+PRU,stock,Financials,2016-01-04,true,true,0
+PEG,stock,Utilities,2016-01-04,true,true,0
+PTC,stock,Information Technology,2016-01-04,true,true,0
+PSA,stock,Real Estate,2016-01-04,true,true,0
+PHM,stock,Consumer Discretionary,2016-01-04,true,true,0
+PWR,stock,Industrials,2016-01-04,true,true,0
+QCOM,stock,Information Technology,2016-01-04,true,true,0
+DGX,stock,Health Care,2016-01-04,true,true,0
+RL,stock,Consumer Discretionary,2016-01-04,true,true,0
+RJF,stock,Financials,2016-01-04,true,true,0
+RTX,stock,Industrials,2020-04-03,true,true,0
+O,stock,Real Estate,2016-01-04,true,true,0
+REG,stock,Real Estate,2016-01-04,true,true,0
+REGN,stock,Health Care,2016-01-04,true,true,0
+RF,stock,Financials,2016-01-04,true,true,0
+RSG,stock,Industrials,2016-01-04,true,true,0
+RMD,stock,Health Care,2016-01-04,true,true,0
+RVTY,stock,Health Care,2016-01-04,true,true,0
+HOOD,stock,Financials,2021-07-29,true,true,0
+ROK,stock,Industrials,2016-01-04,true,true,0
+ROL,stock,Industrials,2016-01-04,true,true,0
+ROP,stock,Information Technology,2016-01-04,true,true,0
+ROST,stock,Consumer Discretionary,2016-01-04,true,true,0
+RCL,stock,Consumer Discretionary,2016-01-04,true,true,0
+SPGI,stock,Financials,2016-01-04,true,true,0
+CRM,stock,Information Technology,2016-01-04,true,true,0
+SBAC,stock,Real Estate,2016-01-04,true,true,0
+SLB,stock,Energy,2016-01-04,true,true,0
+STX,stock,Information Technology,2016-01-04,true,true,0
+SRE,stock,Utilities,2016-01-04,true,true,0
+NOW,stock,Information Technology,2016-01-04,true,true,0
+SHW,stock,Materials,2016-01-04,true,true,0
+SPG,stock,Real Estate,2016-01-04,true,true,0
+SWKS,stock,Information Technology,2016-01-04,true,true,0
+SJM,stock,Consumer Staples,2016-01-04,true,true,0
+SW,stock,Materials,2016-05-16,true,true,0
+SNA,stock,Industrials,2016-01-04,true,true,0
+SO,stock,Utilities,2016-01-04,true,true,0
+LUV,stock,Industrials,2016-01-04,true,true,0
+SWK,stock,Industrials,2016-01-04,true,true,0
+SBUX,stock,Consumer Discretionary,2016-01-04,true,true,0
+STT,stock,Financials,2016-01-04,true,true,0
+STLD,stock,Materials,2016-01-04,true,true,0
+STE,stock,Health Care,2016-01-04,true,true,0
+SYK,stock,Health Care,2016-01-04,true,true,0
+SMCI,stock,Information Technology,2016-01-04,true,true,0
+SYF,stock,Financials,2016-01-04,true,true,0
+SNPS,stock,Information Technology,2016-01-04,true,true,0
+SYY,stock,Consumer Staples,2016-01-04,true,true,0
+TMUS,stock,Communication Services,2016-01-04,true,true,0
+TROW,stock,Financials,2016-01-04,true,true,0
+TTWO,stock,Communication Services,2016-01-04,true,true,0
+TPR,stock,Consumer Discretionary,2016-01-04,true,true,0
+TRGP,stock,Energy,2016-01-04,true,true,0
+TGT,stock,Consumer Staples,2016-01-04,true,true,0
+TEL,stock,Information Technology,2016-01-04,true,true,0
+TDY,stock,Information Technology,2016-01-04,true,true,0
+TER,stock,Information Technology,2016-01-04,true,true,0
+TSLA,stock,Consumer Discretionary,2016-01-04,true,true,0
+TXN,stock,Information Technology,2016-01-04,true,true,0
+TPL,stock,Energy,2016-01-04,true,true,0
+TXT,stock,Industrials,2016-01-04,true,true,0
+TMO,stock,Health Care,2016-01-04,true,true,0
+TJX,stock,Consumer Discretionary,2016-01-04,true,true,0
+TKO,stock,Communication Services,2016-01-04,true,true,0
+TTD,stock,Communication Services,2016-09-21,true,true,0
+TSCO,stock,Consumer Discretionary,2016-01-04,true,true,0
+TT,stock,Industrials,2016-01-04,true,true,0
+TDG,stock,Industrials,2016-01-04,true,true,0
+TRV,stock,Financials,2016-01-04,true,true,0
+TRMB,stock,Information Technology,2016-01-04,true,true,0
+TFC,stock,Financials,2016-01-04,true,true,0
+TYL,stock,Information Technology,2016-01-04,true,true,0
+TSN,stock,Consumer Staples,2016-01-04,true,true,0
+USB,stock,Financials,2016-01-04,true,true,0
+UBER,stock,Industrials,2019-05-10,true,true,0
+UDR,stock,Real Estate,2016-01-04,true,true,0
+ULTA,stock,Consumer Discretionary,2016-01-04,true,true,0
+UNP,stock,Industrials,2016-01-04,true,true,0
+UAL,stock,Industrials,2016-01-04,true,true,0
+UPS,stock,Industrials,2016-01-04,true,true,0
+URI,stock,Industrials,2016-01-04,true,true,0
+UNH,stock,Health Care,2016-01-04,true,true,0
+UHS,stock,Health Care,2016-01-04,true,true,0
+VLO,stock,Energy,2016-01-04,true,true,0
+VEEV,stock,Health Care,2016-01-04,true,true,0
+VTR,stock,Real Estate,2016-01-04,true,true,0
+VRSN,stock,Information Technology,2016-01-04,true,true,0
+VRSK,stock,Industrials,2016-01-04,true,true,0
+VZ,stock,Communication Services,2016-01-04,true,true,0
+VRTX,stock,Health Care,2016-01-04,true,true,0
+VRT,stock,Industrials,2018-07-30,true,true,0
+VTRS,stock,Health Care,2020-11-12,true,true,0
+VICI,stock,Real Estate,2018-02-01,true,true,0
+V,stock,Financials,2016-01-04,true,true,0
+VST,stock,Utilities,2017-05-10,true,true,0
+VMC,stock,Materials,2016-01-04,true,true,0
+WRB,stock,Financials,2016-01-04,true,true,0
+GWW,stock,Industrials,2016-01-04,true,true,0
+WAB,stock,Industrials,2016-01-04,true,true,0
+WMT,stock,Consumer Staples,2016-01-04,true,true,0
+DIS,stock,Communication Services,2016-01-04,true,true,0
+WM,stock,Industrials,2016-01-04,true,true,0
+WAT,stock,Health Care,2016-01-04,true,true,0
+WEC,stock,Utilities,2016-01-04,true,true,0
+WFC,stock,Financials,2016-01-04,true,true,0
+WELL,stock,Real Estate,2016-01-04,true,true,0
+WST,stock,Health Care,2016-01-04,true,true,0
+WDC,stock,Information Technology,2016-01-04,true,true,0
+WY,stock,Real Estate,2016-01-04,true,true,0
+WSM,stock,Consumer Discretionary,2016-01-04,true,true,0
+WMB,stock,Energy,2016-01-04,true,true,0
+WTW,stock,Financials,2016-01-05,true,true,0
+WDAY,stock,Information Technology,2016-01-04,true,true,0
+WYNN,stock,Consumer Discretionary,2016-01-04,true,true,0
+XEL,stock,Utilities,2016-01-04,true,true,0
+XYL,stock,Industrials,2016-01-04,true,true,0
+YUM,stock,Consumer Discretionary,2016-01-04,true,true,0
+ZBRA,stock,Information Technology,2016-01-04,true,true,0
+ZBH,stock,Health Care,2016-01-04,true,true,0
+ZTS,stock,Health Care,2016-01-04,true,true,0

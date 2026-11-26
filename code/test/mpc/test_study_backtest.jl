@@ -38,13 +38,16 @@ end
     @test MPCPortfolio._study_problem_columns(MyCobbDouglasRule(), [1, 2, 3], [3, 4], Int[], γ) == ([1, 2, 3, 4], [false, false, true, true])
     @test MPCPortfolio._study_problem_columns(MyLongShortCDRule(), [1, 2, 3], [4], [5, 6], γ) == ([1, 3, 4, 6], [false, false, true, false])
 end
-@testset "study loop: re-pick timer and basket changes" begin
-    md, ctx = study_ctx(z=1e6, T=10_000, D_max=1.0, repick_on_band_exit=false)
+@testset "study loop: the horizon re-picks the basket" begin
+    md, ctx = study_ctx(z=Inf, T=21, D_max=1.0, cash_revisit=10_000)
     res = run_study(ctx, study_run(ctx, "CD", :random))
     @test res.repicks.date == res.dates[1:21:end]
-    @test Set(res.decisions.reason) ⊆ Set([:initial, :basket_change])
-    @test all(d in res.decisions.date for d in res.repicks.date[res.repicks.changed])
-    @test all(res.repicks.trigger[2:end] .== :timer)
+    @test res.repicks.date == res.decisions.date
+    @test res.repicks.trigger == res.decisions.reason
+    @test all(res.repicks.trigger[2:end] .== :horizon_elapsed)
+    md, ctx = study_ctx(z=Inf, T=10_000, D_max=1.0, cash_revisit=10_000)
+    res = run_study(ctx, study_run(ctx, "CD", :random))
+    @test res.repicks.date == res.decisions.date == res.dates[1:1]
 end
 @testset "study loop: the drawdown peak resets at each drawdown decision" begin
     # Reference walk of the equity path: the peak is the running maximum, set back to that day's equity
@@ -71,14 +74,12 @@ end
         @test 2 <= n[true] < n[false]                                # a reset peak fires less often
     end
 end
-@testset "study loop: band exits re-pick only when enabled" begin
+@testset "study loop: band exits re-pick the basket" begin
     md, ctx = study_ctx(z=0.0)
-    on = run_study(ctx, study_run(ctx, "CD", :random))
-    @test all(d in on.repicks.date for d in on.decisions.date[on.decisions.reason .== :band_exit])
-    @test any(on.repicks.trigger .== :band_exit)
-    md, ctx = study_ctx(z=0.0, repick_on_band_exit=false)
-    off = run_study(ctx, study_run(ctx, "CD", :random))
-    @test any(off.decisions.reason .== :band_exit) && off.repicks.date == off.dates[1:21:end]
+    res = run_study(ctx, study_run(ctx, "CD", :random))
+    @test res.repicks.date == res.decisions.date
+    @test res.repicks.trigger == res.decisions.reason
+    @test any(res.repicks.trigger .== :band_exit)
 end
 @testset "study loop: hedge on and off" begin
     for allocator in ("CD", "CES", "SG", "MinVar", "Tangent", "LS")
@@ -174,7 +175,7 @@ end
     @test res.projections[d].μ == proj.μ && res.projections[d].σ == proj.σ   # the band projects the held book
 end
 @testset "study loop: an empty 130/30 problem goes to cash" begin
-    md, ctx = study_ctx(z=0.0, repick_on_band_exit=false, hedge=false)   # a decision every day, no pool
+    md, ctx = study_ctx(z=0.0, hedge=false)                           # a decision every day, no pool
     ctx.γ[5, :] .= 0.0                                               # day 5: no γ > 0 basket name, no γ < 0 short
     res = run_study(ctx, study_run(ctx, "LS", :gamma))
     d = res.dates[5]; k = findfirst(==(d), res.decisions.date)
@@ -249,24 +250,24 @@ end
 
 # ---- Method v2: the SPY short (Task 2) ----
 
-@testset "study loop: v1 tables are unchanged" begin                 # every v2 switch at its v1 value
+@testset "study loop: initial decision with v1 forecast and hedge settings" begin
     fx = JLD2.load(joinpath(@__DIR__, "fixtures", "v1_run_study.jld2"), "tables")
     for case in v1_fixture_cases()
         md, ctx = study_ctx(; case.settings...)
         res = run_study(ctx, study_run(ctx, case.allocator, case.screen))
         old = fx[case.label]
-        # every v1 column of every table, bit for bit
-        for table in ("decisions", "daily", "repicks", "trades")
+        # The initial decision precedes any of the six triggers.
+        for table in ("decisions", "daily", "repicks")
             new_table = getproperty(res, Symbol(table))
             for name in names(old[table])
-                @test isequal(new_table[!, name], old[table][!, name])
+                @test isequal(new_table[1, name], old[table][1, name])
             end
         end
-        @test res.equity == old["equity"] && res.cash == old["cash"] && res.borrow_fees == old["borrow_fees"]
-        @test res.targets == old["targets"]
-        for d in keys(old["proj_mu"])
-            @test res.projections[d].μ == old["proj_mu"][d] && res.projections[d].σ == old["proj_sigma"][d]
-        end
+        d = first(res.dates)
+        @test res.equity[1:2] == old["equity"][1:2] && res.cash[1:2] == old["cash"][1:2]
+        @test res.borrow_fees[1:2] == old["borrow_fees"][1:2]
+        @test res.targets[d] == old["targets"][d]
+        @test res.projections[d].μ == old["proj_mu"][d] && res.projections[d].σ == old["proj_sigma"][d]
         # the new columns hold no SPY short
         @test all(res.decisions.spy_share .== 0.0) && !any(res.decisions.limit_below_zero)
         @test all(res.daily.spy_weight .== 0.0) && res.daily.book_beta == res.daily.portfolio_beta
@@ -569,7 +570,7 @@ end
 # ---- Method v2: the market-turn and β triggers in the study loop (Task 3) ----
 
 @testset "v2: market-turn decisions follow ξ and re-pick" begin
-    md, ctx = study_ctx(market_turn=true, repick_on_market_turn=true)
+    md, ctx = study_ctx(market_turn=true)
     res = run_study(ctx, study_run(ctx, "CD", :gamma)); dd = res.decisions
     @test any(dd.reason .== :market_turn)
     # walk the days: ξ at the last decision is the reference, and a sign change of ξ must bring a decision
@@ -591,14 +592,8 @@ end
             ξ_last = res.daily.xi[i]
         end
     end
-    # each market-turn decision re-picks on its day (logged as :timer when the timer falls on the same day)
-    for k in eachindex(dd.date)
-        if dd.reason[k] == :market_turn
-            j = findfirst(isequal(dd.date[k]), res.repicks.date)
-            @test j !== nothing && res.repicks.trigger[j] in (:market_turn, :timer)
-        end
-    end
-    @test any(res.repicks.trigger .== :market_turn)
+    @test res.repicks.date == dd.date
+    @test res.repicks.trigger == dd.reason
     # elapsed: trading days since the last decision
     @test dd.elapsed[1] == 0
     for k in 2:length(dd.date)
@@ -607,16 +602,10 @@ end
 end
 
 @testset "v2: a drawdown on a market-turn day still re-picks" begin
-    md, ctx = study_ctx(market_turn=true, repick_on_market_turn=true, D_max=0.01)
+    md, ctx = study_ctx(market_turn=true, D_max=0.01)
     base = run_study(ctx, study_run(ctx, "CD", :gamma)); dd = base.decisions
-    # the first drawdown decision away from a timer re-pick
-    f = 0
-    for k in 2:length(dd.date)
-        if f == 0 && dd.reason[k] == :drawdown && !(dd.date[k] in base.repicks.date)
-            f = k
-        end
-    end
-    @test f > 0
+    f = findfirst(==(:drawdown), dd.reason)
+    @test f !== nothing
     # flip ξ on that day to the other side of 0 from ξ at the decision before it
     d = dd.date[f]; t = index_of(md, d)
     ξ_before = base.daily.xi[findfirst(isequal(dd.date[f - 1]), base.dates)]
@@ -629,7 +618,7 @@ end
     k = findfirst(isequal(d), res.decisions.date)
     @test res.decisions.reason[k] == :drawdown
     j = findfirst(isequal(d), res.repicks.date)
-    @test j !== nothing && res.repicks.trigger[j] == :market_turn
+    @test j !== nothing && res.repicks.trigger[j] == :drawdown
 end
 
 @testset "v2: the β trigger reads the whole book's β each day" begin

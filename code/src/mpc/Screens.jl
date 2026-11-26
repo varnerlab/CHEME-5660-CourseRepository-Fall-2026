@@ -203,10 +203,15 @@ The `size` columns with the largest median dollar volume (USD/day), the median o
 ties by column index. Uses data dated at or before day `t` only.
 """
 function liquid_shortlist(md::MyMarketData, t::Int; size::Int=100, window::Int=63)::Vector{Int}
-    rows = max(1, t - window + 1):t
-    dv = [median(md.close[rows, j] .* md.volume[rows, j]) for j in 1:length(md.tickers)]
+    dv = _liquidity_scores(md, t, window)
     order = sortperm(collect(zip(-dv, 1:length(dv))))
     return order[1:min(size, length(order))]
+end
+
+# Median daily dollar volume (USD/day) for each ticker through row t.
+function _liquidity_scores(md::MyMarketData, t::Int, window::Int)::Vector{Float64}
+    rows = max(1, t - window + 1):t
+    return [median(md.close[rows, j] .* md.volume[rows, j]) for j in eachindex(md.tickers)]
 end
 
 """

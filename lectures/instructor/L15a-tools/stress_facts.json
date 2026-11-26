@@ -1,0 +1,8 @@
+{
+  "WHAT1": "The bands of the strategy and of `SPY` widen over the year. On the last day, `SPY` ends below `W0` on 49 of the 200 markets.",
+  "WHAT2": "With the practicum's settings, only 23 of the 756 stress tests of the menu pass all five gates. Every other stress test fails the failure-rate gate. The 60/40 benchmark would fail that gate too, because it ends below `W0` on 56 of the 200 markets.",
+  "WHAT3": "Across the menu, the hedged run ends with more wealth in only 30,864 of the 75,600 pairs of runs that differ only in the hedge. The hedged run has the smaller drawdown in 41,852 pairs.",
+  "KT1": "We ran the strategy on 200 synthetic markets that share the real history and differ in the next year. The percentiles of its wealth showed how far the outcome can spread. Even `SPY` ended below the starting wealth on 49 of the 200 markets.",
+  "KT2": "We tested the strategy's median outcome and its share of losing markets against the five gates. With the practicum's settings, only 23 of the 756 stress tests passed all five, and every other stress test failed the failure-rate gate.",
+  "KT3": "We ran the same strategy with the market hedge on. Across the menu, the hedged run had the smaller drawdown in 41,852 of the 75,600 pairs of runs that differ only in the hedge. It ended with more wealth in only 30,864 pairs."
+}

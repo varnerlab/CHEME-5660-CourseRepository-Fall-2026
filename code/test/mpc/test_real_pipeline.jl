@@ -22,10 +22,10 @@
     @test res.dates[1] == Date(2025, 1, 2) && res.dates[end] == Date(2026, 9, 4)
     @test nrow(res.decisions) >= 1
 
-    # parity with the INFORMS study: Cobb–Douglas, γ picker, hedge off, seed 5660 on the full universe ended at
-    # 122169.64016343099 USD with 27 decisions (results/tier1_summary.csv, INFORMS repository 2fc998c)
+    # The course loop re-picks on every decision on the full universe too.
     full = build_context(md, calib, s)
     ref = run_study(full, build(MyStudyRun, (settings = s, allocator = "CD", screen = :gamma, seed = 5660)))
-    @test isapprox(ref.equity[end], 122169.64016343099; rtol = 1e-6)
-    @test nrow(ref.decisions) == 27
+    @test all(isfinite, ref.equity) && all(>(0), ref.equity)
+    @test ref.repicks.date == ref.decisions.date
+    @test ref.repicks.trigger == ref.decisions.reason
 end

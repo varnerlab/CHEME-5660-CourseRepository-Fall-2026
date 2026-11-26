@@ -1,8 +1,7 @@
 # Study backtest loop (spec §5–§8): one run (allocator × screen × seed × settings) replayed day by day
 # against a `MyStudyContext`, with run_backtest's fill, cost and accounting helpers. Decisions are made
 # after the close on day t from data dated ≤ t; their orders fill at the open of day t+1 in fractional
-# shares. The basket is re-picked inside the loop (every `repick_interval` trading days, and at a band
-# exit when `repick_on_band_exit`); with `hedge` on, the hedge pool joins every problem and the
+# shares. A trigger re-picks the basket and re-plans the portfolio. With `hedge` on, the hedge pool joins every problem and the
 # ξ-driven β cap applies to every decision.
 #
 # Units: shares (shares), prices (USD/share), equity, cash, costs and fees (USD), growth rates g_f, μ_g,
@@ -26,15 +25,15 @@ One study run (`run_study`). Fields:
 | Field | Meaning |
 |---|---|
 | `settings::MyStudySettings` | every window, limit and cost (units as in `MyStudySettings`) |
-| `allocator::String` | `"CD"`, `"CES"`, `"CESw"`, `"SG"`, `"MinVar"`, `"Tangent"` or `"LS"` (130/30 CD) |
-| `screen::Symbol` | one of `_STUDY_SCREENS` |
+| `allocator::Union{String,AbstractPortfolioRule}` | a built-in allocator name or a rule that implements `allocate` |
+| `screen::Union{Symbol,AbstractScreen}` | a built-in screen name or a screen that implements `pick` |
 | `seed::Int` | screen and projection RNG seed (≥ 0) |
 | `label::String` | run label (default `""`) |
 """
 mutable struct MyStudyRun
     settings::MyStudySettings
-    allocator::String
-    screen::Symbol
+    allocator::Union{String,AbstractPortfolioRule}
+    screen::Union{Symbol,AbstractScreen}
     seed::Int
     label::String
     function MyStudyRun()
@@ -48,9 +47,8 @@ end
     build(::Type{MyStudyRun}, data::NamedTuple)::MyStudyRun
 
 Build a run from `settings`, `allocator`, `screen`, `seed` and optional `label` (default `""`).
-Throws `ArgumentError` on a missing or unknown field, an allocator other than `"CD"`, `"CES"`, `"CESw"`,
-`"SG"`, `"MinVar"`, `"Tangent"`, `"LS"`, a screen not in `_STUDY_SCREENS`, or
-`seed < 0`.
+Pass a strategy object or a built-in name for `allocator` and `screen`. Throws `ArgumentError` on a
+missing or unknown field, an unknown strategy name, or `seed < 0`.
 """
 function build(::Type{MyStudyRun}, data::NamedTuple)::MyStudyRun
     for f in (:settings, :allocator, :screen, :seed)
@@ -60,14 +58,24 @@ function build(::Type{MyStudyRun}, data::NamedTuple)::MyStudyRun
     isempty(unknown) || throw(ArgumentError("Cannot build MyStudyRun: unknown field(s) $(collect(unknown))"))
     r = MyStudyRun()
     r.settings = data.settings
-    r.allocator = String(data.allocator)
-    r.screen = Symbol(data.screen)
+    if data.allocator isa AbstractPortfolioRule
+        r.allocator = data.allocator
+    else
+        r.allocator = String(data.allocator)
+        if !(r.allocator in _STUDY_ALLOCATORS)
+            throw(ArgumentError("Invalid MyStudyRun: allocator must be one of $(_STUDY_ALLOCATORS), got $(repr(r.allocator))"))
+        end
+    end
+    if data.screen isa AbstractScreen
+        r.screen = data.screen
+    else
+        r.screen = Symbol(data.screen)
+        if !(r.screen in _STUDY_SCREENS)
+            throw(ArgumentError("Invalid MyStudyRun: screen must be one of $(_STUDY_SCREENS), got :$(r.screen)"))
+        end
+    end
     r.seed = data.seed
     haskey(data, :label) && (r.label = String(data.label))
-    r.allocator in _STUDY_ALLOCATORS ||
-        throw(ArgumentError("Invalid MyStudyRun: allocator must be one of $(_STUDY_ALLOCATORS), got $(repr(r.allocator))"))
-    r.screen in _STUDY_SCREENS ||
-        throw(ArgumentError("Invalid MyStudyRun: screen must be one of $(_STUDY_SCREENS), got :$(r.screen)"))
     r.seed >= 0 || throw(ArgumentError("Invalid MyStudyRun: seed must be ≥ 0, got $(r.seed)"))
     return r
 end
@@ -90,7 +98,7 @@ Output of `run_study`, one entry per trading day of the run in `dates`, `equity`
   empty 130/30; `:failed` is a sub-solve, such as the hedge step, that no solver accepted). After
   an `:infeasible` or `:solver_failed` decision the target book is the whole kept book (see
   `run_study`).
-- `repicks::DataFrame`: `date`, `trigger` (`:initial`, `:timer` or `:band_exit`), `basket`, `pool`
+- `repicks::DataFrame`: `date`, `trigger` (the reason from `check_trigger`), `basket`, `pool`
   and `shorts` (tickers; `pool` in ranked order) and `changed` (the set basket ∪ pool ∪ shorts differs
   from the previous re-pick's; `true` at the initial re-pick).
 - `daily::DataFrame`: `date`, `xi` (ξ, dimensionless), `beta_max` (`Inf` with the hedge off),
@@ -147,6 +155,8 @@ function make_rule(allocator::String, s::MyStudySettings)::AbstractPortfolioRule
     throw(ArgumentError("unknown allocator $(repr(allocator)); expected one of $(_STUDY_ALLOCATORS)"))
 end
 
+make_rule(rule::AbstractPortfolioRule, ::MyStudySettings) = rule
+
 """
     make_screen(screen::Symbol, s::MyStudySettings)::AbstractScreen
 
@@ -171,6 +181,34 @@ function make_screen(screen::Symbol, s::MyStudySettings)::AbstractScreen
     throw(ArgumentError("unknown screen :$(screen); expected one of $(_STUDY_SCREENS)"))
 end
 
+make_screen(screen::AbstractScreen, ::MyStudySettings) = screen
+
+"""
+    uses_short_candidates(rule::AbstractPortfolioRule)::Bool
+
+Whether the study loop builds a separate list of short candidates, ranked by γ, for `rule`. Only the 130/30 CD
+rule does. A strategy file that hands its problem to `MyLongShortCDRule` returns `true` as well.
+"""
+function uses_short_candidates(rule::AbstractPortfolioRule)::Bool
+    return false
+end
+
+function uses_short_candidates(rule::MyLongShortCDRule)::Bool
+    return true
+end
+
+"""
+    rule_preferences(rule::AbstractPortfolioRule, γ::Vector{Float64}, picked::Vector{Bool})::Vector{Float64}
+
+The preference weights that one decision's allocation problem gives `rule`. `γ` holds the day's preference
+weights (dimensionless) of the problem's columns. `picked[i]` is `true` when column `i` is in the screen's
+basket. The built-in rules keep `γ`. A strategy file can return other weights, for example the weight `1` on
+every picked column, so that its rule treats the picked stocks the same.
+"""
+function rule_preferences(rule::AbstractPortfolioRule, γ::Vector{Float64}, picked::Vector{Bool})::Vector{Float64}
+    return γ
+end
+
 """
     _study_problem_columns(rule, basket, pool, shorts, γ_row)::Tuple{Vector{Int},Vector{Bool}}
 
@@ -182,12 +220,10 @@ also picked appears once, flagged as a hedge.
 """
 function _study_problem_columns(rule::AbstractPortfolioRule, basket::Vector{Int}, pool::Vector{Int},
         shorts::Vector{Int}, γ_row::AbstractVector)::Tuple{Vector{Int},Vector{Bool}}
-    cols = sort!(union(basket, pool))
-    return cols, [j in pool for j in cols]
-end
-
-function _study_problem_columns(rule::MyLongShortCDRule, basket::Vector{Int}, pool::Vector{Int},
-        shorts::Vector{Int}, γ_row::AbstractVector)::Tuple{Vector{Int},Vector{Bool}}
+    if uses_short_candidates(rule) == false
+        cols = sort!(union(basket, pool))
+        return cols, [j in pool for j in cols]
+    end
     cols = sort!(union(filter(j -> γ_row[j] > 0, basket), pool, filter(j -> γ_row[j] < 0, shorts)))
     return cols, [j in pool for j in cols]
 end
@@ -345,7 +381,7 @@ end
 
 """
     _study_problem(ctx, run, t::Int, cols::Vector{Int}, hedge::Vector{Bool}, held::AbstractVector{<:Real},
-        V::Float64; basket::Vector{Int}=Int[])::MyAllocationProblem
+        V::Float64; basket::Vector{Int}=Int[], rule=make_rule(run.allocator, run.settings))::MyAllocationProblem
 
 The allocation problem after the close of market-data row `t` for the ticker columns `cols` (hedge
 flags `hedge`), with holdings `held` (shares, one per ticker) and equity `V` (USD). With
@@ -365,23 +401,33 @@ s = t − first(ctx.rows) + 1, S = close[t, cols] (USD/share) and Ω = `omega_wi
 - prices = S, W = V, g_f = g_f[t] (yr⁻¹).
 """
 function _study_problem(ctx::MyStudyContext, run::MyStudyRun, t::Int, cols::Vector{Int}, hedge::Vector{Bool},
-        held::AbstractVector{<:Real}, V::Float64; basket::Vector{Int}=Int[])::MyAllocationProblem
+        held::AbstractVector{<:Real}, V::Float64; basket::Vector{Int}=Int[],
+        rule::AbstractPortfolioRule=make_rule(run.allocator, run.settings))::MyAllocationProblem
     st = run.settings; md = ctx.md
     s = t - first(ctx.rows) + 1
     S = md.close[t, cols]
     α = ctx.sim.α[s, cols]; β = ctx.sim.β[s, cols]
-    μ_g = expected_growth(make_rule(run.allocator, st), α, β, ctx.g̃[t])
+    μ_g = expected_growth(rule, α, β, ctx.g̃[t])
     Σ_g = _study_covariance(ctx, st, t, cols, α, β, ctx.sim.σ_m[s])
     σ_g_max = isnan(st.vol_cap_annual) ? ctx.calib.σ_m : st.vol_cap_annual / sqrt(_BT_DT)
     cap_pick = isempty(basket) ? st.w_max : max(st.w_max, st.w_max_scale / length(basket))
     # a column the 130/30 rule shorts (γ < 0, not a hedge name) keeps w_max even when the screen picked it
-    is_short(i) = run.allocator == "LS" && ctx.γ[s, cols[i]] < 0 && !hedge[i]
-    w_cap = [(cols[i] in basket && !is_short(i)) ? cap_pick : st.w_max for i in eachindex(cols)]
+    w_cap = fill(st.w_max, length(cols))
+    short_candidates_on = uses_short_candidates(rule)
+    for i in eachindex(cols)
+        is_short = short_candidates_on && ctx.γ[s, cols[i]] < 0 && !hedge[i]
+        if cols[i] in basket && !is_short
+            w_cap[i] = cap_pick
+        end
+    end
     cs = build(MyConstraintSet, (w_max=st.w_max, w_cap=w_cap, s_max=st.s_max, σ_g_max=σ_g_max,
         K_turnover=st.turnover_frac * V, c̄=st.half_spread_bps * 1e-4 * mean(S),     # bps → fraction
         sector=md.sector[cols], n_prev=Float64.(held[cols]), ε=_BT_ε, β=β,
         β_max=allocator_beta_max(st, ctx.ξ[t])))
-    return build(MyAllocationProblem, (γ=ctx.γ[s, cols], μ_g=μ_g, Σ_g=Σ_g, prices=S, W=V, g_f=md.g_f[t],
+    # the rule's preference weights: the day's γ for the built-in rules -
+    picked = Bool[j in basket for j in cols]
+    γ = rule_preferences(rule, ctx.γ[s, cols], picked)
+    return build(MyAllocationProblem, (γ=γ, μ_g=μ_g, Σ_g=Σ_g, prices=S, W=V, g_f=md.g_f[t],
         constraints=cs, hedge=hedge))
 end
 
@@ -431,7 +477,7 @@ function _study_decision(ctx::MyStudyContext, run::MyStudyRun, rule::AbstractPor
             β=Float64[], β_max=allocator_beta_max(run.settings, ctx.ξ[t]), hedge=Bool[], trade=true,
             α=Float64[], g̃_M=ctx.g̃[t], σ_M=ctx.sim.σ_m[s], σ_res=Float64[])
     end
-    p = _study_problem(ctx, run, t, cols, hedge, held, V; basket=basket)
+    p = _study_problem(ctx, run, t, cols, hedge, held, V; basket=basket, rule=rule)
     log = Symbol[]
     r = Base.ScopedValues.with(() -> allocate(rule, p), _SOLVER_LOG => log)
     all(isfinite, r.n) || (r = _result(p, copy(p.constraints.n_prev), :solver_failed))   # R29
@@ -440,7 +486,7 @@ function _study_decision(ctx::MyStudyContext, run::MyStudyRun, rule::AbstractPor
         kept = findall(!=(0), held)
         if !isempty(kept) && kept != cols
             cols = kept; hedge = [j in pool for j in cols]
-            p = _study_problem(ctx, run, t, cols, hedge, held, V)
+            p = _study_problem(ctx, run, t, cols, hedge, held, V; rule=rule)
         end
         n = Float64.(held[cols]); trade = false
     end
@@ -763,14 +809,10 @@ close. `run.settings` must share the context's `context_key`. On each trading da
    `D_max`, `cash_revisit`. The v2 triggers come from `market_turn`, `beta_over_cap` and
    `turn_at_one = hedge && spy_short`, with ξ[t], ξ at the last decision, the whole book's β (the SPY weight
    included) and the full β limit `study_beta_limit(st, ξ[t])`.
-5. **Re-pick** on the first day (`:initial`), when `repick_interval` trading days have passed since the
-   last re-pick (`:timer`), at a `:band_exit` when `repick_on_band_exit` (`:band_exit`), or when the market
-   turned and `repick_on_market_turn` is on (`:market_turn`, even when another trigger gives the day's
-   reason): the screen's
-   `pick` (N = `N_per_sector`, seed = `run.seed`), the pool `ctx.pool[s]` (empty with the hedge off)
-   and, for `"LS"`, the `short_candidates` outside the pool. If the set basket ∪ pool ∪ shorts changed
-   and no trigger fired, the reason becomes `:basket_change`.
-6. **Decide** when the reason is not `:in_spec` (`_study_decision`): `allocate` on the problem of
+5. **Re-pick** when `check_trigger` returns a decision reason, including `:initial` on the first day.
+   Run the screen's `pick` (N = `N_per_sector`, seed = `run.seed`), take the pool `ctx.pool[s]`
+   with the hedge on, and choose the `short_candidates` outside the pool for 130/30 Cobb–Douglas.
+6. **Decide** on the same trigger (`_study_decision`). Call `allocate` on the problem from
    `_study_problem_columns` and `_study_problem` (non-finite shares count as `:solver_failed`, R29).
    After a solve, queue orders for t+1 at the executable shares `_study_lots` (a target worth at most
    0.1% of V trades to 0; held names outside the problem target 0; none on the last day). After `:infeasible` or `:solver_failed`, queue no orders and keep every holding (spec §6).
@@ -803,8 +845,7 @@ close. `run.settings` must share the context's `context_key`. On each trading da
    (close − open), `0` on the first day. `spy_rose` is whether SPY closed above its last close (`false` on the
    first day).
 
-When the timer and a band exit fall on the same day the re-pick is logged as `:timer`
-**(plan decision)**. Throws `ArgumentError` when the settings do not match the context's, when
+Throws `ArgumentError` when the settings do not match the context's, when
 `forecast_model = "factor"` and the context has no forecast models (`ctx.fm === nothing`), when the first
 run row is ≤ the run's `omega_window` (trading days; not part of `context_key`, so checked here per run),
 or when a screen cannot pick (e.g. a bandit lookback longer than the data); allocator and projection
@@ -854,7 +895,7 @@ function run_study(ctx::MyStudyContext, run::MyStudyRun)::MyStudyResult
 
     trig = MyTriggerState()
     trig.wealth_peak = st.W0; trig.initial = true
-    basket = Int[]; pool = Int[]; shorts = Int[]; in_play = Set{Int}(); last_repick = i0
+    pool = Int[]; in_play = Set{Int}()
     pending = nothing
     # the SPY position (shares, negative for a short) and the SPY shares the last decision asked for
     n_spy = 0.0; spy_target = 0.0
@@ -896,33 +937,22 @@ function run_study(ctx::MyStudyContext, run::MyStudyRun)::MyStudyResult
         trig.book_beta = held_β / V + spy_weight
         trig.beta_limit = study_beta_limit(st, ctx.ξ[t])
         reason = check_trigger(trig, mpc)
-        flags = trigger_flags(trig, mpc)
-        # 5. re-pick: on the first day, on the timer, at a band exit, or when the market turned (even when a
-        # higher-priority trigger gives the day's reason)
-        why = :none
-        if t == i0
-            why = :initial
-        elseif t - last_repick >= st.repick_interval
-            why = :timer
-        elseif reason == :band_exit && st.repick_on_band_exit
-            why = :band_exit
-        elseif flags.market_turn && st.repick_on_market_turn
-            why = :market_turn
-        end
-        if why != :none
+        if reason != :in_spec
+            # 5. Re-pick on the same trigger that starts a new plan -
             γ_t = ctx.γ[s, :]
             basket = pick(screen, md, t; X=ctx.X, γ_t=γ_t, N=st.N_per_sector, seed=run.seed)
             pool = st.hedge ? ctx.pool[s] : Int[]
-            shorts = run.allocator == "LS" ? short_candidates(γ_t, md; N=st.N_per_sector, exclude=pool) : Int[]
+            shorts = Int[]
+            if uses_short_candidates(rule)
+                shorts = short_candidates(γ_t, md; N=st.N_per_sector, exclude=pool)
+            end
             now = Set(vcat(basket, pool, shorts))
             changed = now != in_play
-            in_play = now; last_repick = t
-            changed && reason == :in_spec && (reason = :basket_change)
-            push!(rep.date, d); push!(rep.trigger, why); push!(rep.basket, md.tickers[basket])
+            in_play = now
+            push!(rep.date, d); push!(rep.trigger, reason); push!(rep.basket, md.tickers[basket])
             push!(rep.pool, md.tickers[pool]); push!(rep.shorts, md.tickers[shorts]); push!(rep.changed, changed)
-        end
-        # 6. decide
-        if reason != :in_spec
+
+            # 6. Decide and queue the trades -
             # the SPY short covers the part of the β limit below zero; the stocks are solved on the rest of equity
             limit = study_beta_limit(st, ctx.ξ[t])
             spy_share = spy_overlay_share(st, ctx.ξ[t])

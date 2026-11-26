@@ -19,18 +19,21 @@ than on every day below the peak (user, 2026-10-25; `false` keeps the trial's ne
 fills the defaults. `turnover_frac` sets each decision's spread-cost budget, c̄·Σ|Δnᵢ| ≤ `turnover_frac`·W with c̄ the half-spread cost per share at the basket's mean price. It is kept from the trial; at 5 bps, for a long-only book, it can bind only when a basket's mean share price is more than 100 times its cheapest name's.
 Field names are ASCII so TOML keys equal field names **(plan decision)**.
 
-Method v2 switches (design 2026-11-13). Each default is the v1 behavior, so the v1 results reproduce exactly:
+Method v2 switches (design 2026-11-13). The defaults use the v1 forecast and hedge settings:
 - `forecast_model`: `"gbm"` (v1, multi-asset GBM) or `"factor"` (v2, the JumpHMM factor model).
 - `forecast_band`: `"sigma"` (v1, mean ± z·σ) or `"quantile"` (v2, the 2.5% and 97.5% quantiles of simulated wealth).
 - `market_turn` (flag): re-plan when ξ changes sign, and, with the SPY short on, when ξ crosses 1.
 - `beta_over_cap` (dimensionless): re-plan when the book's β is more than this margin over its β limit; `Inf` is off.
 - `spy_short` (flag): with the hedge on, short SPY to cover the part of the β limit below zero.
-- `repick_on_market_turn` (flag): re-pick the basket when the market-turn condition holds.
 `beta_min` is the floor of the β limit: `0` in v1, between `-1` and `0` only with `spy_short = true`.
 
 Course addition (CHEME 5660, 2026-11-19):
 - `covariance_model`: `"shrunk"` (v1 and v2: the single index covariance plus the shrunk residual covariance) or
   `"sector_factor"` (the single index covariance plus the sector blocks of the factor forecast's models).
+
+L15a estimate settings. `estimates = "updated"` updates the single index model each trading day.
+`estimates_start` is the first update date and defaults to `start` when it is `nothing`.
+`estimates = "fixed"` holds the fitted single index parameters and market volatility at their training values.
 """
 mutable struct MyStudySettings
     start::Date; stop::Date; train_start::Date; train_stop::Date
@@ -39,7 +42,7 @@ mutable struct MyStudySettings
     ewls_half_life::Float64; ewls_prior_weight::Float64
     omega_window::Int; lambda::Float64
     T::Int; z::Float64; D_max::Float64; drawdown_reset::Bool; cash_revisit::Int; n_paths::Int
-    N_per_sector::Int; repick_interval::Int; repick_on_band_exit::Bool
+    N_per_sector::Int
     bandit_lookback::Int; bandit_horizon::Int; bandit_eps_floor::Float64
     bandit_iters_per_arm::Int; bandit_min_iters::Int; bandit_max_iters::Int
     w_max::Float64; vol_cap_annual::Float64; s_max::Float64; turnover_frac::Float64
@@ -51,8 +54,9 @@ mutable struct MyStudySettings
     w_max_scale::Float64; fixed_tickers::Vector{String}
     forecast_model::String; forecast_band::String
     market_turn::Bool; beta_over_cap::Float64
-    spy_short::Bool; repick_on_market_turn::Bool
+    spy_short::Bool
     covariance_model::String
+    estimates::String; estimates_start::Union{Nothing,Date}
     function MyStudySettings()
         return new(Date(2025, 1, 2), Date(2026, 9, 4), Date(2014, 1, 3), Date(2024, 12, 31),
             100_000.0,
@@ -60,7 +64,7 @@ mutable struct MyStudySettings
             63.0, 63.0,
             126, NaN,
             21, 1.96, 0.08, true, 21, 1000,
-            3, 21, true,
+            3,
             252, 21, 0.05, 50, 500, 5000,
             0.10, NaN, 1.0, 0.10,
             0.5, 0.01, 1.30, 0.30, 1.00, 0.0075,
@@ -70,8 +74,9 @@ mutable struct MyStudySettings
             1.5, ["AAPL", "MSFT", "INTC", "MU", "AMD", "NVDA", "GS", "BAC", "WFC", "C", "F", "GM", "JNJ"],
             "gbm", "sigma",          # v1 forecast and band
             false, Inf,              # v1: no market-turn trigger, no β trigger
-            false, false,            # v1: no SPY short, no re-pick at a market turn
-            "shrunk")                # v1 and v2: the shrunk residual covariance
+            false,                   # v1: no SPY short
+            "shrunk",                # v1 and v2: the shrunk residual covariance
+            "updated", nothing)
     end
 end
 
@@ -116,6 +121,12 @@ function _validate_settings(s::MyStudySettings)
     s.ces_eta > 0 || throw(ArgumentError("MyStudySettings: ces_eta must be > 0"))
     s.train_stop < s.start ≤ s.stop ||
         throw(ArgumentError("MyStudySettings: need train_stop < start ≤ stop"))
+    if !(s.estimates in ("updated", "fixed"))
+        throw(ArgumentError("MyStudySettings: estimates must be \"updated\" or \"fixed\""))
+    end
+    if s.estimates_start !== nothing && !(s.train_stop < s.estimates_start ≤ s.start)
+        throw(ArgumentError("MyStudySettings: need train_stop < estimates_start ≤ start"))
+    end
     return s
 end
 
@@ -171,20 +182,23 @@ other run to `results/v2/`, so that a v2 run never reuses or overwrites a v1 fil
 
 ### Returns
 - `Bool`: `true` when `forecast_model = "gbm"`, `forecast_band = "sigma"`, `market_turn = false`,
-  `beta_over_cap = Inf`, `beta_min ≥ 0`, `spy_short = false`, `repick_on_market_turn = false` and
-  `covariance_model = "shrunk"`.
+  `beta_over_cap = Inf`, `beta_min ≥ 0`, `spy_short = false` and
+  `covariance_model = "shrunk"`, with estimates updated from `start`.
 """
 function uses_v1_method(s::MyStudySettings)::Bool
     if s.forecast_model != "gbm" || s.forecast_band != "sigma"
         return false;
     end
-    if s.market_turn || isfinite(s.beta_over_cap) || s.repick_on_market_turn
+    if s.market_turn || isfinite(s.beta_over_cap)
         return false;
     end
     if s.beta_min < 0.0 || s.spy_short
         return false;
     end
     if s.covariance_model != "shrunk"
+        return false;
+    end
+    if s.estimates != "updated" || something(s.estimates_start, s.start) != s.start
         return false;
     end
     return true;
@@ -240,11 +254,16 @@ end
     context_key(s::MyStudySettings)::NamedTuple
 
 The settings that `build_context` depends on (dates, EWLS half-life and prior weight in trading days,
-ξ and g̃ windows, β floor, pool size, down-day lookback, bandit horizon). Two settings with equal keys
-can share one context.
+estimate mode and first update date, ξ and g̃ windows, β floor, pool size, down-day lookback, bandit horizon).
+Two settings with equal keys can share one context.
 """
 function context_key(s::MyStudySettings)::NamedTuple
+    estimates_start = nothing
+    if s.estimates == "updated"
+        estimates_start = something(s.estimates_start, s.start)
+    end
     return (start = s.start, stop = s.stop, train_start = s.train_start, train_stop = s.train_stop,
+        estimates = s.estimates, estimates_start = estimates_start,
         ewls_half_life = s.ewls_half_life, ewls_prior_weight = s.ewls_prior_weight,
         xi_short = s.xi_short, xi_long = s.xi_long, xi_quantile = s.xi_quantile,
         gtilde_window = s.gtilde_window, beta_floor = s.beta_floor, pool_H = s.pool_H,

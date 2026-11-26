@@ -1,0 +1,53 @@
+% L15a the stress test. A fan of synthetic wealth paths, all starting from the starting wealth W0 on the
+% start day (dashed line), one for each synthetic market from the generator, over one synthetic year.
+% A path that ends below W0 is drawn in the darker failure red of the histogram, the others in light red.
+% At the right edge: a sideways histogram of the wealth on the last day over the 200 markets, with the
+% bars below W0 (the failures) shaded darker red, and a tick at the median.
+%
+% November 26, 2026: drawn in the style of the L13a schematics (schematic-style.tex). The real price
+% history to the left of the start day was removed the same day, so that wealth does not read as a
+% continuation of a price.
+% The paths are made up: stress_paths.py writes them into Fig-L15a-Stress-Test-paths.tex (a fixed-seed
+% draw, not the stress test). No calendar date appears, because the start day moves with the data.
+\documentclass[tikz,border=6pt]{standalone}
+\input{schematic-style.tex}
+\input{Fig-L15a-Stress-Test-paths.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  % the paths match the bars: darker red for a path that ends below W0, light red for the others
+  fanok/.style={draw=gdred, line width=0.6pt, line join=round, draw opacity=0.32},
+  fanfail/.style={draw=gdred, line width=0.6pt, line join=round, draw opacity=0.8},
+]
+  % ---------------------------------------------------------------- the time axis and the synthetic year
+  \draw[axis] (1.7, 0.45) -- (13.3, 0.45);
+  \draw[decorate, decoration={brace, amplitude=4pt, mirror}, draw=gdgray, line width=0.8pt] (1.75, 0.25) -- (12.95, 0.25);
+  \node[note, anchor=north] at (7.35, 0.08) {one synthetic year: 252 trading days};
+
+  % ---------------------------------------------------------------- the start day and the starting wealth
+  \draw[drop] (1.7, 0.45) -- (1.7, 6.75);
+  \draw[drop, draw=vnink] (1.7, 2.2) -- (15.7, 2.2);
+  \node[font=\sffamily\small, anchor=east] at (1.55, 2.2) {start day};
+
+  % ---------------------------------------------------------------- the synthetic markets
+  \fanpaths
+  \node[pt] at (1.7, 2.2) {};
+  \node[font=\sffamily\small, anchor=north west, align=left, text=gdred] at (2.0, 6.75)
+    {200 synthetic markets\\from the generator};
+
+  % ---------------------------------------------------------------- the wealth on the last day
+  \foreach \a/\b/\c/\fail in \histbars {
+    \ifnum\fail=1
+      \fill[gdred, fill opacity=0.75] (13.6, \a + 0.015) rectangle (13.6 + 0.04*\c, \b - 0.015);
+    \else
+      \fill[gdred, fill opacity=0.28] (13.6, \a + 0.015) rectangle (13.6 + 0.04*\c, \b - 0.015);
+    \fi
+  }
+  \draw[spine] (13.6, \ylow) -- (13.6, \yhigh); % the base of the bars
+  \node[font=\sffamily\small, anchor=south, align=center] at (14.5, 6.8) {wealth on the last day};
+  \draw[draw=vnink, line width=1.4pt] (13.45, \ymedian) -- (15.7, \ymedian);
+  \node[font=\sffamily\footnotesize, anchor=west] at (15.8, \ymedian) {median};
+  \node[font=\sffamily\footnotesize, anchor=west] at (15.8, 2.2) {starting wealth $W_{0}$};
+  \node[font=\sffamily\footnotesize, anchor=west, align=left, text=gdred] at (15.8, 1.35) {failures:\\end below $W_{0}$};
+\end{tikzpicture}
+\end{document}

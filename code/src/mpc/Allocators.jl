@@ -528,13 +528,14 @@ end
 
 # Utility solve over the preferred names (γ > 0) and the free hedge names: `pins` gives every name's
 # value when pinned and is also each free hedge name's lower bound (shares), `lb` the lower bound
-# (shares) of each preferred name's variable, and `objective!(m, x, γ_p)` adds the cone constraints
-# on the preferred shares x and returns the utility expression. The objective is the utility minus
+# (shares) of each preferred name's variable. `utility_objective!(rule, m, x, γp)` adds the rule's cone
+# constraints and returns the utility expression. The objective is the utility minus
 # _HEDGE_TIEBREAK·Σ wᵢ over the free hedge names (which get no utility term); when there are any,
 # `_min_hedge` then settles their holdings with the preferred shares fixed. Pinned names enter the
 # shared constraints as constants.
 function _solve_utility(p::MyAllocationProblem, pins::Vector{Float64}, lb::Vector{Float64},
-        objective!::Function)::MyAllocationResult
+        rule::AbstractPortfolioRule; scale::Union{Nothing,Vector{Float64}}=nothing,
+        baseline::Union{Nothing,Vector{Float64}}=nothing)::MyAllocationResult
     pref = findall(p.γ .> 0); hedge = _free_hedges(p)
     K = length(p.γ); Kp = length(pref); Kh = length(hedge)
     function build_model(opt)
@@ -549,7 +550,14 @@ function _solve_utility(p::MyAllocationProblem, pins::Vector{Float64}, lb::Vecto
         for (k, i) in enumerate(hedge)
             n[i] = AffExpr(0.0, h[k] => 1.0)
         end
-        U = objective!(m, x, p.γ[pref])
+        utility_inputs = x
+        if baseline !== nothing
+            utility_inputs = x .- baseline                         # shares above the Stone–Geary baseline
+        end
+        if scale !== nothing
+            utility_inputs = scale .* utility_inputs               # normalized shares or weights for CES
+        end
+        U = utility_objective!(rule, m, utility_inputs, p.γ[pref])
         w = add_shared_constraints!(m, n, p)
         @objective(m, Max, Kh == 0 ? U : U - _HEDGE_TIEBREAK * sum(w[i] for i in hedge))
         return m, vcat(x, h)
@@ -583,18 +591,29 @@ function allocate end
 Cobb-Douglas: maximize Σ_{γ>0} γᵢ·log nᵢ (nᵢ in shares) via exponential cones, with nᵢ ≥ 1e-8 and
 γ ≤ 0 names pinned at ε shares (free hedge names: nᵢ ≥ ε, no utility term).
 """
-function allocate(::MyCobbDouglasRule, p::MyAllocationProblem)::MyAllocationResult
+function allocate(rule::MyCobbDouglasRule, p::MyAllocationProblem)::MyAllocationResult
     _check_problem(p)
     pins = fill(p.constraints.ε, length(p.γ))
     any(>(0), p.γ) || return _result(p, pins, :no_preferred)
     Kp = count(>(0), p.γ)
-    return _solve_utility(p, pins, fill(1e-8, Kp), function (m, x, γp)
-        t = @variable(m, [1:Kp])
-        for k in 1:Kp
-            @constraint(m, [t[k], 1.0, x[k]] in MOI.ExponentialCone())   # t ≤ log n
-        end
-        return sum(γp[k] * t[k] for k in 1:Kp)
-    end)
+    return _solve_utility(p, pins, fill(1e-8, Kp), rule)
+end
+
+"""
+    utility_objective!(rule, m, x, γp)
+
+Add the rule's utility constraints to JuMP model `m` and return the expression to maximize.
+Each `x[k]` is the quantity that enters the utility, and `γp[k]` is its positive preference weight.
+"""
+function utility_objective! end
+
+function utility_objective!(::Union{MyCobbDouglasRule,MyStoneGearyRule}, m, x, γp)
+    Kp = length(x)
+    t = @variable(m, [1:Kp])
+    for k in 1:Kp
+        @constraint(m, [t[k], 1.0, x[k]] in MOI.ExponentialCone())   # t ≤ log x
+    end
+    return sum(γp[k] * t[k] for k in 1:Kp)
 end
 
 """
@@ -602,7 +621,7 @@ end
 
 CES with ρ = 1 − 1/η, nᵢ in shares, γ ≤ 0 names pinned at ε shares (free hedge names: nᵢ ≥ ε, no
 utility term). Under a budget alone nᵢ ∝ (γᵢ/Sᵢ)^η for every η (CHEME-5660 `allocate_ces`).
-Both cones work on the scaled share count zᵢ = aᵢ·nᵢ (`_ces_objective`), with aᵢ = Σ_{γ>0} Sⱼ / W
+Both cones work on the scaled share count zᵢ = aᵢ·nᵢ (`utility_objective!`), with aᵢ = Σ_{γ>0} Sⱼ / W
 (1/shares), so zᵢ = 1 at the book with equal share counts over the preferred names.
 - η > 1 (0 < ρ < 1): maximize Σ_{γ>0} γᵢ·tᵢ with (zᵢ, 1, tᵢ) ∈ PowerCone(ρ), i.e. tᵢ ≤ zᵢ^ρ.
 - 0 < η < 1 (ρ < 0): minimize Σ_{γ>0} γᵢ·tᵢ with (tᵢ, zᵢ, 1) ∈ PowerCone(η), i.e. tᵢ ≥ zᵢ^ρ.
@@ -620,7 +639,7 @@ function allocate(rule::MyCESRule, p::MyAllocationProblem)::MyAllocationResult
     any(>(0), p.γ) || return _result(p, pins, :no_preferred)
     pref = findall(p.γ .> 0)
     a = fill(sum(p.prices[pref]) / p.W, length(pref))                    # 1/c, 1/shares
-    return _solve_utility(p, pins, zeros(length(pref)), _ces_objective(Float64(rule.η), a))
+    return _solve_utility(p, pins, zeros(length(pref)), rule; scale=a)
 end
 
 """
@@ -628,7 +647,7 @@ end
 
 Weight-based CES: the CES of `allocate(::MyCESRule, …)` over the dollar weights wᵢ = nᵢSᵢ/W instead of
 the share counts, γ ≤ 0 names pinned at ε shares (free hedge names: nᵢ ≥ ε, no utility term). The
-cones work on zᵢ = Kp·wᵢ (`_ces_objective` with aᵢ = Kp·Sᵢ/W, in 1/shares), so zᵢ = 1 at equal
+cones work on zᵢ = Kp·wᵢ (`utility_objective!` with aᵢ = Kp·Sᵢ/W, in 1/shares), so zᵢ = 1 at equal
 weights over the Kp preferred names **(plan decision)**; the common factor Kp^ρ leaves the argmax
 unchanged. Under a budget alone wᵢ ∝ γᵢ^η. η = 1: `allocate(MyCobbDouglasRule(), p)`.
 """
@@ -639,34 +658,33 @@ function allocate(rule::MyCESWeightRule, p::MyAllocationProblem)::MyAllocationRe
     any(>(0), p.γ) || return _result(p, pins, :no_preferred)
     pref = findall(p.γ .> 0); Kp = length(pref)
     a = Kp .* p.prices[pref] ./ p.W                                      # 1/shares
-    return _solve_utility(p, pins, zeros(Kp), _ces_objective(Float64(rule.η), a))
+    return _solve_utility(p, pins, zeros(Kp), rule; scale=a)
 end
 
 """
-    _ces_objective(η::Float64, a::Vector{Float64})::Function
+    utility_objective!(rule::Union{MyCESRule,MyCESWeightRule}, m, z, γp)
 
-The `objective!(m, x, γp)` closure of `_solve_utility` for CES with elasticity η ≠ 1 over the
-preferred holdings x, on the scaled variable zₖ = aₖ·xₖ (aₖ in 1/units of x). With ρ = 1 − 1/η it adds
+The CES objective for elasticity η ≠ 1 takes the scaled holdings zₖ = aₖ·xₖ (aₖ in 1/units of x).
+With ρ = 1 − 1/η it adds
 - η > 1: `[z, 1, t] in PowerCone(ρ)` (t ≤ z^ρ) and returns Σ γₖ tₖ;
 - η < 1: `[t, z, 1] in PowerCone(η)` (t ≥ z^ρ) and returns −Σ γₖ tₖ.
 The argmax is that of (Σ γₖ xₖ^ρ)^(1/ρ) for any a > 0.
 """
-function _ces_objective(η::Float64, a::Vector{Float64})::Function
+function utility_objective!(rule::Union{MyCESRule,MyCESWeightRule}, m, z, γp)
+    η = rule.η
     ρ = 1 - 1 / η
-    return function (m, x, γp)
-        Kp = length(x)
-        t = @variable(m, [1:Kp])
-        if η > 1
-            for k in 1:Kp
-                @constraint(m, [a[k] * x[k], 1.0, t[k]] in MOI.PowerCone(ρ))   # t ≤ z^ρ
-            end
-            return sum(γp[k] * t[k] for k in 1:Kp)
-        end
+    Kp = length(z)
+    t = @variable(m, [1:Kp])
+    if η > 1
         for k in 1:Kp
-            @constraint(m, [t[k], a[k] * x[k], 1.0] in MOI.PowerCone(η))       # t ≥ z^ρ, ρ < 0
+            @constraint(m, [z[k], 1.0, t[k]] in MOI.PowerCone(ρ))    # t ≤ z^ρ
         end
-        return -sum(γp[k] * t[k] for k in 1:Kp)
+        return sum(γp[k] * t[k] for k in 1:Kp)
     end
+    for k in 1:Kp
+        @constraint(m, [t[k], z[k], 1.0] in MOI.PowerCone(η))        # t ≥ z^ρ, ρ < 0
+    end
+    return -sum(γp[k] * t[k] for k in 1:Kp)
 end
 
 """
@@ -687,13 +705,7 @@ function allocate(rule::MyStoneGearyRule, p::MyAllocationProblem)::MyAllocationR
     any(>(0), p.γ) || return _stone_geary_baselines(p, b)
     pref = findall(p.γ .> 0); Kp = length(pref)
     b_p = b[pref]
-    return _solve_utility(p, b, b_p, function (m, x, γp)
-        t = @variable(m, [1:Kp])
-        for k in 1:Kp
-            @constraint(m, [t[k], 1.0, x[k] - b_p[k]] in MOI.ExponentialCone())  # t ≤ log(n − b)
-        end
-        return sum(γp[k] * t[k] for k in 1:Kp)
-    end)
+    return _solve_utility(p, b, b_p, rule; baseline=b_p)
 end
 
 # Stone–Geary with no γ > 0: the baselines b (shares), held under a finite β cap (spec §6: the cap

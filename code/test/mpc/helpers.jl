@@ -216,7 +216,7 @@ end
 (md, ctx) for the SPY-short tests: the study fixture with the v2 short switches on (`beta_min = -0.5`,
 `spy_short = true`), a run from 2018-07-02 to 2018-07-13 (10 trading days), and ξ set to `ξ` on every run row,
 so the β limit is 1 − ξ on every day. `z = 1e6` and `D_max = 1` keep the band and drawdown triggers quiet, and
-the run is shorter than the horizon and the re-pick timer, so the first day's decision is the only one. Other
+the run is shorter than the horizon, so the first day's decision is the only one. Other
 keywords override settings.
 
 ### Arguments
@@ -379,5 +379,5 @@ The seven method-v2 settings at their v2 values (plan, Global Constraints).
 """
 function v2_settings()::NamedTuple
     return (forecast_model="factor", forecast_band="quantile", market_turn=true, beta_over_cap=0.1,
-        beta_min=-0.5, spy_short=true, repick_on_market_turn=true)
+        beta_min=-0.5, spy_short=true)
 end

@@ -1,0 +1,34 @@
+written = "2026-11-26T09:55:11.195"
+
+[synthetic]
+volume = "median 2016-2024 volume"
+risk_free = "the last real T-bill rate"
+days = 252
+start = "the real history to 2026-11-24"
+seeds = "5660 + path (synthetic_growth), the practicum's stress-test seeds"
+paths = 200
+generator = "data/generator.jld2 with scripts/practicum/src/Generator.jl (see data/SOURCE.md)"
+
+[windows]
+train_start = "2016-01-04"
+backtest_start = "2025-01-02"
+train_stop = "2024-12-31"
+backtest_stop = "2026-11-24"
+
+[strategies]
+picking = ["gamma by sector", "global gamma", "correlation gamma", "liquid gamma", "hand-picked l8b_13", "hand-picked l8b_15", "random by sector", "random liquid", "random global"]
+estimates = ["updated", "fixed"]
+hedge = [true, false]
+weighting = ["Cobb-Douglas", "CES on shares", "CES on weights", "Stone-Geary", "minimum variance", "maximum Sharpe", "130/30 long-short", "equal weight", "BAB"]
+
+[engine]
+basket_K = 13
+seeds_synthetic = 5
+forecast_band = "quantile"
+config = "code/src/data/mpc/study.toml (INFORMS v2) with the L15a dates"
+trigger_rule = "every trigger picks a new basket and re-plans the book"
+seeds_real = 30
+N_per_sector = 3
+forecast_models = "the practicum generator (scripts/synthetic.jl, l15a_forecast_models)"
+seed_deterministic = 5660
+forecast_model = "factor"

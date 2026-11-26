@@ -72,6 +72,7 @@ module MPCPortfolio
     # course additions: default settings, universe selection, and the L14a strategies -
     include(joinpath(@__DIR__, "Course.jl"))
     include(joinpath(@__DIR__, "CourseStrategies.jl"))
+    include(joinpath(@__DIR__, "CourseL15a.jl"))
 
     # exports (the study's names for the ported files, plus the course additions) -
     export MyMarketData, load_market_data, growth_rates, index_of, DATA_FILES, DATA_FILES_NOV2026,
@@ -80,7 +81,7 @@ module MPCPortfolio
         market_state, preference_weights, AbstractCovarianceModel, MySIMCovariance,
         MyShrunkResidualCovariance, growth_covariance, residual_matrix, shrinkage_loss,
         choose_shrinkage, AbstractPortfolioRule, MyCobbDouglasRule, MyCESRule, MyCESWeightRule,
-        MyStoneGearyRule, MyConstraintSet, MyAllocationProblem, MyAllocationResult, allocate,
+        MyStoneGearyRule, MyConstraintSet, MyAllocationProblem, MyAllocationResult, allocate, utility_objective!,
         add_shared_constraints!, budget_only_weights, MyMinVarRule, MyTangentRule,
         MyLongShortCDRule, max_investable, expected_growth, MyProjection, project_gbm, trade_cost,
         borrow_fee, MyMPCSpec, MyTriggerState, check_trigger, scorecard, MyRunConfig,
@@ -103,4 +104,5 @@ module MPCPortfolio
     export sector_factor_covariance, sector_factor_variances
     export default_study_path, default_study_v1_path, select_universe, subset_universe
     export market_data_from_growth, bab_betas, bab_weights, bab_rebalance_rows, run_bab, buy_and_hold_equity
+    export load_l15a_market, closest_book, scaled_book
 end

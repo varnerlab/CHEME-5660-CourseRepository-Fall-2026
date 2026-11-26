@@ -23,14 +23,24 @@ using Statistics
 using StatsBase
 using VLQuantitativeFinancePackage
 using Dates # the trading days of the market data
-import Logging # silence the data loader's notes about split adjustments
+using JLD2 # read the saved forecast models and backtests
+using CodecZlib # read the compressed JLD2 files
+import JumpHMM # the saved forecast models of the band trigger are JumpHMM models
 
 # the INFORMS 2026 model-predictive portfolio method, a submodule of the course package: always call it
 # qualified (MPC.calibrate, ...), because some of its names are also used by the course package itself.
 import VLQuantitativeFinancePackage.MPCPortfolio as MPC
 
-# the course's daily S&P 500 files, sector list, and 13-week bill rates (DTB3) -
-const _PATH_TO_MARKET_DATA = joinpath(dirname(pathof(VLQuantitativeFinancePackage)), "data");
-
 # load the functions in the local src directory -
 include(joinpath(_PATH_TO_SRC, "Helper.jl"));
+
+# load the strategy files: the picking rules, the weighting rules, and the menu that lists them -
+const _PATH_TO_STRATEGIES = joinpath(_ROOT, "strategies");
+for folder ∈ ("picking", "weighting")
+    for file ∈ sort(readdir(joinpath(_PATH_TO_STRATEGIES, folder)))
+        if endswith(file, ".jl") == true
+            include(joinpath(_PATH_TO_STRATEGIES, folder, file));
+        end
+    end
+end
+include(joinpath(_PATH_TO_STRATEGIES, "menu.jl"));

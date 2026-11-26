@@ -4,19 +4,17 @@
 """
     default_study_path()::String
 
-Path of the study's default settings, `data/mpc/study.toml` in the course package: a copy of the INFORMS
-study's method-v2 `config/study.toml` (windows, limits, costs, triggers, hedge, pickers, forecast), plus the
-course's `covariance_model` key. Read it with `load_study`
-and change single values with `with_settings`.
+Path of the study's default settings in `data/mpc/study.toml`. The settings come from the INFORMS
+study's method-v2 configuration with the course covariance option and a single list of triggers.
+Read it with `load_study` and change single values with `with_settings`.
 """
 default_study_path()::String = joinpath(@__DIR__, "..", "data", "mpc", "study.toml")
 
 """
     default_study_v1_path()::String
 
-Path of the study's v1 settings, `data/mpc/study_v1.toml` in the course package: `study.toml` with every method-v2
-switch at its v1 value (the GBM forecast and its σ band, no market-turn or β trigger, no SPY short). Read it with
-`load_study`.
+Path of `data/mpc/study_v1.toml`. It uses the v1 forecast and hedge settings with the course's
+single list of triggers. Read it with `load_study`.
 """
 default_study_v1_path()::String = joinpath(@__DIR__, "..", "data", "mpc", "study_v1.toml")
 

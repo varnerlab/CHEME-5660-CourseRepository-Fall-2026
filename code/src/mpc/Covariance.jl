@@ -106,8 +106,9 @@ sample covariance of the SIM residuals over the trailing `window` trading days; 
 variance over the next 21 trading days of wᵀε_t. At each anchor α, β come from OLS on the trailing
 252 days (the study's online EWLS estimates have no run-up inside the training window). Anchors are
 the month-ends from `start` + 252 trading days through `stop` − 21. Baskets: up to 33 names
-(round-robin across sectors), Dirichlet(1) weights. Portfolios with non-finite or non-positive r
-are skipped. Uses data through `stop` only.
+(round-robin across sectors), Dirichlet(1) weights, drawn at each anchor from the tickers with a growth rate on
+every day of its trailing 252 days and its next 21 days (a ticker that lists later joins at a later anchor).
+Portfolios with non-finite or non-positive r are skipped. Uses data through `stop` only.
 """
 function shrinkage_loss(md::MyMarketData, start::Date, stop::Date;
         grid=0:0.1:1, n_portfolios::Int=200, seed::Int=5660, window::Int=126)::Vector{Float64}
@@ -116,13 +117,17 @@ function shrinkage_loss(md::MyMarketData, start::Date, stop::Date;
     i0 = searchsortedfirst(md.dates, start); i1 = searchsortedlast(md.dates, stop)
     anchors = _shrinkage_anchors(md.dates, i0, i1)
     isempty(anchors) && throw(ArgumentError("window too short: need a month-end with 252 trading days before it and 21 after"))
-    sector_idx = [findall(==(s), md.sector) for s in unique(md.sector)]
+    sectors = unique(md.sector)
     λs = collect(Float64, grid)
     loss = zeros(length(λs)); count = 0
     for a in anchors
-        (; α, β, Σs) = _shrinkage_covariances(g, g_m, a, λs; window=window)
+        # the tickers listed over the anchor's fit window and its next 21 days -
+        listed = [j for j in axes(g, 2) if all(isfinite, view(g, (a - 252):(a + 20), j))]
+        ga = g[:, listed]
+        sector_idx = [findall(==(s), md.sector[listed]) for s in sectors]
+        (; α, β, Σs) = _shrinkage_covariances(ga, g_m, a, λs; window=window)
         fw = a:(a + 20)
-        Ef = residual_matrix(g[fw, :], g_m[fw], α, β)
+        Ef = residual_matrix(ga[fw, :], g_m[fw], α, β)
         for _ in 1:n_portfolios
             idx = _draw_basket(rng, sector_idx, 33)
             w = randexp(rng, length(idx)); w ./= sum(w)       # Dirichlet(1)

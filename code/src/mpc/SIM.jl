@@ -22,7 +22,9 @@ end
     fit_base_sim(md::MyMarketData, start::Date, stop::Date)
 
 Fit a SIM per ticker on growth rates (yr⁻¹, Δt = 1/252) between consecutive trading days inside
-[`start`, `stop`]. Returns `(params, σ_m, m_m, v_m)`: `params::Dict{String,MySIMParameterEstimate}`;
+[`start`, `stop`]. A ticker that lists after `start` has no close (`NaN`) before its first trading day, so its
+fit uses only the days on which it has a growth rate. Returns `(params, σ_m, m_m, v_m)`:
+`params::Dict{String,MySIMParameterEstimate}`;
 `σ_m` (yr⁻¹) the sample SD (N−1) of SPY growth over the same days; `m_m` (yr⁻¹) the mean and
 `v_m` (yr⁻²) the population variance (`corrected=false`) of that SPY growth, the training market
 moments that seed `ewls_init`.
@@ -35,7 +37,8 @@ function fit_base_sim(md::MyMarketData, start::Date, stop::Date)
     G = growth_rates(md.close[rows, :])
     params = Dict{String,MySIMParameterEstimate}()
     for (j, t) ∈ enumerate(md.tickers)
-        params[t] = estimate_sim(g_m, G[:, j])
+        own = isfinite.(G[:, j])    # the days on which the ticker has a growth rate
+        params[t] = estimate_sim(g_m[own], G[own, j])
     end
     return (params = params, σ_m = std(g_m), m_m = mean(g_m), v_m = var(g_m; corrected = false))
 end

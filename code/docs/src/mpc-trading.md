@@ -4,6 +4,6 @@ The forecasts (the GBM projection and the JumpHMM factor model), trading costs, 
 
 ```@autodocs
 Modules = [VLQuantitativeFinancePackage.MPCPortfolio]
-Pages = ["Projection.jl", "ForecastFactor.jl", "Costs.jl", "Triggers.jl", "Metrics.jl", "GrowthScorecard.jl", "Backtest.jl", "StudyBacktest.jl", "StudyScoring.jl", "HedgePool.jl", "Screens.jl", "Bandit.jl", "CourseStrategies.jl"]
+Pages = ["Projection.jl", "ForecastFactor.jl", "Costs.jl", "Triggers.jl", "Metrics.jl", "GrowthScorecard.jl", "Backtest.jl", "StudyBacktest.jl", "StudyScoring.jl", "HedgePool.jl", "Screens.jl", "Bandit.jl", "CourseStrategies.jl", "CourseL15a.jl"]
 Order = [:constant, :type, :function]
 ```
