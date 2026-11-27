@@ -374,7 +374,7 @@ The saved stress-test runs of one strategy, one row for each synthetic market, i
 - `picking::String`: the name of the picking rule on the menu.
 - `weighting::String`: the name of the weighting rule on the menu.
 - `hedge::Bool`: `true` for the runs with the market hedge on, and `false` for the runs without it.
-- `estimates::String`: `"fixed"` or `"updated"`.
+- `estimates::String`: `"fixed"`, `"updated"`, or `"sector_factor"`.
 - `seed::Int`: the seed of the strategy's random draws.
 
 ### Returns

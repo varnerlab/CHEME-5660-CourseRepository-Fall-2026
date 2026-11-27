@@ -6,7 +6,8 @@
 Daily SIM estimates over a run window. `rows` are the market-data row indices of the run;
 `α` (yr⁻¹), `β` (dimensionless) and `σ_ε` (yr⁻¹) are `length(rows) × length(tickers)` matrices;
 `σ_m` (yr⁻¹) is the SD of SPY growth. For updated estimates, row s includes growth into day `rows[s]`.
-For fixed estimates, every row holds the training values.
+For fixed estimates, every row holds the training values. For the sector factor estimates, `α` also holds the
+sector term δ̂ᵢ·f̃ₛ,₋ᵢ(t) of each row (`add_sector_term!`).
 """
 mutable struct MyOnlineSIM
     rows::UnitRange{Int}

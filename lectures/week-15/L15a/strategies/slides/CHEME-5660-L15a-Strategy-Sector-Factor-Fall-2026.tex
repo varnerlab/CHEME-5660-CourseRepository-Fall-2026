@@ -1,0 +1,118 @@
+% L15a strategy deck: the sector factor estimates, an estimate setting of the strategy menu.
+% One short deck per entry of the strategy menu, read next to the code (code/src/mpc/SectorTerm.jl). Sources:
+% sector_factor_series, sector_loadings, smoothed_sector_factor, and add_sector_term! in SectorTerm.jl, build_context
+% in code/src/mpc/Context.jl, _study_problem and _study_decision in code/src/mpc/StudyBacktest.jl, and the setting
+% gtilde_window = 252 in code/src/data/mpc/study.toml. The figure comes from slides/figs/make_deck_figures.py.
+% November 27, 2026: first build. Build with make in this folder: LaTeX runs from strategies/, so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+\newcommand{\engine}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/code/src/mpc}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: The Sector Factor Estimates}
+\subtitle{Estimates, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The sector factor estimates start from the fixed estimates and add a sector term to the expected growth rate of
+  each stock:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Fixed fit}: the baseline $\hat{\alpha}_{i}$ (1/yr) and the market sensitivity $\hat{\beta}_{i}$ of
+      stock $i$ keep their values from the 2016 to 2024 fit.
+    \item \hilite{Sector term}: the expected growth rate adds the recent growth of the stock's sector that the
+      market does not explain.
+    \item \hilite{ETFs}: an exchange-traded fund (ETF) has no sector, so its expected growth rate keeps the single
+      index form.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine adds the sector term only to the fixed fit, because an updated baseline $\alpha_{i}(t)$ already
+  follows the recent growth of each stock, including the growth of its sector.
+\end{frame}
+
+\begin{frame}{The Sector Term}
+  Previously, we built the sector factor model, in which the sector factor $f_{s}(t)$ is the average residual of the
+  stocks in sector $s$. On day $t$, stock $j$ has the growth rate $g_{j}(t)$ (1/yr), and \texttt{SPY} has the growth
+  rate $g_{m}(t)$ with the 252-day exponential moving average (EMA) $\tilde{g}_{M,t}$. For stock $i$ in sector $s$:
+  {\setlength{\jot}{1pt}
+  \begin{align*}
+    \varepsilon_{j}(t) &= g_{j}(t)-\hat{\alpha}_{j}-\hat{\beta}_{j}\,g_{m}(t) && \text{residual of stock } j\text{, fixed fit}\\
+    f_{s,-i}(t) &= \frac{1}{n_{s}-1}\sum_{j\in s,\ j\neq i}\varepsilon_{j}(t) && \text{sector factor without stock } i\\
+    \tilde{f}_{s,-i}(t) &= \text{252-day EMA of } f_{s,-i}(t) && \text{smoothed like } \tilde{g}_{M,t}\\
+    \Longrightarrow\quad &\boxed{\tilde{g}_{i,t}=\hat{\alpha}_{i}+\hat{\beta}_{i}\,\tilde{g}_{M,t}+\hat{\delta}_{i}\,\tilde{f}_{s,-i}(t)}
+      && \text{expected growth rate (1/yr)}
+  \end{align*}}%
+  where $n_{s}$ counts the stocks of sector $s$ with a price on day $t$. The loading $\hat{\delta}_{i}$ is the least
+  squares slope, with an intercept, of $\varepsilon_{i}(t)$ on $f_{s,-i}(t)$ over 2016 to 2024. The preference weight
+  $\gamma_{i}(t)$ keeps its \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{formula}, with
+  $\tilde{g}_{i,t}$ in the numerator and $\hat{\beta}_{i}$ in the denominator.
+\end{frame}
+
+\begin{frame}{The Basket of a Made-Up Market}
+  \vspace{0.3em}
+  A made-up sector term lowers Tech and Comm. and lifts Health and Staples:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Sector-Factor.pdf}
+  \end{center}
+  \href{\repo/strategies/slides/CHEME-5660-L15a-Strategy-Global-Gamma-Fall-2026.pdf}{Global gamma} keeps 9 of its 13
+  tickers and holds three each from Health and Staples.
+\end{frame}
+
+\begin{frame}{Where the Sector Term Enters}
+  \vspace{0.3em}
+  At every close, the engine adds $\hat{\delta}_{i}\tilde{f}_{s,-i}(t)$ to the fixed baseline $\hat{\alpha}_{i}$. Every part
+  of a decision that uses the expected growth rate then carries the sector term:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Preference weights}: the gamma picking rules, and the Cobb-Douglas, CES, Stone-Geary, and 130/30
+      long-short weighting rules.
+    \item \hilite{Maximum Sharpe}: the expected excess growth rates that set the weights.
+    \item \hilite{Band-exit trigger}: the forecast of the wealth over the next 21 trading days.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The market sensitivities and the covariance are the same as with fixed estimates. Minimum variance, equal
+  weight, and BAB change only through the basket and the decision days.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The code file is
+  \href{\engine/SectorTerm.jl}{\texttt{code/src/mpc/SectorTerm.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{MPC.sector\_factor\_series(md, calib)} computes the sector factor $f_{s,-i}(t)$ of every stock on every day.
+    \item \texttt{MPC.sector\_loadings(md, calib, F; train\_start, train\_stop)} fits the loading $\hat{\delta}_{i}$ of every stock.
+    \item \texttt{MPC.smoothed\_sector\_factor(F; window)} computes $\tilde{f}_{s,-i}(t)$, with \texttt{window~=~252}.
+    \item \texttt{MPC.add\_sector\_term!(sim, md, calib, s)} adds $\hat{\delta}_{i}\tilde{f}_{s,-i}(t)$ to the fixed baseline on every day of the run.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The setting \texttt{estimates~=~"sector\_factor"} selects these estimates. The
+  \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule and setting, and the
+  \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the preference weight and the triggers.
+\end{frame}
+
+\end{document}

@@ -60,7 +60,12 @@
   exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
 
   \vspace{0.5em}
-  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+  The preference weight lies between $-1$ and $1$, with the sign of $\tilde{g}_{i,t}$.
+
+  \vspace{0.5em}
+  With fixed estimates, $\alpha_{i}(t)$ and $\beta_{i}(t)$ keep their values from the 2016 to 2024 fit. With
+  updated estimates, the engine updates them at every close. The \href{\repo/strategies/slides/CHEME-5660-L15a-Strategy-Sector-Factor-Fall-2026.pdf}{sector factor estimates}
+  keep the fixed values and add the sector growth that the market does not explain, $\hat{\delta}_{i}\tilde{f}_{s,-i}(t)$, to $\tilde{g}_{i,t}$.
 \end{frame}
 
 \begin{frame}{How the Market State Tilts the Preference Weight}

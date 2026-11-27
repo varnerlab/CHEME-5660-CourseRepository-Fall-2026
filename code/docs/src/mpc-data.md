@@ -4,6 +4,6 @@ Market data, the risk-free rate, the single-index model and its online update, t
 
 ```@autodocs
 Modules = [VLQuantitativeFinancePackage.MPCPortfolio]
-Pages = ["Types.jl", "Factory.jl", "Data.jl", "SIM.jl", "Covariance.jl", "MarketInputs.jl", "Calibration.jl", "OnlineSIM.jl", "StudySettings.jl", "Context.jl", "Course.jl"]
+Pages = ["Types.jl", "Factory.jl", "Data.jl", "SIM.jl", "Covariance.jl", "MarketInputs.jl", "Calibration.jl", "OnlineSIM.jl", "StudySettings.jl", "SectorTerm.jl", "Context.jl", "Course.jl"]
 Order = [:constant, :type, :function]
 ```

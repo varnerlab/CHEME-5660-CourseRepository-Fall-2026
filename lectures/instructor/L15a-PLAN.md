@@ -122,15 +122,23 @@ Spec: `lectures/instructor/L15a-DESIGN.md` (approved by Jeff 11-25). Not committ
        `run_strategies.jl`, and `check_picking_files.jl`.
     3. Smoke test: `run_strategies.jl --synthetic-only --paths 2 --strategies 4 --tag synccheck`; SPY and TLT on
        markets 1 and 2 must match the practicum's paths 1 and 2 (seeds 5661 and 5662). Delete the synccheck files.
-    4. Run the picking and weighting checks, then `run_strategies.jl --real-only` (about 10 min; it also rewrites
-       `L15a-Forecast-Models.jld2` from the new generator).
+    4. Run the picking and weighting checks, then `run_strategies.jl --real-only` (about 15 min with the three
+       estimate settings, 5,184 runs; it also rewrites `L15a-Forecast-Models.jld2` from the new generator).
     5. Backtest example: set `run_stop = Date(2026, 11, 30)` and the "November 24" text, recount the "What do we
        see?" numbers and the Summary with `menu_facts.jl`, and re-execute.
-    6. Start the 200-market run (about 5 h) and delete the timing10 files when it finishes.
-    7. Stress example, with the tools in `lectures/instructor/L15a-tools/` (run from the repo root):
-       `julia stress_facts.jl <repo>` recounts the menu-wide numbers; update `stress_facts.json`, and in `make_stress_example.py`
-       the "November 24" text and the `Date(2026, 11, 24)` check; then `python3 make_stress_example.py <out> <backtest example> stress_facts.json`,
-       execute with nbconvert into `lectures/week-15/L15a/`, and run `clear_include_output.py` on the result.
+       With the sector factor estimates (added 11-27), the menu has 486 strategies and 5,184 backtests: update
+       "3,456" (cells 0, 20, 24, 33), "324" (cell 20), and the check `@assert nrow(df) == 3456` (cell 21). The 1,728
+       updated-versus-fixed pairs stay 1,728. `menu_facts.jl` counts only those pairs, so add the sector factor
+       pairs if the text should mention them. In the stress example, "756" (cells 4 and 32) becomes 1,134.
+    6. Start the 200-market run (about 7 h: 1,134 runs per market with the sector factor estimates, added 11-27) and
+       delete the timing10 files when it finishes. The saved summary no longer has the `combination` column, which
+       keeps the file near 75 MB.
+    7. Stress example: do NOT regenerate it with `make_stress_example.py`. That script still writes the old 30-cell
+       example (checked 11-27), and the committed example (34 cells, utility basket and BAB) was edited after it.
+       Edit the notebook by hand: the "November 24" text and the `Date(2026, 11, 24)` check. Recount the menu-wide
+       numbers with `julia lectures/instructor/L15a-tools/stress_facts.jl <repo>` (it compares the updated and the
+       sector factor runs with their fixed copies), update the "What do we see?" boxes, execute with nbconvert in
+       place, and run `clear_include_output.py` on the result.
     8. Lecture: in `make_lecture.py`, update the two "November 24, 2026" mentions and the Summary's menu-wide
        statements (fewer than half, most strategies, few pass, about a quarter) if Monday's counts change them.
        Regenerate from the HEAD lecture, or apply the same edits by hand if Jeff has edited the notebook.

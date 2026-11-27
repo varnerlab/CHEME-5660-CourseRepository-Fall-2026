@@ -34,6 +34,8 @@ Course addition (CHEME 5660, 2026-11-19):
 L15a estimate settings. `estimates = "updated"` updates the single index model each trading day.
 `estimates_start` is the first update date and defaults to `start` when it is `nothing`.
 `estimates = "fixed"` holds the fitted single index parameters and market volatility at their training values.
+`estimates = "sector_factor"` holds the same training values and adds the sector term δ̂ᵢ·f̃ₛ,₋ᵢ(t) to each α
+(`add_sector_term!`, course addition 2026-11-27).
 """
 mutable struct MyStudySettings
     start::Date; stop::Date; train_start::Date; train_stop::Date
@@ -121,8 +123,8 @@ function _validate_settings(s::MyStudySettings)
     s.ces_eta > 0 || throw(ArgumentError("MyStudySettings: ces_eta must be > 0"))
     s.train_stop < s.start ≤ s.stop ||
         throw(ArgumentError("MyStudySettings: need train_stop < start ≤ stop"))
-    if !(s.estimates in ("updated", "fixed"))
-        throw(ArgumentError("MyStudySettings: estimates must be \"updated\" or \"fixed\""))
+    if !(s.estimates in ("updated", "fixed", "sector_factor"))
+        throw(ArgumentError("MyStudySettings: estimates must be \"updated\", \"fixed\", or \"sector_factor\""))
     end
     if s.estimates_start !== nothing && !(s.train_stop < s.estimates_start ≤ s.start)
         throw(ArgumentError("MyStudySettings: need train_stop < estimates_start ≤ start"))

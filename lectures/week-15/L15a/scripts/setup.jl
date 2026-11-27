@@ -32,8 +32,8 @@ include(joinpath(_PATH_TO_STRATEGIES, "menu.jl"))
 """
     l15a_settings(; hedge::Bool, estimates::String, kw...)::MPC.MyStudySettings
 
-The INFORMS v2 settings on the L15a dates, with the market hedge on or off and the estimates `"updated"` or
-`"fixed"`. Other keywords override settings by field name, for example `stop` or `forecast_model`.
+The INFORMS v2 settings on the L15a dates, with the market hedge on or off and the estimates `"updated"`, `"fixed"`,
+or `"sector_factor"`. Other keywords override settings by field name, for example `stop` or `forecast_model`.
 """
 function l15a_settings(; hedge::Bool, estimates::String, kw...)::MPC.MyStudySettings
     base = MPC.load_study(MPC.default_study_path()).settings

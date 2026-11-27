@@ -50,8 +50,12 @@
   \end{itemize}
 
   \vspace{0.5em}
-  The basket comes from the picking rule. Each $\beta_{i}$ comes from the strategy's fixed or
-  updated estimates of the single index model.
+  The basket comes from the picking rule.
+
+  \vspace{0.5em}
+  With fixed estimates, each $\beta_{i}$ keeps its value from the 2016 to 2024 fit of the single index model.
+  With updated estimates, the engine updates $\beta_{i}$ at every close. The \href{\repo/strategies/slides/CHEME-5660-L15a-Strategy-Sector-Factor-Fall-2026.pdf}{sector factor estimates}
+  change only the expected growth rates, which reach this rule through the basket and the decision days.
 \end{frame}
 
 \begin{frame}{The BAB Weights}

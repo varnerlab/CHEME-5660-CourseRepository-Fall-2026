@@ -16,7 +16,9 @@ XeLaTeX, `pdf2svg`, and `pdftoppm`. Each figure `\input`s `schematic-style.tex`,
 L13a style, and `theme_svg.py` adds the dark screen palette; an unmapped color fails the build.
 
 The strategy decks draw their own figures in `strategies/slides/figs`, with `make_deck_figures.py`. The deck figure
-`Fig-L15a-Deck-Tilt` redraws the left panel of `Fig-L15a-BAB-Tilt` at slide size, without its title.
+`Fig-L15a-Deck-Tilt` redraws the left panel of `Fig-L15a-BAB-Tilt` at slide size, without its title. The deck figure
+`Fig-L15a-Deck-Sector-Factor` draws the made-up market of `Fig-L15a-Deck-Picks-Global` on a taller scale, with fixed
+estimates and with a made-up sector term (seed 5662). The script asserts the basket counts that the deck quotes.
 
 ## Alt text: Fig-L15a-Backtest-Day
 

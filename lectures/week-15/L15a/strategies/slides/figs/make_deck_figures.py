@@ -84,7 +84,13 @@ GY = 1.15  # cm per unit of gamma
 PANEL = DX * (len(SECTORS) + 0.4)  # cm, the width of one panel
 
 
-def grid_panel(x0, title, picked, cutoff_line, y_label):
+def grid_panel(x0, title, picked, cutoff_line, y_label, values=None, cut=None, GY=GY):
+    """One dot panel: the preference weights `values` of each sector (default: the made-up market), and the cutoff
+    `cut` of the top 13 (default: its cutoff), at `GY` cm per unit of preference weight."""
+    if values is None:
+        values = gamma
+    if cut is None:
+        cut = cutoff
     out = [r"  \begin{scope}[shift={(%s, 0)}]" % fmt(x0)]
     out.append(r"    \node[font=\sffamily\small\bfseries, anchor=south] at (%s, %s) {%s};" % (fmt(PANEL / 2), fmt(0.97 * GY), title))
     out.append(r"    \draw[axis] (0, %s) -- (0, %s);" % (fmt(-0.95 * GY), fmt(0.98 * GY)))
@@ -96,12 +102,12 @@ def grid_panel(x0, title, picked, cutoff_line, y_label):
         out.append(r"    \node[font=\sffamily\small, rotate=90, anchor=south] at (-0.62, 0) {preference weight};")
     if cutoff_line:
         out.append(r"    \draw[draw=saorange, line width=1.0pt, dash pattern=on 4pt off 2pt] (0, %s) -- (%s, %s);"
-                   % (fmt(cutoff * GY), fmt(PANEL), fmt(cutoff * GY)))
+                   % (fmt(cut * GY), fmt(PANEL), fmt(cut * GY)))
     for s in range(len(SECTORS)):
         x = DX * (s + 0.7)
         out.append(r"    \node[font=\sffamily\footnotesize, rotate=45, anchor=east] at (%s, %s) {%s};" % (fmt(x + 0.06), fmt(-0.95 * GY - 0.04), SECTORS[s]))
         for k in range(PER_SECTOR):
-            y = gamma[s][k] * GY
+            y = values[s][k] * GY
             if (s, k) in picked:
                 out.append(r"    \filldraw[fill=saorange, draw=vnink, line width=0.5pt] (%s, %s) circle (0.054);" % (fmt(x), fmt(y)))
             else:
@@ -110,7 +116,7 @@ def grid_panel(x0, title, picked, cutoff_line, y_label):
     return "\n".join(out) + "\n"
 
 
-def dot_legend(cutoff_entry):
+def dot_legend(cutoff_entry, GY=GY):
     """One row above both panels: the two kinds of dots, and the cutoff line of global gamma."""
     x, y = SHIFT - 3.2 - (1.6 if cutoff_entry else 0.0), 0.97 * GY + 0.78
     out = [r"  \filldraw[fill=saorange, draw=vnink, line width=0.5pt] (%s, %s) circle (0.054);" % (fmt(x), fmt(y)),
@@ -134,6 +140,40 @@ write("Picks-Global",
       grid_panel(0, "global gamma", top13, True, True)
       + grid_panel(SHIFT, "random global", global_random, False, False)
       + dot_legend(True))
+
+# ================================================================== the sector factor estimates on the same market
+# A made-up smoothed sector factor for each sector (1/yr) and a made-up loading for each stock. The sector term
+# moves the argument of tanh, so each preference weight becomes tanh(atanh(gamma) + delta * f). The ETFs have no
+# sector, so they keep their preference weights. A second random stream draws the loadings, so the figures above
+# keep their draws; the loop redraws until the dots of each column stay apart at the taller scale GY_SF.
+SECTOR_TERM = dict(zip(SECTORS, [-0.55, 0.0, 0.7, 0.0, 0.0, 0.4, 0.0, 0.0, 0.0, 0.0, -0.2, 0.0]))
+GY_SF = 1.42  # cm per unit of gamma: two picked dots need a gap of 0.108 cm
+rng_sf = random.Random(5662)
+while True:
+    loading = [[0.0 if SECTORS[s] == "ETF" else max(0.4, min(1.4, rng_sf.gauss(0.9, 0.12))) for k in range(PER_SECTOR)]
+               for s in range(len(SECTORS))]
+    gamma_sf = [[math.tanh(math.atanh(gamma[s][k]) + loading[s][k] * SECTOR_TERM[SECTORS[s]]) for k in range(PER_SECTOR)]
+                for s in range(len(SECTORS))]
+    gap = min(abs(a - b) for column in gamma_sf for i, a in enumerate(column) for j, b in enumerate(column) if i < j)
+    if gap * GY_SF >= 0.108 and max(max(c) for c in gamma_sf) <= 0.93:
+        break
+flat_sf = sorted(((gamma_sf[s][k], s, k) for s in range(len(SECTORS)) for k in range(PER_SECTOR)), reverse=True)
+top13_sf = set((s, k) for (_, s, k) in flat_sf[:13])
+cutoff_sf = 0.5 * (flat_sf[12][0] + flat_sf[13][0])
+crowd_sf = {}
+for (s, k) in top13_sf:
+    crowd_sf[SECTORS[s]] = crowd_sf.get(SECTORS[s], 0) + 1
+KEPT_SF = len(top13 & top13_sf)
+# the facts the deck quotes: Tech 4 to 1, Health and Staples 1 to 3 each, Comm. 1 to 0, and 9 of the 13 tickers kept
+assert (crowd["Tech"], crowd_sf.get("Tech", 0)) == (4, 1)
+assert (crowd["Health"], crowd_sf.get("Health", 0), crowd["Staples"], crowd_sf.get("Staples", 0)) == (1, 3, 1, 3)
+assert (crowd["Comm."], crowd_sf.get("Comm.", 0)) == (1, 0) and KEPT_SF == 9
+write("Sector-Factor",
+      "Global gamma with the fixed estimates and with the sector factor estimates, on the made-up market of "
+      "Fig-L15a-Deck-Picks-Global (seed 5660), with made-up sector terms and loadings (seed 5662).",
+      grid_panel(0, "fixed estimates", top13, True, True, GY=GY_SF)
+      + grid_panel(SHIFT, "sector factor estimates", top13_sf, True, False, values=gamma_sf, cut=cutoff_sf, GY=GY_SF)
+      + dot_legend(True, GY=GY_SF))
 
 # ================================================================== correlation gamma: the walk down the ranking
 VISITED = 17
@@ -376,6 +416,8 @@ write("Tilt", "The factor 1/max(|beta_i|, beta_floor)^xi_t on the expected growt
 print("top13 by sector:", dict(sorted(crowd.items(), key=lambda kv: -kv[1])))
 print("sectors with no ticker in the global-gamma basket:", EMPTY_SECTORS)
 print("gamma-by-sector picks with a negative preference weight:", NEGATIVE_PICKS)
+print("sector factor estimates: top13 by sector", dict(sorted(crowd_sf.items(), key=lambda kv: -kv[1])), "kept", KEPT_SF,
+      "of 13; smallest gap", round(gap, 3))
 print("weights: CD", [round(w, 3) for w in W_CD], "CES-S", [round(w, 3) for w in W_CESS], "CES-W", [round(w, 3) for w in W_CESW],
       "SG", [round(w, 3) for w in W_SG], "LS", [round(w, 3) for w in W_LS])
 print("two-step: tangent sigma", round(S_T, 4), "excess", round(M_T, 4), "c", round(C_T, 3))

@@ -47,6 +47,7 @@ Compute G (from SPY closes over the training rows), ξ and g̃ per row, the SIM 
 hedge pool per run row, and the bandit excess-growth matrix. Row s of `γ`/`pool` uses data dated
 ≤ `rows[s]` only. Throws `ArgumentError` when `first(rows) ≤ max(omega_window, downday_lookback)`
 (trading days), or when `calib`'s training window (`train_start`, `train_stop`) differs from `s`'s.
+With `estimates = "sector_factor"`, the SIM estimates are the fixed fit with the sector term in α (`add_sector_term!`).
 `omega_window` is not part of `context_key`, so `run_study` checks it again for each run. `fm` is stored as the
 context's forecast models (`nothing` when the runs use the GBM forecast).
 
@@ -72,9 +73,13 @@ function build_context(md::MyMarketData, calib::MyCalibration, s::MyStudySetting
     G = xi_gain(md.spy_close[tr]; short = s.xi_short, long = s.xi_long, q = s.xi_quantile)
     ξ = xi_series(md.spy_close; short = s.xi_short, long = s.xi_long, G = G)
     g̃ = gtilde_series(md.spy_close; window = s.gtilde_window)
-    if s.estimates == "fixed"
+    if s.estimates == "fixed" || s.estimates == "sector_factor"
         rows = i0:searchsortedlast(md.dates, s.stop)
         sim = _fixed_sim(md, calib, rows)
+        if s.estimates == "sector_factor"
+            # course addition: the fixed fit plus the sector term δ̂ᵢ·f̃ₛ,₋ᵢ(t) in every α
+            add_sector_term!(sim, md, calib, s)
+        end
     else
         estimates_start = something(s.estimates_start, s.start)
         sim = online_sim(md, calib; start = s.start, stop = s.stop, estimates_start,

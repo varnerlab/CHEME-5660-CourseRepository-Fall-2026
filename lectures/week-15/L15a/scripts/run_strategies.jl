@@ -1,15 +1,16 @@
 # L15a: run every strategy of the menu on the real 2025–2026 market and on synthetic markets, and save the results
 # that the L15a examples load. Instructor only.
 #
-# A strategy is one picking rule, one weighting rule, the market hedge on or off, and fixed or updated estimates.
+# A strategy is one picking rule, one weighting rule, the market hedge on or off, and the estimates: updated, fixed,
+# or the sector factor estimates (the fixed fit plus the sector term in each expected growth rate).
 # The engine (`VLQuantitativeFinancePackage.MPCPortfolio`, the INFORMS v2 method) calls the strategy files in
 # strategies/picking and strategies/weighting. Every trigger picks a new basket and re-plans the book.
 #
 # The runs:
 #   - real market: 2025-01-02 to 2026-11-24, estimates fit on 2016–2024, 30 seeds of each random picking rule:
-#     (6 + 3 × 30) picks × 9 weightings × 2 hedge settings × 2 estimate settings = 3,456 runs
+#     (6 + 3 × 30) picks × 9 weightings × 2 hedge settings × 3 estimate settings = 5,184 runs
 #   - synthetic markets: 252 trading days after 2026-11-24 from the practicum's generator (scripts/synthetic.jl),
-#     5 seeds of each random picking rule: (6 + 3 × 5) × 9 × 2 × 2 = 756 runs on each market
+#     5 seeds of each random picking rule: (6 + 3 × 5) × 9 × 2 × 3 = 1,134 runs on each market
 #
 # Run from the repository root:
 #   OMP_NUM_THREADS=1 KMP_GTID_MODE=2 julia --project=. -t 28 lectures/week-15/L15a/scripts/run_strategies.jl
@@ -43,6 +44,7 @@ const _SEED = 5660 # the seed of the deterministic picking rules: it also seeds 
 const _N_SEEDS_REAL = 30 # seeds of each random picking rule on the real market (INFORMS)
 const _N_SEEDS_SYNTHETIC = 5 # seeds of each random picking rule on each synthetic market (INFORMS)
 const _PERCENTILES = [0.05, 0.25, 0.50, 0.75, 0.95]
+const _ESTIMATES = ["updated", "fixed", "sector_factor"] # the estimate settings of every strategy
 
 """
     parse_options(args::Vector{String})::NamedTuple
@@ -107,8 +109,8 @@ end
 """
     strategy_list(settings, n_seeds::Int)::Vector{NamedTuple}
 
-Every strategy of the menu: each picking run crossed with each weighting rule, the hedge on and off, and the
-estimates updated and fixed. Each entry holds a unique `label`, the `picking` and `weighting` names, the
+Every strategy of the menu: each picking run crossed with each weighting rule, the hedge on and off, and each
+estimate setting in `_ESTIMATES`. Each entry holds a unique `label`, the `picking` and `weighting` names, the
 `combination` (the strategy without its seed), the `hedge` flag, the `estimates` setting, the `seed`, the `screen`,
 and the `rule`.
 """
@@ -117,7 +119,7 @@ function strategy_list(settings::MPC.MyStudySettings, n_seeds::Int)::Vector{Name
     for pick in picking_rules(settings, n_seeds)
         for weigh in weighting_menu(settings)
             for hedge in (true, false)
-                for estimates in ("updated", "fixed")
+                for estimates in _ESTIMATES
                     hedge_name = "hedge off"
                     if hedge == true
                         hedge_name = "hedge on"
@@ -202,12 +204,12 @@ end
 """
     market_contexts(md, calib, fm, settings)::Dict{String,Any}
 
-The study context of each estimate setting on one market: `"updated"` and `"fixed"`.
+The study context of each estimate setting in `_ESTIMATES` on one market.
 """
 function market_contexts(md::MPC.MyMarketData, calib::MPC.MyCalibration, fm::MPC.MyForecastModels,
         settings::MPC.MyStudySettings)::Dict{String,Any}
     contexts = Dict{String,Any}()
-    for estimates in ("updated", "fixed")
+    for estimates in _ESTIMATES
         s = MPC.with_settings(settings; estimates=estimates)
         contexts[estimates] = MPC.build_context(md, calib, s; fm=fm)
     end
@@ -423,14 +425,14 @@ function run_synthetic(md::MPC.MyMarketData, calib::MPC.MyCalibration, fm::MPC.M
     end
 
     # write the files: the failed runs and their errors go to a CSV file, and the saved summary leaves out the run
-    # label, the error, and the run time, so that the file stays under 100 MB (the combination and the seed give the
-    # label) -
+    # label, the combination, the error, and the run time, so that the file stays under 100 MB. The picking, weighting,
+    # hedge, and estimates columns give the combination, and the combination and the seed give the label -
     df = rows_to_frame(rows)
     dates = vcat(md.dates[end], sessions)
     CSV.write(joinpath(_PATH_TO_L15A_DATA, "L15a-Strategies-Synthetic-Markets" * tag * ".csv"), markets)
     failed = df[df.status .!= "ok", [:path_id, :strategy, :error]]
     CSV.write(joinpath(_PATH_TO_L15A_DATA, "L15a-Strategies-Synthetic-Failures" * tag * ".csv"), failed)
-    summary = select(df, Not([:strategy, :error, :wall_seconds]))
+    summary = select(df, Not([:strategy, :combination, :error, :wall_seconds]))
     jldsave(joinpath(_PATH_TO_L15A_DATA, "L15a-Strategies-Synthetic" * tag * ".jld2"), true; dates=dates, spy=spy,
         tlt=tlt, summary=summary, combinations=combinations, percentiles=_PERCENTILES, bands=bands,
         gamma_equity=gamma_equity)
@@ -457,7 +459,7 @@ function write_settings(settings::MPC.MyStudySettings, options::NamedTuple)::Not
         "forecast_models" => "the practicum generator (scripts/synthetic.jl, l15a_forecast_models)")
     d["strategies"] = Dict("picking" => [r.name for r in picking_menu(settings)],
         "weighting" => [r.name for r in weighting_menu(settings)], "hedge" => [true, false],
-        "estimates" => ["updated", "fixed"])
+        "estimates" => _ESTIMATES)
     d["synthetic"] = Dict("paths" => options.paths, "days" => _SYNTHETIC_DAYS,
         "seeds" => "5660 + path (synthetic_growth), the practicum's stress-test seeds",
         "start" => "the real history to " * string(_BACKTEST_STOP),

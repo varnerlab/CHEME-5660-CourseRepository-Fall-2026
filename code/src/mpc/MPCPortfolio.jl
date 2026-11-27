@@ -63,6 +63,7 @@ module MPCPortfolio
     include(joinpath(@__DIR__, "HedgePool.jl"))
     include(joinpath(@__DIR__, "Screens.jl"))
     include(joinpath(@__DIR__, "StudySettings.jl"))
+    include(joinpath(@__DIR__, "SectorTerm.jl"))           # course addition: the sector factor estimates
     include(joinpath(@__DIR__, "Context.jl"))
     include(joinpath(@__DIR__, "GrowthScorecard.jl"))
     include(joinpath(@__DIR__, "StudyBacktest.jl"))
@@ -102,6 +103,7 @@ module MPCPortfolio
     # course additions to the engine -
     export study_stats, regime_stats, score_study
     export sector_factor_covariance, sector_factor_variances
+    export sector_factor_series, sector_loadings, smoothed_sector_factor, add_sector_term!
     export default_study_path, default_study_v1_path, select_universe, subset_universe
     export market_data_from_growth, bab_betas, bab_weights, bab_rebalance_rows, run_bab, buy_and_hold_equity
     export load_l15a_market, closest_book, scaled_book
