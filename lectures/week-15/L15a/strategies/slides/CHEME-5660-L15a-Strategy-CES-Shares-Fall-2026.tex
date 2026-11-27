@@ -1,0 +1,132 @@
+% L15a strategy deck: the CES-on-shares weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/ces_shares.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: CES on Shares}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The constant elasticity of substitution (CES) utility on share counts weighs each ticker by its preference
+  weight and its price:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long only}: the rule never sells a ticker short, and a ticker with a preference weight that is not positive gets nothing.
+    \item \hilite{Elasticity}: $\eta=0.5$ sets how easily the investor trades one ticker for another. With $\eta=1$, the rule gives the Cobb-Douglas weights.
+    \item \hilite{Price}: at the same preference weight, a ticker with a higher price gets more of the wealth.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The basket comes from the picking rule. Each preference weight is the day's value at the decision.
+\end{frame}
+
+\begin{frame}{The Preference Weight}
+  \vspace{0.3em}
+  At each close $t$, the engine scores every ticker $i$ with its preference weight $\gamma_{i}(t)$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    \tilde{g}_{i,t} &= \alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t} && \text{the expected growth rate (1/yr)}\\
+    \gamma_{i}(t) &= \tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
+      && h=1\text{ year},\ \beta_{\text{floor}}=0.1
+  \end{align*}}%
+  where the single index model gives $\alpha_{i}(t)$ and $\beta_{i}(t)$, $\tilde{g}_{M,t}$ is the 252-day
+  exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
+
+  \vspace{0.5em}
+  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+\end{frame}
+
+\begin{frame}{How the Market State Tilts the Preference Weight}
+  \vspace{0.3em}
+  The market state $\xi_{t}$ sets how the market sensitivity scales the expected growth rate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Tilt.pdf}
+  \end{center}
+  At the same positive expected growth rate, the preference weight favors a low market sensitivity when the
+  market falls and a high one when the market rises.
+\end{frame}
+
+\begin{frame}{The CES Weights on Shares}
+  \vspace{0.3em}
+  With $\rho=1-1/\eta$, so that $1/(1-\rho)=\eta$, choose the share counts $n_{i}$ of the tickers with $\gamma_{i}>0$ to spend the
+  wealth $W$ (USD) at the prices $S_{i}$ (USD/share):
+  {\setlength{\jot}{2pt}
+  \begin{align*}
+    &\max_{n}\ \Big(\sum_{\gamma_{i}>0}\gamma_{i}n_{i}^{\rho}\Big)^{1/\rho}\quad\text{subject to}\quad\sum_{i}n_{i}S_{i}=W
+      && \text{utility and budget}\\
+    &\gamma_{i}\,n_{i}^{\rho-1}=\lambda S_{i}\quad\Longrightarrow\quad n_{i}\propto\left(\gamma_{i}/S_{i}\right)^{\eta}
+      && \text{first-order condition}\\
+    \Longrightarrow\quad&\boxed{w_{i}=\frac{S_{i}^{1-\eta}\,\gamma_{i}^{\eta}}{\sum_{\gamma_{j}>0}S_{j}^{1-\eta}\,\gamma_{j}^{\eta}}}
+      && w_{i}=n_{i}S_{i}/W
+  \end{align*}}%
+  where the multiplier $\lambda$ absorbs the factor that every ticker shares. For three tickers with $\gamma=(0.6,\ 0.3,\ -0.1)$ and prices $(100,\ 300,\ 50)$ USD/share, the weights are $(0.45,\ 0.55,\ 0.00)$.
+\end{frame}
+
+\begin{frame}{The Weights of Three Made-Up Tickers}
+  \vspace{0.3em}
+  The three tickers with $\gamma=(0.6,\ 0.3,\ -0.1)$ get these weights:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Weights-CES-Shares.pdf}
+  \end{center}
+  The second ticker gets more of the wealth than the first, because its price is three times the price of the first ticker.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine chooses the share counts $n_{i}$ that maximize the CES utility
+  within the trading limits:
+  \[
+    U(n;\gamma)=\Big(\sum_{\gamma_{i}>0}\gamma_{i}n_{i}^{\rho}\Big)^{1/\rho},\qquad\eta=0.5,\ \rho=-1
+  \]
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Shared limits}: the weight, volatility, and trading-cost limits of every strategy apply. With the hedge on, so does the market sensitivity limit, and the engine can buy up to five tickers with zero or negative market sensitivity from its hedge pool.
+    \item \hilite{Left out}: a ticker with $\gamma_{i}\leq 0$ holds no shares.
+  \end{itemize}
+
+  \vspace{0.3em}
+  The cash stays at or above zero. When a limit stops the engine from reaching the CES weights, the engine holds the best portfolio within the limits, and cash can remain.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/ces_shares.jl}{\texttt{strategies/weighting/ces\_shares.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_ces\_shares(gamma, prices; eta)} computes the weights before the trading limits. The engine does not call it.
+    \item \texttt{MyL15aCESSharesRule} is the type the engine calls. It holds the setting \texttt{eta~=~0.5}.
+    \item \texttt{MPC.allocate(rule, p)} passes the decision's problem \texttt{p} to the engine's \texttt{MPC.MyCESRule}, which maximizes the utility within the limits.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the shared limits.
+\end{frame}
+
+\end{document}

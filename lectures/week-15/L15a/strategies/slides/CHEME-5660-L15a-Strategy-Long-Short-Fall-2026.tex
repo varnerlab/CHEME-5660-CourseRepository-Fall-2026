@@ -1,0 +1,131 @@
+% L15a strategy deck: the 130/30 long-short weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/long_short.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: 130/30 Long-Short}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The 130/30 rule applies Cobb-Douglas to each side of a long-short portfolio:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long side}: buy the basket's tickers with positive preference weights, worth up to 130\% of the wealth.
+    \item \hilite{Short side}: sell short, in each sector, up to three tickers of the whole universe with the most negative preference weights, worth up to 30\% of the wealth.
+    \item \hilite{Net}: the short sales pay for the extra 30\% on the long side, so that the net position is at most 100\% of the wealth.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The long side comes from the picking rule. The engine finds the short candidates at each decision.
+\end{frame}
+
+\begin{frame}{The Preference Weight}
+  \vspace{0.3em}
+  At each close $t$, the engine scores every ticker $i$ with its preference weight $\gamma_{i}(t)$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    \tilde{g}_{i,t} &= \alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t} && \text{the expected growth rate (1/yr)}\\
+    \gamma_{i}(t) &= \tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
+      && h=1\text{ year},\ \beta_{\text{floor}}=0.1
+  \end{align*}}%
+  where the single index model gives $\alpha_{i}(t)$ and $\beta_{i}(t)$, $\tilde{g}_{M,t}$ is the 252-day
+  exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
+
+  \vspace{0.5em}
+  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+\end{frame}
+
+\begin{frame}{How the Market State Tilts the Preference Weight}
+  \vspace{0.3em}
+  The market state $\xi_{t}$ sets how the market sensitivity scales the expected growth rate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Tilt.pdf}
+  \end{center}
+  At the same positive expected growth rate, the preference weight favors a low market sensitivity when the
+  market falls and a high one when the market rises.
+\end{frame}
+
+\begin{frame}{The 130/30 Weights}
+  \vspace{0.3em}
+  Each side splits its share of the wealth in proportion to the size of the preference weights:
+  {\setlength{\jot}{2pt}
+  \begin{align*}
+    &\max_{n^{+},\,n^{-}}\ \sum_{\gamma_{i}>0}\gamma_{i}\ln n_{i}^{+}+\sum_{\gamma_{i}<0}|\gamma_{i}|\ln n_{i}^{-}
+      && n_{i}^{+}\text{ long, }n_{i}^{-}\text{ short}\\
+    &\text{long}\leq 1.30\,W,\quad\text{short}\leq 0.30\,W,\quad\text{long}-\text{short}\leq W
+      && \text{the caps}\\
+    \Longrightarrow\quad&\boxed{w_{i}=\begin{cases}1.30\,\gamma_{i}\big/\sum_{\gamma_{j}>0}\gamma_{j}&\gamma_{i}>0\\
+      0.30\,\gamma_{i}\big/\sum_{\gamma_{j}<0}|\gamma_{j}|&\gamma_{i}<0\end{cases}}
+  \end{align*}}%
+  where a negative $w_{i}$ is a short position. The utility grows with every share on either side, so both
+  sides reach their caps. For three tickers with $\gamma=(0.6,\ 0.3,\ -0.1)$, the weights are
+  $(0.87,\ 0.43,\ -0.30)$. When no preference weight is negative, the rule gives the Cobb-Douglas weights.
+\end{frame}
+
+\begin{frame}{The Weights of Three Made-Up Tickers}
+  \vspace{0.3em}
+  For the three tickers with $\gamma=(0.6,\ 0.3,\ -0.1)$, the third ticker is a short candidate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Weights-Long-Short.pdf}
+  \end{center}
+  The short sale of the third ticker pays for the extra 30\% on the long side.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine chooses the shares that maximize the 130/30 utility within the trading limits:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long and short sides}: the long positions are worth at most 130\% of the wealth, the short positions at most 30\%, and the cash stays at or above zero.
+    \item \hilite{Signs}: a ticker with $\gamma_{i}>0$ can only be held long, and a short candidate can only be held short. The engine never sells short a ticker from its hedge pool.
+    \item \hilite{Shared limits}: the weight, volatility, and trading-cost limits of every strategy apply. With the hedge on, so does the market sensitivity limit, and the engine can buy up to five tickers with zero or negative market sensitivity from its hedge pool.
+  \end{itemize}
+
+  \vspace{0.3em}
+  When a limit stops the engine from reaching the 130/30 weights, the engine holds the best portfolio within
+  the limits.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/long_short.jl}{\texttt{strategies/weighting/long\_short.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_long\_short(gamma; long\_cap, short\_cap)} computes the weights before the trading limits. The engine does not call it.
+    \item \texttt{MyL15aLongShortRule} is the type the engine calls. It holds the settings \texttt{long\_cap~=~1.30}, \texttt{short\_cap~=~0.30}, and \texttt{net\_cap~=~1.00}.
+    \item \texttt{MPC.uses\_short\_candidates(rule)} returns \texttt{true}, so that the engine adds the short candidates to each decision's problem.
+    \item \texttt{MPC.allocate(rule, p)} passes the problem to the engine's \texttt{MPC.MyLongShortCDRule}, which maximizes the utility within the limits.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the shared limits.
+\end{frame}
+
+\end{document}

@@ -1,7 +1,7 @@
 # Build the L15a figures to PDF (for slides), themed SVG (for the notebook), and PNG (preview).
 # Each figure shares schematic-style.tex, a copy of the L13a style (week-12 schematics).
 
-FIGURES := Fig-L15a-EWLS-JPM Fig-L15a-Gamma-Picks Fig-L15a-Market-Hedge Fig-L15a-Backtest-Day Fig-L15a-Stress-Test
+FIGURES := Fig-L15a-EWLS-JPM Fig-L15a-Gamma-Picks Fig-L15a-Market-Hedge Fig-L15a-BAB-Tilt Fig-L15a-Backtest-Day Fig-L15a-Stress-Test
 
 XELATEX ?= xelatex
 PDF2SVG ?= pdf2svg

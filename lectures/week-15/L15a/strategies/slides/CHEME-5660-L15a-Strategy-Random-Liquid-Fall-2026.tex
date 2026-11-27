@@ -1,0 +1,87 @@
+% L15a strategy deck: the random-liquid picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/random_liquid.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Random Liquid}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The random-liquid rule draws 13 tickers at random among the 100 most traded tickers, the same shortlist and
+  basket size as the liquid-gamma rule:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Most traded}: the 100 tickers with the largest median value traded per day (USD/day) over the last 63 trading days.
+    \item \hilite{Reason}: a random basket shows how a basket of the same size does by luck alone.
+    \item \hilite{Seeds}: the saved results run each random rule with 30 seeds in the backtests and 5 in the stress tests.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine draws a new basket at each decision: on the start day and whenever a trigger fires.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On decision day $t$, let $S_{i}(u)$ (USD/share) and $V_{i}(u)$ (shares) be the closing price and the volume
+  of ticker $i$ on day $u$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    D_{i}(t) &= \operatorname{median}_{\,t-62\leq u\leq t}\;S_{i}(u)\,V_{i}(u) && \text{value traded (USD/day)}\\
+    \mathcal{L}(t) &= \text{the 100 tickers with the largest }D_{i}(t) && \text{shortlist}\\
+    \mathcal{B}(t) &= \text{13 tickers drawn at random from }\mathcal{L}(t) && \text{basket}
+  \end{align*}}%
+  Each set of 13 tickers in the shortlist is equally likely. The random stream depends on the run's seed and the decision date, so the same seed and date give the same basket.
+\end{frame}
+
+\begin{frame}{The Two Steps of the Rule}
+  \vspace{0.3em}
+  The rule shortlists the most traded tickers, then draws 13 of them at random:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Picks-Liquid-Random.pdf}
+  \end{center}
+  The liquid-gamma rule takes the 13 tickers of the same shortlist with the highest preference weights.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/random_liquid.jl}{\texttt{strategies/picking/random\_liquid.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_random\_liquid(tickers, dollar\_volume, rng; count, shortlist)} builds the shortlist, then draws \texttt{count} tickers from it.
+    \item \texttt{MyL15aRandomLiquidScreen} is the type the engine calls. It holds the settings \texttt{count~=~13}, \texttt{shortlist~=~100}, and \texttt{window~=~63}.
+    \item \texttt{MPC.pick(screen, md, t; seed, ...)} builds one random stream for the decision date with the run's \texttt{seed}, computes $D_{i}(t)$, runs the rule, and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the triggers that start each decision.
+\end{frame}
+
+\end{document}

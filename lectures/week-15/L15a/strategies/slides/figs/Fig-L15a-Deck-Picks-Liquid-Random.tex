@@ -1,0 +1,16 @@
+% Written by make_deck_figures.py: edit the script, not this file.
+% The two steps of random liquid, with the random-liquid box shaded.
+\documentclass[tikz,border=2pt]{standalone}
+\input{../../../figs/schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[sumbox, text width=2.4cm] (U) at (0, 0) {universe\\491 stocks and 14 ETFs};
+  \node[sumbox, text width=2.9cm] (L) at (5.3, 0) {shortlist\\the 100 tickers with the largest $D_{i}(t)$};
+  \node[sumbox, fill=boxfill, text width=3.4cm] (G) at (10.4, 0.95) {liquid gamma\\the 13 with the highest\\preference weights};
+  \node[sumbox, fill=orangefill, text width=3.4cm] (R) at (10.4, -0.95) {random liquid\\13 drawn at random};
+  \draw[flow] (U) -- node[note, above=2pt] {rank by $D_{i}(t)$} node[note, below=2pt] {the median value\\traded per day,\\last 63 days} (L);
+  \draw[flow] (L.east) -- (G.west);
+  \draw[flow] (L.east) -- (R.west);
+\end{tikzpicture}
+\end{document}

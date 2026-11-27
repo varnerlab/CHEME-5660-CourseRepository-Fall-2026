@@ -1,0 +1,114 @@
+% L15a strategy deck: the gamma-by-sector picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/gamma_by_sector.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Gamma by Sector}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The gamma-by-sector rule picks the basket from the preference weights, three tickers in each sector:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Universe}: 491 stocks in 11 sectors and 14 exchange-traded funds (ETFs), without \texttt{SPY} and the Treasury bill fund \texttt{SGOV}. The ETFs count as one more sector.
+    \item \hilite{Basket}: the three tickers with the highest preference weights in each of the 12 sectors, 36 tickers in all.
+    \item \hilite{Reason}: taking the same number from each sector spreads the basket across the economy.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine runs the rule at each decision: on the start day and whenever a trigger fires. Between decisions, the basket stays the same.
+\end{frame}
+
+\begin{frame}{The Preference Weight}
+  \vspace{0.3em}
+  At each close $t$, the engine scores every ticker $i$ with its preference weight $\gamma_{i}(t)$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    \tilde{g}_{i,t} &= \alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t} && \text{the expected growth rate (1/yr)}\\
+    \gamma_{i}(t) &= \tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
+      && h=1\text{ year},\ \beta_{\text{floor}}=0.1
+  \end{align*}}%
+  where the single index model gives $\alpha_{i}(t)$ and $\beta_{i}(t)$, $\tilde{g}_{M,t}$ is the 252-day
+  exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
+
+  \vspace{0.5em}
+  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+\end{frame}
+
+\begin{frame}{How the Market State Tilts the Preference Weight}
+  \vspace{0.3em}
+  The market state $\xi_{t}$ sets how the market sensitivity scales the expected growth rate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Tilt.pdf}
+  \end{center}
+  At the same positive expected growth rate, the preference weight favors a low market sensitivity when the
+  market falls and a high one when the market rises.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On decision day $t$, split the universe into its sectors $\mathcal{S}_{1},\dots,\mathcal{S}_{12}$:
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item In each sector $\mathcal{S}_{j}$, rank the tickers by $\gamma_{i}(t)$, from highest to lowest.
+    \item Take the first three tickers of each ranking. A sector with three tickers or fewer gives all of them.
+    \item The basket $\mathcal{B}(t)$ holds the tickers taken in every sector.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  The order of the tickers in the universe breaks ties. The rule takes the top three tickers of a sector
+  even when their preference weights are negative. The weighting rule then decides how much of each ticker to hold.
+\end{frame}
+
+\begin{frame}{The Basket of a Made-Up Market}
+  \vspace{0.3em}
+  In a made-up market of 12 sectors, the rule takes the top three of each sector:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Picks-Sector.pdf}
+  \end{center}
+  In Health and Real estate, the third ticker taken has a negative preference weight. The random-by-sector rule, on the
+  right, draws three tickers of each sector at random.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/gamma_by_sector.jl}{\texttt{strategies/picking/gamma\_by\_sector.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_gamma\_by\_sector(tickers, sectors, gamma; count)} takes the \texttt{count} tickers with the highest preference weights in each sector.
+    \item \texttt{MyL15aGammaSectorScreen} is the type the engine calls. The rule has no settings of its own.
+    \item \texttt{MPC.pick(screen, md, t; $\gamma$\_t, N, ...)} runs at each decision with the day's preference weights \texttt{$\gamma$\_t} and \texttt{N~=~3} tickers per sector, and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the preference weight and the triggers.
+\end{frame}
+
+\end{document}

@@ -1,0 +1,31 @@
+% Written by make_deck_figures.py: edit the script, not this file.
+% CES-on-weights weights of three made-up tickers, next to Cobb-Douglas.
+\documentclass[tikz,border=2pt]{standalone}
+\input{../../../figs/schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \draw[axis] (0, -0.572) -- (0, 2.6);
+  \draw[spine] (0, 0) -- (6.84, 0);
+  \node[anchor=east, font=\sffamily\footnotesize] at (-0.08, 0) {0};
+  \node[font=\sffamily\small, align=center, anchor=north] at (1.08, -0.602) {ticker 1\\$\gamma=0.6$};
+  \filldraw[fill=boxfill, draw=gdgray, line width=0.8pt] (0.39, 0) rectangle (0.97, 1.7333);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (0.68, 1.7333) {0.67};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (1.19, 0) rectangle (1.77, 1.523);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (1.48, 1.523) {0.59};
+  \node[font=\sffamily\small, align=center, anchor=north] at (3.48, -0.602) {ticker 2\\$\gamma=0.3$};
+  \filldraw[fill=boxfill, draw=gdgray, line width=0.8pt] (2.79, 0) rectangle (3.37, 0.8667);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (3.08, 0.8667) {0.33};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (3.59, 0) rectangle (4.17, 1.077);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (3.88, 1.077) {0.41};
+  \node[font=\sffamily\small, align=center, anchor=north] at (5.88, -0.602) {ticker 3\\$\gamma=-0.1$};
+  \filldraw[fill=boxfill, draw=gdgray, line width=0.8pt] (5.19, 0) rectangle (5.77, 0);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (5.48, 0) {0};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (5.99, 0) rectangle (6.57, 0);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (6.28, 0) {0};
+  \filldraw[fill=boxfill, draw=gdgray, line width=0.8pt] (7.04, 2.314) rectangle +(0.34, 0.26);
+  \node[anchor=west, font=\sffamily\small] at (7.44, 2.444) {Cobb-Douglas};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (7.04, 1.814) rectangle +(0.34, 0.26);
+  \node[anchor=west, font=\sffamily\small] at (7.44, 1.944) {CES on weights};
+\end{tikzpicture}
+\end{document}

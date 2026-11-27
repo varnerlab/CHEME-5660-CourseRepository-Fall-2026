@@ -1,0 +1,110 @@
+% L15a strategy deck: the minimum-variance weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/minimum_variance.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Minimum Variance}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The minimum-variance rule holds the long-only portfolio of the basket with the smallest variance of its
+  growth rate:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long only}: the rule never sells a ticker short.
+    \item \hilite{Risk only}: the rule ignores the preference weights and the expected growth rates.
+    \item \hilite{Covariance}: the single index model gives the covariance of the tickers' growth rates.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The basket comes from the picking rule.
+\end{frame}
+
+\begin{frame}{The Minimum-Variance Weights}
+  \vspace{0.3em}
+  Under the single index model, the growth rates of tickers $i$ and $j$ have the covariance
+  \[
+    \Sigma_{ij}=\sigma_{M}^{2}\,\beta_{i}\beta_{j}+\begin{cases}\sigma_{\varepsilon,i}^{2}&i=j\\0&i\neq j\end{cases}
+  \]
+  where $\sigma_{M}$ (1/yr) is the volatility of market growth and $\sigma_{\varepsilon,i}$ (1/yr) is the
+  volatility of the residual growth of ticker $i$.
+  {\setlength{\jot}{2pt}
+  \begin{align*}
+    &\min_{w}\ w^{\top}\Sigma\,w\quad\text{subject to}\quad\mathbf{1}^{\top}w=1 && \text{variance and budget}\\
+    &2\,\Sigma\,w=\lambda\,\mathbf{1}\quad\Longrightarrow\quad w\propto\Sigma^{-1}\mathbf{1}
+      && \text{first-order condition, multiplier }\lambda\\
+    \Longrightarrow\quad&\boxed{w=\frac{\Sigma^{-1}\mathbf{1}}{\mathbf{1}^{\top}\Sigma^{-1}\mathbf{1}}}
+  \end{align*}}%
+  The code file then sets each negative weight to $0$ and divides the others by their sum, so that the
+  portfolio holds no short positions.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine takes two steps, with its own covariance $\Sigma_{g}$:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Mix}: minimize $w^{\top}\Sigma_{g}w$, over long-only weights that add to $s$, the largest share of the wealth that the other limits allow. This step leaves out the volatility limit.
+    \item \hilite{Scale}: if the mix is more volatile than the limit $\sigma_{\max}$, scale it down, $w=c\,w_{\text{mix}}$ with $c=\min\big(1,\ \sigma_{\max}\big/\sqrt{w_{\text{mix}}^{\top}\Sigma_{g}w_{\text{mix}}}\big)$. The rest of the wealth stays in cash.
+  \end{itemize}
+
+  The engine's covariance also keeps the correlations between the residuals over the last 126 trading days:
+  \[
+    \Sigma_{g}=\sigma_{M}^{2}\,\beta\beta^{\top}+(1-\lambda)\,\hat{\Omega}_{\varepsilon}+\lambda\,\operatorname{diag}\big(\hat{\Omega}_{\varepsilon}\big)
+  \]
+  where $\hat{\Omega}_{\varepsilon}$ is the sample covariance of the residual growth rates, and $\lambda$
+  between $0$ and $1$ shrinks it toward its diagonal.
+\end{frame}
+
+\begin{frame}{The Two Steps on a Made-Up Basket}
+  \vspace{0.3em}
+  Each point on the curve is a long-only portfolio of a made-up basket:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Two-Step-Minimum-Variance.pdf}
+  \end{center}
+  The minimum-variance mix is the leftmost point of the curve. This mix is within the volatility limit, and the
+  engine holds the mix with $c=1$.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/minimum_variance.jl}{\texttt{strategies/weighting/minimum\_variance.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_minimum\_variance(beta, sigma\_e, sigma\_m)} computes the weights with the single index covariance, before the trading limits. The engine does not call it.
+    \item \texttt{MyL15aMinimumVarianceRule} is the type the engine calls. The rule has no settings of its own.
+    \item \texttt{MPC.allocate(rule, p)} passes the decision's problem \texttt{p} to the engine's \texttt{MPC.MyMinVarRule}, which takes the two steps.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the shared limits.
+\end{frame}
+
+\end{document}

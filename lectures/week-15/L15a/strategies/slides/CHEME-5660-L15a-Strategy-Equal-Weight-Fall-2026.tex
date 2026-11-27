@@ -1,0 +1,93 @@
+% L15a strategy deck: the equal-weight weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/equal_weight.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Equal Weight}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The equal-weight rule puts the same weight on every ticker in the basket:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long only}: the rule never sells a ticker short.
+    \item \hilite{No estimates}: the rule ignores the preference weights, the market sensitivities, and the covariance.
+    \item \hilite{Benchmark}: equal weight is a common benchmark for the other weighting rules.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The basket comes from the picking rule.
+\end{frame}
+
+\begin{frame}{The Equal Weights}
+  \vspace{0.3em}
+  For a basket of $K$ tickers, every ticker gets the same share of the wealth:
+  \[
+    \boxed{w_{i}=\frac{1}{K}\quad\text{for each ticker }i\text{ in the basket}}
+  \]
+  A basket of $K=13$ tickers gives each ticker a weight of $1/13\approx 0.077$, or 7.7\% of the wealth.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine scales the equal weights down until they meet every limit:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Scale}: the engine finds the largest $c\leq 1$ such that the weights $c/K$ meet the limits. Every ticker keeps the same weight, and the rest of the wealth stays in cash.
+    \item \hilite{Shared limits}: the cash stays at or above zero, and the weight, volatility, and trading-cost limits of every strategy apply. With the hedge on, so does the market sensitivity limit.
+    \item \hilite{Hedge pool}: with the hedge on, the engine can also buy tickers with zero or negative market sensitivity from its hedge pool, as few as the limit needs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Scaled Weights of a Made-Up Basket}
+  \vspace{0.3em}
+  Here a made-up limit gives $c=0.85$ for a basket of $K=13$ tickers:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Weights-Equal.pdf}
+  \end{center}
+  The tightest limit sets the same $c$ for all 13 tickers.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/equal_weight.jl}{\texttt{strategies/weighting/equal\_weight.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_equal(count)} computes the weights $1/K$ for \texttt{count} $=K$ tickers.
+    \item \texttt{MyL15aEqualWeightRule} is the type the engine calls. The rule has no settings of its own.
+    \item \texttt{MPC.rule\_preferences(...)} marks the picked tickers with a score of one, so that the rule can find the basket.
+    \item \texttt{MPC.allocate(rule, p)} builds the equal weights of the basket, then calls \texttt{MPC.scaled\_book(...)}, which scales them to meet the limits.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the shared limits.
+\end{frame}
+
+\end{document}

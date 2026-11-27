@@ -1,0 +1,28 @@
+% Written by make_deck_figures.py: edit the script, not this file.
+% 130/30 weights of two made-up basket tickers and one short candidate.
+\documentclass[tikz,border=2pt]{standalone}
+\input{../../../figs/schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \draw[axis] (0, -0.85) -- (0, 2.38);
+  \draw[spine] (0, 0) -- (6.84, 0);
+  \node[anchor=east, font=\sffamily\footnotesize] at (-0.08, 0) {0};
+  \node[font=\sffamily\small, align=center, anchor=north] at (1.08, -0.88) {ticker 1\\$\gamma=0.6$};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (0.79, 0) rectangle (1.37, 1.4733);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (1.08, 1.4733) {0.87};
+  \node[font=\sffamily\small, align=center, anchor=north] at (3.48, -0.88) {ticker 2\\$\gamma=0.3$};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (3.19, 0) rectangle (3.77, 0.7367);
+  \node[font=\sffamily\small, anchor=south, inner sep=2pt] at (3.48, 0.7367) {0.43};
+  \node[font=\sffamily\small, align=center, anchor=north] at (5.88, -0.88) {short candidate\\$\gamma=-0.1$};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (5.59, 0) rectangle (6.17, -0.51);
+  \node[font=\sffamily\small, anchor=north, inner sep=2pt] at (5.88, -0.51) {$-$0.30};
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (7.39, 0) rectangle (7.97, 1.4733);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.8pt] (7.39, 1.4733) rectangle (7.97, 2.21);
+  \filldraw[fill=bluefill, draw=vnink, line width=0.8pt] (7.39, 0) rectangle (7.97, -0.51);
+  \draw[draw=gdgray, line width=1.0pt, dash pattern=on 4pt off 2pt] (7.18, 1.7) -- (8.18, 1.7);
+  \node[font=\sffamily\small, anchor=west, align=left] at (8.13, 2.074) {long side: $0.87+0.43=1.30$};
+  \node[font=\sffamily\small, text=gdgray, anchor=west, align=left] at (8.23, 1.581) {net: $1.30-0.30=1.00$};
+  \node[font=\sffamily\small, anchor=west, align=left] at (8.13, -0.255) {short side: $-0.30$};
+\end{tikzpicture}
+\end{document}

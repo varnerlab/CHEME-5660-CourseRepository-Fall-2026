@@ -1,7 +1,7 @@
 # L15a: Testing a Trading Strategy
 
-The lecture introduces the trading engine and follows one betting-against-beta strategy through a backtest on the
-real market and a stress test on synthetic markets. The stress test applies the five gates.
+The lecture describes backtests and stress tests in general. Its examples backtest two strategies, the utility basket and
+betting against beta (BAB), on the real market, and stress-test them on synthetic markets with the practicum's five gates.
 
 - [`CHEME-5660-L15a-Lecture-Testing-Trading-Strategies-Fall-2026.ipynb`](CHEME-5660-L15a-Lecture-Testing-Trading-Strategies-Fall-2026.ipynb)
   is the lecture.
@@ -16,12 +16,14 @@ real market and a stress test on synthetic markets. The stress test applies the 
   preference basket. It uses `src/Helper.jl` (`pick_days`, `gamma_basket`).
 - [`strategies/`](strategies/) holds the strategy menu.
   [`CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb`](strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb)
-  lists each rule with its code file. The rule files are in `picking/` and `weighting/`, and `menu.jl` lists the
-  rules by name.
+  lists each rule with its code file and its slide deck. The rule files are in `picking/` and `weighting/`, and
+  `menu.jl` lists the rules by name. The short decks in `slides/` describe each rule and its code. Run `make` in
+  `slides/` to rebuild them. The decks' figures are drawn by `slides/figs/make_deck_figures.py`.
 - [`src/Helper.jl`](src/Helper.jl) holds the helpers of the examples: the pick days, the preference basket, the
   60/40 benchmark, the five gates, and the lookup of saved stress-test runs.
-- [`advanced/`](advanced/) holds the trading engine reference, the EWLS derivation, and the policy-gradient
-  derivation.
+- [`engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb`](engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb) describes how the trading engine makes each
+  decision: the estimates, the preference weight, the six triggers, the utility and BAB weighting rules, and the market hedge.
+- [`advanced/`](advanced/) holds the EWLS derivation and the policy-gradient derivation.
 - [`data/`](data/) holds the saved results of the menu, the backtests and the stress test, and the practicum's
   data. [`data/SOURCE.md`](data/SOURCE.md) gives the source and the checksum of each copied file.
 - [`scripts/`](scripts/) is for the instructor. `run_strategies.jl` runs every strategy on the real market and on

@@ -1,0 +1,107 @@
+% L15a strategy deck: the maximum-Sharpe weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/maximum_sharpe.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Maximum Sharpe}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The maximum-Sharpe rule holds the long-only portfolio of the basket with the largest Sharpe ratio, the
+  excess growth rate per unit of volatility:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long only}: the rule never sells a ticker short.
+    \item \hilite{Growth and risk}: the rule uses the expected growth rates and the covariance of the single index model, not the preference weights.
+    \item \hilite{Fallback}: when no portfolio has a positive excess growth rate, the rule holds the minimum-variance portfolio.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The basket comes from the picking rule.
+\end{frame}
+
+\begin{frame}{The Maximum-Sharpe Weights}
+  \vspace{0.3em}
+  With $\tilde{g}_{M}$ the 252-day exponential moving average of market growth and $g_{f}$ the risk-free
+  growth rate (1/yr), the excess growth rate of ticker $i$ is $e_{i}=\alpha_{i}+\beta_{i}\tilde{g}_{M}-g_{f}$.
+  The covariance $\Sigma$ comes from the single index model:
+  {\setlength{\jot}{2pt}
+  \begin{align*}
+    &\max_{w}\ \frac{e^{\top}w}{\sqrt{w^{\top}\Sigma\,w}}\quad\text{subject to}\quad\mathbf{1}^{\top}w=1
+      && \text{Sharpe ratio and budget}\\
+    &\frac{e}{\sqrt{w^{\top}\Sigma w}}-\frac{\left(e^{\top}w\right)\Sigma w}{\left(w^{\top}\Sigma w\right)^{3/2}}=0
+      \quad\Longrightarrow\quad w\propto\Sigma^{-1}e && \text{zero gradient}\\
+    \Longrightarrow\quad&\boxed{w=\frac{\Sigma^{-1}e}{\mathbf{1}^{\top}\Sigma^{-1}e}}
+  \end{align*}}%
+  The code file then sets each negative weight to $0$ and divides the others by their sum. When no weight is
+  positive, it uses the minimum-variance weights instead.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine takes two steps, with its own covariance $\Sigma_{g}$:
+  \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \hilite{Mix}: maximize $\big(\mu_{g}-g_{f}\big)^{\top}w\big/\sqrt{w^{\top}\Sigma_{g}w}$, with $\mu_{g,i}=\alpha_{i}+\beta_{i}\tilde{g}_{M}$, over long-only weights that add to $s$, the largest share of the wealth that the other limits allow. This step leaves out the volatility limit.
+    \item \hilite{Scale}: if the mix is more volatile than the limit $\sigma_{\max}$, scale it down, $w=c\,w_{\text{mix}}$ with $c=\min\big(1,\ \sigma_{\max}\big/\sqrt{w_{\text{mix}}^{\top}\Sigma_{g}w_{\text{mix}}}\big)$. The rest of the wealth stays in cash.
+  \end{itemize}
+
+  The engine's covariance also keeps the correlations between the residuals over the last 126 trading days:
+  \[
+    \Sigma_{g}=\sigma_{M}^{2}\,\beta\beta^{\top}+(1-\lambda)\,\hat{\Omega}_{\varepsilon}+\lambda\,\operatorname{diag}\big(\hat{\Omega}_{\varepsilon}\big)
+  \]
+  where $\hat{\Omega}_{\varepsilon}$ is the sample covariance of the residual growth rates, and $\lambda$
+  between $0$ and $1$ shrinks it toward its diagonal.
+\end{frame}
+
+\begin{frame}{The Two Steps on a Made-Up Basket}
+  \vspace{0.3em}
+  Each point on the curve is a long-only portfolio of a made-up basket:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Two-Step-Maximum-Sharpe.pdf}
+  \end{center}
+  The maximum-Sharpe mix is the point where a line from cash touches the curve. Here, the engine scales the mix down along that line to the volatility limit.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/maximum_sharpe.jl}{\texttt{strategies/weighting/maximum\_sharpe.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_maximum\_sharpe(alpha, beta, sigma\_e, sigma\_m, g\_market, g\_f)} computes the weights with the single index covariance, before the trading limits. The engine does not call it.
+    \item \texttt{MyL15aMaximumSharpeRule} is the type the engine calls. The rule has no settings of its own.
+    \item \texttt{MPC.allocate(rule, p)} passes the decision's problem \texttt{p} to the engine's \texttt{MPC.MyTangentRule}, which takes the two steps.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the shared limits.
+\end{frame}
+
+\end{document}

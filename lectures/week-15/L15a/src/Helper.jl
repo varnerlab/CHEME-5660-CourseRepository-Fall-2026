@@ -303,6 +303,66 @@ function five_gates(runs::DataFrame, comparison::Vector{Float64}; W0::Float64, s
 end
 
 """
+    tail_losses(terminal::Vector{Float64}; W0::Float64, level::Float64)::NamedTuple
+
+The value at risk (VaR) and the conditional value at risk (CVaR) of a strategy's loss over the synthetic markets.
+The loss on market `p` is `W0 - terminal[p]`, so a negative loss is a gain.
+
+- __VaR:__ the `level` quantile of the losses. Only a share `1 - level` of the markets lose more.
+- __CVaR:__ the average loss on the markets whose loss is at least the VaR.
+
+### Arguments
+- `terminal::Vector{Float64}`: the strategy's wealth on the last day of each market (USD).
+- `W0::Float64`: the starting wealth (USD).
+- `level::Float64`: the level of both numbers, between `0` and `1`, for example `0.95`.
+
+### Returns
+- `NamedTuple`: the `VaR` and the `CVaR` of the loss (USD).
+
+Throws `ArgumentError` when `terminal` is empty or `level` is not between `0` and `1`.
+
+### Example
+```julia
+tail = tail_losses(our_runs.terminal; W0 = 100000.0, level = 0.95);
+tail.CVaR # the average loss on the worst 5% of the markets (USD)
+```
+"""
+function tail_losses(terminal::Vector{Float64}; W0::Float64, level::Float64)::NamedTuple
+
+    # check the inputs -
+    number_of_markets = length(terminal);
+    if number_of_markets == 0
+        throw(ArgumentError("terminal must have one entry per synthetic market"));
+    end
+    if level <= 0.0 || level >= 1.0
+        throw(ArgumentError("level must be between 0 and 1"));
+    end
+
+    # the loss on each market: the starting wealth minus the wealth on the last day (USD) -
+    losses = zeros(number_of_markets);
+    for p ∈ 1:number_of_markets
+        losses[p] = W0 - terminal[p];
+    end
+
+    # the VaR: the level quantile of the losses (USD) -
+    VaR = quantile(losses, level);
+
+    # the CVaR: the average loss on the markets whose loss is at least the VaR (USD) -
+    total_loss = 0.0;
+    number_in_tail = 0;
+    for p ∈ 1:number_of_markets
+        if losses[p] >= VaR
+            total_loss = total_loss + losses[p];
+            number_in_tail = number_in_tail + 1;
+        end
+    end
+    CVaR = total_loss / number_in_tail;
+
+    # return -
+    return (VaR = VaR, CVaR = CVaR);
+end
+
+"""
     find_runs(stress_runs::DataFrame; picking::String, weighting::String, hedge::Bool, estimates::String,
         seed::Int)::DataFrame
 

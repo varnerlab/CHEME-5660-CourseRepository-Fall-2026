@@ -1,0 +1,113 @@
+% L15a strategy deck: the liquid-gamma picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/liquid_gamma.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Liquid Gamma}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The liquid-gamma rule picks the 13 tickers with the highest preference weights among the 100 most traded
+  tickers:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Most traded}: the 100 tickers with the largest median value traded per day (USD/day) over the last 63 trading days.
+    \item \hilite{Reason}: the price impact part of the engine's trading cost grows with the size of an order relative to the ticker's average daily volume. The same order costs less in a heavily traded ticker.
+    \item \hilite{Size}: the basket holds $K=13$ tickers at every decision.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine runs the rule at each decision: on the start day and whenever a trigger fires. Between decisions, the basket stays the same.
+\end{frame}
+
+\begin{frame}{The Preference Weight}
+  \vspace{0.3em}
+  At each close $t$, the engine scores every ticker $i$ with its preference weight $\gamma_{i}(t)$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    \tilde{g}_{i,t} &= \alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t} && \text{the expected growth rate (1/yr)}\\
+    \gamma_{i}(t) &= \tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
+      && h=1\text{ year},\ \beta_{\text{floor}}=0.1
+  \end{align*}}%
+  where the single index model gives $\alpha_{i}(t)$ and $\beta_{i}(t)$, $\tilde{g}_{M,t}$ is the 252-day
+  exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
+
+  \vspace{0.5em}
+  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+\end{frame}
+
+\begin{frame}{How the Market State Tilts the Preference Weight}
+  \vspace{0.3em}
+  The market state $\xi_{t}$ sets how the market sensitivity scales the expected growth rate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Tilt.pdf}
+  \end{center}
+  At the same positive expected growth rate, the preference weight favors a low market sensitivity when the
+  market falls and a high one when the market rises.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On decision day $t$, let $S_{i}(u)$ (USD/share) and $V_{i}(u)$ (shares) be the closing price and the volume
+  of ticker $i$ on day $u$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    D_{i}(t) &= \operatorname{median}_{\,t-62\leq u\leq t}\;S_{i}(u)\,V_{i}(u) && \text{value traded (USD/day)}\\
+    \mathcal{L}(t) &= \text{the 100 tickers with the largest }D_{i}(t) && \text{shortlist}\\
+    \mathcal{B}(t) &= \text{the 13 tickers in }\mathcal{L}(t)\text{ with the largest }\gamma_{i}(t) && \text{basket}
+  \end{align*}}%
+  The order of the tickers in the universe breaks ties in both rankings.
+\end{frame}
+
+\begin{frame}{The Two Steps of the Rule}
+  \vspace{0.3em}
+  The rule shortlists the most traded tickers, then ranks the shortlist by preference weight:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Picks-Liquid-Gamma.pdf}
+  \end{center}
+  The random-liquid rule draws its 13 tickers from the same shortlist.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/liquid_gamma.jl}{\texttt{strategies/picking/liquid\_gamma.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_liquid\_gamma(tickers, gamma, dollar\_volume; count, shortlist)} builds the shortlist, then takes the highest preference weights in it.
+    \item \texttt{MyL15aLiquidGammaScreen} is the type the engine calls. It holds the settings \texttt{count~=~13}, \texttt{shortlist~=~100}, and \texttt{window~=~63}.
+    \item \texttt{MPC.pick(screen, md, t; $\gamma$\_t, ...)} computes $D_{i}(t)$ with \texttt{MPC.\_liquidity\_scores}, runs the rule with the day's preference weights \texttt{$\gamma$\_t}, and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the preference weight and the triggers.
+\end{frame}
+
+\end{document}

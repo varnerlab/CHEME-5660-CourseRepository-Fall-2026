@@ -1,0 +1,25 @@
+% Written by make_deck_figures.py: edit the script, not this file.
+% The two steps of the maximum-Sharpe rule on a made-up basket: the mix is scaled back to the limit.
+\documentclass[tikz,border=2pt]{standalone}
+\input{../../../figs/schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \draw[axis] (0, 0) -- (8.88, 0);
+  \draw[axis] (0, 0) -- (0, 3.3);
+  \node[font=\sffamily\small, anchor=north] at (5.76, -0.05) {volatility $\sqrt{w^{\top}\Sigma_{g}w}$};
+  \node[font=\sffamily\small, rotate=90, anchor=south, align=center] at (-0.1, 1.65) {excess growth\\$(\mu_{g}-g_{f})^{\top}w$};
+  \draw[curve, draw=gdgray] plot[smooth] coordinates {(3.2199, 0) (3.1426, 0.0627) (3.0742, 0.1254) (3.0152, 0.1881) (2.9663, 0.2508) (2.928, 0.3135) (2.9007, 0.3762) (2.8846, 0.4389) (2.8801, 0.5016) (2.887, 0.5643) (2.9055, 0.627) (2.9352, 0.6897) (2.9758, 0.7524) (3.0268, 0.8151) (3.0878, 0.8778) (3.1582, 0.9405) (3.2373, 1.0032) (3.3246, 1.0659) (3.4193, 1.1286) (3.521, 1.1913) (3.629, 1.254) (3.7428, 1.3167) (3.8618, 1.3794) (3.9857, 1.4421) (4.1139, 1.5048) (4.246, 1.5675) (4.3818, 1.6302) (4.5209, 1.6929) (4.6629, 1.7556) (4.8077, 1.8183) (4.9549, 1.881) (5.1045, 1.9437) (5.2561, 2.0064) (5.4096, 2.0691) (5.5648, 2.1318) (5.7217, 2.1945) (5.88, 2.2572) (6.0397, 2.3199) (6.2006, 2.3826) (6.3627, 2.4453) (6.5259, 2.508) (6.69, 2.5707) (6.8551, 2.6334) (7.0211, 2.6961) (7.1878, 2.7588) (7.3553, 2.8215) (7.5235, 2.8842) (7.6923, 2.9469) (7.8617, 3.0096) (8.0317, 3.0723) (8.2022, 3.135)};
+  \node[font=\sffamily\small, text=gdgray, anchor=west, align=left] at (8.3022, 2.935) {long-only portfolios\\of the basket};
+  \draw[draw=gdred, line width=1.0pt, dash pattern=on 4pt off 2pt] (3.24, 0) -- (3.24, 3.135);
+  \node[font=\sffamily\small, text=gdred, anchor=south] at (3.24, 3.135) {volatility limit $\sigma_{\max}$};
+  \node[pt, fill=vnink] at (0, 0) {};
+  \node[font=\sffamily\small, anchor=north west] at (0.02, -0.02) {cash};
+  \draw[draw=vnink, line width=0.8pt] (0, 0) -- (7.0839, 2.7225);
+  \node[pt, fill=white] at (6.4399, 2.475) {};
+  \node[font=\sffamily\small, anchor=west] at (6.6399, 2.275) {maximum-Sharpe mix};
+  \draw[feedback] (6.1635, 2.6366) -- (3.337, 1.5503);
+  \node[pt, fill=saorange, minimum size=2.4mm] at (3.24, 1.2452) {};
+  \node[font=\sffamily\small, anchor=east, align=right] at (3.04, 1.4952) {scaled: $c\,w_{\text{mix}}$,\\the rest in cash};
+\end{tikzpicture}
+\end{document}

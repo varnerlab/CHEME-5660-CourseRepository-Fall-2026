@@ -1,0 +1,44 @@
+% Written by make_deck_figures.py: edit the script, not this file.
+% Equal weights of a 13-ticker basket, scaled by a made-up c = 0.85, with the rest in cash.
+\documentclass[tikz,border=2pt]{standalone}
+\input{../../../figs/schematic-style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \draw[axis] (0, 0) -- (0, 3.4);
+  \draw[spine] (0, 0) -- (8.69, 0);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (0.36, 0) rectangle (0.74, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (0.36, 0) rectangle (0.74, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (0.91, 0) rectangle (1.29, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (0.91, 0) rectangle (1.29, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (1.46, 0) rectangle (1.84, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (1.46, 0) rectangle (1.84, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (2.01, 0) rectangle (2.39, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (2.01, 0) rectangle (2.39, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (2.56, 0) rectangle (2.94, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (2.56, 0) rectangle (2.94, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (3.11, 0) rectangle (3.49, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (3.11, 0) rectangle (3.49, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (3.66, 0) rectangle (4.04, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (3.66, 0) rectangle (4.04, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (4.21, 0) rectangle (4.59, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (4.21, 0) rectangle (4.59, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (4.76, 0) rectangle (5.14, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (4.76, 0) rectangle (5.14, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (5.31, 0) rectangle (5.69, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (5.31, 0) rectangle (5.69, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (5.86, 0) rectangle (6.24, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (5.86, 0) rectangle (6.24, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (6.41, 0) rectangle (6.79, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (6.41, 0) rectangle (6.79, 1.3077);
+  \draw[draw=gdgray, line width=0.7pt, dash pattern=on 2pt off 1.5pt] (6.96, 0) rectangle (7.34, 1.5385);
+  \filldraw[fill=orangefill, draw=vnink, line width=0.7pt] (6.96, 0) rectangle (7.34, 1.3077);
+  \filldraw[fill=boxfill, draw=gdgray, line width=0.7pt] (8.06, 0) rectangle (8.44, 3);
+  \node[font=\sffamily\small, anchor=west, align=left] at (8.55, 1.8) {cash:\\$1-c=0.15$};
+  \node[font=\sffamily\small, anchor=north] at (3.85, -0.03) {the $K=13$ tickers of the basket};
+  \draw[spine] (0, 1.5385) -- (-0.07, 1.5385);
+  \node[anchor=east, font=\sffamily\small, text=gdgray] at (-0.08, 1.6985) {target $1/K\approx 0.077$};
+  \draw[spine] (0, 1.3077) -- (-0.07, 1.3077);
+  \node[anchor=east, font=\sffamily\small] at (-0.08, 1.1077) {scaled $c/K\approx 0.065$};
+\end{tikzpicture}
+\end{document}

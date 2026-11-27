@@ -1,0 +1,115 @@
+% L15a strategy deck: the correlation-gamma picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/correlation_gamma.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Correlation Gamma}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  Tickers with high preference weights can move together, such as stocks in the same industry. The
+  correlation-gamma rule goes down the ranking of preference weights and skips a ticker that moves too closely
+  with a ticker already taken:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Universe}: 491 stocks and 14 exchange-traded funds (ETFs), without \texttt{SPY} and the Treasury bill fund \texttt{SGOV}.
+    \item \hilite{Limit}: the correlation of daily growth rates with each ticker already taken is at most 0.7, over the last 252 trading days.
+    \item \hilite{Size}: the basket holds $K=13$ tickers at every decision.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine runs the rule at each decision: on the start day and whenever a trigger fires. Between decisions, the basket stays the same.
+\end{frame}
+
+\begin{frame}{The Preference Weight}
+  \vspace{0.3em}
+  At each close $t$, the engine scores every ticker $i$ with its preference weight $\gamma_{i}(t)$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    \tilde{g}_{i,t} &= \alpha_{i}(t)+\beta_{i}(t)\,\tilde{g}_{M,t} && \text{the expected growth rate (1/yr)}\\
+    \gamma_{i}(t) &= \tanh\left(h\,\frac{\tilde{g}_{i,t}}{\max\left(|\beta_{i}(t)|,\,\beta_{\text{floor}}\right)^{\xi_{t}}}\right)
+      && h=1\text{ year},\ \beta_{\text{floor}}=0.1
+  \end{align*}}%
+  where the single index model gives $\alpha_{i}(t)$ and $\beta_{i}(t)$, $\tilde{g}_{M,t}$ is the 252-day
+  exponential moving average of market growth, and the market state $\xi_{t}$ is positive when the market falls.
+
+  \vspace{0.5em}
+  The preference weight lies between $-1$ and $1$, with the sign of the expected growth rate.
+\end{frame}
+
+\begin{frame}{How the Market State Tilts the Preference Weight}
+  \vspace{0.3em}
+  The market state $\xi_{t}$ sets how the market sensitivity scales the expected growth rate:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Tilt.pdf}
+  \end{center}
+  At the same positive expected growth rate, the preference weight favors a low market sensitivity when the
+  market falls and a high one when the market rises.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On decision day $t$, let $\rho_{ij}(t)$ be the correlation of the daily growth rates of tickers $i$ and $j$
+  over the 252 trading days through day $t$. Start with an empty basket $\mathcal{B}(t)$:
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item Rank every ticker by $\gamma_{i}(t)$, from highest to lowest.
+    \item Go down the ranking. Take ticker $i$ when $\rho_{ij}(t)\leq 0.7$ for every ticker $j$ already in
+      $\mathcal{B}(t)$, and stop when $\mathcal{B}(t)$ holds $K=13$ tickers.
+    \item If fewer than 13 tickers pass, fill the basket with the highest-ranked tickers not yet taken.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{The Basket of a Made-Up Ranking}
+  \vspace{0.3em}
+  The rule goes down a made-up ranking and skips each ticker with $\rho_{ij}(t)>0.7$ for a ticker $j$ already in
+  the basket:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Picks-Correlation.pdf}
+  \end{center}
+  Each arc joins a skipped ticker to a ticker already taken, and its label gives their correlation. After four
+  skips, the 13th ticker taken is at rank 17.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/correlation_gamma.jl}{\texttt{strategies/picking/correlation\_gamma.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_correlation\_gamma(tickers, gamma, growth; count, max\_correlation)} goes down the ranking and fills a short basket. Each column of \texttt{growth} holds one ticker's daily growth rates.
+    \item \texttt{MyL15aCorrelationGammaScreen} is the type the engine calls. It holds the settings \texttt{count~=~13}, \texttt{max\_correlation~=~0.7}, and \texttt{window~=~252}.
+    \item \texttt{MPC.pick(screen, md, t; $\gamma$\_t, ...)} computes the growth rates over the window, runs the rule with the day's preference weights \texttt{$\gamma$\_t}, and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the preference weight and the triggers.
+\end{frame}
+
+\end{document}

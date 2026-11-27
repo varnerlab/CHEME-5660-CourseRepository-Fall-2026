@@ -1,0 +1,88 @@
+% L15a strategy deck: the random-by-sector picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/random_by_sector.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Random by Sector}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The random-by-sector rule draws three tickers at random in each sector, the same basket shape as the
+  gamma-by-sector rule:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Basket}: three tickers in each of the 11 sectors and three of the 14 exchange-traded funds (ETFs), 36 tickers in all.
+    \item \hilite{Reason}: a random basket shows how a basket of the same shape does by luck alone.
+    \item \hilite{Seeds}: the saved results run each random rule with 30 seeds in the backtests and 5 in the stress tests.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The engine draws a new basket at each decision: on the start day and whenever a trigger fires.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On decision day $t$, split the universe into its 12 sectors $\mathcal{S}_{1},\dots,\mathcal{S}_{12}$, with
+  the ETFs as one sector:
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item In each sector $\mathcal{S}_{j}$, draw three distinct tickers at random, each set of three equally
+      likely. A sector with three tickers or fewer gives all of them.
+    \item The basket $\mathcal{B}(t)$ holds the tickers drawn in every sector.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  The random stream depends on the run's seed and the decision date, so the same seed and date give the same basket. Unlike the gamma rules, the rule ignores the preference weights.
+\end{frame}
+
+\begin{frame}{The Basket of a Made-Up Market}
+  \vspace{0.3em}
+  In a made-up market of 12 sectors, the rule draws three of each sector at random:
+  \begin{center}
+    \includegraphics{slides/figs/Fig-L15a-Deck-Picks-Sector.pdf}
+  \end{center}
+  The gamma-by-sector rule, on the left, takes the top three tickers of each sector instead.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/random_by_sector.jl}{\texttt{strategies/picking/random\_by\_sector.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_random\_by\_sector(tickers, sectors, rng; count)} draws \texttt{count} tickers in each sector from the random stream \texttt{rng}.
+    \item \texttt{MyL15aRandomSectorScreen} is the type the engine calls. The rule has no settings of its own.
+    \item \texttt{MPC.pick(screen, md, t; N, seed, ...)} builds one random stream for the decision date with the run's \texttt{seed}, draws \texttt{N~=~3} tickers per sector, and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the triggers that start each decision.
+\end{frame}
+
+\end{document}

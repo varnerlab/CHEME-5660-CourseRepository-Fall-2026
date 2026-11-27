@@ -1,13 +1,15 @@
-% L15a preference weights with updated estimates. One time axis with three rows.
+% L15a preference weights and the basket held between decisions. One time axis with three rows.
 % Top: a path of the market state xi_t, red where the market is falling (xi_t > 0) and blue
-% where it is rising (xi_t < 0). Middle: the estimates and the preference weights update
-% every trading day (one dot per day). Bottom: the gamma basket the method holds, which changes only on a
-% pick day: every 21 trading days, and on a market turn (orange line), the day xi_t is on
+% where it is rising (xi_t < 0). Middle: the preference weights update at every close (one dot per day),
+% and so do alpha and beta with updated estimates. Bottom: the basket the method holds, which changes only at a
+% decision: every 21 trading days, and on a market turn (orange line), the day xi_t is on
 % the other side of zero from its value on the last pick day. A pick at a turn restarts the
 % 21-day count (pick_days in src/Helper.jl). Basket 2 lasts 15 trading days (days 21 to 36):
 % the first turn cuts it short.
 %
 % November 20, 2026: drawn in the style of the L13a schematics (schematic-style.tex).
+% November 27, 2026: labels changed to the lecture's terms (basket, decision, updated estimates). The L14a
+% copy (Fig-L14a-Gamma-Picks) keeps the old labels, because L14a is released.
 % The xi_t path is made up: 0.65 sin(2 pi (d - 35.5)/120), d = 0..132, 12/126 cm per day; the
 % pick days 0, 21, 36 (turn), 57, 78, 96 (turn), 117 follow pick_days.
 \documentclass[tikz,border=6pt]{standalone}
@@ -44,11 +46,11 @@
   % ---------------------------------------------------------------- the daily update
   \begin{scope}[shift={(0, 2.35)}]
     \draw[draw=gdgray, line width=0.6pt] (0, 0) -- (12.6, 0);
-    \foreach \d in {0, ..., 126} {
-      \filldraw[fill=gdgray, draw=white, line width=0.3pt] (0.1*\d, 0) circle (0.045);
+    \foreach \d in {0, ..., 132} {
+      \filldraw[fill=gdgray, draw=white, line width=0.3pt] ({\d*12/126}, 0) circle (0.045);
     }
-    \node[label] at (-0.3, 0.12) {update every day};
-    \node[note, anchor=east] at (-0.3, -0.3) {$\alpha_{i}(t)$, $\beta_{i}(t)$, $\gamma_{i}(t)$};
+    \node[label] at (-0.3, 0.12) {update at every close};
+    \node[note, anchor=north east, align=right] at (-0.3, -0.12) {$\gamma_{i}(t)$; $\alpha_{i}(t)$ and $\beta_{i}(t)$\\with updated estimates};
   \end{scope}
 
   % ---------------------------------------------------------------- the basket held
@@ -57,8 +59,8 @@
       \draw[held] (\a + 0.04, -0.22) rectangle (\b - 0.04, 0.22);
       \node[font=\sffamily\footnotesize] at ({(\a + \b)/2}, 0) {\n};
     }
-    \node[label] at (-0.3, 0.12) {preference basket held};
-    \node[note, anchor=east] at (-0.3, -0.3) {changes on pick days};
+    \node[label] at (-0.3, 0.12) {basket held};
+    \node[note, anchor=east] at (-0.3, -0.3) {picked at each decision};
     \draw[decorate, decoration={brace, amplitude=4pt, mirror}, draw=gdgray, line width=0.8pt] (0.05, -0.38) -- (1.95, -0.38);
     \node[note, anchor=north] at (1.0, -0.53) {21 trading days};
     \draw[decorate, decoration={brace, amplitude=4pt, mirror}, draw=gdgray, line width=0.8pt] (3.48, -0.38) -- (5.38, -0.38);

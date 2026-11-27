@@ -1,0 +1,78 @@
+% L15a strategy deck: the hand-picked picking rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/picking/hand_picked.jl). Written by make_strategy_decks.py (session scratchpad, 2026-11-27) and then
+% kept by hand: edit this file, not the generator. Build with make in this folder: LaTeX runs from strategies/,
+% so paths are relative to it.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Hand-Picked Lists}
+\subtitle{Picking Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  The hand-picked rule holds the same list of tickers at every decision. The menu has two lists, chosen without
+  looking at the 2025 prices:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{\texttt{l8b\_13}}: \texttt{AAPL}, \texttt{MSFT}, \texttt{INTC}, \texttt{MU}, \texttt{AMD}, \texttt{NVDA}, \texttt{GS}, \texttt{BAC}, \texttt{WFC}, \texttt{C}, \texttt{F}, \texttt{GM}, \texttt{JNJ}.
+    \item \hilite{\texttt{l8b\_15}}: the same 13 tickers, plus \texttt{WMT} and \texttt{PG}.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Each list is its own picking entry on the menu, \textbf{hand-picked l8b\_13} and \textbf{hand-picked l8b\_15}.
+  With a fixed list, the results show what the weighting rule adds when the basket never changes.
+\end{frame}
+
+\begin{frame}{The Rule}
+  \vspace{0.3em}
+  On every decision day $t$, the basket $\mathcal{B}(t)$ is the chosen list:
+  \begin{enumerate}\setlength{\itemsep}{0.5em}
+    \item Find each ticker of the list in the universe. The rule stops with an error when a ticker is missing.
+    \item Return the tickers in the order of the universe.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  The rule ignores the preference weights and the market data. The basket is the same at every decision.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/picking/hand_picked.jl}{\texttt{strategies/picking/hand\_picked.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{pick\_hand\_picked(tickers, basket)} finds the list's tickers in the universe.
+    \item \texttt{MyL15aHandPickedScreen} is the type the engine calls. It holds the list \texttt{basket}.
+    \item The lists live under \texttt{[grid.fixed\_lists]} in the study settings file \texttt{code/src/data/mpc/study.toml}, and \texttt{menu.jl} adds one menu entry for each list.
+    \item \texttt{MPC.pick(screen, md, t; ...)} runs at each decision and returns the basket's columns in the market data.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists every rule, and the \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes the triggers that start each decision.
+\end{frame}
+
+\end{document}

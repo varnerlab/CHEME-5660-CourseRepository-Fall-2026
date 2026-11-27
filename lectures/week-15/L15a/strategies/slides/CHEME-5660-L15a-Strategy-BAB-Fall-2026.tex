@@ -1,0 +1,126 @@
+% L15a strategy deck: the betting-against-beta (BAB) weighting rule.
+% One short deck per rule on the strategy menu, read next to the rule's code file
+% (strategies/weighting/bab.jl). Sources: weigh_bab and MyL15aBABRule in bab.jl, MPC.closest_book in
+% code/src/mpc/CourseL15a.jl, and the engine settings ls_long = 1.30, ls_short = 0.30, and
+% beta_floor = 0.1 in code/src/data/mpc/study.toml. The figure is the right panel of
+% figs/Fig-L15a-BAB-Tilt.pdf. Build with make in this folder: LaTeX runs from strategies/, so paths are relative to it.
+% November 27, 2026: first build, the pilot of the strategy decks. The figure trim (229bp) keeps the right panel.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{vnslides}
+
+\newcommand{\repo}{https://github.com/varnerlab/CHEME-5660-CourseRepository-Fall-2026/blob/main/lectures/week-15/L15a}
+
+\title{\texorpdfstring{{\vnheavy L15a}}{L15a}: Betting Against Beta (BAB)}
+\subtitle{Weighting Rule, CHEME 5660 Strategy Menu, Cornell University}
+\author{Copyright Jeffrey Varner 2026. All Rights Reserved}
+
+\begin{document}
+
+\vntitlepage
+
+\begin{frame}{Disclaimer and Risks}
+  \vspace{0.6em}
+  \textbf{\ink{Training only.}} This content is for training and informational
+  purposes only. The teaching team does not make, give, or endorse any offer or
+  solicitation to buy or sell securities or derivative products, or provide
+  investment or trading advice or strategy.
+
+  \vspace{1.1em}
+  \textbf{\ink{Risk.}} Trading involves risk and is generally not recommended for
+  those with limited resources, experience, or a low risk tolerance. Past
+  performance does not guarantee future success.
+
+  \vspace{1.1em}
+  \textbf{\ink{Responsibility.}} You are responsible for your investment decisions
+  based on your financial circumstances, objectives, risk tolerance, and
+  liquidity needs.
+\end{frame}
+
+\begin{frame}{The Idea}
+  \vspace{0.3em}
+  Previously, we met \href{https://www.aqr.com/Our-Firm/About-Us}{AQR Capital Management}, where
+  Andrea Frazzini and Lasse H. Pedersen proposed the
+  \href{https://www.aqr.com/Insights/Research/Journal-Article/Betting-Against-Beta}{betting-against-beta
+  portfolio} in 2014. The BAB weighting rule splits the basket into two sides:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long side}: buy the picked stocks with a low market sensitivity $\beta_{i}$.
+    \item \hilite{Short side}: sell short the picked stocks with a high $\beta_{i}$.
+    \item \hilite{Sizing}: scale each side to a market sensitivity of one, so that the portfolio's
+      $\beta$ is zero before the trading limits.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The basket comes from the picking rule. Each $\beta_{i}$ comes from the strategy's fixed or
+  updated estimates of the single index model.
+\end{frame}
+
+\begin{frame}{The BAB Weights}
+  \vspace{0.3em}
+  Rank the $K$ stocks of the basket by $\beta_{i}$, from $z_{i}=1$ (lowest) to $z_{i}=K$, with
+  the middle rank $\bar{z}=(K+1)/2$:
+  {\setlength{\jot}{3pt}
+  \begin{align*}
+    k &= 2\Big/\sum_{i=1}^{K}\left|z_{i}-\bar{z}\right| && \text{each side adds to one}\\
+    w_{i}^{L} &= k\,\max\left(\bar{z}-z_{i},\,0\right),\qquad
+    w_{i}^{H} = k\,\max\left(z_{i}-\bar{z},\,0\right) && \text{below or above the middle}\\
+    \beta_{L} &= \sum_{i=1}^{K}w_{i}^{L}\beta_{i},\qquad \beta_{H}=\sum_{i=1}^{K}w_{i}^{H}\beta_{i}
+      && \text{each side's }\beta\\
+    \Longrightarrow\quad &\boxed{w_{i}=\frac{w_{i}^{L}}{\max\left(\beta_{L},\beta_{\text{floor}}\right)}
+      -\frac{w_{i}^{H}}{\max\left(\beta_{H},\beta_{\text{floor}}\right)}}
+  \end{align*}}%
+  where $\beta_{\text{floor}}=0.1$, and a negative $w_{i}$ is a short position. When both sides
+  have $\beta$ at least $\beta_{\text{floor}}$, the portfolio's $\beta$ is $1-1=0$.
+\end{frame}
+
+\begin{frame}{The Weights of Eight Made-Up Stocks}
+  \vspace{0.3em}
+  Each weight grows with the stock's distance from the middle rank:
+  \begin{center}
+    \includegraphics[trim={229bp 0 0 0},clip,width=\textwidth,height=0.59\textheight,keepaspectratio]{../figs/Fig-L15a-BAB-Tilt.pdf}
+  \end{center}
+  The short side is smaller than the long side. Its stocks have the larger $\beta$, so dividing
+  by $\beta_{H}$ shrinks its weights more.
+\end{frame}
+
+\begin{frame}{Under the Trading Limits}
+  \vspace{0.3em}
+  At each decision, the engine finds the portfolio whose weights are closest to the BAB weights,
+  in the sum of the squared gaps, within these limits:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \hilite{Long and short sides}: the long weights add to at most 130\% of the wealth, and
+      the short weights to at most 30\%.
+    \item \hilite{Signs}: a stock with a positive BAB weight can only be held long, and a stock
+      with a negative BAB weight can only be held short.
+    \item \hilite{Shared limits}: the cash stays at or above zero, and the weight, volatility, and
+      trading-cost limits of every strategy apply. With the hedge on, so does the market
+      sensitivity limit.
+  \end{itemize}
+
+  \vspace{0.5em}
+  When a limit stops the engine from reaching the BAB weights, the portfolio's $\beta$ can move
+  away from zero.
+\end{frame}
+
+\begin{frame}{Reading the Code}
+  \vspace{0.3em}
+  The rule's code file is
+  \href{\repo/strategies/weighting/bab.jl}{\texttt{strategies/weighting/bab.jl}}:
+  \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item \texttt{weigh\_bab(beta; beta\_floor)} computes the BAB weights $w_{i}$, without the
+      trading limits.
+    \item \texttt{MyL15aBABRule} holds the settings: \texttt{long\_cap = 1.30},
+      \texttt{short\_cap = 0.30}, and \texttt{beta\_floor = 0.1}.
+    \item \texttt{MPC.rule\_preferences(...)} marks the picked stocks with a score of one, so that
+      the rule can find the basket.
+    \item \texttt{MPC.allocate(...)} computes the BAB weights of the basket, then calls
+      \texttt{MPC.closest\_book(...)}, which applies the trading limits.
+  \end{itemize}
+
+  \vspace{0.5em}
+  The \href{\repo/strategies/CHEME-5660-L15a-Strategy-Menu-Fall-2026.ipynb}{strategy menu} lists
+  every rule, and the
+  \href{\repo/engine/CHEME-5660-L15a-Trading-Engine-Fall-2026.ipynb}{trading engine} describes
+  the shared limits.
+\end{frame}
+
+\end{document}
